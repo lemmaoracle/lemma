@@ -1,6 +1,6 @@
 ---
 /**
- * 製品ページ v18 — `/ja/pillars/`（日本語のみ）。
+ * 製品ページ v18 — `/pillars/`（EN）と `/ja/pillars/`（JA）。
  *
  * デザイナーのモック `lemma_product_page_mock_v18.html` と実装指示書
  * `Lemma_製品ページ_実装指示_v1_2026-08-03.md` の機械的な移植。節の並びは
@@ -9,11 +9,21 @@
  *   ヒーロー → Why proof → Five proofs → How it works → Registry → Custom → CTA
  *
  * 中核暗号 3 節（ゼロ知識証明・選択的開示・オンチェーン来歴）は指示書 §7 に従い
- * `/ja/guides/#core-crypto` へ移設済み。ここからは How it works 末尾の 1 行で送る。
+ * `/guides/#core-crypto` へ移設済み。ここからは How it works 末尾の 1 行で送る。
  * §7-3 の順序どおり、受け皿を作ってからこの節を落としている。
  *
- * 英語の `/pillars/` は LemmaApiTemplate のまま。このテンプレートは
- * `/ja/pillars/` だけが使う。
+ * 文言はすべて `C = isJa ? {…} : {…}` に集約する（LemmaApiTemplate /
+ * VerifyAnchorTemplate と同じ型）。マークアップは両ロケール共通で、差し込む
+ * 文字列だけがロケールで変わる。`/ja/pillars/` の出力は英語化の前後で
+ * バイト一致していなければならないため、テキストノードを式に置き換える際は
+ * 前後の空白を変えないこと。
+ *
+ * 英語コピーの禁則（クライアント仕様）:
+ *   - 説明責任を「果たす」とは言わない。根拠として「示せる」までにとどめる。
+ *   - 防止・検知は主張しない。言えるのは「自己申告を証明に変える」まで。
+ *   - 証明が「永続する」とは言わない。「そのまま残る」と言う。
+ *   - 開発工数・期間には触れない。
+ *   - 導入実績は「自治体・個人情報を出さず・個別構成」を上限とする。
  *
  * スタイルは `../styles/product-v18.css`（全規則が `.pv18` 配下）。共有シート
  * （global.css / pillar-v4.css 等）は触らない。
@@ -32,15 +42,17 @@ interface Props {
   base: string;
   /** 正規パス。既定は `/pillars/`。 */
   pagePath?: string;
-  /** OG 画像（/ja/pillars は専用カードを持っている）。 */
+  /** OG 画像（/pillars と /ja/pillars は専用カードを持っている）。 */
   ogImage?: string;
 }
 const { locale, t, base, pagePath = "/pillars/", ogImage } = Astro.props as Props;
+const isJa = locale === "ja";
 
 const L = (path: string) => `${base}${path}`;
 
 // リンク先はすべて実在する面へ（指示書 §6）。Sandbox / 仕様書 / ドキュメント /
 // 相談フォームは、これまで同じ URL で運用してきた既存の定数をそのまま使う。
+// 相談フォームは locale 別（JA と EN で Tally のフォーム ID が違う）。
 const sandboxUrl = DASHBOARD_URL;
 const guidesHref = L("/guides/");
 // 中核暗号 3 本の着地点。製品ページからこの1行で送るため、群のアンカーを直接指す。
@@ -58,17 +70,355 @@ const PROOF_HREF = {
   attribute: L("/pillars/regulatory-attribute-proof/"),
 };
 
-// メタは現行 /ja/pillars（LemmaApiTemplate）の文言をそのまま引き継ぐ。
-const metaTitle = "Lemma API — 来歴・認証・権限・推論・属性を1つの API で | Lemma";
-const metaDesc =
-  "生データを渡さずに証明を発行する ZK 証明の発行 API。来歴・認証・権限・推論・属性の5つの証明を、1つの API で。検証はいつでも無料。MCP / A2A / x402 / C2PA / W3C VC 対応。";
+const C = isJa
+  ? {
+      // メタは現行 /ja/pillars（LemmaApiTemplate）の文言をそのまま引き継ぐ。
+      metaTitle: "Lemma API — 来歴・認証・権限・推論・属性を1つの API で | Lemma",
+      metaDesc:
+        "生データを渡さずに証明を発行する ZK 証明の発行 API。来歴・認証・権限・推論・属性の5つの証明を、1つの API で。検証はいつでも無料。MCP / A2A / x402 / C2PA / W3C VC 対応。",
+
+      crumbHome: "ホーム",
+      crumbProduct: "製品",
+
+      heroEyebrow: "製品 — Lemma API",
+      heroH1a: "5つの証明を、",
+      heroH1b: "ひとつの API で。",
+      heroSub: "モデルは変わる。証明は残る。",
+      heroLeadA: "記録・データ・AIの実行に証明を付けて発行します。",
+      heroLeadStrong: "生データは渡さず、証明だけを送ります。",
+      heroLeadB: "検証は無料で、何度でも、キーも要りません。",
+      stdsLabel: "国際標準に対応しています",
+      ctaEnterprise: "エンタープライズ相談",
+      ctaSandbox: "Sandbox で試す（testnet・無料）",
+      heroDocs: "ドキュメントを見る →",
+      heroSpecs: "仕様書 →",
+
+      uiUrl: "lemma.frame00.com/ja/verify/?doc=0x68d4…9f01",
+      verdict: "改ざんされていません",
+      chk1: "署名の一致",
+      chk2: "改ざんの有無",
+      chk3: "発行者の確認",
+      miniIssuerK: "発行者",
+      miniIssuerV: "株式会社◯◯",
+      miniSubjectK: "対象",
+      miniSubjectV: "検査記録",
+
+      whyH2: "なぜ、証明なのか。",
+      whyLedeA: "検知でもなく、目視でもなく。",
+      whyLedeB: "AI時代に、確認のコストを増やさずに信用をつくる、3つの理由。",
+      wWas: "これまで",
+      wNow: "証明なら",
+      w1: {
+        b: "AIが進化しても、崩れない。",
+        was: "検知モデルは、AIが進化するたびに作り直しが必要でした。",
+        nowA: "暗号技術で発行するので、AIが何世代進んでも",
+        nowU: "そのまま残ります",
+        nowB: "。",
+      },
+      w2: {
+        b: "AI 対 AI でも、そのまま成立する。",
+        was: "人の目視に頼っていて、エージェント同士の取引には使えませんでした。",
+        nowA: "",
+        nowU: "人を挟まずに、機械が機械を確かめられます",
+        nowB: "。キー不要で 8ms。",
+      },
+      w3: {
+        b: "自己申告を、証明に変える。",
+        was: "「うちが本物です」と言うだけの、確かめようのない自己申告でした。",
+        nowA: "",
+        nowU: "受け取った側が独立に確かめられます",
+        nowB: "。監査や取引先にも、根拠として示せます。",
+      },
+      whyFootA: "どの記録に証明を付けると確認が短くなるかは、",
+      whyFootLink: "構成相談",
+      whyFootB: "でご一緒に設計します。",
+
+      fpH2a: "ひとつの API で、",
+      fpH2b: "5種の証明。",
+      fpLede: "証明できるのは、この5種類です。用途に応じて組み合わせて使います。",
+      pf1: {
+        h: "来歴 ",
+        sub: "Provenance",
+        t: "原本を渡さず、出所を証明する。",
+        d: "データの出所と非改ざんを、中身を出さずに示せます。",
+        u: "検査記録・計測値／公開した記事や写真",
+      },
+      pf2: {
+        h: "認証 ",
+        sub: "Authentication",
+        t: "鍵を送らず、本人だと証明する。",
+        d: "秘密は端末から一歩も出ません。鍵を AI に渡さないサインイン。",
+        u: "社内システムへのサインイン／エージェントの本人性",
+      },
+      pf3: {
+        h: "権限 ",
+        sub: "Authority",
+        t: "鍵を渡さず、権限だけを委ねる。",
+        d: "範囲の内側だけが実行され、外側は止まります。",
+        u: "エージェントへの委任／承認フロー",
+      },
+      pf4: {
+        h: "推論 ",
+        sub: "Inference",
+        t: "モデルを開示せず、推論を証明する。",
+        d: "何を根拠に動いたかを、あとから提示できます。",
+        u: "AI の実行記録／判断の根拠",
+      },
+      pf5: {
+        h: "属性 ",
+        sub: "Attribute",
+        t: "属性を明かさず、要件を満たすと証明する。",
+        d: "健康状態を出さずに就業適格だけを示す、といった形。",
+        u: "資格・適格の提示／年齢や条件の確認",
+        badge: "個別構成で提供",
+      },
+      pfMore: "詳しく →",
+      fpNoteA: "発行に課金し、検証はいつでも無料です。認証の入口ページは ",
+      fpNoteB: "、エージェント向けのラッパーは ",
+      fpNoteC: " です。",
+
+      hwH2a: "データは出ない。",
+      hwH2b: "証明だけが流通する。",
+      figSource1: "記録・データ",
+      figSource2: "AI の実行",
+      figSourceNote: "生データはここに残る",
+      figWire: "HASH ONLY · 約200B",
+      hw1t: "発行",
+      hw1d: "ソース側で証明を作ります。Lemma が受け取るのはハッシュだけで、記録そのものは御社の手元に残ります。",
+      hw2t: "提示",
+      hw2d: "証明を記録と一緒に渡します。受け取った側に、専用のソフトもアカウントも要りません。",
+      hw3t: "検証",
+      hw3d: "公開鍵で誰でも確かめられます。発行元に問い合わせないので、確認が何度起きても費用は増えません。",
+      hwFootA: "発行は ",
+      hwFootStrong: "API を1回",
+      hwFootB: "。Sandbox（testnet）は無料で今すぐ試せます。",
+      hwFootC: "ゼロ知識証明・選択的開示・オンチェーン来歴の詳細は ",
+      hwFootLink: "ドキュメント →",
+
+      regH2a: "動いているものを、",
+      regH2b: "その場で確かめられます。",
+      regLedeA: "右は、Lemma が検証・発行してきた記録の実数です。",
+      regLedeB: "推定では埋めません。",
+      regLedeC: "取得できないときは OFFLINE と表示します。",
+      regTryGo: "この証明を検証する",
+      regNoteA: "上のIDは、実際に発行された証明のものです。",
+      regNoteB: "自分で発行した証明のIDを貼っても、同じように確かめられます。",
+      regl1b: "検証は無料。",
+      regl1t: "キーもアカウントも要りません。回数の上限もありません。",
+      regl2b: "発行元に問い合わせません。",
+      regl2t: "受け取った側だけで判定が完結します。",
+      regl3b: "数えているのは実数だけ。",
+      regl3t: "データ点数でもリクエスト数でもなく、1回の検証を1と数えます。",
+      regCenterLink: "検証センターを見る →",
+      regRawLink: "レスポンスを直接確認する →",
+      rpVerifiedJ: "検証済み証明数",
+      rpVerifiedD: "1回の検証を1と数えます。データ点数でも、リクエスト数でもありません。",
+      rpIssuedJ: "発行された証明",
+      rpIssuedD: "1件の登録を1と数えます。",
+      perr: "レジストリに到達できません。推定値では埋めません。",
+
+      cuH2a: "標準で出るもの、",
+      cuH2b: "個別構成で提供するもの。",
+      cuStdK: "標準で提供",
+      cuStd1: "証明の発行と検証（来歴・認証・権限・推論）",
+      cuStd2: "検証ページへのリンクとバッジの設置",
+      cuStd3: "対応標準への接続（MCP / A2A / x402 / C2PA / W3C VC）",
+      cuAskK: "個別構成で提供",
+      cuAsk1: "項目を選んで出し分ける（選択的開示）",
+      cuAsk2: "チェーン上での直接検証（専用の検証コントラクト）",
+      cuAsk3: "自社の画面への埋め込み、基幹システムとの連携",
+      cuProofB: "自治体で、個人情報を出さずに、実際に動いています。",
+      cuProofT: "個別構成での導入実績があります。",
+      cuProofLink: "導入について相談する →",
+
+      ctaH2a: "どの記録に証明を付けると、",
+      ctaH2b: "確認が短くなりますか。",
+      ctaBody:
+        "30〜60分で、証明の対象と構成を一緒に設計します。標準構成で足りるかも、その場で分かります。",
+      ctaTalk: "相談する",
+      ctaPricing: "料金を見る",
+    }
+  : {
+      metaTitle:
+        "Lemma API — provenance, authentication, authority, inference, attribute in one API | Lemma",
+      metaDesc:
+        "The ZK proof issuance API — issue proofs without handing over raw data. Provenance, authentication, authority, inference, attribute: five proofs in one API. Verification is always free. MCP / A2A / x402 / C2PA / W3C VC compliant.",
+
+      crumbHome: "Home",
+      crumbProduct: "Product",
+
+      heroEyebrow: "Product — Lemma API",
+      heroH1a: "Five proofs,",
+      heroH1b: "one API.",
+      heroSub: "Models change. Proofs remain.",
+      heroLeadA: "Issue proofs over your records, your data, and your AI runs. ",
+      heroLeadStrong: "Raw data never leaves; only the proof is sent.",
+      heroLeadB: " Verification is free, unlimited, and needs no key.",
+      stdsLabel: "Supports international standards",
+      ctaEnterprise: "Enterprise inquiry",
+      ctaSandbox: "Try the Sandbox (testnet · free)",
+      heroDocs: "Read the documentation →",
+      heroSpecs: "Specs →",
+
+      uiUrl: "lemma.frame00.com/verify/?doc=0x68d4…9f01",
+      verdict: "Not tampered",
+      chk1: "Signature match",
+      chk2: "Integrity check",
+      chk3: "Issuer check",
+      miniIssuerK: "Issuer",
+      miniIssuerV: "Example Corp.",
+      miniSubjectK: "Subject",
+      miniSubjectV: "Inspection record",
+
+      whyH2: "Why it has to be proof.",
+      whyLedeA: "Not detection. Not the human eye. ",
+      whyLedeB:
+        "Three reasons proof builds trust in the AI era without adding to the cost of checking.",
+      wWas: "Before",
+      wNow: "With proof",
+      w1: {
+        b: "It holds as AI advances.",
+        was: "Detection models had to be rebuilt every time AI moved on.",
+        nowA: "It is issued with cryptography, so however many generations of AI go by, it ",
+        nowU: "remains as it is",
+        nowB: ".",
+      },
+      w2: {
+        b: "It still holds, AI to AI.",
+        was: "Checking relied on a human eye, so it did not carry over to agent-to-agent transactions.",
+        nowA: "",
+        nowU: "Machines check machines, with no person in between",
+        nowB: ". No key, 8ms.",
+      },
+      w3: {
+        b: "Turn self-declaration into proof.",
+        was: "It was self-declaration — “we are the real thing” — with no way to check it.",
+        nowA: "",
+        nowU: "The receiving side can check it independently",
+        nowB: ". It can be shown to auditors and counterparties as grounds.",
+      },
+      whyFootA:
+        "We design which records should carry proof — and where that shortens checking — with you in a ",
+      whyFootLink: "configuration session",
+      whyFootB: ".",
+
+      fpH2a: "Five kinds of proof, ",
+      fpH2b: "one API.",
+      fpLede: "These are the five kinds of proof. Combine them to suit the use.",
+      pf1: {
+        h: "Provenance",
+        sub: null,
+        t: "Prove origin without handing over the original.",
+        d: "Show where data came from, and that it is unchanged, without exposing the contents.",
+        u: "Inspection records and measurements / published articles and photos",
+      },
+      pf2: {
+        h: "Authentication",
+        sub: null,
+        t: "Prove identity without sending a key.",
+        d: "The secret never leaves the device. Sign-in that hands no key to an AI.",
+        u: "Sign-in to internal systems / the identity of an agent",
+      },
+      pf3: {
+        h: "Authority",
+        sub: null,
+        t: "Delegate authority without handing over a key.",
+        d: "Inside the scope it runs. Outside the scope it stops.",
+        u: "Delegation to agents / approval flows",
+      },
+      pf4: {
+        h: "Inference",
+        sub: null,
+        t: "Prove inference without disclosing the model.",
+        d: "Show afterwards what the run was based on.",
+        u: "AI run records / the grounds for a decision",
+      },
+      pf5: {
+        h: "Attribute",
+        sub: null,
+        t: "Prove you meet a requirement without revealing the attribute.",
+        d: "Show fitness to work, for instance, without disclosing the health data behind it.",
+        u: "Presenting a qualification or eligibility / checking age or conditions",
+        badge: "Under custom configuration",
+      },
+      pfMore: "Learn more →",
+      fpNoteA:
+        "Issuance is billed; verification is always free. The entry page for authentication is ",
+      fpNoteB: ", and the wrapper for agents is ",
+      fpNoteC: ".",
+
+      hwH2a: "Data stays in place. ",
+      hwH2b: "Only proofs travel.",
+      figSource1: "Records · data",
+      figSource2: "AI runs",
+      figSourceNote: "raw data stays here",
+      figWire: "HASH ONLY · ~200B",
+      hw1t: "Issue",
+      hw1d: "The proof is created at the source. Lemma receives only a hash; the record itself stays with you.",
+      hw2t: "Present",
+      hw2d: "You hand over the proof together with the record. The receiving side needs no special software and no account.",
+      hw3t: "Verify",
+      hw3d: "Anyone can check it with a public key. There is no call back to the issuer, so cost does not rise however often it is checked.",
+      hwFootA: "Issuing is ",
+      hwFootStrong: "one API call",
+      hwFootB: ". The Sandbox (testnet) is free to try.",
+      hwFootC:
+        "Zero-knowledge proof, selective disclosure, and on-chain provenance are covered in the ",
+      hwFootLink: "documentation →",
+
+      regH2a: "What is running, ",
+      regH2b: "checkable on the spot.",
+      regLedeA: "On the right are the real counts of what Lemma has verified and issued.",
+      regLedeB: "We do not fill in estimates.",
+      regLedeC: " When they cannot be read, the panel shows OFFLINE.",
+      regTryGo: "Verify this proof",
+      regNoteA: "The ID above belongs to a proof that was actually issued. ",
+      regNoteB: "Paste the ID of a proof you issued yourself and it is checked the same way.",
+      regl1b: "Verification is free.",
+      regl1t: " No key, no account. No cap on how many times.",
+      regl2b: "There is no call back to the issuer.",
+      regl2t: " The receiving side reaches the verdict on its own.",
+      regl3b: "Only real counts.",
+      regl3t: " Not data points, not requests — one verification counts as one.",
+      regCenterLink: "See the Verification Center →",
+      regRawLink: "Check the response directly →",
+      rpVerifiedJ: "Verified proofs",
+      rpVerifiedD: "One verification counts as one — not one data point, not one request.",
+      rpIssuedJ: "Issued proofs",
+      rpIssuedD: "One registration counts as one.",
+      perr: "The registry is unreachable. We do not fill in estimates.",
+
+      cuH2a: "What ships as standard, ",
+      cuH2b: "what comes under custom configuration.",
+      cuStdK: "Standard",
+      cuStd1: "Issuing and verifying proofs (provenance, authentication, authority, inference)",
+      cuStd2: "Links and badges to the verification page",
+      cuStd3: "Connection to the supported standards (MCP / A2A / x402 / C2PA / W3C VC)",
+      cuAskK: "Under custom configuration",
+      cuAsk1: "Choosing which fields to reveal (selective disclosure)",
+      cuAsk2: "Direct verification on chain (a dedicated verifier contract)",
+      cuAsk3: "Embedding in your own screens, and integration with core systems",
+      cuProofB: "It is running in production at a municipality, without exposing personal data.",
+      cuProofT: " There are deployments under custom configuration. ",
+      cuProofLink: "Talk to us about deployment →",
+
+      ctaH2a: "Which records, once they carry proof,",
+      ctaH2b: "would make checking shorter?",
+      ctaBody:
+        "In 30 to 60 minutes we design, with you, what to prove and how to configure it. You will also see on the spot whether the standard configuration is enough.",
+      ctaTalk: "Talk to us",
+      ctaPricing: "See pricing",
+    };
 
 // Registry 節のクライアント側取得に渡す文字列（検証センターと同じ文言）。
 const REG = {
   api: COUNTERS_API_URL,
   live: "LIVE",
   offline: "OFFLINE",
-  perr: "レジストリに到達できません。推定値では埋めません。",
+  perr: C.perr,
+  // 数値の桁区切り。整数なので ja-JP と en-US で出力は同じだが、
+  // ページのロケールと取り違えないよう明示的に渡す。
+  numLocale: isJa ? "ja-JP" : "en-US",
 };
 ---
 
@@ -77,52 +427,51 @@ const REG = {
   metaType="page"
   pagePath={pagePath}
   ogImage={ogImage}
-  title={metaTitle}
-  description={metaDesc}
+  title={C.metaTitle}
+  description={C.metaDesc}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
   <main class="pv18">
     <div class="iwrap">
       <div class="crumb">
-        <a href={L("/")}>ホーム</a><i>/</i><span>製品</span><i>/</i><span>Lemma API</span>
+        <a href={L("/")}>{C.crumbHome}</a><i>/</i><span>{C.crumbProduct}</span><i>/</i><span
+          >Lemma API</span
+        >
       </div>
 
       {/* ── ヒーロー ───────────────────────────────────────────── */}
       <div class="phero">
         <div>
-          <div class="ind-label">製品 — Lemma API</div>
+          <div class="ind-label">{C.heroEyebrow}</div>
           <h1 class="ih1" style="margin-top:14px;">
-            <span class="nb">5つの証明を、</span><br /><span class="nb">ひとつの API で。</span>
+            <span class="nb">{C.heroH1a}</span><br /><span class="nb">{C.heroH1b}</span>
           </h1>
-          <p class="isub">モデルは変わる。証明は残る。</p>
+          <p class="isub">{C.heroSub}</p>
           <p class="ilead">
-            記録・データ・AIの実行に証明を付けて発行します。<strong
-              >生データは渡さず、証明だけを送ります。</strong
-            >検証は無料で、何度でも、キーも要りません。
+            {C.heroLeadA}<strong>{C.heroLeadStrong}</strong>{C.heroLeadB}
           </p>
           <div class="stdswrap">
-            <div class="stds-k">国際標準に対応しています</div>
+            <div class="stds-k">{C.stdsLabel}</div>
             <div class="stds">
               <span>MCP</span><span>A2A</span><span>x402</span><span>C2PA</span><span>W3C VC</span>
             </div>
           </div>
           <div class="ictas">
             <a class="btn primary" href={contactUrl} target="_blank" rel="noopener"
-              >エンタープライズ相談</a
+              >{C.ctaEnterprise}</a
             >
-            <a class="btn ghostd" href={sandboxUrl} target="_blank" rel="noopener"
-              >Sandbox で試す（testnet・無料）</a
+            <a class="btn ghostd" href={sandboxUrl} target="_blank" rel="noopener">{C.ctaSandbox}</a
             >
           </div>
           <div class="herolink">
-            <a href={guidesHref}>ドキュメントを見る →</a><a href={guidesHref}>仕様書 →</a>
+            <a href={guidesHref}>{C.heroDocs}</a><a href={guidesHref}>{C.heroSpecs}</a>
           </div>
         </div>
         <div class="ui" aria-hidden="true">
           <div class="ui-bar">
             <span class="ui-dot"></span><span class="ui-dot"></span><span class="ui-dot"></span>
-            <span class="ui-url">lemma.frame00.com/ja/verify/?doc=0x68d4…9f01</span>
+            <span class="ui-url">{C.uiUrl}</span>
           </div>
           <div class="uipane">
             <div class="mini-verdict" style="padding:22px 20px 20px;">
@@ -144,16 +493,16 @@ const REG = {
                   ></span
                 >
               </div>
-              <div class="t">改ざんされていません</div>
-              <div class="en">NOT TAMPERED</div>
+              <div class="t">{C.verdict}</div>
+              {isJa && <div class="en">NOT TAMPERED</div>}
               <div class="chk">
-                <span>署名の一致</span><span>改ざんの有無</span><span>発行者の確認</span>
+                <span>{C.chk1}</span><span>{C.chk2}</span><span>{C.chk3}</span>
               </div>
             </div>
             <div class="mini-body">
               <div class="mini-row"><span>DOC HASH</span><b>0x68d4…9f01</b></div>
-              <div class="mini-row"><span>発行者</span><b>株式会社◯◯</b></div>
-              <div class="mini-row"><span>対象</span><b>検査記録</b></div>
+              <div class="mini-row"><span>{C.miniIssuerK}</span><b>{C.miniIssuerV}</b></div>
+              <div class="mini-row"><span>{C.miniSubjectK}</span><b>{C.miniSubjectV}</b></div>
             </div>
           </div>
         </div>
@@ -161,18 +510,16 @@ const REG = {
 
       {/* ── Why proof ── 囲み3列。各列で「これまで」→「証明なら」を縦に流す ── */}
       <section class="isec whysec">
-        <h2 class="isec-h"><span>Why proof</span><b>なぜ、証明なのか。</b></h2>
+        <h2 class="isec-h"><span>Why proof</span><b>{C.whyH2}</b></h2>
         <p class="sec-lede" style="max-width:62ch;margin-top:4px;">
-          検知でもなく、目視でもなく。<b
-            >AI時代に、確認のコストを増やさずに信用をつくる、3つの理由。</b
-          >
+          {C.whyLedeA}<b>{C.whyLedeB}</b>
         </p>
         <div class="why3col">
           <div class="wcol">
             <span class="w-n">01</span>
-            <div class="w-b">AIが進化しても、崩れない。</div>
+            <div class="w-b">{C.w1.b}</div>
             <div class="w-was">
-              <span>これまで</span>検知モデルは、AIが進化するたびに作り直しが必要でした。
+              <span>{C.wWas}</span>{C.w1.was}
             </div>
             <div class="w-arw">
               <svg
@@ -185,16 +532,14 @@ const REG = {
               >
             </div>
             <div class="w-now">
-              <span>証明なら</span>暗号技術で発行するので、AIが何世代進んでも<u>そのまま残ります</u
-              >。
+              <span>{C.wNow}</span>{C.w1.nowA}<u>{C.w1.nowU}</u>{C.w1.nowB}
             </div>
           </div>
           <div class="wcol">
             <span class="w-n">02</span>
-            <div class="w-b">AI 対 AI でも、そのまま成立する。</div>
+            <div class="w-b">{C.w2.b}</div>
             <div class="w-was">
-              <span>これまで</span
-              >人の目視に頼っていて、エージェント同士の取引には使えませんでした。
+              <span>{C.wWas}</span>{C.w2.was}
             </div>
             <div class="w-arw">
               <svg
@@ -207,14 +552,14 @@ const REG = {
               >
             </div>
             <div class="w-now">
-              <span>証明なら</span><u>人を挟まずに、機械が機械を確かめられます</u>。キー不要で 8ms。
+              <span>{C.wNow}</span>{C.w2.nowA}<u>{C.w2.nowU}</u>{C.w2.nowB}
             </div>
           </div>
           <div class="wcol">
             <span class="w-n">03</span>
-            <div class="w-b">自己申告を、証明に変える。</div>
+            <div class="w-b">{C.w3.b}</div>
             <div class="w-was">
-              <span>これまで</span>「うちが本物です」と言うだけの、確かめようのない自己申告でした。
+              <span>{C.wWas}</span>{C.w3.was}
             </div>
             <div class="w-arw">
               <svg
@@ -227,27 +572,24 @@ const REG = {
               >
             </div>
             <div class="w-now">
-              <span>証明なら</span><u>受け取った側が独立に確かめられます</u
-              >。監査や取引先にも、根拠として示せます。
+              <span>{C.wNow}</span>{C.w3.nowA}<u>{C.w3.nowU}</u>{C.w3.nowB}
             </div>
           </div>
         </div>
         <div class="hiwfoot" style="margin-top:14px;">
-          どの記録に証明を付けると確認が短くなるかは、<a
-            href={contactUrl}
-            target="_blank"
-            rel="noopener">構成相談</a
-          >でご一緒に設計します。
+          {C.whyFootA}<a href={contactUrl} target="_blank" rel="noopener">{C.whyFootLink}</a>{
+            C.whyFootB
+          }
         </div>
       </section>
 
       {/* ── Five proofs ── アイコン付き5カード（Why proof とレイアウトを変える） ── */}
       <div class="band alt">
         <h2 class="isec-h">
-          <span>Five proofs</span><b>ひとつの API で、<span class="nb">5種の証明。</span></b>
+          <span>Five proofs</span><b>{C.fpH2a}<span class="nb">{C.fpH2b}</span></b>
         </h2>
         <p class="sec-lede" style="max-width:58ch;margin-top:4px;">
-          証明できるのは、この5種類です。用途に応じて組み合わせて使います。
+          {C.fpLede}
         </p>
         <div class="pfgrid">
           <a class="pf" href={PROOF_HREF.origin}>
@@ -264,11 +606,11 @@ const REG = {
               ></span
             >
             <span class="pf-n">01</span>
-            <span class="pf-h">来歴 <i>Provenance</i></span>
-            <span class="pf-t">原本を渡さず、出所を証明する。</span>
-            <span class="pf-d">データの出所と非改ざんを、中身を出さずに示せます。</span>
-            <span class="pf-u">検査記録・計測値／公開した記事や写真</span>
-            <span class="pf-go">詳しく →</span>
+            <span class="pf-h">{C.pf1.h}{C.pf1.sub && <i>{C.pf1.sub}</i>}</span>
+            <span class="pf-t">{C.pf1.t}</span>
+            <span class="pf-d">{C.pf1.d}</span>
+            <span class="pf-u">{C.pf1.u}</span>
+            <span class="pf-go">{C.pfMore}</span>
           </a>
           <a class="pf" href={PROOF_HREF.auth}>
             <span class="pf-g"
@@ -284,11 +626,11 @@ const REG = {
               ></span
             >
             <span class="pf-n">02</span>
-            <span class="pf-h">認証 <i>Authentication</i></span>
-            <span class="pf-t">鍵を送らず、本人だと証明する。</span>
-            <span class="pf-d">秘密は端末から一歩も出ません。鍵を AI に渡さないサインイン。</span>
-            <span class="pf-u">社内システムへのサインイン／エージェントの本人性</span>
-            <span class="pf-go">詳しく →</span>
+            <span class="pf-h">{C.pf2.h}{C.pf2.sub && <i>{C.pf2.sub}</i>}</span>
+            <span class="pf-t">{C.pf2.t}</span>
+            <span class="pf-d">{C.pf2.d}</span>
+            <span class="pf-u">{C.pf2.u}</span>
+            <span class="pf-go">{C.pfMore}</span>
           </a>
           <a class="pf" href={PROOF_HREF.authority}>
             <span class="pf-g"
@@ -309,11 +651,11 @@ const REG = {
               ></span
             >
             <span class="pf-n">03</span>
-            <span class="pf-h">権限 <i>Authority</i></span>
-            <span class="pf-t">鍵を渡さず、権限だけを委ねる。</span>
-            <span class="pf-d">範囲の内側だけが実行され、外側は止まります。</span>
-            <span class="pf-u">エージェントへの委任／承認フロー</span>
-            <span class="pf-go">詳しく →</span>
+            <span class="pf-h">{C.pf3.h}{C.pf3.sub && <i>{C.pf3.sub}</i>}</span>
+            <span class="pf-t">{C.pf3.t}</span>
+            <span class="pf-d">{C.pf3.d}</span>
+            <span class="pf-u">{C.pf3.u}</span>
+            <span class="pf-go">{C.pfMore}</span>
           </a>
           <a class="pf" href={PROOF_HREF.inference}>
             <span class="pf-g"
@@ -327,11 +669,11 @@ const REG = {
               ></span
             >
             <span class="pf-n">04</span>
-            <span class="pf-h">推論 <i>Inference</i></span>
-            <span class="pf-t">モデルを開示せず、推論を証明する。</span>
-            <span class="pf-d">何を根拠に動いたかを、あとから提示できます。</span>
-            <span class="pf-u">AI の実行記録／判断の根拠</span>
-            <span class="pf-go">詳しく →</span>
+            <span class="pf-h">{C.pf4.h}{C.pf4.sub && <i>{C.pf4.sub}</i>}</span>
+            <span class="pf-t">{C.pf4.t}</span>
+            <span class="pf-d">{C.pf4.d}</span>
+            <span class="pf-u">{C.pf4.u}</span>
+            <span class="pf-go">{C.pfMore}</span>
           </a>
           <a class="pf" href={PROOF_HREF.attribute}>
             <span class="pf-g"
@@ -349,26 +691,24 @@ const REG = {
               ></span
             >
             <span class="pf-n">05</span>
-            <span class="pf-h">属性 <i>Attribute</i></span>
-            <span class="pf-t">属性を明かさず、要件を満たすと証明する。</span>
-            <span class="pf-d">健康状態を出さずに就業適格だけを示す、といった形。</span>
-            <span class="pf-u">資格・適格の提示／年齢や条件の確認</span>
-            <span class="pf-b">個別構成で提供</span>
-            <span class="pf-go">詳しく →</span>
+            <span class="pf-h">{C.pf5.h}{C.pf5.sub && <i>{C.pf5.sub}</i>}</span>
+            <span class="pf-t">{C.pf5.t}</span>
+            <span class="pf-d">{C.pf5.d}</span>
+            <span class="pf-u">{C.pf5.u}</span>
+            <span class="pf-b">{C.pf5.badge}</span>
+            <span class="pf-go">{C.pfMore}</span>
           </a>
         </div>
         <p class="plnote" style="margin-top:14px;">
-          発行に課金し、検証はいつでも無料です。認証の入口ページは <a href={L("/seal/")}>Seal</a
-          >、エージェント向けのラッパーは <a href={L("/trust402/")}>Trust402</a> です。
+          {C.fpNoteA}<a href={L("/seal/")}>Seal</a>{C.fpNoteB}<a href={L("/trust402/")}>Trust402</a
+          >{C.fpNoteC}
         </p>
       </div>
 
       {/* ── How it works ── 境界図＋発行／提示／検証 ────────────── */}
       <div class="band alt">
         <h2 class="isec-h">
-          <span>How it works</span><b
-            >データは出ない。<span class="nb">証明だけが流通する。</span></b
-          >
+          <span>How it works</span><b>{C.hwH2a}<span class="nb">{C.hwH2b}</span></b>
         </h2>
         <div class="hwwrap">
           <div class="hwfig">
@@ -388,17 +728,18 @@ const REG = {
               <rect x="8" y="34" width="180" height="190" rx="6" fill="#fff" stroke="#C7CCC2"
               ></rect>
               <g font-family="Noto Sans JP, sans-serif" font-size="11" fill="#2f332b">
-                <text x="26" y="66">記録・データ</text><text x="26" y="90">AI の実行</text></g
+                <text x="26" y="66">{C.figSource1}</text><text x="26" y="90">{C.figSource2}</text
+                ></g
               >
               <g font-family="Space Mono, monospace" font-size="8" fill="#9aa197">
-                <text x="26" y="112">生データはここに残る</text></g
+                <text x="26" y="112">{C.figSourceNote}</text></g
               >
               <path d="M232 129h0" stroke="#C7CCC2"></path>
               <path d="M232 34v190" stroke="#C7CCC2" stroke-dasharray="3 4"></path>
               <path d="M188 129h130" stroke="#a8e010" stroke-width="2"></path>
               <circle cx="318" cy="129" r="3.4" fill="#a8e010"></circle>
               <g font-family="Space Mono, monospace" font-size="8" fill="#6f9c00">
-                <text x="196" y="120">HASH ONLY · 約200B</text></g
+                <text x="196" y="120">{C.figWire}</text></g
               >
               <rect x="330" y="86" width="120" height="86" rx="6" fill="#333b34"></rect>
               <g font-family="Space Mono, monospace" font-size="9" fill="#EBEFE6"
@@ -419,25 +760,23 @@ const REG = {
           </div>
           <div class="hwtxt">
             <div class="hw3">
-              <span class="hw-n">01</span><b>発行</b><p>
-                ソース側で証明を作ります。Lemma
-                が受け取るのはハッシュだけで、記録そのものは御社の手元に残ります。
+              <span class="hw-n">01</span><b>{C.hw1t}</b><p>
+                {C.hw1d}
               </p>
             </div>
             <div class="hw3">
-              <span class="hw-n">02</span><b>提示</b><p>
-                証明を記録と一緒に渡します。受け取った側に、専用のソフトもアカウントも要りません。
+              <span class="hw-n">02</span><b>{C.hw2t}</b><p>
+                {C.hw2d}
               </p>
             </div>
             <div class="hw3">
-              <span class="hw-n">03</span><b>検証</b><p>
-                公開鍵で誰でも確かめられます。発行元に問い合わせないので、確認が何度起きても費用は増えません。
+              <span class="hw-n">03</span><b>{C.hw3t}</b><p>
+                {C.hw3d}
               </p>
             </div>
             <div class="hiwfoot" style="margin-top:14px;">
-              発行は <b>API を1回</b>。Sandbox（testnet）は無料で今すぐ試せます。<br
-              />ゼロ知識証明・選択的開示・オンチェーン来歴の詳細は <a href={coreDocsHref}
-                >ドキュメント →</a
+              {C.hwFootA}<b>{C.hwFootStrong}</b>{C.hwFootB}<br />{C.hwFootC}<a href={coreDocsHref}
+                >{C.hwFootLink}</a
               >
             </div>
           </div>
@@ -447,21 +786,18 @@ const REG = {
       {/* ── Registry ── 左に説明＋単票検証、右にダークの計器パネル ── */}
       <section class="isec regsec">
         <h2 class="isec-h">
-          <span>Registry</span><b
-            >動いているものを、<span class="nb">その場で確かめられます。</span></b
-          >
+          <span>Registry</span><b>{C.regH2a}<span class="nb">{C.regH2b}</span></b>
         </h2>
         <div class="regwrap">
           <div class="regtxt">
             <p class="sec-lede">
-              右は、Lemma が検証・発行してきた記録の実数です。<br /><b>推定では埋めません。</b
-              >取得できないときは OFFLINE と表示します。
+              {C.regLedeA}<br /><b>{C.regLedeB}</b>{C.regLedeC}
             </p>
             <div class="rb-try">
               <div class="rt-f">
                 <span class="rt-k">DOC HASH</span><span class="rt-v">0x68d4bff9c2a1e07b…9f01</span>
               </div>
-              <div class="rt-go">この証明を検証する</div>
+              <div class="rt-go">{C.regTryGo}</div>
               <div class="rt-res">
                 <span class="vmark"
                   ><svg viewBox="0 0 24 24" fill="none"
@@ -478,13 +814,11 @@ const REG = {
                       stroke-linecap="round"
                       stroke-linejoin="round"></path></svg
                   ></span
-                ><b>改ざんされていません</b><i>NOT TAMPERED</i>
+                ><b>{C.verdict}</b>{isJa && <i>NOT TAMPERED</i>}
               </div>
             </div>
             <p class="plnote" style="margin-top:11px;">
-              上のIDは、実際に発行された証明のものです。<b
-                >自分で発行した証明のIDを貼っても、同じように確かめられます。</b
-              >
+              {C.regNoteA}<b>{C.regNoteB}</b>
             </p>
             <ul class="reglist">
               <li>
@@ -497,9 +831,7 @@ const REG = {
                     stroke-linecap="round"
                     stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
                   ></span
-                ><span
-                  ><b>検証は無料。</b>キーもアカウントも要りません。回数の上限もありません。</span
-                >
+                ><span><b>{C.regl1b}</b>{C.regl1t}</span>
               </li>
               <li>
                 <span class="rl-c"
@@ -511,7 +843,7 @@ const REG = {
                     stroke-linecap="round"
                     stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
                   ></span
-                ><span><b>発行元に問い合わせません。</b>受け取った側だけで判定が完結します。</span>
+                ><span><b>{C.regl2b}</b>{C.regl2t}</span>
               </li>
               <li>
                 <span class="rl-c"
@@ -523,17 +855,12 @@ const REG = {
                     stroke-linecap="round"
                     stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
                   ></span
-                ><span
-                  ><b>数えているのは実数だけ。</b
-                  >データ点数でもリクエスト数でもなく、1回の検証を1と数えます。</span
-                >
+                ><span><b>{C.regl3b}</b>{C.regl3t}</span>
               </li>
             </ul>
             <div class="hiwfoot" style="margin-top:14px;">
-              <a href={verifyHref}>検証センターを見る →</a>
-              <a href={COUNTERS_API_URL} target="_blank" rel="noopener"
-                >レスポンスを直接確認する →</a
-              >
+              <a href={verifyHref}>{C.regCenterLink}</a>
+              <a href={COUNTERS_API_URL} target="_blank" rel="noopener">{C.regRawLink}</a>
             </div>
           </div>
           <div class="regpanel">
@@ -546,10 +873,10 @@ const REG = {
             </div>
             <div class="rp-blk">
               <div class="rp-k">Proof Verifications</div>
-              <div class="rp-j">検証済み証明数</div>
+              <div class="rp-j">{C.rpVerifiedJ}</div>
               <div class="rp-n" id="pv18-verified" aria-live="polite">———</div>
               <div class="rp-d">
-                1回の検証を1と数えます。データ点数でも、リクエスト数でもありません。
+                {C.rpVerifiedD}
               </div>
               <div class="rb-bars" id="pv18-bars">
                 <span class="rb-bar"><span>—</span><i><b style="width:0%"></b></i><u>—</u></span>
@@ -559,15 +886,13 @@ const REG = {
             </div>
             <div class="rp-blk">
               <div class="rp-k">Proofs Issued</div>
-              <div class="rp-j">発行された証明</div>
+              <div class="rp-j">{C.rpIssuedJ}</div>
               <div class="rp-n sm" id="pv18-issued" aria-live="polite">———</div>
-              <div class="rp-d">1件の登録を1と数えます。</div>
+              <div class="rp-d">{C.rpIssuedD}</div>
             </div>
             <div class="rp-err" id="pv18-err" hidden>
               {REG.perr}
-              <a href={COUNTERS_API_URL} target="_blank" rel="noopener"
-                >レスポンスを直接確認する →</a
-              >
+              <a href={COUNTERS_API_URL} target="_blank" rel="noopener">{C.regRawLink}</a>
             </div>
           </div>
         </div>
@@ -576,11 +901,11 @@ const REG = {
       {/* ── Custom ── チェックリスト2列 ──────────────────────── */}
       <section class="isec">
         <h2 class="isec-h">
-          <span>Custom</span><b>標準で出るもの、<span class="nb">個別構成で提供するもの。</span></b>
+          <span>Custom</span><b>{C.cuH2a}<span class="nb">{C.cuH2b}</span></b>
         </h2>
         <div class="ckwrap">
           <div class="ckcol">
-            <div class="ck-k">標準で提供</div>
+            <div class="ck-k">{C.cuStdK}</div>
             <ul>
               <li class="on">
                 <span class="ck"
@@ -592,7 +917,7 @@ const REG = {
                     stroke-linecap="round"
                     stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
                   ></span
-                ><span>証明の発行と検証（来歴・認証・権限・推論）</span>
+                ><span>{C.cuStd1}</span>
               </li>
               <li class="on">
                 <span class="ck"
@@ -604,7 +929,7 @@ const REG = {
                     stroke-linecap="round"
                     stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
                   ></span
-                ><span>検証ページへのリンクとバッジの設置</span>
+                ><span>{C.cuStd2}</span>
               </li>
               <li class="on">
                 <span class="ck"
@@ -616,12 +941,12 @@ const REG = {
                     stroke-linecap="round"
                     stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
                   ></span
-                ><span>対応標準への接続（MCP / A2A / x402 / C2PA / W3C VC）</span>
+                ><span>{C.cuStd3}</span>
               </li>
             </ul>
           </div>
           <div class="ckcol ask">
-            <div class="ck-k">個別構成で提供</div>
+            <div class="ck-k">{C.cuAskK}</div>
             <ul>
               <li class="ad">
                 <span class="ck"
@@ -632,7 +957,7 @@ const REG = {
                     stroke-width="1.7"
                     stroke-linecap="round"><path d="M8 3.4v9.2M3.4 8h9.2"></path></svg
                   ></span
-                ><span>項目を選んで出し分ける（選択的開示）</span>
+                ><span>{C.cuAsk1}</span>
               </li>
               <li class="ad">
                 <span class="ck"
@@ -643,7 +968,7 @@ const REG = {
                     stroke-width="1.7"
                     stroke-linecap="round"><path d="M8 3.4v9.2M3.4 8h9.2"></path></svg
                   ></span
-                ><span>チェーン上での直接検証（専用の検証コントラクト）</span>
+                ><span>{C.cuAsk2}</span>
               </li>
               <li class="ad">
                 <span class="ck"
@@ -654,15 +979,14 @@ const REG = {
                     stroke-width="1.7"
                     stroke-linecap="round"><path d="M8 3.4v9.2M3.4 8h9.2"></path></svg
                   ></span
-                ><span>自社の画面への埋め込み、基幹システムとの連携</span>
+                ><span>{C.cuAsk3}</span>
               </li>
             </ul>
           </div>
         </div>
         <p class="plnote" style="margin-top:14px;">
-          <b>自治体で、個人情報を出さずに、実際に動いています。</b
-          >個別構成での導入実績があります。<a href={contactUrl} target="_blank" rel="noopener"
-            >導入について相談する →</a
+          <b>{C.cuProofB}</b>{C.cuProofT}<a href={contactUrl} target="_blank" rel="noopener"
+            >{C.cuProofLink}</a
           >
         </p>
       </section>
@@ -670,14 +994,14 @@ const REG = {
       {/* ── CTA ────────────────────────────────────────────── */}
       <div class="artcta">
         <div class="k">Enterprise</div>
-        <h2>どの記録に証明を付けると、<br />確認が短くなりますか。</h2>
+        <h2>{C.ctaH2a}<br />{C.ctaH2b}</h2>
         <p>
-          30〜60分で、証明の対象と構成を一緒に設計します。標準構成で足りるかも、その場で分かります。
+          {C.ctaBody}
         </p>
         <div class="row">
-          <a class="btn primary" href={contactUrl} target="_blank" rel="noopener">相談する</a><a
+          <a class="btn primary" href={contactUrl} target="_blank" rel="noopener">{C.ctaTalk}</a><a
             class="btn ghost"
-            href={pricingHref}>料金を見る</a
+            href={pricingHref}>{C.ctaPricing}</a
           >
         </div>
       </div>
@@ -697,7 +1021,7 @@ const REG = {
 <script is:inline define:vars={{ REG }}>
   (function () {
     const $ = (id) => document.getElementById(id);
-    const fmt = (n) => Number(n).toLocaleString("ja-JP");
+    const fmt = (n) => Number(n).toLocaleString(REG.numLocale);
     const esc = (s) =>
       String(s ?? "").replace(
         /[&<>"']/g,
