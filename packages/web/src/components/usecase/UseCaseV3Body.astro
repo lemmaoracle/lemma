@@ -434,6 +434,7 @@ const bytaskMembers = taskGroupMembers.filter(
           </div>
 
           <div class="ucv-approach">
+            <div class="ucv-approach-h">{isJa ? "なぜ Lemma か" : "Why Lemma"}</div>
             {v3 ? (
               <p>{v3.approach[locale]}</p>
             ) : (
@@ -733,6 +734,8 @@ const bytaskMembers = taskGroupMembers.filter(
 
   .ucv-approach { margin: 30px 0 0; background: var(--lite-2); border-left: 3px solid var(--ok); border-radius: 0 10px 10px 0; padding: 20px 24px; }
   .ucv-band--deep .ucv-approach { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--ok); }
+  .ucv-approach-h { font-family: var(--font-serif-jp); font-weight: 600; font-size: 16px; color: var(--tx); margin: 0 0 8px; }
+  .ucv-approach-h::before { content: ""; display: block; width: 22px; height: 2px; border-radius: 2px; background: var(--ok); margin-bottom: 8px; }
   .ucv-approach p, .ucv-approach-body { font-size: 14px; line-height: 1.9; color: var(--tx-soft); margin: 0; }
   .ucv-approach-body :global(p) { margin: 0 0 10px; }
   .ucv-approach-body :global(p:last-child) { margin-bottom: 0; }
