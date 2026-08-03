@@ -106,4 +106,4 @@ LiteLLM（社内の AI 利用を束ねる OSS の AI ゲートウェイ）で、
 - **NVD**: CVE-2026-40217（ガードレールのサンドボックス脱出）— <https://nvd.nist.gov/vuln/detail/CVE-2026-40217>
 - **The Hacker News**: “LiteLLM Vulnerability Chain Lets Low-Privilege Users Take Over AI Gateway Servers”（2026-06）— <https://thehackernews.com/2026/06/litellm-vulnerability-chain-lets-low.html>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)、[Trust402](https://lemma.frame00.com/ja/trust402/)

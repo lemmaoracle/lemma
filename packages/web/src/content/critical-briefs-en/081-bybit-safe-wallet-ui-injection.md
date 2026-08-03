@@ -108,4 +108,4 @@ Detection (after-the-fact statement, forensics, tracing, sanctions) works on rem
 - **Chainalysis**: blockchain analysis report (2025-02 to 03)
 - **Unchained / The Block / CoinDesk, etc.**: reporting on the incident's course (2025-02-21 onward)
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Seal](https://lemma.frame00.com/seal/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance), [Seal](https://lemma.frame00.com/seal/)

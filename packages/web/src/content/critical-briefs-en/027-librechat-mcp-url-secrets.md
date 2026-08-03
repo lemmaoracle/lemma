@@ -100,4 +100,4 @@ This closes — as a pre-execution refusal rather than via detection — the str
 - **NVD**: CVE-2026-32625 (CVSS 9.6 Critical, analysis completed 2026-06-04) — https://nvd.nist.gov/vuln/detail/cve-2026-32625
 - **CIRCL Vulnerability-Lookup**: CVE-2026-32625 (aggregated record including CISA SSVC assessment) — https://vulnerability.circl.lu/vuln/cve-2026-32625
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/#authority), [Trust402](https://lemma.frame00.com/trust402/)

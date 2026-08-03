@@ -1,0 +1,110 @@
+<div class="band">
+    <div class="wrap" style="padding:0;max-width:none">
+      <div class="isec-h">
+        <span>Five proofs</span>
+        <b><span class="nb">ひとつの API で、</span><span class="nb">5種の証明。</span></b>
+      </div>
+      <p class="lead">証明できるのは、この5種類です。用途に応じて組み合わせて使います。<span class="hi">どれも「示すのは事実だけ、原本は動かない」</span>という同じ形をしています——<span class="hi">原本は Lemma にも渡りません。</span></p>
+
+      <div class="fp-tabs" role="tablist">
+        <button class="fp-tab" id="t-01" role="tab" aria-selected="true" aria-controls="p-01" data-fp="01"><span class="pn">01</span><b>来歴</b><span class="en">Provenance</span></button>
+        <button class="fp-tab" id="t-02" role="tab" aria-selected="false" aria-controls="p-02" data-fp="02"><span class="pn">02</span><b>認証</b><span class="en">Authentication</span></button>
+        <button class="fp-tab" id="t-03" role="tab" aria-selected="false" aria-controls="p-03" data-fp="03"><span class="pn">03</span><b>権限</b><span class="en">Authority</span></button>
+        <button class="fp-tab" id="t-04" role="tab" aria-selected="false" aria-controls="p-04" data-fp="04"><span class="pn">04</span><b>推論</b><span class="en">Inference</span></button>
+        <button class="fp-tab" id="t-05" role="tab" aria-selected="false" aria-controls="p-05" data-fp="05"><span class="pn">05</span><b>属性</b><span class="en">Attribute</span></button>
+      </div>
+
+      <div class="fp-panel" id="p-01" role="tabpanel" aria-labelledby="t-01">
+        <p class="fp-lead">原本を渡さず、出所を証明する。</p>
+        <p class="fp-sub">データの出所と、改ざんされていないことを、中身を出さずに示せます。受け取った側は、原本にアクセスせず独立に確かめられます。</p>
+        <div class="fp-grid">
+          <div class="card fig"><div class="cbody after"><h4>公開されるもの</h4><ul><li>データの指紋（<span class='mn'>docHash</span>）</li><li>発行元と、その署名</li><li>発行時刻</li><li>来歴の連なり</li></ul></div></div>
+          <div class="card fig"><div class="cbody before"><h4>渡らないもの</h4><ul><li><b>原本データ — Lemma のサーバーにも送信されません</b></li><li>内部の詳細やセンシティブな項目</li><li>発行者の秘密鍵</li></ul></div></div>
+        </div>
+        <div class="fp-uses"><a class="fp-uc" href="/ja/solutions/use-cases/manufacturing/"><span class="ind">製造・基幹インフラ</span><b>検査記録アシュアランス</b><span class="sc">出荷検査の記録に、改ざんされていない証明を添える。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/media/"><span class="ind">メディア・コンテンツ</span><b>コンテンツ真正性</b><span class="sc">公開した記事や写真の出所を、あとから示せるようにする。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/finance/"><span class="ind">金融・FinTech</span><b>取引先レコード検証</b><span class="sc">相手方のレコードを、原本を受け取らずに確かめる。</span><span class="go">詳しく →</span></a></div><p class="fp-more">自社の業界での使い方は <a class="tlink" href="/ja/solutions/use-cases/">業界別ソリューション索引</a> にまとまっています。</p>
+        <div class="fp-tech"><span class="tl">Tech</span><span class="tc">BBS+ Signature</span><span class="tc">Poseidon Hash</span><span class="tc">W3C DID / VC</span></div>
+        
+      </div>
+      <div class="fp-panel" id="p-02" role="tabpanel" aria-labelledby="t-02">
+        <p class="fp-lead">鍵を送らず、本人だと証明する。</p>
+        <p class="fp-sub">端末の中で「その鍵を持っている」ことの証明だけを作り、それを送ります。鍵も、鍵のハッシュも渡りません。証明はサインインのたびに別の値になるため、<span class="hi">証明そのものからは同じ人のものだと突き合わせられません。</span></p>
+        <div class="fp-grid">
+          <div class="card fig"><div class="cbody after"><h4>公開されるもの</h4><ul>
+            <li>そのセッションだけの値（<span class='mn'>nullifier</span>）</li>
+            <li>検証に必要な公開信号</li>
+            <li>サインインが成立したという事実</li>
+          </ul></div></div>
+          <div class="card fig"><div class="cbody before"><h4>渡らないもの</h4><ul>
+            <li><b>鍵そのもの — Lemma のサーバーにも送信されません</b></li>
+            <li>鍵のハッシュ（公開信号に出ません）</li>
+            <li>証明どうしを突き合わせる手がかり</li>
+          </ul></div></div>
+        </div>
+        <p class="fp-note">※ サインイン先のサービスは、受け取った証明を自分の登録済みの鍵と突き合わせて本人を確認します。<a class="tlink" href="/ja/seal/">サインインの仕組みと導入は Seal のページへ ↗</a></p>
+        <div class="fp-uses"><a class="fp-uc" href="/ja/solutions/use-cases/retail/"><span class="ind">サービス・小売</span><b>グループ横断アイデンティティ</b><span class="sc">複数サービスで同じ本人性を、鍵を配らずに通す。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/developers/"><span class="ind">開発者・エージェント運用</span><b>エージェント権限統制</b><span class="sc">エージェントに渡すのは鍵ではなく、限度のついた権限。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/ai/"><span class="ind">AI導入（業種横断）</span><b>AI実行ガバナンス</b><span class="sc">AI の実行を、あとから根拠ごと提示できる形で残す。</span><span class="go">詳しく →</span></a></div><p class="fp-more">自社の業界での使い方は <a class="tlink" href="/ja/solutions/use-cases/">業界別ソリューション索引</a> にまとまっています。</p>
+        <div class="fp-tech"><span class="tl">Tech</span><span class="tc">Groth16 / BN254</span><span class="tc">Poseidon Nullifier</span></div>
+      </div>
+      <div class="fp-panel" id="p-03" role="tabpanel" aria-labelledby="t-03">
+        <p class="fp-lead">鍵を渡さず、権限だけを委ねる。</p>
+        <p class="fp-sub">範囲の内側だけが実行され、外側は止まります。エージェントに渡すのは鍵ではなく、限度のついた権限です。</p>
+        <div class="fp-grid">
+          <div class="card fig"><div class="cbody after"><h4>公開されるもの</h4><ul><li>委ねた範囲（ロール・上限）</li><li>その範囲で実行してよいという事実</li><li>許可と停止の記録</li></ul></div></div>
+          <div class="card fig"><div class="cbody before"><h4>渡らないもの</h4><ul><li><b>鍵そのもの — Lemma のサーバーにも送信されません</b></li><li>委任元の資格情報</li></ul></div></div>
+        </div>
+        <div class="fp-uses"><a class="fp-uc" href="/ja/solutions/use-cases/developers/"><span class="ind">開発者・エージェント運用</span><b>エージェント権限統制</b><span class="sc">エージェントに渡すのは鍵ではなく、限度のついた権限。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/ai/"><span class="ind">AI導入（業種横断）</span><b>AI実行ガバナンス</b><span class="sc">AI の実行を、あとから根拠ごと提示できる形で残す。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/supply-chain/"><span class="ind">調達・サプライチェーン</span><b>仕入先資格モニタリング</b><span class="sc">仕入先の資格が有効かを、書類を集めずに確かめる。</span><span class="go">詳しく →</span></a></div><p class="fp-more">自社の業界での使い方は <a class="tlink" href="/ja/solutions/use-cases/">業界別ソリューション索引</a> にまとまっています。</p>
+        
+        
+      </div>
+      <div class="fp-panel" id="p-04" role="tabpanel" aria-labelledby="t-04">
+        <p class="fp-lead">モデルを開示せず、推論を証明する。</p>
+        <p class="fp-sub">何を根拠に動いたかを、あとから提示できます。モデルの中身を開示せずに、実行そのものを証明します。</p>
+        <div class="fp-grid">
+          <div class="card fig"><div class="cbody after"><h4>公開されるもの</h4><ul><li>実行があったという事実</li><li>入力の指紋</li><li>登録の時刻</li></ul></div></div>
+          <div class="card fig"><div class="cbody before"><h4>渡らないもの</h4><ul><li><b>モデルの重み・構成 — Lemma のサーバーにも送信されません</b></li><li>プロンプトや入力データの本文</li></ul></div></div>
+        </div>
+        <div class="fp-uses"><a class="fp-uc" href="/ja/solutions/use-cases/ai/"><span class="ind">AI導入（業種横断）</span><b>AI実行ガバナンス</b><span class="sc">AI の実行を、あとから根拠ごと提示できる形で残す。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/finance/"><span class="ind">金融・FinTech</span><b>取引先レコード検証</b><span class="sc">相手方のレコードを、原本を受け取らずに確かめる。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/public-sector/"><span class="ind">自治体・公共</span><b>証明書レス手続き</b><span class="sc">証明書の添付をやめ、要件を満たす事実だけを渡す。</span><span class="go">詳しく →</span></a></div><p class="fp-more">自社の業界での使い方は <a class="tlink" href="/ja/solutions/use-cases/">業界別ソリューション索引</a> にまとまっています。</p>
+        
+        
+      </div>
+      <div class="fp-panel" id="p-05" role="tabpanel" aria-labelledby="t-05">
+        <p class="fp-lead">属性を明かさず、要件を満たすと証明する。</p>
+        <p class="fp-sub">健康状態を出さずに就業適格だけを示す、といった形です。値そのものではなく、要件を満たすという事実だけが渡ります。</p>
+        <div class="fp-grid">
+          <div class="card fig"><div class="cbody after"><h4>公開されるもの</h4><ul><li>要件を満たすという事実</li><li>発行元と、その署名</li><li>有効期限</li></ul></div></div>
+          <div class="card fig"><div class="cbody before"><h4>渡らないもの</h4><ul><li><b>属性の値そのもの — Lemma のサーバーにも送信されません</b></li><li>生年月日・健康状態などの内訳</li></ul></div></div>
+        </div>
+        <div class="fp-uses"><a class="fp-uc" href="/ja/solutions/use-cases/healthcare/"><span class="ind">医療・ヘルスケア</span><b>有資格者アシュアランス</b><span class="sc">資格の有無だけを示し、個人の内訳は渡さない。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/public-sector/"><span class="ind">自治体・公共</span><b>証明書レス手続き</b><span class="sc">証明書の添付をやめ、要件を満たす事実だけを渡す。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/supply-chain/"><span class="ind">調達・サプライチェーン</span><b>仕入先資格モニタリング</b><span class="sc">仕入先の資格が有効かを、書類を集めずに確かめる。</span><span class="go">詳しく →</span></a></div><p class="fp-more">自社の業界での使い方は <a class="tlink" href="/ja/solutions/use-cases/">業界別ソリューション索引</a> にまとまっています。</p>
+        
+        <p class="fp-note">※ この証明は個別構成でのご提供です。ご相談ください。</p>
+      </div>
+
+      <figure class="tech fp-api">
+        <div class="pgrid"></div>
+        <div class="tin">
+          <div class="tophead">
+            <div class="tlab">どの証明でも、叩くのは同じ2本</div>
+            <a href="/ja/guides">API リファレンス ↗</a>
+          </div>
+          <p class="apilead"><b>送るのはハッシュだけです。</b>原本は、通信にも Lemma のサーバーにも載りません。</p>
+<pre class="code"><span class="c">// 発行（有料・一度きり）— 送るのはハッシュです。原本は送りません。</span>
+<span class="k">POST</span> /v1/documents
+  <span class="c">→ req</span>  { docHash: <span class="s">"0x7a8f…"</span>, … }
+  <span class="c">→ res</span>  { docHash, status: <span class="s">"registered"</span> }
+
+<span class="c">// 検証（無料・何度でも・キー不要）</span>
+<span class="k">GET</span>  /v1/documents/:docHash
+  <span class="c">→ res</span>  { status: <span class="s">"registered"</span> | <span class="s">"anchored"</span> | <span class="s">"pending"</span>,
+           issuer, registeredAt }
+  <span class="cw">→ 未登録は 404。本文系のフィールドは返りません。</span>
+<span class="c">// GET は確定仕様で、現在実装中です。照会の現行実装は POST /v1/verified-attributes/query。</span></pre>
+        </div>
+      </figure>
+      <p class="fp-abs">証明の種類ごとに使う暗号は違いますが、<span class="hi">叩く API は同じ2本です</span>。各証明の暗号仕様は <a class="tlink" href="/ja/guides">技術ドキュメント</a> にあります。</p>
+
+      <div class="fp-cta">
+        <p class="note">発行に課金し、検証はいつでも無料です。他の手段との違いは <a class="tlink" href="/ja/compare/">比較ページ</a> にあります。</p>
+        <a class="btn solid" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Sandbox で試す（無料）</a>
+        <a class="btn ghostd" href="/ja/guides">ドキュメントを読む</a>
+      </div>
+    </div>
+  </div>

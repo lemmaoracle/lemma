@@ -81,8 +81,8 @@ Polaris Holdings のグループ Booking.com アカウントが侵害され、�
 本事案で露呈した構造(資金移動に直結する受領口座変更が、変更時点の認証だけで受理され、認可と属性の真正性が独立検証されない)に対して、Lemma は、高インパクトな属性変更を実行前に独立検証可能な証明として扱う設計を提示している。
 
 - **変更前の事前証明**: 受領口座のような資金経路設定の変更を、認証済みセッションの操作としてではなく、実行前に独立検証可能な proof として要求する。
-- **属性の真正性検証(P4)**: 新しい送金先が「正規に確立された真正な口座属性か」を、変更の前提として proof で確かめる。
-- **変更指示の来歴検証(P1)**: 「誰が・どの正規の認可で変更したか」という指示の正当な来歴を、資金移動の前に独立検証する。
+- **属性の真正性検証**: 新しい送金先が「正規に確立された真正な口座属性か」を、変更の前提として proof で確かめる。
+- **変更指示の来歴検証**: 「誰が・どの正規の認可で変更したか」という指示の正当な来歴を、資金移動の前に独立検証する。
 - **欠落時の事前 block**: proof が認可または真正性の欠落を告げれば、認証済みセッションであっても変更と後続の送金を事前に reject する。
 
 これにより、認証済みセッションであっても正規の認可と真正性を欠く変更は事前に reject され、検出は事後でなく事前の証明によって補完される。
@@ -96,4 +96,4 @@ Polaris Holdings のグループ Booking.com アカウントが侵害され、�
 - **The Globe and Mail**: "Polaris Holdings Probes Booking.com Breach After Fraudulent Hotel Transfers"(2026-05)— https://www.theglobeandmail.com/investing/markets/markets-news/Tipranks/2193582/polaris-holdings-probes-booking-com-breach-after-fraudulent-hotel-transfers/
 - **Sekoia.io**: "Phishing campaigns 'I Paid Twice' targeting Booking.com hotels and customers"(2026、パートナー侵害キャンペーンの文脈)— https://blog.sekoia.io/phishing-campaigns-i-paid-twice-targeting-booking-com-hotels-and-customers/
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Trust402](https://lemma.frame00.com/ja/trust402/)

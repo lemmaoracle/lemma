@@ -88,7 +88,7 @@ SynthID — Google DeepMind の AI 画像向け透かし — が、2026 年 3 �
 - **両方向の改ざんに対処**: 標識が剥がされても、非正規コンテンツに偽って付けられても、proof が別系統で「正規の origin か否か」を告げる
 - **選択的開示**: 内部情報を出さずに「この成果物は正規の origin の下で生成された」ことだけを最小開示する
 
-検出（事後の透かし判定・モデレーション）は AI 生成らしさのラベリングに、事前証明（来歴の独立検証）はコンテンツ真正性の確立に、それぞれ相補的に働く。設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
+検出（事後の透かし判定・モデレーション）は AI 生成らしさのラベリングに、事前証明（来歴の独立検証）はコンテンツ真正性の確立に、それぞれ相補的に働く。設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

@@ -96,4 +96,4 @@ Discord が年齢確認を委託していた第三者事業者 5CA が侵害さ�
 - **Proton**: "Discord ID data breach: Why the world isn't ready for age verification laws"（年齢確認義務化と生 ID 保管リスクの構造） — <https://proton.me/blog/discord-age-verfication-breach>
 - **Bitdefender (HotForSecurity)**: "Discord Data Breach: 5CA Named as Vendor Behind Leak of 70,000 IDs"（第三者事業者 5CA・侵害経緯） — <https://www.bitdefender.com/en-us/blog/hotforsecurity/discord-data-breach-5ca-leak-70000-ids>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Trust402](https://lemma.frame00.com/ja/trust402/)

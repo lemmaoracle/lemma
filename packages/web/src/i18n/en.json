@@ -264,8 +264,8 @@
             "a": "Lemma operates at the RAG layer and is independent of any specific AI model or framework. It also extends to proving the authority and origin of operations when an agent acts on external systems (→ Section 5).",
             "links": [
               {
-                "label": "Agent Authority Proof (P3)",
-                "href": "/pillars/agent-authority-proof/"
+                "label": "Agent Authority Proof",
+                "href": "/pillars/#authority"
               }
             ]
           },
@@ -325,8 +325,8 @@
                 "href": "/critical/briefs/"
               },
               {
-                "label": "Regulatory Attribute Proof (P4)",
-                "href": "/pillars/regulatory-attribute-proof/"
+                "label": "Regulatory Attribute Proof",
+                "href": "/pillars/#attribute"
               }
             ]
           }
@@ -361,7 +361,7 @@
       },
       {
         "id": "agent-authority",
-        "title": "5. AI Agents and Authority (P3)",
+        "title": "5. AI Agents and Authority",
         "items": [
           {
             "q": "In the era of autonomous AI agents, what can be proven?",
@@ -373,8 +373,8 @@
                 "href": "/critical/briefs/"
               },
               {
-                "label": "Agent Authority Proof (P3)",
-                "href": "/pillars/agent-authority-proof/"
+                "label": "Agent Authority Proof",
+                "href": "/pillars/#authority"
               }
             ]
           },
@@ -388,8 +388,8 @@
                 "href": "/critical/briefs/"
               },
               {
-                "label": "Agent Authority Proof (P3)",
-                "href": "/pillars/agent-authority-proof/"
+                "label": "Agent Authority Proof",
+                "href": "/pillars/#authority"
               }
             ]
           }
@@ -397,7 +397,7 @@
       },
       {
         "id": "regulatory",
-        "title": "6. Regulatory & Compliance (P4)",
+        "title": "6. Regulatory & Compliance",
         "items": [
           {
             "q": "What is \"compliance as a proof\"?",
@@ -405,8 +405,8 @@
             "pillar": "p4",
             "links": [
               {
-                "label": "Regulatory Attribute Proof (P4)",
-                "href": "/pillars/regulatory-attribute-proof/"
+                "label": "Regulatory Attribute Proof",
+                "href": "/pillars/#attribute"
               },
               {
                 "label": "KYC/AML Selective Disclosure",

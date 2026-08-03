@@ -29,6 +29,9 @@
  * （global.css / pillar-v4.css 等）は触らない。
  */
 import type { Locale, Translations } from "../i18n/translations";
+import fpJa from "../config/pillars-fiveproofs.ja.html?raw";
+import fpEn from "../config/pillars-fiveproofs.en.html?raw";
+import "../styles/pillars-fiveproofs.css";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
@@ -46,6 +49,7 @@ interface Props {
   ogImage?: string;
 }
 const { locale, t, base, pagePath = "/pillars/", ogImage } = Astro.props as Props;
+const fpBody = locale === "ja" ? fpJa : fpEn;
 const isJa = locale === "ja";
 
 const L = (path: string) => `${base}${path}`;
@@ -63,11 +67,11 @@ const contactUrl = `${DISCOVERY_CALL_URL[locale]}?source=lemma-api`;
 
 // 5つの証明 → 既存の個別ページ（外すとこの5ページがどこからも辿れなくなる）。
 const PROOF_HREF = {
-  origin: L("/pillars/verifiable-origin/"),
+  origin: L("/pillars/#provenance"),
   auth: L("/seal/"),
-  authority: L("/pillars/agent-authority-proof/"),
-  inference: L("/pillars/verifiable-ai/"),
-  attribute: L("/pillars/regulatory-attribute-proof/"),
+  authority: L("/pillars/#authority"),
+  inference: L("/pillars/#inference"),
+  attribute: L("/pillars/#attribute"),
 };
 
 const C = isJa
@@ -592,127 +596,51 @@ const REG = {
         </div>
       </section>
 
-      {/* ── Five proofs ── アイコン付き5カード（Why proof とレイアウトを変える） ── */}
-      <div class="band alt">
-        <h2 class="isec-h">
-          <span>Five proofs</span><b>{C.fpH2a}<span class="nb">{C.fpH2b}</span></b>
-        </h2>
-        <p class="sec-lede" style="max-width:58ch;margin-top:4px;">
-          {C.fpLede}
-        </p>
-        <div class="pfgrid">
-          <a class="pf" href={PROOF_HREF.origin}>
-            <span class="pf-g"
-              ><svg
-                viewBox="0 0 21 21"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M4 16.5h5M4 16.5l7-9M11 7.5h5"></path><circle cx="4" cy="16.5" r="1.6"
-                ></circle><circle cx="16" cy="7.5" r="1.6"></circle></svg
-              ></span
-            >
-            <span class="pf-n">01</span>
-            <span class="pf-h">{C.pf1.h}{C.pf1.sub && <i>{C.pf1.sub}</i>}</span>
-            <span class="pf-t">{C.pf1.t}</span>
-            <span class="pf-d">{C.pf1.d}</span>
-            <span class="pf-u">{C.pf1.u}</span>
-            <span class="pf-go">{C.pfMore}</span>
-          </a>
-          <a class="pf" href={PROOF_HREF.auth}>
-            <span class="pf-g"
-              ><svg
-                viewBox="0 0 21 21"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><circle cx="10.5" cy="10.5" r="7.4"></circle><circle cx="10.5" cy="10.5" r="3.4"
-                ></circle></svg
-              ></span
-            >
-            <span class="pf-n">02</span>
-            <span class="pf-h">{C.pf2.h}{C.pf2.sub && <i>{C.pf2.sub}</i>}</span>
-            <span class="pf-t">{C.pf2.t}</span>
-            <span class="pf-d">{C.pf2.d}</span>
-            <span class="pf-u">{C.pf2.u}</span>
-            <span class="pf-go">{C.pfMore}</span>
-          </a>
-          <a class="pf" href={PROOF_HREF.authority}>
-            <span class="pf-g"
-              ><svg
-                viewBox="0 0 21 21"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><rect x="3" y="4.5" width="15" height="12" rx="2"></rect><rect
-                  x="6.6"
-                  y="7.6"
-                  width="7.8"
-                  height="5.8"
-                  rx="1.2"
-                  stroke-dasharray="2.6 2.4"></rect></svg
-              ></span
-            >
-            <span class="pf-n">03</span>
-            <span class="pf-h">{C.pf3.h}{C.pf3.sub && <i>{C.pf3.sub}</i>}</span>
-            <span class="pf-t">{C.pf3.t}</span>
-            <span class="pf-d">{C.pf3.d}</span>
-            <span class="pf-u">{C.pf3.u}</span>
-            <span class="pf-go">{C.pfMore}</span>
-          </a>
-          <a class="pf" href={PROOF_HREF.inference}>
-            <span class="pf-g"
-              ><svg
-                viewBox="0 0 21 21"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-                stroke-linejoin="round"><path d="M2.5 10.5h3l2-5 3 10 2.5-7 2 4h3"></path></svg
-              ></span
-            >
-            <span class="pf-n">04</span>
-            <span class="pf-h">{C.pf4.h}{C.pf4.sub && <i>{C.pf4.sub}</i>}</span>
-            <span class="pf-t">{C.pf4.t}</span>
-            <span class="pf-d">{C.pf4.d}</span>
-            <span class="pf-u">{C.pf4.u}</span>
-            <span class="pf-go">{C.pfMore}</span>
-          </a>
-          <a class="pf" href={PROOF_HREF.attribute}>
-            <span class="pf-g"
-              ><svg
-                viewBox="0 0 21 21"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><circle cx="10.5" cy="10.5" r="7.4"></circle><path
-                  d="M10.5 3.1a7.4 7.4 0 010 14.8z"
-                  fill="currentColor"
-                  stroke="none"></path></svg
-              ></span
-            >
-            <span class="pf-n">05</span>
-            <span class="pf-h">{C.pf5.h}{C.pf5.sub && <i>{C.pf5.sub}</i>}</span>
-            <span class="pf-t">{C.pf5.t}</span>
-            <span class="pf-d">{C.pf5.d}</span>
-            <span class="pf-u">{C.pf5.u}</span>
-            <span class="pf-b">{C.pf5.badge}</span>
-            <span class="pf-go">{C.pfMore}</span>
-          </a>
-        </div>
-        <p class="plnote" style="margin-top:14px;">
-          {C.fpNoteA}<a href={L("/seal/")}>Seal</a>{C.fpNoteB}<a href={L("/trust402/")}>Trust402</a
-          >{C.fpNoteC}
-        </p>
-      </div>
+      {/* ── Five proofs ── 配下4ページを統合したタブ+詳細パネル (製品ページ移行
+          v2.7 §5 / mock v5)。JS 無効時は全パネルが縦に並ぶ (hidden は JS が付与)。
+          ⛔ §5.5g:「原本は Lemma にも渡らない」の強調は /ja/guides/ の AES-GCM/CID
+          記述との整合確認が公開前ブロッカー。 */}
+      <div class="fpx" id="proofs" set:html={fpBody} />
+      <script is:inline>
+        (function () {
+          var tabs = document.querySelectorAll(".fpx [data-fp]");
+          if (!tabs.length) return;
+          var HASH_MAP = {
+            provenance: "01",
+            authentication: "02",
+            authority: "03",
+            inference: "04",
+            attribute: "05",
+          };
+          function select(n) {
+            ["01", "02", "03", "04", "05"].forEach(function (i) {
+              var t = document.getElementById("t-" + i);
+              var pnl = document.getElementById("p-" + i);
+              if (!t || !pnl) return;
+              t.setAttribute("aria-selected", String(i === n));
+              pnl.hidden = i !== n;
+            });
+          }
+          tabs.forEach(function (t) {
+            t.addEventListener("click", function () {
+              select(t.getAttribute("data-fp"));
+            });
+          });
+          function fromHash() {
+            var k = (location.hash || "").slice(1);
+            return HASH_MAP[k];
+          }
+          select(fromHash() || "01");
+          window.addEventListener("hashchange", function () {
+            var n = fromHash();
+            if (n) {
+              select(n);
+              var el = document.getElementById("proofs");
+              if (el) el.scrollIntoView({ block: "start" });
+            }
+          });
+        })();
+      </script>
 
       {/* ── How it works ── 境界図＋発行／提示／検証 ────────────── */}
       <div class="band alt">

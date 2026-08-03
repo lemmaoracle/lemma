@@ -102,4 +102,4 @@ Against the regulatory-attribute-proof category's design thesis that "the existe
 - **Simple Flying**: "60,000 Fake Parts Sold: The True Scale Of The AOG Technics Fraud" — <https://simpleflying.com/60000-fake-parts-sold-true-scale-aog-technics-fraud/>
 - **Reference implementation (GitHub)**: regulatory-attribute proof sample — <https://github.com/lemmaoracle/example-origin>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/), [Seal](https://lemma.frame00.com/seal/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/#attribute), [Seal](https://lemma.frame00.com/seal/)

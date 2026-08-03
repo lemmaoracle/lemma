@@ -99,4 +99,4 @@ deepfake 検出モデルの高度化、liveness の多層化、不正パター�
 - **MIT Technology Review**: "Cyberscammers are bypassing banks' security with illicit tools sold on Telegram"(2026-04-15、22 チャネルの市場・ツール・標的機関・価格)— https://www.technologyreview.com/2026/04/15/1135898/cyberscammers-bypassing-bank-telegram/
 - **Biometric Update**: "KYC bypass tools sold on Telegram to defeat biometric checks"(2026-04)— https://www.biometricupdate.com/202604/kyc-bypass-tools-sold-on-telegram-to-defeat-biometric-checks
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Trust402](https://lemma.frame00.com/ja/trust402/)

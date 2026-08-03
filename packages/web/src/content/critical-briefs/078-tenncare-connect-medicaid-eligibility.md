@@ -90,7 +90,7 @@ gap_fix: "給付の打ち切りという不利益処分の前に、自動適格�
 - **処分前ゲート**: proof が「入力不備」「世帯割当の根拠なし」「認可なし」と告げれば、当該判定に基づく打ち切りを事前に保留する設計を採る。
 - **調達への組み込み**: これは行政が AI / アルゴリズム利用の説明責任を制度的に満たすための監査・証跡層に相当し、システムインテグレーション経由で公共部門の調達要件に組み込みうる。
 
-Lemma は判定の正しさ・公平性そのものを保証するものではないが、判定が不利益処分の前に独立検証・認可された事実（あるいはされなかった事実）を、後から改ざんできない証跡として残す。検出（不服申立て・監査・事後是正）は誤りの救済に、事前証明（不利益処分の前に判定の入力・認可を独立検証する証跡）は処分が下る前の信頼確立に、それぞれ相補的に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。設計と適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) も参照。
+Lemma は判定の正しさ・公平性そのものを保証するものではないが、判定が不利益処分の前に独立検証・認可された事実（あるいはされなかった事実）を、後から改ざんできない証跡として残す。検出（不服申立て・監査・事後是正）は誤りの救済に、事前証明（不利益処分の前に判定の入力・認可を独立検証する証跡）は処分が下る前の信頼確立に、それぞれ相補的に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。設計と適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference) も参照。
 
 ---
 

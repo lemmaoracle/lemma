@@ -105,4 +105,4 @@ Detection (after-the-fact forensics, notification, and strengthened access contr
 - **Fincrime Central**: “The Sumsub Incident and the Future of Cloud Compliance” — <https://fincrimecentral.com/sumsub-incident-cloud-aml-risk-management/>
 - **CryptoTimes**: “Crypto KYC Gatekeeper Sumsub Hits Back After Rekt Raises Red Flags” (2026-04-15) — <https://www.cryptotimes.io/2026/04/15/crypto-kyc-gatekeeper-sumsub-hits-back-after-rekt-raises-red-flags/>
 
-References: [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/), [Seal](https://lemma.frame00.com/seal/)
+References: [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/#attribute), [Seal](https://lemma.frame00.com/seal/)

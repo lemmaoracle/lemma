@@ -102,4 +102,4 @@ gap_fix: "口座開設の前に「この本人確認属性が、発行者の署�
 - **AInvest（二次情報・統計集約）**: "Deepfake Fraud: $897M Trail and Crypto Market Risk"（2026-04、deepfake 詐欺損失・本人確認統計・規制制裁の集約） — https://www.ainvest.com/news/deepfake-fraud-897m-trail-crypto-market-risk-2604/
 - **Signicat（業界統計）**: deepfake 不正試行 3 年間 2,137% 増 — https://www.signicat.com/press-releases/fraud-attempts-with-deepfakes-have-increased-by-2137-over-the-last-three-year
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Trust402](https://lemma.frame00.com/ja/trust402/)

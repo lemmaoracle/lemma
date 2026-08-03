@@ -108,4 +108,4 @@ Safe のマルチシグ設計は「複数の鍵保有者が合意すれば実行
 - **Chainalysis**: ブロックチェーン分析レポート（2025-02〜03）
 - **Unchained / The Block / CoinDesk 等**: 事案経緯の報道（2025-02-21〜）
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/)、[Seal](https://lemma.frame00.com/ja/seal/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance)、[Seal](https://lemma.frame00.com/ja/seal/)

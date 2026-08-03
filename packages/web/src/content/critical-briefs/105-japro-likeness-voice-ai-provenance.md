@@ -105,4 +105,4 @@ Lemma は、生成物が作られる時点で素材の許諾属性を独立検�
 - **IPconnect（調査受託）**: IPconnect 株式会社 — <https://ipconnect.co.jp/>
 - **Siliconera（声の権利をめぐる動向）**: “Japan May Introduce ‘Voice Rights’ to Protect Against Unauthorized AI Usage” — <https://www.siliconera.com/japan-may-introduce-voice-rights-to-protect-against-unauthorized-ai-usage/>
 
-参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Seal](https://lemma.frame00.com/ja/seal/)。
+参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) および [Seal](https://lemma.frame00.com/ja/seal/)。

@@ -24,11 +24,11 @@ export interface ProofClass {
 }
 
 export const PROOF_CLASSES: ReadonlyArray<ProofClass> = [
-  { key: "provenance",     name: { ja: "来歴", en: "Provenance" },     blurb: { ja: "原本を渡さず、出所を証明する。", en: "Prove origin without handing over the original." },        rate: "0.005",     path: "/pillars/verifiable-origin/" },
+  { key: "provenance",     name: { ja: "来歴", en: "Provenance" },     blurb: { ja: "原本を渡さず、出所を証明する。", en: "Prove origin without handing over the original." },        rate: "0.005",     path: "/pillars/#provenance" },
   { key: "authentication", name: { ja: "認証", en: "Authentication" }, blurb: { ja: "鍵を送らず、本人だと証明する。", en: "Prove identity without sending a key." },                rate: "0.01–0.05", path: "/seal/" },
-  { key: "authority",      name: { ja: "権限", en: "Authority" },      blurb: { ja: "鍵を渡さず、権限だけを委ねる。", en: "Delegate authority without handing over a key." },         rate: "0.05",      path: "/pillars/agent-authority-proof/" },
-  { key: "inference",      name: { ja: "推論", en: "Inference" },      blurb: { ja: "モデルを開示せず、推論を証明する。", en: "Prove inference without disclosing the model." },        rate: "0.07",      path: "/pillars/verifiable-ai/" },
-  { key: "attribute",      name: { ja: "属性", en: "Attribute" },      blurb: { ja: "属性を明かさず、要件を満たすと証明する。", en: "Prove you meet a requirement without revealing the attribute." }, rate: "0.20",      path: "/pillars/regulatory-attribute-proof/" },
+  { key: "authority",      name: { ja: "権限", en: "Authority" },      blurb: { ja: "鍵を渡さず、権限だけを委ねる。", en: "Delegate authority without handing over a key." },         rate: "0.05",      path: "/pillars/#authority" },
+  { key: "inference",      name: { ja: "推論", en: "Inference" },      blurb: { ja: "モデルを開示せず、推論を証明する。", en: "Prove inference without disclosing the model." },        rate: "0.07",      path: "/pillars/#inference" },
+  { key: "attribute",      name: { ja: "属性", en: "Attribute" },      blurb: { ja: "属性を明かさず、要件を満たすと証明する。", en: "Prove you meet a requirement without revealing the attribute." }, rate: "0.20",      path: "/pillars/#attribute" },
 ] as const;
 
 /** Locale-prefixed href for a proof class (base = "" for en, "/ja" for ja). */

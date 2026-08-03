@@ -90,7 +90,7 @@ Against the gap this case exposed (the message's path was authenticated, but the
 - **Making absence visible**: Rather than promising to block all phishing, attach verifiable provenance to legitimate communications and make its absence visible as an anomaly. By moving the unit of trust from "path" to "author," authentication laundering no longer works
 - **Selective disclosure**: Without disclosing the sender's internal information or full authority, prove with minimal disclosure only that "this communication was authored by the claimed party, with that authority"
 
-Detection (email authentication, the after-the-fact malicious verdict) works toward finding spoofed paths, and pre-execution attestation (independent verification of the author's provenance before execution) works toward establishing trust in business communication; the two are complementary. The gap is closed not by "hardening email authentication" but by "moving the unit of trust from path to author." For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Seal](https://lemma.frame00.com/seal/).
+Detection (email authentication, the after-the-fact malicious verdict) works toward finding spoofed paths, and pre-execution attestation (independent verification of the author's provenance before execution) works toward establishing trust in business communication; the two are complementary. The gap is closed not by "hardening email authentication" but by "moving the unit of trust from path to author." For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance) and [Seal](https://lemma.frame00.com/seal/).
 
 ---
 

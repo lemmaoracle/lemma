@@ -105,4 +105,4 @@ gap_fix: "MCP サーバーを起動する前に、設定の来歴と起動の認
 - **GitHub Security Advisory**: GHSA-xhcr-j4j9-3gh7（CVE-2026-12957）— <https://github.com/aws/language-servers/security/advisories/GHSA-xhcr-j4j9-3gh7>
 - **The Hacker News**: “Amazon Q Developer Flaw Could Let Malicious Repos Run Code via MCP Configs” — <https://thehackernews.com/2026/06/amazon-q-developer-flaw-could-let.html>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)、[Trust402](https://lemma.frame00.com/ja/trust402/)

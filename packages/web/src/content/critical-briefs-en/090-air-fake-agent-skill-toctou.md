@@ -93,7 +93,7 @@ Against the gap this case exposed (the artifact fetched and followed at executio
 - **Scanned ≠ runtime identity**: Do not separate a past state ("it was clean at submission," "it has many stars") from the fact that "the artifact I am now following carries a legitimate provenance," and make the latter the subject of pre-execution attestation
 - **Selective disclosure**: Without disclosing the skill's implementation or the entire build pipeline, prove with minimal disclosure only that "this artifact carries a scanned, legitimate provenance and is still identical"
 
-Detection (the submission scan, the after-the-fact malicious verdict) works toward finding illegitimate artifacts, and pre-execution attestation (independent verification of the runtime artifact's provenance at the moment of use) works toward establishing trust in agent skills; the two are complementary. For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Seal](https://lemma.frame00.com/seal/).
+Detection (the submission scan, the after-the-fact malicious verdict) works toward finding illegitimate artifacts, and pre-execution attestation (independent verification of the runtime artifact's provenance at the moment of use) works toward establishing trust in agent skills; the two are complementary. For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance) and [Seal](https://lemma.frame00.com/seal/).
 
 ---
 

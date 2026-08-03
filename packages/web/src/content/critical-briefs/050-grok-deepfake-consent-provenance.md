@@ -94,4 +94,4 @@ X に統合された Grok の画像生成が、実在人物の非同意ディー
 - **Al Jazeera**: "EU probes Musk's Grok AI feature over deepfakes of women, minors"（2026-01-26、EU DSA 手続の開始） — <https://www.aljazeera.com/news/2026/1/26/eu-launches-probe-into-grok-ai-feature-creating-deepfakes-of-women-minors>
 - **BISI（Bloomsbury Intelligence & Security Institute）**: "Deepfake Regulation Accelerates After Grok Controversy"（規制動向・upstream での対応の必要性） — <https://bisi.org.uk/reports/deepfake-regulation-accelerates-after-grok-controversy>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Trust402](https://lemma.frame00.com/ja/trust402/)

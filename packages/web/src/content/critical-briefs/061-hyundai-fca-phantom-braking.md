@@ -99,4 +99,4 @@ gap_fix: "人間の操作に割り込む AI 判断の前に「この行動はい
 - **Fox Business**: "Hyundai recalls over 421,000 vehicles to fix software bug causing unexpected braking" — <https://www.foxbusiness.com/lifestyle/hyundai-recalls-over-421000-vehicles-fix-software-bug-causing-unexpected-braking>
 - **The Brake Report**: "Hyundai Recalls 421,078 Vehicles for Phantom Braking"（376 件の報告・是正内容・26V316）— <https://thebrakereport.com/hyundai-tucson-santa-cruz-fca-recall-26v316/>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference)、[Trust402](https://lemma.frame00.com/ja/trust402/)

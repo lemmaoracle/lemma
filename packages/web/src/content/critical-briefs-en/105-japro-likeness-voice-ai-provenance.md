@@ -105,4 +105,4 @@ With this, a proof fixed at the moment of generation makes "was this generated w
 - **IPconnect (survey contractor)**: IPconnect, Inc. — <https://ipconnect.co.jp/>
 - **Siliconera (developments over voice rights)**: "Japan May Introduce 'Voice Rights' to Protect Against Unauthorized AI Usage" — <https://www.siliconera.com/japan-may-introduce-voice-rights-to-protect-against-unauthorized-ai-usage/>
 
-References: for the detection-vs-attestation thesis, ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05). For the design and its scope, [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Seal](https://lemma.frame00.com/seal/).
+References: for the detection-vs-attestation thesis, ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05). For the design and its scope, [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance) and [Seal](https://lemma.frame00.com/seal/).

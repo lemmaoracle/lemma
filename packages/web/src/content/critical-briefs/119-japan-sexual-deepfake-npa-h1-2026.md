@@ -77,7 +77,7 @@ Lemma がこの primitive に対して提示する設計は次の通りである
 - **属性の選択的開示**：「この利用は認可されている」という事実だけを、本人の身元や連絡先を渡さずに証明できる形にする。認可の確認のために被害者側の情報を集積させない。
 - **配布経路での事前検証**：投稿・共有の経路に来歴検証を組み込み、認可の証明を欠く生成物が公開の場に載る前に止める。事後の削除ではなく、公開の成立を止める位置に検証を置く。
 
-Lemma は生成物が偽物かを判定する製品ではなく、削除申請を代行するものでもない。射程は、肖像を素材とする生成と公開が成立する前に本人の認可を独立検証し、証明を欠く生成物の通過を事前に排除することにある。検出（統計整備、事案の把握、捜査と立件、削除申請）と、事前証明（生成と公開の前に認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた被害の把握と救済に、後者は被害が成立する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) を参照。
+Lemma は生成物が偽物かを判定する製品ではなく、削除申請を代行するものでもない。射程は、肖像を素材とする生成と公開が成立する前に本人の認可を独立検証し、証明を欠く生成物の通過を事前に排除することにある。検出（統計整備、事案の把握、捜査と立件、削除申請）と、事前証明（生成と公開の前に認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた被害の把握と救済に、後者は被害が成立する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) を参照。
 
 ## 6. Sources
 
@@ -89,4 +89,4 @@ Lemma は生成物が偽物かを判定する製品ではなく、削除申請�
 - **警察庁（一次・広報啓発資料）**: 「児童の性的ディープフェイク被害・加害防止のための広報啓発資料」（2025-12-18）— <https://www.npa.go.jp/newlyarrived/2025/20251218001.html>
 - **時事通信（2025 年統計の初公表）**: 「性的偽画像の被害相談、１８歳未満７９件　５割超が学校内　生成ＡＩ普及で低年齢化―警察庁が初公表」（2025-12-18）— <https://www.jiji.com/jc/article?k=2025121800120&g=soc>
 
-参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) · [Brief 105（JAPRO 肖像・声の実態調査）](https://lemma.frame00.com/ja/critical/briefs/105-japro-likeness-voice-ai-provenance/) · [Brief 011（SynthID 透かし）](https://lemma.frame00.com/ja/critical/briefs/011-synthid-watermark-reverse-engineering/)
+参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) · [Brief 105（JAPRO 肖像・声の実態調査）](https://lemma.frame00.com/ja/critical/briefs/105-japro-likeness-voice-ai-provenance/) · [Brief 011（SynthID 透かし）](https://lemma.frame00.com/ja/critical/briefs/011-synthid-watermark-reverse-engineering/)

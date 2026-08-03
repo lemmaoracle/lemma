@@ -72,7 +72,7 @@ Lemma がこの primitive に対して提示する設計は次の通りである
 - **独立検証の証跡化**：判定が人間または独立の層によって検証・認可されたか（あるいはされなかったか）を、当事者・監査・司法手続きが後から独立に立証できる証跡として残す。検証材料が手続き上も届かない状態を、設計として塞ぐ。
 - **選択的な処分記録**：誰の・どの判定が・どの認可の下で不利益処分に用いられたかを、改ざんできない記録として保持する。争いが生じた場合に、処分の経路と認可の状態を独立に示せる。
 
-Lemma は判定の公平性そのものを保証する製品ではない。射程は、判定が不利益処分に用いられる前に独立に検証・認可された事実（あるいはされなかった事実）を、後から改ざんできない証跡として残すことにある。差別の有無や適否の判断は、あくまで手続きと法が行う。検出（差別の疑いの把握、統計的分析、係争を通じた事後の救済）と、事前証明（処分の前に判定の裏付けと認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた不利益の把握と回復に、後者は不利益が確定する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) を参照。
+Lemma は判定の公平性そのものを保証する製品ではない。射程は、判定が不利益処分に用いられる前に独立に検証・認可された事実（あるいはされなかった事実）を、後から改ざんできない証跡として残すことにある。差別の有無や適否の判断は、あくまで手続きと法が行う。検出（差別の疑いの把握、統計的分析、係争を通じた事後の救済）と、事前証明（処分の前に判定の裏付けと認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた不利益の把握と回復に、後者は不利益が確定する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference) を参照。
 
 ## 6. Sources
 
@@ -83,4 +83,4 @@ Lemma は判定の公平性そのものを保証する製品ではない。射�
 - Norton Rose Fulbright, “Behind the privilege shield: Safeguarding AI bias-testing data in employment decisions”（Inside Tech Law、2026-06）— <https://www.insidetechlaw.com/blog/2026/06/behind-the-privilege-shield-safeguarding-ai-bias-testing-data-in-employment-decisions>
 - Mobley v. Workday, Inc., No. 3:23-cv-00770（N.D. Cal.）— 事件ドケット（一次） — <https://www.courtlistener.com/docket/66831340/mobley-v-workday-inc/>
 
-参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) · [Brief 012（Robert Williams 誤認逮捕）](https://lemma.frame00.com/ja/critical/briefs/012-williams-frt-wrongful-arrest/) · [Brief 076（Robert Dillon 誤認逮捕）](https://lemma.frame00.com/ja/critical/briefs/076-dillon-frt-wrongful-arrest/)
+参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference) · [Brief 012（Robert Williams 誤認逮捕）](https://lemma.frame00.com/ja/critical/briefs/012-williams-frt-wrongful-arrest/) · [Brief 076（Robert Dillon 誤認逮捕）](https://lemma.frame00.com/ja/critical/briefs/076-dillon-frt-wrongful-arrest/)

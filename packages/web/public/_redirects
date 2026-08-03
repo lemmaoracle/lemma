@@ -26,3 +26,22 @@
 /ja/company/            https://corp.frame00.com/         301
 /company                https://corp.frame00.com/index-en 301
 /company/               https://corp.frame00.com/index-en 301
+
+# Pillars 配下4ページを index のタブへ統合 (製品ページ移行 v2.7 §5.4)。
+# Location にフラグメントを含めてタブを初期選択させる。
+/ja/pillars/verifiable-origin/          /ja/pillars/#provenance   301
+/ja/pillars/verifiable-origin           /ja/pillars/#provenance   301
+/ja/pillars/agent-authority-proof/      /ja/pillars/#authority    301
+/ja/pillars/agent-authority-proof       /ja/pillars/#authority    301
+/ja/pillars/verifiable-ai/              /ja/pillars/#inference    301
+/ja/pillars/verifiable-ai               /ja/pillars/#inference    301
+/ja/pillars/regulatory-attribute-proof/ /ja/pillars/#attribute    301
+/ja/pillars/regulatory-attribute-proof  /ja/pillars/#attribute    301
+/pillars/verifiable-origin/             /pillars/#provenance      301
+/pillars/verifiable-origin              /pillars/#provenance      301
+/pillars/agent-authority-proof/         /pillars/#authority       301
+/pillars/agent-authority-proof          /pillars/#authority       301
+/pillars/verifiable-ai/                 /pillars/#inference       301
+/pillars/verifiable-ai                  /pillars/#inference       301
+/pillars/regulatory-attribute-proof/    /pillars/#attribute       301
+/pillars/regulatory-attribute-proof     /pillars/#attribute       301

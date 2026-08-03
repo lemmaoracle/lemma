@@ -104,4 +104,4 @@ Polymarket の迅速な公表、影響依存の除去、利用者への連絡と
 - **The Next Web**: “Polymarket confirms hackers stole $3 million from users after third-party vendor was compromised”（2026-06）— <https://thenextweb.com/news/polymarket-hack-3-million-stolen-third-party-breach>
 - **TechRadar Pro**: “Prediction market giant Polymarket hit by cyberattack…”（2026-06）— <https://www.techradar.com/pro/security/prediction-market-giant-polymarket-hit-by-cyberattack-with-company-confirming-user-funds-stolen-here-is-what-we-know>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/)、[Seal](https://lemma.frame00.com/ja/seal/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance)、[Seal](https://lemma.frame00.com/ja/seal/)

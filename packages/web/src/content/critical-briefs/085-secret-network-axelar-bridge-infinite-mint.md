@@ -102,4 +102,4 @@ Axelar 緊急委員会による接続停止、取引所・法執行機関への�
 - **Bitcoinist**: “Secret Network Bridge Exploited for $4.67M in Infinite-Mint Attack”（2026-06）— <https://bitcoinist.com/02-secret-network-axelar-bridge-drained-in-infinite-mint/>
 - **BanklessTimes**: “Secret Network Bridge Exploit Drains $4.67M From Axelar Link”（2026-06-20）— <https://www.banklesstimes.com/articles/2026/06/20/secret-network-bridge-exploit-drains-4-67m-from-axelar-link/>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/)、[Seal](https://lemma.frame00.com/ja/seal/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance)、[Seal](https://lemma.frame00.com/ja/seal/)

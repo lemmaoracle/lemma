@@ -75,7 +75,7 @@ Lemma がこの primitive に対して提示する設計は次の通りである
 - **認可範囲のスコープ**：用途・期間・配布先といった認可の範囲を証明に束ね、範囲外の生成を事前に排除する。一度の許諾が無制限の利用に転化することを防ぐ。
 - **生成物への来歴バインド**：生成された音声そのものに認可の来歴を改ざん耐性のある形で結び付け、受け手が独立に確認できるようにする。
 
-Lemma は音声クローンの品質を判定する製品ではなく、詐欺台本を検知するものでもない。射程は、音声が生成される前に本人の認可を独立検証し、認可の証明を欠く生成を事前に排除することにある。検出（実態調査、独立テスト、規制当局への申立てと執行）と、事前証明（生成の前に認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた被害の把握と是正に、後者は被害が成立する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 04 — 規制・属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) を参照。
+Lemma は音声クローンの品質を判定する製品ではなく、詐欺台本を検知するものでもない。射程は、音声が生成される前に本人の認可を独立検証し、認可の証明を欠く生成を事前に排除することにある。検出（実態調査、独立テスト、規制当局への申立てと執行）と、事前証明（生成の前に認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた被害の把握と是正に、後者は被害が成立する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 04 — 規制・属性証明](https://lemma.frame00.com/ja/pillars/#attribute) を参照。
 
 ## 6. Sources
 
@@ -86,4 +86,4 @@ Lemma は音声クローンの品質を判定する製品ではなく、詐欺�
 - **FTC（背景・一次）**: “FTC Data Show People Reported Losing $3.5 Billion to Imposter Scams in 2025”（2026-06）— <https://www.ftc.gov/news-events/news/press-releases/2026/06/ftc-data-show-people-reported-losing-3-point-5-billion-imposter-scams-2025>
 - **FBI / IC3（背景・一次）**: “Federal Bureau of Investigation Internet Crime Report 2025”（PDF）— <https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf>
 
-参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 04 — 規制・属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) · [Brief 105（JAPRO 肖像・声の実態調査）](https://lemma.frame00.com/ja/critical/briefs/105-japro-likeness-voice-ai-provenance/) · [Brief 053（YouTube 偽の著名人）](https://lemma.frame00.com/ja/critical/briefs/053-youtube-deepfake-likeness-provenance/)
+参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 04 — 規制・属性証明](https://lemma.frame00.com/ja/pillars/#attribute) · [Brief 105（JAPRO 肖像・声の実態調査）](https://lemma.frame00.com/ja/critical/briefs/105-japro-likeness-voice-ai-provenance/) · [Brief 053（YouTube 偽の著名人）](https://lemma.frame00.com/ja/critical/briefs/053-youtube-deepfake-likeness-provenance/)

@@ -102,4 +102,4 @@ gap_fix: "受領の前に、証書の来歴（発行機関・対象・真正性�
 - **Simple Flying**: “60,000 Fake Parts Sold: The True Scale Of The AOG Technics Fraud” — <https://simpleflying.com/60000-fake-parts-sold-true-scale-aog-technics-fraud/>
 - **reference 実装（GitHub）**: regulatory-attribute proof sample — <https://github.com/lemmaoracle/example-origin>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Seal](https://lemma.frame00.com/ja/seal/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Seal](https://lemma.frame00.com/ja/seal/)

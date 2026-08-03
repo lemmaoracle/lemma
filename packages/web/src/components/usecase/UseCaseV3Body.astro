@@ -182,6 +182,14 @@ const C = isJa
 
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
+// 柱の配下ページは /pillars のタブへ統合 (製品ページ移行 v2.7 §5.4)
+const PILLAR_ANCHOR: Record<string, string> = {
+  "verifiable-origin": "#provenance",
+  "agent-authority-proof": "#authority",
+  "verifiable-ai": "#inference",
+  "regulatory-attribute-proof": "#attribute",
+};
+
 
 // 対応プラン — links to the matching plan page. DRAFT map in useCasePlanMap.ts.
 const planKey = USE_CASE_PLAN[useCase.slug];
@@ -435,7 +443,7 @@ const bytaskMembers = taskGroupMembers.filter(
             ) : (
               <div class="ucv-approach-body" set:html={approachBody} />
             )}
-            <a class="ucv-approach-link" href={`${pillarsPath}/${pillar.slug}`}>{C.approachLink}</a>
+            <a class="ucv-approach-link" href={`${pillarsPath}/${PILLAR_ANCHOR[pillar.slug] ?? ""}`}>{C.approachLink}</a>
           </div>
         </div>
       </div>

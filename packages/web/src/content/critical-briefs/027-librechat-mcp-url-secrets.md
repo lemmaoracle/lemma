@@ -99,4 +99,4 @@ Brief 003(Starlette/BadHost)と同じくエージェント基盤の信頼境界�
 - **NVD**: CVE-2026-32625(CVSS 9.6 Critical、2026-06-04 解析完了)— https://nvd.nist.gov/vuln/detail/cve-2026-32625
 - **CIRCL Vulnerability-Lookup**: CVE-2026-32625(CISA SSVC 評価を含む集約レコード)— https://vulnerability.circl.lu/vuln/cve-2026-32625
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)、[Trust402](https://lemma.frame00.com/ja/trust402/)

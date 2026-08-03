@@ -139,11 +139,11 @@ export const isDocCategory = (category: string): boolean => DOC_CATEGORIES.inclu
  */
 const TAG_DESTINATIONS: Readonly<Record<string, string>> = {
   // Pillars
-  "verifiable-origin": "/pillars/verifiable-origin/",
-  "verifiable-ai": "/pillars/verifiable-ai/",
-  "agent-security": "/pillars/agent-authority-proof/",
-  "agent-authority": "/pillars/agent-authority-proof/",
-  compliance: "/pillars/regulatory-attribute-proof/",
+  "verifiable-origin": "/pillars/#provenance",
+  "verifiable-ai": "/pillars/#inference",
+  "agent-security": "/pillars/#authority",
+  "agent-authority": "/pillars/#authority",
+  compliance: "/pillars/#attribute",
   // Use cases
   "financial-services": "/solutions/use-cases/kyc-aml-selective-disclosure/",
   // Glossary

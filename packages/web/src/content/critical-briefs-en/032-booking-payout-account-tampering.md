@@ -81,8 +81,8 @@ Pre-execution attestation requires, before execution, that a payout-account chan
 Against the structure exposed here (a payout-account change directly tied to the movement of funds is accepted on authentication at change-time alone, with no independent verification of authorization and attribute authenticity), Lemma proposes a design that treats high-impact attribute changes as independently verifiable proof before execution.
 
 - **Pre-execution attestation**: require a change to a funds-routing setting such as the payout account to be presented as independently verifiable proof before execution, not as an operation of an authenticated session.
-- **Attribute-authenticity verification (P4)**: confirm with a proof, as a precondition of the change, that the new destination is "a genuine account attribute established legitimately."
-- **Change-instruction provenance (P1)**: independently verify, before funds move, the legitimate provenance of the instruction — "who changed it, under what legitimate authorization."
+- **Attribute-authenticity verification**: confirm with a proof, as a precondition of the change, that the new destination is "a genuine account attribute established legitimately."
+- **Change-instruction provenance**: independently verify, before funds move, the legitimate provenance of the instruction — "who changed it, under what legitimate authorization."
 - **Block in advance on absence**: if the proof reports missing authorization or authenticity, reject the change and the subsequent transfer in advance, even within an authenticated session.
 
 In this way, a change that lacks legitimate authorization and authenticity is rejected in advance even within an authenticated session, and detection is complemented by proof beforehand rather than after the fact.
@@ -96,4 +96,4 @@ In this way, a change that lacks legitimate authorization and authenticity is re
 - **The Globe and Mail**: "Polaris Holdings Probes Booking.com Breach After Fraudulent Hotel Transfers" (2026-05) — https://www.theglobeandmail.com/investing/markets/markets-news/Tipranks/2193582/polaris-holdings-probes-booking-com-breach-after-fraudulent-hotel-transfers/
 - **Sekoia.io**: "Phishing campaigns 'I Paid Twice' targeting Booking.com hotels and customers" (2026; context on partner-compromise campaigns) — https://blog.sekoia.io/phishing-campaigns-i-paid-twice-targeting-booking-com-hotels-and-customers/
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/#attribute), [Trust402](https://lemma.frame00.com/trust402/)

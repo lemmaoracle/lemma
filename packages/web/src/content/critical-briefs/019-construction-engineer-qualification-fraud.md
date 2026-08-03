@@ -97,4 +97,4 @@ gap_fix: "配置の前に「この技術者は、必要な国家資格を、要�
 - **国土交通省**: 「『建設業者の不正行為等に対する監督処分の基準』等の改正について」（2021-07-26、不正取得者を配置した建設業者への 30 日以上の営業停止処分）— https://www.mlit.go.jp/report/press/tochi_fudousan_kensetsugyo13_hh_000001_00064.html
 - **業界専門媒体（二次情報）**: 国家資格の不正取得をめぐる建設業の継続的な事案報道（2025-01 ほか）— 日経クロステック
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Trust402](https://lemma.frame00.com/ja/trust402/)

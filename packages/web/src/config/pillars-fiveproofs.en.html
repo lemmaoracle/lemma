@@ -1,0 +1,110 @@
+<div class="band">
+    <div class="wrap" style="padding:0;max-width:none">
+      <div class="isec-h">
+        <span>Five proofs</span>
+        <b><span class="nb">Five kinds of proof,</span> <span class="nb">one API.</span></b>
+      </div>
+      <p class="lead">These are the five things Lemma can prove. Combine them to fit the job. <span class="hi">Every one follows the same shape: show only the fact, never move the original. </span><span class="hi">The original is never handed to Lemma either.</span></p>
+
+      <div class="fp-tabs" role="tablist">
+        <button class="fp-tab" id="t-01" role="tab" aria-selected="true" aria-controls="p-01" data-fp="01"><span class="pn">01</span><b>Provenance</b></button>
+        <button class="fp-tab" id="t-02" role="tab" aria-selected="false" aria-controls="p-02" data-fp="02"><span class="pn">02</span><b>Authentication</b></button>
+        <button class="fp-tab" id="t-03" role="tab" aria-selected="false" aria-controls="p-03" data-fp="03"><span class="pn">03</span><b>Authority</b></button>
+        <button class="fp-tab" id="t-04" role="tab" aria-selected="false" aria-controls="p-04" data-fp="04"><span class="pn">04</span><b>Inference</b></button>
+        <button class="fp-tab" id="t-05" role="tab" aria-selected="false" aria-controls="p-05" data-fp="05"><span class="pn">05</span><b>Attribute</b></button>
+      </div>
+
+      <div class="fp-panel" id="p-01" role="tabpanel" aria-labelledby="t-01">
+        <p class="fp-lead">Prove origin without handing over the original.</p>
+        <p class="fp-sub">Show where data came from and that it has not been tampered with, without exposing the contents. Receivers verify independently, with no access to the original.</p>
+        <div class="fp-grid">
+          <div class="card fig"><div class="cbody after"><h4>What is disclosed</h4><ul><li>The data fingerprint (<span class='mn'>docHash</span>）</li><li>The issuer and its signature</li><li>Time of issuance</li><li>The chain of provenance</li></ul></div></div>
+          <div class="card fig"><div class="cbody before"><h4>What never leaves</h4><ul><li><b>The original data — never sent to Lemma servers either</b></li><li>Internal details and sensitive fields</li><li>The issuer private key</li></ul></div></div>
+        </div>
+        <div class="fp-uses"><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Manufacturing and infrastructure</span><b>Inspection-record assurance</b><span class="sc">Attach a tamper-evident proof to outbound inspection records.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Media and content</span><b>Content authenticity</b><span class="sc">Make the origin of published articles and photos provable later.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Finance and FinTech</span><b>Counterparty record verification</b><span class="sc">Verify counterparty records without receiving the originals.</span><span class="go">Learn more →</span></a></div><p class="fp-more">See how your industry uses this in the <a class="tlink" href="/solutions/use-cases/">solutions index</a>.</p>
+        <div class="fp-tech"><span class="tl">Tech</span><span class="tc">BBS+ Signature</span><span class="tc">Poseidon Hash</span><span class="tc">W3C DID / VC</span></div>
+        
+      </div>
+      <div class="fp-panel" id="p-02" role="tabpanel" aria-labelledby="t-02">
+        <p class="fp-lead">Prove who you are without sending a key.</p>
+        <p class="fp-sub">The device produces only a proof of holding the key, and sends that. Neither the key nor its hash is handed over. Because the proof is a different value at every sign-in, <span class="hi">proofs cannot be linked to the same person from the proofs themselves.</span></p>
+        <div class="fp-grid">
+          <div class="card fig"><div class="cbody after"><h4>What is disclosed</h4><ul>
+            <li>A per-session value (the <span class='mn'>nullifier</span>）</li>
+            <li>Public signals needed for verification</li>
+            <li>The fact that the sign-in succeeded</li>
+          </ul></div></div>
+          <div class="card fig"><div class="cbody before"><h4>What never leaves</h4><ul>
+            <li><b>The key itself — never sent to Lemma servers either</b></li>
+            <li>The key hash (absent from the public signals)</li>
+            <li>Anything that links one proof to another</li>
+          </ul></div></div>
+        </div>
+        <p class="fp-note">Note: the service you sign in to matches the received proof against its own registered key to confirm who you are. <a class="tlink" href="/seal/">How sign-in works and how to adopt it: the Seal page ↗</a></p>
+        <div class="fp-uses"><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Services and retail</span><b>Cross-group identity</b><span class="sc">Carry one identity across services without distributing keys.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Developers and agent ops</span><b>Agent authority control</b><span class="sc">Hand agents bounded authority, not keys.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">AI adoption (cross-industry)</span><b>AI execution governance</b><span class="sc">Keep AI executions in a form you can later present with grounds.</span><span class="go">Learn more →</span></a></div><p class="fp-more">See how your industry uses this in the <a class="tlink" href="/solutions/use-cases/">solutions index</a>.</p>
+        <div class="fp-tech"><span class="tl">Tech</span><span class="tc">Groth16 / BN254</span><span class="tc">Poseidon Nullifier</span></div>
+      </div>
+      <div class="fp-panel" id="p-03" role="tabpanel" aria-labelledby="t-03">
+        <p class="fp-lead">Delegate authority without handing over a key.</p>
+        <p class="fp-sub">Only what is inside the granted scope executes; outside it, nothing runs. Agents receive bounded authority, not keys.</p>
+        <div class="fp-grid">
+          <div class="card fig"><div class="cbody after"><h4>What is disclosed</h4><ul><li>The delegated scope (role and limits)</li><li>The fact that execution within that scope is allowed</li><li>The record of allows and stops</li></ul></div></div>
+          <div class="card fig"><div class="cbody before"><h4>What never leaves</h4><ul><li><b>The key itself — never sent to Lemma servers either</b></li><li>The delegator credentials</li></ul></div></div>
+        </div>
+        <div class="fp-uses"><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Developers and agent ops</span><b>Agent authority control</b><span class="sc">Hand agents bounded authority, not keys.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">AI adoption (cross-industry)</span><b>AI execution governance</b><span class="sc">Keep AI executions in a form you can later present with grounds.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Procurement and supply chain</span><b>Supplier credential monitoring</b><span class="sc">Check that supplier credentials are valid without collecting documents.</span><span class="go">Learn more →</span></a></div><p class="fp-more">See how your industry uses this in the <a class="tlink" href="/solutions/use-cases/">solutions index</a>.</p>
+        
+        
+      </div>
+      <div class="fp-panel" id="p-04" role="tabpanel" aria-labelledby="t-04">
+        <p class="fp-lead">Prove the inference without disclosing the model.</p>
+        <p class="fp-sub">Show, after the fact, what an execution was grounded on. The execution itself is proven without opening up the model.</p>
+        <div class="fp-grid">
+          <div class="card fig"><div class="cbody after"><h4>What is disclosed</h4><ul><li>The fact that an execution happened</li><li>The input fingerprint</li><li>Time of registration</li></ul></div></div>
+          <div class="card fig"><div class="cbody before"><h4>What never leaves</h4><ul><li><b>Model weights and configuration — never sent to Lemma servers either</b></li><li>Prompt and input-data contents</li></ul></div></div>
+        </div>
+        <div class="fp-uses"><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">AI adoption (cross-industry)</span><b>AI execution governance</b><span class="sc">Keep AI executions in a form you can later present with grounds.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Finance and FinTech</span><b>Counterparty record verification</b><span class="sc">Verify counterparty records without receiving the originals.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Public sector</span><b>Certificate-less procedures</b><span class="sc">Drop certificate attachments and pass only the fact that requirements are met.</span><span class="go">Learn more →</span></a></div><p class="fp-more">See how your industry uses this in the <a class="tlink" href="/solutions/use-cases/">solutions index</a>.</p>
+        
+        
+      </div>
+      <div class="fp-panel" id="p-05" role="tabpanel" aria-labelledby="t-05">
+        <p class="fp-lead">Prove a requirement is met without revealing the attribute.</p>
+        <p class="fp-sub">For example: show fitness for duty without exposing health data. What travels is the fact that a requirement is met, not the value itself.</p>
+        <div class="fp-grid">
+          <div class="card fig"><div class="cbody after"><h4>What is disclosed</h4><ul><li>The fact that the requirement is met</li><li>The issuer and its signature</li><li>Expiry</li></ul></div></div>
+          <div class="card fig"><div class="cbody before"><h4>What never leaves</h4><ul><li><b>The attribute value itself — never sent to Lemma servers either</b></li><li>The underlying details: birth date, health data, and so on</li></ul></div></div>
+        </div>
+        <div class="fp-uses"><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Healthcare</span><b>Qualified-staff assurance</b><span class="sc">Show only whether a qualification holds, never the personal details.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Public sector</span><b>Certificate-less procedures</b><span class="sc">Drop certificate attachments and pass only the fact that requirements are met.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Procurement and supply chain</span><b>Supplier credential monitoring</b><span class="sc">Check that supplier credentials are valid without collecting documents.</span><span class="go">Learn more →</span></a></div><p class="fp-more">See how your industry uses this in the <a class="tlink" href="/solutions/use-cases/">solutions index</a>.</p>
+        
+        <p class="fp-note">Note: this proof is offered as a custom build. Talk to us.</p>
+      </div>
+
+      <figure class="tech fp-api">
+        <div class="pgrid"></div>
+        <div class="tin">
+          <div class="tophead">
+            <div class="tlab">Whatever the proof, you call the same two endpoints</div>
+            <a href="/guides">API reference ↗</a>
+          </div>
+          <p class="apilead"><b>You send only a hash. </b>The original never rides the wire, and never reaches Lemma servers.</p>
+<pre class="code"><span class="c">// Issue (billed, once) — you send a hash. Never the original.</span>
+<span class="k">POST</span> /v1/documents
+  <span class="c">→ req</span>  { docHash: <span class="s">"0x7a8f…"</span>, … }
+  <span class="c">→ res</span>  { docHash, status: <span class="s">"registered"</span> }
+
+<span class="c">// Verify (free, any number of times, no key)</span>
+<span class="k">GET</span>  /v1/documents/:docHash
+  <span class="c">→ res</span>  { status: <span class="s">"registered"</span> | <span class="s">"anchored"</span> | <span class="s">"pending"</span>,
+           issuer, registeredAt }
+  <span class="cw">→ Unregistered returns 404. No content fields are returned.</span>
+<span class="c">// GET is the finalized spec, currently being implemented. Today's query path is POST /v1/verified-attributes/query.</span></pre>
+        </div>
+      </figure>
+      <p class="fp-abs">Each proof uses different cryptography, but <span class="hi">you call the same two endpoints</span>. Each proof's cryptographic spec lives in the  <a class="tlink" href="/guides">technical docs</a>.</p>
+
+      <div class="fp-cta">
+        <p class="note">Issuance is billed; verification is always free. How this differs from other approaches: <a class="tlink" href="/compare/">the comparison page</a>.</p>
+        <a class="btn solid" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Try the Sandbox (free)</a>
+        <a class="btn ghostd" href="/guides">Read the docs</a>
+      </div>
+    </div>
+  </div>

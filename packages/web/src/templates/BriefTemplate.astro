@@ -100,16 +100,17 @@ const PILLAR_LABELS: Record<PillarSlug, { ja: string; en: string }> = {
     en: "Pillar 04 · Regulatory Attribute Proof",
   },
 };
-const PILLAR_PAGE_SLUG: Record<PillarSlug, string> = {
-  "01-verifiable-origin": "verifiable-origin",
-  "02-verifiable-ai": "verifiable-ai",
-  "03-agent-authority": "agent-authority-proof",
-  "04-regulatory-attribute": "regulatory-attribute-proof",
+// 配下4ページは /pillars のタブへ統合 (製品ページ移行 v2.7 §5.4)
+const PILLAR_PAGE_ANCHOR: Record<PillarSlug, string> = {
+  "01-verifiable-origin": "#provenance",
+  "02-verifiable-ai": "#inference",
+  "03-agent-authority": "#authority",
+  "04-regulatory-attribute": "#attribute",
 };
 
 const pillar = brief.data.pillar as PillarSlug;
 const pillarLabel = PILLAR_LABELS[pillar][isJa ? "ja" : "en"];
-const pillarHref = `${base}/pillars/${PILLAR_PAGE_SLUG[pillar]}/`;
+const pillarHref = `${base}/pillars/${PILLAR_PAGE_ANCHOR[pillar]}`;
 
 // Locale-resolved full collection (EN preferred, JA fallback) for prev/next
 // and auto-derived related.

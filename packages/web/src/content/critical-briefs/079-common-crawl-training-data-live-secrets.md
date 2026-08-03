@@ -100,4 +100,4 @@ Truffle Security による走査・検出、影響ベンダーへの連絡、鍵
 - **IT Pro**: “12,000 API keys and passwords were found in a popular AI training dataset”（2025-02）— <https://www.itpro.com/security/12-000-api-keys-and-passwords-were-found-in-a-popular-ai-training-dataset-experts-say-the-issue-is-down-to-poor-identity-management>
 - **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance)

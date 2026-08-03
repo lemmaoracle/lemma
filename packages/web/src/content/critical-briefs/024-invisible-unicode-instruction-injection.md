@@ -98,4 +98,4 @@ Models change. Proofs remain.
 - **研究者開示（二次情報）**: Embrace The Red "Scary Agent Skills: Hidden Unicode Instructions in Skills"（2026）— <https://embracethered.com/blog/posts/2026/scary-agent-skills/>
 - **供給網監査（一次情報）**: Snyk "ToxicSkills: Comprehensive Security Audit of AI Agent Skills"（2026-02-05、3,984 スキル・36.82%・13.4% CRITICAL・76 悪性ペイロード）— <https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference)、[Trust402](https://lemma.frame00.com/ja/trust402/)

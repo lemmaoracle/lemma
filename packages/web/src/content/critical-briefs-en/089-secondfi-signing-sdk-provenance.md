@@ -93,7 +93,7 @@ Against the gap this incident exposed (the provenance of the cryptographic code 
 - **Normal operation ≠ code provenance**: Do not separate the fact that "the wallet is operating normally" from the fact that "the implementation doing the signing carries a legitimate provenance," and make the latter the subject of pre-execution attestation
 - **Selective disclosure**: Without disclosing the signing implementation or the entire build pipeline, prove with minimal disclosure only that "this signer carries an audited, legitimate provenance"
 
-Detection (after-the-fact root-cause identification, fund evacuation, compensation, audits) works toward remediating harm, and pre-execution attestation (independent verification of the signing code's provenance before signing) works toward establishing trust in wallet signing; the two are complementary. For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Seal](https://lemma.frame00.com/seal/).
+Detection (after-the-fact root-cause identification, fund evacuation, compensation, audits) works toward remediating harm, and pre-execution attestation (independent verification of the signing code's provenance before signing) works toward establishing trust in wallet signing; the two are complementary. For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance) and [Seal](https://lemma.frame00.com/seal/).
 
 ---
 

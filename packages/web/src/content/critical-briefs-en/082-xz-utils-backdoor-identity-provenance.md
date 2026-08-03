@@ -96,7 +96,7 @@ Against the detection–proof gap exposed in this incident (code signing proves 
 - **Provenance chain of build artifacts**: Seamlessly chain the author provenance of the source code → the executor provenance of the build process → the signer provenance of the release archive, making forgery at any stage detectable
 - **Proof of correspondence between release archive and source**: Disclose, in an independently verifiable form before the build runs, the differences between the source confirmable via `git clone` and the release archive
 
-This is the design philosophy of "cryptographically valid ≠ identity provenance correct" — the core of the verifiable-origin category — and rather than replacing after-the-fact detection like Andres Freund's, it makes the two **complement** each other by fixing identity provenance before acceptance. For the design details, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/); for the scope, see [Trust402](https://lemma.frame00.com/trust402/).
+This is the design philosophy of "cryptographically valid ≠ identity provenance correct" — the core of the verifiable-origin category — and rather than replacing after-the-fact detection like Andres Freund's, it makes the two **complement** each other by fixing identity provenance before acceptance. For the design details, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance); for the scope, see [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 
