@@ -66,15 +66,6 @@ const collectionJsonLd = {
       </section>
 
       {
-        /*
-        ヒーローとガイド一覧のあいだに差し込む任意の帯。JA は
-        CoreCryptoSections（仕組み＋3つの中核）を入れる。渡さなければ何も
-        描画しないので、EN の /guides/ は従来どおり。
-      */
-      }
-      <slot name="feature" />
-
-      {
         guides.length > 0 && (
           <section class="gd-grid-section" aria-label={t.blog.index.guidesTag}>
             <ul class="gd-grid">
@@ -95,6 +86,15 @@ const collectionJsonLd = {
           </section>
         )
       }
+
+      {
+        /*
+        仕組み＋3つの中核 (JA のみ・CoreCryptoSections)。ドキュメントハブの
+        並びは「まず実装の入口 (ガイド) → 概念 (仕組み・暗号技術) → 正典 (基盤)」
+        の順 (2026-08-04)。
+      */
+      }
+      <slot name="feature" />
 
       {
         foundations.length > 0 && (
@@ -143,8 +143,9 @@ const collectionJsonLd = {
     font-family: var(--gd-body);
     font-weight: 400;
     line-height: 1.65;
+    /* ナビは sticky (通常フロー) のため旧固定ナビ用の margin-top 64px は不要。
+       body の地色が帯状に見える原因だったので撤去。 */
     padding: 0 0 96px;
-    margin-top: 64px;
   }
   :root[lang="en"] .gd-page {
     --gd-body: "Noto Sans JP", system-ui, sans-serif;
