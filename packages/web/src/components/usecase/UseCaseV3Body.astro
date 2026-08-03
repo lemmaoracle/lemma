@@ -435,6 +435,11 @@ const bytaskMembers = taskGroupMembers.filter(
 
           <div class="ucv-approach">
             <div class="ucv-approach-h">{isJa ? "なぜ Lemma か" : "Why Lemma"}</div>
+            <ul class="ucv-why">
+              <li><b>{isJa ? "本文は出さない" : "The document stays private"}</b>{isJa ? " — 記録の本文（個人情報・機微データ）は送信も開示もしません。" : " — the record itself is never sent or disclosed."}</li>
+              <li><b>{isJa ? "相手が独立に検証" : "Independent verification"}</b>{isJa ? " — 受け取った側はリンクを開くだけ。アカウントもキーも不要です。" : " — the receiver just opens a link. No account, no keys."}</li>
+              <li><b>{isJa ? "書き換えは検知" : "Edits are detected"}</b>{isJa ? " — 1文字の書き換えも、検証の時点で一致しなくなります。" : " — even a one-character edit fails verification."}</li>
+            </ul>
             {v3 ? (
               <p>{v3.approach[locale]}</p>
             ) : (
@@ -736,6 +741,10 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-band--deep .ucv-approach { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--ok); }
   .ucv-approach-h { font-family: var(--font-serif-jp); font-weight: 600; font-size: 16px; color: var(--tx); margin: 0 0 8px; }
   .ucv-approach-h::before { content: ""; display: block; width: 22px; height: 2px; border-radius: 2px; background: var(--ok); margin-bottom: 8px; }
+  .ucv-why { list-style: none; margin: 0 0 14px; padding: 0; }
+  .ucv-why li { position: relative; padding: 5px 0 5px 20px; font-size: 13.5px; line-height: 1.8; color: var(--tx-soft); }
+  .ucv-why li::before { content: "✓"; position: absolute; left: 0; color: var(--ok-light); font-weight: 700; }
+  .ucv-why b { color: var(--tx); font-weight: 600; }
   .ucv-approach p, .ucv-approach-body { font-size: 14px; line-height: 1.9; color: var(--tx-soft); margin: 0; }
   .ucv-approach-body :global(p) { margin: 0 0 10px; }
   .ucv-approach-body :global(p:last-child) { margin-bottom: 0; }
