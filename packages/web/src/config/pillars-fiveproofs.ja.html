@@ -59,7 +59,7 @@
         <p class="fp-lead">モデルを開示せず、推論を証明する。</p>
         <p class="fp-sub">何を根拠に動いたかを、あとから提示できます。モデルの中身を開示せずに、実行そのものを証明します。</p>
         <div class="fp-grid">
-          <div class="card fig"><div class="cbody after"><h4>公開されるもの</h4><ul><li>実行があったという事実</li><li>入力の指紋</li><li>実行の時刻</li></ul></div></div>
+          <div class="card fig"><div class="cbody after"><h4>公開されるもの</h4><ul><li>実行があったという事実</li><li>入力の指紋</li><li>登録の時刻</li></ul></div></div>
           <div class="card fig"><div class="cbody before"><h4>渡らないもの</h4><ul><li><b>モデルの重み・構成 — Lemma のサーバーにも送信されません</b></li><li>プロンプトや入力データの本文</li></ul></div></div>
         </div>
         <div class="fp-uses"><a class="fp-uc" href="/ja/solutions/use-cases/ai/"><span class="ind">AI導入（業種横断）</span><b>AI実行ガバナンス</b><span class="sc">AI の実行を、あとから根拠ごと提示できる形で残す。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/finance/"><span class="ind">金融・FinTech</span><b>取引先レコード検証</b><span class="sc">相手方のレコードを、原本を受け取らずに確かめる。</span><span class="go">詳しく →</span></a><a class="fp-uc" href="/ja/solutions/use-cases/public-sector/"><span class="ind">自治体・公共</span><b>証明書レス手続き</b><span class="sc">証明書の添付をやめ、要件を満たす事実だけを渡す。</span><span class="go">詳しく →</span></a></div><p class="fp-more">自社の業界での使い方は <a class="tlink" href="/ja/solutions/use-cases/">業界別ソリューション索引</a> にまとまっています。</p>
@@ -95,7 +95,8 @@
 <span class="k">GET</span>  /v1/documents/:docHash
   <span class="c">→ res</span>  { status: <span class="s">"registered"</span> | <span class="s">"anchored"</span> | <span class="s">"pending"</span>,
            issuer, registeredAt }
-  <span class="cw">→ 未登録は 404。本文系のフィールドは返りません。</span></pre>
+  <span class="cw">→ 未登録は 404。本文系のフィールドは返りません。</span>
+<span class="c">// GET は確定仕様で、現在実装中です。照会の現行実装は POST /v1/verified-attributes/query。</span></pre>
         </div>
       </figure>
       <p class="fp-abs">証明の種類ごとに使う暗号は違いますが、<span class="hi">叩く API は同じ2本です</span>。各証明の暗号仕様は <a class="tlink" href="/ja/guides">技術ドキュメント</a> にあります。</p>

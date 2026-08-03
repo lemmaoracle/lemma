@@ -59,7 +59,7 @@
         <p class="fp-lead">Prove the inference without disclosing the model.</p>
         <p class="fp-sub">Show, after the fact, what an execution was grounded on. The execution itself is proven without opening up the model.</p>
         <div class="fp-grid">
-          <div class="card fig"><div class="cbody after"><h4>What is disclosed</h4><ul><li>The fact that an execution happened</li><li>The input fingerprint</li><li>Time of execution</li></ul></div></div>
+          <div class="card fig"><div class="cbody after"><h4>What is disclosed</h4><ul><li>The fact that an execution happened</li><li>The input fingerprint</li><li>Time of registration</li></ul></div></div>
           <div class="card fig"><div class="cbody before"><h4>What never leaves</h4><ul><li><b>Model weights and configuration — never sent to Lemma servers either</b></li><li>Prompt and input-data contents</li></ul></div></div>
         </div>
         <div class="fp-uses"><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">AI adoption (cross-industry)</span><b>AI execution governance</b><span class="sc">Keep AI executions in a form you can later present with grounds.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Finance and FinTech</span><b>Counterparty record verification</b><span class="sc">Verify counterparty records without receiving the originals.</span><span class="go">Learn more →</span></a><a class="fp-uc" href="/solutions/use-cases/"><span class="ind">Public sector</span><b>Certificate-less procedures</b><span class="sc">Drop certificate attachments and pass only the fact that requirements are met.</span><span class="go">Learn more →</span></a></div><p class="fp-more">See how your industry uses this in the <a class="tlink" href="/solutions/use-cases/">solutions index</a>.</p>
@@ -95,7 +95,8 @@
 <span class="k">GET</span>  /v1/documents/:docHash
   <span class="c">→ res</span>  { status: <span class="s">"registered"</span> | <span class="s">"anchored"</span> | <span class="s">"pending"</span>,
            issuer, registeredAt }
-  <span class="cw">→ Unregistered returns 404. No content fields are returned.</span></pre>
+  <span class="cw">→ Unregistered returns 404. No content fields are returned.</span>
+<span class="c">// GET is the finalized spec, currently being implemented. Today's query path is POST /v1/verified-attributes/query.</span></pre>
         </div>
       </figure>
       <p class="fp-abs">Each proof uses different cryptography, but <span class="hi">you call the same two endpoints</span>. Each proof's cryptographic spec lives in the  <a class="tlink" href="/guides">technical docs</a>.</p>
