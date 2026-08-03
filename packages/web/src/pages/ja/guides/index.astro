@@ -20,9 +20,9 @@ const CORE_SLUGS = [
 const allGuides = sections
   .flatMap((s) => s.posts)
   .filter((p) => p.category === "ガイド" || p.category === "Guides");
-const cores = CORE_SLUGS.map((slug) =>
-  allGuides.find((p) => p.slug === slug),
-).filter((p): p is NonNullable<typeof p> => Boolean(p));
+const cores = CORE_SLUGS.map((slug) => allGuides.find((p) => p.slug === slug)).filter(
+  (p): p is NonNullable<typeof p> => Boolean(p),
+);
 const coreSlugSet = new Set(cores.map((p) => p.slug));
 const guides = allGuides.filter((p) => !coreSlugSet.has(p.slug));
 const foundations = sections

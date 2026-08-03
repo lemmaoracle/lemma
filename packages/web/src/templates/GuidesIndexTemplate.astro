@@ -29,8 +29,14 @@ export interface GuidesIndexTemplateProps {
   foundations: ReadonlyArray<BlogPost>;
 }
 
-const { locale, t, base, guides, cores = [], foundations } =
-  Astro.props as GuidesIndexTemplateProps;
+const {
+  locale,
+  t,
+  base,
+  guides,
+  cores = [],
+  foundations,
+} = Astro.props as GuidesIndexTemplateProps;
 const isJa = locale === "ja";
 const coreCopy = isJa
   ? {
@@ -43,9 +49,8 @@ const coreCopy = isJa
     };
 const blogPath = base ? `${base}/blog` : "/blog";
 const guidesPath = base ? `${base}/guides` : "/guides";
-const title = locale === "ja"
-  ? `${t.blog.index.guidesTitle} — Lemma`
-  : `${t.blog.index.guidesTitle} — Lemma`;
+const title =
+  locale === "ja" ? `${t.blog.index.guidesTitle} — Lemma` : `${t.blog.index.guidesTitle} — Lemma`;
 const description = t.blog.index.guidesDesc;
 
 const SITE = "https://lemma.frame00.com";
@@ -69,13 +74,7 @@ const collectionJsonLd = {
 };
 ---
 
-<Layout
-  locale={locale}
-  title={title}
-  description={description}
-  metaType="page"
-  pagePath="/guides/"
->
+<Layout locale={locale} title={title} description={description} metaType="page" pagePath="/guides/">
   <script type="application/ld+json" is:inline set:html={JSON.stringify(collectionJsonLd)} />
 
   <Navigation locale={locale} t={t.nav} base={base} />
@@ -89,64 +88,70 @@ const collectionJsonLd = {
         <p class="gd-hero-sub">{t.blog.index.guidesDesc}</p>
       </section>
 
-      {cores.length > 0 && (
-        <section class="gd-block gd-cores" id="core-crypto" aria-label={coreCopy.eyebrow}>
-          <div class="gd-block-eyebrow">{coreCopy.eyebrow}</div>
-          <p class="gd-cores-lead">{coreCopy.lead}</p>
-          <ul class="gd-foundations">
-            {cores.map((post) => (
-              <li>
-                <a href={`${blogPath}/${post.slug}`} class="gd-foundations-card">
-                  <div class="gd-foundations-text">
-                    <h2 class="gd-foundations-title">{post.title}</h2>
-                    <p class="gd-foundations-abstract">{post.abstract}</p>
-                  </div>
-                  <span class="gd-foundations-cta">{t.blog.index.readGuide}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {
+        cores.length > 0 && (
+          <section class="gd-block gd-cores" id="core-crypto" aria-label={coreCopy.eyebrow}>
+            <div class="gd-block-eyebrow">{coreCopy.eyebrow}</div>
+            <p class="gd-cores-lead">{coreCopy.lead}</p>
+            <ul class="gd-foundations">
+              {cores.map((post) => (
+                <li>
+                  <a href={`${blogPath}/${post.slug}`} class="gd-foundations-card">
+                    <div class="gd-foundations-text">
+                      <h2 class="gd-foundations-title">{post.title}</h2>
+                      <p class="gd-foundations-abstract">{post.abstract}</p>
+                    </div>
+                    <span class="gd-foundations-cta">{t.blog.index.readGuide}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
 
-      {guides.length > 0 && (
-        <section class="gd-grid-section" aria-label={t.blog.index.guidesTag}>
-          <ul class="gd-grid">
-            {guides.map((post) => (
-              <li>
-                <a href={`${blogPath}/${post.slug}`} class="gd-card">
-                  <div class="gd-card-meta">
-                    <span class="gd-card-cat">{post.category}</span>
-                    <span class="gd-card-date">{post.date}</span>
-                  </div>
-                  <h2 class="gd-card-title">{post.title}</h2>
-                  <p class="gd-card-abstract">{post.abstract}</p>
-                  <span class="gd-card-cta">{t.blog.index.readGuide}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {
+        guides.length > 0 && (
+          <section class="gd-grid-section" aria-label={t.blog.index.guidesTag}>
+            <ul class="gd-grid">
+              {guides.map((post) => (
+                <li>
+                  <a href={`${blogPath}/${post.slug}`} class="gd-card">
+                    <div class="gd-card-meta">
+                      <span class="gd-card-cat">{post.category}</span>
+                      <span class="gd-card-date">{post.date}</span>
+                    </div>
+                    <h2 class="gd-card-title">{post.title}</h2>
+                    <p class="gd-card-abstract">{post.abstract}</p>
+                    <span class="gd-card-cta">{t.blog.index.readGuide}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
 
-      {foundations.length > 0 && (
-        <section class="gd-block" aria-label={t.blog.index.foundationsTag}>
-          <div class="gd-block-eyebrow">{t.blog.index.foundationsTag}</div>
-          <ul class="gd-foundations">
-            {foundations.map((post) => (
-              <li>
-                <a href={`${blogPath}/${post.slug}`} class="gd-foundations-card">
-                  <div class="gd-foundations-text">
-                    <h3 class="gd-foundations-title">{post.title}</h3>
-                    <p class="gd-foundations-abstract">{post.abstract}</p>
-                  </div>
-                  <span class="gd-foundations-cta">{t.blog.index.readSpecs}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {
+        foundations.length > 0 && (
+          <section class="gd-block" aria-label={t.blog.index.foundationsTag}>
+            <div class="gd-block-eyebrow">{t.blog.index.foundationsTag}</div>
+            <ul class="gd-foundations">
+              {foundations.map((post) => (
+                <li>
+                  <a href={`${blogPath}/${post.slug}`} class="gd-foundations-card">
+                    <div class="gd-foundations-text">
+                      <h3 class="gd-foundations-title">{post.title}</h3>
+                      <p class="gd-foundations-abstract">{post.abstract}</p>
+                    </div>
+                    <span class="gd-foundations-cta">{t.blog.index.readSpecs}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
     </div>
   </main>
 
@@ -266,7 +271,10 @@ const collectionJsonLd = {
     border-radius: 14px;
     padding: 26px 26px 22px;
     height: 100%;
-    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    transition:
+      border-color 0.25s,
+      box-shadow 0.25s,
+      transform 0.25s;
     position: relative;
     overflow: hidden;
   }
@@ -388,7 +396,9 @@ const collectionJsonLd = {
     padding: 28px 32px;
     position: relative;
     overflow: hidden;
-    transition: border-color 0.25s, box-shadow 0.25s;
+    transition:
+      border-color 0.25s,
+      box-shadow 0.25s;
   }
   .gd-foundations-card::before {
     content: "";
