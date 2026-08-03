@@ -589,9 +589,11 @@ const bytaskMembers = taskGroupMembers.filter(
               <a class="ucv-bytask-row" href={`${useCasesPath}/${m.slug}/`}>{m.title}</a>
             ))}
           </div>
-          <a class="ucv-bytask-all" href={`${useCasesPath}/`}>ユースケース一覧（全36件） →</a>
         </div>
       )}
+    </div>
+    <div class="ucv-container" style="text-align:center;">
+      <a class="ucv-bytask-all" href={`${useCasesPath}/`}>ユースケース一覧（全36件） →</a>
     </div>
   </section>
 
@@ -614,14 +616,14 @@ const bytaskMembers = taskGroupMembers.filter(
   {/* フッター上の細い1行 — 仕組み・FAQ・活用シーン全体像をここに集約 */}
   <nav class="ucv-footlinks" aria-label={isJa ? "関連リンク" : "Related links"}>
     <div class="ucv-footlinks-box">
-      <p class="ucv-footlinks-h">{isJa ? "お問い合わせの前に、確認したい方へ" : "Before you reach out"}</p>
+      <p class="ucv-footlinks-h">{isJa ? "さらに詳しく知りたい方へ" : "Want to go deeper?"}</p>
       <div class="ucv-footlinks-grid">
         {pillar && (
-          <a href={`${pillarsPath}/${pillar.slug}`}><b>{C.footHow}</b><span>{isJa ? `${pillar.title[locale]} の仕組みと技術詳細` : "How the proof works, in depth"}</span></a>
+          <a href={`${pillarsPath}/${pillar.slug}`}>{C.footHow} ↗</a>
         )}
-        <a href={`${base}/pricing/#api`}><b>{isJa ? "料金" : "Pricing"}</b><span>{isJa ? "発行に課金、検証は無料" : "Pay to issue; verification is free"}</span></a>
-        <a href={faqHref}><b>{C.footFaq}</b><span>{isJa ? "セキュリティ・既存システム連携など" : "Security, integrations, and more"}</span></a>
-        <a href={ucBridgeHref}><b>{C.footBridge}</b><span>{isJa ? "業界・業務ごとの活用シーン" : "Use scenarios by industry"}</span></a>
+        <a href={`${base}/pricing/#api`}>{isJa ? "料金" : "Pricing"} ↗</a>
+        <a href={faqHref}>{C.footFaq} ↗</a>
+        <a href={ucBridgeHref}>{C.footBridge} ↗</a>
       </div>
     </div>
   </nav>
@@ -745,7 +747,6 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-approach { margin: 30px 0 0; background: var(--lite-2); border-left: 3px solid var(--ok); border-radius: 0 10px 10px 0; padding: 20px 24px; }
   .ucv-band--deep .ucv-approach { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--ok); }
   .ucv-approach-h { font-family: var(--font-serif-jp); font-weight: 600; font-size: 16px; color: var(--tx); margin: 0 0 8px; }
-  .ucv-approach-h::before { content: ""; display: block; width: 22px; height: 2px; border-radius: 2px; background: var(--ok); margin-bottom: 8px; }
   .ucv-why { list-style: none; margin: 0 0 14px; padding: 0; }
   .ucv-why li { position: relative; padding: 5px 0 5px 20px; font-size: 13.5px; line-height: 1.8; color: var(--tx-soft); }
   .ucv-why li::before { content: "✓"; position: absolute; left: 0; color: var(--ok-light); font-weight: 700; }
@@ -837,12 +838,9 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-footlinks { padding: 34px 6vw 44px; border-top: 1px solid var(--line); }
   .ucv-footlinks-box { max-width: 880px; margin: 0 auto; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px 26px 20px; box-shadow: var(--sh-s); }
   .ucv-footlinks-h { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--muted); margin: 0 0 12px; }
-  .ucv-footlinks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 28px; }
-  .ucv-footlinks-grid a { display: block; padding: 8px 0 8px 12px; border-left: 2px solid transparent; transition: 0.15s; }
-  .ucv-footlinks-grid a:hover { border-left-color: var(--ok); background: rgba(168, 224, 16, 0.06); }
-  .ucv-footlinks-grid b { display: block; font-size: 13.5px; font-weight: 600; color: var(--tx); }
-  .ucv-footlinks-grid span { font-size: 11.5px; color: var(--muted); }
-  @media (max-width: 720px) { .ucv-footlinks-grid { grid-template-columns: 1fr; } }
+  .ucv-footlinks-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .ucv-footlinks-grid a { display: inline-block; font-size: 12.5px; color: var(--tx-soft); border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; transition: 0.15s; }
+  .ucv-footlinks-grid a:hover { border-color: var(--ok-ink); color: var(--tx); background: rgba(168, 224, 16, 0.06); }
 
   /* ---------- responsive ---------- */
   @media (max-width: 1020px) {
