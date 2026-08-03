@@ -146,7 +146,7 @@
   opacity: 0.5;
 }
 .pv18 .artcta {
-  margin: 56px 0 0;
+  margin: 88px 0 0;
   background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
   border-radius: 16px;
   padding: 38px 36px 34px;
@@ -333,13 +333,13 @@
   align-items: center;
 }
 .pv18 .isec {
-  margin: 16px 0 0;
+  margin: 72px 0 0;
 }
 .pv18 .band + .isec {
-  margin-top: 12px;
+  margin-top: 72px;
 }
 .pv18 .isec + .band {
-  margin-top: 14px;
+  margin-top: 64px;
 }
 .pv18 .isec-h {
   display: block;
@@ -442,8 +442,8 @@
 }
 .pv18 .band {
   position: relative;
-  padding: 24px 0 26px;
-  margin-top: 14px;
+  padding: 56px 0 60px;
+  margin-top: 64px;
 }
 .pv18 .band::before {
   content: "";
@@ -850,8 +850,8 @@
 }
 .pv18 .whysec {
   border-top: 2px solid var(--ok);
-  padding-top: 20px;
-  margin-top: 22px;
+  padding-top: 48px;
+  margin-top: 64px;
 }
 .pv18 .whysec .isec-h b {
   font-size: clamp(25px, 3vw, 35px);
@@ -1214,7 +1214,7 @@
   }
 }
 .pv18 .regsec {
-  margin-top: 22px;
+  margin-top: 72px;
 }
 .pv18 .regwrap {
   display: grid;
@@ -1431,4 +1431,21 @@
 }
 .pv18 .rp-live.offline i {
   background: #ce9a85;
+}
+
+/* --------------------------------------------------------------------------
+   節間のリズム（この面のみ）。
+
+   モックの値は業界ページ（industry-v1.css）の house pattern をそのまま
+   引き継いでいるが、業界ページは各節が大きな図版を持つのに対し、この面は
+   テキスト密度が高い節が連続するため、同じ値だと節の境目が読めない。
+   `.pv18` 配下だけを広げている（他ページには影響しない）。
+
+   さらに Five proofs と How it works は同じ `.band.alt`（同背景）が隣接する
+   ため、余白だけでは1つの塊に見える。背景を変えるとモックのトーンが崩れる
+   ので、細い罫線で境界だけを立てる。
+   -------------------------------------------------------------------------- */
+.pv18 .band + .band {
+  margin-top: 0;
+  border-top: 1px solid var(--line);
 }
