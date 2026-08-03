@@ -614,19 +614,6 @@ const bytaskMembers = taskGroupMembers.filter(
   )}
 
   {/* フッター上の細い1行 — 仕組み・FAQ・活用シーン全体像をここに集約 */}
-  <nav class="ucv-footlinks" aria-label={isJa ? "関連リンク" : "Related links"}>
-    <div class="ucv-footlinks-box">
-      <p class="ucv-footlinks-h">{isJa ? "さらに詳しく知りたい方へ" : "Want to go deeper?"}</p>
-      <div class="ucv-footlinks-grid">
-        {pillar && (
-          <a href={`${pillarsPath}/${pillar.slug}`}>{C.footHow} ↗</a>
-        )}
-        <a href={`${base}/pricing/#api`}>{isJa ? "料金" : "Pricing"} ↗</a>
-        <a href={faqHref}>{C.footFaq} ↗</a>
-        <a href={ucBridgeHref}>{C.footBridge} ↗</a>
-      </div>
-    </div>
-  </nav>
 </main>
 
 <style>
@@ -834,13 +821,6 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-closing-link { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.04em; color: #bcc3b6; border-bottom: 1px solid rgba(168, 224, 16, 0.35); padding: 0 0 2px; transition: 0.18s; }
   .ucv-closing-link:hover { color: var(--ok); }
 
-  /* ---------- footer 直上の細いリンク行 ---------- */
-  .ucv-footlinks { padding: 34px 6vw 44px; border-top: 1px solid var(--line); }
-  .ucv-footlinks-box { max-width: 880px; margin: 0 auto; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px 26px 20px; box-shadow: var(--sh-s); }
-  .ucv-footlinks-h { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--muted); margin: 0 0 12px; }
-  .ucv-footlinks-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-  .ucv-footlinks-grid a { display: inline-block; font-size: 12.5px; color: var(--tx-soft); border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; transition: 0.15s; }
-  .ucv-footlinks-grid a:hover { border-color: var(--ok-ink); color: var(--tx); background: rgba(168, 224, 16, 0.06); }
 
   /* ---------- responsive ---------- */
   @media (max-width: 1020px) {
