@@ -103,4 +103,4 @@ AI が示した根拠を行動前に独立検証する層の不在は、特定�
 - **ABA Journal**: "Federal judge removes 4 plaintiff and defense attorneys over AI errors" — <https://www.abajournal.com/news/article/federal-judge-terminates-4-plaintiff-and-defense-attorneys-over-ai-errors>
 - **Reason (The Volokh Conspiracy)**: "Nonexistent Case Citations on Both Sides + 'Rubberstamp[ing]' by 'Local Counsel'"（2026-06-09）— <https://reason.com/volokh/2026/06/09/nonexistent-case-citations-on-both-sides-rubberstamping-by-local-counsel/>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference)、[Trust402](https://lemma.frame00.com/ja/trust402/)

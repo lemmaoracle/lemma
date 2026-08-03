@@ -92,7 +92,7 @@ FRT とその精度評価は、捜査における初期の絞り込み手段と�
 - **公平性は保証せず、説明責任を満たす**: Lemma は判定の公平性そのものを保証しないが、行政が AI 利用の説明責任を制度的に満たすための監査・証跡層に相当し、システムインテグレーション経由で公共部門の調達要件に組み込みうる
 - **選択的開示**: 元データや内部状態を全面開示せずに、「この出力が独立裏付け・認可の下で使われた」ことだけを最小開示する
 
-検出（FRT 精度の計測、事後の誤り是正）は被害の把握・救済に、事前証明（強制処分の前に AI 出力の裏付け・認可を独立検証する証跡）は判定が行動に移る前の信頼確立に、それぞれ相補的に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。設計と適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) も参照。
+検出（FRT 精度の計測、事後の誤り是正）は被害の把握・救済に、事前証明（強制処分の前に AI 出力の裏付け・認可を独立検証する証跡）は判定が行動に移る前の信頼確立に、それぞれ相補的に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。設計と適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference) も参照。
 
 ---
 

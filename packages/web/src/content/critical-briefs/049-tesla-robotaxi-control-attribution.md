@@ -97,4 +97,4 @@ NHTSA への事故報告、規制当局の調査・予備評価、報道によ�
 - **Electrek**: "Tesla 'Robotaxi' adds 5 more crashes in Austin in a month — 4x worse than humans"（2026-02-17、約 80 万マイル・14 件・約 5.7 万マイルに 1 件・人間比約 4 倍） — <https://electrek.co/2026/02/17/tesla-robotaxi-adds-5-more-crashes-austin-month-4x-worse-than-humans/>
 - **NHTSA**: Standing General Order ADS Incident Reports（自動運転事故報告制度の一次データ） — <https://www.nhtsa.gov/laws-regulations/standing-general-order-crash-reporting>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference)、[Trust402](https://lemma.frame00.com/ja/trust402/)

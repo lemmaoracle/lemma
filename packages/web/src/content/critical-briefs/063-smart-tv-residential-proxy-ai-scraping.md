@@ -103,4 +103,4 @@ gap_fix: "AI 学習にデータを取り込む前に「このデータは検証�
 - **Lowpass（The Verge 配信）**: スマートテレビ × Web スクレイピング・プロキシ網の先行報道（2026-02）— <https://www.lowpass.cc/p/smart-tv-web-scraping-ai-bright-data-proxy-networks>
 - **Krebs on Security**: "Aisuru Botnet Shifts from DDoS to Residential Proxies"（2025-10、住宅プロキシが AI データ収集を支える文脈）— <https://krebsonsecurity.com/2025/10/aisuru-botnet-shifts-from-ddos-to-residential-proxies/>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance)、[Trust402](https://lemma.frame00.com/ja/trust402/)

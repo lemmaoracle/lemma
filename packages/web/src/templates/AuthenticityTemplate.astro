@@ -88,7 +88,7 @@ const C = isJa
             "<strong>保存性</strong>：保存期間を通じて読める状態を保つこと。",
           ],
           after: [
-            `このうち真正性の確保は、電子署名・タイムスタンプ・操作履歴（来歴）の管理で支えられます。Lemmaの来歴証明は、この「誰が・いつ・どの版を作り、改ざんされていないか」を、暗号的に検証できる形で固定します。詳しくは <a href="${L("/pillars/regulatory-attribute-proof/")}">規制属性証明（Pillar 04）</a> をご覧ください。`,
+            `このうち真正性の確保は、電子署名・タイムスタンプ・操作履歴（来歴）の管理で支えられます。Lemmaの来歴証明は、この「誰が・いつ・どの版を作り、改ざんされていないか」を、暗号的に検証できる形で固定します。詳しくは <a href="${L("/pillars/#attribute")}">規制属性証明（Pillar 04）</a> をご覧ください。`,
           ],
         },
         {
@@ -97,10 +97,10 @@ const C = isJa
           h2: "真正性が問われる場面（ジャンル別）",
           body: ["真正性は一つの言葉ですが、求められる現場ごとに中身が変わります。"],
           list: [
-            `<strong>規制・電子記録</strong>：電子帳簿、電子カルテ、契約・監査証跡。改ざんされていない正規の記録であることを、後から立証できる状態が要ります。→ <a href="${L("/pillars/regulatory-attribute-proof/")}">規制属性証明（Pillar 04）</a>／業務での適用は <a href="${anshinUrl}">AIに業務を安全に任せるデータ基盤</a>／関連事案：<a href="${L("/critical/briefs/021-wirecard-balance-attestation/")}">Wirecard：銀行残高確認書の偽造（No.021）</a>`,
+            `<strong>規制・電子記録</strong>：電子帳簿、電子カルテ、契約・監査証跡。改ざんされていない正規の記録であることを、後から立証できる状態が要ります。→ <a href="${L("/pillars/#attribute")}">規制属性証明（Pillar 04）</a>／業務での適用は <a href="${anshinUrl}">AIに業務を安全に任せるデータ基盤</a>／関連事案：<a href="${L("/critical/briefs/021-wirecard-balance-attestation/")}">Wirecard：銀行残高確認書の偽造（No.021）</a>`,
             `<strong>報道・コンテンツ</strong>：写真・映像・記事が、撮影時点から加工されていない本物であること。業界標準の <strong>C2PA（Coalition for Content Provenance and Authenticity）</strong><sup class="au-ref"><a href="#ref-3">[3]</a></sup> や Content Credentials が、出所と来歴の記録を標準化しています。→ 関連事案：<a href="${L("/critical/briefs/")}">ディープフェイクで実在の人物を生成（No.050／053／084）</a>`,
             `<strong>金融・DeFi</strong>：取引やクロスチェーン送金が、正規の発信元から来た本物であること。発信元の来歴を検証しないと、裏づけのない発行や不正送金に直結します。→ 関連事案：<a href="${L("/critical/briefs/085-secret-network-axelar-bridge-infinite-mint/")}">ブリッジの infinite-mint（No.085）</a>`,
-            `<strong>AIエージェント・AI出力</strong>：AIが参照した事実や生成した出力が、何に裏づけられているか（来歴）をたどれること。→ <a href="${L("/pillars/verifiable-ai/")}">検証可能AI（Pillar 02）</a>`,
+            `<strong>AIエージェント・AI出力</strong>：AIが参照した事実や生成した出力が、何に裏づけられているか（来歴）をたどれること。→ <a href="${L("/pillars/#inference")}">検証可能AI（Pillar 02）</a>`,
             `<strong>サプライチェーン・調達</strong>：部品・検査記録・サプライヤー資格が、正規の発行元による本物であること。→ <a href="${L("/solutions/use-cases/supply-chain-esg/")}">サプライチェーンESG</a>`,
           ],
           after: [
@@ -157,9 +157,9 @@ const C = isJa
                 "発行元と改ざんの有無を検証する（中身は開かない）",
                 "確認できたものだけ使う・配信する",
               ],
-              lemma: `検証は <a href="${L("/pillars/verifiable-ai/")}">検証可能AI（Pillar 02）</a> と <a href="${L("/pillars/verifiable-origin/")}">来歴証明（Pillar 01）</a>。証明だけを受け取ります。`,
+              lemma: `検証は <a href="${L("/pillars/#inference")}">検証可能AI（Pillar 02）</a> と <a href="${L("/pillars/#provenance")}">来歴証明（Pillar 01）</a>。証明だけを受け取ります。`,
               ctaLabel: "検証のはじめ方を見る →",
-              ctaHref: L("/pillars/verifiable-ai/"),
+              ctaHref: L("/pillars/#inference"),
               ctaExtra: `技術的な詳細は下の <a href="#verify">「真正性をどう検証するか」</a> へ`,
             },
           ],
@@ -195,7 +195,7 @@ const C = isJa
             "<strong>モデルに依存しない</strong>：AIモデルが入れ替わっても、来歴の証明は残ります。",
           ],
           after: [
-            `詳しい設計は <a href="${L("/pillars/verifiable-origin/")}">来歴証明（Pillar 01）</a> と <a href="${L("/seal/")}">Seal</a>、AIの出力に対する検証は <a href="${L("/pillars/verifiable-ai/")}">検証可能AI（Pillar 02）</a> と <a href="${L("/trust402/")}">Trust402</a> をご覧ください。`,
+            `詳しい設計は <a href="${L("/pillars/#provenance")}">来歴証明（Pillar 01）</a> と <a href="${L("/seal/")}">Seal</a>、AIの出力に対する検証は <a href="${L("/pillars/#inference")}">検証可能AI（Pillar 02）</a> と <a href="${L("/trust402/")}">Trust402</a> をご覧ください。`,
           ],
         },
       ],
@@ -311,7 +311,7 @@ const C = isJa
             "<strong>Preservation</strong>: it stays readable throughout the retention period.",
           ],
           after: [
-            `Of these, authenticity is upheld through electronic signatures, timestamps, and management of operation history (provenance). Lemma's provenance proof fixes exactly this — who created which version, when, and whether it was altered — in a cryptographically verifiable form. See <a href="${L("/pillars/regulatory-attribute-proof/")}">Regulatory Attribute Proof (Pillar 04)</a>.`,
+            `Of these, authenticity is upheld through electronic signatures, timestamps, and management of operation history (provenance). Lemma's provenance proof fixes exactly this — who created which version, when, and whether it was altered — in a cryptographically verifiable form. See <a href="${L("/pillars/#attribute")}">Regulatory Attribute Proof (Pillar 04)</a>.`,
           ],
         },
         {
@@ -322,10 +322,10 @@ const C = isJa
             "Authenticity is a single word, but what it requires changes with each setting.",
           ],
           list: [
-            `<strong>Regulation & e-records</strong>: electronic books, electronic medical records, contracts, and audit trails. You need to be able to prove later that a record is a genuine, unaltered original. → <a href="${L("/pillars/regulatory-attribute-proof/")}">Regulatory Attribute Proof (Pillar 04)</a>; for operational adoption, <a href="${anshinUrl}">a data foundation for delegating work to AI safely</a>. Related case: <a href="${L("/critical/briefs/021-wirecard-balance-attestation/")}">Wirecard's forged bank balance confirmations (No.021)</a>.`,
+            `<strong>Regulation & e-records</strong>: electronic books, electronic medical records, contracts, and audit trails. You need to be able to prove later that a record is a genuine, unaltered original. → <a href="${L("/pillars/#attribute")}">Regulatory Attribute Proof (Pillar 04)</a>; for operational adoption, <a href="${anshinUrl}">a data foundation for delegating work to AI safely</a>. Related case: <a href="${L("/critical/briefs/021-wirecard-balance-attestation/")}">Wirecard's forged bank balance confirmations (No.021)</a>.`,
             `<strong>Media & content</strong>: that a photo, video, or article is genuine and unedited since capture. The industry standard <strong>C2PA (Coalition for Content Provenance and Authenticity)</strong><sup class="au-ref"><a href="#ref-3">[3]</a></sup> and Content Credentials standardize the recording of origin and provenance. → Related cases: <a href="${L("/critical/briefs/")}">deepfakes generating real people (No.050/053/084)</a>.`,
             `<strong>Finance & DeFi</strong>: that a transaction or cross-chain transfer is genuine and came from a legitimate origin. Without verifying the origin's provenance, unbacked issuance and illicit transfers follow directly. → Related case: <a href="${L("/critical/briefs/085-secret-network-axelar-bridge-infinite-mint/")}">a bridge infinite-mint (No.085)</a>.`,
-            `<strong>AI agents & AI output</strong>: that you can trace what an AI's referenced facts and generated output are backed by (their provenance). → <a href="${L("/pillars/verifiable-ai/")}">Verifiable AI (Pillar 02)</a>.`,
+            `<strong>AI agents & AI output</strong>: that you can trace what an AI's referenced facts and generated output are backed by (their provenance). → <a href="${L("/pillars/#inference")}">Verifiable AI (Pillar 02)</a>.`,
             `<strong>Supply chain & procurement</strong>: that parts, inspection records, and supplier qualifications are genuine and from a legitimate issuer. → <a href="${L("/solutions/use-cases/supply-chain-esg/")}">Supply-chain ESG</a>.`,
           ],
           after: [
@@ -382,9 +382,9 @@ const C = isJa
                 "Verify the issuer and whether it was altered (without opening the contents)",
                 "Use or distribute only what checks out",
               ],
-              lemma: `Verification is <a href="${L("/pillars/verifiable-ai/")}">Verifiable AI (Pillar 02)</a> and <a href="${L("/pillars/verifiable-origin/")}">Verifiable Origin (Pillar 01)</a>. You receive only the proof.`,
+              lemma: `Verification is <a href="${L("/pillars/#inference")}">Verifiable AI (Pillar 02)</a> and <a href="${L("/pillars/#provenance")}">Verifiable Origin (Pillar 01)</a>. You receive only the proof.`,
               ctaLabel: "See how to start verifying →",
-              ctaHref: L("/pillars/verifiable-ai/"),
+              ctaHref: L("/pillars/#inference"),
               ctaExtra: `for the technical detail, see <a href="#verify">“How to verify authenticity”</a> below`,
             },
           ],
@@ -420,7 +420,7 @@ const C = isJa
             "<strong>Model-independent</strong>: even when AI models change, the provenance proof remains.",
           ],
           after: [
-            `For the design, see <a href="${L("/pillars/verifiable-origin/")}">Verifiable Origin (Pillar 01)</a> and <a href="${L("/seal/")}">Seal</a>; for verifying AI output, see <a href="${L("/pillars/verifiable-ai/")}">Verifiable AI (Pillar 02)</a> and <a href="${L("/trust402/")}">Trust402</a>.`,
+            `For the design, see <a href="${L("/pillars/#provenance")}">Verifiable Origin (Pillar 01)</a> and <a href="${L("/seal/")}">Seal</a>; for verifying AI output, see <a href="${L("/pillars/#inference")}">Verifiable AI (Pillar 02)</a> and <a href="${L("/trust402/")}">Trust402</a>.`,
           ],
         },
       ],

@@ -723,8 +723,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
           ja: "Agentic payments のなかで来歴 (provenance) はどこに位置するか?",
         },
         a: {
-          en: 'Provenance answers the third trust question: "is the data underlying this payment genuine and unaltered." Without it, an agent can be tricked — by retrieved documents, by upstream tool outputs, by another agent — into authorizing the wrong transaction. Lemma\'s provenance stack is fed into the same Authority Proof attestation chain so that the proof an agent shows at payment time includes evidence that the input data is verifiable. See the <a href="/pillars/verifiable-origin/">Verifiable Origin pillar</a> for the input side.',
-          ja: 'プロヴナンス (来歴) は三つ目の信頼問題 — 「この支払いの根拠データは真正か」 — に答える要素。これがないと、検索文書・上流ツール出力・別エージェントを通じてエージェントが誤った取引を承認させられる経路が残る。Lemma の来歴インフラは同じ権限証明のアテステーション連鎖に流し込まれ、支払い時にエージェントが提示する証明に「入力データが真正であること」の根拠が含まれる。入力側は <a href="/ja/pillars/verifiable-origin/">来歴証明</a> を参照。',
+          en: 'Provenance answers the third trust question: "is the data underlying this payment genuine and unaltered." Without it, an agent can be tricked — by retrieved documents, by upstream tool outputs, by another agent — into authorizing the wrong transaction. Lemma\'s provenance stack is fed into the same Authority Proof attestation chain so that the proof an agent shows at payment time includes evidence that the input data is verifiable. See the <a href="/pillars/#provenance">Verifiable Origin pillar</a> for the input side.',
+          ja: 'プロヴナンス (来歴) は三つ目の信頼問題 — 「この支払いの根拠データは真正か」 — に答える要素。これがないと、検索文書・上流ツール出力・別エージェントを通じてエージェントが誤った取引を承認させられる経路が残る。Lemma の来歴インフラは同じ権限証明のアテステーション連鎖に流し込まれ、支払い時にエージェントが提示する証明に「入力データが真正であること」の根拠が含まれる。入力側は <a href="/ja/pillars/#provenance">来歴証明</a> を参照。',
         },
       },
     ],

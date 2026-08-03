@@ -99,4 +99,4 @@ Microsoft Threat Intelligence による攻撃チェーンの可視化、CISA の
 - **CISA KEV**: CVE-2025-53521(F5 BIG-IP APM、2026-03-27 追加)— https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 - **NVD**: CVE-2025-33073(Windows SMB NTLM reflection)— https://nvd.nist.gov/vuln/detail/CVE-2025-33073
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)、[Trust402](https://lemma.frame00.com/ja/trust402/)

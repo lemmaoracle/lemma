@@ -99,4 +99,4 @@ In this way, if a proof of legitimate authorization and provenance does not hold
 - **CISA KEV**: CVE-2025-53521 (F5 BIG-IP APM, added 2026-03-27) — https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 - **NVD**: CVE-2025-33073 (Windows SMB NTLM reflection) — https://nvd.nist.gov/vuln/detail/CVE-2025-33073
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/#authority), [Trust402](https://lemma.frame00.com/trust402/)

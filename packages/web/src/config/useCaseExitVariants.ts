@@ -38,10 +38,10 @@ export const PILLAR_LABEL_JA: Record<ExitPillarCode, string> = {
 };
 
 export const PILLAR_HREF: Record<ExitPillarCode, string> = {
-  P1: "/pillars/verifiable-origin/",
-  P2: "/pillars/verifiable-ai/",
-  P3: "/pillars/agent-authority-proof/",
-  P4: "/pillars/regulatory-attribute-proof/",
+  P1: "/pillars/#provenance",
+  P2: "/pillars/#inference",
+  P3: "/pillars/#authority",
+  P4: "/pillars/#attribute",
 };
 
 export const INDUSTRY_LABEL_JA: Record<ExitIndustry, string> = {

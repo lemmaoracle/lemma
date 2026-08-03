@@ -83,7 +83,7 @@ Lemma がこの primitive に対して提示する設計は次の通りである
 - **成果物完全性のバインド**：音声・映像・台本が別々に作られて継ぎ合わされた成果物について、その構成要素の来歴を改ざん耐性のある形で束ねる。使い回しの音声トラックや複製された人物像は、来歴の対応を欠くものとして分別される。
 - **配信経路での事前検証**：推薦と配信の経路に来歴検証を組み込み、証明を欠く発信が視聴者の前に「独立した作り手の意見」として並ぶ前に分別する。反復による親近性の醸成は、ここで断たれる。
 
-Lemma は偽情報の真偽を判定する製品ではなく、AI 生成の痕跡を検出するものでもない。射程は、発信が視聴者に届く前に発信者と成果物の来歴を独立に検証し、証明を欠く発信を分別可能にすることにある。検出（報道機関による分析、プラットフォームの監視と削除、ラベル付けの拡大）と、事前証明（視聴の前に発信者来歴を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた流通の把握と封じ込めに、後者は流通が信頼を獲得する前の分別に働く。補完の位置づけは [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) を参照。
+Lemma は偽情報の真偽を判定する製品ではなく、AI 生成の痕跡を検出するものでもない。射程は、発信が視聴者に届く前に発信者と成果物の来歴を独立に検証し、証明を欠く発信を分別可能にすることにある。検出（報道機関による分析、プラットフォームの監視と削除、ラベル付けの拡大）と、事前証明（視聴の前に発信者来歴を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた流通の把握と封じ込めに、後者は流通が信頼を獲得する前の分別に働く。補完の位置づけは [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) を参照。
 
 ## 6. Sources
 
@@ -92,4 +92,4 @@ Lemma は偽情報の真偽を判定する製品ではなく、AI 生成の痕�
 - **CNA（一次・関連調査）**: Renald Loh & CNA Verification, “Some 260 fake Jack Ma videos spreading falsehoods about Singapore on YouTube: CNA investigation”（2026-07-28）— <https://www.channelnewsasia.com/singapore/jack-ma-ai-deepfakes-youtube-disinformation-falsehoods-6273136>
 - **CNA（一次・先行調査）**: “Singapore and PM Lawrence Wong targeted in AI-driven disinformation campaign on YouTube”（2026-02）— <https://www.channelnewsasia.com/singapore/lawrence-wong-disinformation-ai-youtube-campaign-chinese-fake-videos-5949266>
 
-参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) · [Brief 011（SynthID 透かし）](https://lemma.frame00.com/ja/critical/briefs/011-synthid-watermark-reverse-engineering/) · [Brief 053（YouTube 偽の著名人）](https://lemma.frame00.com/ja/critical/briefs/053-youtube-deepfake-likeness-provenance/)
+参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) · [Brief 011（SynthID 透かし）](https://lemma.frame00.com/ja/critical/briefs/011-synthid-watermark-reverse-engineering/) · [Brief 053（YouTube 偽の著名人）](https://lemma.frame00.com/ja/critical/briefs/053-youtube-deepfake-likeness-provenance/)

@@ -93,7 +93,7 @@ gap_fix: "高額承認の実行前に、承認者の identity 来歴を映像・
 - **映像確認からの独立**: 視覚・聴覚確認を「信頼のゲート」から「補助情報」に降格させ、独立した属性証明をゲートとする設計への移行を支援する
 - **選択的開示**: CFO の完全な個人情報を開示せずに、「この者がこの権限で承認した」ことだけを最小開示で証明し、内部コンプライアンス記録として活用する
 
-検出（映像の真贋の事後判定）と事前証明（承認者 identity の実行前の独立検証）は代替ではなく補完であり、両者を組み合わせて初めて deepfake による承認偽装を未然に区別できる。設計と適用範囲は [Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) および [Seal](https://lemma.frame00.com/ja/seal/) を参照のこと。
+検出（映像の真贋の事後判定）と事前証明（承認者 identity の実行前の独立検証）は代替ではなく補完であり、両者を組み合わせて初めて deepfake による承認偽装を未然に区別できる。設計と適用範囲は [Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute) および [Seal](https://lemma.frame00.com/ja/seal/) を参照のこと。
 
 ---
 

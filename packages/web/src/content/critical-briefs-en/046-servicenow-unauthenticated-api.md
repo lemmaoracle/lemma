@@ -87,7 +87,7 @@ Against the structure this incident exposed (a request to the endpoint is accept
 - **Scope-limited operations**: Bind, per request, which data and on whose authorization may be queried, so that a once-established premise does not carry over beyond the scope of the action.
 - **Selective disclosure**: Disclose only the minimum — that "this request meets the authorization/provenance verification condition" — without exposing internal configuration or credentials.
 
-In this way, unauthorized queries can be distinguished before execution even amid configuration drift or unauthenticated requests. For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
+In this way, unauthorized queries can be distinguished before execution even amid configuration drift or unauthenticated requests. For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/#authority) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

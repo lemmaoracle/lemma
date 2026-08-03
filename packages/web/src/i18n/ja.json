@@ -264,8 +264,8 @@
             "a": "Lemma は RAG レイヤーで動作しモデル非依存で、加えてエージェントが外部システムへ作用する際の権限・来歴の証明にも及びます (→ セクション 5)。",
             "links": [
               {
-                "label": "エージェント権限証明 (P3)",
-                "href": "/ja/pillars/agent-authority-proof/"
+                "label": "エージェント権限証明",
+                "href": "/ja/pillars/#authority"
               }
             ]
           },
@@ -339,8 +339,8 @@
                 "href": "/ja/critical/briefs/"
               },
               {
-                "label": "規制属性証明 (P4)",
-                "href": "/ja/pillars/regulatory-attribute-proof/"
+                "label": "規制属性証明",
+                "href": "/ja/pillars/#attribute"
               }
             ]
           }
@@ -375,7 +375,7 @@
       },
       {
         "id": "agent-authority",
-        "title": "5. AI エージェントと権限 (P3)",
+        "title": "5. AI エージェントと権限",
         "items": [
           {
             "q": "AI エージェントが自律的に動く時代に、何を証明できる？",
@@ -387,8 +387,8 @@
                 "href": "/ja/critical/briefs/"
               },
               {
-                "label": "エージェント権限証明 (P3)",
-                "href": "/ja/pillars/agent-authority-proof/"
+                "label": "エージェント権限証明",
+                "href": "/ja/pillars/#authority"
               }
             ]
           },
@@ -402,8 +402,8 @@
                 "href": "/ja/critical/briefs/"
               },
               {
-                "label": "エージェント権限証明 (P3)",
-                "href": "/ja/pillars/agent-authority-proof/"
+                "label": "エージェント権限証明",
+                "href": "/ja/pillars/#authority"
               }
             ]
           }
@@ -411,7 +411,7 @@
       },
       {
         "id": "regulatory",
-        "title": "6. 規制・コンプライアンス (P4)",
+        "title": "6. 規制・コンプライアンス",
         "items": [
           {
             "q": "「コンプライアンスの証明」とは？",
@@ -419,8 +419,8 @@
             "pillar": "p4",
             "links": [
               {
-                "label": "規制属性証明 (P4)",
-                "href": "/ja/pillars/regulatory-attribute-proof/"
+                "label": "規制属性証明",
+                "href": "/ja/pillars/#attribute"
               },
               {
                 "label": "KYC/AML 選択的開示",

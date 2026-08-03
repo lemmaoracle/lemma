@@ -95,4 +95,4 @@ gap_fix: "型式指定の前に「この製品は、規定の試験条件で、�
 - **当該メーカー公表**: 基準適合性の検証結果に関する公表（2024-06-25、技術的検証の完了）— https://www.daihatsu.com/jp/news/2024/20240625-1.html
 - **業界専門媒体（二次情報）**: 産業用エンジンの型式指定取消と再取得をめぐる報道（2024）— 日経クロステック
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Trust402](https://lemma.frame00.com/ja/trust402/)

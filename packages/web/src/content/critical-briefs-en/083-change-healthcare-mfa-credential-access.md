@@ -95,7 +95,7 @@ Against the detection–proof gap exposed by this incident (a credential match d
 - **Provenance chain for PHI access**: Leave a provable record, at the moment of the access request, of "whether access to medical records is by someone holding legitimate operational authority." Implement HIPAA's "Minimum Necessary" principle as pre-execution proof rather than after-the-fact self-declaration
 - **Selective disclosure**: Without disclosing the access requester's full personal information, prove only that "this party holds the access-authorization attribute for this system"
 
-Detection (incident detection, containment) and pre-execution attestation (independent verification of the access authorization attribute) are complements, not substitutes; without denying after-the-fact detection, they place a gate at the front of the design that does not depend on credential match alone. For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Seal](https://lemma.frame00.com/seal/).
+Detection (incident detection, containment) and pre-execution attestation (independent verification of the access authorization attribute) are complements, not substitutes; without denying after-the-fact detection, they place a gate at the front of the design that does not depend on credential match alone. For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/#attribute) and [Seal](https://lemma.frame00.com/seal/).
 
 ---
 

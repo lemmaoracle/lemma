@@ -88,7 +88,7 @@ Against the detection–proof gap exposed by this incident (a mark embedded in t
 - **Addresses tampering in both directions**: even if the mark is stripped, or forged onto non-legitimate content, the proof tells through a separate channel whether the origin is legitimate.
 - **Selective disclosure**: without exposing internal information, disclose only the minimum — that "this artifact was generated under a legitimate origin."
 
-Detection (after-the-fact watermark judgment and moderation) works on labeling AI-generated-ness; pre-execution attestation (independent verification of provenance) works on establishing content authenticity — each complementary to the other. For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
+Detection (after-the-fact watermark judgment and moderation) works on labeling AI-generated-ness; pre-execution attestation (independent verification of provenance) works on establishing content authenticity — each complementary to the other. For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

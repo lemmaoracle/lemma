@@ -100,4 +100,4 @@ Against the design philosophy of the verifiable-origin category — "public ≠ 
 - **IT Pro**: “12,000 API keys and passwords were found in a popular AI training dataset” (2025-02) — <https://www.itpro.com/security/12-000-api-keys-and-passwords-were-found-in-a-popular-ai-training-dataset-experts-say-the-issue-is-down-to-poor-identity-management>
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance)

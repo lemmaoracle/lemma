@@ -96,4 +96,4 @@ FAA の調査、Boeing の自主報告・再検査、就航フリートへの対
 - **NPR**: "FAA is investigating Boeing for apparent missed inspections on 787 Dreamliner"(2024-05-06)— https://www.npr.org/2024/05/06/1249432229/faa-investigation-boeing-787-dreamliner
 - **CBS News**: "FAA investigates Boeing for falsified records on some 787 Dreamliners"(2024-05)— https://www.cbsnews.com/news/boeing-787-dreamliners-faa-falsified-records/
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Trust402](https://lemma.frame00.com/ja/trust402/)

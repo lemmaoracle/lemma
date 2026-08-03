@@ -99,4 +99,4 @@ Humanity Protocol では、開発者 1 人の業務用ラップトップが感�
 - **Bitcoin.com News（二次・帰属の留保）**: “Humanity Protocol Loses $32M in Private Key Hack as ZachXBT Calls Incident 'Possibly Staged'” — <https://news.bitcoin.com/humanity-protocol-exploit-zachxbt-staged/>
 - **Chainalysis（参考・比較事例 §6 の Drift）**: “Lessons from the Drift hack”（2026 年最大級・管理鍵侵害による約 $285M 流出、DPRK 関連の指摘） — <https://www.chainalysis.com/blog/lessons-from-the-drift-hack/>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance)、[Trust402](https://lemma.frame00.com/ja/trust402/)

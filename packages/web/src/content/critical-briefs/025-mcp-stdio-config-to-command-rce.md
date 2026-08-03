@@ -102,4 +102,4 @@ Models change. Proofs remain.
 - **報道（二次情報）**: The Hacker News "Anthropic MCP Design Vulnerability Enables RCE"（2026-04）— <https://thehackernews.com/2026/04/anthropic-mcp-design-vulnerability.html> ／ Infosecurity Magazine "Systemic Flaw in MCP Protocol Could Expose 150 Million Downloads"
 - **CVE 参照（一次情報）**: CVE-2026-30623（MCP SDK 経由のコマンドインジェクション、liteLLM advisory）ほか同系列 CVE
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)、[Trust402](https://lemma.frame00.com/ja/trust402/)

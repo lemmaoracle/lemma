@@ -93,7 +93,7 @@ Against the gap this case exposed (visual confirmation of "face and voice" no lo
 - **Independence from video confirmation**: Demote visual and auditory confirmation from "trust gate" to "auxiliary information," and support the move to a design in which independent attribute proof is the gate
 - **Selective disclosure**: Without disclosing the CFO's full personal information, prove with minimal disclosure only that "this person approved with this authority," and use it as an internal compliance record
 
-Detection (after-the-fact judgment of the authenticity of video) and pre-execution attestation (independent verification of the approver's identity before execution) are not substitutes but complements, and only by combining them can deepfake-based approval impersonation be distinguished before it occurs. For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Seal](https://lemma.frame00.com/seal/).
+Detection (after-the-fact judgment of the authenticity of video) and pre-execution attestation (independent verification of the approver's identity before execution) are not substitutes but complements, and only by combining them can deepfake-based approval impersonation be distinguished before it occurs. For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/#attribute) and [Seal](https://lemma.frame00.com/seal/).
 
 ---
 

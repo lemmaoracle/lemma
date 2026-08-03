@@ -71,7 +71,7 @@ Lemma がこの primitive に対して提示する設計は次の通りである
 - **成果物完全性のバインド**：model card や README の見た目ではなく、モデル成果物そのものの完全性を検証可能な来歴に束ねる。丸写しのメタデータで正規に偽装した成果物は、実行の前に証明を欠くものとして分別される。
 - **CI 経路への来歴検証の組み込み**：ハブからモデルを取得する CI・自動化の経路に来歴検証を組み込み、来歴を欠くモデルが取得・実行される前に止める。
 
-Lemma は悪性コードを走査・削除する製品ではなく、ハブの評判順位を管理するものでもない。射程は、モデルの取得と実行が起きる前に、成果物と発行者の来歴を独立に検証し、typosquat と偽装成果物の通過を実行前に排除することにある。検出（悪性コードの特定、リポジトリの削除、IOC の共有）と、事前証明（取得と実行の前に発行者来歴と成果物完全性を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた侵害の把握と封じ込めに、後者は侵害が成立する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) を参照。発行者と成果物の来歴を束ねる観点は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) にも接続する。
+Lemma は悪性コードを走査・削除する製品ではなく、ハブの評判順位を管理するものでもない。射程は、モデルの取得と実行が起きる前に、成果物と発行者の来歴を独立に検証し、typosquat と偽装成果物の通過を実行前に排除することにある。検出（悪性コードの特定、リポジトリの削除、IOC の共有）と、事前証明（取得と実行の前に発行者来歴と成果物完全性を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた侵害の把握と封じ込めに、後者は侵害が成立する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference) を参照。発行者と成果物の来歴を束ねる観点は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) にも接続する。
 
 ## 6. Sources
 
@@ -80,4 +80,4 @@ Lemma は悪性コードを走査・削除する製品ではなく、ハブの�
 - The Hacker News, “Fake OpenAI Privacy Filter Repo Hits Hugging Face Trending, Delivers Infostealer”（2026-05）— <https://thehackernews.com/2026/05/fake-openai-privacy-filter-repo-hits-1.html>
 - Security Boulevard, “Fake OpenAI Repository on Hugging Face Pushes Infostealer Malware”（2026-05）— <https://securityboulevard.com/2026/05/fake-openai-repository-on-hugging-face-pushes-infostealer-malware/>
 
-参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) · [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) · [Brief 101（Paysafe 偽装決済 SDK）](https://lemma.frame00.com/ja/critical/briefs/101-paysafe-fake-payment-sdk/) · [Brief 004（Megalodon の GitHub サプライチェーン）](https://lemma.frame00.com/ja/critical/briefs/004-megalodon-github-supply-chain/)
+参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference) · [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) · [Brief 101（Paysafe 偽装決済 SDK）](https://lemma.frame00.com/ja/critical/briefs/101-paysafe-fake-payment-sdk/) · [Brief 004（Megalodon の GitHub サプライチェーン）](https://lemma.frame00.com/ja/critical/briefs/004-megalodon-github-supply-chain/)

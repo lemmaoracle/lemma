@@ -101,4 +101,4 @@ gap_fix: "開示・確認の前に「この資産が、発行元の金融機関�
 - **Wikipedia（二次情報・経緯の集約）**: "Wirecard scandal"（19 億ユーロ、信託口座、EY・BaFin の関与、破綻の経緯）— https://en.wikipedia.org/wiki/Wirecard_scandal
 - **報道（二次情報）**: 2020-06 の破綻に至る時系列（フィリピン 2 行の偽造通知、経営陣の辞任・逮捕、破綻申請）— Financial Times / CNN Business / Reuters
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Trust402](https://lemma.frame00.com/ja/trust402/)

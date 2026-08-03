@@ -106,4 +106,4 @@ The lesson precedes the breach question: **without provable custody and provenan
 
 The facts of this case are disputed between the parties; this document does not adjudicate either side's claims.
 
-References: [“The last layer left in AI-era cyber defense”](https://lemma.frame00.com/blog/detection-is-not-proof/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Seal](https://lemma.frame00.com/seal/)
+References: [“The last layer left in AI-era cyber defense”](https://lemma.frame00.com/blog/detection-is-not-proof/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/#attribute), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance), [Seal](https://lemma.frame00.com/seal/)

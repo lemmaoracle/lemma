@@ -80,7 +80,7 @@ Lemma がこの primitive に対して提示する設計は次の通りである
 - **原資料の完全性検証**：報告や集計の根拠となる原資料をハッシュで束ね、生成物が参照した原資料が改ざんされていないことを検証可能にする。
 - **配布経路での検証**：文書が共有・再編集されて回る経路に来歴検証を組み込み、来歴を欠く文書が次の生成の入力になる前に止める。伝播の連鎖はここで断たれる。
 
-Lemma はプロンプト注入を検知する製品ではなく、モデルの出力品質を保証するものでもない。射程は、生成された文書が次の判断や配布の根拠になる前に、その来歴を独立に検証し、来歴を欠く文書の通過を事前に排除することにある。検出（研究による特定、ベンダーの緩和、注入パターンの遮断）と、事前証明（生成と受領の前に来歴を独立検証する証跡）は、代替ではなく補完の関係にある。前者は既知の攻撃の封じ込めに、後者は改変が根拠として通用する前の信頼確立に働く。補完の位置づけは [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) を参照。
+Lemma はプロンプト注入を検知する製品ではなく、モデルの出力品質を保証するものでもない。射程は、生成された文書が次の判断や配布の根拠になる前に、その来歴を独立に検証し、来歴を欠く文書の通過を事前に排除することにある。検出（研究による特定、ベンダーの緩和、注入パターンの遮断）と、事前証明（生成と受領の前に来歴を独立検証する証跡）は、代替ではなく補完の関係にある。前者は既知の攻撃の封じ込めに、後者は改変が根拠として通用する前の信頼確立に働く。補完の位置づけは [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) を参照。
 
 ## 6. Sources
 
@@ -90,4 +90,4 @@ Lemma はプロンプト注入を検知する製品ではなく、モデルの�
 - **Malwarebytes（独立解析）**: “Hidden prompt turns Microsoft Copilot into an AI worm”（2026-07-30）— <https://www.malwarebytes.com/blog/ai/2026/07/hidden-microsoft-copilot-ai-worm>
 - **CyberInsider（独立報道）**: “Microsoft Copilot for Word vulnerable to self-propagating worm-like attack”（2026-07-30）— <https://cyberinsider.com/microsoft-copilot-for-word-vulnerable-to-self-propagating-worm-like-attack/>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) · [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) · [Brief 055（EchoLeak — M365 Copilot の指示来歴）](https://lemma.frame00.com/ja/critical/briefs/055-echoleak-m365-copilot-instruction-provenance/) · [Brief 024（不可視 Unicode による指示注入）](https://lemma.frame00.com/ja/critical/briefs/024-invisible-unicode-instruction-injection/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) · [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) · [Brief 055（EchoLeak — M365 Copilot の指示来歴）](https://lemma.frame00.com/ja/critical/briefs/055-echoleak-m365-copilot-instruction-provenance/) · [Brief 024（不可視 Unicode による指示注入）](https://lemma.frame00.com/ja/critical/briefs/024-invisible-unicode-instruction-injection/)
