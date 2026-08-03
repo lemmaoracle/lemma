@@ -201,7 +201,7 @@ const C = isJa
       regLedeB: "推定では埋めません。",
       regLedeC: "取得できないときは OFFLINE と表示します。",
       regTryGo: "この証明を検証する",
-      regNoteA: "上のIDは、実際に発行された証明のものです。",
+      regNoteA: "上の ID は、為替データフィードに実際に発行された証明のものです。",
       regNoteB: "自分で発行した証明のIDを貼っても、同じように確かめられます。",
       regl1b: "検証は無料。",
       regl1t: "キーもアカウントも要りません。回数の上限もありません。",
@@ -371,7 +371,7 @@ const C = isJa
       regLedeB: "We do not fill in estimates.",
       regLedeC: " If the counts cannot be read, the panel shows OFFLINE.",
       regTryGo: "Verify this proof",
-      regNoteA: "The ID above belongs to a proof that was actually issued. ",
+      regNoteA: "The ID above belongs to a proof actually issued for the forex data feed. ",
       regNoteB: "Paste the ID of a proof you issued yourself and it will be checked the same way.",
       regl1b: "Verification is free.",
       regl1t: " No key, no account. No limit on the number of verifications.",
@@ -410,8 +410,18 @@ const C = isJa
     };
 
 // Registry 節のクライアント側取得に渡す文字列（検証センターと同じ文言）。
+// 単票検証のサンプルに使う、実在する証明。為替データフィードの日次 composite で、
+// GET /v1/suites/feeds/forex/composite/latest が返す docHash をそのまま使う。
+// ここを架空のハッシュにすると「実際に発行された証明」という説明が嘘になるため、
+// 既定値も実在するものを焼き込み、クライアント側で最新へ差し替える。
+const SAMPLE_FEED_API = "https://workers.lemma.workers.dev/v1/suites/feeds/forex/composite/latest";
+const SAMPLE_DOC_HASH = "0x6374a166e9b8f1b9090d6d5cf325771c49148239f6969d8c7e796a3b87514590";
+const shortHash = (h: string) => `${h.slice(0, 18)}…${h.slice(-4)}`;
+
 const REG = {
   api: COUNTERS_API_URL,
+  sampleApi: SAMPLE_FEED_API,
+  verifyBase: L("/verify/"),
   live: "LIVE",
   offline: "OFFLINE",
   perr: C.perr,
@@ -794,9 +804,13 @@ const REG = {
             </p>
             <div class="rb-try">
               <div class="rt-f">
-                <span class="rt-k">DOC HASH</span><span class="rt-v">0x68d4bff9c2a1e07b…9f01</span>
+                <span class="rt-k">DOC HASH</span><span class="rt-v" data-sample-hash
+                  >{shortHash(SAMPLE_DOC_HASH)}</span
+                >
               </div>
-              <div class="rt-go">{C.regTryGo}</div>
+              <a class="rt-go" data-sample-link href={`${L("/verify/")}?doc=${SAMPLE_DOC_HASH}`}
+                >{C.regTryGo}</a
+              >
               <div class="rt-res">
                 <span class="vmark"
                   ><svg viewBox="0 0 24 24" fill="none"
@@ -1027,6 +1041,24 @@ const REG = {
         (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
       );
 
+    // サンプル証明を最新へ差し替える。取得できなければ焼き込み済みの
+    // 実在ハッシュのまま（どちらも実際に発行された証明なので説明は成立する）。
+    async function refreshSample() {
+      try {
+        const r = await fetch(REG.sampleApi, { headers: { accept: "application/json" } });
+        if (!r.ok) return;
+        const j = await r.json();
+        const h = String(j.docHash || "");
+        if (!/^0x[0-9a-f]{64}$/i.test(h)) return;
+        const el = document.querySelector("[data-sample-hash]");
+        const link = document.querySelector("[data-sample-link]");
+        if (el) el.textContent = h.slice(0, 18) + "\u2026" + h.slice(-4);
+        if (link) link.setAttribute("href", REG.verifyBase + "?doc=" + h);
+      } catch (e) {
+        /* 焼き込み値のまま */
+      }
+    }
+
     async function load() {
       try {
         const r = await fetch(REG.api, { headers: { accept: "application/json" } });
@@ -1066,6 +1098,7 @@ const REG = {
       }
     }
     load();
+    refreshSample();
   })();
 </script>
 
