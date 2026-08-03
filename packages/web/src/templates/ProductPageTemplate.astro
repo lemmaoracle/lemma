@@ -1,0 +1,399 @@
+---
+/**
+ * 製品ページ v18 — `/ja/pillars/`（日本語のみ）。
+ *
+ * デザイナーのモック `lemma_product_page_mock_v18.html` と実装指示書
+ * `Lemma_製品ページ_実装指示_v1_2026-08-03.md` の機械的な移植。節の並びは
+ * 指示書 §2 のとおり：
+ *
+ *   ヒーロー → Why proof → Five proofs → How it works → Registry → Custom → CTA
+ *
+ * 中核暗号 3 節（ゼロ知識証明・選択的開示・オンチェーン来歴）は指示書 §7 に従い
+ * `/ja/guides/#core-crypto` へ移設済み。ここからは How it works 末尾の 1 行で送る。
+ * §7-3 の順序どおり、受け皿を作ってからこの節を落としている。
+ *
+ * 英語の `/pillars/` は LemmaApiTemplate のまま。このテンプレートは
+ * `/ja/pillars/` だけが使う。
+ *
+ * スタイルは `../styles/product-v18.css`（全規則が `.pv18` 配下）。共有シート
+ * （global.css / pillar-v4.css 等）は触らない。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import { DISCOVERY_CALL_URL, DASHBOARD_URL } from "../config/cta";
+import { COUNTERS_API_URL } from "../config/counters";
+import "../styles/product-v18.css";
+
+interface Props {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  /** 正規パス。既定は `/pillars/`。 */
+  pagePath?: string;
+  /** OG 画像（/ja/pillars は専用カードを持っている）。 */
+  ogImage?: string;
+}
+const { locale, t, base, pagePath = "/pillars/", ogImage } = Astro.props as Props;
+
+const L = (path: string) => `${base}${path}`;
+
+// リンク先はすべて実在する面へ（指示書 §6）。Sandbox / 仕様書 / ドキュメント /
+// 相談フォームは、これまで同じ URL で運用してきた既存の定数をそのまま使う。
+const sandboxUrl = DASHBOARD_URL;
+const guidesHref = L("/guides/");
+// 中核暗号 3 本の着地点。製品ページからこの1行で送るため、群のアンカーを直接指す。
+const coreDocsHref = L("/guides/#core-crypto");
+const pricingHref = L("/pricing/");
+const verifyHref = L("/verify/");
+const contactUrl = `${DISCOVERY_CALL_URL[locale]}?source=lemma-api`;
+
+// 5つの証明 → 既存の個別ページ（外すとこの5ページがどこからも辿れなくなる）。
+const PROOF_HREF = {
+  origin: L("/pillars/verifiable-origin/"),
+  auth: L("/seal/"),
+  authority: L("/pillars/agent-authority-proof/"),
+  inference: L("/pillars/verifiable-ai/"),
+  attribute: L("/pillars/regulatory-attribute-proof/"),
+};
+
+// メタは現行 /ja/pillars（LemmaApiTemplate）の文言をそのまま引き継ぐ。
+const metaTitle = "Lemma API — 来歴・認証・権限・推論・属性を1つの API で | Lemma";
+const metaDesc =
+  "生データを渡さずに証明を発行する ZK 証明の発行 API。来歴・認証・権限・推論・属性の5つの証明を、1つの API で。検証はいつでも無料。MCP / A2A / x402 / C2PA / W3C VC 対応。";
+
+// Registry 節のクライアント側取得に渡す文字列（検証センターと同じ文言）。
+const REG = {
+  api: COUNTERS_API_URL,
+  live: "LIVE",
+  offline: "OFFLINE",
+  perr: "レジストリに到達できません。推定値では埋めません。",
+};
+
+
+
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath={pagePath}
+  ogImage={ogImage}
+  title={metaTitle}
+  description={metaDesc}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <main class="pv18">
+    <div class="iwrap">
+      <div class="crumb"><a href={L("/")}>ホーム</a><i>/</i><span>製品</span><i>/</i><span>Lemma API</span></div>
+
+      {/* ── ヒーロー ───────────────────────────────────────────── */}
+      <div class="phero">
+        <div>
+          <div class="ind-label">製品 — Lemma API</div>
+          <h1 class="ih1" style="margin-top:14px;"><span class="nb">5つの証明を、</span><br /><span class="nb">ひとつの API で。</span></h1>
+          <p class="isub">モデルは変わる。証明は残る。</p>
+          <p class="ilead">記録・データ・AIの実行に証明を付けて発行します。<strong>生データは渡さず、証明だけを送ります。</strong>検証は無料で、何度でも、キーも要りません。</p>
+          <div class="stdswrap">
+            <div class="stds-k">国際標準に対応しています</div>
+            <div class="stds"><span>MCP</span><span>A2A</span><span>x402</span><span>C2PA</span><span>W3C VC</span></div>
+          </div>
+          <div class="ictas">
+            <a class="btn primary" href={contactUrl} target="_blank" rel="noopener">エンタープライズ相談</a>
+            <a class="btn ghostd" href={sandboxUrl} target="_blank" rel="noopener">Sandbox で試す（testnet・無料）</a>
+          </div>
+          <div class="herolink"><a href={guidesHref}>ドキュメントを見る →</a><a href={guidesHref}>仕様書 →</a></div>
+        </div>
+        <div class="ui" aria-hidden="true">
+          <div class="ui-bar"><span class="ui-dot"></span><span class="ui-dot"></span><span class="ui-dot"></span>
+            <span class="ui-url">lemma.frame00.com/ja/verify/?doc=0x68d4…9f01</span></div>
+          <div class="uipane">
+            <div class="mini-verdict" style="padding:22px 20px 20px;">
+              <div class="seal"><span class="vmark"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"></circle><circle cx="12" cy="12" r="6.4" stroke="currentColor" stroke-width="1.6"></circle><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+              <div class="t">改ざんされていません</div>
+              <div class="en">NOT TAMPERED</div>
+              <div class="chk"><span>署名の一致</span><span>改ざんの有無</span><span>発行者の確認</span></div>
+            </div>
+            <div class="mini-body">
+              <div class="mini-row"><span>DOC HASH</span><b>0x68d4…9f01</b></div>
+              <div class="mini-row"><span>発行者</span><b>株式会社◯◯</b></div>
+              <div class="mini-row"><span>対象</span><b>検査記録</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Why proof ── 囲み3列。各列で「これまで」→「証明なら」を縦に流す ── */}
+      <section class="isec whysec">
+        <h2 class="isec-h"><span>Why proof</span><b>なぜ、証明なのか。</b></h2>
+        <p class="sec-lede" style="max-width:62ch;margin-top:4px;">検知でもなく、目視でもなく。<b>AI時代に、確認のコストを増やさずに信用をつくる、3つの理由。</b></p>
+        <div class="why3col">
+          <div class="wcol">
+            <span class="w-n">01</span>
+            <div class="w-b">AIが進化しても、崩れない。</div>
+            <div class="w-was"><span>これまで</span>検知モデルは、AIが進化するたびに作り直しが必要でした。</div>
+            <div class="w-arw"><svg viewBox="0 0 14 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v16M2.6 13.6L7 18l4.4-4.4"></path></svg></div>
+            <div class="w-now"><span>証明なら</span>暗号技術で発行するので、AIが何世代進んでも<u>そのまま残ります</u>。</div>
+          </div>
+          <div class="wcol">
+            <span class="w-n">02</span>
+            <div class="w-b">AI 対 AI でも、そのまま成立する。</div>
+            <div class="w-was"><span>これまで</span>人の目視に頼っていて、エージェント同士の取引には使えませんでした。</div>
+            <div class="w-arw"><svg viewBox="0 0 14 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v16M2.6 13.6L7 18l4.4-4.4"></path></svg></div>
+            <div class="w-now"><span>証明なら</span><u>人を挟まずに、機械が機械を確かめられます</u>。キー不要で 8ms。</div>
+          </div>
+          <div class="wcol">
+            <span class="w-n">03</span>
+            <div class="w-b">自己申告を、証明に変える。</div>
+            <div class="w-was"><span>これまで</span>「うちが本物です」と言うだけの、確かめようのない自己申告でした。</div>
+            <div class="w-arw"><svg viewBox="0 0 14 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v16M2.6 13.6L7 18l4.4-4.4"></path></svg></div>
+            <div class="w-now"><span>証明なら</span><u>受け取った側が独立に確かめられます</u>。監査や取引先にも、根拠として示せます。</div>
+          </div>
+        </div>
+        <div class="hiwfoot" style="margin-top:14px;">どの記録に証明を付けると確認が短くなるかは、<a href={contactUrl} target="_blank" rel="noopener">構成相談</a>でご一緒に設計します。</div>
+      </section>
+
+      {/* ── Five proofs ── アイコン付き5カード（Why proof とレイアウトを変える） ── */}
+      <div class="band alt">
+        <h2 class="isec-h"><span>Five proofs</span><b>ひとつの API で、<span class="nb">5種の証明。</span></b></h2>
+        <p class="sec-lede" style="max-width:58ch;margin-top:4px;">証明できるのは、この5種類です。用途に応じて組み合わせて使います。</p>
+        <div class="pfgrid">
+          <a class="pf" href={PROOF_HREF.origin}>
+            <span class="pf-g"><svg viewBox="0 0 21 21" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5h5M4 16.5l7-9M11 7.5h5"></path><circle cx="4" cy="16.5" r="1.6"></circle><circle cx="16" cy="7.5" r="1.6"></circle></svg></span>
+            <span class="pf-n">01</span>
+            <span class="pf-h">来歴 <i>Provenance</i></span>
+            <span class="pf-t">原本を渡さず、出所を証明する。</span>
+            <span class="pf-d">データの出所と非改ざんを、中身を出さずに示せます。</span>
+            <span class="pf-u">検査記録・計測値／公開した記事や写真</span>
+            <span class="pf-go">詳しく →</span>
+          </a>
+          <a class="pf" href={PROOF_HREF.auth}>
+            <span class="pf-g"><svg viewBox="0 0 21 21" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="7.4"></circle><circle cx="10.5" cy="10.5" r="3.4"></circle></svg></span>
+            <span class="pf-n">02</span>
+            <span class="pf-h">認証 <i>Authentication</i></span>
+            <span class="pf-t">鍵を送らず、本人だと証明する。</span>
+            <span class="pf-d">秘密は端末から一歩も出ません。鍵を AI に渡さないサインイン。</span>
+            <span class="pf-u">社内システムへのサインイン／エージェントの本人性</span>
+            <span class="pf-go">詳しく →</span>
+          </a>
+          <a class="pf" href={PROOF_HREF.authority}>
+            <span class="pf-g"><svg viewBox="0 0 21 21" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="15" height="12" rx="2"></rect><rect x="6.6" y="7.6" width="7.8" height="5.8" rx="1.2" stroke-dasharray="2.6 2.4"></rect></svg></span>
+            <span class="pf-n">03</span>
+            <span class="pf-h">権限 <i>Authority</i></span>
+            <span class="pf-t">鍵を渡さず、権限だけを委ねる。</span>
+            <span class="pf-d">範囲の内側だけが実行され、外側は止まります。</span>
+            <span class="pf-u">エージェントへの委任／承認フロー</span>
+            <span class="pf-go">詳しく →</span>
+          </a>
+          <a class="pf" href={PROOF_HREF.inference}>
+            <span class="pf-g"><svg viewBox="0 0 21 21" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 10.5h3l2-5 3 10 2.5-7 2 4h3"></path></svg></span>
+            <span class="pf-n">04</span>
+            <span class="pf-h">推論 <i>Inference</i></span>
+            <span class="pf-t">モデルを開示せず、推論を証明する。</span>
+            <span class="pf-d">何を根拠に動いたかを、あとから提示できます。</span>
+            <span class="pf-u">AI の実行記録／判断の根拠</span>
+            <span class="pf-go">詳しく →</span>
+          </a>
+          <a class="pf" href={PROOF_HREF.attribute}>
+            <span class="pf-g"><svg viewBox="0 0 21 21" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="7.4"></circle><path d="M10.5 3.1a7.4 7.4 0 010 14.8z" fill="currentColor" stroke="none"></path></svg></span>
+            <span class="pf-n">05</span>
+            <span class="pf-h">属性 <i>Attribute</i></span>
+            <span class="pf-t">属性を明かさず、要件を満たすと証明する。</span>
+            <span class="pf-d">健康状態を出さずに就業適格だけを示す、といった形。</span>
+            <span class="pf-u">資格・適格の提示／年齢や条件の確認</span>
+            <span class="pf-b">個別構成で提供</span>
+            <span class="pf-go">詳しく →</span>
+          </a>
+        </div>
+        <p class="plnote" style="margin-top:14px;">発行に課金し、検証はいつでも無料です。認証の入口ページは <a href={L("/seal/")}>Seal</a>、エージェント向けのラッパーは <a href={L("/trust402/")}>Trust402</a> です。</p>
+      </div>
+
+      {/* ── How it works ── 境界図＋発行／提示／検証 ────────────── */}
+      <div class="band alt">
+        <h2 class="isec-h"><span>How it works</span><b>データは出ない。<span class="nb">証明だけが流通する。</span></b></h2>
+        <div class="hwwrap">
+          <div class="hwfig">
+            <svg viewBox="0 0 560 260" style="display:block;width:100%;height:auto;" aria-hidden="true">
+              <g font-family="Space Mono, monospace" font-size="9" letter-spacing="1.6" fill="#9aa197">
+                <text x="8" y="16">YOUR SIDE</text><text x="330" y="16">ANYONE</text></g>
+              <rect x="8" y="34" width="180" height="190" rx="6" fill="#fff" stroke="#C7CCC2"></rect>
+              <g font-family="Noto Sans JP, sans-serif" font-size="11" fill="#2f332b">
+                <text x="26" y="66">記録・データ</text><text x="26" y="90">AI の実行</text></g>
+              <g font-family="Space Mono, monospace" font-size="8" fill="#9aa197">
+                <text x="26" y="112">生データはここに残る</text></g>
+              <path d="M232 129h0" stroke="#C7CCC2"></path>
+              <path d="M232 34v190" stroke="#C7CCC2" stroke-dasharray="3 4"></path>
+              <path d="M188 129h130" stroke="#a8e010" stroke-width="2"></path>
+              <circle cx="318" cy="129" r="3.4" fill="#a8e010"></circle>
+              <g font-family="Space Mono, monospace" font-size="8" fill="#6f9c00">
+                <text x="196" y="120">HASH ONLY · 約200B</text></g>
+              <rect x="330" y="86" width="120" height="86" rx="6" fill="#333b34"></rect>
+              <g font-family="Space Mono, monospace" font-size="9" fill="#EBEFE6"><text x="352" y="134">LEMMA</text></g>
+              <g stroke="#a8e010" stroke-width="1.2" opacity=".85">
+                <path d="M450 129L548 74"></path><path d="M450 129h98"></path><path d="M450 129L548 184"></path></g>
+              <g fill="#a8e010"><circle cx="548" cy="74" r="2.6"></circle><circle cx="548" cy="129" r="2.6"></circle><circle cx="548" cy="184" r="2.6"></circle></g>
+              <g font-family="Space Mono, monospace" font-size="8" fill="#9aa197">
+                <text x="470" y="212">VERIFY · FREE · NO KEY</text></g>
+            </svg>
+          </div>
+          <div class="hwtxt">
+            <div class="hw3"><span class="hw-n">01</span><b>発行</b><p>ソース側で証明を作ります。Lemma が受け取るのはハッシュだけで、記録そのものは御社の手元に残ります。</p></div>
+            <div class="hw3"><span class="hw-n">02</span><b>提示</b><p>証明を記録と一緒に渡します。受け取った側に、専用のソフトもアカウントも要りません。</p></div>
+            <div class="hw3"><span class="hw-n">03</span><b>検証</b><p>公開鍵で誰でも確かめられます。発行元に問い合わせないので、確認が何度起きても費用は増えません。</p></div>
+            <div class="hiwfoot" style="margin-top:14px;">発行は <b>API を1回</b>。Sandbox（testnet）は無料で今すぐ試せます。<br />ゼロ知識証明・選択的開示・オンチェーン来歴の詳細は <a href={coreDocsHref}>ドキュメント →</a></div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Registry ── 左に説明＋単票検証、右にダークの計器パネル ── */}
+      <section class="isec regsec">
+        <h2 class="isec-h"><span>Registry</span><b>動いているものを、<span class="nb">その場で確かめられます。</span></b></h2>
+        <div class="regwrap">
+          <div class="regtxt">
+            <p class="sec-lede">右は、Lemma が検証・発行してきた記録の実数です。<br /><b>推定では埋めません。</b>取得できないときは OFFLINE と表示します。</p>
+            <div class="rb-try">
+              <div class="rt-f"><span class="rt-k">DOC HASH</span><span class="rt-v">0x68d4bff9c2a1e07b…9f01</span></div>
+              <div class="rt-go">この証明を検証する</div>
+              <div class="rt-res"><span class="vmark"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"></circle><circle cx="12" cy="12" r="6.4" stroke="currentColor" stroke-width="1.6"></circle><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><b>改ざんされていません</b><i>NOT TAMPERED</i></div>
+            </div>
+            <p class="plnote" style="margin-top:11px;">上のIDは、実際に発行された証明のものです。<b>自分で発行した証明のIDを貼っても、同じように確かめられます。</b></p>
+            <ul class="reglist">
+              <li><span class="rl-c"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg></span><span><b>検証は無料。</b>キーもアカウントも要りません。回数の上限もありません。</span></li>
+              <li><span class="rl-c"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg></span><span><b>発行元に問い合わせません。</b>受け取った側だけで判定が完結します。</span></li>
+              <li><span class="rl-c"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg></span><span><b>数えているのは実数だけ。</b>データ点数でもリクエスト数でもなく、1回の検証を1と数えます。</span></li>
+            </ul>
+            <div class="hiwfoot" style="margin-top:14px;"><a href={verifyHref}>検証センターを見る →</a>　<a href={COUNTERS_API_URL} target="_blank" rel="noopener">レスポンスを直接確認する →</a></div>
+          </div>
+          <div class="regpanel">
+            <div class="rp-head"><span class="rp-t">LEMMA REGISTRY</span>
+              <span class="rp-live" id="pv18-live"><i></i><span id="pv18-live-label">LIVE</span></span>
+              <span class="rp-ep">GET /v1/counters</span></div>
+            <div class="rp-blk">
+              <div class="rp-k">Proof Verifications</div>
+              <div class="rp-j">検証済み証明数</div>
+              <div class="rp-n" id="pv18-verified" aria-live="polite">———</div>
+              <div class="rp-d">1回の検証を1と数えます。データ点数でも、リクエスト数でもありません。</div>
+              <div class="rb-bars" id="pv18-bars">
+                <span class="rb-bar"><span>—</span><i><b style="width:0%"></b></i><u>—</u></span>
+                <span class="rb-bar"><span>—</span><i><b style="width:0%"></b></i><u>—</u></span>
+                <span class="rb-bar"><span>—</span><i><b style="width:0%"></b></i><u>—</u></span>
+              </div>
+            </div>
+            <div class="rp-blk">
+              <div class="rp-k">Proofs Issued</div>
+              <div class="rp-j">発行された証明</div>
+              <div class="rp-n sm" id="pv18-issued" aria-live="polite">———</div>
+              <div class="rp-d">1件の登録を1と数えます。</div>
+            </div>
+            <div class="rp-err" id="pv18-err" hidden>
+              {REG.perr}
+              <a href={COUNTERS_API_URL} target="_blank" rel="noopener">レスポンスを直接確認する →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Custom ── チェックリスト2列 ──────────────────────── */}
+      <section class="isec">
+        <h2 class="isec-h"><span>Custom</span><b>標準で出るもの、<span class="nb">個別構成で提供するもの。</span></b></h2>
+        <div class="ckwrap">
+          <div class="ckcol">
+            <div class="ck-k">標準で提供</div>
+            <ul>
+              <li class="on"><span class="ck"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg></span><span>証明の発行と検証（来歴・認証・権限・推論）</span></li>
+              <li class="on"><span class="ck"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg></span><span>検証ページへのリンクとバッジの設置</span></li>
+              <li class="on"><span class="ck"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg></span><span>対応標準への接続（MCP / A2A / x402 / C2PA / W3C VC）</span></li>
+            </ul>
+          </div>
+          <div class="ckcol ask">
+            <div class="ck-k">個別構成で提供</div>
+            <ul>
+              <li class="ad"><span class="ck"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 3.4v9.2M3.4 8h9.2"></path></svg></span><span>項目を選んで出し分ける（選択的開示）</span></li>
+              <li class="ad"><span class="ck"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 3.4v9.2M3.4 8h9.2"></path></svg></span><span>チェーン上での直接検証（専用の検証コントラクト）</span></li>
+              <li class="ad"><span class="ck"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 3.4v9.2M3.4 8h9.2"></path></svg></span><span>自社の画面への埋め込み、基幹システムとの連携</span></li>
+            </ul>
+          </div>
+        </div>
+        <p class="plnote" style="margin-top:14px;"><b>自治体で、個人情報を出さずに、実際に動いています。</b>個別構成での導入実績があります。<a href={contactUrl} target="_blank" rel="noopener">導入について相談する →</a></p>
+      </section>
+
+      {/* ── CTA ────────────────────────────────────────────── */}
+      <div class="artcta" style="margin-top:26px;">
+        <div class="k">Enterprise</div>
+        <h2>どの記録に証明を付けると、<br />確認が短くなりますか。</h2>
+        <p>30〜60分で、証明の対象と構成を一緒に設計します。標準構成で足りるかも、その場で分かります。</p>
+        <div class="row"><a class="btn primary" href={contactUrl} target="_blank" rel="noopener">相談する</a><a class="btn ghost" href={pricingHref}>料金を見る</a></div>
+      </div>
+    </div>
+
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+{/*
+  Registry 節のデータ接続。検証センター（VerifyAnchorTemplate）と同じ
+  `is:inline` + `define:vars` の型で、同じ `GET /v1/counters` を叩く。
+  失敗時は OFFLINE と定義文を出すだけで、推定値では埋めない。
+*/}
+<script is:inline define:vars={{ REG }}>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const fmt = (n) => Number(n).toLocaleString("ja-JP");
+    const esc = (s) =>
+      String(s ?? "").replace(
+        /[&<>"']/g,
+        (c) =>
+          ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+      );
+
+    async function load() {
+      try {
+        const r = await fetch(REG.api, { headers: { accept: "application/json" } });
+        if (!r.ok) throw new Error(String(r.status));
+        const j = await r.json();
+        const total = Number(j.verified.count) || 0;
+        $("pv18-verified").textContent = fmt(total);
+        $("pv18-issued").textContent = fmt(j.issued.count);
+
+        const top = (j.verified.bySource || []).slice(0, 3);
+        if (top.length) {
+          $("pv18-bars").innerHTML = top
+            .map(function (x) {
+              const p = total ? Math.round((x.count / total) * 100) : 0;
+              return (
+                '<span class="rb-bar"><span>' +
+                esc(String(x.source).toUpperCase()) +
+                '</span><i><b style="width:' +
+                p +
+                '%"></b></i><u>' +
+                p +
+                "%</u></span>"
+              );
+            })
+            .join("");
+        }
+        $("pv18-err").hidden = true;
+        $("pv18-live-label").textContent = REG.live;
+        $("pv18-live").classList.remove("offline");
+      } catch (e) {
+        // 推定値では埋めない。数字は OFFLINE、内訳バーはプレースホルダのまま。
+        $("pv18-verified").textContent = REG.offline;
+        $("pv18-issued").textContent = REG.offline;
+        $("pv18-err").hidden = false;
+        $("pv18-live-label").textContent = REG.offline;
+        $("pv18-live").classList.add("offline");
+      }
+    }
+    load();
+  })();
+</script>
+
+<style>
+  @media (max-width: 900px) {
+  }
+  @media (max-width: 720px) {
+  }
+</style>

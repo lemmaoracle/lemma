@@ -20,11 +20,27 @@ export interface GuidesIndexTemplateProps {
   t: Translations;
   base: string;
   guides: ReadonlyArray<BlogPost>;
+  /**
+   * 暗号技術の中核（ゼロ知識証明・選択的開示・オンチェーン来歴）。製品ページ
+   * （/ja/pillars/）が「詳細はドキュメント →」で着地させる受け皿なので、他の
+   * ガイドと混ぜず #core-crypto の独立群として先頭に出す。渡さなければ描画しない。
+   */
+  cores?: ReadonlyArray<BlogPost>;
   foundations: ReadonlyArray<BlogPost>;
 }
 
-const { locale, t, base, guides, foundations } =
+const { locale, t, base, guides, cores = [], foundations } =
   Astro.props as GuidesIndexTemplateProps;
+const isJa = locale === "ja";
+const coreCopy = isJa
+  ? {
+      eyebrow: "暗号技術の中核",
+      lead: "原本データに触れずに「同じものだ」「これだけ開示する」「書き換えられない」を成立させている 3 つの技術。",
+    }
+  : {
+      eyebrow: "Core cryptography",
+      lead: "The three techniques that establish sameness, selective disclosure, and immutability without ever touching the original data.",
+    };
 const blogPath = base ? `${base}/blog` : "/blog";
 const guidesPath = base ? `${base}/guides` : "/guides";
 const title = locale === "ja"
@@ -73,6 +89,26 @@ const collectionJsonLd = {
         <p class="gd-hero-sub">{t.blog.index.guidesDesc}</p>
       </section>
 
+      {cores.length > 0 && (
+        <section class="gd-block gd-cores" id="core-crypto" aria-label={coreCopy.eyebrow}>
+          <div class="gd-block-eyebrow">{coreCopy.eyebrow}</div>
+          <p class="gd-cores-lead">{coreCopy.lead}</p>
+          <ul class="gd-foundations">
+            {cores.map((post) => (
+              <li>
+                <a href={`${blogPath}/${post.slug}`} class="gd-foundations-card">
+                  <div class="gd-foundations-text">
+                    <h2 class="gd-foundations-title">{post.title}</h2>
+                    <p class="gd-foundations-abstract">{post.abstract}</p>
+                  </div>
+                  <span class="gd-foundations-cta">{t.blog.index.readGuide}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {guides.length > 0 && (
         <section class="gd-grid-section" aria-label={t.blog.index.guidesTag}>
           <ul class="gd-grid">
@@ -118,6 +154,19 @@ const collectionJsonLd = {
 </Layout>
 
 <style>
+  /* 暗号技術の中核（#core-crypto）。foundations のカード様式を再利用し、
+     群の頭にリード文だけを足す。製品ページからの着地点。 */
+  .gd-cores {
+    margin-bottom: 40px;
+  }
+  .gd-cores-lead {
+    margin: 6px 0 18px;
+    max-width: 62ch;
+    font-size: 14px;
+    line-height: 1.8;
+    opacity: 0.8;
+  }
+
   .gd-page {
     --gd-display: var(--font-display);
     --gd-body: "Noto Sans JP", system-ui, sans-serif;

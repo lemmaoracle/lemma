@@ -8,9 +8,23 @@ const t = getTranslations(locale);
 const base = "/ja";
 
 const sections = await getBlogSections(locale);
-const guides = sections
+// 暗号技術の中核 3 本。製品ページ（/ja/pillars/）から「詳細はドキュメント →」で
+// 着地する受け皿なので、他のガイドと混ぜず独立した群として先頭に出す。
+// 指示書 §7-3：受け皿を作ってから製品ページ側の 3 節を落とす。
+const CORE_SLUGS = [
+  "prove-facts-with-zero-knowledge",
+  "disclose-only-what-ai-needs",
+  "provenance-that-never-disappears",
+] as const;
+
+const allGuides = sections
   .flatMap((s) => s.posts)
   .filter((p) => p.category === "ガイド" || p.category === "Guides");
+const cores = CORE_SLUGS.map((slug) =>
+  allGuides.find((p) => p.slug === slug),
+).filter((p): p is NonNullable<typeof p> => Boolean(p));
+const coreSlugSet = new Set(cores.map((p) => p.slug));
+const guides = allGuides.filter((p) => !coreSlugSet.has(p.slug));
 const foundations = sections
   .flatMap((s) => s.posts)
   .filter((p) => p.category === "基盤" || p.category === "Foundations");
@@ -21,5 +35,6 @@ const foundations = sections
   t={t}
   base={base}
   guides={guides}
+  cores={cores}
   foundations={foundations}
 />
