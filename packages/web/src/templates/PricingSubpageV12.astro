@@ -67,23 +67,34 @@ const crumbLabel = isApi ? "開発者向け" : "Trust402";
 </Layout>
 
 <style>
-  /* 旧 PricingTemplate の .pr-page クロームの最小複製（サブページ独立化のため） */
+  /* 旧 PricingTemplate の .pr-page クロームの最小複製（サブページ独立化のため）。
+     配色だけ v12 トーンに寄せる: 地は --lite 系のクールグレー、アクセントは
+     ブラウンでなくオリーブ（本体 /pricing/ と地続きに見せる）。 */
   .pr-page {
     --pr-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
     --pr-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
     --pr-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --pr-text-1: #1a1a1a;
-    --pr-text-2: #3a3a3a;
-    --pr-text-3: #5a5a5a;
-    --pr-text-4: #9a9a9a;
-    background: var(--lemma-cream);
+    --pr-text-1: #12140e;
+    --pr-text-2: #2f332b;
+    --pr-text-3: #5c6156;
+    --pr-text-4: #9aa197;
+    --accent: #4e7a00;
+    --black: #12140e;
+    --lemma-cream: #fbfcfa;
+    --lemma-line: #e1e3dd;
+    --lemma-brown-light: #edf2ed;
+    --lemma-brown: #4e7a00;
+    background: #f3f4f1;
     color: var(--pr-text-2);
     font-family: var(--pr-body);
     font-weight: 400;
     line-height: 1.7;
-    margin-top: 64px;
+    /* margin-top だと body のクリーム地が帯状に見えるため padding で確保 */
+    padding-top: 64px;
     padding-bottom: 96px;
   }
+  /* PricingLemmaApi の hover はブラウンがハードコードのため上書き */
+  .pr-page :global(.api-btn:hover) { background: #3f6300; }
   .pr-container {
     max-width: 1100px;
     margin: 0 auto;
