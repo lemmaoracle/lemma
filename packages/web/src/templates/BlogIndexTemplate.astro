@@ -121,7 +121,8 @@ const C = isJa
   <main class="bi-page">
     <div class="bi-container">
       <section class="bi-hero">
-        <div class="bi-kicker">Blog</div>
+        {/* 旧 kicker「Blog」は削除 — h1（ブログ/Blog）と同語反復で情報が無い。
+            他ページの kicker は情報を足しているので残している。 */}
         <h1 class="bi-h1">{t.blog.title}</h1>
         <p class="bi-lead">{C.lead}</p>
         {categories.length > 0 && (
@@ -298,7 +299,7 @@ const C = isJa
     line-height: 1.95;
     letter-spacing: 0.01em;
     padding: 0;
-    margin-top: 64px;
+    padding-top: 64px; /* sticky ナビ時代の margin-top:64px を padding に変換 — body 背景色の帯を出さない（H1 上の空白修正） */
   }
   .bi-container {
     max-width: calc(1180px + 12vw);
@@ -314,20 +315,13 @@ const C = isJa
   .bi-hero {
     padding: 46px 0 0;
   }
-  .bi-kicker {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
   .bi-h1 {
     font-family: var(--font-serif-jp);
     font-weight: 600;
     font-size: clamp(28px, 3.2vw, 38px);
     letter-spacing: 0.04em;
     color: var(--tx);
-    margin: 14px 0 12px;
+    margin: 0 0 12px;
   }
   .bi-lead {
     margin: 0;

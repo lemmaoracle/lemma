@@ -60,10 +60,9 @@ const brandSuffix = locale === "ja" ? "Lemma — 検証可能AI" : "Lemma — Ve
 
 <style>
   .legal-header {
-    margin-top: 64px;
     background: var(--black);
     color: var(--white);
-    padding: 96px 10% 72px;
+    padding: 160px 10% 72px; /* sticky ナビ時代の margin-top:64px を padding に変換 — body 背景色の帯を出さない（H1 上の空白修正） */
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
   .legal-tag {

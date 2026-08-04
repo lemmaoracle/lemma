@@ -736,7 +736,7 @@ const breadcrumbJsonLd = {
     font-family: var(--au-body);
     line-height: 1.85;
     padding: 0 0 32px;
-    margin-top: 64px;
+    padding-top: 64px; /* sticky ナビ時代の margin-top:64px を padding に変換 — body 背景色の帯を出さない（H1 上の空白修正） */
   }
   :root[lang="en"] .au-page {
     --au-body: "Noto Sans JP", system-ui, sans-serif;

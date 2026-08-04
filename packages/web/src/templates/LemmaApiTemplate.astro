@@ -599,7 +599,7 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
     color: var(--la-t2);
     font-family: var(--la-body);
     line-height: 1.7;
-    margin-top: 64px;
+    padding-top: 64px; /* sticky ナビ時代の margin-top:64px を padding に変換 — body 背景色の帯を出さない（H1 上の空白修正） */
   }
   :root[lang="en"] .la { --la-body: "Noto Sans JP", system-ui, sans-serif; }
   .la-container { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
