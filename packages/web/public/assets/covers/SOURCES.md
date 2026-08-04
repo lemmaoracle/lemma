@@ -13,3 +13,6 @@
 | from-data-sharing-to-verification-sharing.jpg | 2026.03.18 データ共有から検証共有へ | Bluestonex | https://unsplash.com/photos/-8Lsg7OqCBE | Unsplash License |
 | claude-fable-5-what-ai-did-proof.jpg | 2026.06.10 「何をしたか」の証明が要る | Miha Meglič | https://unsplash.com/photos/p7Bfwn_VKRQ | Unsplash License |
 | ai-financial-cybersecurity-akamai-2026.jpg | 2026.06.04 AI時代の金融サイバー攻撃対策 | Erik Mclean | https://unsplash.com/photos/_uiWUtMqzvI | Unsplash License |
+| ppsi-stablecoin-aml-kyc-third-layer.jpg | 2026.05.15 x402 に第3層を足す | Jakub Żerdzicki | https://unsplash.com/photos/4YdFMaYq-xA | Unsplash License |
+| verifiable-ai-financial-agents-2026.jpg | 2026.05.07 金融AIが業務の中核に入った 2026 | Jakub Żerdzicki | https://unsplash.com/photos/8wLZi9OhsWU | Unsplash License |
+| keep-ai-underwriting-without-data-handover.jpg | 2026.05.28 渡さずに、審査する | Jakub Żerdzicki | https://unsplash.com/photos/fgNgbnMdgBM | Unsplash License |
