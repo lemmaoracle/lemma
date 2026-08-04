@@ -215,18 +215,20 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 /* ---------- フィールドスイープ（v5.9 の再現・左→右のみ） ---------- */
 .topx .fieldpanel .cbody{padding:22px!important}
 .topx .fieldstage{position:relative;height:clamp(280px,30vw,380px);overflow:hidden;z-index:2}
-.topx .fitem{position:absolute;width:48px;height:48px;border-radius:10px;background:#ECEEE9;
+/* ブロックは固定 48px でなく画面幅に追随させる（狭幅では列間隔 < ブロック幅に
+   なり重なって見えるため。9列×4%起点・90%/8 間隔が前提） */
+.topx .fitem{position:absolute;width:clamp(26px,7vw,48px);height:clamp(26px,7vw,48px);border-radius:clamp(6px,1.6vw,10px);background:#ECEEE9;
   border:1px solid var(--line);box-shadow:0 1px 2px rgba(24,36,26,.04);
   transition:opacity .5s, border-color .3s, background .3s, transform .5s, box-shadow .3s}
-.topx .fitem::after{content:"";position:absolute;inset:9px;border-radius:5px;
+.topx .fitem::after{content:"";position:absolute;inset:18%;border-radius:4px;
   background:repeating-linear-gradient(45deg,#E1E4DD,#E1E4DD 4px,#ECEEE9 4px,#ECEEE9 8px)}
 .topx .fitem.checked.fake{opacity:.14;transform:scale(.9)}
 .topx .fitem.checked.real{background:var(--card);border-color:var(--ok-ink);box-shadow:0 8px 24px rgba(143,191,0,.22)}
-.topx .fmark{position:absolute;top:-8px;right:-8px;z-index:2;width:20px;height:20px;
+.topx .fmark{position:absolute;top:-7px;right:-7px;z-index:2;width:clamp(14px,3.4vw,20px);height:clamp(14px,3.4vw,20px);
   display:none;place-items:center;color:#1a1f16;border-radius:50%;
   background:var(--ok);box-shadow:0 0 10px rgba(168,224,16,.45)}
 .topx .fitem.checked.real .fmark{display:grid}
-.topx .fmark svg{width:11px;height:11px;display:block}
+.topx .fmark svg{width:55%;height:55%;display:block}
 .topx .sweep{position:absolute;top:0;bottom:0;width:2px;left:0;background:var(--ok);
   box-shadow:0 0 20px rgba(168,224,16,.85);z-index:4}
 .topx .fieldfoot{position:relative;z-index:5;margin:14px 0 0;font-family:var(--mono);font-size:10.5px;
@@ -310,3 +312,23 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 
 .topx .fp-more{margin:12px 0 0;font-size:13px;color:var(--muted);line-height:1.8}
 .topx :focus-visible{outline:2px solid var(--ok-light);outline-offset:2px}
+
+/* ================= モバイル調整（実機レビュー 2026-08-04） ================= */
+/* 業界タブ: テキスト羅列だと切り替えられることが伝わらないため、狭幅ではチップ化 */
+@media(max-width:700px){
+  .topx .ind-tabs{gap:8px;border-bottom:0;padding-bottom:2px}
+  .topx .ind-tab{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;color:var(--tx-soft)}
+  .topx .ind-tab[aria-selected="true"]{background:rgba(168,224,16,.15);border-color:var(--ok-ink);color:var(--tx);font-weight:700}
+  .topx .ind-tab[aria-selected="true"]::after{display:none}
+}
+
+/* ムービー: 狭幅ではカードの額縁をやめて全幅ブリードにし、少しでも大きく見せる */
+@media(max-width:560px){
+  .topx .filmbleed{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);border-radius:0;padding:12px 8px}
+  /* ヒーロー: boosting 解消とあわせてタイポと余白を締め、1画面の情報量を抑える */
+  .topx .herodark .hin{padding-top:clamp(40px,10vw,58px);padding-bottom:44px;gap:40px}
+  .topx .herodark h1{margin:14px 0 22px}
+  .topx .herodark .sublead{font-size:14.5px;line-height:1.9;margin-bottom:20px}
+  .topx .herodark .tfacts{margin-bottom:24px}
+  .topx .herodark .tfacts li{font-size:13.5px;padding:7px 0 7px 20px}
+}
