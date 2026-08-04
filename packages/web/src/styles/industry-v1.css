@@ -1135,7 +1135,10 @@
 .indv1 .newscard .cover .cl em{display:block;font-style:normal;font-family:var(--font-mono);font-size:8.5px;
     letter-spacing:.18em;color:#9AA192;margin-bottom:6px;}
 .indv1 .newscard:hover .cover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(24,36,26,.16);}
-.indv1 .newscard .meta{display:flex;align-items:center;gap:10px;margin:14px 0 7px;
+/* チップ（事案分析）だけ枠と余白を持つぶん行が高くなり、カードごとに
+   タイトルの縦位置がずれていた。行に最低高さを与えて、チップの有無に
+   関わらず同じ高さになるようにする。 */
+.indv1 .newscard .meta{display:flex;align-items:center;gap:10px;margin:14px 0 7px;min-height:20px;
     font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--muted);}
 .indv1 .newscard .meta em{font-style:normal;color:var(--ok-ink);}
 /* タイトルは**2行で固定**。文字数が記事ごとにばらつくため行数を決めておかないと
@@ -1160,7 +1163,7 @@
    地の斜線パターンは殺す — SVG 自身が地を持つ。 */
 .indv1 .newscard .cover:has(>svg)::before{content:none;}
 /* メタ行のチップ（D）。カバー＝ブランドの言葉／チップ＝中身の種類。 */
-.indv1 .newscard .meta em.ja{font-family:var(--font-body);font-size:10.5px;letter-spacing:0;
+.indv1 .newscard .meta em.ja{font-family:var(--font-body);font-size:10.5px;letter-spacing:0;line-height:1;
     color:#333B34;background:#F6FAEC;border:1px solid #C9D6A8;border-radius:3px;padding:2px 7px;}
 @media (max-width:1020px){
 .indv1 .newsgrid{grid-template-columns:1fr;}
