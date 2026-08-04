@@ -56,6 +56,26 @@ export interface BlogPost {
   readonly body: string;
   readonly categoryColor?: string;
   readonly cover?: string;
+  /**
+   * ビジネス読者向けか（Latest news 枠3 に出るのは "business" のみ）。
+   * 2値のみ・それ以外の値や欠落は undefined（= 枠3 に出ない）。
+   * 指示書: `Lemma_Latest news_出し分け設計_v1_2026-08-04.md` §2。
+   */
+  readonly audience?: "business" | "technical";
+  /**
+   * この記事を出す業界（`/solutions/use-cases/<slug>/` の slug）。任意・複数可。
+   * 業界ページの Latest news 枠3 が、この記事を「その業界の記事」として
+   * 選ぶために使う（設計 v1 §5）。省略時は業種横断の扱いで、業界一致が
+   * 1本も無い業界のフォールバックとしてのみ現れる。
+   */
+  readonly industries?: ReadonlyArray<string>;
+  /**
+   * 写真カバーのサイト内パス（例: `/assets/covers/<slug>.jpg`）。
+   * public/ 配下にファイルが実在するときだけ写真カバーになり、無ければ
+   * 抽象パターンに落ちる — 実在判定は `lib/coverPhoto.ts`。ここでパスを
+   * 素通しするだけなのは、写真の未着でビルドを落とさないため。
+   */
+  readonly coverPhoto?: string;
   readonly tags?: ReadonlyArray<string>;
   readonly relatedLinks?: ReadonlyArray<RelatedLink>;
   readonly headings: ReadonlyArray<Heading>;
@@ -183,6 +203,9 @@ interface PostFrontmatter {
   readonly abstract?: string;
   readonly categoryColor?: string;
   readonly cover?: string;
+  readonly audience?: string;
+  readonly industries?: ReadonlyArray<string>;
+  readonly coverPhoto?: string;
   readonly tags?: ReadonlyArray<string>;
   readonly relatedLinks?: ReadonlyArray<RelatedLink>;
 }
@@ -402,6 +425,13 @@ function parsePost(filename: string, raw: string): BlogPost | undefined {
               categoryColor:
                 fm.categoryColor || categoryColorByCategory[fm.category || ""] || "#000",
               cover: fm.cover ? resolveCoverUrl(fm.cover) : undefined,
+              audience:
+                fm.audience === "business" || fm.audience === "technical"
+                  ? fm.audience
+                  : undefined,
+              industries:
+                fm.industries && fm.industries.length > 0 ? fm.industries : undefined,
+              coverPhoto: fm.coverPhoto || undefined,
               tags: fm.tags && fm.tags.length > 0 ? fm.tags : undefined,
               relatedLinks:
                 fm.relatedLinks && fm.relatedLinks.length > 0 ? fm.relatedLinks : undefined,
