@@ -49,6 +49,9 @@ const metaTitle = `${entry.name}のユースケース — ${entry.h1} | Lemma`;
  */
 const esc = (s: string): string =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+/* 行数の制御は CSS の line-clamp（2行）に任せ、ここは極端に長い値を切るだけの
+ * 安全網にする。短く切りすぎると CSS 側で畳む前に文字が尽きて、カードごとに
+ * 行数がばらつく原因になる。 */
 const clip = (s: string, n: number): string => (s.length > n ? `${s.slice(0, n)}…` : s);
 
 /* 枠3: この業界の記事（frontmatter `industries` に自 slug を含む）の最新1本。
@@ -123,12 +126,12 @@ if (bizPost && latestBrief) {
       <a class="newscard" href="${base}/critical/briefs/${briefSlug}/">
         <div class="cover">${briefCover}</div>
         <span class="meta"><em class="ja">事案分析</em><span>${briefDate}</span></span>
-        <span class="t">${esc(clip(latestBrief.data.title, 58))}</span>
+        <span class="t">${esc(clip(latestBrief.data.title, 90))}</span>
       </a>
       <a class="newscard" href="${base}/blog/${bizPost.slug}">
         <div class="cover">${blogCover}</div>
         <span class="meta"><em>ブログ</em><span>${bizPost.date}</span></span>
-        <span class="t">${esc(clip(bizPost.title, 58))}</span>
+        <span class="t">${esc(clip(bizPost.title, 90))}</span>
       </a>
     </div>
     <p class="hiwfoot"><a href="${base}/blog">ブログをすべて見る →</a></p>

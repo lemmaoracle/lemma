@@ -1138,7 +1138,15 @@
 .indv1 .newscard .meta{display:flex;align-items:center;gap:10px;margin:14px 0 7px;
     font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--muted);}
 .indv1 .newscard .meta em{font-style:normal;color:var(--ok-ink);}
-.indv1 .newscard .t{font-family:var(--font-serif-jp);font-weight:600;font-size:14.5px;line-height:1.7;color:var(--tx);}
+/* タイトルは**2行で固定**。文字数が記事ごとにばらつくため行数を決めておかないと
+   カードの下端が揃わない（3行と1行が隣り合う）。溢れは CSS 側で … に畳み、
+   1行しかない記事も 2行ぶんの高さを確保して底を揃える。
+   寸法はブログ一覧のカード（.bi-card-title 16px/1.7）に合わせる — 同じ「記事の
+   タイトル」なので、面が変わるたびに大きさが変わらないようにする。 */
+.indv1 .newscard .t{font-family:var(--font-serif-jp);font-weight:600;font-size:16px;line-height:1.7;
+    letter-spacing:.03em;color:var(--tx);
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+    min-height:calc(16px * 1.7 * 2);}
 .indv1 /* ---- Latest news 実データ配線後のカバー（ブログ写真/抽象 SVG・Brief 面）---- */
   .newscard .cover>svg{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;}
 .indv1 .newscard .cover .nc-photo{position:absolute;inset:0;display:block;z-index:1;}
