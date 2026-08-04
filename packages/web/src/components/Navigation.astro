@@ -1,13 +1,10 @@
 ---
 /**
- * Global nav dispatcher.
- *
- * JA は Phase 1 共通レイヤー (実装指示 v2 2026-08-03 / mock v24) の
- * 全幅パネルナビ (NavigationV2)。EN は業界ページ等の EN 版が未整備のため
- * 旧メガナビ (NavigationLegacy) を維持する。呼び出し側の API は不変。
+ * Global nav dispatcher — 全ロケール NavigationV2 (Issue #762 で EN も統一)。
+ * 呼び出し側の API (locale / t / base) は不変。t は V2 では未使用だが
+ * 37+ 箇所の呼び出しを変えないため受け取ったままにする。
  */
 import type { Locale, Translations } from "../i18n/translations";
-import NavigationLegacy from "./NavigationLegacy.astro";
 import NavigationV2 from "./NavigationV2.astro";
 
 interface Props {
@@ -16,7 +13,7 @@ interface Props {
   base: string;
 }
 
-const { locale, t, base } = Astro.props;
+const { locale } = Astro.props;
 ---
 
-{locale === "ja" ? <NavigationV2 /> : <NavigationLegacy locale={locale} t={t} base={base} />}
+<NavigationV2 locale={locale} />
