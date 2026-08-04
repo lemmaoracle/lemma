@@ -1,0 +1,326 @@
+<!-- トップページ v47 本文（JA）。正典: lemma_top_mock_v47.html ＋ 実装指示 v1 2026-08-04。
+     ナビ・フッターは共通コンポーネント（この断片には含めない）。 -->
+
+<!-- ============ HERO ============ -->
+<section class="herodark">
+  <div class="hin">
+    <div>
+      <h1><span class="nb">AI時代に、</span><span class="nb">何が本物かを証明する。</span></h1>
+      <p class="sublead">生成AIで、コピーのコストはゼロになりました。記録・データ・AIの実行に暗号技術で証明を付け、受け取った側が自分で確かめられるようにします。証明のあるものだけが、先へ進みます。</p>
+      <ul class="tfacts">
+        <li>生データは受け取らない</li>
+        <li>世界中のどこからでも第三者が検証できる</li>
+        <li>検証にキーもアカウントも要らない</li>
+      </ul>
+      <div class="btnrow" style="margin-top:0">
+        <a class="btn solid" href="https://tally.so/r/EkBqDX?source=top">エンタープライズ相談</a>
+        <a class="btn ghostd js-doclink" href="/ja/verify/">証明サンプルを検証する</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="reghead">
+        <span class="rlabel">LEMMA REGISTRY</span>
+        <span class="rlive"><i></i>LIVE</span>
+        <span class="rep">GET /v1/counters</span>
+      </div>
+      <p class="ren">Proof Verifications</p>
+      <p class="biglabel">検証済み証明数</p>
+      <p class="bignum off" id="vcount">———</p>
+      <p class="bigsub">1回の検証を1と数えます。データ点数でも、リクエスト数でもありません。</p>
+      <p class="bigsub" id="vsub">読み込み中…</p>
+      <a class="biglink" href="https://workers.lemma.workers.dev/v1/counters" target="_blank" rel="noopener">この数字を検証する →</a>
+      <div class="bigrow">
+        <div>
+          <p class="ren">Proofs Issued</p>
+          <p class="biglabel sm">発行された証明</p>
+          <div class="bv" id="icount">———</div>
+          <div class="bn">1件の登録を1と数えます。</div>
+        </div>
+      </div>
+      <p class="rup">LAST UPDATED <span id="vup">—</span></p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <!-- ============ STORY ============ -->
+  <section class="sec">
+    <div class="isec-h">
+      <b><span class="nb">見た目は、まったく同じ。</span><span class="nb">確かめられるのは、本物だけ。</span></b>
+    </div>
+    <p class="lead">同じ見出し、同じ写真、同じ体裁の記事が並びます。読者にも、受け取る側のシステムにも、見分けはつきません。</p>
+
+    <div class="filmbleed">
+      <figure class="filmwrap">
+        <iframe id="film" src="/assets/film/concept-film.html?embed=1&amp;lang=ja" title="Lemma コンセプトムービー — 偽物に追われ続ける状態から、証明のあるものだけが先へ進むまで（0:23）" loading="lazy"></iframe>
+      </figure>
+    </div>
+
+    <div class="scenes">
+      <div class="scn" id="scn-01">
+        <span class="bar"></span><span class="n">01</span>
+        <h4>偽物に、追われ続ける。</h4>
+        <p>消しても、また出てくる。見分けがつかないまま、追う手間だけが積み上がる。</p>
+        <div class="back">追いかける側は終わりません。</div>
+      </div>
+      <div class="scn" id="scn-02">
+        <span class="bar"></span><span class="n">02</span>
+        <h4>追うのをやめ、本物を証明する。</h4>
+        <p>公開のとき、API を1回呼ぶだけ。</p>
+        <div class="back">受け取ったのは、ハッシュだけ。原本も写真も Lemma には残りません。</div>
+      </div>
+      <div class="scn" id="scn-03">
+        <span class="bar"></span><span class="n">03</span>
+        <h4>ワンタップで、その場で確かめる。</h4>
+        <p>アプリ不要、登録不要、検証は無料。</p>
+        <div class="back">発行元のサーバーには問い合わせません。何万回確認されても費用は増えません。</div>
+      </div>
+      <div class="scn" id="scn-04">
+        <span class="bar"></span><span class="n">04</span>
+        <h4>確認から配信まで、止まらない。</h4>
+        <p>受け取る側のシステムが自分で照合し、そのまま次の処理へ進みます。</p>
+        <div class="back">通す・止めるのルールは、受け手が決めます。Lemma は判断しません。</div>
+      </div>
+    </div>
+
+    <div class="bridge">
+      <p class="bh">同じことが、ここでも起きています。</p>
+      <div class="bitems">
+        <div class="bi"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="9" width="20" height="26" rx="2" fill="none" stroke="#5c6156" stroke-width="1.3"/><rect x="10" y="5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3"/><rect x="16" y="1.5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3" opacity=".45"/></svg><b>請求書</b><span>同じ体裁で、いくらでも作れる</span></div>
+        <div class="bi"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="9" width="20" height="26" rx="2" fill="none" stroke="#5c6156" stroke-width="1.3"/><rect x="10" y="5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3"/><rect x="16" y="1.5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3" opacity=".45"/></svg><b>経歴</b><span>書かれている内容は、確かめられない</span></div>
+        <div class="bi"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="9" width="20" height="26" rx="2" fill="none" stroke="#5c6156" stroke-width="1.3"/><rect x="10" y="5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3"/><rect x="16" y="1.5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3" opacity=".45"/></svg><b>身分証</b><span>券面は、画像として複製できる</span></div>
+        <div class="bi"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="9" width="20" height="26" rx="2" fill="none" stroke="#5c6156" stroke-width="1.3"/><rect x="10" y="5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3"/><rect x="16" y="1.5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3" opacity=".45"/></svg><b>AIからの依頼</b><span>誰の代理なのか、名乗りだけでは分からない</span></div>
+      </div>
+      <div class="bfoot">
+        <p class="bfq">どれも、原本を見せれば確かめられます。<br>けれど、原本は渡したくない。</p>
+        <p class="bfa">渡すのは原本ではなく、証明だけ。</p>
+        <p class="bfn">偽物は消えません。ただ、見分けがつくようになります。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INDUSTRIES ============ -->
+  <section class="sec alt">
+    <div>
+      <div class="isec-h">
+        <b><span class="nb">この構造、</span><span class="nb">御社の業務でも起きていませんか。</span></b>
+      </div>
+      <div class="ind-tabs" role="tablist" id="indtabs">
+        <button class="ind-tab" type="button" role="tab" id="it-0" aria-controls="ip-0" aria-selected="true">製造・基幹インフラ</button>
+        <button class="ind-tab" type="button" role="tab" id="it-1" aria-controls="ip-1" aria-selected="false">金融・FinTech</button>
+        <button class="ind-tab" type="button" role="tab" id="it-2" aria-controls="ip-2" aria-selected="false">自治体・公共</button>
+        <button class="ind-tab" type="button" role="tab" id="it-3" aria-controls="ip-3" aria-selected="false">医療・ヘルスケア</button>
+        <button class="ind-tab" type="button" role="tab" id="it-4" aria-controls="ip-4" aria-selected="false">調達・サプライチェーン</button>
+        <button class="ind-tab" type="button" role="tab" id="it-5" aria-controls="ip-5" aria-selected="false">メディア・コンテンツ</button>
+        <button class="ind-tab" type="button" role="tab" id="it-6" aria-controls="ip-6" aria-selected="false">サービス・小売</button>
+        <button class="ind-tab" type="button" role="tab" id="it-7" aria-controls="ip-7" aria-selected="false">AI導入（業種横断）</button>
+        <button class="ind-tab" type="button" role="tab" id="it-8" aria-controls="ip-8" aria-selected="false">開発者・エージェント運用</button>
+      </div>
+      <div id="indpanels">
+        <div class="ind-panel" id="ip-0" role="tabpanel" aria-labelledby="it-0">
+          <div class="ind-ph has-photo" style="background-image:url('/industry/manufacturing.jpg')"></div>
+          <div><div class="ic">製造・基幹インフラ</div><h3>検査記録アシュアランス</h3><p>検査記録や計測値を、原本を渡さずに取引先へ示す。監査のたびに原本を集め直す必要がなくなります。</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/ja/solutions/use-cases/manufacturing/">このソリューションを見る →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-1" role="tabpanel" aria-labelledby="it-1" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/finance.jpg')"></div>
+          <div><div class="ic">金融・FinTech</div><h3>取引先レコード検証</h3><p>相手方のレコードを、原本を受け取らずに確かめる。預かった瞬間に発生する保管責任を負いません。</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/ja/solutions/use-cases/finance/">このソリューションを見る →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-2" role="tabpanel" aria-labelledby="it-2" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/public-sector.jpg')"></div>
+          <div><div class="ic">自治体・公共</div><h3>証明書レス手続き</h3><p>証明書の添付をやめ、要件を満たす事実だけを渡す。窓口の確認が待ち時間になりません。</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/ja/solutions/use-cases/public-sector/">このソリューションを見る →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-3" role="tabpanel" aria-labelledby="it-3" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/healthcare.jpg')"></div>
+          <div><div class="ic">医療・ヘルスケア</div><h3>有資格者アシュアランス</h3><p>資格の有無だけを示し、個人の内訳は渡さない。着任前に確認が済みます。</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/ja/solutions/use-cases/healthcare/">このソリューションを見る →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-4" role="tabpanel" aria-labelledby="it-4" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/supply-chain.jpg')"></div>
+          <div><div class="ic">調達・サプライチェーン</div><h3>仕入先資格モニタリング</h3><p>仕入先の資格が有効かを、書類を集めずに確かめる。更新のたびの回収作業がなくなります。</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/ja/solutions/use-cases/supply-chain/">このソリューションを見る →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-5" role="tabpanel" aria-labelledby="it-5" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/media.jpg')"></div>
+          <div><div class="ic">メディア・コンテンツ</div><h3>コンテンツ真正性</h3><p>公開した記事や写真の出所を、あとから示せるようにする。消して回る運用から降りられます。</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/ja/solutions/use-cases/media/">このソリューションを見る →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-6" role="tabpanel" aria-labelledby="it-6" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/retail.jpg')"></div>
+          <div><div class="ic">サービス・小売</div><h3>グループ横断アイデンティティ</h3><p>複数サービスで同じ本人性を、鍵を配らずに通す。本部への照会を待ちません。</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/ja/solutions/use-cases/retail/">このソリューションを見る →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-7" role="tabpanel" aria-labelledby="it-7" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/ai.jpg')"></div>
+          <div><div class="ic">AI導入（業種横断）</div><h3>AI実行ガバナンス</h3><p>AI の実行を、あとから根拠ごと提示できる形で残す。説明を求められたときに出せます。</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/ja/solutions/use-cases/ai/">このソリューションを見る →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-8" role="tabpanel" aria-labelledby="it-8" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/developers.jpg')"></div>
+          <div><div class="ic">開発者・エージェント運用</div><h3>エージェント権限統制</h3><p>エージェントに渡すのは鍵ではなく、限度のついた権限。範囲外は実行される前に止まります。</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/ja/solutions/use-cases/developers/">このソリューションを見る →</a></div>
+        </div>
+      </div>
+      <p class="fp-more" style="margin-top:18px">9業界すべての一覧は <a class="tlink" href="/ja/solutions/">業界別ソリューション索引</a> にあります。</p>
+    </div>
+  </section>
+
+  <!-- ============ WHY NOW ============ -->
+  <section class="sec">
+    <div class="isec-h">
+      <b><span class="nb">なぜ、いま必要になったのか。</span></b>
+    </div>
+    <div class="wn">
+      <div class="card"><div class="cbody">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+          <rect x="3" y="7" width="17" height="21" rx="2" stroke="#5c6156" stroke-width="1.4"/>
+          <rect x="9" y="4" width="17" height="21" rx="2" stroke="#c25438" stroke-width="1.4"/>
+          <rect x="15" y="1.4" width="17" height="21" rx="2" stroke="#c25438" stroke-width="1.4" opacity=".5"/>
+        </svg>
+        <div class="wnlb">生成AI</div><h4>作る側</h4>
+        <p>生成のコストがゼロになりました。本物と同じ見た目のものが、いくらでも複製されます。</p>
+      </div></div>
+      <div class="card"><div class="cbody">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+          <circle cx="6" cy="17" r="3.4" stroke="#5c6156" stroke-width="1.4"/>
+          <circle cx="28" cy="8" r="3.4" stroke="#5c6156" stroke-width="1.4"/>
+          <circle cx="28" cy="26" r="3.4" stroke="#5c6156" stroke-width="1.4"/>
+          <path d="M9.2 15.6 L24.8 9.2M9.2 18.4 L24.8 24.8" stroke="#6f9c00" stroke-width="1.3"/>
+        </svg>
+        <div class="wnlb">AI エージェント</div><h4>行う側</h4>
+        <p>AI エージェントが、人の代わりに実行します。誰の権限で、どこまで動いたのかが問われます。</p>
+      </div></div>
+      <div class="card"><div class="cbody">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+          <rect x="6" y="4" width="22" height="26" rx="2" stroke="#5c6156" stroke-width="1.4"/>
+          <path d="M11 12h12M11 17h12M11 22h7" stroke="#5c6156" stroke-width="1.2" opacity=".55"/>
+          <circle cx="25" cy="24" r="6.6" fill="#fff" stroke="#6f9c00" stroke-width="1.5"/>
+          <path d="M22 24.2 L24.2 26.4 L28 21.8" stroke="#6f9c00" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <div class="wnlb">規制と説明責任</div><h4>求める側</h4>
+        <p>説明を求める側の要求が上がっています。改正個人情報保護法をはじめ、根拠の提示が前提になります。</p>
+      </div></div>
+    </div>
+    <div class="soband" id="sostmt">
+      <div class="soin">
+        <span class="solabel">だから</span>
+        <h3 class="soh">人が1件ずつ確かめる速さでは、もう追いつきません。</h3>
+        <p class="sop">確認を、機械に渡す。<em>検証は、無料で何度でも。</em></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY PROOF ============ -->
+  <section class="sec alt">
+    <div class="wp">
+      <div>
+        <div class="isec-h">
+          <b><span class="nb">Lemmaが、証明するもの。</span></b>
+        </div>
+        <p class="lead">証明を付けられるのは、記録・データ・AIの実行です。証明の種類は、5つ。用途に応じて組み合わせて使います。</p>
+        <div class="btnrow"><a class="btn solid" style="background:var(--ok);color:#1a1f16" href="/ja/pillars/">5つの証明を見る →</a></div>
+      </div>
+      <figure class="card fig fieldpanel"><div class="cbody">
+          <div class="fieldstage" id="fieldstage" aria-label="検証で本物だけが残るイメージ">
+            <div class="sweep" id="sweep"></div>
+          </div>
+          <div class="fieldfoot">残った証明 <b id="realcount">0</b> ／ 通過した情報 <b id="scancount">0</b><span class="sim">— イメージ</span></div>
+        </div></figure>
+    </div>
+
+    <div class="p5">
+      <a class="p5i" href="/ja/pillars/#provenance"><span class="p5n">01</span><b>来歴</b><span class="p5d">どこから来たのか。原本を渡さず、出所と無改ざんを示す。</span></a>
+      <a class="p5i" href="/ja/pillars/#authentication"><span class="p5n">02</span><b>認証</b><span class="p5d">誰のものか。鍵を送らず、本人だと証明する。</span></a>
+      <a class="p5i" href="/ja/pillars/#authority"><span class="p5n">03</span><b>権限</b><span class="p5d">どこまで任せたのか。鍵を渡さず、範囲だけを委ねる。</span></a>
+      <a class="p5i" href="/ja/pillars/#inference"><span class="p5n">04</span><b>推論</b><span class="p5d">何を根拠に動いたのか。モデルを開示せずに、実行を証明する。</span></a>
+      <a class="p5i" href="/ja/pillars/#attribute"><span class="p5n">05</span><b>属性</b><span class="p5d">要件を満たすか。値そのものを明かさず、満たすことだけを示す。</span></a>
+    </div>
+  </section>
+
+  <!-- ============ START ============ -->
+  <section class="sec">
+    <div class="start">
+      <div class="isec-h">
+        <b><span class="nb">はじめ方は、3つ。</span></b>
+      </div>
+      <p class="lead">証明という信頼レイヤーを、事業のどこに組み込むか。エージェントとの取引、プロダクトへの実装、業務プロセスへの適用——目的に近いところから着手できます。</p>
+      <div class="st3">
+        <div class="card"><div class="cbody">
+          <div class="lb"><i>01</i>エージェントとの取引</div>
+          <h4>Trust402</h4>
+          <p>エージェントに任せる側にも、エージェントに売る側にも。x402 の上に、証明を足します。</p>
+          <a class="btn" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">サンドボックスで試す</a>
+        </div></div>
+        <div class="card"><div class="cbody">
+          <div class="lb"><i>02</i>プロダクトへの実装</div>
+          <h4>Lemma API</h4>
+          <p>ひとつの API で、5種の証明。発行は有料・一度きり、検証は無料・何度でも。</p>
+          <a class="btn" href="/ja/guides/">ドキュメントを読む</a>
+        </div></div>
+        <div class="card"><div class="cbody">
+          <div class="lb"><i>03</i>業務プロセスへの適用</div>
+          <h4>エンタープライズ</h4>
+          <p>どの工程を止めずに通せるようになるか。構成のご相談から始められます。</p>
+          <a class="btn" href="https://tally.so/r/EkBqDX?source=top">エンタープライズ相談</a>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LATEST ============ -->
+  <section class="sec alt">
+    <div class="isec-h">
+      <b><span class="nb">最近の動き。</span></b>
+    </div>
+    <div class="lat3">
+      <a href="https://www.metawater.co.jp/news/2025/02/web3dao.html" target="_blank" rel="noopener"><div class="card"><figure class="latimg"><div class="pgrid"></div><span>導入事例</span></figure><div class="cbody">
+        <div class="lb">導入事例</div>
+        <b>メタウォーター — AI変電所の実証</b>
+        <span>水インフラの実行記録に証明を付ける取り組み。記事を読む →</span>
+      </div></div></a>
+      <a><div class="card"><figure class="latimg"><div class="pgrid"></div><span>プレスリリース</span></figure><div class="cbody">
+        <div class="lb">プレスリリース</div>
+        <b>（発表内容に差し替え）</b>
+        <span>公開後に本文と画像を差し替えます。詳しく →</span>
+      </div></div></a>
+      <a href="/ja/critical/briefs/105-japro-likeness-voice-ai-provenance/"><div class="card"><figure class="latimg"><div class="pgrid"></div><span>Critical Brief</span></figure><div class="cbody">
+        <div class="lb">Critical Brief</div>
+        <b>No.105 — 肖像・声の無断利用をめぐる論点</b>
+        <span>いま争点になっていることを、事実から追う。Brief を読む →</span>
+      </div></div></a>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta">
+    <figure class="tech">
+      <div class="pgrid"></div>
+      <div class="tin ctagrid">
+        <div>
+        <h3><span class="nb">証明のあるものだけが、</span><span class="nb">先へ進みます。</span></h3>
+        <div class="ctaline" aria-hidden="true"><i class="bar"></i><i class="head"></i></div>
+        <p>確認を待つ工程が消え、記録も、データも、AI の実行も、そのまま次へ渡ります。まず1つの業務から始められます。</p>
+        <div class="btnrow">
+          <a class="btn solid" href="https://tally.so/r/EkBqDX?source=top">エンタープライズ相談</a>
+          <a class="btn ghostd js-doclink" href="/ja/verify/">証明サンプルを検証する</a>
+        </div>
+        </div>
+        <div class="devcol">
+          <div class="devlb">開発者の方へ</div>
+          <div class="devlinks">
+            <a href="/ja/blog/lemma-oracle-specs/">仕様書 / Lemma Oracle →</a>
+            <a href="/ja/blog/encrypt-everything-expose-nothing/">すべてを暗号化し、何も露出しない →</a>
+            <a href="/ja/blog/prove-facts-with-zero-knowledge/">ゼロ知識で事実を証明する →</a>
+            <a href="/ja/blog/query-verified-attributes/">検証済み属性をクエリする →</a>
+            <a href="/ja/blog/provenance-that-never-disappears/">消えることのない来歴 →</a>
+            <a href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">サンドボックスで試す →</a>
+          </div>
+        </div>
+      </div>
+    </figure>
+  </section>
+</div>

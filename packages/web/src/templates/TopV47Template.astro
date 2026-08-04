@@ -1,0 +1,323 @@
+---
+/**
+ * トップページ v47 — `/ja/`（JA）と `/`（EN）。
+ *
+ * 正典: lemma_top_mock_v47.html ＋ Lemma_トップページ_実装指示_v1_2026-08-04.md（Phase6）。
+ * seal-v4 と同じ fragment（config/top-v47.{ja,en}.html）＋ scoped CSS
+ * （styles/top-v47.css, .topx）方式。ナビ・フッターは共通コンポーネント。
+ *
+ * 指示書の要点:
+ *   - ムービーは外部ファイル /assets/film/concept-film.html?embed=1（srcdoc・base64 禁止）。
+ *     読み込み即再生せず、ビューポート進入時に postMessage で再生。
+ *     reduced-motion では play を送らない（ムービー側は 01 の完成状態で静止）。
+ *   - レジストリは表示のたびに GET /v1/counters。失敗時は推定で埋めず
+ *     「レジストリに到達できません。推定値では埋めません。」（/verify/ と同一表記）。
+ *   - ヒーロー第2CTA は為替フィードの docHash をライブ取得して /verify/?doc= に埋める。
+ *     取得失敗時は /verify/ のまま。
+ *   - 未実測の数字（8ms・0.4s・312 等）は書かない。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import bodyJa from "../config/top-v47.ja.html?raw";
+import bodyEn from "../config/top-v47.en.html?raw";
+import "../styles/top-v47.css";
+
+export interface TopV47TemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as TopV47TemplateProps;
+const isJa = locale === "ja";
+const body = isJa ? bodyJa : bodyEn;
+
+const API_BASE = "https://workers.lemma.workers.dev/v1";
+const VERIFY_PATH = `${base}/verify/`;
+
+// レジストリ表記は /verify/ の VerifyAnchorTemplate と揃える（指示 §3.1）。
+const REG = isJa
+  ? {
+      perr: "レジストリに到達できません。推定値では埋めません。",
+      breakdown: "内訳 — ",
+      numLocale: "ja-JP",
+      timeLocale: "ja-JP",
+    }
+  : {
+      perr: "The registry is unreachable. We do not fill in estimates.",
+      breakdown: "Breakdown — ",
+      numLocale: "en-US",
+      timeLocale: "en-US",
+    };
+
+const metaTitle = isJa
+  ? "Lemma — 真正性のある AI データ基盤｜検証可能 AI の信頼インフラ"
+  : "Lemma — An authentic data foundation for AI | verifiable-AI trust infrastructure";
+const metaDescription = isJa
+  ? "データを渡さずに来歴・属性・実績の真正性を暗号的に証明する、AI のための信頼インフラ（データ基盤）。生データを開示せず第三者が独立検証。検証可能AI・エージェント決済・規制対応。Trusted Web 準拠。"
+  : "Lemma is trust infrastructure for AI: prove the provenance, attributes, and track record of data cryptographically — without sharing raw data — verifiable by any third party. Verifiable AI, agent payments, regulatory attributes. Trusted Web–aligned.";
+---
+
+<Layout
+  locale={locale}
+  metaType="home"
+  title={metaTitle}
+  description={metaDescription}
+  ogImage={`https://lemma.frame00.com/og/home/${locale}.png`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+  <main class="topx" set:html={body} />
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+
+  <script is:inline define:vars={{ API_BASE, VERIFY_PATH, REG }}>
+    (function () {
+      var reduced =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      /* ---- 業界タブ（プリレンダー済みのボタンに切替だけ付ける） ---- */
+      (function () {
+        var N = 9;
+        function sel(n) {
+          for (var i = 0; i < N; i++) {
+            var t = document.getElementById("it-" + i);
+            var p = document.getElementById("ip-" + i);
+            if (!t || !p) return;
+            t.setAttribute("aria-selected", String(i === n));
+            p.hidden = i !== n;
+          }
+        }
+        for (var i = 0; i < N; i++) {
+          (function (n) {
+            var t = document.getElementById("it-" + n);
+            if (t)
+              t.addEventListener("click", function () {
+                sel(n);
+              });
+          })(i);
+        }
+      })();
+
+      /* ---- レジストリ実数（/verify/ と同じ GET /v1/counters・同じ数え方の宣言） ---- */
+      (function () {
+        var V = document.getElementById("vcount"),
+          I = document.getElementById("icount"),
+          S = document.getElementById("vsub"),
+          U = document.getElementById("vup");
+        if (!V) return;
+        function off() {
+          V.textContent = "———";
+          I.textContent = "———";
+          V.classList.add("off");
+          S.textContent = REG.perr;
+          U.textContent = "—";
+        }
+        function num(n) {
+          return (n || 0).toLocaleString(REG.numLocale);
+        }
+        function fmtTime(s) {
+          if (!s) return "—";
+          var d = new Date(s.indexOf("T") >= 0 ? s : s.replace(" ", "T") + "Z");
+          if (isNaN(d.getTime())) return "—";
+          return d.toLocaleString(REG.timeLocale, {
+            month: "numeric",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+        fetch(API_BASE + "/counters", { headers: { accept: "application/json" } })
+          .then(function (r) {
+            if (!r.ok) throw 0;
+            return r.json();
+          })
+          .then(function (d) {
+            var v = d && d.verified,
+              s = d && d.issued;
+            if (!v || typeof v.count !== "number") throw 0;
+            V.textContent = num(v.count);
+            V.classList.remove("off");
+            if (s && typeof s.count === "number") I.textContent = num(s.count);
+            var by = (v.bySource || [])
+              .slice(0, 3)
+              .map(function (b) {
+                return b.source + " " + num(b.count);
+              })
+              .join("   ");
+            S.textContent = by ? REG.breakdown + by : "";
+            U.textContent = fmtTime(v.updatedAt);
+          })
+          .catch(off);
+      })();
+
+      /* ---- ヒーロー第2CTA: 為替フィードの docHash を /verify/?doc= に埋める ---- */
+      (function () {
+        fetch(API_BASE + "/suites/feeds/forex/composite/latest", {
+          headers: { accept: "application/json" },
+        })
+          .then(function (r) {
+            if (!r.ok) throw 0;
+            return r.json();
+          })
+          .then(function (j) {
+            if (!j || !j.docHash || !/^0x[0-9a-fA-F]+$/.test(j.docHash)) return;
+            var href = VERIFY_PATH + "?doc=" + encodeURIComponent(j.docHash);
+            [].forEach.call(
+              document.querySelectorAll(".js-doclink"),
+              function (a) {
+                a.href = href;
+              },
+            );
+          })
+          .catch(function () {
+            /* 失敗時は /verify/ のまま（フォールバック） */
+          });
+      })();
+
+      /* ---- 「だから」の締め帯をスクロールで浮かせる ---- */
+      (function () {
+        var el = document.getElementById("sostmt");
+        if (!el) return;
+        if (reduced || !("IntersectionObserver" in window)) {
+          el.classList.add("on");
+          return;
+        }
+        var io = new IntersectionObserver(
+          function (es) {
+            es.forEach(function (e) {
+              if (e.isIntersecting) {
+                e.target.classList.add("on");
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.35 },
+        );
+        io.observe(el);
+      })();
+
+      /* ---- フィールドスイープ（左→右のみ・reduced-motion では全件チェック済みで静止） ---- */
+      (function () {
+        var stage = document.getElementById("fieldstage"),
+          sweep = document.getElementById("sweep");
+        if (!stage || !sweep) return;
+        var FCOLS = 9,
+          FROWS = 6,
+          items = [];
+        for (var r = 0; r < FROWS; r++)
+          for (var c = 0; c < FCOLS; c++) {
+            var el = document.createElement("div");
+            var real = Math.random() < 0.2;
+            el.className = "fitem " + (real ? "real" : "fake");
+            if (real)
+              el.innerHTML =
+                '<span class="fmark"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.4 6.3 L4.9 8.8 L9.6 3.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+            var x = 4 + c * (90 / (FCOLS - 1));
+            el.style.left = x + "%";
+            el.style.top = 6 + r * (78 / (FROWS - 1)) + "%";
+            stage.appendChild(el);
+            items.push({ el: el, real: real, x: x });
+          }
+        var sx = 0,
+          scanned = 0,
+          reals = 0;
+        var RC = document.getElementById("realcount"),
+          SC = document.getElementById("scancount");
+        function step() {
+          sx += 0.42;
+          if (sx > 104) {
+            sx = 0;
+            scanned = 0;
+            reals = 0;
+            items.forEach(function (i) {
+              i.el.classList.remove("checked");
+            });
+            if (SC) SC.textContent = 0;
+            if (RC) RC.textContent = 0;
+          }
+          sweep.style.left = sx + "%";
+          items.forEach(function (i) {
+            if (!i.el.classList.contains("checked") && i.x < sx) {
+              i.el.classList.add("checked");
+              scanned++;
+              if (i.real) {
+                reals++;
+                if (RC) RC.textContent = reals;
+              }
+              if (SC) SC.textContent = scanned;
+            }
+          });
+        }
+        if (!reduced) {
+          setInterval(step, 40);
+        } else {
+          items.forEach(function (i) {
+            i.el.classList.add("checked");
+            if (i.real) reals++;
+            scanned++;
+          });
+          if (RC) RC.textContent = reals;
+          if (SC) SC.textContent = scanned;
+          sweep.style.display = "none";
+        }
+      })();
+
+      /* ---- ムービー: 進入時に再生・シーン要約と連動（連動しなくても全行読める） ---- */
+      (function () {
+        var ids = ["01", "02", "03", "04"];
+        window.addEventListener("message", function (e) {
+          var d = e.data;
+          if (!d || d.type !== "lemma:film:scene") return;
+          var n = String(d.scene).padStart(2, "0");
+          if (ids.indexOf(n) < 0) return;
+          ids.forEach(function (i) {
+            var el = document.getElementById("scn-" + i);
+            if (el) el.classList.toggle("on", i === n);
+          });
+        });
+
+        var f = document.getElementById("film");
+        if (!f) return;
+        function post(cmd) {
+          try {
+            f.contentWindow.postMessage({ type: "lemma:film:" + cmd }, "*");
+          } catch (err) {
+            /* iframe 未準備なら load 側で再送する */
+          }
+        }
+        /* reduced-motion では自動再生しない（ムービー側は 01 の完成状態で静止） */
+        if (reduced) return;
+        /* iframe の読み込みは非同期: 進入フラグと load の両方で play を送る */
+        var want = false,
+          ready = false;
+        f.addEventListener("load", function () {
+          ready = true;
+          if (want) post("play");
+        });
+        if (!("IntersectionObserver" in window)) {
+          want = true;
+          post("play");
+          return;
+        }
+        var io = new IntersectionObserver(
+          function (es) {
+            es.forEach(function (e) {
+              if (e.isIntersecting) {
+                want = true;
+                /* すでに読み込み済みのときはここで届く。未読込なら load 側で再送 */
+                post("play");
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.4 },
+        );
+        io.observe(f);
+      })();
+    })();
+  </script>
+</Layout>

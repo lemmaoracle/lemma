@@ -1,0 +1,327 @@
+<!-- Top page v47 body (EN). Canonical: lemma_top_mock_v47.html + 実装指示 v1 2026-08-04.
+     Nav / footer are shared components (not part of this fragment).
+     EN industry detail pages do not exist yet, so industry panels link to /solutions/. -->
+
+<!-- ============ HERO ============ -->
+<section class="herodark">
+  <div class="hin">
+    <div>
+      <h1>Prove what's real, in the age of AI.</h1>
+      <p class="sublead">Generative AI has driven the cost of copying to zero. Lemma attaches cryptographic proofs to records, data, and AI runs, so whoever receives them can verify them on their own. Only what carries proof moves forward.</p>
+      <ul class="tfacts">
+        <li>Raw data never reaches us</li>
+        <li>Third parties can verify from anywhere in the world</li>
+        <li>Verification needs no key and no account</li>
+      </ul>
+      <div class="btnrow" style="margin-top:0">
+        <a class="btn solid" href="https://tally.so/r/Pd2Rl5?source=top">Enterprise consultation</a>
+        <a class="btn ghostd js-doclink" href="/verify/">Verify a sample proof</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="reghead">
+        <span class="rlabel">LEMMA REGISTRY</span>
+        <span class="rlive"><i></i>LIVE</span>
+        <span class="rep">GET /v1/counters</span>
+      </div>
+      <p class="ren">Proof Verifications</p>
+      <p class="biglabel">Verified proofs</p>
+      <p class="bignum off" id="vcount">———</p>
+      <p class="bigsub">One successful verification counts as one — not one data point, not one request.</p>
+      <p class="bigsub" id="vsub">Loading…</p>
+      <a class="biglink" href="https://workers.lemma.workers.dev/v1/counters" target="_blank" rel="noopener">Verify these numbers →</a>
+      <div class="bigrow">
+        <div>
+          <p class="ren">Proofs Issued</p>
+          <p class="biglabel sm">Issued proofs</p>
+          <div class="bv" id="icount">———</div>
+          <div class="bn">One registration counts as one.</div>
+        </div>
+      </div>
+      <p class="rup">LAST UPDATED <span id="vup">—</span></p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <!-- ============ STORY ============ -->
+  <section class="sec">
+    <div class="isec-h">
+      <b>They look identical. Only the real one can be verified.</b>
+    </div>
+    <p class="lead">Same headline, same photo, same layout. Neither readers nor receiving systems can tell them apart.</p>
+
+    <div class="filmbleed">
+      <figure class="filmwrap">
+        <iframe id="film" src="/assets/film/concept-film.html?embed=1&amp;lang=en" title="Lemma concept film — from endlessly chasing fakes to only what carries proof moving forward (0:23)" loading="lazy"></iframe>
+      </figure>
+    </div>
+
+    <div class="scenes">
+      <div class="scn" id="scn-01">
+        <span class="bar"></span><span class="n">01</span>
+        <h4>Chasing fakes, with no end.</h4>
+        <p>Take one down, another appears. Nothing is distinguishable, and the work of chasing piles up.</p>
+        <div class="back">For the pursuer, it never ends.</div>
+      </div>
+      <div class="scn" id="scn-02">
+        <span class="bar"></span><span class="n">02</span>
+        <h4>Stop chasing. Prove the real one.</h4>
+        <p>One API call at publish time.</p>
+        <div class="back">Only the hash was received. Neither the original nor the photo stays with Lemma.</div>
+      </div>
+      <div class="scn" id="scn-03">
+        <span class="bar"></span><span class="n">03</span>
+        <h4>One tap to check, on the spot.</h4>
+        <p>No app, no account, and verification is free.</p>
+        <div class="back">No callback to the issuer's server. However many times it is checked, the cost does not grow.</div>
+      </div>
+      <div class="scn" id="scn-04">
+        <span class="bar"></span><span class="n">04</span>
+        <h4>From check to distribution, nothing stops.</h4>
+        <p>The receiving system matches the proof itself and moves straight to the next step.</p>
+        <div class="back">Pass or stop — the receiver sets the rules. Lemma does not decide.</div>
+      </div>
+    </div>
+
+    <div class="bridge">
+      <p class="bh">The same thing is happening here, too.</p>
+      <div class="bitems">
+        <div class="bi"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="9" width="20" height="26" rx="2" fill="none" stroke="#5c6156" stroke-width="1.3"/><rect x="10" y="5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3"/><rect x="16" y="1.5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3" opacity=".45"/></svg><b>Invoices</b><span>The same layout can be produced in any quantity</span></div>
+        <div class="bi"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="9" width="20" height="26" rx="2" fill="none" stroke="#5c6156" stroke-width="1.3"/><rect x="10" y="5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3"/><rect x="16" y="1.5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3" opacity=".45"/></svg><b>Résumés</b><span>What is written cannot be checked</span></div>
+        <div class="bi"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="9" width="20" height="26" rx="2" fill="none" stroke="#5c6156" stroke-width="1.3"/><rect x="10" y="5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3"/><rect x="16" y="1.5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3" opacity=".45"/></svg><b>ID documents</b><span>A card face can be copied as an image</span></div>
+        <div class="bi"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="9" width="20" height="26" rx="2" fill="none" stroke="#5c6156" stroke-width="1.3"/><rect x="10" y="5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3"/><rect x="16" y="1.5" width="20" height="26" rx="2" fill="none" stroke="#c25438" stroke-width="1.3" opacity=".45"/></svg><b>Requests from AI</b><span>A name alone does not tell you whose agent it is</span></div>
+      </div>
+      <div class="bfoot">
+        <p class="bfq">All of these could be checked by showing the original.<br>But you do not want to hand the original over.</p>
+        <p class="bfa">Hand over the proof — not the original.</p>
+        <p class="bfn">Fakes will not disappear. They become distinguishable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INDUSTRIES ============ -->
+  <section class="sec alt">
+    <div>
+      <div class="isec-h">
+        <b>Does this pattern appear in your operations, too?</b>
+      </div>
+      <div class="ind-tabs" role="tablist" id="indtabs">
+        <button class="ind-tab" type="button" role="tab" id="it-0" aria-controls="ip-0" aria-selected="true">Manufacturing &amp; Critical Infra</button>
+        <button class="ind-tab" type="button" role="tab" id="it-1" aria-controls="ip-1" aria-selected="false">Finance &amp; FinTech</button>
+        <button class="ind-tab" type="button" role="tab" id="it-2" aria-controls="ip-2" aria-selected="false">Public Sector</button>
+        <button class="ind-tab" type="button" role="tab" id="it-3" aria-controls="ip-3" aria-selected="false">Healthcare</button>
+        <button class="ind-tab" type="button" role="tab" id="it-4" aria-controls="ip-4" aria-selected="false">Procurement &amp; Supply Chain</button>
+        <button class="ind-tab" type="button" role="tab" id="it-5" aria-controls="ip-5" aria-selected="false">Media &amp; Content</button>
+        <button class="ind-tab" type="button" role="tab" id="it-6" aria-controls="ip-6" aria-selected="false">Service &amp; Retail</button>
+        <button class="ind-tab" type="button" role="tab" id="it-7" aria-controls="ip-7" aria-selected="false">AI Adoption (cross-industry)</button>
+        <button class="ind-tab" type="button" role="tab" id="it-8" aria-controls="ip-8" aria-selected="false">Developers &amp; Agent Ops</button>
+      </div>
+      <div id="indpanels">
+        <div class="ind-panel" id="ip-0" role="tabpanel" aria-labelledby="it-0">
+          <div class="ind-ph has-photo" style="background-image:url('/industry/manufacturing.jpg')"></div>
+          <div><div class="ic">Manufacturing &amp; Critical Infra</div><h3>Inspection Record Assurance</h3><p>Show inspection records and measurements to your counterparties without handing over the originals. No more re-collecting originals for every audit.</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/solutions/">See the solutions →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-1" role="tabpanel" aria-labelledby="it-1" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/finance.jpg')"></div>
+          <div><div class="ic">Finance &amp; FinTech</div><h3>Counterparty Record Verification</h3><p>Check a counterparty's records without receiving the originals — and without the custody obligations that begin the moment you hold them.</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/solutions/">See the solutions →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-2" role="tabpanel" aria-labelledby="it-2" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/public-sector.jpg')"></div>
+          <div><div class="ic">Public Sector</div><h3>Certificate-less Procedures</h3><p>Stop attaching certificates; pass only the fact that requirements are met. Window checks stop turning into waiting time.</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/solutions/">See the solutions →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-3" role="tabpanel" aria-labelledby="it-3" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/healthcare.jpg')"></div>
+          <div><div class="ic">Healthcare</div><h3>Qualified Worker Assurance</h3><p>Show only that the qualification exists, without handing over personal details. The check is done before the assignment starts.</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/solutions/">See the solutions →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-4" role="tabpanel" aria-labelledby="it-4" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/supply-chain.jpg')"></div>
+          <div><div class="ic">Procurement &amp; Supply Chain</div><h3>Supplier Credential Monitoring</h3><p>Check that a supplier's credentials are valid without collecting documents. Collection rounds at every renewal go away.</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/solutions/">See the solutions →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-5" role="tabpanel" aria-labelledby="it-5" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/media.jpg')"></div>
+          <div><div class="ic">Media &amp; Content</div><h3>Content Authenticity</h3><p>Make the origin of published articles and photos verifiable after the fact — and step off the takedown treadmill.</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/solutions/">See the solutions →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-6" role="tabpanel" aria-labelledby="it-6" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/retail.jpg')"></div>
+          <div><div class="ic">Service &amp; Retail</div><h3>Cross-group Identity</h3><p>Carry the same identity across services without distributing keys. No waiting on head-office lookups.</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/solutions/">See the solutions →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-7" role="tabpanel" aria-labelledby="it-7" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/ai.jpg')"></div>
+          <div><div class="ic">AI Adoption (cross-industry)</div><h3>AI Run Governance</h3><p>Keep AI runs in a form you can later present with their grounds. When someone asks for an explanation, you have one to show.</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/solutions/">See the solutions →</a></div>
+        </div>
+        <div class="ind-panel" id="ip-8" role="tabpanel" aria-labelledby="it-8" hidden>
+          <div class="ind-ph has-photo" style="background-image:url('/industry/developers.jpg')"></div>
+          <div><div class="ic">Developers &amp; Agent Ops</div><h3>Agent Authority Control</h3><p>What you hand an agent is not a key but a bounded authority. Anything outside the scope is stopped before it runs.</p>
+            <a class="btn" style="background:var(--ok);color:#1a1f16" href="/solutions/">See the solutions →</a></div>
+        </div>
+      </div>
+      <p class="fp-more" style="margin-top:18px">The full list for all nine industries is in the <a class="tlink" href="/solutions/">solutions index</a>.</p>
+    </div>
+  </section>
+
+  <!-- ============ WHY NOW ============ -->
+  <section class="sec">
+    <div class="isec-h">
+      <b>Why this became necessary now.</b>
+    </div>
+    <div class="wn">
+      <div class="card"><div class="cbody">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+          <rect x="3" y="7" width="17" height="21" rx="2" stroke="#5c6156" stroke-width="1.4"/>
+          <rect x="9" y="4" width="17" height="21" rx="2" stroke="#c25438" stroke-width="1.4"/>
+          <rect x="15" y="1.4" width="17" height="21" rx="2" stroke="#c25438" stroke-width="1.4" opacity=".5"/>
+        </svg>
+        <div class="wnlb">Generative AI</div><h4>Those who make</h4>
+        <p>The cost of generating has fallen to zero. Things that look exactly like the real one can be copied without limit.</p>
+      </div></div>
+      <div class="card"><div class="cbody">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+          <circle cx="6" cy="17" r="3.4" stroke="#5c6156" stroke-width="1.4"/>
+          <circle cx="28" cy="8" r="3.4" stroke="#5c6156" stroke-width="1.4"/>
+          <circle cx="28" cy="26" r="3.4" stroke="#5c6156" stroke-width="1.4"/>
+          <path d="M9.2 15.6 L24.8 9.2M9.2 18.4 L24.8 24.8" stroke="#6f9c00" stroke-width="1.3"/>
+        </svg>
+        <div class="wnlb">AI agents</div><h4>Those who act</h4>
+        <p>AI agents act in people's place. Whose authority they ran under, and how far they went, is now the question.</p>
+      </div></div>
+      <div class="card"><div class="cbody">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+          <rect x="6" y="4" width="22" height="26" rx="2" stroke="#5c6156" stroke-width="1.4"/>
+          <path d="M11 12h12M11 17h12M11 22h7" stroke="#5c6156" stroke-width="1.2" opacity=".55"/>
+          <circle cx="25" cy="24" r="6.6" fill="#fff" stroke="#6f9c00" stroke-width="1.5"/>
+          <path d="M22 24.2 L24.2 26.4 L28 21.8" stroke="#6f9c00" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <div class="wnlb">Regulation &amp; accountability</div><h4>Those who ask</h4>
+        <p>Demands for explanation keep rising. Starting with Japan's amended privacy law, presenting the grounds is becoming the premise.</p>
+      </div></div>
+    </div>
+    <div class="soband" id="sostmt">
+      <div class="soin">
+        <span class="solabel">SO</span>
+        <h3 class="soh">Checking one item at a time, by hand, no longer keeps up.</h3>
+        <p class="sop">Hand the checking to machines. <em>Verification is free — as many times as you need.</em></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY PROOF ============ -->
+  <section class="sec alt">
+    <div class="wp">
+      <div>
+        <div class="isec-h">
+          <b>What Lemma proves.</b>
+        </div>
+        <p class="lead">Proofs can be attached to records, data, and AI runs. There are five kinds of proofs. Combine them to fit the job.</p>
+        <div class="btnrow"><a class="btn solid" style="background:var(--ok);color:#1a1f16" href="/pillars/">See the five proofs →</a></div>
+      </div>
+      <figure class="card fig fieldpanel"><div class="cbody">
+          <div class="fieldstage" id="fieldstage" aria-label="An illustration of verification leaving only the real ones">
+            <div class="sweep" id="sweep"></div>
+          </div>
+          <div class="fieldfoot">Proofs remaining <b id="realcount">0</b> ／ Items passed <b id="scancount">0</b><span class="sim">— illustration</span></div>
+        </div></figure>
+    </div>
+
+    <div class="p5">
+      <a class="p5i" href="/pillars/#provenance"><span class="p5n">01</span><b>Provenance</b><span class="p5d">Where did it come from? Show origin and integrity without handing over the original.</span></a>
+      <a class="p5i" href="/pillars/#authentication"><span class="p5n">02</span><b>Authentication</b><span class="p5d">Whose is it? Prove it is you without sending your key.</span></a>
+      <a class="p5i" href="/pillars/#authority"><span class="p5n">03</span><b>Authority</b><span class="p5d">How much was delegated? Entrust the scope without handing over the key.</span></a>
+      <a class="p5i" href="/pillars/#inference"><span class="p5n">04</span><b>Inference</b><span class="p5d">What did it act on? Prove the run without disclosing the model.</span></a>
+      <a class="p5i" href="/pillars/#attribute"><span class="p5n">05</span><b>Attribute</b><span class="p5d">Does it meet the requirement? Show only that it does, without revealing the value.</span></a>
+    </div>
+  </section>
+
+  <!-- ============ START ============ -->
+  <section class="sec">
+    <div class="start">
+      <div class="isec-h">
+        <b>Three ways to start.</b>
+      </div>
+      <p class="lead">Where does the proof layer fit into your business? Transactions with agents, implementation in your product, or application to business processes — start from the one closest to your goal.</p>
+      <div class="st3">
+        <div class="card"><div class="cbody">
+          <div class="lb"><i>01</i>Transactions with agents</div>
+          <h4>Trust402</h4>
+          <p>For those who delegate to agents, and those who sell to agents. Adds proofs on top of x402.</p>
+          <a class="btn" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Try the sandbox</a>
+        </div></div>
+        <div class="card"><div class="cbody">
+          <div class="lb"><i>02</i>Implementation in your product</div>
+          <h4>Lemma API</h4>
+          <p>Five kinds of proofs through one API. Issuance is paid, once; verification is free, every time.</p>
+          <a class="btn" href="/guides/">Read the docs</a>
+        </div></div>
+        <div class="card"><div class="cbody">
+          <div class="lb"><i>03</i>Application to business processes</div>
+          <h4>Enterprise</h4>
+          <p>See which steps can pass without stopping. Start with a conversation about your configuration.</p>
+          <a class="btn" href="https://tally.so/r/Pd2Rl5?source=top">Enterprise consultation</a>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LATEST ============ -->
+  <section class="sec alt">
+    <div class="isec-h">
+      <b>Recent updates.</b>
+    </div>
+    <div class="lat3">
+      <a href="https://www.metawater.co.jp/news/2025/02/web3dao.html" target="_blank" rel="noopener"><div class="card"><figure class="latimg"><div class="pgrid"></div><span>Case study</span></figure><div class="cbody">
+        <div class="lb">Case study</div>
+        <b>Metawater — AI substation pilot</b>
+        <span>Attaching proofs to execution records in water infrastructure. Read the article →</span>
+      </div></div></a>
+      <a><div class="card"><figure class="latimg"><div class="pgrid"></div><span>Press release</span></figure><div class="cbody">
+        <div class="lb">Press release</div>
+        <b>(To be replaced with the announcement)</b>
+        <span>Body and image will be replaced after publication. Details →</span>
+      </div></div></a>
+      <a href="/critical/briefs/105-japro-likeness-voice-ai-provenance/"><div class="card"><figure class="latimg"><div class="pgrid"></div><span>Critical Brief</span></figure><div class="cbody">
+        <div class="lb">Critical Brief</div>
+        <b>No.105 — Unauthorized likeness and voice use, in dispute</b>
+        <span>Following what is contested now, from the facts. Read the brief →</span>
+      </div></div></a>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta">
+    <figure class="tech">
+      <div class="pgrid"></div>
+      <div class="tin ctagrid">
+        <div>
+        <h3>Only what carries proof moves forward.</h3>
+        <div class="ctaline" aria-hidden="true"><i class="bar"></i><i class="head"></i></div>
+        <p>The waiting-for-review step disappears — records, data, and AI runs pass straight to the next stage. You can start with a single workflow.</p>
+        <div class="btnrow">
+          <a class="btn solid" href="https://tally.so/r/Pd2Rl5?source=top">Enterprise consultation</a>
+          <a class="btn ghostd js-doclink" href="/verify/">Verify a sample proof</a>
+        </div>
+        </div>
+        <div class="devcol">
+          <div class="devlb">For developers</div>
+          <div class="devlinks">
+            <a href="/blog/lemma-oracle-specs/">Specs / Lemma Oracle →</a>
+            <a href="/blog/encrypt-everything-expose-nothing/">Encrypt everything, expose nothing →</a>
+            <a href="/blog/prove-facts-with-zero-knowledge/">Prove facts with zero knowledge →</a>
+            <a href="/blog/query-verified-attributes/">Query verified attributes →</a>
+            <a href="/blog/provenance-that-never-disappears/">Provenance that never disappears →</a>
+            <a href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Try the sandbox →</a>
+          </div>
+        </div>
+      </div>
+    </figure>
+  </section>
+</div>

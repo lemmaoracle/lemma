@@ -1,5 +1,5 @@
 ---
-import IndexTemplate from "../templates/IndexTemplate.astro";
+import TopV47Template from "../templates/TopV47Template.astro";
 import { getTranslations } from "../i18n/translations";
 
 const locale = "en";
@@ -7,8 +7,4 @@ const t = getTranslations(locale);
 const base = "";
 ---
 
-<IndexTemplate
-  locale={locale}
-  t={t}
-  base={base}
-/>
+<TopV47Template locale={locale} t={t} base={base} />
