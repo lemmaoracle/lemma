@@ -165,20 +165,19 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 .topx .herodark .btn.ghostd{background:rgba(255,255,255,.10);color:#e8ece5}
 .topx .herodark .btn.ghostd:hover{background:rgba(255,255,255,.18)}
 @media(max-width:940px){.topx .herodark .hin{grid-template-columns:1fr;gap:32px}}
-/* 390px 級端末: 「何が本物かを証明する。」の .nb（11字×34px=374px）が
-   本文幅（346px）を超えて右端が見切れるため、狭幅だけ h1 を縮める */
-@media(max-width:430px){.topx .herodark h1{font-size:29px}
-  /* 「御社の業務でも起きていませんか。」(16字) 等、句読点なしの .nb は
-     keep-all では折り返せないため、狭幅だけ改行固定を解いて自然に折り返す。
-     h1 の「何が本物かを証明する。」(11字) も 360px 級では同じ問題になる
-     （社内レビュー: Masako 実機確認）ため h1 側にも適用 */
+/* 430px 級端末: keep-all では本文が溢れるため、全体を normal に倒す。
+   h1「何が本物かを証明する。」(11字×34px=374px) が 390px 級で
+   本文幅（346px）を超えるため、h1 も縮小（Masako 実機確認）。 */
+@media(max-width:430px){
+  /* h1 の .nb（11字×34px=374px）が 390px 級で本文幅（346px）を超えるため縮小 */
+  .topx .herodark h1{font-size:29px}
+  /* 句読点なし .nb（isec-h + herodark h1）は keep-all で折り返せないため解除。
+     .topx 全体の keep-all も解除し、段落本文のあふれを防ぐ（Masako 実機確認）。 */
+  .topx{word-break:normal}
+  .topx .nb{display:inline}
   .topx .isec-h b .nb,.topx .herodark h1 .nb{display:inline;word-break:normal}
-  /* ヒーロー右カラム: GET /v1/counters (.rep) は margin-left:auto の右寄せを
-     やめ、狭幅では折り返して独立行にする */
+  /* ヒーロー右カラム: GET /v1/counters (.rep) の右寄せをやめ独立行に */
   .topx .rep{flex-basis:100%;margin-left:0}}
-/* 320px 級（iPhone SE 等）: keep-all を守れる幅がなく本文まで溢れるため、
-   極狭幅では keep-all 自体を解いて自然改行に倒す */
-@media(max-width:374px){.topx{word-break:normal}.topx .nb{display:inline}}
 
 /* 巨大な実数（枠を持たない）＋ 検証センターと同じ順序 */
 /* 最大128px(モック)は h1 に対して勝ちすぎるため、96px 上限にバランス調整 */
