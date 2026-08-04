@@ -169,8 +169,16 @@ body:has(main.topx) .lemma-brand-bar{display:none}
    本文幅（346px）を超えて右端が見切れるため、狭幅だけ h1 を縮める */
 @media(max-width:430px){.topx .herodark h1{font-size:29px}
   /* 「御社の業務でも起きていませんか。」(16字) 等、句読点なしの .nb は
-     keep-all では折り返せないため、狭幅だけ改行固定を解いて自然に折り返す */
-  .topx .isec-h b .nb{display:inline;word-break:normal}}
+     keep-all では折り返せないため、狭幅だけ改行固定を解いて自然に折り返す。
+     h1 の「何が本物かを証明する。」(11字) も 360px 級では同じ問題になる
+     （社内レビュー: Masako 実機確認）ため h1 側にも適用 */
+  .topx .isec-h b .nb,.topx .herodark h1 .nb{display:inline;word-break:normal}
+  /* ヒーロー右カラム: GET /v1/counters (.rep) は margin-left:auto の右寄せを
+     やめ、狭幅では折り返して独立行にする */
+  .topx .rep{flex-basis:100%;margin-left:0}}
+/* 320px 級（iPhone SE 等）: keep-all を守れる幅がなく本文まで溢れるため、
+   極狭幅では keep-all 自体を解いて自然改行に倒す */
+@media(max-width:374px){.topx{word-break:normal}.topx .nb{display:inline}}
 
 /* 巨大な実数（枠を持たない）＋ 検証センターと同じ順序 */
 /* 最大128px(モック)は h1 に対して勝ちすぎるため、96px 上限にバランス調整 */
