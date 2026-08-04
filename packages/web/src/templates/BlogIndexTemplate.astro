@@ -71,7 +71,7 @@ const readCta = isJa ? "読む →" : "Read →";
  * 旧「業務への組み込み方と検証結果」は適用の話と実装の話の両方を吸い、
  * Solutions に技術記事が混ざる原因になっていた）。
  *
- *   Industry     論点・エッセイ    …… 事業に取り入れるかどうかの判断材料
+ *   Industry     論点・エッセイ    …… 事業に取り入れる価値（新しいジャンルの提示を含む）
  *   Solutions    業務への適用シーン …… どの業務の、どの場面で効くか
  *   Technical    設計・実装の詳細   …… 開発者・アーキテクト向け
  *   Announcements 公開のお知らせ
@@ -85,8 +85,8 @@ const CATEGORY_DESC: Record<string, Record<Locale, string>> = {
     en: "Features and releases",
   },
   Industry: {
-    ja: "事業に取り入れる論点",
-    en: "The case for adoption",
+    ja: "事業に取り入れる価値",
+    en: "The value of adoption",
   },
   Solutions: {
     ja: "業務での適用シーン",
