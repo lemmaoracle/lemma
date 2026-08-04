@@ -63,6 +63,13 @@ export interface BlogPost {
    */
   readonly audience?: "business" | "technical";
   /**
+   * この記事を出す業界（`/solutions/use-cases/<slug>/` の slug）。任意・複数可。
+   * 業界ページの Latest news 枠3 が、この記事を「その業界の記事」として
+   * 選ぶために使う（設計 v1 §5）。省略時は業種横断の扱いで、業界一致が
+   * 1本も無い業界のフォールバックとしてのみ現れる。
+   */
+  readonly industries?: ReadonlyArray<string>;
+  /**
    * 写真カバーのサイト内パス（例: `/assets/covers/<slug>.jpg`）。
    * public/ 配下にファイルが実在するときだけ写真カバーになり、無ければ
    * 抽象パターンに落ちる — 実在判定は `lib/coverPhoto.ts`。ここでパスを
@@ -197,6 +204,7 @@ interface PostFrontmatter {
   readonly categoryColor?: string;
   readonly cover?: string;
   readonly audience?: string;
+  readonly industries?: ReadonlyArray<string>;
   readonly coverPhoto?: string;
   readonly tags?: ReadonlyArray<string>;
   readonly relatedLinks?: ReadonlyArray<RelatedLink>;
@@ -421,6 +429,8 @@ function parsePost(filename: string, raw: string): BlogPost | undefined {
                 fm.audience === "business" || fm.audience === "technical"
                   ? fm.audience
                   : undefined,
+              industries:
+                fm.industries && fm.industries.length > 0 ? fm.industries : undefined,
               coverPhoto: fm.coverPhoto || undefined,
               tags: fm.tags && fm.tags.length > 0 ? fm.tags : undefined,
               relatedLinks:

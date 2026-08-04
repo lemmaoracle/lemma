@@ -42,15 +42,21 @@ const metaTitle = `${entry.name}のユースケース — ${entry.h1} | Lemma`;
  *        ここから機械導出する。03 節のラベルを変えれば枠2の対象も追随
  *        し、対応表の二重管理は生まれない。一致ゼロなら全体最新へ
  *        フォールバック（枠を空けない）
- *   枠3: audience:business の最新ブログ1本（写真カバー対応・自動）
+ *   枠3: **この業界の** audience:business ブログ最新1本（frontmatter の
+ *        `industries` で判定・写真カバー対応・自動）。業界一致が無ければ
+ *        business 全体の最新へフォールバック
  */
 const esc = (s: string): string =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const clip = (s: string, n: number): string => (s.length > n ? `${s.slice(0, n)}…` : s);
 
-const bizPost = (await getAllPosts(locale))
+/* 枠3: この業界の記事（frontmatter `industries` に自 slug を含む）の最新1本。
+ * 無い業界は business 全体の最新へフォールバックし、枠を空けない（設計 v1 §5）。 */
+const bizPosts = (await getAllPosts(locale))
   .filter((p) => p.audience === "business")
-  .sort((a, b) => (a.date > b.date ? -1 : 1))[0];
+  .sort((a, b) => (a.date > b.date ? -1 : 1));
+const bizPost =
+  bizPosts.find((p) => p.industries?.includes(entry.slug)) ?? bizPosts[0];
 
 /* 03 節の脅威ラベル（JA 表示名）→ カテゴリキーへ逆引きし、この業界の
  * 割り当て集合を作る。ラベルは data/criticalBriefs.ts の CATEGORY_LABELS
