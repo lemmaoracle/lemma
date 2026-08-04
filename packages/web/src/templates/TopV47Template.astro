@@ -139,6 +139,23 @@ const metaDescription = isJa
         function num(n) {
           return (n || 0).toLocaleString(REG.numLocale);
         }
+        /* 読み込み時に数字が上がる (検証センター /verify/ と同じ 1300ms・cubic-out)。
+           reduced-motion では最終値を直接出す。 */
+        function countUp(el, to) {
+          if (reduced) {
+            el.textContent = num(to);
+            return;
+          }
+          var t0 = performance.now(),
+            dur = 1300,
+            from = Math.max(0, to - Math.min(to, 600));
+          (function f(t) {
+            var p = Math.min(1, (t - t0) / dur),
+              e = 1 - Math.pow(1 - p, 3);
+            el.textContent = num(Math.round(from + (to - from) * e));
+            if (p < 1) requestAnimationFrame(f);
+          })(t0);
+        }
         function fmtTime(s) {
           if (!s) return "—";
           var d = new Date(s.indexOf("T") >= 0 ? s : s.replace(" ", "T") + "Z");
@@ -150,30 +167,51 @@ const metaDescription = isJa
             minute: "2-digit",
           });
         }
-        fetch(API_BASE + "/counters", { headers: { accept: "application/json" } })
-          .then(function (r) {
-            if (!r.ok) throw 0;
-            return r.json();
-          })
-          .then(function (d) {
-            var v = d && d.verified,
-              s = d && d.issued;
-            if (!v || typeof v.count !== "number") throw 0;
-            V.textContent = num(v.count);
-            V.classList.remove("off");
-            if (s && typeof s.count === "number") I.textContent = num(s.count);
-            var by = (v.bySource || [])
-              .slice(0, 3)
-              .map(function (b) {
-                return b.source + " " + num(b.count);
-              })
-              .join("   ");
-            S.textContent = by ? REG.breakdown + by : "";
-            U.textContent = fmtTime(v.updatedAt);
-            if (head) head.classList.remove("offline");
-            if (chip) chip.textContent = REG.live;
-          })
-          .catch(off);
+        var first = true;
+        function load() {
+          fetch(API_BASE + "/counters", { headers: { accept: "application/json" } })
+            .then(function (r) {
+              if (!r.ok) throw 0;
+              return r.json();
+            })
+            .then(function (d) {
+              var v = d && d.verified,
+                s = d && d.issued;
+              if (!v || typeof v.count !== "number") throw 0;
+              V.classList.remove("off");
+              var hasIssued = s && typeof s.count === "number";
+              if (first) {
+                countUp(V, v.count);
+                if (hasIssued) countUp(I, s.count);
+                first = false;
+              } else {
+                V.textContent = num(v.count);
+                if (hasIssued) I.textContent = num(s.count);
+              }
+              var by = (v.bySource || [])
+                .slice(0, 3)
+                .map(function (b) {
+                  return b.source + " " + num(b.count);
+                })
+                .join("   ");
+              S.textContent = by ? REG.breakdown + by : "";
+              U.textContent = fmtTime(v.updatedAt);
+              if (head) head.classList.remove("offline");
+              if (chip) chip.textContent = REG.live;
+            })
+            .catch(function () {
+              /* 初回失敗は推定で埋めずエラー表示。2回目以降は直近の実数を残したまま
+                 ヘッダーだけ OFFLINE に落とす (LAST UPDATED が鮮度を示す)。 */
+              if (first) {
+                off();
+              } else {
+                if (head) head.classList.add("offline");
+                if (chip) chip.textContent = REG.offline;
+              }
+            });
+        }
+        load();
+        setInterval(load, 45000);
       })();
 
       /* ---- ヒーロー第2CTA の docHash 埋め込み + レジストリのイベントストリーム ----
