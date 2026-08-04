@@ -4,13 +4,14 @@
  * （`Lemma_コンテンツテンプレート_実装指示_v1_2026-07-30.md` §3）。
  *
  * 構成: ヒーロー → フィルタピル → 注目の記事（7:5・カード装飾なし）→
- * 最近の記事6件（3列・16:9サムネ）→ すべての記事（72pxミニカバーの行）→
- * 変更履歴（3カラム行・カバーなし）→ カテゴリ4枚。
+ * すべての記事（3列カードグリッド・ページ送り）→ 変更履歴（3カラム行・
+ * カバーなし）→ カテゴリ4枚。
  *
- * カバーは「選ばれたもの」に付け、網羅リストはテキスト寄りに——大（注目）→
- * 中（最近）→ 小（すべて）→ 行（変更履歴）と重みを落とす（§3.2）。
- * フィルタで単一カテゴリを選ぶと全件が同じ色相になり情報量が消えるため、
- * フィルタ結果もカードでなく**行**で出す。
+ * 旧構成の「最近の記事6件＋72pxミニカバー行の全記事リスト」は 2026-08-04 に
+ * 統合した——ミニサムネはカバーの情報量が出ず（特に写真カバー）、閲覧の
+ * 主導線はカードの見え方でページ送りしたい、というフィードバックによる。
+ * フィルタ結果も同じカードグリッドで出す（写真カバー混在で色相の単調さは
+ * 解消済みのため、行に落とす理由がなくなった）。
  *
  * v24 のスクロール reveal は落とした（`prefers-reduced-motion` でホバー以外の
  * アニメーションを無効にする受け入れ基準に対し、消してしまうのが最も確実。
@@ -164,13 +165,15 @@ const C = isJa
           </section>
         )}
 
-        {recent.length > 0 && (
-          <section>
+        {entries.length > 1 && (
+          <section data-all-section>
             <div class="bi-label">
-              <b>{C.recent}</b><span>{C.recentEn}</span>
+              <b>{C.all}</b><span>All — {entries.length}</span>
             </div>
+            {/* 注目に出した1本目は重複させず、2本目以降をカードで。
+                ページ送りは SSR 全件 + 表示切り替え（Brief 一覧と同じ方式）。 */}
             <div class="bi-grid">
-              {recent.map((post) => (
+              {entries.slice(1).map((post) => (
                 <a class="bi-card" href={`${blogPath}/${post.slug}`}>
                   <div class="bi-thumb">
                     <BlogCoverAuto category={post.category} slug={post.slug} coverPhoto={post.coverPhoto} />
@@ -183,26 +186,6 @@ const C = isJa
                   <h3 class="bi-card-title">{post.title}</h3>
                   {post.abstract && <p class="bi-card-ex">{post.abstract}</p>}
                   <span class="bi-cta">{readCta}</span>
-                </a>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {entries.length > 0 && (
-          <section data-all-section>
-            <div class="bi-label">
-              <b>{C.all}</b><span>All — {entries.length}</span>
-            </div>
-            <div class="bi-alist">
-              {entries.map((post) => (
-                <a class="bi-arow" href={`${blogPath}/${post.slug}`}>
-                  <span class="bi-athumb">
-                    <BlogCoverAuto category={post.category} slug={post.slug} coverPhoto={post.coverPhoto} />
-                  </span>
-                  <span class="bi-acat">{post.category}</span>
-                  <span class="bi-atitle">{post.title}</span>
-                  <span class="bi-adate">{post.date}</span>
                 </a>
               ))}
             </div>
@@ -244,25 +227,30 @@ const C = isJa
         )}
       </div>
 
-      {/* フィルタ結果はカードでなく行（§3.2 — 単一カテゴリでは色相の情報量が
-          消えるため、テキスト寄りにする）。 */}
+      {/* フィルタ結果も同じカードグリッド（注目の1本目も対象に含めるため
+          全 entries を持つ。既定表示では非表示なので重複しない）。 */}
       <section class="bi-filtered" hidden>
         <div class="bi-label">
           <b data-filtered-label></b><span data-filtered-count></span>
         </div>
-        <div class="bi-alist">
+        <div class="bi-grid">
           {entries.map((post) => (
             <a
-              class="bi-arow bi-filtered-row"
+              class="bi-card bi-filtered-card"
               href={`${blogPath}/${post.slug}`}
               data-category={[post.category, ...(post.secondaryCategories ?? [])].join("|")}
             >
-              <span class="bi-athumb">
+              <div class="bi-thumb">
                 <BlogCoverAuto category={post.category} slug={post.slug} coverPhoto={post.coverPhoto} />
-              </span>
-              <span class="bi-acat">{post.category}</span>
-              <span class="bi-atitle">{post.title}</span>
-              <span class="bi-adate">{post.date}</span>
+              </div>
+              <div class="bi-meta">
+                <span class="bi-cat">{post.category}</span>
+                <span class="bi-sep">·</span>
+                <time>{post.date}</time>
+              </div>
+              <h3 class="bi-card-title">{post.title}</h3>
+              {post.abstract && <p class="bi-card-ex">{post.abstract}</p>}
+              <span class="bi-cta">{readCta}</span>
             </a>
           ))}
         </div>
@@ -422,8 +410,7 @@ const C = isJa
     filter: brightness(1.045);
   }
   .bi-feat:hover .bi-thumb :global(.cover-photo)::before,
-  .bi-card:hover .bi-thumb :global(.cover-photo)::before,
-  .bi-arow:hover .bi-athumb :global(.cover-photo)::before {
+  .bi-card:hover .bi-thumb :global(.cover-photo)::before {
     opacity: 1;
     box-shadow: 0 0 9px rgba(168, 224, 16, 0.5);
   }
@@ -526,49 +513,12 @@ const C = isJa
     margin-top: auto;
   }
 
-  /* ─── ALL（72pxミニカバーの行リスト） ─── */
-  .bi-arow {
-    display: grid;
-    grid-template-columns: 72px 118px 1fr auto;
-    gap: 18px;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--line);
-    transition: color 0.15s;
-  }
-  .bi-arow:hover .bi-atitle {
-    color: var(--ok-ink);
-  }
-  .bi-athumb :global(svg),
-  .bi-athumb :global(.cover-photo) {
-    width: 72px;
-    aspect-ratio: 1200 / 630;
-    height: auto;
-    display: block;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(24, 36, 26, 0.1);
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  /* 72px ミニサムネでは走査線を 1px に（2px は比率過大） */
-  .bi-athumb :global(.cover-photo) {
-    --cover-scan-height: 1px;
-  }
-  .bi-arow:hover .bi-athumb :global(svg),
-  .bi-arow:hover .bi-athumb :global(.cover-photo) {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(24, 36, 26, 0.16);
-  }
+  /* .bi-acat / .bi-adate は変更履歴の行（.bi-crow）が使う。 */
   .bi-acat {
     font-family: var(--font-mono);
     font-size: 10.5px;
     letter-spacing: 0.1em;
     color: var(--ok-ink);
-  }
-  .bi-atitle {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--tx);
-    transition: color 0.15s;
   }
   .bi-adate {
     font-family: var(--font-mono);
@@ -676,12 +626,11 @@ const C = isJa
     cursor: default;
   }
 
-  /* ─── FILTERED VIEW ─── */
+  /* ─── FILTERED VIEW / ページ送りの表示切り替え ─── */
   .bi-view-all[hidden],
   .bi-filtered[hidden],
-  .bi-filtered-row[hidden],
-  .bi-arow[hidden] {
-    display: none;
+  .bi-card[hidden] {
+    display: none !important;
   }
   /* フッターの margin-top:80px が下端の余白を持つ。最後のセクションの
      行リストで途切れないよう最低限だけ足す。 */
@@ -707,25 +656,6 @@ const C = isJa
       gap: 5px;
     }
   }
-  @media (max-width: 820px) {
-    .bi-arow {
-      grid-template-columns: 56px 1fr;
-      gap: 14px;
-      row-gap: 4px;
-    }
-    .bi-athumb {
-      grid-row: 1 / span 2;
-    }
-    .bi-athumb :global(svg),
-    .bi-athumb :global(.cover-photo) {
-      width: 56px;
-    }
-    .bi-acat,
-    .bi-atitle,
-    .bi-adate {
-      grid-column: 2;
-    }
-  }
   @media (max-width: 640px) {
     .bi-container {
       padding: 0 24px;
@@ -737,8 +667,6 @@ const C = isJa
   @media (prefers-reduced-motion: reduce) {
     .bi-thumb :global(svg),
     .bi-thumb :global(.cover-photo),
-    .bi-athumb :global(svg),
-    .bi-athumb :global(.cover-photo),
     .bi-cat-card {
       transition: none;
     }
@@ -746,7 +674,8 @@ const C = isJa
 </style>
 
 <script is:inline>
-  // ─── Category filter（一覧の面はそのまま、フィルタ時だけ行リストへ） ───
+  // ─── Category filter（既定はカードグリッド＋ページ送り、フィルタ時は
+  //     同じカードの絞り込みグリッドへ切り替え） ───
   (function () {
     var pills = document.querySelectorAll(".bi-pill");
     if (!pills.length) return;
@@ -754,10 +683,10 @@ const C = isJa
     var filtered = document.querySelector(".bi-filtered");
     var label = document.querySelector("[data-filtered-label]");
     var count = document.querySelector("[data-filtered-count]");
-    var rows = filtered ? filtered.querySelectorAll(".bi-filtered-row") : [];
+    var rows = filtered ? filtered.querySelectorAll(".bi-filtered-card") : [];
     var allSection = document.querySelector("[data-all-section]");
     var allRows = allSection
-      ? allSection.querySelectorAll(".bi-arow")
+      ? allSection.querySelectorAll(".bi-card")
       : [];
     var pagerAll = document.querySelector("[data-pager]");
     var pagerFiltered = document.querySelector("[data-pager-filtered]");
