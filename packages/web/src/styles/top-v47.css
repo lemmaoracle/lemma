@@ -28,8 +28,10 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 .topx .sec + .sec:not(.alt)::after{background:var(--line)}
 
 /* ---------- headings ---------- */
+/* 見出し上のライムバーは全セクションで不使用 (ユーザー判断 2026-08-04。
+   指示書 第6部§5 は「見出しの上に 26×2px のライムのバー」としていたが、
+   セクションが増えると反復が強すぎるため撤去) */
 .topx .isec-h{margin:0 0 18px}
-.topx .isec-h::before{content:"";display:block;width:26px;height:2px;background:var(--ok);margin-bottom:18px}
 .topx .isec-h > span{display:none}
 .topx .isec-h b{display:block;font-family:var(--serif);font-weight:600;font-size:clamp(25px,3vw,36px);line-height:1.44;letter-spacing:.005em}
 .topx .lead{font-size:16px;line-height:1.95;color:var(--tx-soft);max-width:58ch;margin:0 0 14px}
@@ -122,19 +124,19 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 @media(max-width:860px){.topx .lat3{grid-template-columns:1fr}}
 
 /* ---------- story: concept film（白い面の上・透過） ---------- */
-.topx .filmbleed{position:relative;background:var(--card);border-radius:4px;padding:clamp(16px,2.2vw,30px);margin:26px 0 0;overflow:hidden;box-shadow:0 1px 2px rgba(24,36,26,.05)}
+.topx .filmbleed{position:relative;background:var(--card);border-radius:4px;padding:clamp(12px,1.4vw,20px);margin:20px 0 0;overflow:hidden;box-shadow:0 1px 2px rgba(24,36,26,.05)}
 .topx .filmbleed::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(18,20,14,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(18,20,14,.028) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
 .topx .filmbleed::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 76% at 94% -16%,rgba(168,224,16,.10),transparent 62%);pointer-events:none}
-.topx .filmwrap{position:relative;z-index:1;width:100%;max-width:none;margin:0;aspect-ratio:16/9;border:0;border-radius:0;box-shadow:none;background:transparent;overflow:hidden}
+.topx .filmwrap{position:relative;z-index:1;width:100%;max-width:940px;margin:0 auto;aspect-ratio:16/9;border:0;border-radius:0;box-shadow:none;background:transparent;overflow:hidden}
 .topx .filmwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:transparent}
-.topx .scenes{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:26px -20px 0;border-top:1px solid var(--dline)}
-.topx .scn{padding:20px 20px 22px;transition:background .3s ease;border-radius:4px}
+.topx .scenes{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:20px -20px 0;border-top:1px solid var(--dline)}
+.topx .scn{padding:15px 20px 17px;transition:background .3s ease;border-radius:4px}
 .topx .scn + .scn{border-left:1px solid var(--dline)}
-.topx .scn .bar{display:block;width:18px;height:2px;background:var(--line);margin-bottom:11px;transition:background .3s ease,width .3s ease}
-.topx .scn .n{display:block;font-family:var(--num);font-weight:200;font-size:clamp(30px,3.4vw,44px);line-height:1;letter-spacing:.04em;color:var(--tx-soft);font-variant-numeric:tabular-nums;margin-bottom:14px;transition:color .3s ease}
+.topx .scn .bar{display:block;width:18px;height:2px;background:var(--line);margin-bottom:9px;transition:background .3s ease,width .3s ease}
+.topx .scn .n{display:block;font-family:var(--num);font-weight:200;font-size:clamp(30px,3.4vw,44px);line-height:1;letter-spacing:.04em;color:var(--tx-soft);font-variant-numeric:tabular-nums;margin-bottom:10px;transition:color .3s ease}
 .topx .scn h4{font-family:var(--serif);font-weight:600;font-size:18px;line-height:1.55;margin:0 0 8px}
 .topx .scn p{font-size:14.5px;color:var(--tx-soft);line-height:1.85;margin:0}
-.topx .scn .back{margin-top:11px;padding-top:10px;border-top:1px solid var(--dline);font-size:13px;color:var(--tx-soft);line-height:1.8}
+.topx .scn .back{margin-top:9px;padding-top:8px;border-top:1px solid var(--dline);font-size:13px;color:var(--tx-soft);line-height:1.8}
 /* 再生中のシーンに連動（JS が付ける。連動しなくても全行が読める） */
 .topx .scn.on{background:rgba(168,224,16,.13)}
 .topx .scn.on .bar{background:var(--ok);width:34px}
@@ -288,23 +290,23 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 @media(max-width:600px){.topx .p5{grid-template-columns:1fr}.topx .p5i:nth-child(2){border-top:1px solid var(--dline)}}
 
 /* ---------- Story → 業界 のつなぎ ---------- */
-.topx .bridge{margin-top:34px;padding-top:26px;border-top:1px solid var(--dline)}
-.topx .bh{font-family:var(--serif);font-weight:600;font-size:clamp(19px,2.2vw,26px);line-height:1.5;margin:0 0 20px}
+.topx .bridge{margin-top:24px;padding-top:20px;border-top:1px solid var(--dline)}
+.topx .bh{font-family:var(--serif);font-weight:600;font-size:clamp(19px,2.2vw,26px);line-height:1.5;margin:0 0 16px}
 .topx .bitems{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
 .topx .bi{padding:0 20px}
 .topx .bi:first-child{padding-left:0}
 .topx .bi:last-child{padding-right:0}
 .topx .bi + .bi{border-left:1px solid var(--dline)}
-.topx .bi svg{width:38px;height:38px;display:block;margin-bottom:14px}
+.topx .bi svg{width:34px;height:34px;display:block;margin-bottom:10px}
 .topx .bi b{display:block;font-family:var(--serif);font-weight:600;font-size:17px;line-height:1.5;margin-bottom:6px}
 .topx .bi span{display:block;font-size:12.5px;color:var(--muted);line-height:1.8}
 @media(max-width:860px){.topx .bitems{grid-template-columns:1fr 1fr}.topx .bi{padding:16px 14px}.topx .bi:first-child{padding-left:14px}.topx .bi+.bi{border-left:0}.topx .bi:nth-child(n+3){border-top:1px solid var(--dline)}}
 @media(max-width:520px){.topx .bitems{grid-template-columns:1fr}.topx .bi+.bi{border-top:1px solid var(--dline)}}
 
 /* つなぎの締め：問い → 答え → 但し書き */
-.topx .bfoot{margin-top:30px;padding-top:24px;border-top:1px solid var(--dline);max-width:56ch}
-.topx .bfq{font-size:15.5px;line-height:2;color:var(--tx-soft);margin:0 0 14px}
-.topx .bfa{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.5vw,30px);line-height:1.5;color:var(--ok-light);margin:0 0 12px;position:relative;padding-left:20px}
+.topx .bfoot{margin-top:22px;padding-top:18px;border-top:1px solid var(--dline);max-width:56ch}
+.topx .bfq{font-size:15.5px;line-height:1.9;color:var(--tx-soft);margin:0 0 10px}
+.topx .bfa{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.5vw,30px);line-height:1.5;color:var(--ok-light);margin:0 0 8px;position:relative;padding-left:20px}
 .topx .bfa::before{content:"";position:absolute;left:0;top:.62em;width:13px;height:2px;background:var(--ok)}
 .topx .bfn{font-size:13.5px;color:var(--muted);line-height:1.9;margin:0;padding-left:20px}
 
