@@ -1,0 +1,77 @@
+---
+/**
+ * カバーの分岐点: coverPhoto が public/ に実在すれば写真、無ければ従来の
+ * 抽象パターン（BlogCover）。一覧・カードのサムネイル用。
+ *
+ * 写真の色調・暗いヴェール・ライムの走査線はここの scoped CSS で掛ける
+ * （入稿ファイルは無加工 — 刷新指示 §C-3）。走査線は「検証済み」の記号で、
+ * 写真と抽象が一覧で隣り合っても同じシリーズに見えるための要
+ * （カバー写真調達リスト §1.2）。位置・太さは CSS 変数で、呼び出し側が
+ * 文脈に応じて上書きできる（例: 72px ミニサムネは 1px）。
+ *
+ * サイズ・角丸・影は使う側が持つ（BlogCover と同じ流儀）。使う側の
+ * セレクタは `svg` と `.cover-photo` の両方を対象にすること。
+ */
+import BlogCover from "./BlogCover.astro";
+import { resolveCoverPhoto } from "../lib/coverPhoto";
+
+interface Props {
+  readonly category: string;
+  readonly slug: string;
+  readonly coverPhoto?: string;
+}
+
+const { category, slug, coverPhoto } = Astro.props;
+const photoSrc = resolveCoverPhoto(coverPhoto);
+---
+
+{photoSrc ? (
+  <span class="cover-photo" aria-hidden="true">
+    <img src={photoSrc} alt="" loading="lazy" />
+  </span>
+) : (
+  <BlogCover category={category} slug={slug} />
+)}
+
+<style>
+  .cover-photo {
+    --cover-scan-top: 62%;
+    --cover-scan-height: 2px;
+    position: relative;
+    display: block;
+    overflow: hidden;
+  }
+  .cover-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(0.16) saturate(0.62) hue-rotate(-8deg) contrast(1.04);
+  }
+  /* 暗いヴェール */
+  .cover-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      200deg,
+      rgba(51, 59, 52, 0.28),
+      rgba(51, 59, 52, 0.06) 55%,
+      rgba(51, 59, 52, 0.34)
+    );
+    pointer-events: none;
+  }
+  /* ライムの走査線 */
+  .cover-photo::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--cover-scan-top);
+    height: var(--cover-scan-height);
+    background: var(--ok, #a8e010);
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 1;
+  }
+</style>
