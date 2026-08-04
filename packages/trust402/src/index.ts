@@ -27,5 +27,6 @@ export type {
   CommitmentSigner,
   SignedCommitment,
 } from "./signing.js";
+export { nodeSigner } from "./node-signer.js";
 export { create } from "./create.js";
 export type { ClientConfig } from "./create.js";
