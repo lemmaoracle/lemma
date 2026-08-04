@@ -173,35 +173,64 @@ body:has(main.topx) .lemma-brand-bar{display:none}
      h1 の「何が本物かを証明する。」(11字) も 360px 級では同じ問題になる
      （社内レビュー: Masako 実機確認）ため h1 側にも適用 */
   .topx .isec-h b .nb,.topx .herodark h1 .nb{display:inline;word-break:normal}
-  /* ヒーロー右カラム: GET /v1/counters (.rep) は margin-left:auto の右寄せを
-     やめ、狭幅では折り返して独立行にする */
-  .topx .rep{flex-basis:100%;margin-left:0}}
+  /* ヒーロー右カラム: パネル頭の GET /v1/counters は狭幅では独立行に */
+  .topx .phead .ep{flex-basis:100%;margin-left:0}}
 /* 320px 級（iPhone SE 等）: keep-all を守れる幅がなく本文まで溢れるため、
    極狭幅では keep-all 自体を解いて自然改行に倒す */
 @media(max-width:374px){.topx{word-break:normal}.topx .nb{display:inline}}
 
 /* 巨大な実数（枠を持たない）＋ 検証センターと同じ順序 */
 /* 最大128px(モック)は h1 に対して勝ちすぎるため、96px 上限にバランス調整 */
-.topx .bignum{font-family:var(--num);font-weight:200;font-size:clamp(50px,6.8vw,96px);line-height:.94;
-  letter-spacing:-.02em;color:var(--ok);font-variant-numeric:tabular-nums;margin:0 0 12px}
-.topx .bignum.off{font-size:clamp(22px,2.6vw,32px);letter-spacing:.14em;color:#9fb08f}
-.topx .biglabel{font-family:var(--serif);font-weight:600;font-size:clamp(17px,1.9vw,22px);color:#f2f6ec;margin:0 0 10px;line-height:1.5}
-.topx .biglabel.sm{font-size:15px;margin:0 0 8px}
-.topx .bigsub{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:#9fb08f;margin:0;line-height:1.9}
-.topx .biglink{display:inline-block;margin-top:16px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;
-  color:var(--ok);text-decoration:none;border:1px solid #4d5a3f;border-radius:999px;padding:7px 15px}
-.topx .biglink:hover{border-color:var(--ok)}
-.topx .bigrow{display:block;margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12)}
-.topx .bigrow .bv{font-family:var(--num);font-weight:200;font-size:clamp(26px,3vw,36px);color:#f2f6ec;font-variant-numeric:tabular-nums;line-height:1}
-.topx .bigrow .bn{font-size:11.5px;color:#8fa07f;margin-top:8px;line-height:1.7}
-.topx .reghead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-.topx .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:#e8ece5}
-.topx .rlive{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--ok);border:1px solid #4d5a3f;border-radius:999px;padding:3px 9px}
-.topx .rlive i{width:5px;height:5px;border-radius:50%;background:var(--ok);display:block}
-.topx .rep{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:#8fa07f;margin-left:auto}
+/* ---------- レジストリ計器パネル (mock v5.9 の panel/tech を暗色ヒーロー用に移植) ---------- */
+.topx .rpanel{position:relative;border:1px solid rgba(255,255,255,.14);border-radius:6px;
+  background:rgba(255,255,255,.028);overflow:hidden;margin:0}
+.topx .rgrid{position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:28px 28px}
+.topx .phead{position:relative;z-index:2;display:flex;align-items:center;gap:14px;padding:14px 20px;
+  border-bottom:1px solid rgba(255,255,255,.12);font-family:var(--mono);font-size:10px;
+  letter-spacing:.14em;color:#8fa07f}
+.topx .phead .nm{color:#d8ddd1}
+.topx .phead .livechip{display:inline-flex;align-items:center;gap:7px;color:var(--ok)}
+.topx .phead .livechip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok);
+  box-shadow:0 0 8px rgba(168,224,16,.8)}
+.topx .phead.offline .livechip{color:var(--err)}
+.topx .phead.offline .livechip::before{background:var(--err);box-shadow:none;animation:none}
+.topx .phead .ep{margin-left:auto}
+@media(prefers-reduced-motion:no-preference){.topx .phead .livechip::before{animation:topGlow 2.4s ease-in-out infinite}}
+.topx .pbody{position:relative;z-index:2;padding:26px 22px 22px}
+/* 数字は白系（ライムはライブ表示とチェックにだけ使う＝mock v5.9 の規律） */
+.topx .bignum{font-family:var(--num);font-weight:200;font-size:clamp(44px,5.6vw,76px);line-height:.96;
+  letter-spacing:-.02em;color:#f2f6ec;font-variant-numeric:tabular-nums;margin:0 0 12px}
+.topx .bignum.off{font-size:clamp(22px,2.6vw,30px);letter-spacing:.14em;color:#9fb08f}
+.topx .biglabel{font-family:var(--serif);font-weight:600;font-size:clamp(16px,1.8vw,20px);color:#f2f6ec;margin:0 0 10px;line-height:1.5}
+.topx .bigsub{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:#8fa07f;margin:0;line-height:1.9}
 .topx .ren{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#8fa07f;margin:0 0 8px}
-.topx .rup{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:#7d8c70;margin:18px 0 0}
-@media(prefers-reduced-motion:no-preference){.topx .rlive i{animation:topGlow 2.6s ease-in-out infinite}}
+.topx .pmetrics{display:flex;gap:30px;margin-top:22px;padding-top:18px;
+  border-top:1px solid rgba(255,255,255,.12);font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.08em;color:#8fa07f;flex-wrap:wrap}
+.topx .pmetrics b{display:block;color:#e8ece5;font-weight:400;font-size:14px;margin-top:6px;
+  font-variant-numeric:tabular-nums}
+.topx .pstream{position:relative;z-index:2;border-top:1px solid rgba(255,255,255,.12);
+  padding:12px 20px 14px;display:flex;flex-direction:column;gap:8px}
+.topx .pstream[hidden]{display:none}
+.topx .pstream .ev{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10px;
+  color:#8fa07f;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topx .pstream .ev svg{width:13px;height:13px;flex:none;color:var(--ok)}
+.topx .pstream .ev span{overflow:hidden;text-overflow:ellipsis}
+.topx .pfoot{position:relative;z-index:2;padding:12px 20px;border-top:1px solid rgba(255,255,255,.12);
+  font-size:11px;color:#8fa07f;display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline}
+.topx .pfoot a{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#d8ddd1;
+  text-decoration:none;border-bottom:1px solid rgba(255,255,255,.22)}
+.topx .pfoot a:hover{color:#fff;border-color:var(--ok)}
+
+/* ---------- ヒーローの NEW ティッカー (最新の Announcements 記事) ---------- */
+.topx .ticker{margin-top:22px;display:flex;align-items:center;gap:11px;font-size:12.5px;flex-wrap:wrap}
+.topx .tk{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:#1a1f16;
+  background:var(--ok);border-radius:4px;padding:3px 7px;flex:none}
+.topx .ticker a{color:#b9c4ad;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2);padding-bottom:2px}
+.topx .ticker a:hover{color:#f2f6ec;border-color:var(--ok)}
 
 /* ---------- 「だから」= Why now の締め帯 ---------- */
 .topx .soband{position:relative;margin-top:30px;border-radius:4px;overflow:hidden;

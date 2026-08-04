@@ -16,28 +16,33 @@
         <a class="btn solid" href="https://tally.so/r/EkBqDX?source=top">エンタープライズ相談</a>
         <a class="btn ghostd js-doclink" href="/ja/verify/">証明サンプルを検証する</a>
       </div>
+      <!--TICKER-->
     </div>
 
-    <div>
-      <div class="reghead">
-        <span class="rlabel">LEMMA REGISTRY</span>
-        <span class="rlive"><i></i>LIVE</span>
-        <span class="rep">GET /v1/counters</span>
+    <figure class="rpanel" aria-label="Lemma 公開レジストリのライブ表示">
+      <div class="rgrid"></div>
+      <div class="phead" id="phead">
+        <span class="nm">LEMMA&nbsp;REGISTRY</span>
+        <span class="livechip" id="plive">LIVE</span>
+        <span class="ep">GET /v1/counters</span>
       </div>
-      <p class="ren">Proof Verifications</p>
-      <p class="biglabel">検証済み証明数</p>
-      <p class="bignum off" id="vcount">———</p>
-      <p class="bigsub" id="vsub">読み込み中…</p>
-      <a class="biglink" href="https://workers.lemma.workers.dev/v1/counters" target="_blank" rel="noopener">この数字を検証する →</a>
-      <div class="bigrow">
-        <div>
-          <p class="ren">Proofs Issued</p>
-          <p class="biglabel sm">発行された証明</p>
-          <div class="bv" id="icount">———</div>
+      <div class="pbody">
+        <p class="ren">Proof Verifications</p>
+        <p class="biglabel">検証済み証明数</p>
+        <p class="bignum off" id="vcount">———</p>
+        <p class="bigsub" id="vsub">読み込み中…</p>
+        <div class="pmetrics">
+          <div>PROOFS ISSUED<b id="icount">—</b></div>
+          <div>LAST UPDATED<b id="vup">—</b></div>
+          <div>VERIFY COST<b>¥0</b></div>
         </div>
       </div>
-      <p class="rup">LAST UPDATED <span id="vup">—</span></p>
-    </div>
+      <div class="pstream" id="pstream" hidden></div>
+      <div class="pfoot">この数字も、証明されています。
+        <a href="https://workers.lemma.workers.dev/v1/counters" target="_blank" rel="noopener">この数字を検証する →</a>
+        <a href="/ja/verify/">内訳を見る →</a>
+      </div>
+    </figure>
   </div>
 </section>
 

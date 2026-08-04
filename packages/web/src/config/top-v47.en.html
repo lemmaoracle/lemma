@@ -17,28 +17,33 @@
         <a class="btn solid" href="https://tally.so/r/Pd2Rl5?source=top">Enterprise consultation</a>
         <a class="btn ghostd js-doclink" href="/verify/">Verify a sample proof</a>
       </div>
+      <!--TICKER-->
     </div>
 
-    <div>
-      <div class="reghead">
-        <span class="rlabel">LEMMA REGISTRY</span>
-        <span class="rlive"><i></i>LIVE</span>
-        <span class="rep">GET /v1/counters</span>
+    <figure class="rpanel" aria-label="Live view of the public Lemma registry">
+      <div class="rgrid"></div>
+      <div class="phead" id="phead">
+        <span class="nm">LEMMA&nbsp;REGISTRY</span>
+        <span class="livechip" id="plive">LIVE</span>
+        <span class="ep">GET /v1/counters</span>
       </div>
-      <p class="ren">Proof Verifications</p>
-      <p class="biglabel">Verified proofs</p>
-      <p class="bignum off" id="vcount">———</p>
-      <p class="bigsub" id="vsub">Loading…</p>
-      <a class="biglink" href="https://workers.lemma.workers.dev/v1/counters" target="_blank" rel="noopener">Verify these numbers →</a>
-      <div class="bigrow">
-        <div>
-          <p class="ren">Proofs Issued</p>
-          <p class="biglabel sm">Issued proofs</p>
-          <div class="bv" id="icount">———</div>
+      <div class="pbody">
+        <p class="ren">Proof Verifications</p>
+        <p class="biglabel">Verified proofs</p>
+        <p class="bignum off" id="vcount">———</p>
+        <p class="bigsub" id="vsub">Loading…</p>
+        <div class="pmetrics">
+          <div>PROOFS ISSUED<b id="icount">—</b></div>
+          <div>LAST UPDATED<b id="vup">—</b></div>
+          <div>VERIFY COST<b>FREE</b></div>
         </div>
       </div>
-      <p class="rup">LAST UPDATED <span id="vup">—</span></p>
-    </div>
+      <div class="pstream" id="pstream" hidden></div>
+      <div class="pfoot">These numbers are proven, too.
+        <a href="https://workers.lemma.workers.dev/v1/counters" target="_blank" rel="noopener">Verify these numbers →</a>
+        <a href="/verify/">See the breakdown →</a>
+      </div>
+    </figure>
   </div>
 </section>
 

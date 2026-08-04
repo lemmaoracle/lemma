@@ -23,6 +23,7 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import bodyJa from "../config/top-v47.ja.html?raw";
 import bodyEn from "../config/top-v47.en.html?raw";
+import { getAllPosts, postInCategory } from "../data/blog";
 import "../styles/top-v47.css";
 
 export interface TopV47TemplateProps {
@@ -33,7 +34,18 @@ export interface TopV47TemplateProps {
 
 const { locale, t, base } = Astro.props as TopV47TemplateProps;
 const isJa = locale === "ja";
-const body = isJa ? bodyJa : bodyEn;
+
+// ヒーロー CTA 直下の NEW ティッカー。最新の Announcements 記事を1本だけ出す
+// (mock v5.9 の .ticker。モックはハードコードだったので実データに接続)。
+const esc = (v: string) =>
+  v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const latestAnnouncement = [...(await getAllPosts(locale))]
+  .filter((p) => postInCategory(p, "Announcements"))
+  .sort((a, b) => (a.date > b.date ? -1 : 1))[0];
+const tickerHtml = latestAnnouncement
+  ? `<div class="ticker"><span class="tk">NEW</span><a href="${base}/blog/${latestAnnouncement.slug}">${esc(latestAnnouncement.title)} →</a></div>`
+  : "";
+const body = (isJa ? bodyJa : bodyEn).replace("<!--TICKER-->", tickerHtml);
 
 const API_BASE = "https://workers.lemma.workers.dev/v1";
 const VERIFY_PATH = `${base}/verify/`;
@@ -45,12 +57,16 @@ const REG = isJa
       breakdown: "内訳 — ",
       numLocale: "ja-JP",
       timeLocale: "ja-JP",
+      live: "LIVE",
+      offline: "OFFLINE",
     }
   : {
       perr: "The registry is unreachable. We do not fill in estimates.",
       breakdown: "Breakdown — ",
       numLocale: "en-US",
       timeLocale: "en-US",
+      live: "LIVE",
+      offline: "OFFLINE",
     };
 
 const metaTitle = isJa
@@ -109,12 +125,16 @@ const metaDescription = isJa
           S = document.getElementById("vsub"),
           U = document.getElementById("vup");
         if (!V) return;
+        var head = document.getElementById("phead");
+        var chip = document.getElementById("plive");
         function off() {
           V.textContent = "———";
-          I.textContent = "———";
+          I.textContent = "—";
           V.classList.add("off");
           S.textContent = REG.perr;
           U.textContent = "—";
+          if (head) head.classList.add("offline");
+          if (chip) chip.textContent = REG.offline;
         }
         function num(n) {
           return (n || 0).toLocaleString(REG.numLocale);
@@ -150,32 +170,70 @@ const metaDescription = isJa
               .join("   ");
             S.textContent = by ? REG.breakdown + by : "";
             U.textContent = fmtTime(v.updatedAt);
+            if (head) head.classList.remove("offline");
+            if (chip) chip.textContent = REG.live;
           })
           .catch(off);
       })();
 
-      /* ---- ヒーロー第2CTA: 為替フィードの docHash を /verify/?doc= に埋める ---- */
+      /* ---- ヒーロー第2CTA の docHash 埋め込み + レジストリのイベントストリーム ----
+         (mock v5.9 の .pstream。取得できたフィードの分だけ出し、失敗時は何も出さない) */
       (function () {
-        fetch(API_BASE + "/suites/feeds/forex/composite/latest", {
-          headers: { accept: "application/json" },
-        })
-          .then(function (r) {
-            if (!r.ok) throw 0;
-            return r.json();
-          })
+        var stream = document.getElementById("pstream");
+        var MARK =
+          '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"/><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        var evs = [];
+        function shortHash(h) {
+          return h ? h.slice(0, 10) + "…" + h.slice(-4) : "";
+        }
+        function render() {
+          if (!stream || !evs.length) return;
+          stream.innerHTML = evs
+            .map(function (t) {
+              return '<div class="ev">' + MARK + "<span>" + t + "</span></div>";
+            })
+            .join("");
+          stream.hidden = false;
+        }
+        function getJson(path) {
+          return fetch(API_BASE + path, { headers: { accept: "application/json" } }).then(
+            function (r) {
+              if (!r.ok) throw 0;
+              return r.json();
+            },
+          );
+        }
+        getJson("/suites/feeds/forex/composite/latest")
           .then(function (j) {
-            if (!j || !j.docHash || !/^0x[0-9a-fA-F]+$/.test(j.docHash)) return;
-            var href = VERIFY_PATH + "?doc=" + encodeURIComponent(j.docHash);
-            [].forEach.call(
-              document.querySelectorAll(".js-doclink"),
-              function (a) {
+            if (j && j.docHash && /^0x[0-9a-fA-F]+$/.test(j.docHash)) {
+              var href = VERIFY_PATH + "?doc=" + encodeURIComponent(j.docHash);
+              [].forEach.call(document.querySelectorAll(".js-doclink"), function (a) {
                 a.href = href;
-              },
+              });
+            }
+            var a = (j && j.attributes) || {};
+            var v = (j && j.verification) || {};
+            evs.push(
+              "feeds/forex/composite&nbsp; " +
+                (a.date || "") +
+                " — " +
+                (v.verified != null ? v.verified : "?") +
+                "/" +
+                (v.total != null ? v.total : "?") +
+                " sources verified — " +
+                shortHash(j && j.docHash),
             );
+            render();
           })
           .catch(function () {
-            /* 失敗時は /verify/ のまま（フォールバック） */
+            /* 失敗時は /verify/ のまま（フォールバック）。ストリームも出さない */
           });
+        getJson("/suites/feeds/jp-holidays/latest")
+          .then(function (j) {
+            evs.push("feeds/jp-holidays&nbsp; proof issued — " + shortHash(j && j.docHash));
+            render();
+          })
+          .catch(function () {});
       })();
 
       /* ---- 「だから」の締め帯をスクロールで浮かせる ---- */
