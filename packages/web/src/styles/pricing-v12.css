@@ -160,4 +160,4 @@
 @media(max-width:860px){.prx .fit2{grid-template-columns:1fr;}}
 
 /* セクション最下部とフッターの間 (2026-08-03 余白調整) */
-.prx{padding-bottom:96px;}
+.prx{padding-bottom:60px;}
