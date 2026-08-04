@@ -13,6 +13,10 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import { getCollection } from "astro:content";
+import { getAllPosts } from "../data/blog";
+import { resolveCoverPhoto } from "../lib/coverPhoto";
+import { coverArtwork, COVER_WIDTH, COVER_HEIGHT } from "../lib/blogCover";
 import "../styles/industry-v1.css";
 
 export interface IndustryDetailV1Props {
@@ -25,6 +29,64 @@ export interface IndustryDetailV1Props {
 const { locale, t, base, entry } = Astro.props as IndustryDetailV1Props;
 
 const metaTitle = `${entry.name}のユースケース — ${entry.h1} | Lemma`;
+
+/* ── Latest news 枠の実データ化（Latest news 出し分け設計 v1 §4.2）──
+ * config/industry-v1/*.ja.html の「06 — Latest news」節はモック由来の
+ * 静的プレースホルダ（リンク #・手打ち日付・仮カバー）のため、注入前に
+ * ここで実データへ置換する。
+ *   枠1: 導入事例 — 実物が出るまで「近日公開」を静的に維持
+ *   枠2: Critical Brief の最新1本（自動 — 毎週の鮮度はここが担う。
+ *        脅威タイプ×業界の自動マッチングは機械可読な割り当てができた時点で）
+ *   枠3: audience:business の最新ブログ1本（写真カバー対応・自動）
+ */
+const esc = (s: string): string =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const clip = (s: string, n: number): string => (s.length > n ? `${s.slice(0, n)}…` : s);
+
+const bizPost = (await getAllPosts(locale))
+  .filter((p) => p.audience === "business")
+  .sort((a, b) => (a.date > b.date ? -1 : 1))[0];
+const latestBrief = (await getCollection("critical-briefs")).sort(
+  (a, b) => (b.data.brief_no ?? 0) - (a.data.brief_no ?? 0),
+)[0];
+
+let body = entry.body;
+if (bizPost && latestBrief) {
+  const photo = resolveCoverPhoto(bizPost.coverPhoto);
+  const blogCover = photo
+    ? `<span class="nc-photo"><img src="${photo}" alt="" loading="lazy"/></span>`
+    : `<svg viewBox="0 0 ${COVER_WIDTH} ${COVER_HEIGHT}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${coverArtwork(bizPost.category, bizPost.slug)}</svg>`;
+  const briefSlug = latestBrief.id.replace(/\.md$/, "");
+  const briefNo = String(latestBrief.data.brief_no).padStart(3, "0");
+  const d = latestBrief.data.published as unknown as Date;
+  const briefDate =
+    d instanceof Date
+      ? `${d.getUTCFullYear()}.${String(d.getUTCMonth() + 1).padStart(2, "0")}.${String(d.getUTCDate()).padStart(2, "0")}`
+      : String(latestBrief.data.published ?? "");
+  const newsHtml = `<!-- Latest news -->
+  <section class="isec band alt">
+    <div class="isec-h"><span>06 — Latest news</span><b>導入と、この領域の動き</b></div>
+    <div class="newsgrid">
+      <span class="newscard">
+        <div class="cover"><div class="cl"><em>導入事例</em>近日公開</div></div>
+        <span class="meta"><em>導入事例</em><span>近日公開</span></span>
+        <span class="t">導入事例の公開を準備しています</span>
+      </span>
+      <a class="newscard" href="${base}/critical/briefs/${briefSlug}/">
+        <div class="cover nc-brief"><div class="bn"><em>CRITICAL BRIEF</em><b>No. ${briefNo}</b></div></div>
+        <span class="meta"><em>Critical Brief</em><span>${briefDate}</span></span>
+        <span class="t">${esc(clip(latestBrief.data.title, 58))}</span>
+      </a>
+      <a class="newscard" href="${base}/blog/${bizPost.slug}">
+        <div class="cover">${blogCover}</div>
+        <span class="meta"><em>ブログ</em><span>${bizPost.date}</span></span>
+        <span class="t">${esc(clip(bizPost.title, 58))}</span>
+      </a>
+    </div>
+    <p class="hiwfoot"><a href="${base}/blog">ブログをすべて見る →</a></p>
+  </section>`;
+  body = body.replace(/<!-- Latest news -->[\s\S]*?<\/section>/, newsHtml);
+}
 ---
 
 <Layout
@@ -36,6 +98,6 @@ const metaTitle = `${entry.name}のユースケース — ${entry.h1} | Lemma`;
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
-  <main class="indv1" set:html={entry.body} />
+  <main class="indv1" set:html={body} />
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
