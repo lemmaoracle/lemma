@@ -71,27 +71,30 @@ const readCta = isJa ? "読む →" : "Read →";
  * 旧「業務への組み込み方と検証結果」は適用の話と実装の話の両方を吸い、
  * Solutions に技術記事が混ざる原因になっていた）。
  *
- *   Industry     論点・エッセイ    …… 信頼インフラを事業に取り入れるか
+ *   Industry     論点・エッセイ    …… 事業に取り入れるかどうかの判断材料
  *   Solutions    業務への適用シーン …… どの業務の、どの場面で効くか
  *   Technical    設計・実装の詳細   …… 開発者・アーキテクト向け
  *   Announcements 公開のお知らせ
+ *
+ * 文言は**名詞形・1行に収まる長さ**で揃える（カードの幅で折り返すと
+ * 視線が止まる）。JA は10〜11字、EN は約30字が上限。
  */
 const CATEGORY_DESC: Record<string, Record<Locale, string>> = {
   Announcements: {
-    ja: "新機能・フィード・公開のお知らせ",
-    en: "New features, feeds, and release notes",
+    ja: "新機能・公開のお知らせ",
+    en: "Features and releases",
   },
   Industry: {
-    ja: "信頼インフラを、事業に取り入れる",
-    en: "Bringing trust infrastructure into the business",
+    ja: "事業に取り入れる論点",
+    en: "The case for adoption",
   },
   Solutions: {
-    ja: "業務のどの場面で、どう効くか",
-    en: "Where it applies in day-to-day operations",
+    ja: "業務での適用シーン",
+    en: "Where it applies",
   },
   Technical: {
     ja: "設計・仕様・実装の詳細",
-    en: "Design, specs, and implementation detail",
+    en: "Design and specs",
   },
 };
 
