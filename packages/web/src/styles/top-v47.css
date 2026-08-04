@@ -72,7 +72,9 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 .topx .ind-panel[hidden]{display:none}
 .topx .ind-panel{display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,3vw,40px);align-items:center;margin-top:24px}
 .topx .ind-ph{aspect-ratio:16/9;border-radius:4px;background:linear-gradient(172deg,#3c443d,#2e362f);position:relative;overflow:hidden;box-shadow:0 18px 44px rgba(24,36,26,.14)}
-.topx .ind-ph.has-photo{background-size:cover;background-position:center}
+/* 実写真には業界ページ WHY 節と同じ落ち着いたフィルタを重ねる（industry-v1.css と同値） */
+.topx .ind-ph.has-photo{background-size:cover;background-position:center;
+  filter:sepia(.16) saturate(.62) hue-rotate(-8deg) contrast(1.04)}
 .topx .ind-ph .pgrid{opacity:.5}
 .topx .ind-ph span{position:absolute;left:16px;bottom:14px;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:#9fb08f}
 .topx .ind-panel h3{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.4vw,28px);line-height:1.5;margin:6px 0 12px}
@@ -171,7 +173,8 @@ body:has(main.topx) .lemma-brand-bar{display:none}
   .topx .isec-h b .nb{display:inline;word-break:normal}}
 
 /* 巨大な実数（枠を持たない）＋ 検証センターと同じ順序 */
-.topx .bignum{font-family:var(--num);font-weight:200;font-size:clamp(58px,9vw,128px);line-height:.94;
+/* 最大128px(モック)は h1 に対して勝ちすぎるため、96px 上限にバランス調整 */
+.topx .bignum{font-family:var(--num);font-weight:200;font-size:clamp(50px,6.8vw,96px);line-height:.94;
   letter-spacing:-.02em;color:var(--ok);font-variant-numeric:tabular-nums;margin:0 0 12px}
 .topx .bignum.off{font-size:clamp(22px,2.6vw,32px);letter-spacing:.14em;color:#9fb08f}
 .topx .biglabel{font-family:var(--serif);font-weight:600;font-size:clamp(17px,1.9vw,22px);color:#f2f6ec;margin:0 0 10px;line-height:1.5}
