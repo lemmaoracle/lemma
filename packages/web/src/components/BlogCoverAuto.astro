@@ -61,7 +61,8 @@ const photoSrc = resolveCoverPhoto(coverPhoto);
     );
     pointer-events: none;
   }
-  /* ライムの走査線 */
+  /* ライムの走査線。ホバー時は使う側がわずかに明滅させる（記号が
+     「反応する」だけ — 派手にしない）ため、transition を持たせておく。 */
   .cover-photo::before {
     content: "";
     position: absolute;
@@ -73,5 +74,6 @@ const photoSrc = resolveCoverPhoto(coverPhoto);
     opacity: 0.85;
     pointer-events: none;
     z-index: 1;
+    transition: opacity 0.18s, box-shadow 0.18s;
   }
 </style>

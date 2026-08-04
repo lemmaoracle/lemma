@@ -416,7 +416,22 @@ const C = isJa
     display: block;
     border-radius: 12px;
     box-shadow: 0 12px 30px rgba(24, 36, 26, 0.11);
-    transition: transform 0.18s, box-shadow 0.18s;
+    transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+  }
+  /* ホバー時の微アニメーション: 絵全体がわずかに明るくなり、写真では
+     走査線が一段強く光る。動きは既存の持ち上げ（translateY）に任せ、
+     ここでは光量だけを足す — 「検証済みの記号が反応する」以上はやらない。 */
+  .bi-feat:hover .bi-thumb :global(svg),
+  .bi-feat:hover .bi-thumb :global(.cover-photo),
+  .bi-card:hover .bi-thumb :global(svg),
+  .bi-card:hover .bi-thumb :global(.cover-photo) {
+    filter: brightness(1.045);
+  }
+  .bi-feat:hover .bi-thumb :global(.cover-photo)::before,
+  .bi-card:hover .bi-thumb :global(.cover-photo)::before,
+  .bi-arow:hover .bi-athumb :global(.cover-photo)::before {
+    opacity: 1;
+    box-shadow: 0 0 9px rgba(168, 224, 16, 0.5);
   }
 
   /* ─── FEATURED（7:5・装飾なし） ─── */
