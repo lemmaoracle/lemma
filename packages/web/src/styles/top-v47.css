@@ -163,6 +163,12 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 .topx .herodark .btn.ghostd{background:rgba(255,255,255,.10);color:#e8ece5}
 .topx .herodark .btn.ghostd:hover{background:rgba(255,255,255,.18)}
 @media(max-width:940px){.topx .herodark .hin{grid-template-columns:1fr;gap:32px}}
+/* 390px 級端末: 「何が本物かを証明する。」の .nb（11字×34px=374px）が
+   本文幅（346px）を超えて右端が見切れるため、狭幅だけ h1 を縮める */
+@media(max-width:430px){.topx .herodark h1{font-size:29px}
+  /* 「御社の業務でも起きていませんか。」(16字) 等、句読点なしの .nb は
+     keep-all では折り返せないため、狭幅だけ改行固定を解いて自然に折り返す */
+  .topx .isec-h b .nb{display:inline;word-break:normal}}
 
 /* 巨大な実数（枠を持たない）＋ 検証センターと同じ順序 */
 .topx .bignum{font-family:var(--num);font-weight:200;font-size:clamp(58px,9vw,128px);line-height:.94;
