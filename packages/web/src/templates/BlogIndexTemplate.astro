@@ -683,6 +683,23 @@ const C = isJa
     var pageAll = 1;
     var pageFiltered = 1;
 
+    /* ページ番号を URL に持たせる（?page=N）。持たせないとページ送りしても
+       URL が変わらず、リロードやリンク共有で1ページ目に戻ってしまう。
+       カテゴリの絞り込みは従来どおり hash（#industry）が持つので、両者は
+       衝突しない。1ページ目のときは ?page= を消して URL を素のままにする。 */
+    function readPageFromUrl() {
+      var m = /[?&]page=(\d+)/.exec(location.search);
+      return m ? Math.max(1, parseInt(m[1], 10) || 1) : 1;
+    }
+    function writePageToUrl(n) {
+      if (!history.replaceState) return;
+      var params = new URLSearchParams(location.search);
+      if (n <= 1) params.delete("page");
+      else params.set("page", String(n));
+      var q = params.toString();
+      history.replaceState(null, "", location.pathname + (q ? "?" + q : "") + location.hash);
+    }
+
     function renderPager(pager, current, totalPages) {
       if (!pager) return;
       if (totalPages <= 1) {
@@ -760,6 +777,9 @@ const C = isJa
       });
       if (viewAll) viewAll.hidden = !isAll;
       if (filtered) filtered.hidden = isAll;
+      // 絞り込みを変えると母集合が変わるので1ページ目へ戻す（URL も揃える）
+      writePageToUrl(1);
+      pageAll = 1;
       if (!isAll) {
         activeFilter = filter;
         pageFiltered = 1;
@@ -801,6 +821,7 @@ const C = isJa
         else next = Number(v) || 1;
         setPage(next);
         rerender();
+        writePageToUrl(next);
         scrollToHead(section);
       });
     }
@@ -865,6 +886,18 @@ const C = isJa
         }
       });
     }
+    // URL の ?page=N を復元してから描画する（リロード・リンク共有で戻らない）
+    var startPage = readPageFromUrl();
+    if (filtered && !filtered.hidden) {
+      pageFiltered = startPage;
+      var st0 = paginate(rows, matchesFilter, pageFiltered, pagerFiltered);
+      pageFiltered = st0.current;
+      if (count) count.textContent = String(st0.count);
+    } else {
+      pageAll = startPage;
+    }
     applyAllPage();
+    // 総ページ数を超える値が来ていたら、丸めた結果を URL に書き戻す
+    writePageToUrl(filtered && !filtered.hidden ? pageFiltered : pageAll);
   })();
 </script>
