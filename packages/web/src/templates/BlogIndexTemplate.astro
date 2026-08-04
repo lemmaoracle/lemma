@@ -19,7 +19,7 @@
  */
 import type { Locale, Translations } from "../i18n/translations";
 import type { BlogPost } from "../data/blog";
-import { BLOG_CATEGORIES, categorySlug } from "../data/blog";
+import { BLOG_CATEGORIES } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/FooterRenewal.astro";
@@ -85,6 +85,7 @@ const CATEGORY_DESC: Record<string, Record<Locale, string>> = {
 const C = isJa
   ? {
       lead: "証明基盤の設計と実装、AI時代の信頼をめぐる論点。新機能のアナウンスから技術仕様まで。",
+      allDesc: "全カテゴリの記事を新着順に",
       featured: "注目の記事",
       featuredEn: "Featured",
       recent: "最近の記事",
@@ -92,11 +93,10 @@ const C = isJa
       all: "すべての記事",
       changelog: "変更履歴",
       changelogEn: "Changelog",
-      categories: "カテゴリ",
-      categoriesEn: "Categories",
     }
   : {
       lead: "Design and implementation of proof infrastructure, and the questions of trust in the AI era — from announcements to technical specs.",
+      allDesc: "Every category, newest first",
       featured: "Featured",
       featuredEn: "Featured",
       recent: "Recent",
@@ -104,8 +104,6 @@ const C = isJa
       all: "All articles",
       changelog: "Changelog",
       changelogEn: "Changelog",
-      categories: "Categories",
-      categoriesEn: "Categories",
     };
 ---
 
@@ -126,14 +124,19 @@ const C = isJa
             他ページの kicker は情報を足しているので残している。 */}
         <h1 class="bi-h1">{t.blog.title}</h1>
         <p class="bi-lead">{C.lead}</p>
+        {/* カテゴリの提示はここ1箇所（説明1行付きのカード型フィルタ）。
+            旧構成では末尾にも説明付きカードがあり二重だったため、丁寧な
+            方の表記を冒頭に統合した。 */}
         {categories.length > 0 && (
           <nav class="bi-filter" aria-label={t.blog.index.categoriesLabel}>
             <button class="bi-pill on" data-filter="all" type="button">
-              {t.blog.index.allTag} <i>{entries.length}</i>
+              <b>{t.blog.index.allTag} <i>{entries.length}</i></b>
+              <span>{C.allDesc}</span>
             </button>
             {categories.map((c) => (
               <button class="bi-pill" data-filter={c} type="button">
-                {c} <i>{categoryCounts[c]}</i>
+                <b>{c} <i>{categoryCounts[c]}</i></b>
+                <span>{CATEGORY_DESC[c]?.[locale] ?? ""}</span>
               </button>
             ))}
           </nav>
@@ -210,21 +213,6 @@ const C = isJa
           </section>
         )}
 
-        {categories.length > 0 && (
-          <section>
-            <div class="bi-label">
-              <b>{C.categories}</b><span>{C.categoriesEn}</span>
-            </div>
-            <div class="bi-cats">
-              {categories.map((c) => (
-                <a class="bi-cat-card" href={`${blogPath}/category/${categorySlug(c)}`}>
-                  <b>{c}</b>
-                  <span>{CATEGORY_DESC[c]?.[locale] ?? ""}</span>
-                </a>
-              ))}
-            </div>
-          </section>
-        )}
       </div>
 
       {/* フィルタ結果も同じカードグリッド（注目の1本目も対象に含めるため
@@ -318,46 +306,63 @@ const C = isJa
     color: var(--tx-soft);
     max-width: 62ch;
   }
+  /* カテゴリフィルタ — 説明1行付きのカード型（旧・末尾カテゴリカードの
+     表記をフィルタに統合）。 */
   .bi-filter {
-    display: flex;
-    gap: 9px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
     margin: 30px 0 0;
   }
   .bi-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    text-align: left;
     font-family: var(--font-body);
-    font-size: 13px;
-    color: var(--tx-soft);
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: 99px;
-    padding: 8px 15px;
+    border-radius: 12px;
+    padding: 14px 16px 12px;
     cursor: pointer;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s, background 0.18s;
   }
   .bi-pill:hover {
     border-color: rgba(124, 175, 0, 0.5);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-m);
+  }
+  .bi-pill b {
+    font-weight: 600;
+    font-size: 13.5px;
     color: var(--tx);
   }
-  /* 選択中は蛍光地に墨文字（§3.1-2）。 */
-  .bi-pill.on {
-    background: var(--ok);
-    border-color: var(--ok);
-    color: var(--ink);
-    font-weight: 600;
+  .bi-pill span {
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--muted);
   }
   .bi-pill i {
     font-style: normal;
     font-family: var(--font-mono);
     font-size: 10.5px;
+    font-weight: 400;
     color: var(--muted);
+    margin-left: 2px;
   }
+  /* 選択中は蛍光地に墨文字（§3.1-2）。 */
+  .bi-pill.on {
+    background: var(--ok);
+    border-color: var(--ok);
+  }
+  .bi-pill.on b,
   .bi-pill.on i {
     color: var(--ink);
-    opacity: 0.65;
+  }
+  .bi-pill.on span {
+    color: var(--ink);
+    opacity: 0.72;
   }
 
   /* ─── SECTION LABEL ───
@@ -550,36 +555,16 @@ const C = isJa
   }
 
   /* ─── CATEGORIES ─── */
-  .bi-cats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+  /* 末尾のカテゴリカード節は冒頭のフィルタに統合済み（2026-08-04）。
+     ページ下端の余白は .bi-page の padding が持ち、フッターの margin で
+     body 背景色の帯が出ないようにする。 */
+  .bi-page {
+    padding-bottom: 48px;
   }
-  .bi-cat-card {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 18px 18px 16px;
-    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
-  }
-  .bi-cat-card:hover {
-    border-color: rgba(124, 175, 0, 0.5);
-    transform: translateY(-2px);
-    box-shadow: var(--sh-m);
-  }
-  .bi-cat-card b {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--tx);
-  }
-  .bi-cat-card span {
-    font-size: 12px;
-    line-height: 1.7;
-    color: var(--muted);
+  /* FooterRenewal の scoped セレクタ（.rfooter[data-astro-cid] = 0-2-0）に
+     勝つため、main 隣接で詳細度を 0-2-2 に上げる。 */
+  :global(main.bi-page ~ footer.rfooter) {
+    margin-top: 0;
   }
 
   /* ─── ページ送り（Brief 一覧と同じ言語: 現在ページ=蛍光地に墨文字） ─── */
@@ -648,7 +633,7 @@ const C = isJa
       grid-template-columns: 1fr;
       gap: 20px;
     }
-    .bi-cats {
+    .bi-filter {
       grid-template-columns: 1fr 1fr;
     }
     .bi-crow {
@@ -667,7 +652,7 @@ const C = isJa
   @media (prefers-reduced-motion: reduce) {
     .bi-thumb :global(svg),
     .bi-thumb :global(.cover-photo),
-    .bi-cat-card {
+    .bi-pill {
       transition: none;
     }
   }
@@ -694,7 +679,7 @@ const C = isJa
     // ページ送り: SSR は全件のまま、表示だけを PAGE_SIZE 行ずつに切る
     // （Brief 一覧と同じ方式）。「すべての記事」とフィルタ結果の両方に効き、
     // 1ページに収まるときはページャー自体を出さない。
-    var PAGE_SIZE = 12;
+    var PAGE_SIZE = 9; // 3列×3行 — 「まだ下に長い」フィードバックで 12 から縮小
     var pageAll = 1;
     var pageFiltered = 1;
 
