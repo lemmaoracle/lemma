@@ -1148,14 +1148,12 @@
     background:linear-gradient(200deg,rgba(16,22,17,.06) 0%,rgba(16,22,17,.3) 62%,rgba(16,22,17,.52) 100%);}
 .indv1 .newscard .cover .nc-photo::before{content:"";position:absolute;left:0;right:0;top:62%;height:2px;
     background:var(--ok,#A8E010);opacity:.85;z-index:2;}
-.indv1 .newscard .cover.nc-brief{background:linear-gradient(158deg,#3C443D 0%,#333B34 55%,#2E362F 100%);}
-.indv1 .newscard .cover.nc-brief::before{content:none;}
-.indv1 .newscard .cover.nc-brief .bn{position:relative;z-index:2;display:grid;place-items:center;height:100%;
-    padding:20px;text-align:center;}
-.indv1 .newscard .cover.nc-brief .bn em{display:block;font-style:normal;font-family:var(--font-mono);
-    font-size:9px;letter-spacing:.2em;color:#A8E010;margin-bottom:8px;}
-.indv1 .newscard .cover.nc-brief .bn b{font-family:"Inter",sans-serif;font-weight:200;font-size:30px;
-    color:#EBEFE6;letter-spacing:-.01em;}
+/* Brief カードのカバーは生成 SVG（lib/briefCover.ts の C-3 プリセット）。
+   地の斜線パターンは殺す — SVG 自身が地を持つ。 */
+.indv1 .newscard .cover:has(>svg)::before{content:none;}
+/* メタ行のチップ（D）。カバー＝ブランドの言葉／チップ＝中身の種類。 */
+.indv1 .newscard .meta em.ja{font-family:var(--font-body);font-size:10.5px;letter-spacing:0;
+    color:#333B34;background:#F6FAEC;border:1px solid #C9D6A8;border-radius:3px;padding:2px 7px;}
 @media (max-width:1020px){
 .indv1 .newsgrid{grid-template-columns:1fr;}
 }

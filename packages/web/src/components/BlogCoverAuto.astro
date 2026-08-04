@@ -13,16 +13,18 @@
  * セレクタは `svg` と `.cover-photo` の両方を対象にすること。
  */
 import BlogCover from "./BlogCover.astro";
-import { resolveCoverPhoto } from "../lib/coverPhoto";
+import { resolveCoverImage } from "../lib/coverPhoto";
 
 interface Props {
   readonly category: string;
   readonly slug: string;
   readonly coverPhoto?: string;
+  /** frontmatter `cover`（サイト内絶対パスのときだけカバーとして使う）。 */
+  readonly cover?: string;
 }
 
-const { category, slug, coverPhoto } = Astro.props;
-const photoSrc = resolveCoverPhoto(coverPhoto);
+const { category, slug, coverPhoto, cover } = Astro.props;
+const photoSrc = resolveCoverImage({ coverPhoto, cover });
 ---
 
 {photoSrc ? (
