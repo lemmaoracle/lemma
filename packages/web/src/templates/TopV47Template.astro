@@ -59,6 +59,18 @@ const REG = isJa
       timeLocale: "ja-JP",
       live: "LIVE",
       offline: "OFFLINE",
+      // 内訳のソース名は検証センター (VerifyAnchorTemplate の SRC_LABELS) と同じ訳語。
+      // 未知のキーはキーのまま出す。
+      src: {
+        feeds: "為替データフィード",
+        api_verify: "公開API・その他",
+        "jp-holidays": "祝日データフィード",
+        "jp-postal-codes": "郵便番号データフィード",
+        other: "その他",
+      },
+      // イベント列: フィード ID とハッシュはそのまま、説明語だけロケール化
+      evVerified: "検証",
+      evIssued: "証明を発行",
     }
   : {
       perr: "The registry is unreachable. We do not fill in estimates.",
@@ -67,6 +79,15 @@ const REG = isJa
       timeLocale: "en-US",
       live: "LIVE",
       offline: "OFFLINE",
+      src: {
+        feeds: "FX data feed",
+        api_verify: "Public API & others",
+        "jp-holidays": "JP holidays feed",
+        "jp-postal-codes": "JP postal codes feed",
+        other: "Others",
+      },
+      evVerified: "sources verified",
+      evIssued: "proof issued",
     };
 
 const metaTitle = isJa
@@ -191,7 +212,8 @@ const metaDescription = isJa
               var by = (v.bySource || [])
                 .slice(0, 3)
                 .map(function (b) {
-                  return b.source + " " + num(b.count);
+                  var label = (REG.src && REG.src[b.source]) || b.source;
+                  return label + " " + num(b.count);
                 })
                 .join("   ");
               S.textContent = by ? REG.breakdown + by : "";
@@ -222,7 +244,7 @@ const metaDescription = isJa
           '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"/><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         var evs = [];
         function shortHash(h) {
-          return h ? h.slice(0, 10) + "…" + h.slice(-4) : "";
+          return h ? h.slice(0, 6) + "…" + h.slice(-4) : "";
         }
         function render() {
           if (!stream || !evs.length) return;
@@ -249,16 +271,16 @@ const metaDescription = isJa
                 a.href = href;
               });
             }
-            var a = (j && j.attributes) || {};
             var v = (j && j.verification) || {};
+            /* パネル幅に収める: 日付は落とし、検証数とハッシュだけ残す */
             evs.push(
-              "feeds/forex/composite&nbsp; " +
-                (a.date || "") +
-                " — " +
+              "feeds/forex/composite&nbsp;" +
                 (v.verified != null ? v.verified : "?") +
                 "/" +
                 (v.total != null ? v.total : "?") +
-                " sources verified — " +
+                " " +
+                REG.evVerified +
+                " — " +
                 shortHash(j && j.docHash),
             );
             render();
@@ -268,7 +290,9 @@ const metaDescription = isJa
           });
         getJson("/suites/feeds/jp-holidays/latest")
           .then(function (j) {
-            evs.push("feeds/jp-holidays&nbsp; proof issued — " + shortHash(j && j.docHash));
+            evs.push(
+              "feeds/jp-holidays&nbsp;" + REG.evIssued + " — " + shortHash(j && j.docHash),
+            );
             render();
           })
           .catch(function () {});
