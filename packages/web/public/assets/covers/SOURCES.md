@@ -15,6 +15,6 @@
 | ai-financial-cybersecurity-akamai-2026.jpg | 2026.06.04 AI時代の金融サイバー攻撃対策 | Erik Mclean | https://unsplash.com/photos/_uiWUtMqzvI | Unsplash License |
 | ppsi-stablecoin-aml-kyc-third-layer.jpg | 2026.05.15 x402 に第3層を足す | Jakub Żerdzicki | https://unsplash.com/photos/4YdFMaYq-xA | Unsplash License |
 | verifiable-ai-financial-agents-2026.jpg | 2026.05.07 金融AIが業務の中核に入った 2026（スタジアム座席の俯瞰 — スケール抽象） | Samuel Sianipar | https://unsplash.com/photos/oui6HkE7xEM | Unsplash License |
-| keep-ai-underwriting-without-data-handover.jpg | 2026.05.28 渡さずに、審査する（暗所のスマホの手元） | Gilles Lambert | https://unsplash.com/photos/pb_lF8VWaPU | Unsplash License |
+| keep-ai-underwriting-without-data-handover.jpg | 2026.05.28 渡さずに、審査する（三角パネルの格子に確かめる点がひとつ） | Maximalfocus | https://unsplash.com/photos/QtZDb5QJOFM | Unsplash License |
 | ai-explainability-management-crypto-proof.jpg | 2026.04.16 説明可能経営（番号付き私書箱の列 — 記録の在り処のスケール抽象） | Jinsoo Choi | https://unsplash.com/photos/a66u8vmMcMc | Unsplash License |
 | verified-attributes-travel-public-services.jpg | 2026.04.07 旅行・公共（空港のガラス面とシルエット — スケール抽象） | Artur Tumasjan | https://unsplash.com/photos/KZSNMN4VxR8 | Unsplash License |
