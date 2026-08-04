@@ -14,9 +14,11 @@
     "@astrojs/react": "^4.4.2",
     "@astrojs/rss": "^4.0.17",
     "@astrojs/sitemap": "^3.7.0",
+    "@fontsource/inter": "^5.3.0",
     "@fontsource/sora": "^5.2.8",
     "@fontsource/source-serif-4": "^5.2.9",
     "@fontsource/space-mono": "^5.2.9",
+    "@lemmaoracle/sdk": "workspace:*",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/typography": "^0.5.19",
     "gradient-seed-generator": "^1.0.10",
@@ -27,8 +29,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "satori": "^0.26.0",
-    "shiki": "^3.0.0",
-    "@lemmaoracle/sdk": "workspace:*"
+    "shiki": "^3.0.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.12",

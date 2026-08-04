@@ -40,6 +40,10 @@ const soraBold = readFileSync(
 const spaceMonoRegular = readFileSync(
   resolve(cwd, "node_modules/@fontsource/space-mono/files/space-mono-latin-400-normal.woff"),
 );
+/** Brief OGP の番号（Inter 300）。ラテン数字のみで使う（カバー・OGP v2 §C-4）。 */
+const interLight = readFileSync(
+  resolve(cwd, "node_modules/@fontsource/inter/files/inter-latin-300-normal.woff"),
+);
 
 /**
  * 生のフォントデータ。**この共通アートボードに乗らない OG**（ブログの
@@ -52,6 +56,7 @@ export const OG_FONT_DATA = {
   jaBold,
   soraBold,
   spaceMonoRegular,
+  interLight,
 } as const;
 
 export const SATORI_FONTS = [
