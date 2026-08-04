@@ -452,16 +452,17 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     display: block;
     filter: sepia(0.16) saturate(0.62) hue-rotate(-8deg) contrast(1.04);
   }
-  /* 暗いヴェール */
+  /* 暗いヴェール — ユースケース索引サムネ（usecases-v14 の .ux-thv）と同一。
+     業界ページの写真より鮮やかに見える、という作者フィードバックで統一。 */
   .cover--photo::after {
     content: "";
     position: absolute;
     inset: 0;
     background: linear-gradient(
       200deg,
-      rgba(51, 59, 52, 0.28),
-      rgba(51, 59, 52, 0.06) 55%,
-      rgba(51, 59, 52, 0.34)
+      rgba(16, 22, 17, 0.06) 0%,
+      rgba(16, 22, 17, 0.3) 62%,
+      rgba(16, 22, 17, 0.52) 100%
     );
     pointer-events: none;
   }
