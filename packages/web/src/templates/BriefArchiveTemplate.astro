@@ -216,7 +216,7 @@ function cardData(card: ArchiveCard) {
     font-weight: 400;
     line-height: 1.65;
     padding: 0 0 96px;
-    margin-top: 64px;
+    padding-top: 64px; /* sticky ナビ時代の margin-top:64px を padding に変換 — body 背景色の帯を出さない（H1 上の空白修正） */
   }
   :root[lang="en"] .ar-page {
     --ar-body: "Noto Sans JP", system-ui, sans-serif;

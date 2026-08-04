@@ -1139,6 +1139,23 @@
     font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--muted);}
 .indv1 .newscard .meta em{font-style:normal;color:var(--ok-ink);}
 .indv1 .newscard .t{font-family:var(--font-serif-jp);font-weight:600;font-size:14.5px;line-height:1.7;color:var(--tx);}
+.indv1 /* ---- Latest news 実データ配線後のカバー（ブログ写真/抽象 SVG・Brief 面）---- */
+  .newscard .cover>svg{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;}
+.indv1 .newscard .cover .nc-photo{position:absolute;inset:0;display:block;z-index:1;}
+.indv1 .newscard .cover .nc-photo img{width:100%;height:100%;object-fit:cover;display:block;
+    filter:sepia(.16) saturate(.62) hue-rotate(-8deg) contrast(1.04);}
+.indv1 .newscard .cover .nc-photo::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(200deg,rgba(16,22,17,.06) 0%,rgba(16,22,17,.3) 62%,rgba(16,22,17,.52) 100%);}
+.indv1 .newscard .cover .nc-photo::before{content:"";position:absolute;left:0;right:0;top:62%;height:2px;
+    background:var(--ok,#A8E010);opacity:.85;z-index:2;}
+.indv1 .newscard .cover.nc-brief{background:linear-gradient(158deg,#3C443D 0%,#333B34 55%,#2E362F 100%);}
+.indv1 .newscard .cover.nc-brief::before{content:none;}
+.indv1 .newscard .cover.nc-brief .bn{position:relative;z-index:2;display:grid;place-items:center;height:100%;
+    padding:20px;text-align:center;}
+.indv1 .newscard .cover.nc-brief .bn em{display:block;font-style:normal;font-family:var(--font-mono);
+    font-size:9px;letter-spacing:.2em;color:#A8E010;margin-bottom:8px;}
+.indv1 .newscard .cover.nc-brief .bn b{font-family:"Inter",sans-serif;font-weight:200;font-size:30px;
+    color:#EBEFE6;letter-spacing:-.01em;}
 @media (max-width:1020px){
 .indv1 .newsgrid{grid-template-columns:1fr;}
 }

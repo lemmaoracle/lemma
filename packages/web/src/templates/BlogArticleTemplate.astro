@@ -30,6 +30,7 @@ import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import SchemaOrg from "@/components/SchemaOrg";
 import BlogCover from "../components/BlogCover.astro";
+import { resolveCoverPhoto } from "../lib/coverPhoto";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface BlogArticleTemplateProps {
@@ -75,6 +76,32 @@ const {
 
 const homeLabel = locale === "ja" ? "ホーム" : "Home";
 const isJa = locale === "ja";
+
+/* 写真カバー（§C-2）: coverPhoto が指定され public/ に実在するときだけ。
+   無ければ従来どおり category+slug の抽象パターンに落ちる。 */
+const coverPhotoSrc = resolveCoverPhoto(post.coverPhoto);
+
+/* 証拠ブロック（§B）の文言。数字の説明責任は検証センター1枚に集約する
+   ため、`GET /v1/counters` は呼ばない（§B-6）。EN は ¥ を出さない（§B-5）。 */
+const evidence = isJa
+  ? {
+      eyebrow: "確かめる",
+      facts: [
+        { v: "¥0", em: false, d: "検証は無料。API キーも要りません。何度でも実行できます。" },
+        { v: "$0.005", em: false, d: "発行は一度だけ、約0.8円。以降の検証に課金はありません。" },
+        { v: "ハッシュだけ", em: true, d: "Lemma が受け取るのはハッシュです。原本は手元から出ません。" },
+      ],
+      go: "発行と検証の実数を、検証センターで見る →",
+    }
+  : {
+      eyebrow: "Verify",
+      facts: [
+        { v: "Free", em: false, d: "Verification is free. No API key required. Run it as many times as you like." },
+        { v: "$0.005", em: false, d: "Issuing costs $0.005, once. Verifying afterwards is never charged." },
+        { v: "Hash only", em: true, d: "Lemma receives only a hash. The original never leaves your side." },
+      ],
+      go: "See real issuance and verification numbers in the Verify Center →",
+    };
 const builtForHeading = isJa
   ? "意思決定のために"
   : "Built for decisions";
@@ -122,11 +149,19 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
         {post.abstract && <p class="blog-abstract">{post.abstract}</p>}
       </section>
 
-      {/* カテゴリと slug から生成したカバー。索引のサムネイル・関連記事
-          カード・OGP も同じ絵なので、一覧と記事で食い違わない。 */}
-      <figure class="blog-cover">
-        <BlogCover category={post.category} slug={post.slug} />
-      </figure>
+      {/* カバー。coverPhoto が public/ に実在すれば写真（色調・ヴェール・
+          走査線は CSS 加工 — §C-3、JPEG に焼き込まない）、無ければ従来の
+          カテゴリ+slug 抽象パターン。索引・関連カード・OGP は写真対応まで
+          抽象のまま（§C-4 は写真到着後に確定）。 */}
+      {coverPhotoSrc ? (
+        <figure class="blog-cover cover--photo">
+          <img src={coverPhotoSrc} alt="" loading="eager" />
+        </figure>
+      ) : (
+        <figure class="blog-cover">
+          <BlogCover category={post.category} slug={post.slug} />
+        </figure>
+      )}
 
       <div class="blog-body" set:html={post.body} />
 
@@ -150,6 +185,25 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
           </ul>
         </section>
       )}
+
+      {/* 証拠ブロック（§B・バリアントA 計器帯）。面を持たせない・ボタンを
+          置かない — アクションは末尾のスレートCTAの専任で、ここは事実を
+          置いて検証センターへ上がる踏み台に徹する（§B-4）。ブログ記事
+          テンプレート限定で、Critical Brief には入れない（§B-1）。 */}
+      <section class="evidence">
+        <div class="evidence__eyebrow">{evidence.eyebrow}</div>
+        <div class="evidence__facts">
+          {evidence.facts.map((f) => (
+            <div class="evidence__f">
+              <div class="evidence__v">{f.em ? <em>{f.v}</em> : f.v}</div>
+              <div class="evidence__d">{f.d}</div>
+            </div>
+          ))}
+        </div>
+        <div class="evidence__go">
+          <a href={`${base}/verify/`}>{evidence.go}</a>
+        </div>
+      </section>
 
       {post.tags && post.tags.length > 0 && (
         <nav class="blog-tags" aria-label="Related topics">
@@ -286,7 +340,7 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     letter-spacing: 0.01em;
     /* 下の余白は新フッターの `margin-top:80px` が持つ（モックと同じ）。 */
     padding: 0;
-    margin-top: 64px;
+    padding-top: 64px; /* sticky ナビ時代の margin-top:64px を padding に変換 — body 背景色の帯を出さない（H1 上の空白修正） */
   }
   .blog-container {
     max-width: calc(760px + 12vw);
@@ -378,6 +432,52 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     display: block;
     border-radius: 14px;
     box-shadow: 0 18px 44px rgba(24, 36, 26, 0.13);
+  }
+  /* 写真カバー（刷新指示 §C-3）。画像は無加工で入稿され、色調・暗い
+     ヴェール・ライムの走査線はすべてここで掛ける（JPEG に焼き込まない）。
+     走査線の位置・太さは実写1枚が届いた時点で確定するため CSS 変数
+     （暫定 62% / 2px）。枠は抽象カバーと同じ角丸+影で揃える。 */
+  .cover--photo {
+    --cover-scan-top: 62%;
+    --cover-scan-height: 2px;
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 18px 44px rgba(24, 36, 26, 0.13);
+  }
+  .cover--photo img {
+    width: 100%;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+    display: block;
+    filter: sepia(0.16) saturate(0.62) hue-rotate(-8deg) contrast(1.04);
+  }
+  /* 暗いヴェール — ユースケース索引サムネ（usecases-v14 の .ux-thv）と同一。
+     業界ページの写真より鮮やかに見える、という作者フィードバックで統一。 */
+  .cover--photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      200deg,
+      rgba(16, 22, 17, 0.06) 0%,
+      rgba(16, 22, 17, 0.3) 62%,
+      rgba(16, 22, 17, 0.52) 100%
+    );
+    pointer-events: none;
+  }
+  /* ライムの走査線 — 抽象カバーと同じ「検証済み」の記号 */
+  .cover--photo::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--cover-scan-top);
+    height: var(--cover-scan-height);
+    background: var(--ok);
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 1;
   }
 
   /* ─── BODY (rendered markdown HTML) ─── */
@@ -772,6 +872,85 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     color: var(--ok-ink);
   }
 
+  /* ─── EVIDENCE（証拠ブロック・計器帯 §B）───
+     面（背景色）を持たせない: 上辺のライム2pxと内部の1px縦罫だけで構成
+     （末尾はタグ・前後記事・ニュースレター・CTA と箱が並ぶため）。
+     ボタンは置かない。数値は Inter 200 / 27px — 検証センター・製品ページ
+     の計器面（product-v18 の .rp-n）と同じ扱い。 */
+  .evidence {
+    margin: 56px 0 0;
+    padding-top: 22px;
+    border-top: 2px solid var(--ok);
+  }
+  .evidence__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .evidence__facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .evidence__f {
+    padding: 0 22px;
+    border-left: 1px solid var(--line);
+  }
+  .evidence__f:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .evidence__f:last-child {
+    padding-right: 0;
+  }
+  .evidence__v {
+    font-family: "Inter", sans-serif;
+    font-weight: 200;
+    font-size: 27px;
+    line-height: 1.2;
+    color: var(--tx);
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 7px;
+  }
+  .evidence__v em {
+    font-style: normal;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--tx);
+    letter-spacing: 0;
+  }
+  .evidence__d {
+    font-size: 12.5px;
+    line-height: 1.72;
+    color: var(--muted);
+  }
+  .evidence__go {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .evidence__go a {
+    color: var(--tx);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid var(--ok);
+    padding-bottom: 2px;
+    transition: border-color 0.15s;
+  }
+  .evidence__go a:hover {
+    border-bottom-color: var(--ok-ink);
+  }
+  .evidence__go a:focus-visible {
+    outline: 2px solid var(--ok);
+    outline-offset: 3px;
+  }
+
   /* ─── TAGS ─── */
   .blog-tags {
     display: flex;
@@ -954,6 +1133,16 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     }
     .blog-cta {
       padding: 30px 24px 28px;
+    }
+    /* 証拠ブロック: 3カラム→1カラム、縦罫を左辺の淡いバーに（§B-4） */
+    .evidence__facts {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .evidence__f,
+    .evidence__f:first-child {
+      padding: 0 0 0 16px;
+      border-left: 2px solid var(--lite);
     }
     .blog-prevnext {
       grid-template-columns: 1fr;
