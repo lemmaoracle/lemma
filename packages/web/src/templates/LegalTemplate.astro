@@ -62,12 +62,12 @@ const brandSuffix = locale === "ja" ? "Lemma — 検証可能AI" : "Lemma — Ve
   /* 新デザインシステム (2026-08 リニューアル): 地は #f3f4f1、見出しは Noto Serif JP 600、
      アクセントはライム系 (#a8e010 / 小さい文字は #4e7a00)。黒帯ヒーローと
      ブラウンのリンク・◆ビュレットは旧DSのため廃止。 */
-  :global(body) {
+  :global(html body) {
     background: #f3f4f1;
   }
   /* EN 旧ナビ（NavigationLegacy）が出す旧DSサドルブラウンの装飾レールは
      この面の配色に合わないため出さない（トップ v47 と同じ扱い） */
-  :global(.lemma-brand-bar) {
+  :global(html body .lemma-brand-bar) {
     display: none;
   }
 
@@ -194,7 +194,7 @@ const brandSuffix = locale === "ja" ? "Lemma — 検証可能AI" : "Lemma — Ve
     font-weight: 600;
     border-bottom: 1px solid rgba(111, 156, 0, 0.35);
     text-decoration: none;
-    transition: border-color 0.2s, color 0.2s;
+    transition: border-color 0.2s;
     overflow-wrap: anywhere;
   }
   .legal-body :global(a:hover) {
