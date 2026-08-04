@@ -1,0 +1,92 @@
+---
+/**
+ * 404。**存在しない静的アセットが 200 で HTML を返していた**のを直すために置く
+ * （カバー・OGP生成 実装指示 v2 §0.3 / G-6）。
+ *
+ * Cloudflare Pages は `dist/404.html` が無いと、見つからないパスに対して
+ * ルートの `index.html` を 200 で返す——`/assets/covers/<無い slug>.jpg` が
+ * 81KB の HTML（EN トップ）として届き、`<img>` は壊れた表示になっていた。
+ * このページを置くと Pages は 404 ステータスでこれを返すので、画像の失敗は
+ * 画像の失敗として扱われる。
+ *
+ * カバーのフォールバック自体はビルド時のファイルシステム実体で判定している
+ * （`lib/coverPhoto.ts`）ので、そちらは 404 の有無に依存しない。
+ */
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import { getTranslations } from "../i18n/translations";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+---
+
+<Layout
+  locale={locale}
+  title="Page not found — Lemma"
+  description="The page you were looking for does not exist."
+  noindex
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <main class="nf">
+    <p class="nf-code">404</p>
+    <h1 class="nf-h1">Page not found</h1>
+    <p class="nf-lead">
+      The page you were looking for does not exist, or has moved.
+    </p>
+    <p class="nf-go">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="/blog">Blog</a>
+      <span aria-hidden="true">/</span>
+      <a href="/critical/briefs">Critical Brief</a>
+    </p>
+  </main>
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .nf {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(96px, 14vw, 180px) 24px 120px;
+    font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
+  }
+  .nf-code {
+    font-family: "Inter", sans-serif;
+    font-weight: 200;
+    font-size: 64px;
+    line-height: 1;
+    color: #6f9c00;
+    margin: 0 0 18px;
+  }
+  .nf-h1 {
+    font-family: "Noto Serif JP", serif;
+    font-weight: 600;
+    font-size: clamp(26px, 3.2vw, 36px);
+    color: #12140e;
+    margin: 0 0 14px;
+  }
+  .nf-lead {
+    font-size: 15px;
+    line-height: 1.95;
+    color: #5c6156;
+    margin: 0 0 30px;
+  }
+  .nf-go {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    font-size: 14px;
+  }
+  .nf-go a {
+    color: #12140e;
+    text-decoration: none;
+    border-bottom: 1px solid #a8e010;
+    padding-bottom: 2px;
+  }
+  .nf-go span {
+    color: #a9b0a4;
+  }
+</style>

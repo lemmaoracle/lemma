@@ -152,7 +152,7 @@ const C = isJa
             {/* カード装飾は付けない — サムネイル＋テキストのみ（§3.1-3）。 */}
             <a class="bi-feat" href={`${blogPath}/${featured.slug}`}>
               <div class="bi-thumb">
-                <BlogCoverAuto category={featured.category} slug={featured.slug} coverPhoto={featured.coverPhoto} />
+                <BlogCoverAuto category={featured.category} slug={featured.slug} coverPhoto={featured.coverPhoto} cover={featured.cover} />
               </div>
               <div>
                 <div class="bi-meta">
@@ -179,7 +179,7 @@ const C = isJa
               {entries.slice(1).map((post) => (
                 <a class="bi-card" href={`${blogPath}/${post.slug}`}>
                   <div class="bi-thumb">
-                    <BlogCoverAuto category={post.category} slug={post.slug} coverPhoto={post.coverPhoto} />
+                    <BlogCoverAuto category={post.category} slug={post.slug} coverPhoto={post.coverPhoto} cover={post.cover} />
                   </div>
                   <div class="bi-meta">
                     <span class="bi-cat">{post.category}</span>
@@ -229,7 +229,7 @@ const C = isJa
               data-category={[post.category, ...(post.secondaryCategories ?? [])].join("|")}
             >
               <div class="bi-thumb">
-                <BlogCoverAuto category={post.category} slug={post.slug} coverPhoto={post.coverPhoto} />
+                <BlogCoverAuto category={post.category} slug={post.slug} coverPhoto={post.coverPhoto} cover={post.cover} />
               </div>
               <div class="bi-meta">
                 <span class="bi-cat">{post.category}</span>
