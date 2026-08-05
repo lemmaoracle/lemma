@@ -1443,7 +1443,7 @@
 .ucx details.auorph summary .aug-ic{color:#9aa197;}
 .ucx .aubody{padding:10px 8px 20px;}
 /* 末尾CTAとサイトフッターの間隔 */
-.ucx{padding-bottom:96px;}
+.ucx{padding-bottom:60px;}
 /* --- 業界カード: 業界名を主役に（2026-08-02 ユーザー指示） --- */
 .ucx .ux-n{font-family:var(--font-serif-jp,serif);font-size:17px;font-weight:600;letter-spacing:.03em;color:var(--tx,#12140e);margin-bottom:2px;line-height:1.5;}
 .ucx .ux-sol{font-family:var(--font-mono,"Space Mono",monospace);font-size:10px;font-weight:400;letter-spacing:.14em;color:var(--ok-ink,#4e7a00);margin-bottom:8px;}
