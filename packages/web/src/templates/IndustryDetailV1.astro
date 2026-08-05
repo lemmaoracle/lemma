@@ -184,6 +184,7 @@ if (bizPost && latestBrief) {
   description={entry.description}
   metaType="page"
   pagePath={`/solutions/use-cases/${entry.slug}/`}
+  localesAvailable={["ja"] as ReadonlyArray<Locale>}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />

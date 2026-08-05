@@ -29,6 +29,15 @@ interface Props {
   /** Absolute URL of a page-specific OG image (overrides the locale default). */
   ogImage?: string;
   /**
+   * Locales this page actually exists in. Layout emits one `<link rel=alternate
+   * hreflang=...>` per listed locale and points `x-default` at the preferred
+   * available locale. Pages that have no EN equivalent (e.g. JA-only industry
+   * detail pages, `/ja/compare/`) pass `["ja"]` so the missing EN hreflang is
+   * omitted and `x-default` falls back to JA instead of pointing at a 404.
+   * Defaults to both locales for backward compatibility. Refs #790.
+   */
+  localesAvailable?: ReadonlyArray<Locale>;
+  /**
    * og:description / twitter:description の上書き。省略時は `description`。
    *
    * `description` は検索向けなので語彙を積んである。SNS のカードでは硬く読める
@@ -44,6 +53,10 @@ const title = Astro.props.title ?? t.layout.defaultTitle;
 const ogTitle = Astro.props.ogTitle ?? title;
 const description = Astro.props.description ?? t.layout.defaultDescription;
 const base = locale === "ja" ? "/ja" : "";
+const localesAvailable: ReadonlyArray<Locale> =
+  Astro.props.localesAvailable ?? (["en", "ja"] as ReadonlyArray<Locale>);
+const enAvailable = localesAvailable.includes("en");
+const jaAvailable = localesAvailable.includes("ja");
 
 const shouldRenderMetaTags =
   Astro.props.metaType === "home" ||
@@ -92,6 +105,10 @@ const enHref = buildLocalePath("en");
 const jaHref = buildLocalePath("ja");
 const canonicalHref =
   Astro.props.canonicalOverride ?? `${SITE_ORIGIN}${canonicalPath}`;
+// x-default points at the preferred available locale: EN when both exist
+// (the established bilingual default), otherwise whichever locale remains.
+// Without this, JA-only pages emitted x-default = EN URL → 404. Refs #790.
+const xDefaultHref = enAvailable ? enHref : jaHref;
 
 const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
 const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
@@ -152,9 +169,9 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
         )
     }
     <link rel="canonical" href={canonicalHref} />
-    <link rel="alternate" hreflang="en" href={`${SITE_ORIGIN}${enHref}`} />
-    <link rel="alternate" hreflang="ja" href={`${SITE_ORIGIN}${jaHref}`} />
-    <link rel="alternate" hreflang="x-default" href={`${SITE_ORIGIN}${enHref}`} />
+    {enAvailable && <link rel="alternate" hreflang="en" href={`${SITE_ORIGIN}${enHref}`} />}
+    {jaAvailable && <link rel="alternate" hreflang="ja" href={`${SITE_ORIGIN}${jaHref}`} />}
+    <link rel="alternate" hreflang="x-default" href={`${SITE_ORIGIN}${xDefaultHref}`} />
     <script
       type="application/ld+json"
       is:inline
