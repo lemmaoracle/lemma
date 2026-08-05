@@ -72,13 +72,19 @@ const tickerHtml = latestAnnouncement
  * fragment の LATEST 節はモック由来の静的プレースホルダ（社外リリースへの
  * 仮リンク・空のプレス枠・Brief No.105 直書き）だったので `<!--LATEST-->`
  * に畳み、ここで実データを流し込む。3枠の性格は固定し、新着順で競争させない。
- *   枠1 実績     — 最新の「お知らせ」記事（自動）
+ *   枠1 実績     — 導入事例の記事（手動）。無ければ最新の「お知らせ」へ
  *   枠2 論点     — Critical Brief の最新1本（自動。毎週の鮮度はこの枠が担う）
  *   枠3 読みもの — `audience: business` からの選抜1本（手動・月次で見直す）
- *
- * 導入事例（メタウォーター）はブログ記事が未公開のため出さない。公開後は
- * 枠1 をその記事に差し替える（設計 v1 §4.1 の「手動」枠はここ）。
  */
+
+/** 枠1 に出す導入事例の slug。実績の枠なので、お知らせより導入事例を優先する
+ *  （記事が取り下げられても枠が空かないよう、見つからなければ従来どおり
+ *  最新の「お知らせ」へ落ちる）。 */
+const CASE_STUDY_SLUG = "metawater-mizudako-resident-record-proof";
+
+const caseStudy = postsDesc.find((p) => p.slug === CASE_STUDY_SLUG);
+const slot1 = caseStudy ?? latestAnnouncement;
+const slot1Label = caseStudy ? "caseStudy" : "announce";
 
 /** 枠3 に出す記事の slug（`audience: business` のもの）。月次で見直す。
  *  見つからなければ business の最新へ自動フォールバックし、枠を空けない。 */
@@ -87,9 +93,10 @@ const TOP_PICK_SLUG = "ai-financial-cybersecurity-akamai-2026";
 const bizPostsDesc = postsDesc.filter((p) => p.audience === "business");
 const pickedCandidate = bizPostsDesc.find((p) => p.slug === TOP_PICK_SLUG) ?? bizPostsDesc[0];
 // 枠1 と同じ記事が枠3 にも来ないようにする（両枠が同じ1本を指すと枠が死ぬ）。
+// 導入事例は audience:business なので、枠1 に出た場合ここに再登場しうる。
 const pickedPost =
-  pickedCandidate && pickedCandidate.slug === latestAnnouncement?.slug
-    ? bizPostsDesc.find((p) => p.slug !== latestAnnouncement.slug)
+  pickedCandidate && pickedCandidate.slug === slot1?.slug
+    ? bizPostsDesc.find((p) => p.slug !== slot1.slug)
     : pickedCandidate;
 
 // 枠2: Brief は JA コレクションを軸に、EN では訳がある分だけ差し替える
@@ -107,6 +114,7 @@ const latSep = isJa ? "" : " ";
 const LAT = isJa
   ? {
       announce: "お知らせ",
+      caseStudy: "導入事例",
       blog: "ブログ",
       // カバーが「CRITICAL BRIEF」を大きく出すので、チップは語を重ねない
       // （業界ページ枠2 と同じ扱い）。
@@ -117,6 +125,7 @@ const LAT = isJa
     }
   : {
       announce: "Announcement",
+      caseStudy: "Case study",
       blog: "Blog",
       brief: "Case analysis",
       readPost: "Read the article →",
@@ -163,7 +172,7 @@ const briefCardHtml = (b: NonNullable<typeof latestBrief>): string => {
 };
 
 const latestHtml = [
-  latestAnnouncement ? postCardHtml(latestAnnouncement, LAT.announce) : "",
+  slot1 ? postCardHtml(slot1, LAT[slot1Label]) : "",
   latestBrief ? briefCardHtml(latestBrief) : "",
   pickedPost ? postCardHtml(pickedPost, LAT.blog) : "",
 ]
