@@ -133,13 +133,11 @@ const paymentMiddleware = (
                   ).map((accept) => ({
                     ...accept,
                     extra: {
-                      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                      ...((accept?.extra as Record<string, unknown>) ?? {}),
+                      ...((accept.extra as Record<string, unknown> | undefined) ?? {}),
                       lemma: {
-                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                        ...(((accept?.extra as Record<string, unknown>)?.lemma as
+                        ...(((accept.extra as Record<string, unknown> | undefined) ?? {}).lemma as
                           | Record<string, unknown>
-                          | undefined) ?? {}),
+                          | undefined) ?? {},
                         ...discovery,
                       },
                     },

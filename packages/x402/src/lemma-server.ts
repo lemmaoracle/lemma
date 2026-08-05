@@ -70,8 +70,9 @@ const resolveFromEnv = (_?: undefined): ResolvedLemmaConfig | undefined => {
                 apiBase,
                 apiKey: parsed.apiKey as string | undefined,
                 circuitId:
-                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                  (parsed.circuitId as string) ?? DEFAULT_CIRCUIT_ID,
+                  typeof parsed.circuitId === "string"
+                    ? parsed.circuitId
+                    : DEFAULT_CIRCUIT_ID,
                 relayUrl: parsed.relayUrl as string | undefined,
                 discovery:
                   parsed.discovery as LemmaConfig["discovery"] | undefined,
