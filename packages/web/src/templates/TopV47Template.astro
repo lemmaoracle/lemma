@@ -62,9 +62,17 @@ const firstSentence = (v: string): string => {
 
 const postsDesc = [...(await getAllPosts(locale))].sort((a, b) => (a.date > b.date ? -1 : 1));
 
+/** 枠1 に出す導入事例の slug（下の「最近の動き」で使う）。 */
+const CASE_STUDY_SLUG = "metawater-mizudako-resident-record-proof";
+const caseStudy = postsDesc.find((p) => p.slug === CASE_STUDY_SLUG);
+
 // ヒーロー CTA 直下の NEW ティッカー。最新の Announcements 記事を1本だけ出す
 // (mock v5.9 の .ticker。モックはハードコードだったので実データに接続)。
-const latestAnnouncement = postsDesc.find((p) => postInCategory(p, "Announcements"));
+// 導入事例は category:Announcements でありながら下の枠1 にも出るので、
+// ここでは除く——同じ1本をティッカーと枠1 の2箇所に出すと枠が死ぬ。
+const latestAnnouncement = postsDesc.find(
+  (p) => postInCategory(p, "Announcements") && p.slug !== caseStudy?.slug,
+);
 const tickerHtml = latestAnnouncement
   ? `<div class="ticker"><span class="tk">NEW</span><a href="${base}/blog/${latestAnnouncement.slug}">${esc(latestAnnouncement.title)} →</a></div>`
   : "";
@@ -78,12 +86,8 @@ const tickerHtml = latestAnnouncement
  *   枠3 読みもの — `audience: business` からの選抜1本（手動・月次で見直す）
  */
 
-/** 枠1 に出す導入事例の slug。実績の枠なので、お知らせより導入事例を優先する
- *  （記事が取り下げられても枠が空かないよう、見つからなければ従来どおり
- *  最新の「お知らせ」へ落ちる）。 */
-const CASE_STUDY_SLUG = "metawater-mizudako-resident-record-proof";
-
-const caseStudy = postsDesc.find((p) => p.slug === CASE_STUDY_SLUG);
+/* 枠1 は実績の枠なので、お知らせより導入事例を優先する（記事が取り下げられても
+   枠が空かないよう、見つからなければ最新の「お知らせ」へ落ちる）。 */
 const slot1 = caseStudy ?? latestAnnouncement;
 const slot1Label = caseStudy ? "caseStudy" : "announce";
 
