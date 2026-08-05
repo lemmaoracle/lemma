@@ -1256,3 +1256,28 @@
 .indv1 .proven{grid-template-columns:1fr;}
 .indv1 .icases, .indv1 .hiw{grid-template-columns:1fr;}
 }
+
+/* 最終 CTA とフッターの間。フッター側の余白（padding-top:132px）は
+   フッターの暗色の内側にあるため、暗色の CTA カードと地続きに見えてしまう。
+   `.ucx` / `.prx` と同じ 60px をページ側に置いて切り離す。 */
+.indv1{padding-bottom:60px;}
+
+/* ── モバイル (#782) ──────────────────────────────────────────────
+   実機 iPhone で「右端がはみ出す」「本文が縦書きになる」の原因は2つ。
+
+   1) `.whywrap` / `.whywrap2` に狭幅の指定が無い。`.whywrap2` の 460px
+      固定列だけで viewport(375px) を超え、テキスト側の `minmax(0,1fr)` が
+      ほぼ 0 まで潰れる——和文が1文字ずつ折り返され、縦書きに見える。
+      Layout の `overflow-x:hidden` が横スクロールを止めるため、
+      はみ出した分はスクロールできず切り落とされる。
+   2) `word-break:keep-all` は和文の改行機会を全て潰す。広い画面では
+      語の途中で切れない体裁が得られるが、狭いと1行が収まらずに切られる。
+      個別宣言（`.indv1 .ih1` などは 0-2-0）を上回る必要があるため
+      `!important`。`.nb` の nowrap も同じ理由で狭幅では解除する。 */
+@media (max-width:1020px){
+.indv1 .whywrap, .indv1 .whywrap2{grid-template-columns:1fr;gap:26px;}
+}
+@media (max-width:768px){
+.indv1 *{word-break:normal !important;}
+.indv1 .nb{white-space:normal !important;}
+}
