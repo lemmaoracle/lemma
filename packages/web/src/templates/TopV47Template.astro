@@ -223,6 +223,14 @@ const metaTitle = isJa
 const metaDescription = isJa
   ? "データを渡さずに来歴・属性・実績の真正性を暗号的に証明する、AI のための信頼インフラ（データ基盤）。生データを開示せず第三者が独立検証。検証可能AI・エージェント決済・規制対応。Trusted Web 準拠。"
   : "Lemma is trust infrastructure for AI: prove the provenance, attributes, and track record of data cryptographically — without sharing raw data — verifiable by any third party. Verifiable AI, agent payments, regulatory attributes. Trusted Web–aligned.";
+
+/* カードに出る文。`metaDescription` は検索向けに語彙を積んであるので、SNS では
+   硬く読める（しかもこの画像は専用 OG を持たない全ページの既定でもある）。
+   ヒーローのサブリードとフッターの確定コピーから起こした文をカードにだけ出す。
+   検索用の文は v47 の方針どおり据え置き。 */
+const ogDescription = isJa
+  ? "記録・データ・AI の実行に暗号技術で証明を付け、受け取った側が自分で確かめられるようにします。発行は一度。検証は、無料で何度でも。"
+  : "Attach cryptographic proofs to records, data, and AI execution, so the receiving side can check for itself. Issue once. Verify free, any number of times.";
 ---
 
 <Layout
@@ -230,6 +238,7 @@ const metaDescription = isJa
   metaType="home"
   title={metaTitle}
   description={metaDescription}
+  ogDescription={ogDescription}
   ogImage={`https://lemma.frame00.com/og/home/${locale}.png`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />

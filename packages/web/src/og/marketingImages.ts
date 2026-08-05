@@ -16,112 +16,14 @@
  */
 import type { Locale } from "../i18n/translations";
 import {
-  LIME,
-  MARKETING_BG,
-  SLATE_MUTED,
-  SLATE_TITLE,
+  SLATE_BACKDROP,
   buildOgArtboard,
   makeBottomTagline,
   makeTopRightLabel,
-  marketingBackdropSvg,
   renderOgPng,
+  slateArtboard,
 } from "./ogBase";
 
-/**
- * 見出しの直下に引くライムの線。トップ v47 の CTA（`.ctaline`）の実値をそのまま
- * 使う——3px・左から右へ濃くなるグラデーション・外周のにじみ。
- *
- * サイト側はスクロールで引かれるアニメーションだが、静止画の正解は
- * `prefers-reduced-motion` の最終状態（線は引き切り・先端の点は消える）なので、
- * 点は描かない。
- */
-const CTA_RULE = {
-  type: "div",
-  props: {
-    style: {
-      marginTop: 28,
-      width: 560,
-      height: 3,
-      borderRadius: 2,
-      background: `linear-gradient(90deg, rgba(168,224,16,0.25), ${LIME})`,
-      boxShadow: "0 0 16px rgba(168,224,16,0.45)",
-    },
-  },
-};
-
-/**
- * 行の見た目の幅を em で見積もる。全角は 1em、半角は 0.5em、空白は 0.28em。
- *
- * 半角は Space Grotesk 600 の実測が約 0.465em/字（`Prove what's real,` が
- * 100px で約 800px）。**わざと 0.5 に丸めて余裕を持たせている**——見積もりが
- * 実寸を下回ると1段大きい号数を選んでしまい、意図しない位置で折り返す。
- * 大きめに見積もる側の誤差は「1段小さく組む」だけで済む。
- */
-function widthEm(line: string): number {
-  return [...line].reduce((w, ch) => {
-    if (ch === " ") return w + 0.28;
-    // CJK・かな・全角記号は全角幅として数える
-    return w + (/[　-〿぀-ヿ㐀-鿿＀-￯]/.test(ch) ? 1 : 0.5);
-  }, 0);
-}
-
-/**
- * 版面に収まる最大の号数を選ぶ。
- *
- * 共通の `pickTitleFont` は「1行の文字数」で段を決めるため和文で破綻する
- * ——全角は 1文字 ≒ 1em なので、11文字を 100px で組むと 1100px になり
- * 版面（1010px）を超えて意図しない位置で折り返す。ここは幅で判定する。
- * 共通側を直すとユースケース・柱の詳細カードの号数まで動くので、この面だけで
- * 決める（`titleFont` を渡すと共通側の採寸は使われない）。
- */
-function fitTitleFont(title: string): { size: number; lineHeight: number; maxWidth: number } {
-  const lines = title.split("\n");
-  const widest = Math.max(...lines.map(widthEm));
-  /** ヘッダー・ライン・下段を除いた、見出しが使える高さ。 */
-  const titleArea = 300;
-  const candidates = [
-    { size: 100, lineHeight: 1.1, maxWidth: 1010 },
-    { size: 84, lineHeight: 1.12, maxWidth: 1040 },
-    { size: 68, lineHeight: 1.16, maxWidth: 1040 },
-    { size: 56, lineHeight: 1.2, maxWidth: 1040 },
-  ];
-  return (
-    candidates.find(
-      (c) =>
-        widest * c.size <= c.maxWidth && lines.length * c.size * c.lineHeight <= titleArea,
-    ) ?? candidates[candidates.length - 1]
-  );
-}
-
-/**
- * マーケ面の共通指定。地は透過にして生 SVG を後ろへ差し込む。
- *
- * **見出しは塗り分けない**——クリーム1色にして、ライムは見出し直下の線1本だけに
- * 持たせる（v47 の CTA と同じ「メッセージ＋ライン」）。サイト側も h1・h3 に色付き
- * の語はなく、ライムは線・点・ボタンに限って使っている。左下のアクセントの帯は、
- * 線と競合するので出さない。
- */
-function marketingArtboard(input: {
-  title: string;
-  label?: string;
-  tagline?: string;
-}): unknown {
-  return buildOgArtboard({
-    title: input.title,
-    titleFont: fitTitleFont(input.title),
-    titleColorOverride: SLATE_TITLE,
-    accentOverride: LIME,
-    afterTitle: CTA_RULE,
-    hideFooterRule: true,
-    topRight: input.label === undefined ? undefined : makeTopRightLabel(input.label, LIME),
-    bottomTagline:
-      input.tagline === undefined ? undefined : makeBottomTagline(input.tagline, SLATE_MUTED),
-    background: MARKETING_BG,
-  });
-}
-
-/** マーケ面はすべて同じ地なので、生成は1回で足りる。 */
-const BACKDROP = marketingBackdropSvg();
 
 interface Copy {
   readonly ja: string;
@@ -151,11 +53,11 @@ const HOME_TAGLINE: Copy = {
 };
 
 export async function renderHomeOg(locale: Locale): Promise<Buffer> {
-  const node = marketingArtboard({
+  const node = slateArtboard({
     title: localize(HOME_TITLE, locale),
     tagline: localize(HOME_TAGLINE, locale),
   });
-  return renderOgPng(node, BACKDROP);
+  return renderOgPng(node, SLATE_BACKDROP);
 }
 
 /* ───────────────────────── Product: Seal ───────────────────────── */
@@ -176,12 +78,12 @@ const SEAL_TAGLINE: Copy = {
 };
 
 export async function renderSealOg(locale: Locale): Promise<Buffer> {
-  const node = marketingArtboard({
+  const node = slateArtboard({
     title: localize(SEAL_TITLE, locale),
     label: localize(SEAL_LABEL, locale),
     tagline: localize(SEAL_TAGLINE, locale),
   });
-  return renderOgPng(node, BACKDROP);
+  return renderOgPng(node, SLATE_BACKDROP);
 }
 
 /* ───────────────────────── Product: Trust402 ─────────────────────────
@@ -273,12 +175,12 @@ const INDUSTRIES_TAGLINE: Copy = {
 };
 
 export async function renderIndustriesOg(locale: Locale): Promise<Buffer> {
-  const node = marketingArtboard({
+  const node = slateArtboard({
     title: localize(INDUSTRIES_TITLE, locale),
     label: localize(INDUSTRIES_LABEL, locale),
     tagline: localize(INDUSTRIES_TAGLINE, locale),
   });
-  return renderOgPng(node, BACKDROP);
+  return renderOgPng(node, SLATE_BACKDROP);
 }
 
 /* ───────────────────────── Pricing ───────────────────────── */
@@ -299,12 +201,12 @@ const PRICING_TAGLINE: Copy = {
 };
 
 export async function renderPricingOg(locale: Locale): Promise<Buffer> {
-  const node = marketingArtboard({
+  const node = slateArtboard({
     title: localize(PRICING_TITLE, locale),
     label: localize(PRICING_LABEL, locale),
     tagline: localize(PRICING_TAGLINE, locale),
   });
-  return renderOgPng(node, BACKDROP);
+  return renderOgPng(node, SLATE_BACKDROP);
 }
 
 /* ───────────────────────── Pillars ───────────────────────── */
@@ -325,12 +227,12 @@ const PILLARS_TAGLINE: Copy = {
 };
 
 export async function renderPillarsOg(locale: Locale): Promise<Buffer> {
-  const node = marketingArtboard({
+  const node = slateArtboard({
     title: localize(PILLARS_TITLE, locale),
     label: localize(PILLARS_LABEL, locale),
     tagline: localize(PILLARS_TAGLINE, locale),
   });
-  return renderOgPng(node, BACKDROP);
+  return renderOgPng(node, SLATE_BACKDROP);
 }
 
 /* ─────────────── AI 業務あんしん LP (/ai-gyomu-anshin/) ─────────────── */
@@ -351,12 +253,12 @@ const AIANSHIN_TAGLINE: Copy = {
 };
 
 export async function renderAiGyomuAnshinOg(locale: Locale): Promise<Buffer> {
-  const node = marketingArtboard({
+  const node = slateArtboard({
     title: localize(AIANSHIN_TITLE, locale),
     label: localize(AIANSHIN_LABEL, locale),
     tagline: localize(AIANSHIN_TAGLINE, locale),
   });
-  return renderOgPng(node, BACKDROP);
+  return renderOgPng(node, SLATE_BACKDROP);
 }
 
 /* ─────────────── Model comparison LPs (/compare/...) ─────────────── */
@@ -408,10 +310,10 @@ const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> 
 
 export async function renderCompareOg(slug: string, locale: Locale): Promise<Buffer> {
   const c = COMPARE_COPY[slug] ?? COMPARE_COPY["ai-models-attack-resistance"];
-  const node = marketingArtboard({
+  const node = slateArtboard({
     title: localize(c.title, locale),
     label: localize(c.label, locale),
     tagline: localize(c.tagline, locale),
   });
-  return renderOgPng(node, BACKDROP);
+  return renderOgPng(node, SLATE_BACKDROP);
 }
