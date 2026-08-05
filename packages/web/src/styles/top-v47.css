@@ -182,7 +182,9 @@ body:has(main.topx) .lemma-brand-bar{display:none}
   .topx .isec-h b .nb,.topx .herodark h1 .nb{display:inline;word-break:normal}
   /* ヒーロー右カラム: パネル頭の GET /v1/counters は狭幅では独立行に
      (旧 .rep はレジストリのパネル化で .phead .ep に置き換わった) */
-  .topx .phead .ep{flex-basis:100%;margin-left:0}}
+  .topx .phead .ep{flex-basis:100%;margin-left:0}
+  /* NEW ティッカー: 日本語長文は normal では折り返せないため break-all で割る */
+  .topx .ticker a{word-break:break-all}}
 
 /* ---------- レジストリ計器パネル (mock v5.9 の panel/tech を暗色ヒーロー用に移植) ---------- */
 .topx .rpanel{position:relative;border:1px solid rgba(255,255,255,.14);border-radius:6px;
