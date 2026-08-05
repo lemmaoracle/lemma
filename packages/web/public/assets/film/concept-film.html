@@ -414,7 +414,14 @@ html[lang="en"] #pop .c2 span{width:70px}
   /* 01 の完成状態（複製が出そろい、削除ボタンは消えた後） */
   var STILL_01=5.6;
 
-  function sceneOf(t){ return t<6.15?1 : t<12.75?2 : t<18.45?3 : 4; }
+  /* シーンの入り（秒）。各シーンの最初のキューの少し手前＝前のシーンが消えた
+     あとの無音部分に置いてあるので、ここから始めると頭のアニメーションが出る。
+     飛び先と判定を別に持つとずれるので、sceneOf もこの配列を見る。 */
+  var SCENE_IN=[0,6.15,12.75,18.45];
+  function sceneOf(t){
+    for(var i=SCENE_IN.length-1;i>=0;i--){ if(t>=SCENE_IN[i]) return i+1; }
+    return 1;
+  }
   var lastScene=0;
   function notifyScene(t){
     var s=sceneOf(t);
@@ -444,6 +451,17 @@ html[lang="en"] #pop .c2 span{width:70px}
   function play(){ if(pristine){ pristine=false; paint(0); } playing=true; syncBtn(); }
   function pause(){ playing=false; syncBtn(); }
   function reset(){ pristine=true; playing=false; lastScene=0; paint(STILL_01); syncBtn(); }
+  /* 指定シーンの頭へ飛ぶ。埋め込み側（トップの 01〜04）から呼ばれる。
+     1周で 04 の静止画のまま止まる作りなので、見たい場面へ戻る手段が要る。
+     `andPlay` が false のときは飛び先で静止（reduced-motion 用）。 */
+  function seekScene(scene,andPlay){
+    var i=Math.min(Math.max(parseInt(scene,10)||1,1),SCENE_IN.length)-1;
+    pristine=false;
+    lastScene=0;               /* 飛び先を必ず親へ通知する（同じ番号でも出す） */
+    paint(SCENE_IN[i]);
+    playing=(andPlay!==false);
+    syncBtn();
+  }
   function syncBtn(){
     var b=document.getElementById('pp'); if(b) b.textContent=playing?'❚❚ PAUSE':'▶ PLAY';
   }
@@ -470,6 +488,7 @@ html[lang="en"] #pop .c2 span{width:70px}
     if(ty==='lemma:film:play')  play();
     if(ty==='lemma:film:pause') pause();
     if(ty==='lemma:film:reset') reset();
+    if(ty==='lemma:film:goto')  seekScene(d.scene,d.play);
   });
 
   var pp=document.getElementById('pp');
