@@ -13,6 +13,7 @@
  * SOLUTIONS.meta (which still holds the Industries strings on `/ja/solutions/`
  * from the Phase 1 PR — left untouched here, separate cleanup).
  */
+import type { Locale } from "../../../i18n/translations";
 import Layout from "../../../layouts/Layout.astro";
 import Navigation from "../../../components/Navigation.astro";
 import Footer from "../../../components/Footer.astro";
@@ -38,6 +39,7 @@ const metaDesc =
   description={metaDesc}
   metaType="page"
   pagePath="/industries/"
+  localesAvailable={["ja"] as ReadonlyArray<Locale>}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
