@@ -147,3 +147,12 @@
 
 
 .sealx{overflow-x:hidden;}
+
+/* ── モバイル (#782) ──────────────────────────────────────────────
+   `.sealx` のルート宣言 `word-break:keep-all` が全子孫へ継承され、
+   和文の改行機会を全て潰している。強調の `.hi`（1文）は狭幅で
+   1行に収まらず、`overflow-x:hidden` に切り落とされていた。
+   狭い幅では体裁より収まりを優先して解除する。 */
+@media (max-width:768px){
+.sealx, .sealx *{word-break:normal !important;}
+}

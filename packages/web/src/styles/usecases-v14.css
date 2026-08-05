@@ -1472,3 +1472,15 @@
     border-radius:0 0 12px 12px;background:#fff;padding:14px 18px 18px;}
 .ucx .augrid{gap:22px 26px;}
 .ucx .aubody .aurow::before{content:"・";color:#9aa197;margin-right:4px;}
+
+/* ── モバイル (#782) ──────────────────────────────────────────────
+   industry-v1.css と同じ2点。`.whywrap2` の 460px 固定列が狭幅で
+   はみ出し、`word-break:keep-all` が和文の改行機会を潰して見出しが
+   切れる。詳しい経緯は industry-v1.css の同節を参照。 */
+@media (max-width:1020px){
+.ucx .whywrap, .ucx .whywrap2{grid-template-columns:1fr;gap:26px;}
+}
+@media (max-width:768px){
+.ucx *{word-break:normal !important;}
+.ucx .nb{white-space:normal !important;}
+}
