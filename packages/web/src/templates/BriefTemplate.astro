@@ -689,6 +689,13 @@ const gapRowLabels = isJa
     letter-spacing: 0.01em;
     padding: 0;
     padding-top: 64px; /* sticky ナビ時代の margin-top:64px を padding に変換 — body 背景色の帯を出さない（H1 上の空白修正） */
+    /* 末尾CTA（.bd-cta）とフッターは**同じスレートのグラデーション**なので、
+       間隔ゼロだと境目が消えて CTA カードがフッターに溶ける。フッター側の
+       padding-top:132px はその内側＝暗色なので隙間として効かない。ここで
+       ページ地色（--lite）の余白を挟んでカードの下辺を立たせる。
+       ※ margin ではなく padding — margin だと body のクリーム地が帯で出る
+       （FooterRenewal の #779 メモと同じ理由）。 */
+    padding-bottom: 64px;
   }
 
   /* ─── 2カラム: 本文＋右レール 268px（§5.1） ─── */
@@ -1696,6 +1703,9 @@ const gapRowLabels = isJa
     }
   }
   @media (max-width: 760px) {
+    .brief-page {
+      padding-bottom: 40px;
+    }
     .bd-shell {
       padding: 0 24px;
     }
