@@ -29,6 +29,7 @@ import { getEnBriefMap } from "../data/getEnBriefMap";
 import { resolveCoverImage } from "../lib/coverPhoto";
 import { coverArtwork, COVER_WIDTH, COVER_HEIGHT } from "../lib/blogCover";
 import { briefCardSvg } from "../lib/briefCover";
+import { caseStudyCardSvg } from "../lib/caseStudyCover";
 import { categoryLabel } from "../data/criticalBriefs";
 import type { CategorySlug } from "../data/criticalBriefs";
 import "../styles/top-v47.css";
@@ -61,9 +62,17 @@ const firstSentence = (v: string): string => {
 
 const postsDesc = [...(await getAllPosts(locale))].sort((a, b) => (a.date > b.date ? -1 : 1));
 
+/** 枠1 に出す導入事例の slug（下の「最近の動き」で使う）。 */
+const CASE_STUDY_SLUG = "metawater-mizudako-resident-record-proof";
+const caseStudy = postsDesc.find((p) => p.slug === CASE_STUDY_SLUG);
+
 // ヒーロー CTA 直下の NEW ティッカー。最新の Announcements 記事を1本だけ出す
 // (mock v5.9 の .ticker。モックはハードコードだったので実データに接続)。
-const latestAnnouncement = postsDesc.find((p) => postInCategory(p, "Announcements"));
+// 導入事例は category:Announcements でありながら下の枠1 にも出るので、
+// ここでは除く——同じ1本をティッカーと枠1 の2箇所に出すと枠が死ぬ。
+const latestAnnouncement = postsDesc.find(
+  (p) => postInCategory(p, "Announcements") && p.slug !== caseStudy?.slug,
+);
 const tickerHtml = latestAnnouncement
   ? `<div class="ticker"><span class="tk">NEW</span><a href="${base}/blog/${latestAnnouncement.slug}">${esc(latestAnnouncement.title)} →</a></div>`
   : "";
@@ -72,13 +81,15 @@ const tickerHtml = latestAnnouncement
  * fragment の LATEST 節はモック由来の静的プレースホルダ（社外リリースへの
  * 仮リンク・空のプレス枠・Brief No.105 直書き）だったので `<!--LATEST-->`
  * に畳み、ここで実データを流し込む。3枠の性格は固定し、新着順で競争させない。
- *   枠1 実績     — 最新の「お知らせ」記事（自動）
+ *   枠1 実績     — 導入事例の記事（手動）。無ければ最新の「お知らせ」へ
  *   枠2 論点     — Critical Brief の最新1本（自動。毎週の鮮度はこの枠が担う）
  *   枠3 読みもの — `audience: business` からの選抜1本（手動・月次で見直す）
- *
- * 導入事例（メタウォーター）はブログ記事が未公開のため出さない。公開後は
- * 枠1 をその記事に差し替える（設計 v1 §4.1 の「手動」枠はここ）。
  */
+
+/* 枠1 は実績の枠なので、お知らせより導入事例を優先する（記事が取り下げられても
+   枠が空かないよう、見つからなければ最新の「お知らせ」へ落ちる）。 */
+const slot1 = caseStudy ?? latestAnnouncement;
+const slot1Label = caseStudy ? "caseStudy" : "announce";
 
 /** 枠3 に出す記事の slug（`audience: business` のもの）。月次で見直す。
  *  見つからなければ business の最新へ自動フォールバックし、枠を空けない。 */
@@ -87,9 +98,10 @@ const TOP_PICK_SLUG = "ai-financial-cybersecurity-akamai-2026";
 const bizPostsDesc = postsDesc.filter((p) => p.audience === "business");
 const pickedCandidate = bizPostsDesc.find((p) => p.slug === TOP_PICK_SLUG) ?? bizPostsDesc[0];
 // 枠1 と同じ記事が枠3 にも来ないようにする（両枠が同じ1本を指すと枠が死ぬ）。
+// 導入事例は audience:business なので、枠1 に出た場合ここに再登場しうる。
 const pickedPost =
-  pickedCandidate && pickedCandidate.slug === latestAnnouncement?.slug
-    ? bizPostsDesc.find((p) => p.slug !== latestAnnouncement.slug)
+  pickedCandidate && pickedCandidate.slug === slot1?.slug
+    ? bizPostsDesc.find((p) => p.slug !== slot1.slug)
     : pickedCandidate;
 
 // 枠2: Brief は JA コレクションを軸に、EN では訳がある分だけ差し替える
@@ -107,6 +119,7 @@ const latSep = isJa ? "" : " ";
 const LAT = isJa
   ? {
       announce: "お知らせ",
+      caseStudy: "導入事例",
       blog: "ブログ",
       // カバーが「CRITICAL BRIEF」を大きく出すので、チップは語を重ねない
       // （業界ページ枠2 と同じ扱い）。
@@ -117,6 +130,7 @@ const LAT = isJa
     }
   : {
       announce: "Announcement",
+      caseStudy: "Case study",
       blog: "Blog",
       brief: "Case analysis",
       readPost: "Read the article →",
@@ -128,6 +142,14 @@ const LAT = isJa
    カテゴリ由来の抽象パターン（lib/blogCover）。モックのドットグリッドは
    「質感は図解の枠だけ」（指示 第6部-3）に従い通常カードには載せない。 */
 const postCoverHtml = (p: BlogPost): string => {
+  /* 導入事例は Brief と同じ生成カバー（写真用の処理はライムを潰すため）。 */
+  if (p.tags?.includes("case-study") ?? false) {
+    return caseStudyCardSvg({
+      lines: p.coverLines ?? [],
+      locale: isJa ? "ja" : "en",
+      key: `top-${p.slug}`,
+    });
+  }
   const photo = resolveCoverImage(p);
   return photo
     ? `<span class="lat-photo"><img src="${esc(photo)}" alt="" loading="lazy"/></span>`
@@ -163,7 +185,7 @@ const briefCardHtml = (b: NonNullable<typeof latestBrief>): string => {
 };
 
 const latestHtml = [
-  latestAnnouncement ? postCardHtml(latestAnnouncement, LAT.announce) : "",
+  slot1 ? postCardHtml(slot1, LAT[slot1Label]) : "",
   latestBrief ? briefCardHtml(latestBrief) : "",
   pickedPost ? postCardHtml(pickedPost, LAT.blog) : "",
 ]

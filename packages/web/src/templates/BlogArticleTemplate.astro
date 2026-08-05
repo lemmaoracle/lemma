@@ -31,6 +31,7 @@ import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import SchemaOrg from "@/components/SchemaOrg";
 import BlogCover from "../components/BlogCover.astro";
 import { resolveCoverImage } from "../lib/coverPhoto";
+import { caseStudyCardSvg } from "../lib/caseStudyCover";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface BlogArticleTemplateProps {
@@ -80,6 +81,15 @@ const isJa = locale === "ja";
 /* 写真カバー（§C-2）: coverPhoto が指定され public/ に実在するときだけ。
    無ければ従来どおり category+slug の抽象パターンに落ちる。 */
 const coverPhotoSrc = resolveCoverImage(post);
+/* 導入事例は生成カバー。写真用の処理（色調・ヴェール・走査線）は掛けない。 */
+const caseCoverSvg =
+  (post.tags?.includes("case-study") ?? false)
+    ? caseStudyCardSvg({
+        lines: post.coverLines ?? [],
+        locale: locale === "en" ? "en" : "ja",
+        key: post.slug,
+      })
+    : undefined;
 
 /* 証拠ブロック（§B）の文言。数字の説明責任は検証センター1枚に集約する
    ため、`GET /v1/counters` は呼ばない（§B-6）。EN は ¥ を出さない（§B-5）。 */
@@ -153,7 +163,9 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
           走査線は CSS 加工 — §C-3、JPEG に焼き込まない）、無ければ従来の
           カテゴリ+slug 抽象パターン。索引・関連カード・OGP は写真対応まで
           抽象のまま（§C-4 は写真到着後に確定）。 */}
-      {coverPhotoSrc ? (
+      {caseCoverSvg ? (
+        <figure class="cover-art" set:html={caseCoverSvg} />
+      ) : coverPhotoSrc ? (
         <figure class="blog-cover cover--photo">
           <img src={coverPhotoSrc} alt="" loading="eager" />
         </figure>

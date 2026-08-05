@@ -76,6 +76,12 @@ export interface BlogPost {
    * 素通しするだけなのは、写真の未着でビルドを落とさないため。
    */
   readonly coverPhoto?: string;
+  /**
+   * 生成カバーに載せる主文（1要素 = 1行）。改行は書き手が決める。
+   * `tags` に `case-study` を持つ記事で `lib/caseStudyCover.ts` が使う。
+   * 省略時はカバーにタイトルの前半を出さず、ラベルだけの版面になる。
+   */
+  readonly coverLines?: ReadonlyArray<string>;
   readonly tags?: ReadonlyArray<string>;
   readonly relatedLinks?: ReadonlyArray<RelatedLink>;
   readonly headings: ReadonlyArray<Heading>;
@@ -206,6 +212,7 @@ interface PostFrontmatter {
   readonly audience?: string;
   readonly industries?: ReadonlyArray<string>;
   readonly coverPhoto?: string;
+  readonly coverLines?: ReadonlyArray<string>;
   readonly tags?: ReadonlyArray<string>;
   readonly relatedLinks?: ReadonlyArray<RelatedLink>;
 }
@@ -439,6 +446,8 @@ function parsePost(filename: string, raw: string): BlogPost | undefined {
               industries:
                 fm.industries && fm.industries.length > 0 ? fm.industries : undefined,
               coverPhoto: fm.coverPhoto || undefined,
+              coverLines:
+                fm.coverLines && fm.coverLines.length > 0 ? fm.coverLines : undefined,
               tags: fm.tags && fm.tags.length > 0 ? fm.tags : undefined,
               relatedLinks:
                 fm.relatedLinks && fm.relatedLinks.length > 0 ? fm.relatedLinks : undefined,
