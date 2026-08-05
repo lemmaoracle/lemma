@@ -1,0 +1,400 @@
+/* トップページ v47 — lemma_top_mock_v47.html から抽出・.topx スコープ。
+   モックの v40〜v47 の重ね書きは最終適用値にフラット化してある。
+   地は 白 と --lite の2値のみ（--lite-2 は面として使わない・指示 第6部）。 */
+.topx{--ok:#a8e010; --ok-ink:#6f9c00; --ok-light:#4e7a00; --err:#c25438;
+  --lite:#f3f4f1; --lite-2:#eceee9; --card:#fff;
+  --tx:#12140e; --tx-soft:#2f332b; --muted:#5c6156;
+  --line:#e1e3dd; --dline:#e7eae5;
+  --serif:"Noto Serif JP",serif; --sans:"Noto Sans JP",system-ui,sans-serif;
+  --grot:"Space Grotesk",sans-serif; --mono:"Space Mono",monospace; --num:"Inter",sans-serif;
+  --page:1120px;
+  --pad:clamp(52px,5.4vw,78px);}
+.topx{-webkit-text-size-adjust:100%}
+/* EN 旧ナビ（NavigationLegacy）が nav の外に出す旧DSサドルブラウンの装飾レール。
+   新トップの配色に合わないため、この面では出さない（PreviewTop と同じ扱い）。 */
+body:has(main.topx) .lemma-brand-bar{display:none}
+.topx{margin:0;background:var(--lite);color:var(--tx);font-family:var(--sans);font-size:16px;line-height:1.95;word-break:keep-all;-webkit-font-smoothing:antialiased}
+.topx figure{margin:0}
+.topx a{color:inherit}
+.topx .wrap{max-width:var(--page);margin:0 auto;padding:0 clamp(20px,4vw,36px)}
+.topx .nb{display:inline-block}
+
+/* ---------- section rhythm: 面で区切る ---------- */
+.topx .sec{position:relative;padding:var(--pad) 0;margin:0}
+.topx .sec.alt::before{content:"";position:absolute;inset:0;left:50%;width:100vw;transform:translateX(-50%);
+  background:var(--card);z-index:0}
+.topx .sec > *{position:relative;z-index:1}
+.topx .sec + .sec::after{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(var(--page) - 2 * clamp(20px,4vw,36px),100vw);height:1px;background:transparent}
+.topx .sec + .sec:not(.alt)::after{background:var(--line)}
+
+/* ---------- headings ---------- */
+/* 見出し上のライムバーは全セクションで不使用 (ユーザー判断 2026-08-04。
+   指示書 第6部§5 は「見出しの上に 26×2px のライムのバー」としていたが、
+   セクションが増えると反復が強すぎるため撤去) */
+.topx .isec-h{margin:0 0 18px}
+.topx .isec-h > span{display:none}
+.topx .isec-h b{display:block;font-family:var(--serif);font-weight:600;font-size:clamp(25px,3vw,36px);line-height:1.44;letter-spacing:.005em}
+.topx .lead{font-size:16px;line-height:1.95;color:var(--tx-soft);max-width:58ch;margin:0 0 14px}
+.topx .mut{color:var(--muted)}
+
+/* ---------- surfaces ---------- */
+.topx .card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:4px;box-shadow:0 1px 2px rgba(24,36,26,.04)}
+.topx .card.fig{box-shadow:0 10px 28px rgba(24,36,26,.06);overflow:hidden}
+.topx .card.fig::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(18,20,14,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(18,20,14,.03) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.topx .card.fig::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 76% at 94% -16%,rgba(168,224,16,.09),transparent 62%);pointer-events:none}
+.topx .card > *{position:relative;z-index:1}
+.topx .cbody{padding:24px 26px}
+.topx .tech{position:relative;background:linear-gradient(172deg,#3c443d,#333b34 55%,#2e362f);border-radius:5px;box-shadow:0 22px 52px #161e1842;color:#e8ece5;overflow:hidden}
+.topx .tech::before{content:"";position:absolute;inset:0;background:radial-gradient(125% 78% at 92% -18%,rgba(168,224,16,.14),transparent 60%);pointer-events:none}
+.topx .pgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.topx .tech > .tin{position:relative;padding:20px 22px}
+
+/* ---------- buttons ---------- */
+.topx .btn{display:inline-block;font-family:var(--sans);font-weight:700;font-size:14px;padding:13px 24px;border-radius:4px;text-decoration:none;line-height:1;transition:background .15s ease}
+.topx .btn.solid{background:var(--tx);color:#fff}
+.topx .btn.solid:hover{background:#000}
+.topx .btn.ghostd{background:rgba(168,224,16,.16);color:var(--ok-light)}
+.topx .btn.ghostd:hover{background:rgba(168,224,16,.26)}
+.topx .btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:22px}
+.topx .tlink{font-size:13.5px;color:var(--ok-light);text-decoration:none;font-weight:700}
+.topx .tlink:hover{text-decoration:underline}
+
+@keyframes topGlow{0%,100%{opacity:.45}50%{opacity:1}}
+
+/* ---------- hero facts ---------- */
+.topx .tfacts{list-style:none;margin:0 0 24px;padding:0}
+.topx .tfacts li{position:relative;font-size:14.5px;color:var(--tx-soft);padding:8px 0 8px 22px;line-height:1.8}
+.topx .tfacts li::before{content:"";position:absolute;left:0;top:1.05em;width:12px;height:2px;background:var(--ok)}
+
+/* ---------- industry tabs (Truepic型) ---------- */
+.topx .ind-tabs{display:flex;flex-wrap:wrap;gap:0 22px;margin-top:20px;border-bottom:1px solid var(--dline)}
+.topx .ind-tab{background:none;border:0;font-family:inherit;font-size:13.5px;color:var(--muted);padding:10px 0;cursor:pointer;position:relative}
+.topx .ind-tab[aria-selected="true"]{color:var(--tx);font-weight:700}
+.topx .ind-tab[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--ok)}
+.topx .ind-panel[hidden]{display:none}
+.topx .ind-panel{display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,3vw,40px);align-items:center;margin-top:24px}
+.topx .ind-ph{aspect-ratio:16/9;border-radius:4px;background:linear-gradient(172deg,#3c443d,#2e362f);position:relative;overflow:hidden;box-shadow:0 18px 44px rgba(24,36,26,.14)}
+/* 実写真には業界ページ WHY 節と同じ落ち着いたフィルタを重ねる（industry-v1.css と同値） */
+.topx .ind-ph.has-photo{background-size:cover;background-position:center;
+  filter:sepia(.16) saturate(.62) hue-rotate(-8deg) contrast(1.04)}
+.topx .ind-ph .pgrid{opacity:.5}
+.topx .ind-ph span{position:absolute;left:16px;bottom:14px;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:#9fb08f}
+.topx .ind-panel h3{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.4vw,28px);line-height:1.5;margin:6px 0 12px}
+.topx .ind-panel .ic{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ok-light)}
+.topx .ind-panel p{font-size:14.5px;color:var(--tx-soft);line-height:1.9;margin:0 0 18px;max-width:46ch}
+@media(max-width:820px){.topx .ind-panel{grid-template-columns:1fr}}
+
+/* ---------- why now ---------- */
+.topx .wn{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
+.topx .wn .cbody{padding:24px 24px 26px}
+.topx .wn svg{display:block;margin-bottom:14px}
+.topx .wn h4{font-family:var(--serif);font-weight:600;font-size:18px;margin:0 0 8px;line-height:1.5}
+.topx .wn p{font-size:13.5px;color:var(--tx-soft);line-height:1.85;margin:0}
+.topx .wnlb{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ok-light);margin-bottom:10px}
+@media(max-width:900px){.topx .wn{grid-template-columns:1fr}}
+
+/* ---------- why proof（5つの証明・上段） ---------- */
+.topx .wp{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,3.4vw,44px);align-items:start}
+@media(max-width:900px){.topx .wp{grid-template-columns:1fr}}
+
+/* ---------- start 3 ---------- */
+.topx .start{border-top:0;padding-top:0}
+.topx .st3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.topx .st3 .cbody{padding:24px 24px 26px;display:flex;flex-direction:column;height:100%}
+.topx .st3 h4{font-family:var(--serif);font-weight:600;font-size:19px;margin:0 0 8px;line-height:1.5}
+.topx .st3 p{font-size:13.5px;color:var(--tx-soft);line-height:1.85;margin:0 0 20px;flex:1}
+.topx .st3 .lb{display:flex;align-items:baseline;gap:10px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.topx .st3 .lb i{font-style:normal;font-family:var(--num);font-weight:200;font-size:clamp(24px,2.6vw,32px);letter-spacing:.04em;color:var(--muted)}
+.topx .st3 .card:hover .lb i{color:var(--ok-light)}
+.topx .st3 .btn{background:var(--ok);color:#1a1f16;text-align:center}
+.topx .st3 .btn:hover{background:#b7ec2a}
+@media(max-width:820px){.topx .st3{grid-template-columns:1fr}}
+
+/* ---------- latest 3（画像付き） ---------- */
+/* トラックを minmax(0,1fr) で閉じる: 実データの見出しは長さが読めず、`1fr`
+   (=minmax(auto,1fr)) だと min-content までトラックが膨らむ。`.topx` の
+   word-break:keep-all と重なると長い CJK の連なりが1語扱いになり、カード幅が
+   不均等になって面ごと横にはみ出す（下の 860px 以下の1列化はこの後に置く）。 */
+.topx .lat3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:22px}
+.topx .lat3 a{display:block;text-decoration:none}
+.topx .lat3 .card{overflow:hidden;height:100%}
+.topx .latimg{position:relative;aspect-ratio:16/9;margin:0;background:linear-gradient(172deg,#3c443d,#2e362f);overflow:hidden}
+.topx .latimg span{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:#9fb08f}
+.topx .lat3 .cbody{padding:18px 20px 22px}
+.topx .lat3 .lb{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ok-light);margin-bottom:9px}
+.topx .lat3 b{display:block;font-family:var(--serif);font-weight:600;font-size:16.5px;line-height:1.55;color:var(--tx);margin-bottom:8px}
+.topx .lat3 span{display:block;font-size:12.5px;color:var(--muted);line-height:1.8}
+.topx .lat3 .card:hover b{color:var(--ok-light)}
+@media(max-width:860px){.topx .lat3{grid-template-columns:1fr}}
+
+/* ---------- story: concept film（白い面の上・透過） ---------- */
+.topx .filmbleed{position:relative;background:var(--card);border-radius:4px;padding:clamp(12px,1.4vw,20px);margin:20px 0 0;overflow:hidden;box-shadow:0 1px 2px rgba(24,36,26,.05)}
+.topx .filmbleed::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(18,20,14,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(18,20,14,.028) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.topx .filmbleed::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 76% at 94% -16%,rgba(168,224,16,.10),transparent 62%);pointer-events:none}
+.topx .filmwrap{position:relative;z-index:1;width:100%;max-width:940px;margin:0 auto;aspect-ratio:16/9;border:0;border-radius:0;box-shadow:none;background:transparent;overflow:hidden}
+.topx .filmwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:transparent}
+.topx .scenes{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:20px -20px 0;border-top:1px solid var(--dline)}
+.topx .scn{padding:15px 20px 17px;transition:background .3s ease;border-radius:4px}
+.topx .scn + .scn{border-left:1px solid var(--dline)}
+.topx .scn .bar{display:block;width:18px;height:2px;background:var(--line);margin-bottom:9px;transition:background .3s ease,width .3s ease}
+.topx .scn .n{display:block;font-family:var(--num);font-weight:200;font-size:clamp(30px,3.4vw,44px);line-height:1;letter-spacing:.04em;color:var(--tx-soft);font-variant-numeric:tabular-nums;margin-bottom:10px;transition:color .3s ease}
+.topx .scn h4{font-family:var(--serif);font-weight:600;font-size:18px;line-height:1.55;margin:0 0 8px}
+.topx .scn p{font-size:14.5px;color:var(--tx-soft);line-height:1.85;margin:0}
+.topx .scn .back{margin-top:9px;padding-top:8px;border-top:1px solid var(--dline);font-size:13px;color:var(--tx-soft);line-height:1.8}
+/* 再生中のシーンに連動（JS が付ける。連動しなくても全行が読める） */
+.topx .scn.on{background:rgba(168,224,16,.13)}
+.topx .scn.on .bar{background:var(--ok);width:34px}
+.topx .scn.on .n{color:var(--ok-light)}
+.topx .scn.on h4{color:var(--ok-light)}
+.topx .scn.on .back{border-top-color:rgba(111,156,0,.30)}
+@media(max-width:900px){.topx .scenes{grid-template-columns:1fr 1fr;margin:26px 0 0}.topx .scn{padding:18px 0}.topx .scn+.scn{border-left:0}.topx .scn:nth-child(n+3){border-top:1px solid var(--dline)}.topx .scn.on{margin:0 -14px;padding-left:14px;padding-right:14px}}
+@media(max-width:560px){.topx .scenes{grid-template-columns:1fr}.topx .scn+.scn{border-top:1px solid var(--dline)}}
+
+/* ================= HERO: 暗転＋巨大な実数 ================= */
+/* main.topx は body 直下の全幅要素なので、モックの 100vw ハックは使わない */
+.topx .herodark{position:relative;width:100%;
+  background:linear-gradient(168deg,#3c443d,#2f372f 58%,#272e28);color:#e8ece5;overflow:hidden}
+.topx .herodark::before{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.07) 1.2px,transparent 1.2px);background-size:34px 34px;pointer-events:none}
+.topx .herodark::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(120% 78% at 84% -12%,rgba(168,224,16,.16),transparent 62%);pointer-events:none}
+.topx .herodark .hin{position:relative;z-index:2;max-width:var(--page);margin:0 auto;
+  padding:clamp(46px,5vw,74px) clamp(20px,4vw,36px) clamp(42px,4.6vw,66px);
+  display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(30px,4.4vw,64px);align-items:center}
+.topx .herodark h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,4.7vw,58px);line-height:1.32;margin:clamp(14px,1.5vw,20px) 0 clamp(20px,2.4vw,30px);color:#f4f7ef}
+.topx .herodark .sublead{font-size:15.5px;line-height:1.9;color:#b9c4ad;max-width:44ch;margin:0 0 clamp(18px,2.1vw,26px)}
+.topx .herodark .tfacts{margin-bottom:clamp(20px,2.4vw,28px)}
+.topx .herodark .tfacts li{color:#b9c4ad;padding:6px 0 6px 22px}
+.topx .herodark .tfacts li::before{background:var(--ok)}
+.topx .herodark .btn.solid{background:var(--ok);color:#1a1f16}
+.topx .herodark .btn.solid:hover{background:#b7ec2a}
+.topx .herodark .btn.ghostd{background:rgba(255,255,255,.10);color:#e8ece5}
+.topx .herodark .btn.ghostd:hover{background:rgba(255,255,255,.18)}
+@media(max-width:940px){.topx .herodark .hin{grid-template-columns:1fr;gap:32px}}
+/* 430px 級端末: keep-all では本文が溢れるため、全体を normal に倒す。
+   h1「何が本物かを証明する。」(11字×34px=374px) が 390px 級で
+   本文幅（346px）を超えるため、h1 も縮小（Masako 実機確認）。 */
+@media(max-width:430px){
+  /* h1 の .nb（11字×34px=374px）が 390px 級で本文幅（346px）を超えるため縮小 */
+  .topx .herodark h1{font-size:29px}
+  /* 句読点なし .nb（isec-h + herodark h1）は keep-all で折り返せないため解除。
+     .topx 全体の keep-all も解除し、段落本文のあふれを防ぐ（Masako 実機確認）。 */
+  .topx{word-break:normal}
+  .topx .nb{display:inline}
+  .topx .isec-h b .nb,.topx .herodark h1 .nb{display:inline;word-break:normal}
+  /* ヒーロー右カラム: パネル頭の GET /v1/counters は狭幅では独立行に
+     (旧 .rep はレジストリのパネル化で .phead .ep に置き換わった) */
+  .topx .phead .ep{flex-basis:100%;margin-left:0}}
+
+/* ---------- レジストリ計器パネル (mock v5.9 の panel/tech を暗色ヒーロー用に移植) ---------- */
+.topx .rpanel{position:relative;border:1px solid rgba(255,255,255,.14);border-radius:6px;
+  background:rgba(255,255,255,.028);overflow:hidden;margin:0}
+.topx .rgrid{position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:28px 28px}
+.topx .phead{position:relative;z-index:2;display:flex;align-items:center;gap:14px;padding:12px 20px;
+  border-bottom:1px solid rgba(255,255,255,.12);font-family:var(--mono);font-size:10px;
+  letter-spacing:.14em;color:#8fa07f}
+.topx .phead .nm{color:#d8ddd1}
+.topx .phead .livechip{display:inline-flex;align-items:center;gap:7px;color:var(--ok)}
+.topx .phead .livechip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok);
+  box-shadow:0 0 8px rgba(168,224,16,.8)}
+.topx .phead.offline .livechip{color:var(--err)}
+.topx .phead.offline .livechip::before{background:var(--err);box-shadow:none;animation:none}
+.topx .phead .ep{margin-left:auto}
+@media(prefers-reduced-motion:no-preference){.topx .phead .livechip::before{animation:topGlow 2.4s ease-in-out infinite}}
+.topx .pbody{position:relative;z-index:2;padding:22px 22px 18px}
+/* 数字は白系（ライムはライブ表示とチェックにだけ使う＝mock v5.9 の規律） */
+.topx .bignum{font-family:var(--num);font-weight:200;font-size:clamp(44px,5.6vw,76px);line-height:.96;
+  letter-spacing:-.02em;color:#f2f6ec;font-variant-numeric:tabular-nums;margin:0 0 12px}
+.topx .bignum.off{font-size:clamp(22px,2.6vw,30px);letter-spacing:.14em;color:#9fb08f}
+.topx .biglabel{font-family:var(--serif);font-weight:600;font-size:clamp(16px,1.8vw,20px);color:#f2f6ec;margin:0 0 10px;line-height:1.5}
+.topx .bigsub{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:#8fa07f;margin:0;line-height:1.9}
+.topx .ren{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#8fa07f;margin:0 0 8px}
+.topx .pmetrics{display:flex;gap:28px;margin-top:18px;padding-top:15px;
+  border-top:1px solid rgba(255,255,255,.12);font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.08em;color:#8fa07f;flex-wrap:wrap}
+.topx .pmetrics b{display:block;color:#e8ece5;font-weight:400;font-size:14px;margin-top:6px;
+  font-variant-numeric:tabular-nums}
+.topx .pstream{position:relative;z-index:2;border-top:1px solid rgba(255,255,255,.12);
+  padding:10px 20px 12px;display:flex;flex-direction:column;gap:7px}
+.topx .pstream[hidden]{display:none}
+.topx .pstream .ev{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:9.5px;
+  color:#8fa07f;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topx .pstream .ev svg{width:13px;height:13px;flex:none;color:var(--ok)}
+.topx .pstream .ev span{overflow:hidden;text-overflow:ellipsis}
+.topx .pfoot{position:relative;z-index:2;padding:10px 20px;border-top:1px solid rgba(255,255,255,.12);
+  font-size:11px;color:#8fa07f;display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline}
+.topx .pfoot a{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#d8ddd1;
+  text-decoration:none;border-bottom:1px solid rgba(255,255,255,.22)}
+.topx .pfoot a:hover{color:#fff;border-color:var(--ok)}
+
+/* ---------- ヒーローの NEW ティッカー (最新の Announcements 記事) ---------- */
+.topx .ticker{margin-top:16px;display:flex;align-items:center;gap:11px;font-size:12.5px;flex-wrap:wrap}
+.topx .tk{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:#1a1f16;
+  background:var(--ok);border-radius:4px;padding:3px 7px;flex:none}
+.topx .ticker a{color:#b9c4ad;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2);padding-bottom:2px}
+.topx .ticker a:hover{color:#f2f6ec;border-color:var(--ok)}
+
+/* ---------- 「だから」= Why now の締め帯 ---------- */
+.topx .soband{position:relative;margin-top:30px;border-radius:4px;overflow:hidden;
+  background:linear-gradient(168deg,#3c443d,#2f372f 60%,#272e28);color:#e8ece5;
+  padding:clamp(26px,3vw,42px) clamp(22px,3vw,40px)}
+.topx .soband::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.06) 1.1px,transparent 1.1px);background-size:30px 30px;pointer-events:none}
+.topx .soband::after{content:"";position:absolute;inset:0;background:radial-gradient(110% 90% at 88% -20%,rgba(168,224,16,.15),transparent 62%);pointer-events:none}
+.topx .soband .soin{position:relative;z-index:2;text-align:left;display:grid;
+  grid-template-columns:auto 1fr;gap:6px 26px;align-items:baseline;
+  opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease}
+.topx .soband.on .soin{opacity:1;transform:none}
+.topx .soband .solabel{grid-row:1/3;font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--ok);padding-top:6px}
+.topx .soband .soh{font-family:var(--serif);font-weight:600;font-size:clamp(20px,2.4vw,30px);line-height:1.5;margin:0;color:#f4f7ef}
+.topx .soband .sop{font-size:14.5px;line-height:1.95;color:#b9c4ad;margin:6px 0 0}
+.topx .soband .sop em{font-style:normal;color:var(--ok);font-weight:700}
+@media(max-width:700px){.topx .soband .soin{grid-template-columns:1fr}.topx .soband .solabel{grid-row:auto;margin-bottom:8px}}
+@media(prefers-reduced-motion:reduce){.topx .soband .soin{opacity:1;transform:none}}
+
+/* ---------- フィールドスイープ（v5.9 の再現・左→右のみ） ---------- */
+.topx .fieldpanel .cbody{padding:22px!important}
+.topx .fieldstage{position:relative;height:clamp(280px,30vw,380px);overflow:hidden;z-index:2}
+/* ブロックは固定 48px でなく画面幅に追随させる（狭幅では列間隔 < ブロック幅に
+   なり重なって見えるため。9列×4%起点・90%/8 間隔が前提） */
+.topx .fitem{position:absolute;width:clamp(26px,7vw,48px);height:clamp(26px,7vw,48px);border-radius:clamp(6px,1.6vw,10px);background:#ECEEE9;
+  border:1px solid var(--line);box-shadow:0 1px 2px rgba(24,36,26,.04);
+  transition:opacity .5s, border-color .3s, background .3s, transform .5s, box-shadow .3s}
+.topx .fitem::after{content:"";position:absolute;inset:18%;border-radius:4px;
+  background:repeating-linear-gradient(45deg,#E1E4DD,#E1E4DD 4px,#ECEEE9 4px,#ECEEE9 8px)}
+.topx .fitem.checked.fake{opacity:.14;transform:scale(.9)}
+.topx .fitem.checked.real{background:var(--card);border-color:var(--ok-ink);box-shadow:0 8px 24px rgba(143,191,0,.22)}
+.topx .fmark{position:absolute;top:-7px;right:-7px;z-index:2;width:clamp(14px,3.4vw,20px);height:clamp(14px,3.4vw,20px);
+  display:none;place-items:center;color:#1a1f16;border-radius:50%;
+  background:var(--ok);box-shadow:0 0 10px rgba(168,224,16,.45)}
+.topx .fitem.checked.real .fmark{display:grid}
+.topx .fmark svg{width:55%;height:55%;display:block}
+.topx .sweep{position:absolute;top:0;bottom:0;width:2px;left:0;background:var(--ok);
+  box-shadow:0 0 20px rgba(168,224,16,.85);z-index:4}
+.topx .fieldfoot{position:relative;z-index:5;margin:14px 0 0;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.06em;color:var(--muted)}
+.topx .fieldfoot b{color:var(--ok-ink);font-weight:400}
+.topx .fieldfoot .sim{margin-left:10px;color:#9aa093}
+
+/* ---------- 5つの証明を横5列 ---------- */
+.topx .p5{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:34px;border-top:1px solid var(--dline)}
+.topx .p5i{display:block;text-decoration:none;padding:22px 20px 24px;position:relative}
+.topx .p5i:first-child{padding-left:0}
+.topx .p5i:last-child{padding-right:0}
+.topx .p5i + .p5i{border-left:1px solid var(--dline)}
+.topx .p5i::before{content:"";position:absolute;top:-1px;left:0;width:0;height:2px;background:var(--ok);transition:width .25s ease}
+.topx .p5i:hover::before{width:100%}
+.topx .p5n{display:block;font-family:var(--num);font-weight:200;font-size:clamp(22px,2.4vw,30px);letter-spacing:.04em;color:var(--muted);margin-bottom:10px;font-variant-numeric:tabular-nums}
+.topx .p5i b{display:block;font-family:var(--serif);font-weight:600;font-size:18px;line-height:1.5;color:var(--tx);margin-bottom:7px}
+.topx .p5i:hover b{color:var(--ok-light)}
+.topx .p5d{display:block;font-size:12.5px;color:var(--muted);line-height:1.8}
+@media(max-width:1000px){.topx .p5{grid-template-columns:repeat(2,1fr)}.topx .p5i{padding:18px 16px}.topx .p5i:first-child{padding-left:16px}.topx .p5i+.p5i{border-left:0;border-top:1px solid var(--dline)}.topx .p5i:nth-child(2){border-top:0}}
+@media(max-width:600px){.topx .p5{grid-template-columns:1fr}.topx .p5i:nth-child(2){border-top:1px solid var(--dline)}}
+
+/* ---------- Story → 業界 のつなぎ ---------- */
+.topx .bridge{margin-top:24px;padding-top:20px;border-top:1px solid var(--dline)}
+.topx .bh{font-family:var(--serif);font-weight:600;font-size:clamp(19px,2.2vw,26px);line-height:1.5;margin:0 0 16px}
+.topx .bitems{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.topx .bi{padding:0 20px}
+.topx .bi:first-child{padding-left:0}
+.topx .bi:last-child{padding-right:0}
+.topx .bi + .bi{border-left:1px solid var(--dline)}
+.topx .bi svg{width:34px;height:34px;display:block;margin-bottom:10px}
+.topx .bi b{display:block;font-family:var(--serif);font-weight:600;font-size:17px;line-height:1.5;margin-bottom:6px}
+.topx .bi span{display:block;font-size:12.5px;color:var(--muted);line-height:1.8}
+@media(max-width:860px){.topx .bitems{grid-template-columns:1fr 1fr}.topx .bi{padding:16px 14px}.topx .bi:first-child{padding-left:14px}.topx .bi+.bi{border-left:0}.topx .bi:nth-child(n+3){border-top:1px solid var(--dline)}}
+@media(max-width:520px){.topx .bitems{grid-template-columns:1fr}.topx .bi+.bi{border-top:1px solid var(--dline)}}
+
+/* つなぎの締め：問い → 答え → 但し書き */
+.topx .bfoot{margin-top:22px;padding-top:18px;border-top:1px solid var(--dline);max-width:56ch}
+.topx .bfq{font-size:15.5px;line-height:1.9;color:var(--tx-soft);margin:0 0 10px}
+.topx .bfa{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.5vw,30px);line-height:1.5;color:var(--ok-light);margin:0 0 8px;position:relative;padding-left:20px}
+.topx .bfa::before{content:"";position:absolute;left:0;top:.62em;width:13px;height:2px;background:var(--ok)}
+.topx .bfn{font-size:13.5px;color:var(--muted);line-height:1.9;margin:0;padding-left:20px}
+
+/* ---------- CTA ---------- */
+.topx .cta{padding:0 0 var(--pad)}
+.topx .cta .tin{padding:clamp(34px,4.2vw,56px) clamp(26px,3.4vw,44px)}
+.topx .cta h3{font-family:var(--serif);font-weight:600;font-size:clamp(23px,2.7vw,32px);margin:0 0 12px;color:#f2f6ec;line-height:1.5}
+.topx .cta p{font-size:14.5px;color:#b9c4ad;margin:0;max-width:52ch;line-height:1.85}
+.topx .cta .btn.solid{background:var(--ok);color:#1a1f16}
+.topx .cta .btn.solid:hover{background:#b7ec2a}
+.topx .cta .btn.ghostd{background:rgba(255,255,255,.10);color:#e8ece5}
+.topx .cta .btn.ghostd:hover{background:rgba(255,255,255,.16)}
+.topx .ctagrid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,4vw,56px);align-items:center}
+.topx .devcol{position:relative;padding-left:clamp(24px,3vw,42px);border-left:1px solid rgba(255,255,255,.14)}
+.topx .devlb{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ok);margin-bottom:16px}
+.topx .devlinks{display:grid;grid-template-columns:1fr 1fr;gap:2px 22px}
+.topx .devlinks a{display:block;font-size:13px;color:#cfd8c4;text-decoration:none;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.07);line-height:1.6}
+.topx .devlinks a:hover{color:var(--ok)}
+@media(max-width:940px){.topx .ctagrid{grid-template-columns:1fr;gap:30px}.topx .devcol{padding-left:0;border-left:0;padding-top:26px;border-top:1px solid rgba(255,255,255,.14)}}
+@media(max-width:600px){.topx .devlinks{grid-template-columns:1fr}}
+
+/* 最終CTA: 左から右へ引かれる線 */
+.topx .ctaline{position:relative;height:3px;width:min(560px,100%);margin:4px 0 18px}
+.topx .ctaline .bar{position:absolute;inset:0;border-radius:2px;transform-origin:left center;transform:scaleX(0);
+  background:linear-gradient(90deg,rgba(168,224,16,.25),var(--ok));box-shadow:0 0 16px rgba(168,224,16,.45);
+  animation:topCtadraw 5.2s ease-in-out infinite}
+.topx .ctaline .head{position:absolute;top:50%;left:0;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;
+  background:var(--ok);box-shadow:0 0 16px rgba(168,224,16,.95);opacity:0;
+  animation:topCtahead 5.2s ease-in-out infinite}
+@keyframes topCtadraw{0%{transform:scaleX(0);opacity:1}46%{transform:scaleX(1);opacity:1}84%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+@keyframes topCtahead{0%{left:0;opacity:0}6%{opacity:1}46%{left:100%;opacity:1}58%{left:100%;opacity:0}100%{left:100%;opacity:0}}
+@media(prefers-reduced-motion:reduce){.topx .ctaline .bar{animation:none;transform:scaleX(1)}.topx .ctaline .head{animation:none;opacity:0}}
+
+/* のっぺり解消: 面の中の強弱 */
+.topx .wn .card,.topx .st3 .card,.topx .lat3 .card{transition:border-color .2s ease,transform .2s ease}
+.topx .wn .card:hover,.topx .st3 .card:hover,.topx .lat3 .card:hover{border-color:var(--ok)}
+.topx .st3 .card::before{content:"";position:absolute;top:0;left:0;width:34px;height:2px;background:var(--ok);transition:width .25s ease;z-index:2}
+.topx .st3 .card:hover::before{width:100%}
+.topx .lat3 .card::before{content:"";position:absolute;top:0;left:0;width:0;height:2px;background:var(--ok);transition:width .25s ease;z-index:2}
+.topx .lat3 .card:hover::before{width:100%}
+
+.topx .fp-more{margin:12px 0 0;font-size:13px;color:var(--muted);line-height:1.8}
+.topx :focus-visible{outline:2px solid var(--ok-light);outline-offset:2px}
+
+/* ================= モバイル調整（実機レビュー 2026-08-04） ================= */
+/* 業界タブ: テキスト羅列だと切り替えられることが伝わらないため、狭幅ではチップ化 */
+@media(max-width:700px){
+  .topx .ind-tabs{gap:8px;border-bottom:0;padding-bottom:2px}
+  .topx .ind-tab{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;color:var(--tx-soft)}
+  .topx .ind-tab[aria-selected="true"]{background:rgba(168,224,16,.15);border-color:var(--ok-ink);color:var(--tx);font-weight:700}
+  .topx .ind-tab[aria-selected="true"]::after{display:none}
+}
+
+/* ---- 最近の動き: 実データのカバー（ブログ写真／抽象パターン／Brief 面）----
+   モックは仮のドットグリッド面だったので、実カバーの3系統をここで足す。
+   写真の色は業界ページの Latest news と同じ調整値（面の統一）。 */
+
+/* この枠の見出しと一文だけ通常改行に戻す。keep-all は短い確定コピー向けの
+   指定で、自動生成の長い見出し（Brief のリード等）には効かせない。 */
+.topx .lat3 .cbody b,.topx .lat3 .cbody span{word-break:normal;overflow-wrap:anywhere}
+.topx .latimg>svg{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
+.topx .latimg .lat-photo{position:absolute;inset:0;display:block;z-index:1}
+.topx .latimg .lat-photo img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:sepia(.16) saturate(.62) hue-rotate(-8deg) contrast(1.04)}
+.topx .latimg .lat-photo::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(200deg,rgba(16,22,17,.06) 0%,rgba(16,22,17,.3) 62%,rgba(16,22,17,.52) 100%)}
+.topx .latimg .lat-photo::before{content:"";position:absolute;left:0;right:0;top:62%;height:2px;
+  background:var(--ok);opacity:.85;z-index:2}
+/* 枠2 の Brief は写真を持たないので、生成カバー（lib/briefCover の C-3
+   プリセット）を敷く。業界ページ枠2 と同じ絵で、面をまたいで揃える。 */
+
+/* 節の足の「すべて見る」導線。カードから先に進める出口を残す。 */
+.topx .latfoot{display:flex;flex-wrap:wrap;gap:8px 26px;margin:22px 0 0;font-size:12.5px}
+.topx .latfoot a{color:var(--ok-light);text-decoration:none;
+  border-bottom:1px solid rgba(78,122,0,.3);padding-bottom:2px}
+.topx .latfoot a:hover{border-bottom-color:var(--ok-light)}
+
+/* ムービー: 狭幅ではカードの額縁をやめて全幅ブリードにし、少しでも大きく見せる */
+@media(max-width:560px){
+  .topx .filmbleed{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);border-radius:0;padding:12px 8px}
+  /* ヒーロー: boosting 解消とあわせてタイポと余白を締め、1画面の情報量を抑える */
+  .topx .herodark .hin{padding-top:clamp(40px,10vw,58px);padding-bottom:44px;gap:40px}
+  .topx .herodark h1{margin:14px 0 22px}
+  .topx .herodark .sublead{font-size:14.5px;line-height:1.9;margin-bottom:20px}
+  .topx .herodark .tfacts{margin-bottom:24px}
+  .topx .herodark .tfacts li{font-size:13.5px;padding:7px 0 7px 20px}
+}

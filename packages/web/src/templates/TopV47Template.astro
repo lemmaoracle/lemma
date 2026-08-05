@@ -1,0 +1,570 @@
+---
+/**
+ * トップページ v47 — `/ja/`（JA）と `/`（EN）。
+ *
+ * 正典: lemma_top_mock_v47.html ＋ Lemma_トップページ_実装指示_v1_2026-08-04.md（Phase6）。
+ * seal-v4 と同じ fragment（config/top-v47.{ja,en}.html）＋ scoped CSS
+ * （styles/top-v47.css, .topx）方式。ナビ・フッターは共通コンポーネント。
+ *
+ * 指示書の要点:
+ *   - ムービーは外部ファイル /assets/film/concept-film.html?embed=1（srcdoc・base64 禁止）。
+ *     読み込み即再生せず、ビューポート進入時に postMessage で再生。
+ *     reduced-motion では play を送らない（ムービー側は 01 の完成状態で静止）。
+ *   - レジストリは表示のたびに GET /v1/counters。失敗時は推定で埋めず
+ *     「レジストリに到達できません。推定値では埋めません。」（/verify/ と同一表記）。
+ *   - ヒーロー第2CTA は為替フィードの docHash をライブ取得して /verify/?doc= に埋める。
+ *     取得失敗時は /verify/ のまま。
+ *   - 未実測の数字（8ms・0.4s・312 等）は書かない。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import bodyJa from "../config/top-v47.ja.html?raw";
+import bodyEn from "../config/top-v47.en.html?raw";
+import { getCollection } from "astro:content";
+import { getAllPosts, postInCategory, type BlogPost } from "../data/blog";
+import { getEnBriefMap } from "../data/getEnBriefMap";
+import { resolveCoverImage } from "../lib/coverPhoto";
+import { coverArtwork, COVER_WIDTH, COVER_HEIGHT } from "../lib/blogCover";
+import { briefCardSvg } from "../lib/briefCover";
+import { categoryLabel } from "../data/criticalBriefs";
+import type { CategorySlug } from "../data/criticalBriefs";
+import "../styles/top-v47.css";
+
+export interface TopV47TemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as TopV47TemplateProps;
+const isJa = locale === "ja";
+
+const esc = (v: string) =>
+  v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+/** n 字で詰める。空白がある言語（EN）は語の途中で切らない。 */
+const clip = (v: string, n: number) => {
+  if (v.length <= n) return v;
+  const cut = v.slice(0, n);
+  const sp = cut.lastIndexOf(" ");
+  return `${(sp > n * 0.6 ? cut.slice(0, sp) : cut).trimEnd()}…`;
+};
+/** カードの一文。JA は最初の「。」まで、EN は最初の「. 」までで切る。 */
+const firstSentence = (v: string): string => {
+  const ja = v.indexOf("。");
+  if (ja >= 0) return v.slice(0, ja + 1);
+  const en = v.match(/^[\s\S]*?\.(?=\s|$)/);
+  return en ? en[0] : v;
+};
+
+const postsDesc = [...(await getAllPosts(locale))].sort((a, b) => (a.date > b.date ? -1 : 1));
+
+// ヒーロー CTA 直下の NEW ティッカー。最新の Announcements 記事を1本だけ出す
+// (mock v5.9 の .ticker。モックはハードコードだったので実データに接続)。
+const latestAnnouncement = postsDesc.find((p) => postInCategory(p, "Announcements"));
+const tickerHtml = latestAnnouncement
+  ? `<div class="ticker"><span class="tk">NEW</span><a href="${base}/blog/${latestAnnouncement.slug}">${esc(latestAnnouncement.title)} →</a></div>`
+  : "";
+
+/* ── 最近の動き（Latest news 出し分け設計 v1 §4.1）────────────────────
+ * fragment の LATEST 節はモック由来の静的プレースホルダ（社外リリースへの
+ * 仮リンク・空のプレス枠・Brief No.105 直書き）だったので `<!--LATEST-->`
+ * に畳み、ここで実データを流し込む。3枠の性格は固定し、新着順で競争させない。
+ *   枠1 実績     — 最新の「お知らせ」記事（自動）
+ *   枠2 論点     — Critical Brief の最新1本（自動。毎週の鮮度はこの枠が担う）
+ *   枠3 読みもの — `audience: business` からの選抜1本（手動・月次で見直す）
+ *
+ * 導入事例（メタウォーター）はブログ記事が未公開のため出さない。公開後は
+ * 枠1 をその記事に差し替える（設計 v1 §4.1 の「手動」枠はここ）。
+ */
+
+/** 枠3 に出す記事の slug（`audience: business` のもの）。月次で見直す。
+ *  見つからなければ business の最新へ自動フォールバックし、枠を空けない。 */
+const TOP_PICK_SLUG = "ai-financial-cybersecurity-akamai-2026";
+
+const bizPostsDesc = postsDesc.filter((p) => p.audience === "business");
+const pickedCandidate = bizPostsDesc.find((p) => p.slug === TOP_PICK_SLUG) ?? bizPostsDesc[0];
+// 枠1 と同じ記事が枠3 にも来ないようにする（両枠が同じ1本を指すと枠が死ぬ）。
+const pickedPost =
+  pickedCandidate && pickedCandidate.slug === latestAnnouncement?.slug
+    ? bizPostsDesc.find((p) => p.slug !== latestAnnouncement.slug)
+    : pickedCandidate;
+
+// 枠2: Brief は JA コレクションを軸に、EN では訳がある分だけ差し替える
+// （/critical/briefs/ の一覧と同じ選び方・同じ並び）。
+const enBriefById = isJa ? null : await getEnBriefMap();
+const latestBrief = [...(await getCollection("critical-briefs"))]
+  .map((ja) => enBriefById?.get(ja.id) ?? ja)
+  .sort((a, b) => {
+    const diff = b.data.published.getTime() - a.data.published.getTime();
+    return diff !== 0 ? diff : b.data.brief_no - a.data.brief_no;
+  })[0];
+
+// 一文と「読む →」の間。JA は句点で切れるので詰め、EN は空白で分ける。
+const latSep = isJa ? "" : " ";
+const LAT = isJa
+  ? {
+      announce: "お知らせ",
+      blog: "ブログ",
+      // カバーが「CRITICAL BRIEF」を大きく出すので、チップは語を重ねない
+      // （業界ページ枠2 と同じ扱い）。
+      brief: "事案分析",
+      readPost: "記事を読む →",
+      readBrief: "Brief を読む →",
+      briefLead: "いま争点になっていることを、事実から追う。",
+    }
+  : {
+      announce: "Announcement",
+      blog: "Blog",
+      brief: "Case analysis",
+      readPost: "Read the article →",
+      readBrief: "Read the brief →",
+      briefLead: "Following what is contested now, from the facts.",
+    };
+
+/* カバーはブログ一覧と同じ扱い: 写真が public/ に実在すれば写真、無ければ
+   カテゴリ由来の抽象パターン（lib/blogCover）。モックのドットグリッドは
+   「質感は図解の枠だけ」（指示 第6部-3）に従い通常カードには載せない。 */
+const postCoverHtml = (p: BlogPost): string => {
+  const photo = resolveCoverImage(p);
+  return photo
+    ? `<span class="lat-photo"><img src="${esc(photo)}" alt="" loading="lazy"/></span>`
+    : `<svg viewBox="0 0 ${COVER_WIDTH} ${COVER_HEIGHT}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${coverArtwork(p.category, p.slug)}</svg>`;
+};
+
+const postCardHtml = (p: BlogPost, label: string): string =>
+  `<a href="${base}/blog/${p.slug}"><div class="card"><figure class="latimg">${postCoverHtml(p)}</figure><div class="cbody">
+        <div class="lb">${esc(label)}</div>
+        <b>${esc(clip(p.title, isJa ? 44 : 72))}</b>
+        <span>${esc(clip(firstSentence(p.abstract), isJa ? 54 : 116))}${latSep}${LAT.readPost}</span>
+      </div></div></a>`;
+
+const briefCardHtml = (b: NonNullable<typeof latestBrief>): string => {
+  // 見出しは og_lead（≈30〜45字の一文リード）を使う。Brief の title は
+  // 「主題：詳細 — 補足」で長く、3列カードでは他の2枚と釣り合わないため。
+  const lead = isJa
+    ? (b.data.og_lead_ja ?? b.data.title)
+    : (b.data.og_lead_en ?? b.data.title_en);
+  // カバーは業界ページ枠2 と同じ生成カバー（lib/briefCover の C-3 プリセット・
+  // 主役は番号）。版面は 1200x630 で、この枠は 16:9 なので切られ方も近い。
+  const cover = briefCardSvg({
+    no: String(b.data.brief_no).padStart(3, "0"),
+    threat: categoryLabel(b.data.primary_category as CategorySlug, locale),
+    locale: isJa ? "ja" : "en",
+    key: `top-${b.id}`,
+  });
+  return `<a href="${base}/critical/briefs/${b.id}/"><div class="card"><figure class="latimg">${cover}</figure><div class="cbody">
+        <div class="lb">${LAT.brief}</div>
+        <b>${esc(clip(lead, isJa ? 62 : 104))}</b>
+        <span>${LAT.briefLead}${latSep}${LAT.readBrief}</span>
+      </div></div></a>`;
+};
+
+const latestHtml = [
+  latestAnnouncement ? postCardHtml(latestAnnouncement, LAT.announce) : "",
+  latestBrief ? briefCardHtml(latestBrief) : "",
+  pickedPost ? postCardHtml(pickedPost, LAT.blog) : "",
+]
+  .filter(Boolean)
+  .join("\n      ");
+
+const body = (isJa ? bodyJa : bodyEn)
+  .replace("<!--TICKER-->", tickerHtml)
+  .replace("<!--LATEST-->", latestHtml);
+
+const API_BASE = "https://workers.lemma.workers.dev/v1";
+const VERIFY_PATH = `${base}/verify/`;
+
+// レジストリ表記は /verify/ の VerifyAnchorTemplate と揃える（指示 §3.1）。
+const REG = isJa
+  ? {
+      perr: "レジストリに到達できません。推定値では埋めません。",
+      breakdown: "内訳 — ",
+      numLocale: "ja-JP",
+      timeLocale: "ja-JP",
+      live: "LIVE",
+      offline: "OFFLINE",
+      // 内訳のソース名は検証センター (VerifyAnchorTemplate の SRC_LABELS) と同じ訳語。
+      // 未知のキーはキーのまま出す。
+      src: {
+        feeds: "為替データフィード",
+        api_verify: "公開API・その他",
+        "jp-holidays": "祝日データフィード",
+        "jp-postal-codes": "郵便番号データフィード",
+        other: "その他",
+      },
+      // イベント列: フィード ID とハッシュはそのまま、説明語だけロケール化
+      evVerified: "検証",
+      evIssued: "証明を発行",
+    }
+  : {
+      perr: "The registry is unreachable. We do not fill in estimates.",
+      breakdown: "Breakdown — ",
+      numLocale: "en-US",
+      timeLocale: "en-US",
+      live: "LIVE",
+      offline: "OFFLINE",
+      src: {
+        feeds: "FX data feed",
+        api_verify: "Public API & others",
+        "jp-holidays": "JP holidays feed",
+        "jp-postal-codes": "JP postal codes feed",
+        other: "Others",
+      },
+      evVerified: "sources verified",
+      evIssued: "proof issued",
+    };
+
+const metaTitle = isJa
+  ? "Lemma — 真正性のある AI データ基盤｜検証可能 AI の信頼インフラ"
+  : "Lemma — An authentic data foundation for AI | verifiable-AI trust infrastructure";
+const metaDescription = isJa
+  ? "データを渡さずに来歴・属性・実績の真正性を暗号的に証明する、AI のための信頼インフラ（データ基盤）。生データを開示せず第三者が独立検証。検証可能AI・エージェント決済・規制対応。Trusted Web 準拠。"
+  : "Lemma is trust infrastructure for AI: prove the provenance, attributes, and track record of data cryptographically — without sharing raw data — verifiable by any third party. Verifiable AI, agent payments, regulatory attributes. Trusted Web–aligned.";
+---
+
+<Layout
+  locale={locale}
+  metaType="home"
+  title={metaTitle}
+  description={metaDescription}
+  ogImage={`https://lemma.frame00.com/og/home/${locale}.png`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+  <main class="topx" set:html={body} />
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+
+  <script is:inline define:vars={{ API_BASE, VERIFY_PATH, REG }}>
+    (function () {
+      var reduced =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      /* ---- 業界タブ（プリレンダー済みのボタンに切替だけ付ける） ---- */
+      (function () {
+        var N = 9;
+        function sel(n) {
+          for (var i = 0; i < N; i++) {
+            var t = document.getElementById("it-" + i);
+            var p = document.getElementById("ip-" + i);
+            if (!t || !p) return;
+            t.setAttribute("aria-selected", String(i === n));
+            p.hidden = i !== n;
+          }
+        }
+        for (var i = 0; i < N; i++) {
+          (function (n) {
+            var t = document.getElementById("it-" + n);
+            if (t)
+              t.addEventListener("click", function () {
+                sel(n);
+              });
+          })(i);
+        }
+      })();
+
+      /* ---- レジストリ実数（/verify/ と同じ GET /v1/counters・同じ数え方の宣言） ---- */
+      (function () {
+        var V = document.getElementById("vcount"),
+          I = document.getElementById("icount"),
+          S = document.getElementById("vsub"),
+          U = document.getElementById("vup");
+        if (!V) return;
+        var head = document.getElementById("phead");
+        var chip = document.getElementById("plive");
+        function off() {
+          V.textContent = "———";
+          I.textContent = "—";
+          V.classList.add("off");
+          S.textContent = REG.perr;
+          U.textContent = "—";
+          if (head) head.classList.add("offline");
+          if (chip) chip.textContent = REG.offline;
+        }
+        function num(n) {
+          return (n || 0).toLocaleString(REG.numLocale);
+        }
+        /* 読み込み時に数字が上がる (検証センター /verify/ と同じ 1300ms・cubic-out)。
+           reduced-motion では最終値を直接出す。 */
+        function countUp(el, to) {
+          if (reduced) {
+            el.textContent = num(to);
+            return;
+          }
+          var t0 = performance.now(),
+            dur = 1300,
+            from = Math.max(0, to - Math.min(to, 600));
+          (function f(t) {
+            var p = Math.min(1, (t - t0) / dur),
+              e = 1 - Math.pow(1 - p, 3);
+            el.textContent = num(Math.round(from + (to - from) * e));
+            if (p < 1) requestAnimationFrame(f);
+          })(t0);
+        }
+        function fmtTime(s) {
+          if (!s) return "—";
+          var d = new Date(s.indexOf("T") >= 0 ? s : s.replace(" ", "T") + "Z");
+          if (isNaN(d.getTime())) return "—";
+          return d.toLocaleString(REG.timeLocale, {
+            month: "numeric",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+        var first = true;
+        function load() {
+          fetch(API_BASE + "/counters", { headers: { accept: "application/json" } })
+            .then(function (r) {
+              if (!r.ok) throw 0;
+              return r.json();
+            })
+            .then(function (d) {
+              var v = d && d.verified,
+                s = d && d.issued;
+              if (!v || typeof v.count !== "number") throw 0;
+              V.classList.remove("off");
+              var hasIssued = s && typeof s.count === "number";
+              if (first) {
+                countUp(V, v.count);
+                if (hasIssued) countUp(I, s.count);
+                first = false;
+              } else {
+                V.textContent = num(v.count);
+                if (hasIssued) I.textContent = num(s.count);
+              }
+              var by = (v.bySource || [])
+                .slice(0, 3)
+                .map(function (b) {
+                  var label = (REG.src && REG.src[b.source]) || b.source;
+                  return label + " " + num(b.count);
+                })
+                .join("   ");
+              S.textContent = by ? REG.breakdown + by : "";
+              U.textContent = fmtTime(v.updatedAt);
+              if (head) head.classList.remove("offline");
+              if (chip) chip.textContent = REG.live;
+            })
+            .catch(function () {
+              /* 初回失敗は推定で埋めずエラー表示。2回目以降は直近の実数を残したまま
+                 ヘッダーだけ OFFLINE に落とす (LAST UPDATED が鮮度を示す)。 */
+              if (first) {
+                off();
+              } else {
+                if (head) head.classList.add("offline");
+                if (chip) chip.textContent = REG.offline;
+              }
+            });
+        }
+        load();
+        setInterval(load, 45000);
+      })();
+
+      /* ---- ヒーロー第2CTA の docHash 埋め込み + レジストリのイベントストリーム ----
+         (mock v5.9 の .pstream。取得できたフィードの分だけ出し、失敗時は何も出さない) */
+      (function () {
+        var stream = document.getElementById("pstream");
+        var MARK =
+          '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"/><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        var evs = [];
+        function shortHash(h) {
+          return h ? h.slice(0, 6) + "…" + h.slice(-4) : "";
+        }
+        function render() {
+          if (!stream || !evs.length) return;
+          stream.innerHTML = evs
+            .map(function (t) {
+              return '<div class="ev">' + MARK + "<span>" + t + "</span></div>";
+            })
+            .join("");
+          stream.hidden = false;
+        }
+        function getJson(path) {
+          return fetch(API_BASE + path, { headers: { accept: "application/json" } }).then(
+            function (r) {
+              if (!r.ok) throw 0;
+              return r.json();
+            },
+          );
+        }
+        getJson("/suites/feeds/forex/composite/latest")
+          .then(function (j) {
+            if (j && j.docHash && /^0x[0-9a-fA-F]+$/.test(j.docHash)) {
+              var href = VERIFY_PATH + "?doc=" + encodeURIComponent(j.docHash);
+              [].forEach.call(document.querySelectorAll(".js-doclink"), function (a) {
+                a.href = href;
+              });
+            }
+            var v = (j && j.verification) || {};
+            /* パネル幅に収める: 日付は落とし、検証数とハッシュだけ残す */
+            evs.push(
+              "feeds/forex/composite&nbsp;" +
+                (v.verified != null ? v.verified : "?") +
+                "/" +
+                (v.total != null ? v.total : "?") +
+                " " +
+                REG.evVerified +
+                " — " +
+                shortHash(j && j.docHash),
+            );
+            render();
+          })
+          .catch(function () {
+            /* 失敗時は /verify/ のまま（フォールバック）。ストリームも出さない */
+          });
+        getJson("/suites/feeds/jp-holidays/latest")
+          .then(function (j) {
+            evs.push(
+              "feeds/jp-holidays&nbsp;" + REG.evIssued + " — " + shortHash(j && j.docHash),
+            );
+            render();
+          })
+          .catch(function () {});
+      })();
+
+      /* ---- 「だから」の締め帯をスクロールで浮かせる ---- */
+      (function () {
+        var el = document.getElementById("sostmt");
+        if (!el) return;
+        if (reduced || !("IntersectionObserver" in window)) {
+          el.classList.add("on");
+          return;
+        }
+        var io = new IntersectionObserver(
+          function (es) {
+            es.forEach(function (e) {
+              if (e.isIntersecting) {
+                e.target.classList.add("on");
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.35 },
+        );
+        io.observe(el);
+      })();
+
+      /* ---- フィールドスイープ（左→右のみ・reduced-motion では全件チェック済みで静止） ---- */
+      (function () {
+        var stage = document.getElementById("fieldstage"),
+          sweep = document.getElementById("sweep");
+        if (!stage || !sweep) return;
+        var FCOLS = 9,
+          FROWS = 6,
+          items = [];
+        for (var r = 0; r < FROWS; r++)
+          for (var c = 0; c < FCOLS; c++) {
+            var el = document.createElement("div");
+            var real = Math.random() < 0.2;
+            el.className = "fitem " + (real ? "real" : "fake");
+            if (real)
+              el.innerHTML =
+                '<span class="fmark"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.4 6.3 L4.9 8.8 L9.6 3.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+            var x = 4 + c * (90 / (FCOLS - 1));
+            el.style.left = x + "%";
+            el.style.top = 6 + r * (78 / (FROWS - 1)) + "%";
+            stage.appendChild(el);
+            items.push({ el: el, real: real, x: x });
+          }
+        var sx = 0,
+          scanned = 0,
+          reals = 0;
+        var RC = document.getElementById("realcount"),
+          SC = document.getElementById("scancount");
+        function step() {
+          sx += 0.42;
+          if (sx > 104) {
+            sx = 0;
+            scanned = 0;
+            reals = 0;
+            items.forEach(function (i) {
+              i.el.classList.remove("checked");
+            });
+            if (SC) SC.textContent = 0;
+            if (RC) RC.textContent = 0;
+          }
+          sweep.style.left = sx + "%";
+          items.forEach(function (i) {
+            if (!i.el.classList.contains("checked") && i.x < sx) {
+              i.el.classList.add("checked");
+              scanned++;
+              if (i.real) {
+                reals++;
+                if (RC) RC.textContent = reals;
+              }
+              if (SC) SC.textContent = scanned;
+            }
+          });
+        }
+        if (!reduced) {
+          setInterval(step, 40);
+        } else {
+          items.forEach(function (i) {
+            i.el.classList.add("checked");
+            if (i.real) reals++;
+            scanned++;
+          });
+          if (RC) RC.textContent = reals;
+          if (SC) SC.textContent = scanned;
+          sweep.style.display = "none";
+        }
+      })();
+
+      /* ---- ムービー: 進入時に再生・シーン要約と連動（連動しなくても全行読める） ---- */
+      (function () {
+        var ids = ["01", "02", "03", "04"];
+        window.addEventListener("message", function (e) {
+          var d = e.data;
+          if (!d || d.type !== "lemma:film:scene") return;
+          var n = String(d.scene).padStart(2, "0");
+          if (ids.indexOf(n) < 0) return;
+          ids.forEach(function (i) {
+            var el = document.getElementById("scn-" + i);
+            if (el) el.classList.toggle("on", i === n);
+          });
+        });
+
+        var f = document.getElementById("film");
+        if (!f) return;
+        function post(cmd) {
+          try {
+            f.contentWindow.postMessage({ type: "lemma:film:" + cmd }, "*");
+          } catch (err) {
+            /* iframe 未準備なら load 側で再送する */
+          }
+        }
+        /* reduced-motion では自動再生しない（ムービー側は 01 の完成状態で静止） */
+        if (reduced) return;
+        /* iframe の読み込みは非同期: 進入フラグと load の両方で play を送る */
+        var want = false,
+          ready = false;
+        f.addEventListener("load", function () {
+          ready = true;
+          if (want) post("play");
+        });
+        if (!("IntersectionObserver" in window)) {
+          want = true;
+          post("play");
+          return;
+        }
+        var io = new IntersectionObserver(
+          function (es) {
+            es.forEach(function (e) {
+              if (e.isIntersecting) {
+                want = true;
+                /* すでに読み込み済みのときはここで届く。未読込なら load 側で再送 */
+                post("play");
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.4 },
+        );
+        io.observe(f);
+      })();
+    })();
+  </script>
+</Layout>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lemma コンセプトムービー（0:23）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@600&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lite:#F3F4F1; --lite-2:#ECEEE9; --card:#FFFFFF;
+  --tx:#12140E; --tx-soft:#2F332B; --muted:#5C6156;
+  --ok:#A8E010; --ok-ink:#6F9C00; --ok-light:#4E7A00; --tan:#C25438;
+  --line:#E1E3DD; --dline:#E7EAE5;
+  --font-serif-jp:'Space Grotesk','Noto Serif JP',Georgia,serif;
+  --font-body:'Space Grotesk','Noto Sans JP','Hiragino Sans',sans-serif;
+  --font-mono:'Space Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#DCDFD9;color:var(--tx);font-family:var(--font-body);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;gap:10px}
+.wrap{width:100%;max-width:1280px}
+.film{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--lite);
+  box-shadow:0 26px 70px rgba(24,36,26,.20)}
+.stage{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left;overflow:hidden;
+  background:radial-gradient(78% 66% at 66% 20%,#FBFCF9,var(--lite) 74%)}
+.stage>*{position:absolute}
+.fx{opacity:0;transform:translateY(9px);
+  transition:opacity .42s cubic-bezier(.2,.6,.2,1),transform .42s cubic-bezier(.2,.6,.2,1)}
+.fx.on{opacity:1;transform:none}
+.pop-in{transform:translateY(10px) scale(.965)}
+.pop-in.on{transform:none}
+.noanim .fx,.noanim #hashdot{transition:none!important}
+
+/* ================= 左 35% ================= */
+.txt{left:60px;top:196px;width:372px;z-index:8}
+.t-n{font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;color:var(--ok-ink)}
+.t-h{font-family:var(--font-serif-jp);font-weight:600;font-size:38px;line-height:1.36;letter-spacing:.004em;
+  margin-top:14px;position:relative;padding-top:18px;word-break:keep-all;line-break:strict}
+.t-h::before{content:"";position:absolute;left:0;top:0;width:28px;height:3px;border-radius:4px;background:var(--ok)}
+.t-h em{font-style:normal;background:linear-gradient(transparent 64%,rgba(168,224,16,.45) 64%)}
+.t-s{font-size:15px;font-weight:700;line-height:1.7;color:var(--tx-soft);margin-top:17px}
+html[lang="en"] .t-h{font-size:33px;line-height:1.3;word-break:normal}
+
+/* 裏側タグ（左カラム下端に固定） */
+.tags{left:60px;top:596px;width:400px;z-index:8}
+.tg{display:inline-flex;align-items:center;gap:11px;font-family:var(--font-mono);font-size:14px;
+  letter-spacing:.03em;padding:12px 20px;border-radius:999px;line-height:1.55}
+.tg.no{color:var(--tan);border:1px solid rgba(194,84,56,.30);background:rgba(194,84,56,.05)}
+.tg.ok{color:var(--ok-light);border:1px solid #D3E6A2;background:#F5FAEA}
+.tg b{font-weight:400;opacity:.62;flex:none;font-size:12px}
+html[lang="en"] .tg{font-size:12.5px;padding:11px 17px}
+
+/* ================= 共通ミニUI ================= */
+.mini{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  box-shadow:0 30px 70px rgba(24,36,26,.15),0 3px 10px rgba(24,36,26,.06)}
+.mini-bar{padding:12px 18px;border-bottom:1px solid var(--line);background:#FBFCFA;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:#8B9188}
+.mini-body{padding:18px}
+.mini-row{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:11px 0;
+  border-top:1px solid var(--dline);font-size:15px}
+.mini-row:first-child{border-top:none}
+.mini-row span{color:var(--muted)}
+.mini-row b{font-weight:700;color:var(--tx)}
+.mini-row.skip span,.mini-row.skip b{color:#B4BAAE;text-decoration:line-through;font-weight:400}
+.vmark{display:inline-grid;place-items:center;flex:none}
+.vmark svg{width:100%;height:100%;display:block}
+
+/* ================= 記事カード ================= */
+.ph2{border:1px solid var(--line);border-radius:10px;background:var(--card);overflow:hidden;
+  box-shadow:0 20px 46px rgba(24,36,26,.12)}
+.ph2-bar{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:#9AA197;
+  padding:10px 13px;border-bottom:1px solid var(--dline)}
+.ph2-img{height:138px;overflow:hidden;background:#DCE0DA}
+.ph2-img img,.av-img img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.86) contrast(.97)}
+.ph2-t{font-size:16px;font-weight:700;padding:13px 14px 4px;line-height:1.42}
+.ph2-m{font-family:var(--font-mono);font-size:9.5px;color:#9AA197;padding:0 14px 14px}
+
+/* ---- 01 ---- */
+#s1{left:448px;top:110px;width:534px;z-index:5}
+#s1 .pair{position:relative;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.dup{position:absolute;width:256px;z-index:1}
+.xbtn{width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--line);
+  box-shadow:0 8px 20px rgba(24,36,26,.18);display:grid;place-items:center;font-size:16px;
+  color:var(--muted);z-index:7}
+
+/* ---- 02 ---- */
+#s2{left:448px;top:138px;width:296px;z-index:5}
+#pub{left:448px;top:470px;width:296px;z-index:5;text-align:center;background:var(--ok);color:#12140E;
+  font-size:15px;font-weight:700;padding:14px 0;border-radius:8px;
+  box-shadow:0 14px 30px rgba(168,224,16,.32)}
+#s2badge{left:458px;top:404px;z-index:7}
+.badge{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:700;color:var(--ok-light);
+  background:#F5FAEA;border:1px solid #D3E6A2;border-radius:999px;padding:11px 19px;
+  box-shadow:0 8px 20px rgba(24,36,26,.10)}
+.badge .vmark{width:18px;height:18px;color:var(--ok-light)}
+#wire{left:0;top:0;width:1280px;height:720px;z-index:4;pointer-events:none}
+#hashdot{left:764px;top:322px;z-index:6;font-family:var(--font-mono);font-size:14px;letter-spacing:.04em;
+  color:var(--ok-light);background:#F5FAEA;border:1px solid #D3E6A2;border-radius:999px;padding:11px 18px;
+  opacity:0;transform:translate(0,0);
+  transition:opacity .4s ease,transform 1.6s cubic-bezier(.4,0,.3,1)}
+#hashdot.on{opacity:1;transform:translate(218px,-160px)}
+#reg{left:964px;top:186px;width:296px;z-index:5}
+.reg{border:1px solid var(--line);border-radius:12px;background:#fff;padding:20px 22px;
+  box-shadow:0 30px 66px rgba(24,36,26,.14)}
+.reg .k{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:#8B9188}
+.reg .v{font-family:var(--font-serif-jp);font-weight:600;font-size:22px;margin-top:10px}
+.reg .h{font-size:13.5px;font-weight:700;color:var(--ok-light);margin-top:13px;padding-top:12px;
+  border-top:1px solid var(--dline);line-height:1.6}
+.reg .h2{font-size:13px;color:var(--muted);margin-top:11px;padding-top:11px;border-top:1px solid var(--dline);line-height:1.6}
+.reg .h2 b{color:var(--tx);font-weight:700}
+
+/* ---- 03 ---- */
+#s3{left:584px;top:92px;width:672px;z-index:5}
+.av-img{height:158px;overflow:hidden;border-radius:7px;margin-bottom:14px;background:#DCE0DA}
+.av-t{font-size:19px;font-weight:700;line-height:1.45;margin-bottom:12px}
+.av-ln{height:7px;border-radius:4px;background:var(--lite-2);margin-bottom:8px}
+.av-ln.s{width:58%}
+.av-badge{display:inline-flex;align-items:center;gap:10px;margin-top:15px;font-size:16px;font-weight:700;
+  color:var(--ok-light);background:#F5FAEA;border:1px solid #D3E6A2;border-radius:999px;padding:12px 21px}
+.av-badge .vmark{width:20px;height:20px;color:var(--ok-light)}
+#pop{left:472px;top:436px;width:540px;z-index:9;background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:24px 26px;box-shadow:0 44px 92px rgba(24,36,26,.26)}
+#pop .t{font-family:var(--font-serif-jp);font-weight:600;font-size:30px;display:flex;align-items:center;gap:14px}
+#pop .t .vmark{width:34px;height:34px;color:var(--ok-light)}
+#pop .en{font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;color:var(--ok-light);margin-top:8px}
+#pop .c2{display:flex;align-items:center;gap:11px;font-size:14.5px;color:var(--tx);
+  margin-top:13px;padding-top:12px;border-top:1px solid var(--dline)}
+#pop .c2 .vmark{width:19px;height:19px;color:var(--ok-light)}
+#pop .c2 span{flex:none;width:54px;font-size:12.5px;color:var(--muted)}
+html[lang="en"] #pop .c2 span{width:70px}
+#pop .c2 b{font-weight:700}
+#pop .row{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);
+  margin-top:13px;padding-top:12px;border-top:1px solid var(--dline)}
+#pop .row b{color:var(--tx);font-weight:700}
+
+/* ---- 04 ---- */
+#s4{left:452px;top:168px;width:716px;z-index:5}
+.passline{display:flex;align-items:center;gap:13px;margin-top:16px;padding-top:15px;border-top:1px solid var(--dline)}
+.passline .vmark{width:26px;height:26px;color:var(--ok-light)}
+.passline b{font-size:19px;font-weight:700}
+.passline i{font-style:normal;font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;
+  color:var(--muted);margin-left:auto}
+
+/* ================= カーソル ================= */
+.cur{width:22px;height:22px;z-index:11;filter:drop-shadow(0 2px 4px rgba(22,30,24,.24))}
+#cur2{left:588px;top:490px;transform:translate(74px,88px)}
+#cur3{left:678px;top:406px;transform:translate(86px,76px)}
+.cur.on{transform:none}
+.clk{width:52px;height:52px;border-radius:50%;border:2px solid var(--ok-ink);opacity:0;z-index:10}
+#clk2{left:573px;top:475px}
+#clk3{left:663px;top:391px}
+.clk.on{animation:clk .7s ease-out}
+@keyframes clk{0%{opacity:.5;transform:scale(.22)}100%{opacity:0;transform:scale(1)}}
+
+#prog{left:0;bottom:0;width:1280px;height:2px;background:rgba(24,36,26,.07);z-index:13}
+#prog i{display:block;height:2px;background:var(--ok);width:0}
+.bare #prog{display:none}
+
+.bar{width:100%;max-width:1280px;display:flex;align-items:center;gap:12px}
+.bar button{font-family:var(--font-mono);font-size:11px;letter-spacing:.15em;color:#3F4A2A;background:#fff;
+  border:1px solid #CFD4C9;border-radius:4px;padding:7px 14px;cursor:pointer}
+.bar button.off{color:#9AA196}
+.bar input{flex:1;accent-color:#6F9C00}
+.bar .tc{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--muted);
+  min-width:100px;text-align:right}
+.bar.hidden{visibility:hidden}
+
+/* ================= 埋め込みモード（?embed=1） ================= */
+.is-embed body{background:transparent;padding:0;min-height:0;gap:0;display:block}
+.is-embed .wrap{max-width:none}
+.is-embed .film{box-shadow:none;background:transparent}
+.is-embed .stage{background:transparent}
+.is-embed .controls{display:none}
+.is-embed #prog{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="film" id="film">
+  <div class="stage" id="stage">
+
+    <!-- ============ 01 ============ -->
+    <div class="txt fx" data-el="t1">
+      <div class="t-n">01</div>
+      <div class="t-h" data-t="h1">偽物に、<br><em>追われ続ける。</em></div>
+      <div class="t-s fx" data-el="t1s" data-t="s1">消しても、また出てくる。<br>見分けがつかないまま増えていく。</div>
+    </div>
+
+    <div id="s1" aria-hidden="true">
+      <div class="dup fx" data-el="d1" style="left:100px;top:50px">
+        <div class="ph2"><div class="ph2-bar" data-t="pub1">◯◯新聞社</div><div class="ph2-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+          <div class="ph2-t" data-t="art">新工場の稼働を確認</div><div class="ph2-m">2026-07-28 09:18</div></div></div>
+      <div class="dup fx" data-el="d2" style="left:200px;top:100px">
+        <div class="ph2"><div class="ph2-bar" data-t="pub1">◯◯新聞社</div><div class="ph2-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+          <div class="ph2-t" data-t="art">新工場の稼働を確認</div><div class="ph2-m">2026-07-28 09:23</div></div></div>
+      <div class="dup fx" data-el="d3" style="left:300px;top:150px">
+        <div class="ph2"><div class="ph2-bar" data-t="pub1">◯◯新聞社</div><div class="ph2-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+          <div class="ph2-t" data-t="art">新工場の稼働を確認</div><div class="ph2-m">2026-07-28 09:31</div></div></div>
+      <div class="dup fx" data-el="d4" style="left:400px;top:200px">
+        <div class="ph2"><div class="ph2-bar" data-t="pub1">◯◯新聞社</div><div class="ph2-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+          <div class="ph2-t" data-t="art">新工場の稼働を確認</div><div class="ph2-m">2026-07-28 09:40</div></div></div>
+      <div class="dup fx" data-el="d5" style="left:500px;top:250px">
+        <div class="ph2"><div class="ph2-bar" data-t="pub1">◯◯新聞社</div><div class="ph2-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+          <div class="ph2-t" data-t="art">新工場の稼働を確認</div><div class="ph2-m">2026-07-28 09:52</div></div></div>
+      <div class="dup fx" data-el="d6" style="left:600px;top:300px">
+        <div class="ph2"><div class="ph2-bar" data-t="pub1">◯◯新聞社</div><div class="ph2-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+          <div class="ph2-t" data-t="art">新工場の稼働を確認</div><div class="ph2-m">2026-07-28 10:04</div></div></div>
+      <div class="dup fx" data-el="d7" style="left:700px;top:350px">
+        <div class="ph2"><div class="ph2-bar" data-t="pub1">◯◯新聞社</div><div class="ph2-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+          <div class="ph2-t" data-t="art">新工場の稼働を確認</div><div class="ph2-m">2026-07-28 10:19</div></div></div>
+
+      <div class="pair">
+        <div class="ph2 fx" data-el="p1a"><div class="ph2-bar" data-t="pub1">◯◯新聞社</div><div class="ph2-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+          <div class="ph2-t" data-t="art">新工場の稼働を確認</div><div class="ph2-m">2026-07-28 09:12</div></div>
+        <div class="ph2 fx" data-el="p1b"><div class="ph2-bar" data-t="pub1">◯◯新聞社</div><div class="ph2-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+          <div class="ph2-t" data-t="art">新工場の稼働を確認</div><div class="ph2-m">2026-07-28 09:14</div></div>
+      </div>
+    </div>
+    <div class="xbtn fx" aria-hidden="true" data-el="x1" style="left:912px;top:196px">✕</div>
+
+    <!-- ============ 02 ============ -->
+    <div class="txt fx" data-el="t2">
+      <div class="t-n">02</div>
+      <div class="t-h" data-t="h2">追うのをやめ、<br><em>本物を証明する。</em></div>
+      <div class="t-s fx" data-el="t2s" data-t="s2">公開のとき、API を1回呼ぶだけ。</div>
+    </div>
+
+    <div id="s2" class="fx" data-el="s2" aria-hidden="true">
+      <div class="ph2"><div class="ph2-bar" data-t="pub1o">◯◯新聞社 — 原本</div><div class="ph2-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+        <div class="ph2-t" data-t="art">新工場の稼働を確認</div><div class="ph2-m">2026-07-28 09:12</div></div>
+    </div>
+    <div id="s2badge" class="fx pop-in" data-el="s2b" aria-hidden="true">
+      <span class="badge"><span class="vmark"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="6.4" stroke="currentColor" stroke-width="1.6"/><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-t="bdg">証明つき</span></span>
+    </div>
+    <div id="pub" class="fx" data-el="pub" aria-hidden="true" data-t="pubbtn">公開する</div>
+
+    <svg id="wire" viewBox="0 0 1280 720" fill="none" aria-hidden="true">
+      <path class="fx" data-el="wire1" d="M770 336 C 884 336, 908 214, 978 184"
+        stroke="#C3CAB9" stroke-width="1.4" stroke-dasharray="5 5"/>
+    </svg>
+    <div id="hashdot" data-el="hash" aria-hidden="true">hash 0x68d4…9f01</div>
+
+    <div id="reg" class="fx pop-in" data-el="reg" aria-hidden="true">
+      <div class="reg">
+        <div class="k">LEMMA REGISTRY</div>
+        <div class="v" data-t="regv">登録しました</div>
+        <div class="h" data-t="regh">受け取ったのは、ハッシュだけ</div>
+        <div class="h2 fx" data-el="reg2" data-t="regh2">発行者 <b>◯◯新聞社</b><br>として記録されました</div>
+      </div>
+    </div>
+
+    <!-- ============ 03 ============ -->
+    <div class="txt fx" data-el="t3">
+      <div class="t-n">03</div>
+      <div class="t-h" data-t="h3">ワンタップで、<br><em>その場で確かめる。</em></div>
+      <div class="t-s fx" data-el="t3s" data-t="s3">アプリ不要・登録不要・無料。</div>
+    </div>
+
+    <div id="s3" class="mini fx" data-el="s3" aria-hidden="true">
+      <div class="mini-bar" data-t="brw">読者のブラウザ — 記事ページ</div>
+      <div class="mini-body">
+        <div class="av-img"><img src="lemma_film_photo.webp" alt="" loading="lazy" decoding="async" aria-hidden="true"></div>
+        <div class="av-t" data-t="art">新工場の稼働を確認</div>
+        <div class="av-ln"></div>
+        <div class="av-ln s"></div>
+        <div class="av-badge fx" data-el="r3a">
+          <span class="vmark"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="6.4" stroke="currentColor" stroke-width="1.6"/><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span data-t="bdg">証明つき</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="pop" class="fx pop-in" data-el="pop" aria-hidden="true">
+      <div class="t">
+        <span class="vmark"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="6.4" stroke="currentColor" stroke-width="1.6"/><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span data-t="popt">改ざんされていません</span>
+      </div>
+      <div class="en">NOT TAMPERED</div>
+      <div class="c2 fx" data-el="c2a"><span class="vmark"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="6.4" stroke="currentColor" stroke-width="1.6"/><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-t="c2al">内容</span><span data-t="c2av">発行時から、変わっていない</span></div>
+      <div class="c2 fx" data-el="c2b"><span class="vmark"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="6.4" stroke="currentColor" stroke-width="1.6"/><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-t="c2bl">発行者</span><span data-t="c2bv"><b>◯◯新聞社</b>として確認</span></div>
+      <div class="row"><span data-t="rowl">検証</span><b data-t="rowv">無料・キー不要</b></div>
+    </div>
+
+    <!-- ============ 04 ============ -->
+    <div class="txt fx" data-el="t4">
+      <div class="t-n">04</div>
+      <div class="t-h" data-t="h4">確認から配信まで、<br><em>止まらない。</em></div>
+      <div class="t-s fx" data-el="t4s" data-t="s4">人の目視を、挟まない。</div>
+    </div>
+
+    <div id="s4" class="mini fx" data-el="s4" aria-hidden="true">
+      <div class="mini-bar" data-t="sys">配信提携先のシステム — 記事の受け入れ</div>
+      <div class="mini-body">
+        <div class="mini-row fx" data-el="r4a"><span data-t="r4al">出所の確認</span><b data-t="r4av">自動</b></div>
+        <div class="mini-row fx" data-el="r4b"><span data-t="r4bl">照合</span><b data-t="r4bv">改ざんされていません</b></div>
+        <div class="mini-row skip fx" data-el="r4c"><span data-t="r4cl">人の目視確認</span><b data-t="r4cv">順番待ち</b></div>
+        <div class="passline fx" data-el="r4d">
+          <span class="vmark"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="6.4" stroke="currentColor" stroke-width="1.6"/><path d="M9 12.1l2.2 2.2 4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <b data-t="r4db">二次配信へ</b><i data-t="r4di">そのまま通過</i>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 裏側タグ ============ -->
+    <div class="tags" aria-hidden="true"><div class="tg no fx" data-el="g1"><b data-t="g1b">従来</b><span data-t="g1v">消して回るいたちごっこ</span></div></div>
+    <div class="tags" aria-hidden="true"><div class="tg ok fx" data-el="g2"><b>Lemma</b><span data-t="g2v">原本も写真も、サーバーに残らない</span></div></div>
+    <div class="tags" aria-hidden="true"><div class="tg ok fx" data-el="g3"><b>Lemma</b><span data-t="g3v">発行元のサーバーには問い合わせない</span></div></div>
+    <div class="tags" aria-hidden="true"><div class="tg ok fx" data-el="g4"><b>Lemma</b><span data-t="g4v">通す・止めるは受け手のルールが決める</span></div></div>
+
+    <!-- ============ カーソル ============ -->
+    <div class="clk" id="clk2" data-el="clk2" aria-hidden="true"></div>
+    <div class="clk" id="clk3" data-el="clk3" aria-hidden="true"></div>
+    <svg class="cur fx" aria-hidden="true" id="cur2" data-el="cur2" viewBox="0 0 20 20"><path d="M3 2l12 7.2-5.1 1.1L12 16l-2.3.9-2-5.1-3.9 3.3z" fill="#fff" stroke="#15171b" stroke-width="1.2" stroke-linejoin="round"/></svg>
+    <svg class="cur fx" aria-hidden="true" id="cur3" data-el="cur3" viewBox="0 0 20 20"><path d="M3 2l12 7.2-5.1 1.1L12 16l-2.3.9-2-5.1-3.9 3.3z" fill="#fff" stroke="#15171b" stroke-width="1.2" stroke-linejoin="round"/></svg>
+
+    <div id="prog" aria-hidden="true"><i id="progi"></i></div>
+  </div>
+</div>
+
+<div class="bar controls" id="bar">
+  <button id="pp" type="button">❚❚ PAUSE</button>
+  <input id="scrub" type="range" min="0" max="23" step="0.05" value="0" aria-label="タイムライン">
+  <span class="tc" id="tc">0:00 / 0:23</span>
+  <button id="bare" type="button">UIを隠す</button>
+</div>
+</div>
+
+<script>
+(function(){
+  var DUR=23;
+  /* 本番: embed 判定は location.search から（モックは true 固定だった） */
+  var Q=location.search;
+  var EMBED=/[?&]embed=1/.test(Q);
+  var LANG=/[?&]lang=en/.test(Q)?'en':'ja';
+  document.documentElement.classList.toggle('is-embed', EMBED);
+  document.documentElement.lang=LANG;
+
+  /* EN 文言（?lang=en のとき data-t 要素を差し替える） */
+  var EN={
+    h1:'Chasing fakes,<br><em>with no end.</em>',
+    s1:'Take one down, another appears.<br>They multiply, indistinguishable.',
+    h2:'Stop chasing.<br><em>Prove the real one.</em>',
+    s2:'One API call at publish time.',
+    h3:'One tap<br><em>to check on the spot.</em>',
+    s3:'No app. No account. Free.',
+    h4:'From check to syndication,<br><em>nothing stops.</em>',
+    s4:'No human review in the path.',
+    pub1:'Daily News Co.', pub1o:'Daily News Co. — original',
+    art:'New plant confirmed operational',
+    pubbtn:'Publish',
+    bdg:'Proof attached',
+    regv:'Registered',
+    regh:'Only the hash was received',
+    regh2:'Recorded with <b>Daily News Co.</b><br>as the issuer',
+    brw:"Reader's browser — article page",
+    popt:'Not tampered',
+    c2al:'Content', c2av:'Unchanged since issuance',
+    c2bl:'Issuer', c2bv:'Confirmed as <b>Daily News Co.</b>',
+    rowl:'Verification', rowv:'Free · no key needed',
+    sys:'Syndication partner system — article intake',
+    r4al:'Origin check', r4av:'Automatic',
+    r4bl:'Match', r4bv:'Not tampered',
+    r4cl:'Human review', r4cv:'In queue',
+    r4db:'To syndication', r4di:'Passed through',
+    g1b:'Before', g1v:'An endless game of takedowns',
+    g2v:'Neither original nor photo stays on the server',
+    g3v:"No callback to the issuer's server",
+    g4v:'Pass or stop — the receiver’s rules decide'
+  };
+  if(LANG==='en'){
+    document.title='Lemma concept film (0:23)';
+    [].forEach.call(document.querySelectorAll('[data-t]'),function(n){
+      var k=n.getAttribute('data-t');
+      if(EN[k]) n.innerHTML=EN[k];
+    });
+  }
+
+  var film=document.getElementById('film'), stage=document.getElementById('stage');
+  function fit(){ stage.style.transform='scale('+(film.clientWidth/1280)+')'; }
+  fit(); new ResizeObserver(fit).observe(film);
+
+  var cues=[
+    /* 01 — 増えていく */
+    [0.3,6.0,'t1'],[1.1,6.0,'t1s'],
+    [0.6,6.0,'p1a'],[1.0,6.0,'p1b'],
+    [1.7,6.0,'d1'],[2.0,3.6,'d2'],[2.3,6.0,'d3'],
+    [2.9,3.9,'x1'],
+    [3.8,6.0,'d4'],[4.1,6.0,'d5'],[4.4,6.0,'d6'],[4.7,6.0,'d7'],
+    [4.4,6.0,'g1'],
+    /* 02 — 原本は残り、ハッシュだけ飛ぶ */
+    [6.3,12.6,'t2'],[7.1,12.6,'t2s'],
+    [6.5,12.6,'s2'],[7.2,12.6,'pub'],
+    [7.5,8.9,'cur2'],[8.3,8.8,'clk2'],
+    [8.7,12.6,'wire1'],[8.9,12.6,'hash'],
+    [10.3,12.6,'reg'],[10.9,12.6,'reg2'],[11.3,12.6,'s2b'],[11.8,12.6,'g2'],
+    /* 03 — 読者が確かめる */
+    [12.9,18.3,'t3'],[13.7,18.3,'t3s'],
+    [13.1,18.3,'s3'],[13.9,18.3,'r3a'],
+    [14.3,15.7,'cur3'],[15.0,15.6,'clk3'],
+    [15.7,18.3,'pop'],[16.2,18.3,'c2a'],[16.5,18.3,'c2b'],[17.1,18.3,'g3'],
+    /* 04 — 止まらない */
+    [18.6,23.0,'t4'],[19.4,23.0,'t4s'],
+    [18.8,23.0,'s4'],[19.2,23.0,'r4a'],[19.5,23.0,'r4b'],[20.1,23.0,'r4c'],
+    [20.9,23.0,'r4d'],[21.7,23.0,'g4']
+  ];
+  var els={};
+  [].forEach.call(stage.querySelectorAll('[data-el]'),function(n){ els[n.dataset.el]=n; });
+  var progi=document.getElementById('progi'),
+      scrub=document.getElementById('scrub'), tc=document.getElementById('tc');
+
+  /* 01 の完成状態（複製が出そろい、削除ボタンは消えた後） */
+  var STILL_01=5.6;
+
+  function sceneOf(t){ return t<6.15?1 : t<12.75?2 : t<18.45?3 : 4; }
+  var lastScene=0;
+  function notifyScene(t){
+    var s=sceneOf(t);
+    if(s!==lastScene){
+      lastScene=s;
+      try{ parent.postMessage({type:'lemma:film:scene',scene:s},'*'); }catch(e){}
+    }
+  }
+
+  function render(t){
+    for(var i=0;i<cues.length;i++){
+      var c=cues[i], n=els[c[2]];
+      if(n) n.classList.toggle('on', t>=c[0] && t<c[1]);
+    }
+    if(progi) progi.style.width=(t/DUR*1280)+'px';
+    if(scrub) scrub.value=t;
+    if(tc) tc.textContent='0:'+String(Math.floor(t)).padStart(2,'0')+' / 0:23';
+    notifyScene(t);
+  }
+
+  var t=0, last=performance.now(), playing=!EMBED, pristine=true;
+
+  function paint(v){
+    stage.classList.add('noanim'); t=v; render(t);
+    requestAnimationFrame(function(){ stage.classList.remove('noanim'); });
+  }
+  function play(){ if(pristine){ pristine=false; paint(0); } playing=true; syncBtn(); }
+  function pause(){ playing=false; syncBtn(); }
+  function reset(){ pristine=true; playing=false; lastScene=0; paint(STILL_01); syncBtn(); }
+  function syncBtn(){
+    var b=document.getElementById('pp'); if(b) b.textContent=playing?'❚❚ PAUSE':'▶ PLAY';
+  }
+
+  function loop(now){
+    if(playing){
+      t+=(now-last)/1000;
+      if(t>=DUR){
+        /* 埋め込み時は1周で止め、04の完成状態を静止画として残す */
+        if(EMBED){ t=DUR-0.01; playing=false; syncBtn(); }
+        else { t=0; lastScene=0; }
+      }
+      render(t);
+    }
+    last=now; requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(function(n){ last=n; requestAnimationFrame(loop); });
+
+  /* 埋め込み時は自動再生せず、01の完成状態で待つ */
+  if(EMBED){ render(STILL_01); t=STILL_01; }
+
+  window.addEventListener('message',function(e){
+    var d=e.data, ty=d&&d.type;
+    if(ty==='lemma:film:play')  play();
+    if(ty==='lemma:film:pause') pause();
+    if(ty==='lemma:film:reset') reset();
+  });
+
+  var pp=document.getElementById('pp');
+  if(pp) pp.addEventListener('click',function(){ playing?pause():play(); });
+  if(scrub) scrub.addEventListener('input',function(){
+    pristine=false; playing=false; syncBtn(); paint(parseFloat(this.value));
+  });
+  var bare=document.getElementById('bare');
+  if(bare) bare.addEventListener('click',function(){
+    stage.classList.toggle('bare');
+    document.getElementById('bar').classList.toggle('hidden');
+  });
+
+  if(!EMBED && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    playing=false; pristine=false; paint(STILL_01); syncBtn();
+  }
+})();
+</script>
+</body>
+</html>

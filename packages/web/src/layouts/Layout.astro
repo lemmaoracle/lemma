@@ -287,7 +287,13 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     --font-body: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
   }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    /* Android Chrome の font boosting（本文だけ自動拡大→横幅崩れ）を止める。
+       非継承プロパティのため、スコープ要素ではなく html に置く必要がある。 */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
   body {
     font-family: var(--font-body);
     background: var(--lemma-cream);
