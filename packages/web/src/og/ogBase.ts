@@ -29,6 +29,14 @@ export const BROWN = "#8B4513";
 export const BROWN_LIGHT = "#F5EBDC";
 export const BLACK = "#000";
 
+/* ── v47 のスレート＋ライム ──────────────────────────────────────
+ * トップ v47 のヒーロー（`styles/top-v47.css` の `.herodark`）から取った実値。
+ * マーケ面の OG はこの語彙に揃える——Brief・ブログ記事の OG が既にスレート地な
+ * ので、クリーム＋茶のままだとタイムライン上で同じ発信元に見えない。 */
+export const SLATE_TITLE = "#F4F7EF";
+export const SLATE_MUTED = "#B9C4AD";
+export const LIME = "#A8E010";
+
 /* ── Fonts (build-time only) ────────────────────────────────────── */
 const cwd = process.cwd();
 const jaRegular = readFileSync(resolve(cwd, "src/assets/fonts/NotoSansJP-Regular.otf"));
@@ -37,6 +45,14 @@ const jaBold = readFileSync(resolve(cwd, "src/assets/fonts/NotoSansJP-Bold.otf")
 const soraBold = readFileSync(
   resolve(cwd, "node_modules/@fontsource/sora/files/sora-latin-700-normal.woff"),
 );
+/* 見出しの書体（2026-08-05）。サイトの `--font-display`（Layout.astro）と同じ
+   ——欧文 Space Grotesk 600 ／ 和文 Noto Serif JP 600。以前は Sora Bold 700 ＋
+   Noto Sans JP Bold 700 だったが、Sora は v24 の書体でサイトからは退役済みで、
+   OG だけが太いサンセリフになっていた。詳細は src/assets/fonts/README.md。 */
+const grotesk600 = readFileSync(
+  resolve(cwd, "node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-600-normal.woff"),
+);
+const jaSerif600 = readFileSync(resolve(cwd, "src/assets/fonts/NotoSerifJP-SemiBold.woff"));
 const spaceMonoRegular = readFileSync(
   resolve(cwd, "node_modules/@fontsource/space-mono/files/space-mono-latin-400-normal.woff"),
 );
@@ -55,13 +71,20 @@ export const OG_FONT_DATA = {
   jaMedium,
   jaBold,
   soraBold,
+  grotesk600,
+  jaSerif600,
   spaceMonoRegular,
   interLight,
 } as const;
 
 export const SATORI_FONTS = [
-  { name: "Display", data: soraBold, weight: 700 as const, style: "normal" as const },
-  { name: "Display", data: jaBold, weight: 700 as const, style: "normal" as const },
+  /* 見出し。**別の family 名で登録して、使う側は "Display, DisplayJa" と
+     並べる**。同じ family 名＋同じウェイトで2本入れても satori は片方しか
+     使わないため、以前の `Display=Sora700 + Display=NotoSansJP700` という
+     登録では和文が Display に当たらず、Mono/Body 側の Noto Sans JP に落ちて
+     いた（＝和文見出しがゴシックのままだった真因）。 */
+  { name: "Display", data: grotesk600, weight: 600 as const, style: "normal" as const },
+  { name: "DisplayJa", data: jaSerif600, weight: 600 as const, style: "normal" as const },
   { name: "Mono", data: spaceMonoRegular, weight: 400 as const, style: "normal" as const },
   { name: "Mono", data: jaRegular, weight: 400 as const, style: "normal" as const },
   { name: "Mono", data: jaMedium, weight: 500 as const, style: "normal" as const },
@@ -294,41 +317,42 @@ export async function fetchCoverAsDataUri(url: string | undefined): Promise<stri
  * column).
  */
 function renderTitle(text: string, color: string, accent: string) {
-  // Parse "before<accent>X</accent>after" → array of {text, accent: bool}
   const lineParser = /<accent>([\s\S]*?)<\/accent>/g;
   const lines = text.split(/\n/);
   return lines.map((line) => {
-    const children: Array<unknown> = [];
+    // まず {text, accent} の連なりに分解する。描画は下でまとめて行う。
+    const segments: Array<{ text: string; accent: boolean }> = [];
     let cursor = 0;
     let m: RegExpExecArray | null;
     lineParser.lastIndex = 0;
     while ((m = lineParser.exec(line))) {
-      if (m.index > cursor) {
-        children.push({
-          type: "span",
-          props: { style: { color }, children: line.slice(cursor, m.index) },
-        });
-      }
-      children.push({
-        type: "span",
-        props: { style: { color: accent }, children: m[1] },
-      });
+      if (m.index > cursor) segments.push({ text: line.slice(cursor, m.index), accent: false });
+      segments.push({ text: m[1], accent: true });
       cursor = m.index + m[0].length;
     }
-    if (cursor < line.length) {
-      children.push({
-        type: "span",
-        props: { style: { color }, children: line.slice(cursor) },
-      });
-    }
-    if (!children.length) {
-      children.push({ type: "span", props: { style: { color }, children: line } });
-    }
+    if (cursor < line.length) segments.push({ text: line.slice(cursor), accent: false });
+    if (segments.length === 0) segments.push({ text: line, accent: false });
+
+    /* 断片の境界にある半角空白を NBSP に替える。
+       断片は flex の行アイテムなので、端の空白は satori に畳まれて消える
+       ——`Prove <accent>what's real</accent>` が "Provewhat's real" になる。
+       和文の見出しは境界に空白を持たないので、この置換では何も変わらない。 */
+    const nbsp = " ";
+    const spaced = segments.map((seg, i) => {
+      let t = seg.text;
+      if (i > 0 && t.startsWith(" ")) t = nbsp + t.slice(1);
+      if (i < segments.length - 1 && t.endsWith(" ")) t = `${t.slice(0, -1)}${nbsp}`;
+      return { ...seg, text: t };
+    });
+
     return {
       type: "div",
       props: {
         style: { display: "flex", flexDirection: "row", flexWrap: "wrap" },
-        children,
+        children: spaced.map((seg) => ({
+          type: "span",
+          props: { style: { color: seg.accent ? accent : color }, children: seg.text },
+        })),
       },
     };
   });
@@ -337,6 +361,12 @@ function renderTitle(text: string, color: string, accent: string) {
 export type OgBackground =
   | { kind: "solid"; color: string }
   | { kind: "gradient"; from: string; to: string; isDark?: boolean }
+  /**
+   * 地を satori に描かせず透過で抜き、生の SVG を後ろへ差し込む方式
+   * （`renderOgPng` の第2引数）。CSS の多重背景・角度つきグラデーション・
+   * ドット格子は satori が満足に描けないため、Brief の OG と同じ分担にする。
+   */
+  | { kind: "transparent"; isDark?: boolean }
   | {
       kind: "cover";
       coverDataUri: string | null;
@@ -369,6 +399,16 @@ export interface OgArtboardInput {
    * it unset and renders exactly as before.
    */
   readonly balanceTitle?: boolean;
+  /**
+   * 見出しの直下に置く要素（組み立て済みの Satori ノード）。トップ v47 の CTA
+   * と同じ「メッセージ＋ライン」を作るために使う。
+   */
+  readonly afterTitle?: unknown;
+  /**
+   * 左下のアクセントの帯を出さない。見出し直下に線を引く面では、ライムの線が
+   * 2本になって競合するため（v47 の CTA は線1本）。
+   */
+  readonly hideFooterRule?: boolean;
 }
 
 interface ResolvedBackground {
@@ -383,6 +423,9 @@ interface ResolvedBackground {
 function resolveBackground(bg: OgBackground): ResolvedBackground {
   if (bg.kind === "solid") {
     return { isDark: false, underlayColor: bg.color, hasCover: false };
+  }
+  if (bg.kind === "transparent") {
+    return { isDark: bg.isDark ?? false, underlayColor: "transparent", hasCover: false };
   }
   if (bg.kind === "gradient") {
     return { isDark: bg.isDark ?? false, underlayColor: bg.from, hasCover: false, gradient: { from: bg.from, to: bg.to } };
@@ -500,8 +543,10 @@ export function buildOgArtboard(input: OgArtboardInput) {
     type: "div",
     props: {
       style: {
-        fontFamily: "Display",
-        fontWeight: 700,
+        // 欧文 → 和文の順に引き当てる。サイトの --font-display と同じ
+        // 「Space Grotesk 600 → Noto Serif JP 600」の並び。
+        fontFamily: "Display, DisplayJa",
+        fontWeight: 600,
         fontSize: t.size,
         lineHeight: t.lineHeight,
         letterSpacing: "-0.03em",
@@ -513,6 +558,19 @@ export function buildOgArtboard(input: OgArtboardInput) {
     },
   };
 
+  // 見出しと、その直下の要素（v47 CTA のライン）をひとまとめにする。
+  // 3段（ヘッダー／見出し／フッター）の space-between を崩さないため。
+  const titleGroup =
+    input.afterTitle === undefined
+      ? titleBlock
+      : {
+          type: "div",
+          props: {
+            style: { display: "flex", flexDirection: "column" },
+            children: [titleBlock, input.afterTitle],
+          },
+        };
+
   const footerRow = {
     type: "div",
     props: {
@@ -523,12 +581,14 @@ export function buildOgArtboard(input: OgArtboardInput) {
         width: "100%",
       },
       children: [
-        {
-          type: "div",
-          props: {
-            style: { width: 96, height: 5, background: accent, borderRadius: 2.5 },
-          },
-        },
+        input.hideFooterRule === true
+          ? { type: "div", props: { style: { width: 0 } } }
+          : {
+              type: "div",
+              props: {
+                style: { width: 96, height: 5, background: accent, borderRadius: 2.5 },
+              },
+            },
         input.bottomTagline ?? { type: "div", props: { style: { width: 0 } } },
       ],
     },
@@ -546,7 +606,7 @@ export function buildOgArtboard(input: OgArtboardInput) {
         flexDirection: "column",
         justifyContent: "space-between",
       },
-      children: [headerRow, titleBlock, footerRow],
+      children: [headerRow, titleGroup, footerRow],
     },
   });
 
@@ -602,9 +662,58 @@ export function makeBottomTagline(text: string, color: string) {
   };
 }
 
-/** Satori → SVG → PNG. */
-export async function renderOgPng(node: unknown): Promise<Buffer> {
-  const svg = await satori(node, { width: OG_WIDTH, height: OG_HEIGHT, fonts: SATORI_FONTS });
+/**
+ * マーケ面の地（生 SVG）。トップ v47 のヒーローを 1200×630 に移植したもので、
+ * 3段のスレート・34px のドット格子・右上からのライムの環境光の3層。
+ *
+ * CSS の実値との対応（`styles/top-v47.css` の `.herodark`）:
+ *   `linear-gradient(168deg,#3c443d,#2f372f 58%,#272e28)`
+ *     → 168° は「上から時計回り」なので方向ベクトルは (sin168°, -cos168°)
+ *       ≒ (0.21, 0.98)。ほぼ真下・わずかに右。
+ *   `radial-gradient(rgba(255,255,255,.07) 1.2px,transparent 1.2px)` / 34px
+ *     → 34px タイルに r=1.2px の点。色停止が 1.2px なので半径がそのまま 1.2。
+ *   `radial-gradient(120% 78% at 84% -12%,rgba(168,224,16,.16),transparent 62%)`
+ *     → 楕円なので、円の放射グラデーションを <ellipse> の外接ボックスへ写す。
+ *       rx = 120% × 1200、ry = 78% × 630。
+ */
+export function marketingBackdropSvg(): string {
+  return [
+    "<defs>",
+    '<linearGradient id="og-slate" x1="0" y1="0" x2="0.21" y2="0.98">',
+    '<stop offset="0" stop-color="#3c443d"/>',
+    '<stop offset="0.58" stop-color="#2f372f"/>',
+    '<stop offset="1" stop-color="#272e28"/>',
+    "</linearGradient>",
+    '<pattern id="og-dots" width="34" height="34" patternUnits="userSpaceOnUse">',
+    '<circle cx="17" cy="17" r="1.2" fill="#ffffff" fill-opacity="0.07"/>',
+    "</pattern>",
+    '<radialGradient id="og-glow">',
+    `<stop offset="0" stop-color="${LIME}" stop-opacity="0.16"/>`,
+    `<stop offset="0.62" stop-color="${LIME}" stop-opacity="0"/>`,
+    "</radialGradient>",
+    "</defs>",
+    `<rect width="${String(OG_WIDTH)}" height="${String(OG_HEIGHT)}" fill="url(#og-slate)"/>`,
+    `<rect width="${String(OG_WIDTH)}" height="${String(OG_HEIGHT)}" fill="url(#og-dots)"/>`,
+    '<ellipse cx="1008" cy="-76" rx="1440" ry="491" fill="url(#og-glow)"/>',
+  ].join("");
+}
+
+/** マーケ面はこれを `background` に渡し、地は `renderOgPng` の第2引数で入れる。 */
+export const MARKETING_BG: OgBackground = { kind: "transparent", isDark: true };
+
+/**
+ * Satori → SVG → PNG。
+ *
+ * `backdropSvg` を渡すと、satori が出した SVG の開きタグ直後に差し込む
+ * （＝文字の下に来る）。Resvg はフォントを持たないので、地の側に生の
+ * `<text>` を置くとラスタライズで消える——文字は必ず satori に描かせる。
+ */
+export async function renderOgPng(node: unknown, backdropSvg?: string): Promise<Buffer> {
+  const textSvg = await satori(node, { width: OG_WIDTH, height: OG_HEIGHT, fonts: SATORI_FONTS });
+  const svg =
+    backdropSvg === undefined
+      ? textSvg
+      : textSvg.replace(/<svg[^>]*>/, (open) => open + backdropSvg);
   return new Resvg(svg, { fitTo: { mode: "width", value: OG_WIDTH } }).render().asPng();
 }
 
