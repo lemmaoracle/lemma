@@ -379,14 +379,14 @@ body:has(main.topx) .lemma-brand-bar{display:none}
   background:linear-gradient(200deg,rgba(16,22,17,.06) 0%,rgba(16,22,17,.3) 62%,rgba(16,22,17,.52) 100%)}
 .topx .latimg .lat-photo::before{content:"";position:absolute;left:0;right:0;top:62%;height:2px;
   background:var(--ok);opacity:.85;z-index:2}
-/* Brief 枠は写真を持たないので、番号を出す暗い面にする（業界ページと同じ作り） */
-.topx .latimg.lat-brief{background:linear-gradient(158deg,#3c443d 0%,#333b34 55%,#2e362f 100%)}
-.topx .latimg.lat-brief .bn{position:relative;z-index:2;display:grid;place-items:center;height:100%;
-  padding:20px;text-align:center}
-.topx .latimg.lat-brief .bn em{display:block;font-style:normal;font-family:var(--mono);font-size:9px;
-  letter-spacing:.2em;color:var(--ok);margin-bottom:8px}
-.topx .latimg.lat-brief .bn b{font-family:var(--num);font-weight:200;font-size:30px;color:#ebefe6;
-  letter-spacing:-.01em;margin:0}
+/* 枠2 の Brief は写真を持たないので、生成カバー（lib/briefCover の C-3
+   プリセット）を敷く。業界ページ枠2 と同じ絵で、面をまたいで揃える。 */
+
+/* 節の足の「すべて見る」導線。カードから先に進める出口を残す。 */
+.topx .latfoot{display:flex;flex-wrap:wrap;gap:8px 26px;margin:22px 0 0;font-size:12.5px}
+.topx .latfoot a{color:var(--ok-light);text-decoration:none;
+  border-bottom:1px solid rgba(78,122,0,.3);padding-bottom:2px}
+.topx .latfoot a:hover{border-bottom-color:var(--ok-light)}
 
 /* ムービー: 狭幅ではカードの額縁をやめて全幅ブリードにし、少しでも大きく見せる */
 @media(max-width:560px){

@@ -26,8 +26,11 @@ import bodyEn from "../config/top-v47.en.html?raw";
 import { getCollection } from "astro:content";
 import { getAllPosts, postInCategory, type BlogPost } from "../data/blog";
 import { getEnBriefMap } from "../data/getEnBriefMap";
-import { resolveCoverPhoto } from "../lib/coverPhoto";
+import { resolveCoverImage } from "../lib/coverPhoto";
 import { coverArtwork, COVER_WIDTH, COVER_HEIGHT } from "../lib/blogCover";
+import { briefCardSvg } from "../lib/briefCover";
+import { categoryLabel } from "../data/criticalBriefs";
+import type { CategorySlug } from "../data/criticalBriefs";
 import "../styles/top-v47.css";
 
 export interface TopV47TemplateProps {
@@ -105,7 +108,9 @@ const LAT = isJa
   ? {
       announce: "お知らせ",
       blog: "ブログ",
-      brief: "Critical Brief",
+      // カバーが「CRITICAL BRIEF」を大きく出すので、チップは語を重ねない
+      // （業界ページ枠2 と同じ扱い）。
+      brief: "事案分析",
       readPost: "記事を読む →",
       readBrief: "Brief を読む →",
       briefLead: "いま争点になっていることを、事実から追う。",
@@ -113,7 +118,7 @@ const LAT = isJa
   : {
       announce: "Announcement",
       blog: "Blog",
-      brief: "Critical Brief",
+      brief: "Case analysis",
       readPost: "Read the article →",
       readBrief: "Read the brief →",
       briefLead: "Following what is contested now, from the facts.",
@@ -123,7 +128,7 @@ const LAT = isJa
    カテゴリ由来の抽象パターン（lib/blogCover）。モックのドットグリッドは
    「質感は図解の枠だけ」（指示 第6部-3）に従い通常カードには載せない。 */
 const postCoverHtml = (p: BlogPost): string => {
-  const photo = resolveCoverPhoto(p.coverPhoto);
+  const photo = resolveCoverImage(p);
   return photo
     ? `<span class="lat-photo"><img src="${esc(photo)}" alt="" loading="lazy"/></span>`
     : `<svg viewBox="0 0 ${COVER_WIDTH} ${COVER_HEIGHT}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${coverArtwork(p.category, p.slug)}</svg>`;
@@ -142,7 +147,15 @@ const briefCardHtml = (b: NonNullable<typeof latestBrief>): string => {
   const lead = isJa
     ? (b.data.og_lead_ja ?? b.data.title)
     : (b.data.og_lead_en ?? b.data.title_en);
-  return `<a href="${base}/critical/briefs/${b.id}/"><div class="card"><figure class="latimg lat-brief"><div class="bn"><em>CRITICAL BRIEF</em><b>No. ${String(b.data.brief_no).padStart(3, "0")}</b></div></figure><div class="cbody">
+  // カバーは業界ページ枠2 と同じ生成カバー（lib/briefCover の C-3 プリセット・
+  // 主役は番号）。版面は 1200x630 で、この枠は 16:9 なので切られ方も近い。
+  const cover = briefCardSvg({
+    no: String(b.data.brief_no).padStart(3, "0"),
+    threat: categoryLabel(b.data.primary_category as CategorySlug, locale),
+    locale: isJa ? "ja" : "en",
+    key: `top-${b.id}`,
+  });
+  return `<a href="${base}/critical/briefs/${b.id}/"><div class="card"><figure class="latimg">${cover}</figure><div class="cbody">
         <div class="lb">${LAT.brief}</div>
         <b>${esc(clip(lead, isJa ? 62 : 104))}</b>
         <span>${LAT.briefLead}${latSep}${LAT.readBrief}</span>
