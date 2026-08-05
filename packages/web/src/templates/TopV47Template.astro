@@ -138,8 +138,12 @@ const LAT = isJa
    「質感は図解の枠だけ」（指示 第6部-3）に従い通常カードには載せない。 */
 const postCoverHtml = (p: BlogPost): string => {
   const photo = resolveCoverImage(p);
+  /* 導入事例のカバーは隣の Brief カバー（生成 SVG・`xMinYMid` で左端固定）と
+     版面を揃えてあるので、こちらも左端を固定する（`lat-left`）。中央基準で
+     切られると 2枚のラベルの横位置がずれる。 */
+  const left = p.tags?.includes("case-study") ?? false;
   return photo
-    ? `<span class="lat-photo"><img src="${esc(photo)}" alt="" loading="lazy"/></span>`
+    ? `<span class="lat-photo${left ? " lat-left" : ""}"><img src="${esc(photo)}" alt="" loading="lazy"/></span>`
     : `<svg viewBox="0 0 ${COVER_WIDTH} ${COVER_HEIGHT}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${coverArtwork(p.category, p.slug)}</svg>`;
 };
 
