@@ -142,6 +142,16 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 .topx .scn p{font-size:14.5px;color:var(--tx-soft);line-height:1.85;margin:0}
 .topx .scn .back{margin-top:9px;padding-top:8px;border-top:1px solid var(--dline);font-size:13px;color:var(--tx-soft);line-height:1.8}
 /* 再生中のシーンに連動（JS が付ける。連動しなくても全行が読める） */
+/* 押せるシーン要約（スクリプトが .tappable を付ける。JS が無ければ見た目も
+   変えない＝押せないものを押せるように見せない）。 */
+.topx .scn.tappable{cursor:pointer}
+/* いま流れているカード（.on）には効かせない。`.tappable:hover` の方が詳細度が
+   高いので、除外しないと再生中カードにホバーしたとき強調が薄まる。 */
+.topx .scn.tappable:not(.on):hover{background:rgba(168,224,16,.07)}
+.topx .scn.tappable:not(.on):hover .n{color:var(--ok-light)}
+.topx .scn.tappable:not(.on):hover .bar{background:var(--ok);width:34px}
+.topx .scn.tappable:focus-visible{outline:2px solid var(--ok-light);outline-offset:-2px}
+
 .topx .scn.on{background:rgba(168,224,16,.13)}
 .topx .scn.on .bar{background:var(--ok);width:34px}
 .topx .scn.on .n{color:var(--ok-light)}
