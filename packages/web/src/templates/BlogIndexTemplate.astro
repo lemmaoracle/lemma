@@ -62,23 +62,39 @@ const categories = BLOG_CATEGORIES.filter(
 
 const readCta = isJa ? "読む →" : "Read →";
 
-/** カテゴリカードの説明1行（§3.1-7）。 */
+/**
+ * カテゴリの説明1行（フィルタのカードに出る）。
+ *
+ * **4カテゴリは「読者が誰か」ではなく「記事が何を渡すか」で分ける。**
+ * 読者の軸は frontmatter の `audience`（business / technical）が別に持って
+ * いるので、ここで重ねない——両方を読者軸にすると境界が崩れる（実際、
+ * 旧「業務への組み込み方と検証結果」は適用の話と実装の話の両方を吸い、
+ * Solutions に技術記事が混ざる原因になっていた）。
+ *
+ *   Industry     論点・エッセイ    …… 事業に取り入れる価値（新しいジャンルの提示を含む）
+ *   Solutions    業務への適用シーン …… どの業務の、どの場面で効くか
+ *   Technical    設計・実装の詳細   …… 開発者・アーキテクト向け
+ *   Announcements 公開のお知らせ
+ *
+ * 文言は**名詞形・1行に収まる長さ**で揃える（カードの幅で折り返すと
+ * 視線が止まる）。JA は10〜11字、EN は約30字が上限。
+ */
 const CATEGORY_DESC: Record<string, Record<Locale, string>> = {
   Announcements: {
-    ja: "新機能・フィード・公開のお知らせ",
-    en: "New features, feeds, and release notes",
+    ja: "新機能・公開のお知らせ",
+    en: "Features and releases",
   },
   Industry: {
-    ja: "AIと信頼をめぐる業界の論点",
-    en: "Industry debates on AI and trust",
+    ja: "事業に取り入れる価値",
+    en: "The value of adoption",
   },
   Solutions: {
-    ja: "業務への組み込み方と検証結果",
-    en: "Integration patterns and verification results",
+    ja: "業務での適用シーン",
+    en: "Where it applies",
   },
   Technical: {
     ja: "設計・仕様・実装の詳細",
-    en: "Design, specs, and implementation detail",
+    en: "Design and specs",
   },
 };
 
@@ -683,6 +699,23 @@ const C = isJa
     var pageAll = 1;
     var pageFiltered = 1;
 
+    /* ページ番号を URL に持たせる（?page=N）。持たせないとページ送りしても
+       URL が変わらず、リロードやリンク共有で1ページ目に戻ってしまう。
+       カテゴリの絞り込みは従来どおり hash（#industry）が持つので、両者は
+       衝突しない。1ページ目のときは ?page= を消して URL を素のままにする。 */
+    function readPageFromUrl() {
+      var m = /[?&]page=(\d+)/.exec(location.search);
+      return m ? Math.max(1, parseInt(m[1], 10) || 1) : 1;
+    }
+    function writePageToUrl(n) {
+      if (!history.replaceState) return;
+      var params = new URLSearchParams(location.search);
+      if (n <= 1) params.delete("page");
+      else params.set("page", String(n));
+      var q = params.toString();
+      history.replaceState(null, "", location.pathname + (q ? "?" + q : "") + location.hash);
+    }
+
     function renderPager(pager, current, totalPages) {
       if (!pager) return;
       if (totalPages <= 1) {
@@ -760,6 +793,9 @@ const C = isJa
       });
       if (viewAll) viewAll.hidden = !isAll;
       if (filtered) filtered.hidden = isAll;
+      // 絞り込みを変えると母集合が変わるので1ページ目へ戻す（URL も揃える）
+      writePageToUrl(1);
+      pageAll = 1;
       if (!isAll) {
         activeFilter = filter;
         pageFiltered = 1;
@@ -801,6 +837,7 @@ const C = isJa
         else next = Number(v) || 1;
         setPage(next);
         rerender();
+        writePageToUrl(next);
         scrollToHead(section);
       });
     }
@@ -865,6 +902,18 @@ const C = isJa
         }
       });
     }
+    // URL の ?page=N を復元してから描画する（リロード・リンク共有で戻らない）
+    var startPage = readPageFromUrl();
+    if (filtered && !filtered.hidden) {
+      pageFiltered = startPage;
+      var st0 = paginate(rows, matchesFilter, pageFiltered, pagerFiltered);
+      pageFiltered = st0.current;
+      if (count) count.textContent = String(st0.count);
+    } else {
+      pageAll = startPage;
+    }
     applyAllPage();
+    // 総ページ数を超える値が来ていたら、丸めた結果を URL に書き戻す
+    writePageToUrl(filtered && !filtered.hidden ? pageFiltered : pageAll);
   })();
 </script>
