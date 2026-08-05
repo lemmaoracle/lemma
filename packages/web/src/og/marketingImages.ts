@@ -7,17 +7,121 @@
  * Copy is locale-aware. The `信頼インフラ` anchor on Industries /
  * Pricing / Pillars is intentional per the v2 dev spec — these
  * surfaces land on social cards as standalone Lemma identity.
+ *
+ * **地は v47 のスレート＋ライム**（2026-08-05）。以前はクリーム＋サドルブラウン
+ * だったが、サイト側が v47（トップ）・seal-v4・pricing v12・industry v1 と
+ * スレート系に移り、Brief とブログ記事の OG も #767 でスレートになったため、
+ * マーケ面だけが旧配色に取り残されていた。タイムライン上で同じ発信元に見えること
+ * を優先して一式を揃える。Trust402 は独自のダーク（#B6F500）を維持する。
  */
 import type { Locale } from "../i18n/translations";
 import {
-  BROWN,
-  CREAM_DEEP,
-  PRODUCT_GRADIENT,
+  LIME,
+  MARKETING_BG,
+  SLATE_MUTED,
+  SLATE_TITLE,
   buildOgArtboard,
   makeBottomTagline,
   makeTopRightLabel,
+  marketingBackdropSvg,
   renderOgPng,
 } from "./ogBase";
+
+/**
+ * 見出しの直下に引くライムの線。トップ v47 の CTA（`.ctaline`）の実値をそのまま
+ * 使う——3px・左から右へ濃くなるグラデーション・外周のにじみ。
+ *
+ * サイト側はスクロールで引かれるアニメーションだが、静止画の正解は
+ * `prefers-reduced-motion` の最終状態（線は引き切り・先端の点は消える）なので、
+ * 点は描かない。
+ */
+const CTA_RULE = {
+  type: "div",
+  props: {
+    style: {
+      marginTop: 28,
+      width: 560,
+      height: 3,
+      borderRadius: 2,
+      background: `linear-gradient(90deg, rgba(168,224,16,0.25), ${LIME})`,
+      boxShadow: "0 0 16px rgba(168,224,16,0.45)",
+    },
+  },
+};
+
+/**
+ * 行の見た目の幅を em で見積もる。全角は 1em、半角は 0.5em、空白は 0.28em。
+ *
+ * 半角は Space Grotesk 600 の実測が約 0.465em/字（`Prove what's real,` が
+ * 100px で約 800px）。**わざと 0.5 に丸めて余裕を持たせている**——見積もりが
+ * 実寸を下回ると1段大きい号数を選んでしまい、意図しない位置で折り返す。
+ * 大きめに見積もる側の誤差は「1段小さく組む」だけで済む。
+ */
+function widthEm(line: string): number {
+  return [...line].reduce((w, ch) => {
+    if (ch === " ") return w + 0.28;
+    // CJK・かな・全角記号は全角幅として数える
+    return w + (/[　-〿぀-ヿ㐀-鿿＀-￯]/.test(ch) ? 1 : 0.5);
+  }, 0);
+}
+
+/**
+ * 版面に収まる最大の号数を選ぶ。
+ *
+ * 共通の `pickTitleFont` は「1行の文字数」で段を決めるため和文で破綻する
+ * ——全角は 1文字 ≒ 1em なので、11文字を 100px で組むと 1100px になり
+ * 版面（1010px）を超えて意図しない位置で折り返す。ここは幅で判定する。
+ * 共通側を直すとユースケース・柱の詳細カードの号数まで動くので、この面だけで
+ * 決める（`titleFont` を渡すと共通側の採寸は使われない）。
+ */
+function fitTitleFont(title: string): { size: number; lineHeight: number; maxWidth: number } {
+  const lines = title.split("\n");
+  const widest = Math.max(...lines.map(widthEm));
+  /** ヘッダー・ライン・下段を除いた、見出しが使える高さ。 */
+  const titleArea = 300;
+  const candidates = [
+    { size: 100, lineHeight: 1.1, maxWidth: 1010 },
+    { size: 84, lineHeight: 1.12, maxWidth: 1040 },
+    { size: 68, lineHeight: 1.16, maxWidth: 1040 },
+    { size: 56, lineHeight: 1.2, maxWidth: 1040 },
+  ];
+  return (
+    candidates.find(
+      (c) =>
+        widest * c.size <= c.maxWidth && lines.length * c.size * c.lineHeight <= titleArea,
+    ) ?? candidates[candidates.length - 1]
+  );
+}
+
+/**
+ * マーケ面の共通指定。地は透過にして生 SVG を後ろへ差し込む。
+ *
+ * **見出しは塗り分けない**——クリーム1色にして、ライムは見出し直下の線1本だけに
+ * 持たせる（v47 の CTA と同じ「メッセージ＋ライン」）。サイト側も h1・h3 に色付き
+ * の語はなく、ライムは線・点・ボタンに限って使っている。左下のアクセントの帯は、
+ * 線と競合するので出さない。
+ */
+function marketingArtboard(input: {
+  title: string;
+  label?: string;
+  tagline?: string;
+}): unknown {
+  return buildOgArtboard({
+    title: input.title,
+    titleFont: fitTitleFont(input.title),
+    titleColorOverride: SLATE_TITLE,
+    accentOverride: LIME,
+    afterTitle: CTA_RULE,
+    hideFooterRule: true,
+    topRight: input.label === undefined ? undefined : makeTopRightLabel(input.label, LIME),
+    bottomTagline:
+      input.tagline === undefined ? undefined : makeBottomTagline(input.tagline, SLATE_MUTED),
+    background: MARKETING_BG,
+  });
+}
+
+/** マーケ面はすべて同じ地なので、生成は1回で足りる。 */
+const BACKDROP = marketingBackdropSvg();
 
 interface Copy {
   readonly ja: string;
@@ -30,9 +134,15 @@ function localize<T>(map: { ja: T; en: T }, locale: Locale): T {
 
 /* ───────────────────────── Homepage ───────────────────────── */
 
+/**
+ * トップの h1 と一致させる（`config/top-v47.{ja,en}.html`）。旧カードは
+ * 「AI に、証明された事実を。」で、v47 で h1 が変わったあとも取り残されていた。
+ * この画像は `getDefaultOgImage()` 経由で**専用 OG を持たない全ページの既定**
+ * にもなるので、ここがサイトの顔になる。
+ */
 const HOME_TITLE: Copy = {
-  ja: "AI に、\n<accent>証明された事実</accent>を。",
-  en: "Give AI\n<accent>proven facts</accent>.",
+  ja: "AI時代に、\n何が本物かを証明する。",
+  en: "Prove what's real,\nin the age of AI.",
 };
 
 const HOME_TAGLINE: Copy = {
@@ -41,19 +151,18 @@ const HOME_TAGLINE: Copy = {
 };
 
 export async function renderHomeOg(locale: Locale): Promise<Buffer> {
-  const node = buildOgArtboard({
+  const node = marketingArtboard({
     title: localize(HOME_TITLE, locale),
-    bottomTagline: makeBottomTagline(localize(HOME_TAGLINE, locale), BROWN),
-    background: { kind: "solid", color: CREAM_DEEP },
+    tagline: localize(HOME_TAGLINE, locale),
   });
-  return renderOgPng(node);
+  return renderOgPng(node, BACKDROP);
 }
 
 /* ───────────────────────── Product: Seal ───────────────────────── */
 
 const SEAL_TITLE: Copy = {
-  ja: "鍵ではなく、\n<accent>証明を送る</accent>。",
-  en: "Send proofs,\n<accent>not keys</accent>.",
+  ja: "鍵ではなく、\n証明を送る。",
+  en: "Send proofs,\nnot keys.",
 };
 
 const SEAL_LABEL: Copy = {
@@ -67,13 +176,12 @@ const SEAL_TAGLINE: Copy = {
 };
 
 export async function renderSealOg(locale: Locale): Promise<Buffer> {
-  const node = buildOgArtboard({
+  const node = marketingArtboard({
     title: localize(SEAL_TITLE, locale),
-    topRight: makeTopRightLabel(localize(SEAL_LABEL, locale), BROWN),
-    bottomTagline: makeBottomTagline(localize(SEAL_TAGLINE, locale), BROWN),
-    background: PRODUCT_GRADIENT,
+    label: localize(SEAL_LABEL, locale),
+    tagline: localize(SEAL_TAGLINE, locale),
   });
-  return renderOgPng(node);
+  return renderOgPng(node, BACKDROP);
 }
 
 /* ───────────────────────── Product: Trust402 ─────────────────────────
@@ -150,8 +258,8 @@ export async function renderTrust402SellOg(locale: Locale): Promise<Buffer> {
 /* ───────────────────────── Product: Industries ───────────────────────── */
 
 const INDUSTRIES_TITLE: Copy = {
-  ja: "<accent>信頼インフラ</accent>を、\n業界の現場へ。",
-  en: "<accent>The Trust Infrastructure</accent>,\nfor the industries.",
+  ja: "信頼インフラを、\n業界の現場へ。",
+  en: "The Trust Infrastructure,\nfor the industries.",
 };
 
 const INDUSTRIES_LABEL: Copy = {
@@ -165,20 +273,19 @@ const INDUSTRIES_TAGLINE: Copy = {
 };
 
 export async function renderIndustriesOg(locale: Locale): Promise<Buffer> {
-  const node = buildOgArtboard({
+  const node = marketingArtboard({
     title: localize(INDUSTRIES_TITLE, locale),
-    topRight: makeTopRightLabel(localize(INDUSTRIES_LABEL, locale), BROWN),
-    bottomTagline: makeBottomTagline(localize(INDUSTRIES_TAGLINE, locale), BROWN),
-    background: PRODUCT_GRADIENT,
+    label: localize(INDUSTRIES_LABEL, locale),
+    tagline: localize(INDUSTRIES_TAGLINE, locale),
   });
-  return renderOgPng(node);
+  return renderOgPng(node, BACKDROP);
 }
 
 /* ───────────────────────── Pricing ───────────────────────── */
 
 const PRICING_TITLE: Copy = {
-  ja: "<accent>信頼インフラ</accent>の、\n導入相談から。",
-  en: "Start from a Discovery\nCall, <accent>not a price tag</accent>.",
+  ja: "信頼インフラの、\n導入相談から。",
+  en: "Start from a Discovery\nCall, not a price tag.",
 };
 
 const PRICING_LABEL: Copy = {
@@ -192,20 +299,19 @@ const PRICING_TAGLINE: Copy = {
 };
 
 export async function renderPricingOg(locale: Locale): Promise<Buffer> {
-  const node = buildOgArtboard({
+  const node = marketingArtboard({
     title: localize(PRICING_TITLE, locale),
-    topRight: makeTopRightLabel(localize(PRICING_LABEL, locale), BROWN),
-    bottomTagline: makeBottomTagline(localize(PRICING_TAGLINE, locale), BROWN),
-    background: PRODUCT_GRADIENT,
+    label: localize(PRICING_LABEL, locale),
+    tagline: localize(PRICING_TAGLINE, locale),
   });
-  return renderOgPng(node);
+  return renderOgPng(node, BACKDROP);
 }
 
 /* ───────────────────────── Pillars ───────────────────────── */
 
 const PILLARS_TITLE: Copy = {
-  ja: "<accent>Lemma API</accent>、\n5つの証明をひとつの API で。",
-  en: "<accent>The Lemma API</accent>,\nfive proofs in one API.",
+  ja: "Lemma API、\n5つの証明をひとつの API で。",
+  en: "The Lemma API,\nfive proofs in one API.",
 };
 
 const PILLARS_LABEL: Copy = {
@@ -219,20 +325,19 @@ const PILLARS_TAGLINE: Copy = {
 };
 
 export async function renderPillarsOg(locale: Locale): Promise<Buffer> {
-  const node = buildOgArtboard({
+  const node = marketingArtboard({
     title: localize(PILLARS_TITLE, locale),
-    topRight: makeTopRightLabel(localize(PILLARS_LABEL, locale), BROWN),
-    bottomTagline: makeBottomTagline(localize(PILLARS_TAGLINE, locale), BROWN),
-    background: PRODUCT_GRADIENT,
+    label: localize(PILLARS_LABEL, locale),
+    tagline: localize(PILLARS_TAGLINE, locale),
   });
-  return renderOgPng(node);
+  return renderOgPng(node, BACKDROP);
 }
 
 /* ─────────────── AI 業務あんしん LP (/ai-gyomu-anshin/) ─────────────── */
 
 const AIANSHIN_TITLE: Copy = {
-  ja: "<accent>本物</accent>のデータだけを、\nAIに。",
-  en: "Only <accent>authentic</accent> data,\nfor your AI.",
+  ja: "本物のデータだけを、\nAIに。",
+  en: "Only authentic data,\nfor your AI.",
 };
 
 const AIANSHIN_LABEL: Copy = {
@@ -246,13 +351,12 @@ const AIANSHIN_TAGLINE: Copy = {
 };
 
 export async function renderAiGyomuAnshinOg(locale: Locale): Promise<Buffer> {
-  const node = buildOgArtboard({
+  const node = marketingArtboard({
     title: localize(AIANSHIN_TITLE, locale),
-    topRight: makeTopRightLabel(localize(AIANSHIN_LABEL, locale), BROWN),
-    bottomTagline: makeBottomTagline(localize(AIANSHIN_TAGLINE, locale), BROWN),
-    background: { kind: "solid", color: CREAM_DEEP },
+    label: localize(AIANSHIN_LABEL, locale),
+    tagline: localize(AIANSHIN_TAGLINE, locale),
   });
-  return renderOgPng(node);
+  return renderOgPng(node, BACKDROP);
 }
 
 /* ─────────────── Model comparison LPs (/compare/...) ─────────────── */
@@ -260,8 +364,8 @@ export async function renderAiGyomuAnshinOg(locale: Locale): Promise<Buffer> {
 const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> = {
   "ai-models-attack-resistance": {
     title: {
-      ja: "6 つの AI モデルに、\n<accent>同じ攻撃</accent>を仕掛けた。",
-      en: "Six AI models,\n<accent>one identical attack.</accent>",
+      ja: "6 つの AI モデルに、\n同じ攻撃を仕掛けた。",
+      en: "Six AI models,\none identical attack.",
     },
     label: {
       ja: "AIモデル比較 · 攻撃耐性",
@@ -274,8 +378,8 @@ const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> 
   },
   "fable5-vs-kimi": {
     title: {
-      ja: "Claude Fable 5\n<accent>vs Kimi-K2.6</accent>",
-      en: "Claude Fable 5\n<accent>vs Kimi-K2.6</accent>",
+      ja: "Claude Fable 5\nvs Kimi-K2.6",
+      en: "Claude Fable 5\nvs Kimi-K2.6",
     },
     label: {
       ja: "AIモデル比較 · 1対1",
@@ -288,8 +392,8 @@ const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> 
   },
   "gpt5-vs-opus": {
     title: {
-      ja: "GPT-5.5\n<accent>vs Opus 4.8</accent>",
-      en: "GPT-5.5\n<accent>vs Opus 4.8</accent>",
+      ja: "GPT-5.5\nvs Opus 4.8",
+      en: "GPT-5.5\nvs Opus 4.8",
     },
     label: {
       ja: "AIモデル比較 · 1対1",
@@ -304,11 +408,10 @@ const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> 
 
 export async function renderCompareOg(slug: string, locale: Locale): Promise<Buffer> {
   const c = COMPARE_COPY[slug] ?? COMPARE_COPY["ai-models-attack-resistance"];
-  const node = buildOgArtboard({
+  const node = marketingArtboard({
     title: localize(c.title, locale),
-    topRight: makeTopRightLabel(localize(c.label, locale), BROWN),
-    bottomTagline: makeBottomTagline(localize(c.tagline, locale), BROWN),
-    background: PRODUCT_GRADIENT,
+    label: localize(c.label, locale),
+    tagline: localize(c.tagline, locale),
   });
-  return renderOgPng(node);
+  return renderOgPng(node, BACKDROP);
 }
