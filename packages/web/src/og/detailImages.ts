@@ -1,19 +1,13 @@
 /**
  * Detail-page OG wrappers — Pillar details + Use Case details.
  *
- * Thin renderers that supply a per-page title, top-right label, and
- * the standard PRODUCT_GRADIENT background to `buildOgArtboard`.
- * Unlike the marketing hub surfaces, these are per-slug — each pillar
- * detail and each use case detail gets its own artboard.
+ * ハブ面と違って**slug ごと**に1枚ずつ出る（柱4本・ユースケース29本 × 2ロケール）。
+ * 地・書体・見出し直下のラインはマーケ面と同じ組み（`slateArtboard`）を共有する
+ * ——2026-08-05 にクリーム＋サドルブラウンから移した。ここだけ旧配色に残すと、
+ * ユースケースを共有したときにトップや料金と別サイトのように見えるため。
  */
 import type { Locale } from "../i18n/translations";
-import {
-  BROWN,
-  PRODUCT_GRADIENT,
-  buildOgArtboard,
-  makeTopRightLabel,
-  renderOgPng,
-} from "./ogBase";
+import { SLATE_BACKDROP, renderOgPng, slateArtboard } from "./ogBase";
 
 /* ────────────────────── Pillar Detail ────────────────────── */
 
@@ -30,12 +24,8 @@ export async function renderPillarDetailOg(
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
   const label = `Pillar ${String(pillarNumber).padStart(2, "0")} · ${enName}`;
-  const node = buildOgArtboard({
-    title,
-    topRight: makeTopRightLabel(label, BROWN),
-    background: PRODUCT_GRADIENT,
-  });
-  return renderOgPng(node);
+  const node = slateArtboard({ title, label });
+  return renderOgPng(node, SLATE_BACKDROP);
 }
 
 /* ────────────────────── Use Case Detail ────────────────────── */
@@ -49,10 +39,6 @@ export async function renderUseCaseOg(
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
   const label = `Use Case · ${pillarLabel}`;
-  const node = buildOgArtboard({
-    title: useCaseTitle,
-    topRight: makeTopRightLabel(label, BROWN),
-    background: PRODUCT_GRADIENT,
-  });
-  return renderOgPng(node);
+  const node = slateArtboard({ title: useCaseTitle, label });
+  return renderOgPng(node, SLATE_BACKDROP);
 }

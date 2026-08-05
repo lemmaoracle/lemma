@@ -42,9 +42,6 @@ const cwd = process.cwd();
 const jaRegular = readFileSync(resolve(cwd, "src/assets/fonts/NotoSansJP-Regular.otf"));
 const jaMedium = readFileSync(resolve(cwd, "src/assets/fonts/NotoSansJP-Medium.otf"));
 const jaBold = readFileSync(resolve(cwd, "src/assets/fonts/NotoSansJP-Bold.otf"));
-const soraBold = readFileSync(
-  resolve(cwd, "node_modules/@fontsource/sora/files/sora-latin-700-normal.woff"),
-);
 /* 見出しの書体（2026-08-05）。サイトの `--font-display`（Layout.astro）と同じ
    ——欧文 Space Grotesk 600 ／ 和文 Noto Serif JP 600。以前は Sora Bold 700 ＋
    Noto Sans JP Bold 700 だったが、Sora は v24 の書体でサイトからは退役済みで、
@@ -70,7 +67,6 @@ export const OG_FONT_DATA = {
   jaRegular,
   jaMedium,
   jaBold,
-  soraBold,
   grotesk600,
   jaSerif600,
   spaceMonoRegular,
@@ -127,10 +123,13 @@ const TITLE_TIERS = [
  * and can break between any two of them (no spaces). */
 const CJK_CHAR = /[\u3000-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff00-\uffef]/;
 
-/** Rough per-glyph advance (px) for the Sora / Noto 700 display face.
- * Deliberately a slight over-estimate (letter-spacing is negative, so
- * real widths are a touch tighter) — over-estimating keeps satori from
- * re-wrapping a line we already placed and re-introducing an orphan. */
+/** Rough per-glyph advance (px) for the display face
+ * (Space Grotesk 600 / Noto Serif JP 600 — 2026-08-05 以降。以前は Sora /
+ * Noto Sans 700 だった)。
+ *
+ * 欧文の実測は約 0.465em/字なので 0.56 は**わざとの過大見積もり**。
+ * letter-spacing が負で実寸はさらに詰まる。少なく見積もると、こちらが決めた
+ * 行を satori が再度折り返して孤立行が戻ってくるので、過大側に倒す。 */
 function glyphAdvance(ch: string, size: number): number {
   if (ch === " ") return size * 0.3;
   if (CJK_CHAR.test(ch)) return size * 1.0;
@@ -192,12 +191,29 @@ function segmentCjk(text: string): string[] {
 
 /** Wrap tokens: whole words for space-delimited (Latin) titles,
  * punctuation-safe phrase chunks for space-free (CJK) titles. */
+/**
+ * 見出しを「折ってよい単位」に割る。**区切りは各トークンの末尾に含める**ので、
+ * 組むときは常に空文字で連結すればよい。
+ *
+ * 以前は「空白で割る」か「和文として割る」の二択で、区切りも1種類だった。
+ * そのため和欧混在の見出し——ユースケース名の
+ * 「社内文書を AI に使わせるが生データは触らせない」など——では空白側に倒れ、
+ * 和文の長い連なりが**1つの折れないトークン**になっていた。どの段でも行に
+ * 入らないので均しが成立せず、最小段での成り行き任せになって孤立行が出る。
+ */
 function tokenizeTitle(text: string): { tokens: string[]; sep: string } {
   const trimmed = text.trim();
-  if (/\s/.test(trimmed) && /[A-Za-z0-9]/.test(trimmed)) {
-    return { tokens: trimmed.split(/\s+/), sep: " " };
-  }
-  return { tokens: segmentCjk(trimmed), sep: "" };
+  // 空白は直前のトークンにぶら下げたまま割る（`(?<=\s)` で空白の後ろを切る）
+  const pieces = trimmed.split(/(?<=\s)/);
+  const tokens = pieces.flatMap((piece) => {
+    if (!CJK_CHAR.test(piece)) return [piece];
+    // 和文を含む断片は、句読点・字単位までさらに割る。末尾の空白は最後の塊に戻す。
+    const trail = /\s+$/.exec(piece)?.[0] ?? "";
+    const chunks = segmentCjk(trail === "" ? piece : piece.slice(0, -trail.length));
+    if (chunks.length === 0) return [piece];
+    return trail === "" ? chunks : [...chunks.slice(0, -1), chunks[chunks.length - 1] + trail];
+  });
+  return { tokens, sep: "" };
 }
 
 /** Greedy line count when packing token widths at `limit` px per line. */
@@ -256,11 +272,11 @@ export function layoutBalancedTitle(raw: string): {
   maxWidth: number;
 } {
   const { tokens, sep } = tokenizeTitle(raw);
-  const sepIsSpace = sep === " ";
+  // 区切りはトークン末尾に含まれているので、連結時の追加幅は無い。
+  const sepWidth = 0;
 
   for (const tier of TITLE_TIERS) {
     const tokenWidths = tokens.map((t) => textWidth(t, tier.size));
-    const sepWidth = sepIsSpace ? glyphAdvance(" ", tier.size) : 0;
     // A single token wider than the line can't fit this tier — shrink.
     if (Math.max(...tokenWidths) > tier.maxWidth) continue;
     const minLines = lineCountAtLimit(tokenWidths, sepWidth, tier.maxWidth);
@@ -284,7 +300,6 @@ export function layoutBalancedTitle(raw: string): {
   // own line breaks; this just keeps output sane.)
   const tier = TITLE_TIERS[TITLE_TIERS.length - 1];
   const tokenWidths = tokens.map((t) => textWidth(t, tier.size));
-  const sepWidth = sepIsSpace ? glyphAdvance(" ", tier.size) : 0;
   const lines = packAtLimit(tokens, tokenWidths, sep, sepWidth, tier.maxWidth);
   return { text: lines.join("\n"), size: tier.size, lineHeight: tier.lineHeight, maxWidth: tier.maxWidth };
 }
@@ -717,9 +732,92 @@ export async function renderOgPng(node: unknown, backdropSvg?: string): Promise<
   return new Resvg(svg, { fitTo: { mode: "width", value: OG_WIDTH } }).render().asPng();
 }
 
-/* Standard gradient backgrounds used by the marketing-page wrappers. */
-export const PRODUCT_GRADIENT: OgBackground = {
-  kind: "gradient",
-  from: CREAM_LIGHT,
-  to: CREAM_DEEP,
+
+/* ── スレート面の組み（マーケ面＋詳細ページの OG が共有）───────────── */
+
+/**
+ * 見出しの直下に引くライムの線。トップ v47 の CTA（`.ctaline`）の実値をそのまま
+ * 使う——3px・左から右へ濃くなるグラデーション・外周のにじみ。
+ *
+ * サイト側はスクロールで引かれるアニメーションだが、静止画の正解は
+ * `prefers-reduced-motion` の最終状態（線は引き切り・先端の点は消える）なので、
+ * 点は描かない。
+ */
+const CTA_RULE = {
+  type: "div",
+  props: {
+    style: {
+      marginTop: 28,
+      width: 560,
+      height: 3,
+      borderRadius: 2,
+      background: `linear-gradient(90deg, rgba(168,224,16,0.25), ${LIME})`,
+      boxShadow: "0 0 16px rgba(168,224,16,0.45)",
+    },
+  },
 };
+
+/**
+ * 改行を書き手が決めている見出しで、版面に収まる最大の号数を選ぶ。
+ *
+ * 共通の `pickTitleFont` は「1行の文字数」で段を決めるため和文で破綻する
+ * ——全角は 1文字 ≒ 1em なので、11文字を 100px で組むと 1100px になり版面
+ * （1010px）を超えて、書き手の意図しない位置で折り返す。ここは幅で判定する。
+ *
+ * 幅の見積もりは `textWidth`（＝`layoutBalancedTitle` と同じ関数）を使う。
+ * 自動で改行を決められる見出しはそちらに任せればよく、この関数は
+ * **改行が確定コピーの一部である面**（トップの h1 など）専用。
+ */
+function fitAuthoredTitle(title: string): {
+  size: number;
+  lineHeight: number;
+  maxWidth: number;
+} {
+  const lines = title.split("\n");
+  const last = TITLE_TIERS[TITLE_TIERS.length - 1];
+  const tier =
+    TITLE_TIERS.find(
+      (t) =>
+        Math.max(...lines.map((l) => textWidth(l, t.size))) <= t.maxWidth &&
+        lines.length <= t.maxLines,
+    ) ?? last;
+  return { size: tier.size, lineHeight: tier.lineHeight, maxWidth: tier.maxWidth };
+}
+
+/**
+ * スレート面の共通指定。地は透過にして生 SVG を後ろへ差し込む。
+ *
+ * **見出しは塗り分けない**——クリーム1色にして、ライムは見出し直下の線1本だけに
+ * 持たせる（v47 の CTA と同じ「メッセージ＋ライン」）。サイト側も h1・h3 に色付き
+ * の語はなく、ライムは線・点・ボタンに限って使っている。左下のアクセントの帯は、
+ * 線と競合するので出さない。
+ */
+export function slateArtboard(input: {
+  title: string;
+  label?: string;
+  tagline?: string;
+}): unknown {
+  /* 改行の決め方が面によって違う。
+       - 確定コピー（トップの h1 など）は `\n` を書き手が置いているので、
+         その改行を守ったまま号数だけ決める（`fitAuthoredTitle`）。
+       - ユースケース名のようなデータ由来の見出しは改行位置が無いので、
+         共通の均し（`balanceTitle`）に任せる——語の途中や1語だけの行を
+         作らずに折る。号数もそちらが決める。 */
+  const authored = input.title.includes("\n");
+  return buildOgArtboard({
+    title: input.title,
+    titleFont: authored ? fitAuthoredTitle(input.title) : undefined,
+    balanceTitle: !authored,
+    titleColorOverride: SLATE_TITLE,
+    accentOverride: LIME,
+    afterTitle: CTA_RULE,
+    hideFooterRule: true,
+    topRight: input.label === undefined ? undefined : makeTopRightLabel(input.label, LIME),
+    bottomTagline:
+      input.tagline === undefined ? undefined : makeBottomTagline(input.tagline, SLATE_MUTED),
+    background: MARKETING_BG,
+  });
+}
+
+/** 地はどの面も同じなので、生成は1回で足りる。 */
+export const SLATE_BACKDROP = marketingBackdropSvg();

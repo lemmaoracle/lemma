@@ -28,6 +28,14 @@ interface Props {
   canonicalOverride?: string;
   /** Absolute URL of a page-specific OG image (overrides the locale default). */
   ogImage?: string;
+  /**
+   * og:description / twitter:description の上書き。省略時は `description`。
+   *
+   * `description` は検索向けなので語彙を積んである。SNS のカードでは硬く読める
+   * ため、`ogTitle` と同じ発想で**カードだけ人向けの文**にできるようにしている
+   * （検索の文はそのまま保つ）。
+   */
+  ogDescription?: string;
 }
 
 const { locale = "en", bodyClass, noindex, noindexFollow } = Astro.props;
@@ -108,7 +116,7 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     <meta name="twitter:card" content="summary_large_image" />
     {
       shouldRenderMetaTags && Astro.props.metaType === "home" && (
-        <MetaTags type="home" title={title} description={description} base={base} locale={locale} ogImage={Astro.props.ogImage} />
+        <MetaTags type="home" title={title} description={description} ogDescription={Astro.props.ogDescription} base={base} locale={locale} ogImage={Astro.props.ogImage} />
       )
     }
     {
@@ -118,6 +126,7 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
           title={title}
           ogTitle={ogTitle}
           description={description}
+          ogDescription={Astro.props.ogDescription}
           base={base}
           pagePath={Astro.props.pagePath}
           locale={locale}
