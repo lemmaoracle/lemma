@@ -111,7 +111,11 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 @media(max-width:820px){.topx .st3{grid-template-columns:1fr}}
 
 /* ---------- latest 3（画像付き） ---------- */
-.topx .lat3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
+/* トラックを minmax(0,1fr) で閉じる: 実データの見出しは長さが読めず、`1fr`
+   (=minmax(auto,1fr)) だと min-content までトラックが膨らむ。`.topx` の
+   word-break:keep-all と重なると長い CJK の連なりが1語扱いになり、カード幅が
+   不均等になって面ごと横にはみ出す（下の 860px 以下の1列化はこの後に置く）。 */
+.topx .lat3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:22px}
 .topx .lat3 a{display:block;text-decoration:none}
 .topx .lat3 .card{overflow:hidden;height:100%}
 .topx .latimg{position:relative;aspect-ratio:16/9;margin:0;background:linear-gradient(172deg,#3c443d,#2e362f);overflow:hidden}
@@ -359,6 +363,30 @@ body:has(main.topx) .lemma-brand-bar{display:none}
   .topx .ind-tab[aria-selected="true"]{background:rgba(168,224,16,.15);border-color:var(--ok-ink);color:var(--tx);font-weight:700}
   .topx .ind-tab[aria-selected="true"]::after{display:none}
 }
+
+/* ---- 最近の動き: 実データのカバー（ブログ写真／抽象パターン／Brief 面）----
+   モックは仮のドットグリッド面だったので、実カバーの3系統をここで足す。
+   写真の色は業界ページの Latest news と同じ調整値（面の統一）。 */
+
+/* この枠の見出しと一文だけ通常改行に戻す。keep-all は短い確定コピー向けの
+   指定で、自動生成の長い見出し（Brief のリード等）には効かせない。 */
+.topx .lat3 .cbody b,.topx .lat3 .cbody span{word-break:normal;overflow-wrap:anywhere}
+.topx .latimg>svg{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
+.topx .latimg .lat-photo{position:absolute;inset:0;display:block;z-index:1}
+.topx .latimg .lat-photo img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:sepia(.16) saturate(.62) hue-rotate(-8deg) contrast(1.04)}
+.topx .latimg .lat-photo::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(200deg,rgba(16,22,17,.06) 0%,rgba(16,22,17,.3) 62%,rgba(16,22,17,.52) 100%)}
+.topx .latimg .lat-photo::before{content:"";position:absolute;left:0;right:0;top:62%;height:2px;
+  background:var(--ok);opacity:.85;z-index:2}
+/* Brief 枠は写真を持たないので、番号を出す暗い面にする（業界ページと同じ作り） */
+.topx .latimg.lat-brief{background:linear-gradient(158deg,#3c443d 0%,#333b34 55%,#2e362f 100%)}
+.topx .latimg.lat-brief .bn{position:relative;z-index:2;display:grid;place-items:center;height:100%;
+  padding:20px;text-align:center}
+.topx .latimg.lat-brief .bn em{display:block;font-style:normal;font-family:var(--mono);font-size:9px;
+  letter-spacing:.2em;color:var(--ok);margin-bottom:8px}
+.topx .latimg.lat-brief .bn b{font-family:var(--num);font-weight:200;font-size:30px;color:#ebefe6;
+  letter-spacing:-.01em;margin:0}
 
 /* ムービー: 狭幅ではカードの額縁をやめて全幅ブリードにし、少しでも大きく見せる */
 @media(max-width:560px){

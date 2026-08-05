@@ -23,7 +23,11 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import bodyJa from "../config/top-v47.ja.html?raw";
 import bodyEn from "../config/top-v47.en.html?raw";
-import { getAllPosts, postInCategory } from "../data/blog";
+import { getCollection } from "astro:content";
+import { getAllPosts, postInCategory, type BlogPost } from "../data/blog";
+import { getEnBriefMap } from "../data/getEnBriefMap";
+import { resolveCoverPhoto } from "../lib/coverPhoto";
+import { coverArtwork, COVER_WIDTH, COVER_HEIGHT } from "../lib/blogCover";
 import "../styles/top-v47.css";
 
 export interface TopV47TemplateProps {
@@ -35,17 +39,127 @@ export interface TopV47TemplateProps {
 const { locale, t, base } = Astro.props as TopV47TemplateProps;
 const isJa = locale === "ja";
 
-// ヒーロー CTA 直下の NEW ティッカー。最新の Announcements 記事を1本だけ出す
-// (mock v5.9 の .ticker。モックはハードコードだったので実データに接続)。
 const esc = (v: string) =>
   v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const latestAnnouncement = [...(await getAllPosts(locale))]
-  .filter((p) => postInCategory(p, "Announcements"))
-  .sort((a, b) => (a.date > b.date ? -1 : 1))[0];
+/** n 字で詰める。空白がある言語（EN）は語の途中で切らない。 */
+const clip = (v: string, n: number) => {
+  if (v.length <= n) return v;
+  const cut = v.slice(0, n);
+  const sp = cut.lastIndexOf(" ");
+  return `${(sp > n * 0.6 ? cut.slice(0, sp) : cut).trimEnd()}…`;
+};
+/** カードの一文。JA は最初の「。」まで、EN は最初の「. 」までで切る。 */
+const firstSentence = (v: string): string => {
+  const ja = v.indexOf("。");
+  if (ja >= 0) return v.slice(0, ja + 1);
+  const en = v.match(/^[\s\S]*?\.(?=\s|$)/);
+  return en ? en[0] : v;
+};
+
+const postsDesc = [...(await getAllPosts(locale))].sort((a, b) => (a.date > b.date ? -1 : 1));
+
+// ヒーロー CTA 直下の NEW ティッカー。最新の Announcements 記事を1本だけ出す
+// (mock v5.9 の .ticker。モックはハードコードだったので実データに接続)。
+const latestAnnouncement = postsDesc.find((p) => postInCategory(p, "Announcements"));
 const tickerHtml = latestAnnouncement
   ? `<div class="ticker"><span class="tk">NEW</span><a href="${base}/blog/${latestAnnouncement.slug}">${esc(latestAnnouncement.title)} →</a></div>`
   : "";
-const body = (isJa ? bodyJa : bodyEn).replace("<!--TICKER-->", tickerHtml);
+
+/* ── 最近の動き（Latest news 出し分け設計 v1 §4.1）────────────────────
+ * fragment の LATEST 節はモック由来の静的プレースホルダ（社外リリースへの
+ * 仮リンク・空のプレス枠・Brief No.105 直書き）だったので `<!--LATEST-->`
+ * に畳み、ここで実データを流し込む。3枠の性格は固定し、新着順で競争させない。
+ *   枠1 実績     — 最新の「お知らせ」記事（自動）
+ *   枠2 論点     — Critical Brief の最新1本（自動。毎週の鮮度はこの枠が担う）
+ *   枠3 読みもの — `audience: business` からの選抜1本（手動・月次で見直す）
+ *
+ * 導入事例（メタウォーター）はブログ記事が未公開のため出さない。公開後は
+ * 枠1 をその記事に差し替える（設計 v1 §4.1 の「手動」枠はここ）。
+ */
+
+/** 枠3 に出す記事の slug（`audience: business` のもの）。月次で見直す。
+ *  見つからなければ business の最新へ自動フォールバックし、枠を空けない。 */
+const TOP_PICK_SLUG = "ai-financial-cybersecurity-akamai-2026";
+
+const bizPostsDesc = postsDesc.filter((p) => p.audience === "business");
+const pickedCandidate = bizPostsDesc.find((p) => p.slug === TOP_PICK_SLUG) ?? bizPostsDesc[0];
+// 枠1 と同じ記事が枠3 にも来ないようにする（両枠が同じ1本を指すと枠が死ぬ）。
+const pickedPost =
+  pickedCandidate && pickedCandidate.slug === latestAnnouncement?.slug
+    ? bizPostsDesc.find((p) => p.slug !== latestAnnouncement.slug)
+    : pickedCandidate;
+
+// 枠2: Brief は JA コレクションを軸に、EN では訳がある分だけ差し替える
+// （/critical/briefs/ の一覧と同じ選び方・同じ並び）。
+const enBriefById = isJa ? null : await getEnBriefMap();
+const latestBrief = [...(await getCollection("critical-briefs"))]
+  .map((ja) => enBriefById?.get(ja.id) ?? ja)
+  .sort((a, b) => {
+    const diff = b.data.published.getTime() - a.data.published.getTime();
+    return diff !== 0 ? diff : b.data.brief_no - a.data.brief_no;
+  })[0];
+
+// 一文と「読む →」の間。JA は句点で切れるので詰め、EN は空白で分ける。
+const latSep = isJa ? "" : " ";
+const LAT = isJa
+  ? {
+      announce: "お知らせ",
+      blog: "ブログ",
+      brief: "Critical Brief",
+      readPost: "記事を読む →",
+      readBrief: "Brief を読む →",
+      briefLead: "いま争点になっていることを、事実から追う。",
+    }
+  : {
+      announce: "Announcement",
+      blog: "Blog",
+      brief: "Critical Brief",
+      readPost: "Read the article →",
+      readBrief: "Read the brief →",
+      briefLead: "Following what is contested now, from the facts.",
+    };
+
+/* カバーはブログ一覧と同じ扱い: 写真が public/ に実在すれば写真、無ければ
+   カテゴリ由来の抽象パターン（lib/blogCover）。モックのドットグリッドは
+   「質感は図解の枠だけ」（指示 第6部-3）に従い通常カードには載せない。 */
+const postCoverHtml = (p: BlogPost): string => {
+  const photo = resolveCoverPhoto(p.coverPhoto);
+  return photo
+    ? `<span class="lat-photo"><img src="${esc(photo)}" alt="" loading="lazy"/></span>`
+    : `<svg viewBox="0 0 ${COVER_WIDTH} ${COVER_HEIGHT}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${coverArtwork(p.category, p.slug)}</svg>`;
+};
+
+const postCardHtml = (p: BlogPost, label: string): string =>
+  `<a href="${base}/blog/${p.slug}"><div class="card"><figure class="latimg">${postCoverHtml(p)}</figure><div class="cbody">
+        <div class="lb">${esc(label)}</div>
+        <b>${esc(clip(p.title, isJa ? 44 : 72))}</b>
+        <span>${esc(clip(firstSentence(p.abstract), isJa ? 54 : 116))}${latSep}${LAT.readPost}</span>
+      </div></div></a>`;
+
+const briefCardHtml = (b: NonNullable<typeof latestBrief>): string => {
+  // 見出しは og_lead（≈30〜45字の一文リード）を使う。Brief の title は
+  // 「主題：詳細 — 補足」で長く、3列カードでは他の2枚と釣り合わないため。
+  const lead = isJa
+    ? (b.data.og_lead_ja ?? b.data.title)
+    : (b.data.og_lead_en ?? b.data.title_en);
+  return `<a href="${base}/critical/briefs/${b.id}/"><div class="card"><figure class="latimg lat-brief"><div class="bn"><em>CRITICAL BRIEF</em><b>No. ${String(b.data.brief_no).padStart(3, "0")}</b></div></figure><div class="cbody">
+        <div class="lb">${LAT.brief}</div>
+        <b>${esc(clip(lead, isJa ? 62 : 104))}</b>
+        <span>${LAT.briefLead}${latSep}${LAT.readBrief}</span>
+      </div></div></a>`;
+};
+
+const latestHtml = [
+  latestAnnouncement ? postCardHtml(latestAnnouncement, LAT.announce) : "",
+  latestBrief ? briefCardHtml(latestBrief) : "",
+  pickedPost ? postCardHtml(pickedPost, LAT.blog) : "",
+]
+  .filter(Boolean)
+  .join("\n      ");
+
+const body = (isJa ? bodyJa : bodyEn)
+  .replace("<!--TICKER-->", tickerHtml)
+  .replace("<!--LATEST-->", latestHtml);
 
 const API_BASE = "https://workers.lemma.workers.dev/v1";
 const VERIFY_PATH = `${base}/verify/`;
