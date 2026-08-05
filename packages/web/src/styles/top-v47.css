@@ -159,13 +159,11 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 .topx .herodark::after{content:"";position:absolute;inset:0;
   background:radial-gradient(120% 78% at 84% -12%,rgba(168,224,16,.16),transparent 62%);pointer-events:none}
 .topx .herodark .hin{position:relative;z-index:2;max-width:var(--page);margin:0 auto;
-  padding:clamp(46px,5vw,74px) clamp(20px,4vw,36px) clamp(42px,4.6vw,66px);
+  padding:clamp(60px,6.8vw,94px) clamp(20px,4vw,36px) clamp(56px,6.2vw,84px);
   display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(30px,4.4vw,64px);align-items:center}
-.topx .herodark h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,4.7vw,58px);line-height:1.32;margin:clamp(14px,1.5vw,20px) 0 clamp(20px,2.4vw,30px);color:#f4f7ef}
-.topx .herodark .sublead{font-size:15.5px;line-height:1.9;color:#b9c4ad;max-width:44ch;margin:0 0 clamp(18px,2.1vw,26px)}
-.topx .herodark .tfacts{margin-bottom:clamp(20px,2.4vw,28px)}
-.topx .herodark .tfacts li{color:#b9c4ad;padding:6px 0 6px 22px}
-.topx .herodark .tfacts li::before{background:var(--ok)}
+.topx .herodark h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,4.7vw,58px);line-height:1.32;margin:clamp(14px,1.5vw,20px) 0 clamp(24px,2.9vw,36px);color:#f4f7ef}
+.topx .herodark .sublead{font-size:15.5px;line-height:1.9;color:#b9c4ad;max-width:44ch;margin:0 0 clamp(22px,2.6vw,32px)}
+/* 3つの事実（.tfacts）はヒーローから外し、ストーリー節の締めへ移設した */
 .topx .herodark .btn.solid{background:var(--ok);color:#1a1f16}
 .topx .herodark .btn.solid:hover{background:#b7ec2a}
 .topx .herodark .btn.ghostd{background:rgba(255,255,255,.10);color:#e8ece5}
@@ -210,20 +208,16 @@ body:has(main.topx) .lemma-brand-bar{display:none}
   letter-spacing:-.02em;color:#f2f6ec;font-variant-numeric:tabular-nums;margin:0 0 12px}
 .topx .bignum.off{font-size:clamp(22px,2.6vw,30px);letter-spacing:.14em;color:#9fb08f}
 .topx .biglabel{font-family:var(--serif);font-weight:600;font-size:clamp(16px,1.8vw,20px);color:#f2f6ec;margin:0 0 10px;line-height:1.5}
+/* #vsub は到達不能時のエラー行だけに使う（内訳は /verify/ 側）。空なら畳む */
 .topx .bigsub{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:#8fa07f;margin:0;line-height:1.9}
+.topx .bigsub:empty{display:none}
 .topx .ren{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#8fa07f;margin:0 0 8px}
 .topx .pmetrics{display:flex;gap:28px;margin-top:18px;padding-top:15px;
   border-top:1px solid rgba(255,255,255,.12);font-family:var(--mono);font-size:9.5px;
   letter-spacing:.08em;color:#8fa07f;flex-wrap:wrap}
 .topx .pmetrics b{display:block;color:#e8ece5;font-weight:400;font-size:14px;margin-top:6px;
   font-variant-numeric:tabular-nums}
-.topx .pstream{position:relative;z-index:2;border-top:1px solid rgba(255,255,255,.12);
-  padding:10px 20px 12px;display:flex;flex-direction:column;gap:7px}
-.topx .pstream[hidden]{display:none}
-.topx .pstream .ev{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:9.5px;
-  color:#8fa07f;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.topx .pstream .ev svg{width:13px;height:13px;flex:none;color:var(--ok)}
-.topx .pstream .ev span{overflow:hidden;text-overflow:ellipsis}
+/* イベントストリーム (.pstream) は撤去。フィード名まではトップで出さない */
 .topx .pfoot{position:relative;z-index:2;padding:10px 20px;border-top:1px solid rgba(255,255,255,.12);
   font-size:11px;color:#8fa07f;display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline}
 .topx .pfoot a{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#d8ddd1;
@@ -305,14 +299,25 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 .topx .bi b{display:block;font-family:var(--serif);font-weight:600;font-size:17px;line-height:1.5;margin-bottom:6px}
 .topx .bi span{display:block;font-size:12.5px;color:var(--muted);line-height:1.8}
 @media(max-width:860px){.topx .bitems{grid-template-columns:1fr 1fr}.topx .bi{padding:16px 14px}.topx .bi:first-child{padding-left:14px}.topx .bi+.bi{border-left:0}.topx .bi:nth-child(n+3){border-top:1px solid var(--dline)}}
-@media(max-width:520px){.topx .bitems{grid-template-columns:1fr}.topx .bi+.bi{border-top:1px solid var(--dline)}}
+/* 狭幅でも1列にはしない（1行ずつ縦に伸びるより、2列で並べたほうがまとまって見える） */
+@media(max-width:520px){.topx .bi{padding:14px 10px}.topx .bi:first-child{padding-left:10px}
+  .topx .bi svg{width:28px;height:28px;margin-bottom:8px}
+  .topx .bi b{font-size:15px}.topx .bi span{font-size:11.5px;line-height:1.7}}
 
-/* つなぎの締め：問い → 答え → 但し書き */
-.topx .bfoot{margin-top:22px;padding-top:18px;border-top:1px solid var(--dline);max-width:56ch}
-.topx .bfq{font-size:15.5px;line-height:1.9;color:var(--tx-soft);margin:0 0 10px}
-.topx .bfa{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.5vw,30px);line-height:1.5;color:var(--ok-light);margin:0 0 8px;position:relative;padding-left:20px}
+/* つなぎの締め：問い → 答え → 3つの事実（ヒーローから移設） */
+.topx .bfoot{margin-top:22px;padding-top:18px;border-top:1px solid var(--dline)}
+.topx .bfq{font-size:15.5px;line-height:1.9;color:var(--tx-soft);margin:0 0 10px;max-width:56ch}
+.topx .bfa{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.5vw,30px);line-height:1.5;color:var(--ok-light);margin:0 0 8px;position:relative;padding-left:20px;max-width:56ch}
 .topx .bfa::before{content:"";position:absolute;left:0;top:.62em;width:13px;height:2px;background:var(--ok)}
-.topx .bfn{font-size:13.5px;color:var(--muted);line-height:1.9;margin:0;padding-left:20px}
+.topx .bfn{font-size:13.5px;color:var(--muted);line-height:1.9;margin:0;padding-left:20px;max-width:56ch}
+/* 締めの直下に3列で置く。横並びになった分、線ではなくチェック印を頭に置く */
+.topx .bfacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 28px;
+  margin:20px 0 0;padding-top:18px;border-top:1px solid var(--dline)}
+.topx .bfacts li{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.75;padding:0}
+.topx .bfacts li::before{display:none}
+.topx .bfacts li svg{width:20px;height:20px;flex:none;color:var(--ok-light);margin-top:.16em}
+@media(max-width:640px){.topx .bfacts{grid-template-columns:1fr;gap:11px;margin-top:18px;padding-top:16px}
+  .topx .bfacts li{font-size:13.5px}}
 
 /* ---------- CTA ---------- */
 .topx .cta{padding:0 0 var(--pad)}
@@ -392,9 +397,9 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 @media(max-width:560px){
   .topx .filmbleed{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);border-radius:0;padding:12px 8px}
   /* ヒーロー: boosting 解消とあわせてタイポと余白を締め、1画面の情報量を抑える */
-  .topx .herodark .hin{padding-top:clamp(40px,10vw,58px);padding-bottom:44px;gap:40px}
-  .topx .herodark h1{margin:14px 0 22px}
-  .topx .herodark .sublead{font-size:14.5px;line-height:1.9;margin-bottom:20px}
-  .topx .herodark .tfacts{margin-bottom:24px}
-  .topx .herodark .tfacts li{font-size:13.5px;padding:7px 0 7px 20px}
+  .topx .herodark .hin{padding-top:clamp(54px,14vw,72px);padding-bottom:62px;gap:46px}
+  .topx .herodark h1{margin:20px 0 30px}
+  .topx .pbody{padding:18px 18px 15px}
+  .topx .pmetrics{gap:8px 22px;margin-top:15px;padding-top:13px}
+  .topx .herodark .sublead{font-size:14.5px;line-height:1.9;margin-bottom:28px}
 }
