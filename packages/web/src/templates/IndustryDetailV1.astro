@@ -84,12 +84,21 @@ const industryThreatKeys = new Set(
 const briefsDesc = (await getCollection("critical-briefs")).sort(
   (a, b) => (b.data.brief_no ?? 0) - (a.data.brief_no ?? 0),
 );
-const matchesIndustry = (b: (typeof briefsDesc)[number]): boolean =>
-  industryThreatKeys.has(b.data.primary_category) ||
+/* 一致は **primary を優先**する。secondary は「その事案にも関係する」程度の
+ * 弱い印で、これを primary と同列に扱うと業界と無関係な事案が枠に出る——
+ * 実際、BonkDAO のガバナンス事案（primary=ブリッジ信頼設定）が secondary の
+ * 「認証・認可」だけで小売の枠に出ていた。
+ *   1) primary が業界の脅威タイプに一致する最新1本
+ *   2) 無ければ secondary 一致の最新1本
+ *   3) それも無ければ全体最新（枠を空けない） */
+const matchesPrimary = (b: (typeof briefsDesc)[number]): boolean =>
+  industryThreatKeys.has(b.data.primary_category);
+const matchesSecondary = (b: (typeof briefsDesc)[number]): boolean =>
   (b.data.secondary_categories ?? []).some((c: string) => industryThreatKeys.has(c));
 const latestBrief =
-  (industryThreatKeys.size > 0 ? briefsDesc.find(matchesIndustry) : undefined) ??
-  briefsDesc[0];
+  (industryThreatKeys.size > 0
+    ? (briefsDesc.find(matchesPrimary) ?? briefsDesc.find(matchesSecondary))
+    : undefined) ?? briefsDesc[0];
 
 let body = entry.body;
 if (bizPost && latestBrief) {
