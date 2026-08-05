@@ -330,8 +330,15 @@ function joinPaths(...parts: string[]): string {
     .join("/");
 }
 
+/**
+ * `cover` の値を URL に直す。
+ *
+ * 先頭が `/` のものは**サイト内の絶対パス**（`/assets/covers/<slug>.jpg`）なので
+ * 素通しする——posts リポジトリのファイルではないため raw の URL に混ぜない
+ * （カバー・OGP生成 v2 §A-5）。リポジトリ相対の値は従来どおり raw に解決する。
+ */
 function resolveCoverUrl(relativePath: string): string {
-  return !relativePath || !POSTS_REPO
+  return !relativePath || !POSTS_REPO || relativePath.startsWith("/")
     ? relativePath
     : relativePath.startsWith("http://") || relativePath.startsWith("https://")
       ? relativePath

@@ -7,14 +7,14 @@
 
 | ファイル | 記事 | 撮影者 | 出所 | ライセンス |
 |---|---|---|---|---|
-| verifiable-intent-provenance-layer-agent-payments.jpg | 2026.06.22 意図の証明に、根拠の検証を重ねる | Jonas Leupe | https://unsplash.com/photos/0IVop5v4MMU | Unsplash License |
+| verifiable-intent-provenance-layer-agent-payments.jpg | 2026.06.22 意図の証明に、根拠の検証を重ねる（金融街を望む窓辺のシルエット） | Charles Forerunner | https://unsplash.com/photos/3fPXt37X6UQ | Unsplash License |
 | verifiable-origin-bridge-exploits-2026.jpg | 2026.04.30 2026年のブリッジ事象 | Scott Rodgerson | https://unsplash.com/photos/PSpf_XgOM5w | Unsplash License |
-| detection-is-not-proof.jpg | 2026.05.22 サイバー防衛に残された最後の層 | Abdulkadir Emiroğlu | https://unsplash.com/photos/5EUo0q15rTg | Unsplash License |
-| from-data-sharing-to-verification-sharing.jpg | 2026.03.18 データ共有から検証共有へ | Bluestonex | https://unsplash.com/photos/-8Lsg7OqCBE | Unsplash License |
-| claude-fable-5-what-ai-did-proof.jpg | 2026.06.10 「何をしたか」の証明が要る | Miha Meglič | https://unsplash.com/photos/p7Bfwn_VKRQ | Unsplash License |
+| detection-is-not-proof.jpg | 2026.05.22 サイバー防衛に残された最後の層（外殻が覆い、内側は見えない） | Bilge Tekin | https://unsplash.com/photos/GiATUqz4NYY | Unsplash License |
+| from-data-sharing-to-verification-sharing.jpg | 2026.03.18 データ共有から検証共有へ（作者指定・調達リスト §3.3 の「避ける: 港のコンテナ」より優先） | Timelab | https://unsplash.com/photos/sWOvgOOFk1g | Unsplash License |
+| claude-fable-5-what-ai-did-proof.jpg | 2026.06.10 「何をしたか」の証明が要る（洋上風力の列 — 無人で自律稼働し、遠いほど霧に消える） | Nicholas Doherty | https://unsplash.com/photos/pONBhDyOFoM | Unsplash License |
 | ai-financial-cybersecurity-akamai-2026.jpg | 2026.06.04 AI時代の金融サイバー攻撃対策 | Erik Mclean | https://unsplash.com/photos/_uiWUtMqzvI | Unsplash License |
 | ppsi-stablecoin-aml-kyc-third-layer.jpg | 2026.05.15 x402 に第3層を足す | Jakub Żerdzicki | https://unsplash.com/photos/4YdFMaYq-xA | Unsplash License |
 | verifiable-ai-financial-agents-2026.jpg | 2026.05.07 金融AIが業務の中核に入った 2026（スタジアム座席の俯瞰 — スケール抽象） | Samuel Sianipar | https://unsplash.com/photos/oui6HkE7xEM | Unsplash License |
-| keep-ai-underwriting-without-data-handover.jpg | 2026.05.28 渡さずに、審査する（暗所のスマホの手元） | Gilles Lambert | https://unsplash.com/photos/pb_lF8VWaPU | Unsplash License |
+| keep-ai-underwriting-without-data-handover.jpg | 2026.05.28 渡さずに、審査する（半透明の膜に光が透ける — 中は見えないが通る） | Daniele Levis Pelusi | https://unsplash.com/photos/pAEwRKQJcn8 | Unsplash License |
 | ai-explainability-management-crypto-proof.jpg | 2026.04.16 説明可能経営（番号付き私書箱の列 — 記録の在り処のスケール抽象） | Jinsoo Choi | https://unsplash.com/photos/a66u8vmMcMc | Unsplash License |
-| verified-attributes-travel-public-services.jpg | 2026.04.07 旅行・公共（暫定 — 赤×=現状の摩擦。差し替え候補あり） | Ries Bosch | https://unsplash.com/photos/0QUf_a6ggHE | Unsplash License |
+| verified-attributes-travel-public-services.jpg | 2026.04.07 旅行・公共（空港のガラス面とシルエット — スケール抽象） | Artur Tumasjan | https://unsplash.com/photos/KZSNMN4VxR8 | Unsplash License |

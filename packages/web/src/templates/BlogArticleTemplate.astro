@@ -30,7 +30,7 @@ import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import SchemaOrg from "@/components/SchemaOrg";
 import BlogCover from "../components/BlogCover.astro";
-import { resolveCoverPhoto } from "../lib/coverPhoto";
+import { resolveCoverImage } from "../lib/coverPhoto";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface BlogArticleTemplateProps {
@@ -79,7 +79,7 @@ const isJa = locale === "ja";
 
 /* 写真カバー（§C-2）: coverPhoto が指定され public/ に実在するときだけ。
    無ければ従来どおり category+slug の抽象パターンに落ちる。 */
-const coverPhotoSrc = resolveCoverPhoto(post.coverPhoto);
+const coverPhotoSrc = resolveCoverImage(post);
 
 /* 証拠ブロック（§B）の文言。数字の説明責任は検証センター1枚に集約する
    ため、`GET /v1/counters` は呼ばない（§B-6）。EN は ¥ を出さない（§B-5）。 */

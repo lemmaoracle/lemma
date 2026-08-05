@@ -168,8 +168,12 @@ const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
 
     position: relative;
     overflow: hidden;
-    margin-top: 80px;
-    padding: 52px 0 28px;
+    /* 余白は**フッターの内側**（padding）に持つ。margin で外に取ると、
+       その 80px にはページの背景が及ばず body の地色（クリーム）が帯として
+       出る——これが「フッター手前の余白」の正体だった（#779 はページ側の
+       padding を削ったが、帯そのものは margin 由来なので残っていた）。
+       見た目の間隔は 80+52=132px で従来と同じ。 */
+    padding: 132px 0 28px;
     background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
     font-family: "Space Grotesk", "Noto Sans JP", "Hiragino Sans", sans-serif;
   }

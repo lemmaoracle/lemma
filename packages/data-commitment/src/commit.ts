@@ -218,42 +218,46 @@ const buildMerkleTree = (
   const padding: bigint[] = Array.from({ length: size - leafCount }, (_unused) => zero);
   const padded: bigint[] = [...leaves, ...padding];
 
-  /* eslint-disable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements --
-   * Merkle tree construction requires imperative mutation for performance */
-  const layers: bigint[][] = [padded];
-  let current = padded;
+  // Build next Merkle layer by hashing pairs of siblings
+  const buildNextLayer = (layer: readonly bigint[]): readonly bigint[] =>
+    Array.from({ length: layer.length / 2 }, (_, i) => {
+      const left = layer[i * 2] ?? 0n;
+      const right = layer[i * 2 + 1] ?? 0n;
+      return poseidon2([left, right]);
+    });
 
-  while (current.length > 1) {
-    const next: bigint[] = [];
-    for (let i = 0; i < current.length; i += 2) {
-      const left = current[i] ?? 0n;
-      const right = current[i + 1] ?? 0n;
-      next.push(poseidon2([left, right]));
-    }
-    layers.push(next);
-    current = next;
-  }
-  /* eslint-enable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements */
+  // Recursively build layers until we reach the root
+  const buildLayers = (
+    acc: readonly (readonly bigint[])[],
+    current: readonly bigint[],
+  ): readonly (readonly bigint[])[] =>
+    current.length <= 1
+      ? [...acc, current]
+      : buildLayers([...acc, current], buildNextLayer(current));
 
-  const root = current[0] ?? zero;
+  const allLayers = buildLayers([], padded);
+  const layers: readonly (readonly bigint[])[] = allLayers;
+  const root = allLayers[allLayers.length - 1]?.[0] ?? zero;
 
   const inclusionProofs = Array.from({ length: leafCount }, (_, leafIdx) => {
-    const siblings: string[] = [];
-    const indices: number[] = [];
-
-    /* eslint-disable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements --
-     * Proof extraction requires imperative index tracking */
-    let idx = leafIdx;
-    for (let level = 0; level < depth; level++) {
-      const siblingIdx = idx ^ 1;
-      const sibling = layers[level]?.[siblingIdx] ?? zero;
-      siblings.push(toHex(sibling));
-      indices.push(idx & 1);
-      idx = Math.floor(idx / 2);
-    }
-    /* eslint-enable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements */
-
-    return { siblings, indices };
+    const levels = Array.from({ length: depth }, (_, level) => level);
+    const proof = levels.reduce<{
+      idx: number;
+      siblings: string[];
+      indices: number[];
+    }>(
+      (acc, level) => {
+        const siblingIdx = acc.idx ^ 1;
+        const sibling = layers[level]?.[siblingIdx] ?? zero;
+        return {
+          idx: Math.floor(acc.idx / 2),
+          siblings: [...acc.siblings, toHex(sibling)],
+          indices: [...acc.indices, acc.idx & 1],
+        };
+      },
+      { idx: leafIdx, siblings: [], indices: [] },
+    );
+    return { siblings: proof.siblings, indices: proof.indices };
   });
 
   return { root, depth, inclusionProofs };
@@ -340,17 +344,16 @@ export const verifyInclusion = (
 
   const leaf = poseidon3([pathField, valueField, blindingField]);
 
-  /* eslint-disable functional/no-let, functional/no-loop-statements, functional/no-expression-statements --
-   * Merkle verification requires imperative accumulation */
-  let current = leaf;
-  for (let i = 0; i < siblings.length; i++) {
-    const sibling = BigInt(siblings[i] ?? "0");
-    const idx = indices[i] ?? 0;
-    current = idx === 0
-      ? poseidon2([current, sibling])
-      : poseidon2([sibling, current]);
-  }
-  /* eslint-enable functional/no-let, functional/no-loop-statements, functional/no-expression-statements */
+  const current = siblings.reduce(
+    (acc, sibling, i) => {
+      const sib = BigInt(sibling);
+      const idx = indices[i];
+      return idx === 0
+        ? poseidon2([acc, sib])
+        : poseidon2([sib, acc]);
+    },
+    leaf,
+  );
 
   return toHex(current) === root;
 };
