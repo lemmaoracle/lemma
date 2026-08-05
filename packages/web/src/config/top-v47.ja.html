@@ -6,12 +6,9 @@
   <div class="hin">
     <div>
       <h1><span class="nb">AI時代に、</span><span class="nb">何が本物かを証明する。</span></h1>
-      <p class="sublead">生成AIで、コピーのコストはゼロになりました。記録・データ・AIの実行に暗号技術で証明を付け、受け取った側が自分で確かめられるようにします。証明のあるものだけが、先へ進みます。</p>
-      <ul class="tfacts">
-        <li>生データは受け取らない</li>
-        <li>世界中のどこからでも第三者が検証できる</li>
-        <li>検証にキーもアカウントも要らない</li>
-      </ul>
+      <!-- サブリードは2文に短縮。3つの事実（生データ／第三者検証／キー不要）は
+           ストーリー節の締め「渡すのは原本ではなく、証明だけ。」の下へ移設した。 -->
+      <p class="sublead">記録・データ・AIの実行に暗号技術で証明を付け、受け取った側が自分で確かめられるようにします。証明のあるものだけが、先へ進みます。</p>
       <div class="btnrow" style="margin-top:0">
         <a class="btn solid" href="https://tally.so/r/EkBqDX?source=top">エンタープライズ相談</a>
         <a class="btn ghostd js-doclink" href="/ja/verify/">証明サンプルを検証する</a>
@@ -30,14 +27,15 @@
         <p class="ren">Proof Verifications</p>
         <p class="biglabel">検証済み証明数</p>
         <p class="bignum off" id="vcount">———</p>
-        <p class="bigsub" id="vsub">読み込み中…</p>
+        <!-- 内訳はここでは出さない（pfoot の「内訳を見る →」で /verify/ に送る）。
+             #vsub はレジストリに到達できないときのエラー行としてだけ使う。 -->
+        <p class="bigsub" id="vsub"></p>
         <div class="pmetrics">
           <div>発行された証明<b id="icount">—</b></div>
           <div>最終更新<b id="vup">—</b></div>
           <div>検証コスト<b>¥0</b></div>
         </div>
       </div>
-      <div class="pstream" id="pstream" hidden></div>
       <div class="pfoot">この数字も、証明されています。
         <a href="https://workers.lemma.workers.dev/v1/counters" target="_blank" rel="noopener">この数字を検証する →</a>
         <a href="/ja/verify/">内訳を見る →</a>
@@ -99,6 +97,12 @@
       <div class="bfoot">
         <p class="bfq">どれも、原本を見せれば確かめられます。<br>けれど、原本は渡したくない。</p>
         <p class="bfa">渡すのは原本ではなく、証明だけ。</p>
+        <!-- ヒーローから移設した3つの事実。締めの直後に置き、1セクションにまとめる。 -->
+        <ul class="tfacts bfacts">
+          <li>生データは受け取らない</li>
+          <li>世界中のどこからでも第三者が検証できる</li>
+          <li>検証にキーもアカウントも要らない</li>
+        </ul>
       </div>
     </div>
   </section>

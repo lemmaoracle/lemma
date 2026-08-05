@@ -7,12 +7,9 @@
   <div class="hin">
     <div>
       <h1>Prove what's real, in the age of AI.</h1>
-      <p class="sublead">Generative AI has driven the cost of copying to zero. Lemma attaches cryptographic proofs to records, data, and AI runs, so whoever receives them can verify them on their own. Only what carries proof moves forward.</p>
-      <ul class="tfacts">
-        <li>Raw data never reaches us</li>
-        <li>Third parties can verify from anywhere in the world</li>
-        <li>Verification needs no key and no account</li>
-      </ul>
+      <!-- Sub-lead trimmed to two sentences; the three facts moved down to the
+           closing line of the story section ("Hand over the proof …"). -->
+      <p class="sublead">Lemma attaches cryptographic proofs to records, data, and AI runs, so whoever receives them can verify them on their own. Only what carries proof moves forward.</p>
       <div class="btnrow" style="margin-top:0">
         <a class="btn solid" href="https://tally.so/r/Pd2Rl5?source=top">Enterprise consultation</a>
         <a class="btn ghostd js-doclink" href="/verify/">Verify a sample proof</a>
@@ -31,14 +28,15 @@
         <p class="ren">Proof Verifications</p>
         <p class="biglabel">Verified proofs</p>
         <p class="bignum off" id="vcount">———</p>
-        <p class="bigsub" id="vsub">Loading…</p>
+        <!-- No breakdown here (the "See the breakdown →" link in pfoot goes to /verify/).
+             #vsub is used only for the registry-unreachable message. -->
+        <p class="bigsub" id="vsub"></p>
         <div class="pmetrics">
           <div>PROOFS ISSUED<b id="icount">—</b></div>
           <div>LAST UPDATED<b id="vup">—</b></div>
           <div>VERIFY COST<b>FREE</b></div>
         </div>
       </div>
-      <div class="pstream" id="pstream" hidden></div>
       <div class="pfoot">These numbers are proven, too.
         <a href="https://workers.lemma.workers.dev/v1/counters" target="_blank" rel="noopener">Verify these numbers →</a>
         <a href="/verify/">See the breakdown →</a>
@@ -100,6 +98,12 @@
       <div class="bfoot">
         <p class="bfq">All of these could be checked by showing the original.<br>But you do not want to hand the original over.</p>
         <p class="bfa">Hand over the proof — not the original.</p>
+        <!-- The three facts, moved here from the hero. -->
+        <ul class="tfacts bfacts">
+          <li>Raw data never reaches us</li>
+          <li>Third parties can verify from anywhere in the world</li>
+          <li>Verification needs no key and no account</li>
+        </ul>
       </div>
     </div>
   </section>
