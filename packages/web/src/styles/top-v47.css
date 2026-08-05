@@ -177,7 +177,9 @@ body:has(main.topx) .lemma-brand-bar{display:none}
   .topx .nb{display:inline}
   .topx .isec-h b .nb,.topx .herodark h1 .nb{display:inline;word-break:normal}
   /* ヒーロー右カラム: GET /v1/counters (.rep) の右寄せをやめ独立行に */
-  .topx .rep{flex-basis:100%;margin-left:0}}
+  .topx .rep{flex-basis:100%;margin-left:0}
+  /* NEW ティッカー: 日本語長文は normal では折り返せないため any で割る */
+  .topx .ticker a{word-break:break-all}}
 
 /* 巨大な実数（枠を持たない）＋ 検証センターと同じ順序 */
 /* 最大128px(モック)は h1 に対して勝ちすぎるため、96px 上限にバランス調整 */
