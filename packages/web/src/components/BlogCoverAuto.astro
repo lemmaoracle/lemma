@@ -14,6 +14,7 @@
  */
 import BlogCover from "./BlogCover.astro";
 import { resolveCoverImage } from "../lib/coverPhoto";
+import { caseStudyCardSvg } from "../lib/caseStudyCover";
 
 interface Props {
   readonly category: string;
@@ -21,13 +22,31 @@ interface Props {
   readonly coverPhoto?: string;
   /** frontmatter `cover`（サイト内絶対パスのときだけカバーとして使う）。 */
   readonly cover?: string;
+  /** `case-study` を含むと生成カバー（lib/caseStudyCover）に切り替える。 */
+  readonly tags?: ReadonlyArray<string>;
+  /** 生成カバーに載せる主文（1要素 = 1行）。 */
+  readonly coverLines?: ReadonlyArray<string>;
+  readonly locale?: "ja" | "en";
 }
 
-const { category, slug, coverPhoto, cover } = Astro.props;
+const { category, slug, coverPhoto, cover, tags, coverLines, locale } = Astro.props;
 const photoSrc = resolveCoverImage({ coverPhoto, cover });
+/* 導入事例は写真ではなく生成カバー。写真用の色調・ヴェール・走査線は
+   図版には掛けない（`saturate(.62)` がライムを潰すため — 詳細は
+   lib/caseStudyCover.ts）。 */
+const caseSvg =
+  (tags?.includes("case-study") ?? false)
+    ? caseStudyCardSvg({
+        lines: coverLines ?? [],
+        locale: locale === "en" ? "en" : "ja",
+        key: slug,
+      })
+    : undefined;
 ---
 
-{photoSrc ? (
+{caseSvg ? (
+  <span class="cover-art" set:html={caseSvg} />
+) : photoSrc ? (
   <span class="cover-photo" aria-hidden="true">
     <img src={photoSrc} alt="" loading="lazy" />
   </span>
@@ -36,6 +55,9 @@ const photoSrc = resolveCoverImage({ coverPhoto, cover });
 )}
 
 <style>
+  /* 生成カバーは地を自前で持つので、写真用の処理は一切掛けない。 */
+  .cover-art { display: block; overflow: hidden; }
+  .cover-art :global(svg) { width: 100%; height: 100%; display: block; }
   .cover-photo {
     --cover-scan-top: 62%;
     --cover-scan-height: 2px;

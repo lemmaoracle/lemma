@@ -1155,9 +1155,6 @@
 .indv1 .newscard .cover .nc-photo{position:absolute;inset:0;display:block;z-index:1;}
 .indv1 .newscard .cover .nc-photo img{width:100%;height:100%;object-fit:cover;display:block;
     filter:sepia(.16) saturate(.62) hue-rotate(-8deg) contrast(1.04);}
-/* 導入事例のカバーは Brief の生成カバー（xMinYMid）と版面を揃えているので、
-   中央ではなく左端を固定して切る。 */
-.indv1 .newscard .cover .nc-photo.nc-left img{object-position:left center;}
 .indv1 .newscard .cover .nc-photo::after{content:"";position:absolute;inset:0;
     background:linear-gradient(200deg,rgba(16,22,17,.06) 0%,rgba(16,22,17,.3) 62%,rgba(16,22,17,.52) 100%);}
 .indv1 .newscard .cover .nc-photo::before{content:"";position:absolute;left:0;right:0;top:62%;height:2px;

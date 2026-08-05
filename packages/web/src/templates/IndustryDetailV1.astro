@@ -19,6 +19,7 @@ import { resolveCoverImage } from "../lib/coverPhoto";
 import { coverArtwork, COVER_WIDTH, COVER_HEIGHT } from "../lib/blogCover";
 import { CATEGORY_LABELS } from "../data/criticalBriefs";
 import { briefCardSvg } from "../lib/briefCover";
+import { caseStudyCardSvg } from "../lib/caseStudyCover";
 import "../styles/industry-v1.css";
 
 export interface IndustryDetailV1Props {
@@ -137,19 +138,16 @@ if (bizPost && latestBrief) {
     locale: locale === "ja" ? "ja" : "en",
     key: `${entry.slug}-${briefSlug}`,
   });
-  /* 枠1。事例があればカード、無ければ従来の「近日公開」。カバーの扱いは
-     枠3 と同じ（写真が実在すれば写真、無ければカテゴリ由来の抽象パターン）。
-     `nc-left` は左端を固定する指定。導入事例のカバーは隣の Brief カバー
-     （生成 SVG・`xMinYMid` で左端固定）と版面を揃えてあり、中央基準で
-     切られると Brief と横位置がずれる。 */
-  const csPhoto = caseStudy ? resolveCoverImage(caseStudy) : undefined;
+  /* 枠1。事例があればカード、無ければ従来の「近日公開」。カバーは Brief と
+     同じ生成 SVG（lib/caseStudyCover）——写真用の処理はライムを潰すため、
+     図版はその経路に乗せない。 */
   const caseStudyHtml = caseStudy
     ? `<a class="newscard" href="${base}/blog/${caseStudy.slug}">
-        <div class="cover">${
-          csPhoto
-            ? `<span class="nc-photo nc-left"><img src="${csPhoto}" alt="" loading="lazy"/></span>`
-            : `<svg viewBox="0 0 ${COVER_WIDTH} ${COVER_HEIGHT}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${coverArtwork(caseStudy.category, caseStudy.slug)}</svg>`
-        }</div>
+        <div class="cover">${caseStudyCardSvg({
+          lines: caseStudy.coverLines ?? [],
+          locale: locale === "en" ? "en" : "ja",
+          key: `${entry.slug}-${caseStudy.slug}`,
+        })}</div>
         <span class="meta"><em class="ja">導入事例</em><span>${caseStudy.date}</span></span>
         <span class="t">${esc(clip(caseStudy.title, 90))}</span>
       </a>`
