@@ -1131,6 +1131,21 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     .blog-container {
       padding: 0 24px;
     }
+    /* 日本語長文タイトルのあふれを防ぐ（keep-all では折り返せないため） */
+    .blog-h1 {
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+    /* 本文中の途切れない長い文字列（URL等）のあふれを防ぐ */
+    .blog-body {
+      overflow-wrap: anywhere;
+    }
+    /* pre 内の長いURLやコード行のあふれを防ぐ */
+    .blog-body :global(pre) {
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
     .blog-cta {
       padding: 30px 24px 28px;
     }
