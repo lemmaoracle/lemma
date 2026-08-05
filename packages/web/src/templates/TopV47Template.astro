@@ -477,6 +477,53 @@ const ogDescription = isJa
             /* iframe 未準備なら load 側で再送する */
           }
         }
+
+        /* ---- 01〜04 を押すと、そのシーンの頭から見せる ----
+           ムービーは1周で 04 の完成状態のまま止まる作りなので、気になった場面へ
+           戻る手段が無かった。要約カード自体を押せるようにする（数字だけより的が
+           大きい）。div なので role/tabindex とキー操作を自分で付ける。
+           reduced-motion では動かさず、その場面の静止画に切り替えるだけにする。 */
+        ids.forEach(function (id, idx) {
+          var card = document.getElementById("scn-" + id);
+          if (!card) return;
+          card.setAttribute("role", "button");
+          card.setAttribute("tabindex", "0");
+          card.setAttribute("aria-controls", "film");
+          card.classList.add("tappable");
+          var jump = function () {
+            try {
+              f.contentWindow.postMessage(
+                { type: "lemma:film:goto", scene: idx + 1, play: !reduced },
+                "*",
+              );
+            } catch (err) {
+              /* iframe 未準備なら何も起きない。押し直せばよい */
+            }
+            /* 選択状態は押した瞬間に出す（ムービーからの通知も来るが体感を先に） */
+            ids.forEach(function (x) {
+              var n = document.getElementById("scn-" + x);
+              if (n) n.classList.toggle("on", x === id);
+            });
+            /* ムービーが画面外だと、再生しても見えない。半分以上隠れていたら寄せる */
+            var r = f.getBoundingClientRect();
+            var vh = window.innerHeight || 0;
+            var shown = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+            if (r.height > 0 && shown / r.height < 0.6) {
+              f.scrollIntoView({
+                behavior: reduced ? "auto" : "smooth",
+                block: "center",
+              });
+            }
+          };
+          card.addEventListener("click", jump);
+          card.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+              e.preventDefault();
+              jump();
+            }
+          });
+        });
+
         /* reduced-motion では自動再生しない（ムービー側は 01 の完成状態で静止） */
         if (reduced) return;
         /* iframe の読み込みは非同期: 進入フラグと load の両方で play を送る */
