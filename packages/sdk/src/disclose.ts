@@ -148,30 +148,27 @@ export type KeyGenOptions = Readonly<{
 /**
  * Generate a BBS+ key pair (secret key: 32 bytes, public key: 96 bytes).
  */
-export const generateKeyPair = async (options: KeyGenOptions = {}): Promise<BbsKeyPair> => {
-  // Ensure WASM is initialized before any crypto operations
-  // eslint-disable-next-line functional/no-expression-statements -- Promise<void> awaited for side effects
-  await ensureWasmInitialized;
+export const generateKeyPair = (options: KeyGenOptions = {}): Promise<BbsKeyPair> =>
+  ensureWasmInitialized.then((_) => {
+    const info = options.keyInfo ?? te.encode("lemma-bbs-key");
 
-  const info = options.keyInfo ?? te.encode("lemma-bbs-key");
+    // Generate a 32-byte random seed
+    const seed = randomBytes(KEY_MATERIAL_BYTES);
 
-  // Generate a 32-byte random seed
-  const seed = randomBytes(KEY_MATERIAL_BYTES);
+    // Generate signing key from seed
+    const secretKey = bbsPlusGenerateSigningKey(seed);
 
-  // Generate signing key from seed
-  const secretKey = bbsPlusGenerateSigningKey(seed);
+    // Generate signature params for 1 message
+    const params = bbsPlusGenerateSignatureParamsG1(1, info);
 
-  // Generate signature params for 1 message
-  const params = bbsPlusGenerateSignatureParamsG1(1, info);
+    // Generate public key from secret key
+    const publicKey = bbsPlusGeneratePublicKeyG2(secretKey, params);
 
-  // Generate public key from secret key
-  const publicKey = bbsPlusGeneratePublicKeyG2(secretKey, params);
-
-  return {
-    secretKey,
-    publicKey,
-  };
-};
+    return {
+      secretKey,
+      publicKey,
+    };
+  });
 
 /**
  * Issuer signs a set of attribute messages with their BBS+ secret key.
@@ -186,14 +183,11 @@ export const generateKeyPair = async (options: KeyGenOptions = {}): Promise<BbsK
  *
  * Whitepaper §2.6 / §4.6.
  */
-export const sign = async (_client: LemmaClient, input: SignInput): Promise<SignOutput> => {
-  // Ensure WASM is initialized before any crypto operations
-  // eslint-disable-next-line functional/no-expression-statements -- Promise<void> awaited for side effects
-  await ensureWasmInitialized;
-
-  return input.messages.length === 0
-    ? reject("messages must not be empty")
-    : R.pipe(encodeMessages, (scalars) => {
+export const sign = (_client: LemmaClient, input: SignInput): Promise<SignOutput> =>
+  ensureWasmInitialized.then((_) =>
+    input.messages.length === 0
+      ? reject("messages must not be empty")
+      : R.pipe(encodeMessages, (scalars) => {
         // Generate signature params based on message count
         const params = bbsPlusGenerateSignatureParamsG1(input.messages.length, input.header);
 
@@ -215,8 +209,8 @@ export const sign = async (_client: LemmaClient, input: SignInput): Promise<Sign
           header: input.header,
           issuerId: input.issuerId,
         };
-      })(input.messages);
-};
+      })(input.messages)
+  );
 
 /**
  * Verify a BBS+ signature against the issuer's public key.
@@ -231,12 +225,9 @@ export const sign = async (_client: LemmaClient, input: SignInput): Promise<Sign
  *
  * Whitepaper §2.6 / §4.6.
  */
-export const verify = async (_client: LemmaClient, signOutput: SignOutput): Promise<boolean> => {
-  // Ensure WASM is initialized before any crypto operations
-  // eslint-disable-next-line functional/no-expression-statements -- Promise<void> awaited for side effects
-  await ensureWasmInitialized;
-
-  return R.pipe(encodeMessages, (scalars) => {
+export const verify = (_client: LemmaClient, signOutput: SignOutput): Promise<boolean> =>
+  ensureWasmInitialized.then((_) =>
+    R.pipe(encodeMessages, (scalars) => {
     const params = bbsPlusGenerateSignatureParamsG1(signOutput.messages.length, signOutput.header);
 
     const result = bbsPlusVerifyG1(
@@ -248,8 +239,8 @@ export const verify = async (_client: LemmaClient, signOutput: SignOutput): Prom
     );
 
     return result.verified;
-  })(signOutput.messages);
-};
+  })(signOutput.messages)
+  );
 
 /**
  * Holder creates a selective disclosure proof, choosing which
@@ -268,15 +259,12 @@ export const verify = async (_client: LemmaClient, signOutput: SignOutput): Prom
  *
  * Whitepaper §2.6 / §4.6.
  */
-export const reveal = async (
+export const reveal = (
   _client: LemmaClient | undefined,
   input: RevealInput,
-): Promise<RevealOutput> => {
-  // Ensure WASM is initialized before any crypto operations
-  // eslint-disable-next-line functional/no-expression-statements -- Promise<void> awaited for side effects
-  await ensureWasmInitialized;
-
-  return input.indexes.length === 0
+): Promise<RevealOutput> =>
+  ensureWasmInitialized.then((_) =>
+    input.indexes.length === 0
     ? reject("indexes must not be empty")
     : R.pipe(encodeMessages, (scalars) => {
         const params = bbsPlusGenerateSignatureParamsG1(input.messages.length, input.header);
@@ -316,8 +304,8 @@ export const reveal = async (
           indexes: input.indexes,
           messages: revealedMessages,
         };
-      })(input.messages);
-};
+      })(input.messages)
+  );
 
 /**
  * Verifier checks a selective-disclosure proof against the issuer's public key.
@@ -332,15 +320,12 @@ export const reveal = async (
  *
  * Whitepaper §2.6 / §4.6.
  */
-export const verifyProof = async (
+export const verifyProof = (
   _client: LemmaClient,
   input: VerifyProofInput,
-): Promise<boolean> => {
-  // Ensure WASM is initialized before any crypto operations
-  // eslint-disable-next-line functional/no-expression-statements -- Promise<void> awaited for side effects
-  await ensureWasmInitialized;
-
-  return R.pipe(encodeMessages, (disclosedScalars) => {
+): Promise<boolean> =>
+  ensureWasmInitialized.then((_) =>
+    R.pipe(encodeMessages, (disclosedScalars) => {
     const params = bbsPlusGenerateSignatureParamsG1(input.count, input.header);
 
     // Populate revealed messages map
@@ -366,8 +351,8 @@ export const verifyProof = async (
     );
 
     return result.verified;
-  })(input.messages);
-};
+  })(input.messages)
+  );
 
 /**
  * Context from the signing / reveal flow needed to make the
