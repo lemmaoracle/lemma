@@ -118,17 +118,13 @@ const paymentMiddleware = (
         // Enrich each route with discovery metadata
         const enrichedRoutes = Object.keys(routes).reduce<Record<string, unknown>>(
           (acc, routePattern) => {
-            const routeConfig = (routes as unknown as Record<string, Record<string, unknown>>)[
-              routePattern
-            ];
+            const routeConfig = (routes as unknown as Record<string, Record<string, unknown>>)[routePattern];
             const discovery = discoveryForRoute(routePattern, discoveryConfig);
 
             const enrichedRouteConfig = discovery
               ? {
                   ...routeConfig,
-                  accepts: (
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    (routeConfig?.accepts as ReadonlyArray<Record<string, unknown>>) ??
+                  accepts: ((routeConfig?.accepts as ReadonlyArray<Record<string, unknown>> | undefined) ??
                     []
                   ).map((accept) => ({
                     ...accept,
