@@ -20,10 +20,21 @@ export interface UseCaseCollation {
   readonly bItems: ReadonlyArray<string>;
   /** 2 枚のあいだに置く演算子ラベル（既定「照合」）。 */
   readonly opLabel: string;
-  /** 下段 — 相手に渡る結果。 */
-  readonly outLabel: string;
-  readonly outValue: string;
+  /** 照合面の脚注 — 導入イメージ（既存の仕組みのままでよい、など）。 */
+  readonly opNote: string;
+  /** 発行面 — 相手に渡る述語。複数書くと ✓ の箇条書きになる。 */
+  readonly outItems: ReadonlyArray<string>;
+  /** 発行面 — 渡らない側（🔒 でグレーに落とす行）。 */
+  readonly lockNote: string;
+  /** 図の下に置く一文。 */
   readonly outNote: string;
+  /** 各面の登場人物。誰の手元で起きているのかを面の頭に出す。 */
+  readonly actorMatch: string;
+  readonly actorIssue: string;
+  readonly actorVerify: string;
+  /** 面と面をつなぐ矢印のラベル。 */
+  readonly joinIssue: string;
+  readonly joinVerify: string;
 }
 
 const COLLATION: Readonly<
@@ -31,15 +42,21 @@ const COLLATION: Readonly<
 > = {
   "counterparty-screening": {
     ja: {
-      aLabel: "A ── 手元にある取引先の情報",
+      aLabel: "照合対象 ── 手元にある取引先の情報",
       aItems: ["社名・法人番号", "代表者・役員", "所在地・実質支配者"],
-      bLabel: "B ── 発行者が持つ与信・反社リスト",
+      bLabel: "照合先 ── 与信・反社データベース",
       bItems: ["反社・制裁リスト", "信用情報・与信区分", "取引制限国"],
       opLabel: "照合",
-      outLabel: "相手に渡るのは、照合の結果だけ",
-      outValue: "反社リストに非該当 ／ 与信区分が基準以上",
+      opNote: "照合そのものは、既存の与信／反社パイプライン・API のままでよい。",
+      outItems: ["反社リストに非該当", "与信区分が基準以上"],
+      lockNote: "原本（取引履歴・スコア・照会履歴）は、送信も開示もされない。",
       outNote:
-        "A も B も、原本は相手に渡らない。渡るのは、この結果が「いつ・誰の発行で・改ざんなく」出たかを確かめられる証明だけ。",
+        "双方の原本は外に出ない。渡るのは「いつ・誰が・改ざんなく発行したか」を示せる、約200バイトの証明だけ。",
+      actorMatch: "自社 ／ 与信・コンプライアンス部門",
+      actorIssue: "裏で API 連携",
+      actorVerify: "取引先・グループ会社・監査人",
+      joinIssue: "照合結果",
+      joinVerify: "証明 URL",
     },
   },
 };
