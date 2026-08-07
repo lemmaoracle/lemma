@@ -112,6 +112,13 @@ export const isLemmaRouteConfig = (
   "bazaarInputSchemaRef" in config ||
   "bazaarOutputSchemaRef" in config;
 
+/** Fail helper: sync validation barrier — throw is the only call-site abort. */
+const failConfigured = (message: string): never => {
+  // imperative: sync validation barrier must throw — no functional alternative
+  // eslint-disable-next-line functional/no-throw-statements
+  throw new Error(message);
+};
+
 /**
  * Runtime validation for v0.2's "discoverable implies metadata" contract.
  *
@@ -119,31 +126,22 @@ export const isLemmaRouteConfig = (
  * on misconfiguration so the failure surfaces at deploy time, not on first
  * incoming request.
  */
-// imperative: sync validation barrier — no functional alternative
-export const assertDiscoverableConfigured = (config: LemmaRouteConfig): void => {
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (!config.discoverable) return;
-
-  const requiredFields = ["schema", "bazaarCategory", "bazaarDescription"] as const;
-  const missing = requiredFields.filter(
-    (field) => !config[field],
-  );
-
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (missing.length > 0) {
-    // eslint-disable-next-line functional/no-throw-statements
-    throw new Error(
-      `[LemmaRouteConfig] discoverable: true requires ${missing.join(", ")}. ` +
-        `See packages/x402/src/README.md for the discoverable contract.`
-    );
-  }
-
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (config.bazaarDescription && config.bazaarDescription.length > 256) {
-    // eslint-disable-next-line functional/no-throw-statements
-    throw new Error(
-      `[LemmaRouteConfig] bazaarDescription exceeds 256 chars (got ${String(config.bazaarDescription.length)}). ` +
-        `Bazaar search hits favour concise descriptions; trim before deploy.`
-    );
-  }
-};
+export const assertDiscoverableConfigured = (config: LemmaRouteConfig): void =>
+  void (config.discoverable
+    ? ((missing: ReadonlyArray<string>) =>
+        missing.length > 0
+          ? failConfigured(
+              `[LemmaRouteConfig] discoverable: true requires ${missing.join(", ")}. ` +
+                `See packages/x402/src/README.md for the discoverable contract.`,
+            )
+          : config.bazaarDescription && config.bazaarDescription.length > 256
+            ? failConfigured(
+                `[LemmaRouteConfig] bazaarDescription exceeds 256 chars (got ${String(config.bazaarDescription.length)}). ` +
+                  `Bazaar search hits favour concise descriptions; trim before deploy.`,
+              )
+            : null)(
+          (["schema", "bazaarCategory", "bazaarDescription"] as const).filter(
+            (field) => !config[field],
+          ),
+        )
+    : null);

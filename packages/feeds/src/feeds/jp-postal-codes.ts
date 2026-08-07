@@ -44,6 +44,13 @@ export type PostalCodeRecord = Readonly<{
 
 const ZIP_LOCAL_HEADER_SIG = 0x04034b50;
 
+/** Fail helper for sync validation boundaries. */
+const failParse = (message: string): never => {
+  // imperative: sync validation boundary must throw — no functional alternative
+  // eslint-disable-next-line functional/no-throw-statements
+  throw new Error(message);
+};
+
 /**
  * Extract the first (and only) file from a ZIP buffer.
  *
@@ -120,13 +127,9 @@ export const parsePostalCodes = (
     }))
     .filter((r) => /^\d{7}$/.test(r.code));
 
-  // imperative: guard clause with throw — no functional alternative
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (records.length === 0)
-    // eslint-disable-next-line functional/no-throw-statements
-    throw new Error("jp-postal-codes: no valid records parsed");
-
-  return [...records].sort((a, b) => a.code.localeCompare(b.code));
+  return records.length === 0
+    ? failParse("jp-postal-codes: no valid records parsed")
+    : [...records].sort((a, b) => a.code.localeCompare(b.code));
 };
 
 // ── hashing / snapshot ───────────────────────────────────────────────────────
@@ -164,22 +167,21 @@ export type Snapshot = Readonly<{
 /** The committed compact structure (~4 leaves) plus the derived hashes. */
 export const buildSnapshot = (
   records: ReadonlyArray<PostalCodeRecord>,
-): Snapshot => {
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (records.length === 0)
-    // eslint-disable-next-line functional/no-throw-statements
-    throw new Error("jp-postal-codes: empty record set");
-  const contentHash = sha256hex(canonicalPostalCodes(records));
-  return {
-    compact: {
-      type: TYPE,
-      count: records.length,
-      contentHash,
-      updatedAt: new Date().toISOString(),
-    },
-    contentHash,
-  };
-};
+): Snapshot =>
+  records.length === 0
+    ? failParse("jp-postal-codes: empty record set")
+    : (() => {
+        const contentHash = sha256hex(canonicalPostalCodes(records));
+        return {
+          compact: {
+            type: TYPE,
+            count: records.length,
+            contentHash,
+            updatedAt: new Date().toISOString(),
+          },
+          contentHash,
+        };
+      })();
 
 // ── feed source ──────────────────────────────────────────────────────────────
 
@@ -191,10 +193,15 @@ export const jpPostalCodes: FeedSource = {
   // imperative: FeedSource.fetch contract — parameter present for interface compatibility
   fetch: async (_config?: FetcherConfig): Promise<FetchResult> => {
     const url = process.env["JP_POSTAL_CODES_URL"] ?? DEFAULT_URL;
-    const resp = await fetch(url);
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (!resp.ok)
-      throw new Error(`jp-postal-codes: fetch ${url} → ${String(resp.status)}`);
+    const resp = await fetch(url).then((r) =>
+      r.ok
+        ? r
+        : Promise.reject(
+            new Error(
+              `jp-postal-codes: fetch ${url} → ${String(r.status)}`,
+            ),
+          ),
+    );
 
     const zipBuf = Buffer.from(await resp.arrayBuffer());
     const csvBuf = extractFirstZipEntry(zipBuf);
