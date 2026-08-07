@@ -88,34 +88,18 @@ const BASE_C = isJa
       s2Lead: "AI に渡すものが変われば、漏洩のリスクごと消える。",
       s2Catch: "現場の手は増えない。相手の確認が変わる。",
       s2AfterFact: "証明された事実",
+      s2OpBar: "自社・現場の記録画面（既存システムのまま）",
+      s2OpRow1: "いつもの操作", s2OpRow1v: "記録を入力して、保存",
+      s2OpRow2: "保存と同時に", s2OpRow2v: "証明が付く（裏で API 連携）",
+      s2OpRow3: "記録の本文", s2OpRow3v: "送信されない",
+      s2OpCap: "現場は、保存するだけ。",
+      s2Link: "証明リンク",
+      s2VfBar: "相手のブラウザ — 検証画面",
+      s2VfHidden: "表示されない",
+      s2VfKey: "ログイン・キー", s2VfKeyVal: "不要",
+      s2VfCap: "相手は、リンクを開くだけ。",
       flowWasTag: "従来", flowNowTag: "Lemma",
       payHead: "渡すもの — 中身の落差", mechEye: "仕組み", mechH: "Lemma の核心メカニズム", mechMore: "詳しい仕組みを読む",
-      flow: {
-        insideLabel: "自社のなか",
-        outsideLabel: "相手のところ",
-        boundaryNote: "記録の本文は、ここを越えない",
-        aLabel: "手元の記録",
-        aItems: ["本文", "添付", "履歴"],
-        bLabel: "証明したい条件",
-        bItems: ["満たすべき基準", "有効期限", "発行者"],
-        opLabel: "照合",
-        results: ["条件を満たしている"],
-        crossLabel: "証明（約 200 バイト）",
-        toLabel: "相手・第三者",
-        toNote: "リンクを開くだけ。アカウントもキーも要らない",
-        payLead: "「原本丸ごと」から「証明された事実（原本 0 文字）」へ。",
-        wasTitle: "原本データ（過剰共有）",
-        wasDetail: "記録の本文・添付・履歴",
-        wasVolume: "数千文字の詳細データ",
-        nowTitle: "ZK 証明（最小限）",
-        nowDetail: "条件を満たしているという事実のみ",
-        nowVolume: "約 200 バイト ／ 原本 0 文字",
-        mechPoints: [
-          { t: "原本は外に出さない", d: "記録の本文（個人情報・機微データ）は自社内に留まる。渡さないので、漏洩のリスクが動かない。" },
-          { t: "渡すのは「証明された事実」だけ", d: "満たしているという事実のみを、約 200 バイトの ZK 証明として発行する。" },
-          { t: "相手はリンクを開くだけ", d: "受け取った側にアカウント作成は不要。「いつ・誰が・改ざんなく発行したか」を自力で確かめられる。" },
-        ],
-      },
       baBeforeTitle: "原本・中身をそのまま渡す", baAfterTitle: "事実だけを証明付きで渡す",
       baFlowBefore: "↓ すべて外部・AI へ渡る", baFlowAfter: "↓ 必要な事実だけ",
       baDataBeforeTitle: "原本をそのまま渡す", baDataAfterTitle: "事実だけを渡す",
@@ -160,34 +144,18 @@ const BASE_C = isJa
       s2Lead: "Change what reaches the AI, and the leakage risk goes with it.",
       s2Catch: "Nothing changes on the floor. Everything changes for the receiver.",
       s2AfterFact: "Proven fact",
+      s2OpBar: "Your team's existing screen",
+      s2OpRow1: "The usual step", s2OpRow1v: "Fill in the record and save",
+      s2OpRow2: "On save", s2OpRow2v: "A proof is attached (API, behind the scenes)",
+      s2OpRow3: "The document itself", s2OpRow3v: "never sent",
+      s2OpCap: "Your team just saves, as always.",
+      s2Link: "proof link",
+      s2VfBar: "Their browser — verification",
+      s2VfHidden: "not shown",
+      s2VfKey: "Login / keys", s2VfKeyVal: "not needed",
+      s2VfCap: "They just open a link.",
       flowWasTag: "Until now", flowNowTag: "With Lemma",
       payHead: "What travels — the gap in substance", mechEye: "How it works", mechH: "The mechanism, in three points", mechMore: "Read the full mechanism",
-      flow: {
-        insideLabel: "Your side",
-        outsideLabel: "Their side",
-        boundaryNote: "The record never crosses this line",
-        aLabel: "The record you hold",
-        aItems: ["The document", "Attachments", "History"],
-        bLabel: "The condition to prove",
-        bItems: ["The threshold", "Validity", "Issuer"],
-        opLabel: "Match",
-        results: ["The condition is met"],
-        crossLabel: "Proof (~200 bytes)",
-        toLabel: "The receiver",
-        toNote: "They open a link. No account, no keys.",
-        payLead: "From “the whole record” to “the fact alone” — zero characters of the original.",
-        wasTitle: "The original (over-shared)",
-        wasDetail: "The document, attachments, history",
-        wasVolume: "Thousands of characters",
-        nowTitle: "ZK proof (minimal)",
-        nowDetail: "Only the fact that the condition is met",
-        nowVolume: "~200 bytes / 0 characters of the original",
-        mechPoints: [
-          { t: "The original never leaves", d: "The record itself — personal and sensitive data — stays with you, so the leakage risk never moves." },
-          { t: "Only the proven fact travels", d: "Just the fact that the condition is met, issued as roughly 200 bytes of ZK proof." },
-          { t: "They only open a link", d: "No account needed on the receiving side. They check when, by whom, and untampered, themselves." },
-        ],
-      },
       baBeforeTitle: "Hand over the raw source", baAfterTitle: "Share only the proven facts",
       baFlowBefore: "↓ all of it reaches the AI / outside", baFlowAfter: "↓ only the necessary facts",
       baDataBeforeTitle: "Hand over the original", baDataAfterTitle: "Hand over just the facts",
@@ -224,9 +192,11 @@ const BASE_C = isJa
 // 空オブジェクトが返るので、共有コピーがそのまま出る。
 const C = { ...BASE_C, ...getUseCaseCopyOverride(useCase.slug, locale) } as typeof BASE_C;
 
-// §2「変化」の 2 枚のフロー図。スラッグ登録があればその業務の言葉に、
-// 無ければ C.flow の一般形を使う。
-const flow = getUseCaseFlow(useCase.slug, locale) ?? C.flow;
+// §2「変化」— 新デザインは config/useCaseFlow.ts に登録のある UC だけ。
+// 未登録の UC は従来の §2（操作画面 → 検証画面のカード列＋「なぜ Lemma か」）
+// のまま。「照合」の語が合わない業務や、スラッグ固有の値（hideProve）を
+// 一般形で薄めてしまう事故を避けるため、opt-in にしている。
+const flow = getUseCaseFlow(useCase.slug, locale);
 
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
@@ -436,116 +406,180 @@ const bytaskMembers = taskGroupMembers.filter(
           <h2 class="ucv-h2">{C.s2H2}</h2>
 
           <p class="ucv-band-lead">{C.s2Catch}</p>
-          {/* §2 は 3 段。①照合そのものの図（境界線を引き、原本は内側に
-              留まり証明だけが越えることを線で見せる。語数は最小限）→
-              ②「渡すもの」だけの新旧比較 → ③仕組みの節。文章で読ませる形は
-              分かりにくいという判断で、この順に組み直した。
-              中身は config/useCaseFlow.ts（未登録の UC は C.flow の一般形）。 */}
-          <div class="ucv-cf">
-            <div class="ucv-cf-zone ucv-cf-zone--in">
-              <div class="ucv-cf-zk">{flow.insideLabel}</div>
-              <div class="ucv-cf-srcs">
-                <div class="ucv-cf-src">
-                  <b>{flow.aLabel}</b>
-                  <ul>{flow.aItems.map((i) => <li>{i}</li>)}</ul>
+          {flow ? (
+            <>
+            {/* §2 は 3 段。①照合そのものの図（境界線を引き、原本は内側に
+                留まり証明だけが越えることを線で見せる。語数は最小限）→
+                ②「渡すもの」だけの新旧比較 → ③仕組みの節。文章で読ませる形は
+                分かりにくいという判断で、この順に組み直した。
+                中身は config/useCaseFlow.ts（未登録の UC は C.flow の一般形）。 */}
+            <div class="ucv-cf">
+              <div class="ucv-cf-zone ucv-cf-zone--in">
+                <div class="ucv-cf-zk">{flow.insideLabel}</div>
+                <div class="ucv-cf-srcs">
+                  <div class="ucv-cf-src">
+                    <b>{flow.aLabel}</b>
+                    <ul>{flow.aItems.map((i) => <li>{i}</li>)}</ul>
+                  </div>
+                  <div class="ucv-cf-src">
+                    <b>{flow.bLabel}</b>
+                    <ul>{flow.bItems.map((i) => <li>{i}</li>)}</ul>
+                  </div>
                 </div>
-                <div class="ucv-cf-src">
-                  <b>{flow.bLabel}</b>
-                  <ul>{flow.bItems.map((i) => <li>{i}</li>)}</ul>
+                <div class="ucv-cf-merge"><span>{flow.opLabel}</span></div>
+                <ul class="ucv-cf-res">
+                  {flow.results.map((r) => <li>{r}</li>)}
+                </ul>
+              </div>
+
+              <div class="ucv-cf-cross">
+                <span class="chip">{flow.crossLabel}</span>
+                <span class="arw" aria-hidden="true"><i></i><s></s></span>
+                <span class="note">{flow.boundaryNote}</span>
+              </div>
+
+              <div class="ucv-cf-zone ucv-cf-zone--out">
+                <div class="ucv-cf-zk">{flow.outsideLabel}</div>
+                <div class="ucv-cf-verdict">
+                  <div class="seal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <circle cx="12" cy="12" r="11" stroke-width="1.1" />
+                      <circle cx="12" cy="12" r="8.2" stroke-width=".7" opacity=".45" />
+                      <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <div class="t">{C.hiwVerdict}</div>
+                  {isJa && <div class="en">NOT TAMPERED</div>}
+                </div>
+                <b class="ucv-cf-to">{flow.toLabel}</b>
+                <p class="ucv-cf-tonote">{flow.toNote}</p>
+              </div>
+            </div>
+
+            {/* 比較はここ 1 点だけ。チップを並べると新旧が対等に見えてしまい、
+                データの重さの差が出ない。帯の長さで落差そのものを見せる。 */}
+            <div class="ucv-pay">
+              <div class="ucv-pay-h">{C.payHead}</div>
+              <p class="ucv-pay-lead">{flow.payLead}</p>
+              <div class="ucv-pay-row ucv-pay-row--was">
+                <div class="hd"><span class="mk" aria-hidden="true">✕</span>{C.flowWasTag}：{flow.wasTitle}</div>
+                <p class="dt">{flow.wasDetail}</p>
+                <div class="bar"><span style="width:100%"></span><em>{flow.wasVolume}</em></div>
+              </div>
+              <div class="ucv-pay-row ucv-pay-row--now">
+                <div class="hd"><span class="mk" aria-hidden="true">✓</span>{C.flowNowTag}：{flow.nowTitle}</div>
+                <p class="dt">{flow.nowDetail}</p>
+                <div class="bar"><span style="width:2.5%"></span><em>{flow.nowVolume}</em></div>
+              </div>
+            </div>
+
+            <section class="ucv-mech">
+              <div class="ucv-mech-eye">{C.mechEye}</div>
+              <h3 class="ucv-mech-h">{C.mechH}</h3>
+              {/* 散文の羅列だと読まれないので、要点 3 つを先に立てる。
+                  しるしは順に 鍵（原本を出さない）→ 証明（渡るもの）→ 検証。 */}
+              <ol class="ucv-mech-pts">
+                {flow.mechPoints.map((m, i) => (
+                  <li>
+                    <span class="ic" aria-hidden="true">
+                      {i === 0 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <rect x="4.5" y="10.5" width="15" height="10" rx="2" stroke-width="1.4" />
+                          <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke-width="1.4" stroke-linecap="round" />
+                        </svg>
+                      )}
+                      {i === 1 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path d="M6 3.5h8l4 4V20a.5.5 0 0 1-.5.5h-11A.5.5 0 0 1 6 20V4a.5.5 0 0 1 .5-.5Z" stroke-width="1.4" stroke-linejoin="round" />
+                          <path d="M14 3.5V8h4" stroke-width="1.4" stroke-linejoin="round" />
+                          <path d="M9 14.5l2 2 4-4.5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      )}
+                      {i === 2 && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path d="M13 3 5.5 13.5H11L10.5 21 18.5 10H13z" stroke-width="1.4" stroke-linejoin="round" />
+                        </svg>
+                      )}
+                    </span>
+                    <b>{m.t}</b>
+                    <p>{m.d}</p>
+                  </li>
+                ))}
+              </ol>
+              <details class="ucv-mech-more">
+                <summary>{C.mechMore}</summary>
+                {v3 ? (
+                  <p class="ucv-mech-body">{v3.approach[locale]}</p>
+                ) : (
+                  <div class="ucv-mech-body" set:html={approachBody} />
+                )}
+                {/* 柱ページへの導線は開いた中に置く。畳んだ状態で
+                    「詳しい仕組みを読む」と 2 つ並ぶと役割が重なるため。 */}
+                <a class="ucv-info-link" href={`${pillarsPath}/${PILLAR_ANCHOR[pillar.slug] ?? ""}`}>{C.approachLink}</a>
+              </details>
+            </section>
+            </>
+          ) : (
+            <>
+            <div class="ucv-ba">
+              <div class="ucv-ba-col">
+                <p class="ucv-ba-cap">① {C.s2OpCap}</p>
+                <div class="ucv-ba-card">
+                  <div class="ucv-ba-bar"><span class="d"></span><span class="d"></span><span class="d"></span>{C.s2OpBar}</div>
+                  <dl class="ucv-ba-rows">
+                    <div class="ucv-ba-row"><dt>{C.s2OpRow1}</dt><dd>{C.s2OpRow1v}</dd></div>
+                    <div class="ucv-ba-row"><dt>{C.s2OpRow2}</dt><dd><span class="ucv-ba-strong">{C.s2OpRow2v}</span></dd></div>
+                    <div class="ucv-ba-row"><dt>{C.s2OpRow3}</dt><dd>{C.s2OpRow3v}</dd></div>
+                  </dl>
                 </div>
               </div>
-              <div class="ucv-cf-merge"><span>{flow.opLabel}</span></div>
-              <ul class="ucv-cf-res">
-                {flow.results.map((r) => <li>{r}</li>)}
+
+              <div class="ucv-ba-arrow" aria-hidden="true"><span class="lab">{C.s2Link}</span><span>→</span></div>
+
+              <div class="ucv-ba-col">
+                <p class="ucv-ba-cap">② {C.s2VfCap}</p>
+                <div class="ucv-ba-card ucv-ba-card--after">
+                  <div class="ucv-ba-bar"><span class="d"></span><span class="d"></span><span class="d"></span>{C.s2VfBar}</div>
+                  <div class="ucv-mini-verdict">
+                    <div class="seal">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="11" stroke-width="1.1" />
+                        <circle cx="12" cy="12" r="8.2" stroke-width=".7" opacity=".45" />
+                        <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </div>
+                    <div class="t">{C.hiwVerdict}</div>
+                    {isJa && <div class="en">NOT TAMPERED</div>}
+                  </div>
+                  <dl class="ucv-ba-rows">
+                    {hideProve && (
+                      <div class="ucv-ba-row"><dt>{C.s2AfterFact}</dt><dd><span class="ucv-ba-strong">{hideProve.prove}</span></dd></div>
+                    )}
+                    {hideProve && (
+                      <div class="ucv-ba-row"><dt>{hideProve.hide}</dt><dd>{C.s2VfHidden}</dd></div>
+                    )}
+                    <div class="ucv-ba-row"><dt>{C.s2VfKey}</dt><dd>{C.s2VfKeyVal}</dd></div>
+                  </dl>
+                </div>
+              </div>
+            </div>
+
+            <div class="ucv-approach">
+              <div class="ucv-approach-h">{isJa ? "なぜ Lemma か" : "Why Lemma"}</div>
+              <ul class="ucv-why">
+                <li><b>{isJa ? "本文は出さない" : "The document stays private"}</b>{isJa ? " — 記録の本文（個人情報・機微データ）は送信も開示もしません。" : " — the record itself is never sent or disclosed."}</li>
+                <li><b>{isJa ? "相手が独立に検証" : "Independent verification"}</b>{isJa ? " — 受け取った側はリンクを開くだけ。アカウントもキーも不要です。" : " — the receiver just opens a link. No account, no keys."}</li>
+                <li><b>{isJa ? "書き換えは検知" : "Edits are detected"}</b>{isJa ? " — 1文字の書き換えも、検証の時点で一致しなくなります。" : " — even a one-character edit fails verification."}</li>
               </ul>
-            </div>
-
-            <div class="ucv-cf-cross">
-              <span class="chip">{flow.crossLabel}</span>
-              <span class="arw" aria-hidden="true"><i></i><s></s></span>
-              <span class="note">{flow.boundaryNote}</span>
-            </div>
-
-            <div class="ucv-cf-zone ucv-cf-zone--out">
-              <div class="ucv-cf-zk">{flow.outsideLabel}</div>
-              <div class="ucv-cf-verdict">
-                <div class="seal">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="11" stroke-width="1.1" />
-                    <circle cx="12" cy="12" r="8.2" stroke-width=".7" opacity=".45" />
-                    <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </div>
-                <div class="t">{C.hiwVerdict}</div>
-                {isJa && <div class="en">NOT TAMPERED</div>}
-              </div>
-              <b class="ucv-cf-to">{flow.toLabel}</b>
-              <p class="ucv-cf-tonote">{flow.toNote}</p>
-            </div>
-          </div>
-
-          {/* 比較はここ 1 点だけ。チップを並べると新旧が対等に見えてしまい、
-              データの重さの差が出ない。帯の長さで落差そのものを見せる。 */}
-          <div class="ucv-pay">
-            <div class="ucv-pay-h">{C.payHead}</div>
-            <p class="ucv-pay-lead">{flow.payLead}</p>
-            <div class="ucv-pay-row ucv-pay-row--was">
-              <div class="hd"><span class="mk" aria-hidden="true">✕</span>{C.flowWasTag}：{flow.wasTitle}</div>
-              <p class="dt">{flow.wasDetail}</p>
-              <div class="bar"><span style="width:100%"></span><em>{flow.wasVolume}</em></div>
-            </div>
-            <div class="ucv-pay-row ucv-pay-row--now">
-              <div class="hd"><span class="mk" aria-hidden="true">✓</span>{C.flowNowTag}：{flow.nowTitle}</div>
-              <p class="dt">{flow.nowDetail}</p>
-              <div class="bar"><span style="width:2.5%"></span><em>{flow.nowVolume}</em></div>
-            </div>
-          </div>
-
-          <section class="ucv-mech">
-            <div class="ucv-mech-eye">{C.mechEye}</div>
-            <h3 class="ucv-mech-h">{C.mechH}</h3>
-            {/* 散文の羅列だと読まれないので、要点 3 つを先に立てる。
-                しるしは順に 鍵（原本を出さない）→ 証明（渡るもの）→ 検証。 */}
-            <ol class="ucv-mech-pts">
-              {flow.mechPoints.map((m, i) => (
-                <li>
-                  <span class="ic" aria-hidden="true">
-                    {i === 0 && (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <rect x="4.5" y="10.5" width="15" height="10" rx="2" stroke-width="1.4" />
-                        <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke-width="1.4" stroke-linecap="round" />
-                      </svg>
-                    )}
-                    {i === 1 && (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M6 3.5h8l4 4V20a.5.5 0 0 1-.5.5h-11A.5.5 0 0 1 6 20V4a.5.5 0 0 1 .5-.5Z" stroke-width="1.4" stroke-linejoin="round" />
-                        <path d="M14 3.5V8h4" stroke-width="1.4" stroke-linejoin="round" />
-                        <path d="M9 14.5l2 2 4-4.5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                      </svg>
-                    )}
-                    {i === 2 && (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M13 3 5.5 13.5H11L10.5 21 18.5 10H13z" stroke-width="1.4" stroke-linejoin="round" />
-                      </svg>
-                    )}
-                  </span>
-                  <b>{m.t}</b>
-                  <p>{m.d}</p>
-                </li>
-              ))}
-            </ol>
-            <details class="ucv-mech-more">
-              <summary>{C.mechMore}</summary>
               {v3 ? (
-                <p class="ucv-mech-body">{v3.approach[locale]}</p>
+                <p>{v3.approach[locale]}</p>
               ) : (
-                <div class="ucv-mech-body" set:html={approachBody} />
+                <div class="ucv-approach-body" set:html={approachBody} />
               )}
-              {/* 柱ページへの導線は開いた中に置く。畳んだ状態で
-                  「詳しい仕組みを読む」と 2 つ並ぶと役割が重なるため。 */}
-              <a class="ucv-info-link" href={`${pillarsPath}/${PILLAR_ANCHOR[pillar.slug] ?? ""}`}>{C.approachLink}</a>
-            </details>
-          </section>
+              <a class="ucv-approach-link" href={`${pillarsPath}/${PILLAR_ANCHOR[pillar.slug] ?? ""}`}>{C.approachLink}</a>
+            </div>
+            </>
+          )}
 
         </div>
       </div>
@@ -811,6 +845,38 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-emph { border-left: 3px solid var(--ok); padding-left: clamp(18px, 3vw, 34px); }
   /* §2 図解 — 枠1枚を細罫で 2〜3 面に割る。以前は照合バンド＋操作画面＋
      検証画面で箱が6つ並び、読む順番が立たなかった。番号で順路を示す。 */
+  .ucv-ba { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 16px; align-items: stretch; margin: 26px 0 0; }
+  .ucv-ba-arrow { display: grid; place-items: center; align-content: center; gap: 4px; color: var(--ok-light); font-size: 17px; }
+  .ucv-ba-arrow .lab { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; }
+  .ucv-ba-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-s); overflow: hidden; display: flex; flex-direction: column; flex: 1; }
+  .ucv-ba-card--after { border-color: rgba(124, 175, 0, 0.45); }
+  .ucv-ba-col { display: flex; flex-direction: column; }
+  .ucv-ba-bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; color: var(--muted); }
+  .ucv-ba-bar .d { width: 7px; height: 7px; border-radius: 50%; background: var(--line); flex: none; }
+  .ucv-ba-card--after .ucv-ba-bar { color: var(--ok-light); }
+  .ucv-ba-cap { margin: 0 0 12px; font-family: var(--font-serif-jp); font-weight: 600; font-size: 14px; color: var(--tx); text-align: center; }
+  .ucv-ba-rows { margin: 4px 0 0; padding: 6px 18px 14px; flex: 1; }
+  .ucv-ba-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 0; border-top: 1px solid var(--line); }
+  .ucv-ba-row:first-child { border-top: none; }
+  .ucv-ba-row dt { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin: 0; flex: none; }
+  .ucv-ba-row dd { font-size: 13px; color: var(--tx); margin: 0; text-align: right; }
+  .ucv-ba-strong { color: var(--ok-light); font-weight: 600; }
+  .ucv-ba-badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ok-light); border: 1px solid rgba(124, 175, 0, 0.45); background: rgba(168, 224, 16, 0.1); border-radius: 999px; padding: 2px 10px; }
+  .ucv-ba-card .ucv-mini-verdict { padding: 16px 18px 4px; }
+
+  .ucv-approach { margin: 30px 0 0; background: var(--lite-2); border-left: 3px solid var(--ok); border-radius: 0 10px 10px 0; padding: 20px 24px; }
+  .ucv-band--deep .ucv-approach { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--ok); }
+  .ucv-approach-h { font-family: var(--font-serif-jp); font-weight: 600; font-size: 16px; color: var(--tx); margin: 0 0 8px; }
+  .ucv-why { list-style: none; margin: 0 0 14px; padding: 0; }
+  .ucv-why li { position: relative; padding: 5px 0 5px 20px; font-size: 13.5px; line-height: 1.8; color: var(--tx-soft); }
+  .ucv-why li::before { content: "✓"; position: absolute; left: 0; color: var(--ok-light); font-weight: 700; }
+  .ucv-why b { color: var(--tx); font-weight: 600; }
+  .ucv-approach p, .ucv-approach-body { font-size: 14px; line-height: 1.9; color: var(--tx-soft); margin: 0; }
+  .ucv-approach-body :global(p) { margin: 0 0 10px; }
+  .ucv-approach-body :global(p:last-child) { margin-bottom: 0; }
+  .ucv-approach-link { display: inline-block; margin-top: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ok-light); border-bottom: 1px solid rgba(124, 175, 0, 0.35); }
+  .ucv-approach-link:hover { border-bottom-color: var(--ok-light); }
+
   /* §2 ①照合の図 — 破線の境界で「自社のなか / 相手のところ」を割り、
      原本は内側に留まり、証明だけが境界を越えることを線で見せる。 */
   .ucv-cf { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(150px, 0.7fr) minmax(0, 0.95fr); align-items: center; gap: 0; margin: 26px 0 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-s); padding: 22px; }
@@ -981,6 +1047,8 @@ const bytaskMembers = taskGroupMembers.filter(
 
   /* ---------- responsive ---------- */
   @media (max-width: 1020px) {
+    .ucv-ba { grid-template-columns: 1fr; }
+    .ucv-ba-arrow { display: none; }
     .ucv-cf { grid-template-columns: 1fr; }
     .ucv-cf-cross { padding: 16px 0; }
     .ucv-cf-cross::before { left: 0; right: 0; top: 50%; bottom: auto; border-left: none; border-top: 1px dashed #b9bfb4; }
