@@ -133,6 +133,14 @@ const briefSchema = z
     gap_detected: z.string().optional(),
     gap_missing: z.string().optional(),
     gap_fix: z.string().optional(),
+    /**
+     * 照合フレームのトライアル (2026-08)。ヒーロー直下に置く一行
+     * 「Lemma の照合分析」——「◯◯と◯◯を照合することで、△△は防げた」。
+     * 設定した Brief だけに出る（未設定の Brief はヒーロー不変）。
+     * ロケールごとに書く。
+     */
+    analysis_lead_ja: z.string().optional(),
+    analysis_lead_en: z.string().optional(),
   })
   .refine(
     (data) => {

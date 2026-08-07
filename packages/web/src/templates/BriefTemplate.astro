@@ -80,6 +80,12 @@ const gap =
       }
     : null;
 
+// 照合フレームのトライアル (2026-08) — ヒーロー直下の一行「Lemma の照合分析」。
+// frontmatter に analysis_lead_* を書いた Brief にだけ出る（既存 Brief は不変）。
+const analysisLead = isJa
+  ? brief.data.analysis_lead_ja
+  : brief.data.analysis_lead_en;
+
 const showRevisionHistory = brief.data.version !== "1.0";
 
 const PILLAR_LABELS: Record<PillarSlug, { ja: string; en: string }> = {
@@ -244,6 +250,7 @@ const labels = isJa
       tocLabel: "Contents",
       progress: "読了",
       coreLabel: "この Brief の核心",
+      analysisLabel: "Lemma の照合分析",
       bannerLabel: "この脅威タイプへの対策",
       bannerBtn: "デモをリクエスト",
       relatedHeading: "関連する Brief",
@@ -272,6 +279,7 @@ const labels = isJa
       tocLabel: "Contents",
       progress: "Read",
       coreLabel: "The core of this Brief",
+      analysisLabel: "Lemma's cross-check analysis",
       bannerLabel: "Against this threat type",
       bannerBtn: "Request a demo",
       relatedHeading: "Related Briefs",
@@ -355,6 +363,12 @@ const gapRowLabels = isJa
               </div>
             )}
           </div>
+          {analysisLead && (
+            <aside class="bd-analysis">
+              <div class="bd-analysis-k">{labels.analysisLabel}</div>
+              <p class="bd-analysis-v">{analysisLead}</p>
+            </aside>
+          )}
         </header>
 
         <article class="brief-body">
@@ -828,6 +842,32 @@ const gapRowLabels = isJa
     font-size: 12.5px;
     line-height: 1.6;
     color: var(--tx);
+  }
+
+  /* 照合フレームのトライアル (2026-08) — ヒーロー直下の「Lemma の照合分析」。
+     右レールの核心パネルと役割が重ならないよう、白カード＋ライム縦罫の
+     地の面で本文の導入として置く（analysis_lead_* のある Brief だけ）。 */
+  .bd-analysis {
+    margin-top: 18px;
+    padding: 14px 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ok);
+    box-shadow: var(--sh-s);
+  }
+  .bd-analysis-k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: var(--ok-light);
+    margin-bottom: 6px;
+  }
+  .bd-analysis-v {
+    font-family: var(--font-serif-jp);
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--tx);
+    font-feature-settings: "palt" 1;
   }
 
   /* ─── BODY (rendered markdown) — 記事テンプレートと同じ組み ─── */
