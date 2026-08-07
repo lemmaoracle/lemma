@@ -1,0 +1,595 @@
+---
+/**
+ * Industries landing（/industries/ · /ja/industries/）。
+ *
+ * もとは `pages/ja/industries/index.astro` に JA 直書きだったものを、EN 版を
+ * 足すにあたってテンプレート化した。CSS は当時のまま（scoped）で、コピーだけ
+ * ロケール分岐する。
+ *
+ * EN で落としたもの: JA の Lemma Critical の説明にある「能動的サイバー防御法
+ * 対応にも」。日本の法律を指した記述で、英語圏の読者には成り立たない
+ * （法域ごとに制度が違う）。EN は規制当局・監査人への証明という技術面だけを
+ * 書く。KYC/AML・CBAM・EUDR・AI Act は法域横断なので EN でもそのまま。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
+
+export interface IndustriesTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as IndustriesTemplateProps;
+const isJa = locale === "ja";
+
+const discoveryUrl = DISCOVERY_CALL_URL[locale];
+/* ホワイトペーパーはロケール共通のフォーム（サイト全体で同じものを使う）。 */
+const whitepaperUrl = "https://tally.so/r/xX0VYv";
+
+const C = isJa
+  ? {
+      metaTitle: "Industries — Civic · Critical · Compliance | Lemma",
+      metaDesc:
+        "公共インフラ・製造業・規制金融に最適化した Civic / Critical / Compliance の 3 製品ライン。データを持たないままで、業界の現場に信頼インフラを実装。",
+      eyebrow: "For Enterprise · Industries",
+      h1a: "信頼インフラを、",
+      h1b: "業界の現場へ",
+      h1tail: "。",
+      sub1: "公共インフラ・製造業・規制金融に最適化した",
+      sub2: "の 3 つの製品ライン。AI と業務の交差点で起きる機密性・説明責任・規制対応の課題を、データを動かさずに解きほぐします。",
+      ctaPrimary: "導入相談へ →",
+      ctaSecondary: "ホワイトペーパー DL",
+      productsH: "3 つの製品ライン",
+      civicTag: "公共・公益サービスのための信頼インフラ",
+      civicDesc:
+        "属性証明・参加証明・透明性 — 行政手続のデジタル化と、住民データを集約しないままでの行政間連携を実現します。",
+      civicTargets: ["自治体・公共サービス", "行政手続デジタル化", "選挙・調査の透明性"],
+      criticalTag: "基幹インフラの信頼インフラ",
+      criticalDesc:
+        "水道・電力・通信などの運用ログを、機密性を保ったまま規制当局・監査人へ証明します。能動的サイバー防御法対応にも。",
+      criticalTargets: ["水道・電力・通信", "製造業・基幹システム", "規制対応・第三者監査"],
+      complianceTag: "規制対応・データ保護の信頼インフラ",
+      complianceDesc:
+        "KYC / AML・CBAM・EUDR・AI Act など、規制属性を原本データを開示せずに選択的に証明できる設計。",
+      complianceTargets: ["金融・暗号資産取引所", "サプライチェーン ESG", "AI ガバナンス・規制対応"],
+      cardCta: "プランを見る →",
+      ucEyebrow: "業界別ユースケース",
+      ucH: "業務の入口から、信頼インフラを。",
+      ucSub: "現場で先に詰まる場所から、Lemma を導入できます。",
+      uc: [
+        { cat: "AI · 監査", title: "AI 監査ログ証明", line: "LLM の入出力履歴を、内容を見せずに「規定通り動いた」だけ証明。", href: "solutions/use-cases/ai-audit-log-proof/" },
+        { cat: "本人確認 · 選択的開示", title: "KYC/AML 選択的開示", line: "本人確認情報を共有せず、必要な属性だけを証明。", href: "solutions/use-cases/kyc-aml-selective-disclosure/" },
+        { cat: "サプライチェーン · ESG", title: "サプライチェーン ESG 証明", line: "調達先の情報を集めずに、ESG 基準充足を多階層で証明。", href: "solutions/use-cases/supply-chain-esg/" },
+      ],
+      ucAllCat: "All Use Cases",
+      ucAllTitle: "ユースケース一覧 →",
+      ucAllLine: "すべての業務適用パターンを見る。",
+      closingA: "業務の現場から、",
+      closingB: "信頼インフラを始める",
+      closingTail: "。",
+      closingSub: "要件をお聞かせください。最適な製品ラインと導入プロセスをご提案します。",
+      closingCta: "導入相談へ →",
+      closingLink: "ホワイトペーパー →",
+    }
+  : {
+      metaTitle: "Industries — Civic · Critical · Compliance | Lemma",
+      metaDesc:
+        "Three product lines — Civic, Critical and Compliance — tuned to public infrastructure, manufacturing and regulated finance. Trust infrastructure that reaches the work, without moving the data.",
+      eyebrow: "For Enterprise · Industries",
+      h1a: "Trust infrastructure,",
+      h1b: "where the work happens",
+      h1tail: ".",
+      sub1: "Three product lines —",
+      sub2: "— tuned to public infrastructure, manufacturing and regulated finance. They untangle the confidentiality, accountability and regulatory problems that appear where AI meets the work, without the data having to move.",
+      ctaPrimary: "Talk to us →",
+      ctaSecondary: "Download the whitepaper",
+      productsH: "Three product lines",
+      civicTag: "Trust infrastructure for public and civic services",
+      civicDesc:
+        "Attribute proofs, proof of participation, transparency — digitize administrative procedures and let agencies work together without pooling residents' data.",
+      civicTargets: ["Local government & public services", "Digitizing administrative procedures", "Transparency in elections and surveys"],
+      criticalTag: "Trust infrastructure for critical infrastructure",
+      criticalDesc:
+        "Prove operational logs from water, power and telecoms to regulators and auditors while the contents stay confidential.",
+      criticalTargets: ["Water, power & telecoms", "Manufacturing & core systems", "Regulatory reporting & third-party audit"],
+      complianceTag: "Trust infrastructure for compliance and data protection",
+      complianceDesc:
+        "Prove regulatory attributes — KYC / AML, CBAM, EUDR, the AI Act — selectively, without disclosing the underlying records.",
+      complianceTargets: ["Finance & crypto exchanges", "Supply chain ESG", "AI governance & regulatory response"],
+      cardCta: "See the plans →",
+      ucEyebrow: "Use cases by industry",
+      ucH: "Start trust infrastructure at the entrance to the work.",
+      ucSub: "Adopt Lemma at the point that jams first on the ground.",
+      uc: [
+        { cat: "AI · Audit", title: "AI audit log proof", line: "Prove that an LLM's input and output history behaved as specified, without showing the contents.", href: "solutions/use-cases/ai-audit-log-proof/" },
+        { cat: "Identity · Selective disclosure", title: "KYC/AML selective disclosure", line: "Prove only the attributes required, without sharing the identity data behind them.", href: "solutions/use-cases/kyc-aml-selective-disclosure/" },
+        { cat: "Supply chain · ESG", title: "Supply chain ESG proof", line: "Prove ESG criteria are met across tiers, without collecting your suppliers' data.", href: "solutions/use-cases/supply-chain-esg/" },
+      ],
+      ucAllCat: "All Use Cases",
+      ucAllTitle: "See all use cases →",
+      ucAllLine: "Every pattern for applying this to the work.",
+      closingA: "Start with the work,",
+      closingB: "then the trust infrastructure",
+      closingTail: ".",
+      closingSub: "Tell us your requirements and we will propose the product line and the rollout that fit.",
+      closingCta: "Talk to us →",
+      closingLink: "Whitepaper →",
+    };
+---
+
+<Layout
+  locale={locale}
+  title={C.metaTitle}
+  description={C.metaDesc}
+  metaType="page"
+  pagePath="/industries/"
+  localesAvailable={["ja", "en"] as ReadonlyArray<Locale>}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <main class="ind-page">
+    <div class="ind-container">
+
+      <section class="ind-hero">
+        <p class="ind-eyebrow">{C.eyebrow}</p>
+        <h1 class="ind-h1">
+          {C.h1a}<br />
+          <span class="accent">{C.h1b}</span>{C.h1tail}
+        </h1>
+        <p class="ind-sub">
+          {C.sub1}
+          <span class="k">Civic / Critical / Compliance</span>
+          {C.sub2}
+        </p>
+        <div class="ind-hero-ctas">
+          <a href={discoveryUrl} class="btn-primary" target="_blank" rel="noopener">{C.ctaPrimary}</a>
+          <a href={whitepaperUrl} class="btn-secondary" target="_blank" rel="noopener">{C.ctaSecondary}</a>
+        </div>
+      </section>
+
+      <section class="ind-products" aria-labelledby="ind-products-h">
+        <h2 class="ind-products-h" id="ind-products-h">{C.productsH}</h2>
+
+        <article class="ind-card">
+          <h3 class="ind-card-name">Lemma Civic</h3>
+          <p class="ind-card-tagline">{C.civicTag}</p>
+          <p class="ind-card-desc">{C.civicDesc}</p>
+          <ul class="ind-card-targets">
+            {C.civicTargets.map((x) => <li>{x}</li>)}
+          </ul>
+          <a href={`${base}/pricing/`} class="ind-card-cta">{C.cardCta}</a>
+        </article>
+
+        <article class="ind-card">
+          <h3 class="ind-card-name">Lemma Critical</h3>
+          <p class="ind-card-tagline">{C.criticalTag}</p>
+          <p class="ind-card-desc">{C.criticalDesc}</p>
+          <ul class="ind-card-targets">
+            {C.criticalTargets.map((x) => <li>{x}</li>)}
+          </ul>
+          <a href={`${base}/pricing/`} class="ind-card-cta">{C.cardCta}</a>
+        </article>
+
+        <article class="ind-card">
+          <h3 class="ind-card-name">Lemma Compliance</h3>
+          <p class="ind-card-tagline">{C.complianceTag}</p>
+          <p class="ind-card-desc">{C.complianceDesc}</p>
+          <ul class="ind-card-targets">
+            {C.complianceTargets.map((x) => <li>{x}</li>)}
+          </ul>
+          <a href={`${base}/pricing/`} class="ind-card-cta">{C.cardCta}</a>
+        </article>
+      </section>
+
+      <section class="ind-uc" aria-labelledby="ind-uc-h">
+        <p class="ind-uc-eyebrow">{C.ucEyebrow}</p>
+        <h2 class="ind-uc-h" id="ind-uc-h">{C.ucH}</h2>
+        <p class="ind-uc-sub">{C.ucSub}</p>
+
+        <div class="ind-uc-grid">
+          {C.uc.map((u) => (
+            <a href={`${base}/${u.href}`} class="ind-uc-card">
+              <span class="ind-uc-cat">{u.cat}</span>
+              <h3 class="ind-uc-title">{u.title}</h3>
+              <p class="ind-uc-line">{u.line}</p>
+            </a>
+          ))}
+
+          <a href={`${base}/solutions/use-cases/`} class="ind-uc-card all-link">
+            <span class="ind-uc-cat">{C.ucAllCat}</span>
+            <h3 class="ind-uc-title">{C.ucAllTitle}</h3>
+            <p class="ind-uc-line">{C.ucAllLine}</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="ind-closing">
+        <h2 class="ind-closing-h">
+          {C.closingA}<br />
+          <span class="accent">{C.closingB}</span>{C.closingTail}
+        </h2>
+        <p class="ind-closing-sub">{C.closingSub}</p>
+        <div class="ind-closing-ctas">
+          <a href={discoveryUrl} class="btn-brown-pill" target="_blank" rel="noopener">{C.closingCta}</a>
+          <a href={whitepaperUrl} class="ind-closing-link" target="_blank" rel="noopener">{C.closingLink}</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  :root {
+    --lemma-black: #000;
+    --lemma-text-1: #1a1a1a;
+    --lemma-text-2: #3a3a3a;
+    --lemma-text-3: #5a5a5a;
+    --lemma-brown: #8b4513;
+    --lemma-brown-light: #f5ebdc;
+    --lemma-cream: #fcfaf5;
+    --lemma-cream-deep: #f2eedf;
+    --lemma-line: #e5e5e5;
+  }
+
+  .ind-page {
+    background: var(--lemma-cream);
+    color: var(--lemma-text-1);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
+    line-height: 1.7;
+  }
+
+  .ind-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ── Hero ────────────────────────────────────────────────────── */
+  .ind-hero {
+    padding: 64px 0 56px;
+    max-width: 880px;
+  }
+
+  .ind-eyebrow {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--lemma-text-3);
+    margin: 0 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ind-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--lemma-brown);
+  }
+
+  .ind-h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    color: var(--lemma-black);
+    margin: 0 0 24px;
+  }
+  .ind-h1 .accent {
+    color: var(--lemma-brown);
+  }
+
+  .ind-sub {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--lemma-text-2);
+    margin: 0 0 32px;
+    max-width: 740px;
+  }
+  .ind-sub .k {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 0.92em;
+    background: var(--lemma-brown-light);
+    color: var(--lemma-brown);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  .ind-hero-ctas {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--lemma-brown);
+    color: #fff;
+    font-family: "Noto Sans JP", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover {
+    background: #6e360f;
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    color: var(--lemma-brown);
+    border: 1px solid var(--lemma-brown);
+    background: transparent;
+    font-family: "Noto Sans JP", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 11px 21px;
+    border-radius: 999px;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .btn-secondary:hover {
+    background: var(--lemma-brown-light);
+  }
+
+  /* ── Products grid ───────────────────────────────────────────── */
+  .ind-products {
+    padding: 56px 0;
+    border-top: 1px solid var(--lemma-line);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .ind-products-h {
+    grid-column: 1 / -1;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 28px;
+    margin: 0 0 8px;
+    color: var(--lemma-black);
+    letter-spacing: -0.02em;
+  }
+
+  .ind-card {
+    background: var(--lemma-cream-deep);
+    padding: 28px 24px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ind-card-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 22px;
+    margin: 0;
+    color: var(--lemma-black);
+    letter-spacing: -0.02em;
+  }
+  .ind-card-tagline {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--lemma-brown);
+    margin: 0;
+  }
+  .ind-card-desc {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--lemma-text-2);
+    margin: 0;
+    flex: 1;
+  }
+  .ind-card-targets {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--lemma-text-2);
+    font-size: 14px;
+    line-height: 1.85;
+  }
+  .ind-card-targets li {
+    margin: 0;
+  }
+
+  .ind-card-cta {
+    font-family: "Noto Sans JP", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--lemma-brown);
+    text-decoration: none;
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+  .ind-card-cta:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Use Cases preview ───────────────────────────────────────── */
+  .ind-uc {
+    padding: 56px 0;
+    border-top: 1px solid var(--lemma-line);
+  }
+  .ind-uc-eyebrow {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--lemma-text-3);
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ind-uc-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--lemma-brown);
+  }
+  .ind-uc-h {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--lemma-black);
+    margin: 0 0 14px;
+  }
+  .ind-uc-sub {
+    font-size: 15px;
+    color: var(--lemma-text-2);
+    margin: 0 0 32px;
+  }
+
+  .ind-uc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .ind-uc-card {
+    display: block;
+    background: #fff;
+    border: 1px solid var(--lemma-line);
+    border-radius: 10px;
+    padding: 22px 22px 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease;
+  }
+  .ind-uc-card:hover {
+    border-color: var(--lemma-brown);
+  }
+
+  .ind-uc-cat {
+    display: inline-block;
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--lemma-brown);
+    background: var(--lemma-brown-light);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+
+  .ind-uc-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.35;
+    color: var(--lemma-black);
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .ind-uc-line {
+    font-size: 14px;
+    color: var(--lemma-text-2);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  .ind-uc-card.all-link {
+    background: var(--lemma-cream-deep);
+    border-style: dashed;
+  }
+
+  /* ── Closing ─────────────────────────────────────────────────── */
+  .ind-closing {
+    padding: 64px 0 80px;
+    border-top: 1px solid var(--lemma-line);
+    text-align: center;
+  }
+
+  .ind-closing-h {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--lemma-black);
+    margin: 0 0 16px;
+  }
+  .ind-closing-h .accent {
+    color: var(--lemma-brown);
+  }
+
+  .ind-closing-sub {
+    font-size: 16px;
+    color: var(--lemma-text-2);
+    margin: 0 0 28px;
+  }
+
+  .ind-closing-ctas {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-brown-pill {
+    display: inline-block;
+    background: var(--lemma-brown);
+    color: #fff;
+    font-family: "Noto Sans JP", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 12px 26px;
+    border-radius: 999px;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .btn-brown-pill:hover {
+    background: #6e360f;
+  }
+
+  .ind-closing-link {
+    color: var(--lemma-brown);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .ind-closing-link:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Responsive ──────────────────────────────────────────────── */
+  @media (max-width: 880px) {
+    .ind-container {
+      padding: 0 24px;
+    }
+    .ind-h1 {
+      font-size: 40px;
+    }
+    .ind-closing-h {
+      font-size: 28px;
+    }
+    .ind-products {
+      grid-template-columns: 1fr;
+    }
+    .ind-uc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
