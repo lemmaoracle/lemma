@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["078-tenncare-connect-medicaid-eligibility", "012-williams-frt-wrongful-arrest", "060-withers-aberdeen-ai-hallucinated-precedent", "115-mobley-workday-ai-hiring-bias"]
 status: published
-version: "1.0"
+version: "1.1"
 og_lead_ja: "Medicare の AI 事前承認モデル WISeR、不承認をめぐり医師がAIハルシネーションを指摘"
 og_lead_en: "Medicare's WISeR AI prior-authorization denials draw doctors' suspicions of AI hallucination"
 gap_detected: "判断の層は制度としては在った。最終的な非該当判断は機械でなく有資格の臨床医が下すと CMS は定め、事業者もそう説明する。"
