@@ -189,10 +189,11 @@ const C = isJa
             <div class="bi-label">
               <b>{C.all}</b><span>All — {entries.length}</span>
             </div>
-            {/* 注目に出した1本目は重複させず、2本目以降をカードで。
+            {/* 注目に出した1本は重複させず、残りをカードで。注目枠は導入事例で
+                固定なので**先頭とは限らない** — 添字ではなく slug で外す。
                 ページ送りは SSR 全件 + 表示切り替え（Brief 一覧と同じ方式）。 */}
             <div class="bi-grid">
-              {entries.slice(1).map((post) => (
+              {entries.filter((post) => post.slug !== featured?.slug).map((post) => (
                 <a class="bi-card" href={`${blogPath}/${post.slug}`}>
                   <div class="bi-thumb">
                     <BlogCoverAuto category={post.category} slug={post.slug} coverPhoto={post.coverPhoto} cover={post.cover} tags={post.tags} coverLines={post.coverLines} locale={locale} />

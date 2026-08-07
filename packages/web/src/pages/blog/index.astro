@@ -26,8 +26,15 @@ const entries = [...articles, ...changelog].sort((a, b) =>
 // Announcements default to `section: Changelog` (see data/blog.ts), so
 // selecting from Essays alone kept the newest post off the top of the index
 // whenever it was an announcement — it only showed in the Changelog list.
-const featured = entries[0];
-const recent = entries.slice(1, 7);
+// Featured is pinned to the case study (`tags: case-study`). Letting it
+// compete on recency pushes the case study out every time an article ships,
+// but this slot exists to show the product in real use, so its character is
+// fixed (same reasoning as the Latest news trio). With several case studies
+// the newest wins; with none, it falls back to the newest entry.
+const featured = entries.find((p) => p.tags?.includes("case-study")) ?? entries[0];
+// Whatever lands in Featured must not repeat in Recent — the old slice(1, 7)
+// assumed featured was entries[0], which no longer holds.
+const recent = entries.filter((p) => p.slug !== featured?.slug).slice(0, 6);
 
 // A release / Announcements post promoted into Featured or Recent stays in the
 // Changelog list as well — the list is the release history and should read as
