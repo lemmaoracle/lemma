@@ -98,20 +98,23 @@ const BASE_C = isJa
       s2VfKey: "ログイン・キー", s2VfKeyVal: "不要",
       s2VfCap: "相手は、リンクを開くだけ。",
       flowWasTag: "従来", flowNowTag: "Lemma",
-      flowWasPayloadK: "渡すもの", flowNowPayloadK: "渡すもの",
+      payHead: "渡すもの", mechEye: "仕組み",
       flow: {
-        fromLabel: "自社 ／ 記録をつくる側",
-        fromNote: "記録が確定した時点で、証明を 1 回だけ発行する",
-        fromKeeps: "記録の本文（個人情報・機微データ）は自社に残る",
+        insideLabel: "自社のなか",
+        outsideLabel: "相手のところ",
+        boundaryNote: "記録の本文は、ここを越えない",
+        aLabel: "手元の記録",
+        aItems: ["本文", "添付", "履歴"],
+        bLabel: "証明したい条件",
+        bItems: ["満たすべき基準", "有効期限", "発行者"],
+        opLabel: "照合",
+        results: ["条件を満たしている"],
+        crossLabel: "証明（約 200 バイト）",
         toLabel: "相手・第三者",
+        toNote: "リンクを開くだけ。アカウントもキーも要らない",
         wasPayload: ["記録の本文", "添付", "履歴"],
-        nowPayload: ["証明された事実（約 200 バイト）"],
-        wasToNote: "受け取った中身を読むか、同じ確認をやり直す",
-        nowToNote: "リンクを開くだけ。アカウントもキーも要らない",
-        wasOut:
-          "本文ごと渡るため、漏洩のリスクが動く。渡さなければ、相手は平文の主張を信じるしかない。",
-        nowOut:
-          "本文は外に出ない。渡るのは証明だけで、「いつ・誰が・改ざんなく発行したか」を相手がその場で確かめられる。",
+        mechLead:
+          "発行者が結果を述語として発行し、受け取った側は原本に触れずに検証する。",
       },
       baBeforeTitle: "原本・中身をそのまま渡す", baAfterTitle: "事実だけを証明付きで渡す",
       baFlowBefore: "↓ すべて外部・AI へ渡る", baFlowAfter: "↓ 必要な事実だけ",
@@ -167,20 +170,23 @@ const BASE_C = isJa
       s2VfKey: "Login / keys", s2VfKeyVal: "not needed",
       s2VfCap: "They just open a link.",
       flowWasTag: "Until now", flowNowTag: "With Lemma",
-      flowWasPayloadK: "What travels", flowNowPayloadK: "What travels",
+      payHead: "What travels", mechEye: "How it works",
       flow: {
-        fromLabel: "You — the side that holds the record",
-        fromNote: "One API call when the record is finalized.",
-        fromKeeps: "The record itself (personal and sensitive data) stays with you.",
+        insideLabel: "Your side",
+        outsideLabel: "Their side",
+        boundaryNote: "The record never crosses this line",
+        aLabel: "The record you hold",
+        aItems: ["The document", "Attachments", "History"],
+        bLabel: "The condition to prove",
+        bItems: ["The threshold", "Validity", "Issuer"],
+        opLabel: "Match",
+        results: ["The condition is met"],
+        crossLabel: "Proof (~200 bytes)",
         toLabel: "The receiver",
-        wasPayload: ["The record", "Attachments", "History"],
-        nowPayload: ["The proven fact (~200 bytes)"],
-        wasToNote: "They read what you sent, or repeat the same check.",
-        nowToNote: "They open a link. No account, no keys.",
-        wasOut:
-          "The document travels, and the leakage risk with it. Withhold it, and they are left trusting a plaintext claim.",
-        nowOut:
-          "The document never leaves. Only the proof travels — and they can check when, by whom, and untampered, on the spot.",
+        toNote: "They open a link. No account, no keys.",
+        wasPayload: ["The document", "Attachments", "History"],
+        mechLead:
+          "The issuer publishes the result as a predicate; the receiver verifies it without ever touching the original.",
       },
       baBeforeTitle: "Hand over the raw source", baAfterTitle: "Share only the proven facts",
       baFlowBefore: "↓ all of it reaches the AI / outside", baFlowAfter: "↓ only the necessary facts",
@@ -430,64 +436,78 @@ const bytaskMembers = taskGroupMembers.filter(
           <h2 class="ucv-h2">{C.s2H2}</h2>
 
           <p class="ucv-band-lead">{C.s2Catch}</p>
-          {/* §2 は 2 枚のフロー図。上段＝従来・下段＝Lemma で同じ骨格
-              （送り手 → 渡るもの → 受け手 → その結果）を並べ、真ん中を
-              流れるものだけが変わることを見せる。表にすると「誰から誰へ」が
-              絵にならず、§3 の表とも続いてしまうためこの形にした。
+          {/* §2 は 3 段。①照合そのものの図（境界線を引き、原本は内側に
+              留まり証明だけが越えることを線で見せる。語数は最小限）→
+              ②「渡すもの」だけの新旧比較 → ③仕組みの節。文章で読ませる形は
+              分かりにくいという判断で、この順に組み直した。
               中身は config/useCaseFlow.ts（未登録の UC は C.flow の一般形）。 */}
-          <div class="ucv-flow">
-            {[
-              { kind: "was", tag: C.flowWasTag, payload: flow.wasPayload, payloadK: C.flowWasPayloadK, toNote: flow.wasToNote, out: flow.wasOut },
-              { kind: "now", tag: C.flowNowTag, payload: flow.nowPayload, payloadK: C.flowNowPayloadK, toNote: flow.nowToNote, out: flow.nowOut },
-            ].map((p) => (
-              <section class={`ucv-flow-panel ucv-flow-panel--${p.kind}`}>
-                <div class="ucv-flow-tag">{p.tag}</div>
-                <div class="ucv-flow-row">
-                  <div class="ucv-flow-actor">
-                    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                      <path d="M4 20V6.5L12 3l8 3.5V20" stroke-width="1.3" stroke-linejoin="round" />
-                      <path d="M4 20h16M9 20v-4.5h6V20M8.5 10h2M13.5 10h2M8.5 13h2M13.5 13h2" stroke-width="1.2" stroke-linecap="round" />
-                    </svg>
-                    <b>{flow.fromLabel}</b>
-                    <p>{flow.fromNote}</p>
-                    {p.kind === "now" && (
-                      <p class="keeps"><span class="lk" aria-hidden="true"></span>{flow.fromKeeps}</p>
-                    )}
-                  </div>
-
-                  <div class="ucv-flow-move">
-                    <div class="ucv-flow-payload">
-                      <div class="k">{p.payloadK}</div>
-                      <ul>{p.payload.map((v) => <li>{v}</li>)}</ul>
-                    </div>
-                    <div class="ucv-flow-arrow" aria-hidden="true"><i></i><s></s></div>
-                  </div>
-
-                  <div class="ucv-flow-actor">
-                    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                      <circle cx="12" cy="8" r="3.4" stroke-width="1.3" />
-                      <path d="M5 20c0-3.6 3.1-5.6 7-5.6s7 2 7 5.6" stroke-width="1.3" stroke-linecap="round" />
-                    </svg>
-                    <b>{flow.toLabel}</b>
-                    <p>{p.toNote}</p>
-                    {p.kind === "now" && (
-                      <p class="ok"><span class="ck" aria-hidden="true"></span>{C.hiwVerdict}</p>
-                    )}
-                  </div>
+          <div class="ucv-cf">
+            <div class="ucv-cf-zone ucv-cf-zone--in">
+              <div class="ucv-cf-zk">{flow.insideLabel}</div>
+              <div class="ucv-cf-srcs">
+                <div class="ucv-cf-src">
+                  <b>{flow.aLabel}</b>
+                  <ul>{flow.aItems.map((i) => <li>{i}</li>)}</ul>
                 </div>
-                <p class="ucv-flow-out">{p.out}</p>
-              </section>
-            ))}
+                <div class="ucv-cf-src">
+                  <b>{flow.bLabel}</b>
+                  <ul>{flow.bItems.map((i) => <li>{i}</li>)}</ul>
+                </div>
+              </div>
+              <div class="ucv-cf-merge" aria-hidden="true"><span>{flow.opLabel}</span></div>
+              <ul class="ucv-cf-res">
+                {flow.results.map((r) => <li>{r}</li>)}
+              </ul>
+            </div>
+
+            <div class="ucv-cf-cross">
+              <span class="chip">{flow.crossLabel}</span>
+              <span class="arw" aria-hidden="true"><i></i><s></s></span>
+              <span class="note">{flow.boundaryNote}</span>
+            </div>
+
+            <div class="ucv-cf-zone ucv-cf-zone--out">
+              <div class="ucv-cf-zk">{flow.outsideLabel}</div>
+              <div class="ucv-cf-verdict">
+                <div class="seal">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="11" stroke-width="1.1" />
+                    <circle cx="12" cy="12" r="8.2" stroke-width=".7" opacity=".45" />
+                    <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <div class="t">{C.hiwVerdict}</div>
+                {isJa && <div class="en">NOT TAMPERED</div>}
+              </div>
+              <b class="ucv-cf-to">{flow.toLabel}</b>
+              <p class="ucv-cf-tonote">{flow.toNote}</p>
+            </div>
           </div>
 
-          <div class="ucv-info-foot">
+          {/* 比較はここだけ。項目を並べず「渡すもの」1 点に絞る。 */}
+          <div class="ucv-pay">
+            <div class="ucv-pay-h">{C.payHead}</div>
+            <div class="ucv-pay-row ucv-pay-row--was">
+              <span class="k">{C.flowWasTag}</span>
+              <ul>{flow.wasPayload.map((v) => <li>{v}</li>)}</ul>
+            </div>
+            <div class="ucv-pay-row ucv-pay-row--now">
+              <span class="k">{C.flowNowTag}</span>
+              <ul>{flow.results.map((v) => <li>{v}</li>)}</ul>
+            </div>
+          </div>
+
+          <section class="ucv-mech">
+            <div class="ucv-mech-eye">{C.mechEye}</div>
+            <h3 class="ucv-mech-h">{flow.mechLead}</h3>
             {v3 ? (
-              <p class="ucv-info-body">{v3.approach[locale]}</p>
+              <p class="ucv-mech-body">{v3.approach[locale]}</p>
             ) : (
-              <div class="ucv-info-body" set:html={approachBody} />
+              <div class="ucv-mech-body" set:html={approachBody} />
             )}
             <a class="ucv-info-link" href={`${pillarsPath}/${PILLAR_ANCHOR[pillar.slug] ?? ""}`}>{C.approachLink}</a>
-          </div>
+          </section>
+
         </div>
       </div>
     </section>
@@ -752,65 +772,65 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-emph { border-left: 3px solid var(--ok); padding-left: clamp(18px, 3vw, 34px); }
   /* §2 図解 — 枠1枚を細罫で 2〜3 面に割る。以前は照合バンド＋操作画面＋
      検証画面で箱が6つ並び、読む順番が立たなかった。番号で順路を示す。 */
-  /* §2「変化」— 従来 / Lemma の 2 枚。同じ骨格（送り手 → 渡るもの → 受け手）
-     を上下に並べ、真ん中を流れるものだけが変わることを見せる。 */
-  .ucv-flow { display: grid; gap: 16px; margin: 26px 0 0; }
-  .ucv-flow-panel { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-s); padding: 34px 22px 18px; }
-  .ucv-flow-panel--was { background: var(--lite-2); }
-  .ucv-flow-panel--now { border-color: rgba(124, 175, 0, 0.45); }
-  .ucv-flow-tag { position: absolute; top: -1px; left: 22px; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.16em; padding: 5px 12px 6px; border-radius: 0 0 8px 8px; }
-  .ucv-flow-panel--was .ucv-flow-tag { background: #cfd4cb; color: #4b5147; }
-  .ucv-flow-panel--now .ucv-flow-tag { background: var(--ok); color: #1d2a00; }
+  /* §2 ①照合の図 — 破線の境界で「自社のなか / 相手のところ」を割り、
+     原本は内側に留まり、証明だけが境界を越えることを線で見せる。 */
+  .ucv-cf { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(150px, 0.7fr) minmax(0, 0.95fr); align-items: center; gap: 0; margin: 26px 0 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-s); padding: 22px; }
+  .ucv-cf-zone { min-width: 0; }
+  .ucv-cf-zk { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 12px; }
 
-  .ucv-flow-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(190px, 0.9fr) minmax(0, 1fr); gap: 12px; align-items: center; }
+  /* 2 つの源 → 合流 → 結果 */
+  .ucv-cf-srcs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .ucv-cf-src { border: 1px solid var(--line); border-radius: 9px; padding: 11px 13px 12px; background: var(--lite-2); }
+  .ucv-cf-src b { display: block; font-family: var(--font-serif-jp); font-weight: 600; font-size: 13px; line-height: 1.5; color: var(--tx); margin-bottom: 6px; }
+  .ucv-cf-src ul { list-style: none; margin: 0; padding: 0; }
+  .ucv-cf-src li { font-size: 11.5px; line-height: 1.75; color: var(--tx-soft); }
+  /* 合流点。上に細い横罫を渡し、中央から下へ落とす。 */
+  .ucv-cf-merge { position: relative; height: 46px; display: grid; place-items: center; }
+  .ucv-cf-merge::before { content: ""; position: absolute; left: 25%; right: 25%; top: 11px; height: 1px; background: var(--line); }
+  .ucv-cf-merge::after { content: ""; position: absolute; left: 50%; top: 11px; width: 1px; height: 34px; background: var(--line); }
+  .ucv-cf-merge span { position: relative; z-index: 2; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--ok-ink); background: rgba(168, 224, 16, 0.16); border: 1px solid rgba(124, 175, 0, 0.4); border-radius: 999px; padding: 4px 14px; }
+  .ucv-cf-res { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .ucv-cf-res li { position: relative; padding: 8px 12px 8px 32px; border-radius: 8px; background: rgba(168, 224, 16, 0.12); font-family: var(--font-serif-jp); font-weight: 600; font-size: 14px; line-height: 1.6; color: var(--ok-ink); }
+  .ucv-cf-res li::before { content: ""; position: absolute; left: 13px; top: 12px; width: 5px; height: 10px; border: solid currentColor; border-width: 0 1.8px 1.8px 0; transform: rotate(42deg); box-sizing: border-box; }
 
-  /* 登場人物 */
-  .ucv-flow-actor { border: 1px solid var(--line); border-radius: 10px; background: var(--card); padding: 15px 16px 16px; }
-  .ucv-flow-panel--was .ucv-flow-actor { border-style: dashed; }
-  .ucv-flow-actor .ic { width: 22px; height: 22px; color: var(--muted); margin-bottom: 8px; }
-  .ucv-flow-panel--now .ucv-flow-actor .ic { color: var(--ok-ink); }
-  .ucv-flow-actor b { display: block; font-family: var(--font-serif-jp); font-weight: 600; font-size: 14px; line-height: 1.55; color: var(--tx); margin-bottom: 5px; }
-  .ucv-flow-actor p { margin: 0; font-size: 12px; line-height: 1.75; color: var(--tx-soft); }
-  .ucv-flow-actor .keeps, .ucv-flow-actor .ok { position: relative; margin-top: 9px; padding: 7px 10px 7px 28px; border-radius: 7px; font-size: 11.5px; line-height: 1.7; }
-  .ucv-flow-actor .keeps { background: var(--lite-2); color: var(--muted); }
-  .ucv-flow-actor .ok { background: rgba(168, 224, 16, 0.12); color: var(--ok-ink); font-weight: 600; }
-  .ucv-flow-actor .lk { position: absolute; left: 10px; top: 9px; width: 11px; height: 12px; }
-  .ucv-flow-actor .lk::before { content: ""; position: absolute; left: 0; bottom: 0; width: 11px; height: 8px; border: 1.3px solid currentColor; border-radius: 2px; box-sizing: border-box; }
-  .ucv-flow-actor .lk::after { content: ""; position: absolute; left: 2.5px; top: 0; width: 6px; height: 6px; border: 1.3px solid currentColor; border-bottom: none; border-radius: 4px 4px 0 0; box-sizing: border-box; }
-  .ucv-flow-actor .ck { position: absolute; left: 11px; top: 9px; width: 9px; height: 11px; }
-  .ucv-flow-actor .ck::before { content: ""; position: absolute; left: 1px; top: 0; width: 5px; height: 10px; border: solid currentColor; border-width: 0 1.8px 1.8px 0; transform: rotate(42deg); box-sizing: border-box; }
+  /* 境界と、そこを越えるもの */
+  .ucv-cf-cross { position: relative; display: grid; place-items: center; gap: 7px; padding: 0 14px; align-self: stretch; }
+  .ucv-cf-cross::before { content: ""; position: absolute; left: 50%; top: -22px; bottom: -22px; border-left: 1px dashed #b9bfb4; }
+  .ucv-cf-cross .chip { position: relative; z-index: 2; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.06em; color: #1d2a00; background: var(--ok); border-radius: 999px; padding: 5px 12px; text-align: center; }
+  .ucv-cf-cross .arw { position: relative; z-index: 2; width: 100%; height: 12px; }
+  .ucv-cf-cross .arw i { position: absolute; left: 0; right: 9px; top: 5px; height: 2px; background: var(--ok-light); }
+  .ucv-cf-cross .arw s { position: absolute; right: 0; top: 0; width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 10px solid var(--ok-light); }
+  .ucv-cf-cross .note { position: relative; z-index: 2; background: var(--card); padding: 3px 6px; font-size: 10.5px; line-height: 1.6; color: var(--muted); text-align: center; }
 
-  /* 渡るもの — 矢印の上に荷物を載せる */
-  .ucv-flow-move { display: grid; gap: 8px; justify-items: center; }
-  .ucv-flow-payload { width: 100%; border-radius: 9px; padding: 11px 13px 12px; text-align: center; }
-  .ucv-flow-panel--was .ucv-flow-payload { background: #e4e7e1; border: 1px solid #d3d8cf; }
-  .ucv-flow-panel--now .ucv-flow-payload { background: rgba(168, 224, 16, 0.16); border: 1px solid rgba(124, 175, 0, 0.4); }
-  .ucv-flow-payload .k { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 6px; }
-  .ucv-flow-panel--now .ucv-flow-payload .k { color: var(--ok-ink); }
-  .ucv-flow-payload ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 6px; justify-content: center; }
-  .ucv-flow-payload li { font-size: 11.5px; line-height: 1.5; padding: 3px 8px; border-radius: 999px; background: var(--card); }
-  .ucv-flow-panel--was .ucv-flow-payload li { color: var(--muted); }
-  .ucv-flow-panel--now .ucv-flow-payload li { color: var(--tx); font-weight: 600; }
+  /* 相手のところ */
+  .ucv-cf-zone--out { padding-left: 4px; }
+  .ucv-cf-verdict { text-align: center; border: 1px solid rgba(124, 175, 0, 0.45); border-radius: 10px; padding: 14px 12px 12px; }
+  .ucv-cf-verdict .seal { width: 34px; height: 34px; border-radius: 50%; margin: 0 auto 8px; display: grid; place-items: center; border: 1.4px solid rgba(124, 175, 0, 0.5); background: rgba(168, 224, 16, 0.09); color: var(--ok-ink); }
+  .ucv-cf-verdict .t { font-family: var(--font-serif-jp); font-weight: 600; font-size: 13px; color: var(--tx); }
+  .ucv-cf-verdict .en { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 0.16em; color: var(--muted); margin-top: 3px; }
+  .ucv-cf-to { display: block; margin-top: 12px; font-family: var(--font-serif-jp); font-weight: 600; font-size: 13px; line-height: 1.55; color: var(--tx); }
+  .ucv-cf-tonote { margin: 4px 0 0; font-size: 11.5px; line-height: 1.75; color: var(--tx-soft); }
 
-  .ucv-flow-arrow { position: relative; width: 100%; height: 12px; }
-  .ucv-flow-arrow i { position: absolute; left: 0; right: 9px; top: 5px; height: 2px; }
-  .ucv-flow-arrow s { position: absolute; right: 0; top: 0; width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
-  .ucv-flow-panel--was .ucv-flow-arrow i { background: #b9bfb4; }
-  .ucv-flow-panel--was .ucv-flow-arrow s { border-left: 10px solid #b9bfb4; }
-  .ucv-flow-panel--now .ucv-flow-arrow i { background: var(--ok-light); }
-  .ucv-flow-panel--now .ucv-flow-arrow s { border-left: 10px solid var(--ok-light); }
+  /* §2 ②「渡すもの」だけの新旧。項目を並べず、この 1 点に絞る。 */
+  .ucv-pay { margin: 20px 0 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+  .ucv-pay-h { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.16em; color: var(--muted); padding: 11px 16px; background: var(--lite-2); border-bottom: 1px solid var(--line); }
+  .ucv-pay-row { display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: center; gap: 14px; padding: 13px 16px; }
+  .ucv-pay-row + .ucv-pay-row { border-top: 1px solid var(--line); }
+  .ucv-pay-row .k { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-align: center; border-radius: 999px; padding: 4px 0; }
+  .ucv-pay-row--was .k { background: #dfe3dc; color: #4b5147; }
+  .ucv-pay-row--now .k { background: var(--ok); color: #1d2a00; }
+  .ucv-pay-row ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .ucv-pay-row li { font-size: 12.5px; line-height: 1.5; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); }
+  .ucv-pay-row--was li { color: var(--muted); background: var(--lite-2); }
+  .ucv-pay-row--now li { color: var(--tx); font-weight: 600; background: rgba(168, 224, 16, 0.14); border-color: rgba(124, 175, 0, 0.4); }
 
-  .ucv-flow-out { position: relative; margin: 16px 0 0; padding: 12px 4px 0 18px; border-top: 1px solid var(--line); font-size: 12.5px; line-height: 1.9; }
-  .ucv-flow-panel--was .ucv-flow-out { color: var(--muted); }
-  .ucv-flow-panel--now .ucv-flow-out { color: var(--tx-soft); }
-  .ucv-flow-out::before { content: ""; position: absolute; left: 0; top: 20px; width: 8px; height: 2px; }
-  .ucv-flow-panel--was .ucv-flow-out::before { background: #b9bfb4; }
-  .ucv-flow-panel--now .ucv-flow-out::before { background: var(--ok); }
-
-  .ucv-info-foot { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
-  .ucv-info-body { font-size: 13.5px; line-height: 1.95; color: var(--tx-soft); max-width: 74ch; margin: 0; }
-  .ucv-info-body :global(p) { margin: 0 0 10px; }
-  .ucv-info-body :global(p:last-child) { margin-bottom: 0; }
+  /* §2 ③仕組み — 散文の前に要約を 1 行立てて、節として読ませる。 */
+  .ucv-mech { margin: 30px 0 0; padding-left: 18px; border-left: 2px solid var(--ok); }
+  .ucv-mech-eye { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.2em; color: var(--ok-light); margin-bottom: 8px; }
+  .ucv-mech-h { font-family: var(--font-serif-jp); font-weight: 600; font-size: clamp(16px, 1.7vw, 19px); line-height: 1.7; letter-spacing: 0.02em; color: var(--tx); margin: 0 0 12px; max-width: 46ch; }
+  .ucv-mech-body { font-size: 13.5px; line-height: 1.95; color: var(--tx-soft); max-width: 68ch; margin: 0; }
+  .ucv-mech-body :global(p) { margin: 0 0 10px; }
+  .ucv-mech-body :global(p:last-child) { margin-bottom: 0; }
   .ucv-info-link { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ok-light); border-bottom: 1px solid rgba(124, 175, 0, 0.35); }
   .ucv-info-link:hover { border-bottom-color: var(--ok-light); }
 
@@ -895,13 +915,15 @@ const bytaskMembers = taskGroupMembers.filter(
 
   /* ---------- responsive ---------- */
   @media (max-width: 1020px) {
-    .ucv-flow-row { grid-template-columns: 1fr; }
-    .ucv-flow-move { padding: 4px 0; }
-    .ucv-flow-arrow { width: 12px; height: 34px; }
-    .ucv-flow-arrow i { left: 5px; right: auto; top: 0; bottom: 9px; width: 2px; height: auto; }
-    .ucv-flow-arrow s { right: auto; left: 0; top: auto; bottom: 0; border-top: 10px solid; border-bottom: none; border-left: 6px solid transparent; border-right: 6px solid transparent; }
-    .ucv-flow-panel--was .ucv-flow-arrow s { border-top-color: #b9bfb4; border-left-color: transparent; }
-    .ucv-flow-panel--now .ucv-flow-arrow s { border-top-color: var(--ok-light); border-left-color: transparent; }
+    .ucv-cf { grid-template-columns: 1fr; }
+    .ucv-cf-cross { padding: 16px 0; }
+    .ucv-cf-cross::before { left: 0; right: 0; top: 50%; bottom: auto; border-left: none; border-top: 1px dashed #b9bfb4; }
+    .ucv-cf-cross .arw { width: 12px; height: 30px; justify-self: center; }
+    .ucv-cf-cross .arw i { left: 5px; right: auto; top: 0; bottom: 9px; width: 2px; height: auto; }
+    .ucv-cf-cross .arw s { right: auto; left: 0; top: auto; bottom: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid var(--ok-light); border-bottom: none; }
+    .ucv-cf-zone--out { padding-left: 0; }
+    .ucv-pay-row { grid-template-columns: 1fr; gap: 8px; }
+    .ucv-pay-row .k { justify-self: start; padding: 4px 14px; }
     .ucv-hero { grid-template-columns: 1fr; gap: 30px; }
     .ucv-hiw { grid-template-columns: 1fr; }
     .ucv-hiw-shot { aspect-ratio: auto; padding: 16px; }
