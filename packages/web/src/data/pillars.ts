@@ -1058,9 +1058,9 @@ const PILLARS: ReadonlyArray<Pillar> = [
         },
         {
           label: { ja: "金融 · 与信 · リスク", en: "Finance · Credit · Risk" },
-          title: { ja: "取引先の与信・反社チェック", en: "Counterparty credit & sanctions screening" },
+          title: { ja: "取引先スクリーニング（与信・反社）", en: "Counterparty credit & sanctions screening" },
           desc: {
-            ja: "与信・反社の判定結果だけを渡し、根拠は出さずに確認できる。",
+            ja: "取引先を与信・反社リストと照合し、結果だけを渡す。原本は渡らない。",
             en: "Share only the credit / sanctions decision result — reasons and scores stay private.",
           },
           useCaseSlug: "counterparty-screening",

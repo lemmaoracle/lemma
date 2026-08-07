@@ -87,16 +87,7 @@ const BASE_C = isJa
       s2H2: "原本を渡すか、事実だけを渡すか。",
       s2Lead: "AI に渡すものが変われば、漏洩のリスクごと消える。",
       s2Catch: "現場の手は増えない。相手の確認が変わる。",
-      s2OpBar: "自社・現場の記録画面（既存システムのまま）",
-      s2OpRow1: "いつもの操作", s2OpRow1v: "記録を入力して、保存",
-      s2OpRow2: "保存と同時に", s2OpRow2v: "証明が付く（裏で API 連携）",
-      s2OpRow3: "記録の本文", s2OpRow3v: "送信されない",
-      s2OpCap: "現場は、保存するだけ。",
-      s2Link: "証明リンク",
-      s2VfBar: "相手のブラウザ — 検証画面",
-      s2AfterFact: "証明された事実", s2VfHidden: "表示されない",
-      s2VfKey: "ログイン・キー", s2VfKeyVal: "不要",
-      s2VfCap: "相手は、リンクを開くだけ。",
+      s2AfterFact: "証明された事実",
       flowWasTag: "従来", flowNowTag: "Lemma",
       payHead: "渡すもの — 中身の落差", mechEye: "仕組み", mechH: "Lemma の核心メカニズム", mechMore: "詳しい仕組みを読む",
       flow: {
@@ -168,16 +159,7 @@ const BASE_C = isJa
       s2H2: "Hand over the source, or just the facts?",
       s2Lead: "Change what reaches the AI, and the leakage risk goes with it.",
       s2Catch: "Nothing changes on the floor. Everything changes for the receiver.",
-      s2OpBar: "Your team's screen — the system you already use",
-      s2OpRow1: "The usual action", s2OpRow1v: "Enter the record, hit save",
-      s2OpRow2: "On save", s2OpRow2v: "a proof is attached (one API call behind the scenes)",
-      s2OpRow3: "The document", s2OpRow3v: "never sent",
-      s2OpCap: "Your team just saves, as always.",
-      s2Link: "Proof link",
-      s2VfBar: "Their browser — the verification screen",
-      s2AfterFact: "Proven fact", s2VfHidden: "not shown",
-      s2VfKey: "Login / keys", s2VfKeyVal: "not needed",
-      s2VfCap: "They just open a link.",
+      s2AfterFact: "Proven fact",
       flowWasTag: "Until now", flowNowTag: "With Lemma",
       payHead: "What travels — the gap in substance", mechEye: "How it works", mechH: "The mechanism, in three points", mechMore: "Read the full mechanism",
       flow: {
@@ -472,7 +454,7 @@ const bytaskMembers = taskGroupMembers.filter(
                   <ul>{flow.bItems.map((i) => <li>{i}</li>)}</ul>
                 </div>
               </div>
-              <div class="ucv-cf-merge" aria-hidden="true"><span>{flow.opLabel}</span></div>
+              <div class="ucv-cf-merge"><span>{flow.opLabel}</span></div>
               <ul class="ucv-cf-res">
                 {flow.results.map((r) => <li>{r}</li>)}
               </ul>
