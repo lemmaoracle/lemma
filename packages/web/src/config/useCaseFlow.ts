@@ -49,6 +49,49 @@ export interface UseCaseFlow {
 const FLOWS: Readonly<
   Record<string, Partial<Readonly<Record<Locale, UseCaseFlow>>>>
 > = {
+  "kyc-aml-selective-disclosure": {
+    ja: {
+      insideLabel: "自社のなか",
+      outsideLabel: "相手のところ",
+      boundaryNote: "本人属性は、ここを越えない",
+      aLabel: "照合対象 ── 本人の属性",
+      aItems: ["氏名・住所", "生年月日", "取引履歴"],
+      bLabel: "照合先 ── KYC/AML の要件",
+      bItems: ["年齢", "居住地", "制裁リスト"],
+      opLabel: "照合",
+      opNote: "照合そのものは、既存の KYC / eKYC のパイプラインのままでよい。",
+      results: ["18 歳以上", "制裁リストに非該当"],
+      lockNote: "原本（氏名・住所・生年月日・取引履歴）は、送信も開示もされない。",
+      outNote:
+        "双方の原本は外に出ない。渡るのは「いつ・誰が・改ざんなく発行したか」を示せる、約200バイトの証明だけ。",
+      actorMatch: "自社 ／ コンプライアンス部門",
+      actorIssue: "裏で API 連携",
+      actorVerify: "委託先・提携先・監査人・当局",
+      joinIssue: "照合結果",
+      joinVerify: "証明 URL",
+      payLead: "「本人属性まるごと」から「判定結果（原本 0 文字）」へ。",
+      wasTitle: "本人属性・原本まるごと（過剰共有）",
+      wasDetail: "氏名・住所・生年月日・取引履歴",
+      wasVolume: "数千文字の詳細データ",
+      nowTitle: "ZK 証明（最小限）",
+      nowDetail: "「18 歳以上」「制裁リストに非該当」の判定事実のみ",
+      nowVolume: "約 200 バイト ／ 原本 0 文字",
+      mechPoints: [
+        {
+          t: "原本は外に出さない",
+          d: "氏名・住所・生年月日・取引履歴といった本人属性は発行者内に留まる。渡さないので、漏洩・拡散のリスクが動かない。",
+        },
+        {
+          t: "渡すのは「判定結果」だけ",
+          d: "「18 歳以上」「制裁リストに非該当」という事実のみを、約 200 バイトの ZK 証明として発行する。",
+        },
+        {
+          t: "相手はリンクを開くだけ",
+          d: "委託先も当局もアカウント作成は不要。受け取った証明から「いつ・誰が・改ざんなく発行したか」を自力で確かめられる。",
+        },
+      ],
+    },
+  },
   "counterparty-screening": {
     ja: {
       insideLabel: "自社のなか",
