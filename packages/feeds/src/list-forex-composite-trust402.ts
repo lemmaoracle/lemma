@@ -5,7 +5,7 @@
  * archives the envelope by `request.date`, and publishes a Trust402 dataset
  * listing whose commitment is the fetcher Merkle root.
  */
-import { create as createTrust402, publish } from "@trust402/sdk";
+import { create as createTrust402, publish, nodeSigner } from "@trust402/sdk";
 import type { Listing } from "@trust402/sdk";
 import { fetchAndCommit } from "@lemmaoracle/fetcher";
 import type { FetchResult } from "@lemmaoracle/fetcher";
@@ -63,6 +63,8 @@ export type ListForexCompositeConfig = Readonly<{
   environment: "sandbox" | "production";
   payoutAddress: string;
   /** When set, publish() uploads the envelope file to the storefront. */
+  /** Optional signer factory for x402 payment. Provide TRUST402_PRIVATE_KEY. */
+  getSigner?: () => Promise<{ address: string; provider: { request: (args: { method: string; params?: unknown[] }) => Promise<unknown> }; signTypedData?: (params: { domain: Record<string, unknown>; types: Record<string, unknown>; primaryType: string; message: Record<string, unknown> }) => Promise<string> }>;
   uploadFile: boolean;
 }>;
 
@@ -354,6 +356,7 @@ const publishEnvelope = (
     const client = createTrust402({
       apiBase: config.apiBase,
       apiKey: config.apiKey,
+      ...(config.getSigner !== undefined ? { getSigner: config.getSigner } : {}),
     });
 
     return config.dryRun

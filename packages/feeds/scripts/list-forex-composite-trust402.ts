@@ -36,6 +36,7 @@ import {
 } from "../src/list-forex-composite-trust402.js";
 
 const dryRun = process.env["DRY_RUN"] === "1";
+import { nodeSigner } from "@trust402/sdk";
 const apiKey = process.env["LEMMA_API_KEY"] ?? "";
 
 const main = async (): Promise<void> => {
@@ -52,6 +53,10 @@ const main = async (): Promise<void> => {
         apiBase:
           process.env["LEMMA_API_BASE"] ?? "https://trust402.lemma.workers.dev",
         apiKey,
+        getSigner: process.env["TRUST402_PRIVATE_KEY"] ? (() => {
+          const signer = nodeSigner(process.env["TRUST402_PRIVATE_KEY"] as `0x${string}`);
+          return async () => signer;
+        })() : undefined,
         circuitId: process.env["CIRCUIT_ID"] ?? DEFAULT_CIRCUIT_ID,
         maxDepth: Number(process.env["FEED_MAX_DEPTH"] ?? String(DEFAULT_MAX_DEPTH)),
         dryRun,
