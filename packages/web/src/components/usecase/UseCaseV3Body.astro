@@ -836,7 +836,10 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-bytask-list { display: grid; grid-template-columns: 1fr; gap: 2px; margin-top: 12px; }
   .ucv-bytask-row { display: block; font-size: 13.5px; line-height: 1.7; color: #2f332b; text-decoration: none; padding: 8px 0 8px 12px; border-left: 2px solid transparent; border-bottom: 1px solid #d9ddd7; transition: 0.15s; }
   .ucv-bytask-row:hover { border-left-color: #a8e010; background: rgba(168, 224, 16, 0.06); color: #12140e; }
-  .ucv-ucnav { text-align: center; margin-top: 96px; }
+  /* 後方に出てくる .ucv-container の `margin: 0 auto`（ショートハンド）が
+     同詳細度で margin-top を 0 に戻してしまうため、詳細度を 1 段上げて
+     指定する。素の .ucv-ucnav だと上のリストと詰まって見える。 */
+  .ucv-band .ucv-ucnav { text-align: center; margin-top: 96px; }
   .ucv-ucnav-lead { font-size: 13px; color: var(--muted); margin: 0 0 14px; }
   @media (max-width: 860px) {
     .ucv-crossnav { grid-template-columns: 1fr; }
