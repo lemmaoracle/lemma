@@ -15,6 +15,10 @@ import retailJa from "./industry-v1/retail.ja.html?raw";
 import aiJa from "./industry-v1/ai.ja.html?raw";
 import developersJa from "./industry-v1/developers.ja.html?raw";
 import financeEn from "./industry-v1/finance.en.html?raw";
+import manufacturingEn from "./industry-v1/manufacturing.en.html?raw";
+import publicSectorEn from "./industry-v1/public-sector.en.html?raw";
+import healthcareEn from "./industry-v1/healthcare.en.html?raw";
+import supplyChainEn from "./industry-v1/supply-chain.en.html?raw";
 
 /** 1ロケール分の本文。EN は「要点を絞った版」で、JA の逐語訳ではない。 */
 export interface IndustryCopy {
@@ -37,8 +41,32 @@ export interface IndustryEntry extends IndustryCopy {
 }
 
 export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
-  { slug: "manufacturing", name: "製造・基幹インフラ", h1: "出荷が、書類の往復で止まらない。", description: "検査記録や計測値が本物であることを、受け取った相手がその場で確認できます。提出後の原本照会・立会・再検査の往復を大きく減らします。", body: manufacturingJa },
-  { slug: "public-sector", name: "自治体・公共", h1: "書類確認は確かに、手続きは速く。", description: "発行した記録に証明を付けると、受け取った窓口がその場で本物と確認できます。原本の提出や発行元への電話照会を大きく減らします。", body: publicSectorJa },
+  {
+    slug: "manufacturing",
+    name: "製造・基幹インフラ",
+    h1: "出荷が、書類の往復で止まらない。",
+    description: "検査記録や計測値が本物であることを、受け取った相手がその場で確認できます。提出後の原本照会・立会・再検査の往復を大きく減らします。",
+    body: manufacturingJa,
+    en: {
+      name: "Manufacturing & critical infrastructure",
+      h1: "Shipments that don't stall on the paperwork round-trip.",
+      description: "Whoever receives an inspection record or a measurement can confirm on the spot that it is genuine — removing most of the requests for originals, witness inspections and re-tests after submission.",
+      body: manufacturingEn,
+    },
+  },
+  {
+    slug: "public-sector",
+    name: "自治体・公共",
+    h1: "書類確認は確かに、手続きは速く。",
+    description: "発行した記録に証明を付けると、受け取った窓口がその場で本物と確認できます。原本の提出や発行元への電話照会を大きく減らします。",
+    body: publicSectorJa,
+    en: {
+      name: "Government & public sector",
+      h1: "Document checks stay rigorous. The procedure gets faster.",
+      description: "Attach a proof to the records you issue and the counter receiving them can confirm they are genuine on the spot — removing most requests for originals and most calls back to the issuing office.",
+      body: publicSectorEn,
+    },
+  },
   {
     slug: "finance",
     name: "金融・FinTech",
@@ -47,13 +75,37 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
     body: financeJa,
     en: {
       name: "Finance & FinTech",
-      h1: "Cut out the round-trip. Shorten the review.",
+      h1: "Cut out the round-trip. Cut the review time.",
       description: "Judge a document's authenticity on the spot, without querying the issuer. Lemma attaches a proof to the document so the review never stalls.",
       body: financeEn,
     },
   },
-  { slug: "healthcare", name: "医療・ヘルスケア", h1: "資格確認は確かに、配置は速く。", description: "資格・研修・就業適格の記録を、コピーを集めずにその場で確認できます。個人情報を預からない仕組みで、配置前の「確認待ち」を大きく減らします。", body: healthcareJa },
-  { slug: "supply-chain", name: "調達・サプライチェーン", h1: "「届いたか」ではなく、「有効か」をその場で判定。", description: "許認可やISO証書を、集めて目視で確かめる代わりに、提示を受けてその場で判定できます。仕入先審査の待ち時間と、確認の作業負荷を大きく減らします。", body: supplyChainJa },
+  {
+    slug: "healthcare",
+    name: "医療・ヘルスケア",
+    h1: "資格確認は確かに、配置は速く。",
+    description: "資格・研修・就業適格の記録を、コピーを集めずにその場で確認できます。個人情報を預からない仕組みで、配置前の「確認待ち」を大きく減らします。",
+    body: healthcareJa,
+    en: {
+      name: "Healthcare",
+      h1: "Credential checks stay rigorous. Staffing gets faster.",
+      description: "Confirm licenses, training and fitness-to-work on the spot, without collecting copies. Because you never hold the personal data, most of the waiting before an assignment disappears.",
+      body: healthcareEn,
+    },
+  },
+  {
+    slug: "supply-chain",
+    name: "調達・サプライチェーン",
+    h1: "「届いたか」ではなく、「有効か」をその場で判定。",
+    description: "許認可やISO証書を、集めて目視で確かめる代わりに、提示を受けてその場で判定できます。仕入先審査の待ち時間と、確認の作業負荷を大きく減らします。",
+    body: supplyChainJa,
+    en: {
+      name: "Procurement & supply chain",
+      h1: "Not whether it arrived — whether it's valid, settled on the spot.",
+      description: "Instead of collecting licenses and ISO certificates and checking them by eye, take them on presentation and settle it on the spot. Both the wait in supplier review and the checking workload drop sharply.",
+      body: supplyChainEn,
+    },
+  },
   { slug: "media", name: "メディア・コンテンツ", h1: "偽物が出回っても、本物はすぐ分かる。", description: "発信の瞬間に証明を付けると、本物かどうかを読者や取引先が自分で確かめられます。偽物への後手の対応を大きく減らします。", body: mediaJa },
   { slug: "retail", name: "サービス・小売", h1: "会員資格や優待の確認を、その場で速く。", description: "本部への照会を挟まず、提示を受けたその場で判定できます。個人データを配らない仕組みで、お客様の待ち時間を大きく減らします。", body: retailJa },
   { slug: "ai", name: "AI導入（業種横断）", h1: "AIに、安心して任せられる。", description: "AIの判断根拠と実行ログに証明を付けると、監査にも第三者にも「本物の記録」として示せます。説明の負担を大きく減らします。", body: aiJa },
