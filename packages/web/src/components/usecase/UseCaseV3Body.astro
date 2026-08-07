@@ -26,7 +26,7 @@ import type { UseCaseV3 } from "../../config/useCaseV3";
 import type { UseCaseBeforeAfter } from "../../config/useCaseBeforeAfter";
 import { USE_CASE_PLAN } from "../../data/useCasePlanMap";
 import { getUseCaseCopyOverride } from "../../config/useCaseCopyOverride";
-import { getUseCaseCollation } from "../../config/useCaseCollation";
+import { getUseCaseShiftTable } from "../../config/useCaseShiftTable";
 import { SEGMENT_URLS } from "../../config/navigation";
 
 export interface UseCaseV3BodyProps {
@@ -97,26 +97,41 @@ const BASE_C = isJa
       s2AfterFact: "証明された事実", s2VfHidden: "表示されない",
       s2VfKey: "ログイン・キー", s2VfKeyVal: "不要",
       s2VfCap: "相手は、リンクを開くだけ。",
-      figStepMatch: "照合する", figStepIssue: "事実だけを発行する", figStepVerify: "相手が確かめる",
-      figActorIssue: "自社・現場", figActorVerify: "相手・第三者", figJoinVerify: "証明 URL",
-      whyWasLab: "従来", whyNowLab: "Lemma",
-      whyPoints: [
+      shiftHeadK: "比較項目", shiftHeadWas: "従来のやり方（課題）",
+      shiftHeadNow: "Lemma 導入後（解決策）", shiftHeadGain: "ビジネス上のメリット",
+      shiftRows: [
         {
-          t: "本文は出さない",
-          was: "理由・スコア・履歴ごと渡すため、漏洩のリスクが動く。",
-          now: "渡るのは結果の事実だけ。記録の本文（個人情報・機微データ）は 1 文字も出ない。",
+          k: "記録の扱い", kSub: "データ確認",
+          was: "相手に原本（記録の本文・履歴）をそのまま渡す",
+          now: "原本は手元に残したまま、事実だけを証明化する",
+          mark: "lock",
+          gain: "漏洩リスクを外す",
+          gainSub: "個人情報・機微データは 1 文字も出ない",
         },
         {
-          t: "相手が独立に検証",
-          was: "相手は平文の主張を信じるか、同じ確認をやり直すかの二択になる。",
-          now: "アカウントもキーも要らない。リンクを開くだけで、相手が自力で確かめられる。",
+          k: "渡すもの", kSub: "相手への共有",
+          was: "理由・スコアなどの詳細データ（または PDF）",
+          now: "「結果のみ」の、約 200 バイトの証明データ",
+          gain: "軽量で、安全",
+          gainSub: "必要な事実だけが相手に伝わる",
         },
         {
-          t: "書き換えは検知",
-          was: "PDF や提出用データの改ざんの疑いは、最後まで拭えない。",
-          now: "ハッシュと署名で、1 文字の書き換えも検証の時点で一致しなくなる。",
+          k: "相手の確認", kSub: "検証コスト",
+          was: "相手も同じ確認をやり直すか、平文の主張を信じるしかない",
+          now: "専用アカウント不要。リンクを開くだけで自力で検証できる",
+          mark: "check",
+          gain: "確認の手間を大幅に削減",
+          gainSub: "受け取る側にアカウントもキーも要らない",
+        },
+        {
+          k: "信頼性", kSub: "改ざん対策",
+          was: "PDF や画面キャプチャのため、改ざんの疑いを捨てきれない",
+          now: "ハッシュと暗号署名で、1 文字の変更も検証の時点で検知される",
+          gain: "真正性を担保",
+          gainSub: "「いつ・誰が・改ざんなく発行したか」を第三者に示せる",
         },
       ],
+      shiftFoot: "既存の業務システム（API）はそのまま使える。双方が原本を手元に置いたまま、必要な事実だけを渡す構成である。",
       baBeforeTitle: "原本・中身をそのまま渡す", baAfterTitle: "事実だけを証明付きで渡す",
       baFlowBefore: "↓ すべて外部・AI へ渡る", baFlowAfter: "↓ 必要な事実だけ",
       baDataBeforeTitle: "原本をそのまま渡す", baDataAfterTitle: "事実だけを渡す",
@@ -170,26 +185,41 @@ const BASE_C = isJa
       s2AfterFact: "Proven fact", s2VfHidden: "not shown",
       s2VfKey: "Login / keys", s2VfKeyVal: "not needed",
       s2VfCap: "They just open a link.",
-      figStepMatch: "Match", figStepIssue: "Issue just the fact", figStepVerify: "They verify",
-      figActorIssue: "You", figActorVerify: "The receiver", figJoinVerify: "Proof URL",
-      whyWasLab: "Until now", whyNowLab: "With Lemma",
-      whyPoints: [
+      shiftHeadK: "Dimension", shiftHeadWas: "Until now (the problem)",
+      shiftHeadNow: "With Lemma (the fix)", shiftHeadGain: "What the business gets",
+      shiftRows: [
         {
-          t: "The document stays private",
-          was: "The rationale, scores, and history travel with the answer — and so does the leakage risk.",
-          now: "Only the proven fact travels. The record itself is never sent or disclosed.",
+          k: "The record", kSub: "checking the data",
+          was: "The original record and its history are handed over as-is.",
+          now: "The original stays with you; only the fact is issued as a proof.",
+          mark: "lock",
+          gain: "Leakage risk removed",
+          gainSub: "Personal and sensitive data never leaves.",
         },
         {
-          t: "Independent verification",
-          was: "The receiver either trusts a plaintext claim or repeats the same check.",
-          now: "No account, no keys — they open a link and verify it themselves.",
+          k: "What travels", kSub: "sharing",
+          was: "Detailed data — rationale, scores — or a PDF.",
+          now: "The result alone, as roughly 200 bytes of proof.",
+          gain: "Light and safe",
+          gainSub: "Only the fact the receiver needs.",
         },
         {
-          t: "Edits are detected",
-          was: "With a PDF or an exported file, doubt about tampering never fully goes away.",
-          now: "Hash and signature: even a one-character edit fails at verification time.",
+          k: "Their check", kSub: "verification cost",
+          was: "They repeat the same check, or take a plaintext claim on trust.",
+          now: "No account needed — they open a link and verify it themselves.",
+          mark: "check",
+          gain: "Far less back-and-forth",
+          gainSub: "No account, no keys on the receiving side.",
+        },
+        {
+          k: "Trust", kSub: "tamper-evidence",
+          was: "With a PDF or a screenshot, doubt about tampering never clears.",
+          now: "Hash and signature: even a one-character edit fails verification.",
+          gain: "Authenticity holds",
+          gainSub: "Shows a third party when, by whom, and untampered.",
         },
       ],
+      shiftFoot: "Your existing systems and APIs stay as they are. Both sides keep their originals; only the fact travels.",
       baBeforeTitle: "Hand over the raw source", baAfterTitle: "Share only the proven facts",
       baFlowBefore: "↓ all of it reaches the AI / outside", baFlowAfter: "↓ only the necessary facts",
       baDataBeforeTitle: "Hand over the original", baDataAfterTitle: "Hand over just the facts",
@@ -226,8 +256,12 @@ const BASE_C = isJa
 // 空オブジェクトが返るので、共有コピーがそのまま出る。
 const C = { ...BASE_C, ...getUseCaseCopyOverride(useCase.slug, locale) } as typeof BASE_C;
 
-// §2 冒頭の照合バンド（config/useCaseCollation.ts）。登録のある UC にだけ出る。
-const collation = getUseCaseCollation(useCase.slug, locale);
+// §2「変化」の比較表。スラッグ登録があればその業務の言葉に、無ければ C の
+// 一般形（全 UC で成立する 4 行）を使う。
+const shift = getUseCaseShiftTable(useCase.slug, locale) ?? {
+  rows: C.shiftRows,
+  foot: C.shiftFoot,
+};
 
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
@@ -437,115 +471,51 @@ const bytaskMembers = taskGroupMembers.filter(
           <h2 class="ucv-h2">{C.s2H2}</h2>
 
           <p class="ucv-band-lead">{C.s2Catch}</p>
-          {/* §2 の図解は枠1枚に畳む。以前は 照合バンド（A/B/結果）＋操作画面
-              ＋検証画面で箱が6つ並び、どこから読むのか分からなくなっていた。
-              いまは 1 枚の figure を細罫で 2〜3 面に割り、番号で順番を示す。
-              照合面は collation 設定のある UC にだけ足される。 */}
-          <figure class="ucv-fig">
-            <div class={`ucv-fig-grid${collation ? " ucv-fig-grid--3" : ""}`}>
-              {collation && (
-                <div class="ucv-fig-pane">
-                  <div class="ucv-fig-actor">{collation.actorMatch}</div>
-                  <div class="ucv-fig-step"><span class="n">01</span>{C.figStepMatch}</div>
-                  <div class="ucv-fig-pair">
-                    <div class="ucv-fig-src">
-                      <div class="k">{collation.aLabel}</div>
-                      <ul>{collation.aItems.map((i) => <li>{i}</li>)}</ul>
-                    </div>
-                    <div class="ucv-fig-x"><span class="mk" aria-hidden="true">×</span><span class="lab">{collation.opLabel}</span></div>
-                    <div class="ucv-fig-src">
-                      <div class="k">{collation.bLabel}</div>
-                      <ul>{collation.bItems.map((i) => <li>{i}</li>)}</ul>
-                    </div>
-                  </div>
-                  <p class="ucv-fig-note">{collation.opNote}</p>
-                </div>
-              )}
+          {/* §2 は「スライド1枚で伝わる表」。以前は登場人物つきの 3 面フロー
+              図だったが、読み解きに時間がかかるため、従来 ↔ Lemma の対比を
+              軸にした 4 行の表へ作り直した。行の中身は config/useCaseShiftTable.ts
+              （登録の無い UC は C.shiftRows の一般形）。 */}
+          <div class="ucv-shift-wrap">
+            <table class="ucv-shift">
+              <thead>
+                <tr>
+                  <th class="k">{C.shiftHeadK}</th>
+                  <th class="was">{C.shiftHeadWas}</th>
+                  <th class="now">{C.shiftHeadNow}</th>
+                  <th class="gain">{C.shiftHeadGain}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shift.rows.map((r, i) => (
+                  <tr>
+                    <th scope="row" class="k">
+                      <span class="n">{String(i + 1).padStart(2, "0")}</span>
+                      <b>{r.k}</b>
+                      <span class="sub">{r.kSub}</span>
+                    </th>
+                    <td class="was">{r.was}</td>
+                    <td class="now">
+                      {r.mark && <span class={`mk mk--${r.mark}`} aria-hidden="true"></span>}
+                      <span class="v">{r.now}</span>
+                    </td>
+                    <td class="gain">
+                      <b>{r.gain}</b>
+                      <span class="sub">{r.gainSub}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="ucv-shift-foot">{shift.foot}</p>
 
-              <div class="ucv-fig-pane">
-                {collation && (
-                  <span class="ucv-fig-join" aria-hidden="true">
-                    <i>→</i><em>{collation.joinIssue}</em>
-                  </span>
-                )}
-                <div class="ucv-fig-actor">{collation ? collation.actorIssue : C.figActorIssue}</div>
-                <div class="ucv-fig-step"><span class="n">{collation ? "02" : "01"}</span>{C.figStepIssue}</div>
-                {/* 渡るものはライム＋✓、渡らないものはグレー＋🔒。この対比が
-                    §2 で一番伝えたいことなので、面の中で色を分けている。 */}
-                <ul class="ucv-fig-out">
-                  {(collation ? collation.outItems : [hideProve?.prove ?? ""]).map((v) => (
-                    <li>{v}</li>
-                  ))}
-                </ul>
-                <dl class="ucv-fig-rows">
-                  {!collation && (
-                    <div class="ucv-fig-row"><dt>{C.s2OpRow1}</dt><dd>{C.s2OpRow1v}</dd></div>
-                  )}
-                  <div class="ucv-fig-row"><dt>{C.s2OpRow2}</dt><dd><span class="hi">{C.s2OpRow2v}</span></dd></div>
-                </dl>
-                <p class="ucv-fig-lock">
-                  {collation ? collation.lockNote : `${C.s2OpRow3}${isJa ? "は、" : ": "}${C.s2OpRow3v}`}
-                </p>
-              </div>
-
-              <div class="ucv-fig-pane">
-                <span class="ucv-fig-join" aria-hidden="true">
-                  <i>→</i><em>{collation ? collation.joinVerify : C.figJoinVerify}</em>
-                </span>
-                <div class="ucv-fig-actor">{collation ? collation.actorVerify : C.figActorVerify}</div>
-                <div class="ucv-fig-step"><span class="n">{collation ? "03" : "02"}</span>{C.figStepVerify}</div>
-                <div class="ucv-fig-verdict">
-                  <div class="seal">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <circle cx="12" cy="12" r="11" stroke-width="1.1" />
-                      <circle cx="12" cy="12" r="8.2" stroke-width=".7" opacity=".45" />
-                      <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </div>
-                  <div class="t">{C.hiwVerdict}</div>
-                  {isJa && <div class="en">NOT TAMPERED</div>}
-                </div>
-                <dl class="ucv-fig-rows">
-                  <div class="ucv-fig-row"><dt>{C.s2VfKey}</dt><dd>{C.s2VfKeyVal}</dd></div>
-                </dl>
-                {hideProve && (
-                  <p class="ucv-fig-lock">{hideProve.hide}{isJa ? "は、" : ": "}{C.s2VfHidden}</p>
-                )}
-              </div>
-            </div>
-            <figcaption class="ucv-fig-cap">
-              {collation ? collation.outNote : `${C.s2OpCap}${isJa ? "" : " "}${C.s2VfCap}`}
-            </figcaption>
-          </figure>
-
-          <div class="ucv-info">
-            <div class="ucv-info-eye">{isJa ? "なぜ Lemma か" : "Why Lemma"}</div>
-            {/* 3 点は「Lemma だとこうなる」だけでは効かない。何が今までで、
-                何が変わるのかを 1 枚ずつ対にして置く。 */}
-            <ol class="ucv-info-grid">
-              {C.whyPoints.map((w, i) => (
-                <li>
-                  <span class="n">{String(i + 1).padStart(2, "0")}</span>
-                  <b>{w.t}</b>
-                  <div class="ucv-info-was">
-                    <span class="k">{C.whyWasLab}</span>
-                    <p>{w.was}</p>
-                  </div>
-                  <div class="ucv-info-now">
-                    <span class="k">{C.whyNowLab}</span>
-                    <p>{w.now}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-            <div class="ucv-info-foot">
-              {v3 ? (
-                <p class="ucv-info-body">{v3.approach[locale]}</p>
-              ) : (
-                <div class="ucv-info-body" set:html={approachBody} />
-              )}
-              <a class="ucv-info-link" href={`${pillarsPath}/${PILLAR_ANCHOR[pillar.slug] ?? ""}`}>{C.approachLink}</a>
-            </div>
+          <div class="ucv-info-foot">
+            {v3 ? (
+              <p class="ucv-info-body">{v3.approach[locale]}</p>
+            ) : (
+              <div class="ucv-info-body" set:html={approachBody} />
+            )}
+            <a class="ucv-info-link" href={`${pillarsPath}/${PILLAR_ANCHOR[pillar.slug] ?? ""}`}>{C.approachLink}</a>
           </div>
         </div>
       </div>
@@ -811,75 +781,40 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-emph { border-left: 3px solid var(--ok); padding-left: clamp(18px, 3vw, 34px); }
   /* §2 図解 — 枠1枚を細罫で 2〜3 面に割る。以前は照合バンド＋操作画面＋
      検証画面で箱が6つ並び、読む順番が立たなかった。番号で順路を示す。 */
-  .ucv-fig { margin: 26px 0 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-s); overflow: hidden; }
-  .ucv-fig-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .ucv-fig-grid--3 { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr); }
-  .ucv-fig-pane { position: relative; padding: 20px 22px 22px; min-width: 0; }
-  .ucv-fig-pane + .ucv-fig-pane { border-left: 1px solid var(--line); padding-left: 34px; }
-  /* 登場人物 — 誰の手元の話かを面の頭に出す（案の「登場人物」）。 */
-  .ucv-fig-actor { display: inline-block; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; margin-bottom: 10px; }
-  .ucv-fig-step { display: flex; align-items: baseline; gap: 8px; font-family: var(--font-serif-jp); font-weight: 600; font-size: 14.5px; color: var(--tx); margin-bottom: 14px; }
-  .ucv-fig-step .n { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--ok-light); }
-  /* 面と面をつなぐ矢印。罫の上に白抜きで置き、何が渡るのかを添える。 */
-  .ucv-fig-join { position: absolute; left: -1px; top: 24px; transform: translateX(-50%); display: grid; place-items: center; gap: 2px; width: 58px; padding: 5px 0; background: var(--card); color: var(--ok-light); }
-  .ucv-fig-join i { font-style: normal; font-size: 13px; line-height: 1; }
-  .ucv-fig-join em { font-style: normal; font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.08em; text-align: center; }
+  /* §2「変化」の比較表 — 従来（グレー）↔ Lemma（ライム地・太字）の対比を
+     行ごとに並べる。§3 の表とは軸が違う（あちらは代替手段どうし）。 */
+  .ucv-shift-wrap { overflow-x: auto; margin: 26px 0 0; }
+  .ucv-shift { width: 100%; min-width: 780px; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: var(--sh-s); }
+  .ucv-shift thead th { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; font-weight: 400; color: var(--muted); text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--lite-2); }
+  .ucv-shift thead th.now { color: var(--ok-ink); background: rgba(168, 224, 16, 0.14); }
+  .ucv-shift tbody th, .ucv-shift tbody td { padding: 15px 16px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; font-weight: 400; }
+  .ucv-shift tbody tr:last-child th, .ucv-shift tbody tr:last-child td { border-bottom: none; }
 
-  /* 01 照合する — A × B。カードを重ねず、細罫のリストだけで見せる。 */
-  .ucv-fig-pair { display: grid; gap: 8px; }
-  .ucv-fig-src .k { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
-  .ucv-fig-src ul { list-style: none; margin: 0; padding: 0; }
-  .ucv-fig-src li { padding: 6px 0; border-top: 1px solid var(--line); font-size: 12.5px; line-height: 1.6; color: var(--tx); }
-  .ucv-fig-src li:first-child { border-top: none; padding-top: 2px; }
-  .ucv-fig-x { display: flex; align-items: center; gap: 8px; color: var(--ok-light); }
-  .ucv-fig-x::after { content: ""; flex: 1; height: 1px; background: rgba(124, 175, 0, 0.35); }
-  .ucv-fig-x .mk { font-size: 15px; line-height: 1; }
-  .ucv-fig-x .lab { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; }
-  .ucv-fig-note { margin: 12px 0 0; font-size: 11.5px; line-height: 1.8; color: var(--muted); }
+  /* 比較項目 */
+  .ucv-shift th.k { width: 15%; }
+  .ucv-shift tbody th.k .n { display: block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; color: var(--ok-light); margin-bottom: 4px; }
+  .ucv-shift tbody th.k b { display: block; font-family: var(--font-serif-jp); font-weight: 600; font-size: 14.5px; line-height: 1.5; color: var(--tx); }
+  .ucv-shift tbody th.k .sub { display: block; font-size: 10.5px; line-height: 1.6; color: var(--muted); margin-top: 3px; }
 
-  /* 02 発行する — 渡る値は ✓ とライム。 */
-  .ucv-fig-out { list-style: none; margin: 0 0 12px; padding: 0; }
-  .ucv-fig-out li { position: relative; padding: 4px 0 4px 20px; font-family: var(--font-serif-jp); font-weight: 600; font-size: 14.5px; line-height: 1.65; color: var(--ok-light); }
-  .ucv-fig-out li::before { content: "✓"; position: absolute; left: 0; top: 4px; font-family: var(--font-body); font-size: 12px; }
-  .ucv-fig-rows { margin: 0; }
-  .ucv-fig-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); }
-  .ucv-fig-row dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: var(--muted); margin: 0; flex: none; }
-  .ucv-fig-row dd { font-size: 12.5px; line-height: 1.6; color: var(--tx); margin: 0; text-align: right; }
-  .ucv-fig-row .hi { color: var(--ok-light); font-weight: 600; }
+  /* 従来 — 目立たせない */
+  .ucv-shift td.was { width: 26%; background: var(--lite-2); font-size: 12.5px; line-height: 1.85; color: var(--muted); }
 
-  /* 渡らないもの — 鍵とグレーで、渡るものと視覚的に分ける。 */
-  .ucv-fig-lock { position: relative; margin: 12px 0 0; padding: 10px 12px 10px 32px; background: var(--lite-2); border-radius: 8px; font-size: 11.5px; line-height: 1.75; color: var(--muted); }
-  .ucv-fig-lock::before { content: ""; position: absolute; left: 12px; top: 12px; width: 11px; height: 12px; border: 1.3px solid var(--muted); border-radius: 2px; box-sizing: border-box; }
-  .ucv-fig-lock::after { content: ""; position: absolute; left: 14.5px; top: 7px; width: 6px; height: 7px; border: 1.3px solid var(--muted); border-bottom: none; border-radius: 4px 4px 0 0; box-sizing: border-box; }
+  /* Lemma — ここに視線を集める */
+  .ucv-shift td.now { width: 30%; background: rgba(168, 224, 16, 0.09); font-size: 13.5px; line-height: 1.8; color: var(--tx); font-weight: 600; }
+  .ucv-shift td.now .mk { float: left; width: 15px; height: 15px; margin: 3px 8px 0 0; position: relative; color: var(--ok-ink); }
+  .ucv-shift td.now .mk--lock::before { content: ""; position: absolute; left: 1px; top: 5px; width: 12px; height: 10px; border: 1.4px solid currentColor; border-radius: 2px; box-sizing: border-box; }
+  .ucv-shift td.now .mk--lock::after { content: ""; position: absolute; left: 3.7px; top: 0.5px; width: 7px; height: 6px; border: 1.4px solid currentColor; border-bottom: none; border-radius: 4px 4px 0 0; box-sizing: border-box; }
+  .ucv-shift td.now .mk--check::before { content: ""; position: absolute; left: 2px; top: 1px; width: 6px; height: 11px; border: solid currentColor; border-width: 0 1.8px 1.8px 0; transform: rotate(42deg); box-sizing: border-box; }
 
-  /* 03 相手が確かめる */
-  .ucv-fig-verdict { text-align: center; padding: 2px 0 12px; }
-  .ucv-fig-verdict .seal { width: 34px; height: 34px; border-radius: 50%; margin: 0 auto 9px; display: grid; place-items: center; border: 1.4px solid rgba(124, 175, 0, 0.5); background: rgba(168, 224, 16, 0.09); color: var(--ok-ink); }
-  .ucv-fig-verdict .t { font-family: var(--font-serif-jp); font-weight: 600; font-size: 13px; color: var(--tx); }
-  .ucv-fig-verdict .en { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 0.16em; color: var(--muted); margin-top: 3px; }
+  /* メリット */
+  .ucv-shift td.gain { width: 29%; }
+  .ucv-shift td.gain b { display: block; font-family: var(--font-serif-jp); font-weight: 600; font-size: 13.5px; line-height: 1.6; color: var(--tx); }
+  .ucv-shift td.gain .sub { display: block; font-size: 11.5px; line-height: 1.8; color: var(--tx-soft); margin-top: 4px; }
 
-  .ucv-fig-cap { padding: 12px 22px 14px; border-top: 1px solid var(--line); background: var(--lite-2); font-size: 12.5px; line-height: 1.85; color: var(--tx-soft); }
+  .ucv-shift-foot { position: relative; margin: 14px 0 0; padding-left: 18px; font-size: 12.5px; line-height: 1.9; color: var(--tx-soft); }
+  .ucv-shift-foot::before { content: ""; position: absolute; left: 0; top: 9px; width: 8px; height: 2px; background: var(--ok); }
 
-  /* 「なぜ Lemma か」— 3 点を「従来 → Lemma」の対で立てる。
-     以前は淡い箱の中の ✓ 3 行で、散文に埋もれて読み飛ばされていた。 */
-  .ucv-info { margin: 34px 0 0; background: var(--card); border: 1px solid var(--line); border-top: 2px solid var(--ok); border-radius: 2px 2px 12px 12px; padding: 22px 24px 24px; }
-  /* 日本語主体の見出しなので mono の極小ラベルにはしない（読み飛ばされる）。
-     ライムの短い罫＋明朝で、節として立てる。 */
-  .ucv-info-eye { display: flex; align-items: center; gap: 10px; font-family: var(--font-serif-jp); font-weight: 600; font-size: 16px; letter-spacing: 0.03em; color: var(--tx); margin-bottom: 18px; }
-  .ucv-info-eye::before { content: ""; width: 18px; height: 2px; background: var(--ok); flex: none; }
-  .ucv-info-grid { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 26px; margin: 0; padding: 0; }
-  .ucv-info-grid li { padding: 14px 0 16px; border-top: 1px solid var(--line); }
-  .ucv-info-grid .n { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--ok-light); margin-bottom: 7px; }
-  .ucv-info-grid b { display: block; font-family: var(--font-serif-jp); font-weight: 600; font-size: 15.5px; line-height: 1.55; color: var(--tx); margin-bottom: 10px; }
-  .ucv-info-was, .ucv-info-now { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; padding: 7px 0; }
-  .ucv-info-was { border-top: 1px solid var(--line); }
-  .ucv-info-was .k, .ucv-info-now .k { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 0.1em; padding-top: 4px; }
-  .ucv-info-was .k { color: var(--muted); }
-  .ucv-info-now .k { color: var(--ok-light); }
-  .ucv-info-was p, .ucv-info-now p { margin: 0; font-size: 12.5px; line-height: 1.8; }
-  .ucv-info-was p { color: var(--muted); }
-  .ucv-info-now p { color: var(--tx); }
-  .ucv-info-foot { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .ucv-info-foot { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
   .ucv-info-body { font-size: 13.5px; line-height: 1.95; color: var(--tx-soft); max-width: 74ch; margin: 0; }
   .ucv-info-body :global(p) { margin: 0 0 10px; }
   .ucv-info-body :global(p:last-child) { margin-bottom: 0; }
@@ -966,28 +901,11 @@ const bytaskMembers = taskGroupMembers.filter(
 
 
   /* ---------- responsive ---------- */
-  /* 3面のままだと 1200px 前後で各面が細くなり、行の値が折れて読みにくい。
-     照合の面だけ上段いっぱいに出して、発行／検証を下段に並べる。 */
-  @media (max-width: 1200px) {
-    .ucv-fig-grid--3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-    .ucv-fig-grid--3 > .ucv-fig-pane:first-child { grid-column: 1 / -1; border-bottom: 1px solid var(--line); }
-    .ucv-fig-grid--3 > .ucv-fig-pane:first-child .ucv-fig-pair { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 16px; }
-    .ucv-fig-grid--3 > .ucv-fig-pane:first-child .ucv-fig-x { flex-direction: column; gap: 4px; }
-    .ucv-fig-grid--3 > .ucv-fig-pane:first-child .ucv-fig-x::after { display: none; }
-    .ucv-fig-grid--3 > .ucv-fig-pane:nth-child(2) { border-left: none; padding-left: 22px; }
-    .ucv-fig-grid--3 > .ucv-fig-pane:nth-child(2) .ucv-fig-join { left: 22px; top: -1px; transform: translateY(-50%); grid-auto-flow: column; width: auto; padding: 4px 8px; gap: 6px; }
-    .ucv-fig-grid--3 > .ucv-fig-pane:nth-child(2) .ucv-fig-join i { transform: rotate(90deg); }
-  }
   @media (max-width: 1020px) {
     .ucv-hero { grid-template-columns: 1fr; gap: 30px; }
     .ucv-hiw { grid-template-columns: 1fr; }
     .ucv-hiw-shot { aspect-ratio: auto; padding: 16px; }
     .ucv-personas { grid-template-columns: 1fr; }
-    .ucv-fig-grid, .ucv-fig-grid--3 { grid-template-columns: 1fr; }
-    .ucv-fig-pane + .ucv-fig-pane { border-left: none; border-top: 1px solid var(--line); padding-left: 22px; }
-    .ucv-fig-pane + .ucv-fig-pane .ucv-fig-join { left: 22px; top: -1px; transform: translateY(-50%); flex-direction: row; grid-auto-flow: column; width: auto; padding: 4px 8px; gap: 6px; }
-    .ucv-fig-pane + .ucv-fig-pane .ucv-fig-join i { transform: rotate(90deg); }
-    .ucv-info-grid { grid-template-columns: 1fr; }
   }
 </style>
 
