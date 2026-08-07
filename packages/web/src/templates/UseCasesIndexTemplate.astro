@@ -14,6 +14,7 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import SolutionsBridge from "../components/SolutionsBridge.astro";
 import UseCaseIcon from "../components/usecase/UseCaseIcon.astro";
+import { INDUSTRIES_V1 } from "../config/industriesV1";
 
 export interface UseCasesIndexTemplateProps {
   locale: Locale;
@@ -32,6 +33,10 @@ const { locale, t, base, useCases, useCaseT } =
   Astro.props as UseCasesIndexTemplateProps;
 const useCasesPath = `${base}/solutions/use-cases`;
 const isJa = locale === "ja";
+
+/* 業界ハブのカード帯。ページが存在する業界だけ出す——EN 本文（`en`）を
+   持たない業界は EN のページ自体が無いため、リンクすると 404 になる。 */
+const industryHubs = INDUSTRIES_V1.filter((e) => (isJa ? true : Boolean(e.en)));
 
 // "対応プラン" badge — non-interactive (card is already a link). Names are
 // brand-fixed (Civic / Critical / Compliance), so they read the same in both
@@ -104,6 +109,28 @@ const collectionJsonLd = {
         <p class="uc-hero-subnote">{isJa ? "データは渡さない。証明は渡る。" : "Data stays. Proof travels."}</p>
         <p class="uc-hero-intro">{useCaseT.chooseOne}</p>
       </section>
+
+      {/* 業界ハブへの帯。EN ではここが唯一の入口だった——トップの業界タブ
+          （config/top-v47.en.html）以外に導線が無く、9本のハブが実質
+          孤児ページになっていた。JA 索引は v14 テンプレ側が同等のカードを
+          持つので、この帯は EN 用（`entry.en` を持つ業界だけ出す）。 */}
+      {industryHubs.length > 0 && (
+        <section class="uc-inds" aria-label={isJa ? "業界から探す" : "Find by industry"}>
+          <div class="uc-sec-lbl">{isJa ? "業界から探す" : "Find by industry"}</div>
+          <div class="uc-ind-grid">
+            {industryHubs.map((e) => (
+              <a class="uc-ind-card" href={`${base}/solutions/use-cases/${e.slug}/`}>
+                <span
+                  class="uc-ind-th"
+                  style={`background-image:url(/industry/${e.slug}.jpg)`}
+                  aria-hidden="true"
+                ></span>
+                <span class="uc-ind-name">{isJa ? e.name : (e.en?.name ?? e.name)}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       {taskGroups && (
         <section class="uc-shortcut" aria-label={isJa ? "課題から探す" : "Find by challenge"}>
@@ -741,6 +768,19 @@ const collectionJsonLd = {
   .uc-sec-lbl { font-family: var(--uc-mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--uc-text-4); display: flex; align-items: center; gap: 11px; }
   .uc-sec-lbl::before { content: ""; width: 26px; height: 1.5px; background: var(--accent); }
   .uc-shortcut { margin: 32px 0 0; }
+  /* 業界ハブ帯。サムネは業界ページと同じ写真（public/industry/<slug>.jpg）を
+     使い、暗いヴェールを重ねて名前を白抜きにする（usecases-index-v14 の
+     .ux-th / .ux-thv と同じ扱い）。 */
+  .uc-inds { margin-top: 34px; }
+  .uc-ind-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  .uc-ind-card { position: relative; display: block; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; border: 1px solid var(--lemma-line); transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+  .uc-ind-card:hover { border-color: var(--accent); box-shadow: 0 8px 24px rgba(139, 69, 19, 0.08); transform: translateY(-2px); }
+  .uc-ind-th { position: absolute; inset: 0; background-size: cover; background-position: center; filter: sepia(0.16) saturate(0.62) hue-rotate(-8deg) contrast(1.04); }
+  .uc-ind-th::after { content: ""; position: absolute; inset: 0; background: linear-gradient(200deg, rgba(16, 22, 17, 0.18) 0%, rgba(16, 22, 17, 0.52) 62%, rgba(16, 22, 17, 0.72) 100%); }
+  .uc-ind-name { position: absolute; left: 14px; right: 14px; bottom: 12px; z-index: 1; color: #fff; font-size: 14px; line-height: 1.45; font-weight: 600; }
+  @media (max-width: 900px) { .uc-ind-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .uc-ind-grid { grid-template-columns: 1fr; } }
+
   .uc-shortcut-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
   .uc-shortcut-item { display: flex; gap: 14px; align-items: center; padding: 20px 22px; border: 1px solid var(--lemma-line); border-radius: 14px; background: #fff; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
   .uc-shortcut-item:hover { border-color: var(--accent); box-shadow: 0 8px 24px rgba(139, 69, 19, 0.08); transform: translateY(-2px); }
