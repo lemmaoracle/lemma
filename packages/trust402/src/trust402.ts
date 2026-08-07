@@ -480,12 +480,10 @@ const submitProof = async (
           ? (e as Readonly<{ message: string }>).message
           : "Unknown error";
     const code = (e as Readonly<{ code?: unknown }>).code;
-    const err = new Error(
-      `${message} (apiBase: ${client.apiBase}; apiKey: *** ? "set" : "unset"})`,
-    );
-    // imperative: attach structured code to Error — no functional alternative
-    // eslint-disable-next-line functional/immutable-data
-    throw typeof code === "number" ? Object.assign(err, { code }) : err;
+    const errMsg = `${message} (apiBase: ${client.apiBase}; apiKey: *** ? "set" : "unset"})`;
+    throw typeof code === "number"
+      ? Object.assign(new Error(errMsg), { code })
+      : new Error(errMsg);
   });
 
   const errBody: unknown = proofRes.ok

@@ -220,29 +220,19 @@ const ensureChain = async (
   // eslint-disable-next-line functional/no-conditional-statements
   if (typeof location === "undefined") return;
   const chainId = `0x${X402_CHAIN_IDS[network].toString(16)}`;
-  // imperative: wallet RPC calls are inherently imperative — boundary
-  // eslint-disable-next-line functional/no-try-statements
-  try {
-    // eslint-disable-next-line functional/no-expression-statements -- RPC boundary
-    await provider.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId }],
-    });
-  } catch (e: unknown) {
+  const meta = CHAIN_METADATA[network];
+  const _switchResult = await provider.request({
+    method: "wallet_switchEthereumChain",
+    params: [{ chainId }],
+  }).catch(async (e: unknown): Promise<void> => {
     const code = (e as Readonly<{ code?: unknown }> | null)?.code;
-    // imperative: error-code branching for wallet RPC — boundary
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (code === 4902 || code === -32603) {
-      const meta = CHAIN_METADATA[network];
-      // eslint-disable-next-line functional/no-expression-statements -- RPC boundary
-      await provider.request({
-        method: "wallet_addEthereumChain",
-        params: [{ chainId, ...meta }],
-      });
-    } else {
-      throw e;
-    }
-  }
+    return code === 4902 || code === -32603
+      ? provider.request({
+          method: "wallet_addEthereumChain",
+          params: [{ chainId, ...meta }],
+        }).then((_: unknown) => undefined)
+      : Promise.reject(e instanceof Error ? e : new Error(String(e)));
+  });
 };
 
 const transferWithAuthorizationTypedData = (
