@@ -98,7 +98,7 @@ const BASE_C = isJa
       s2VfKey: "ログイン・キー", s2VfKeyVal: "不要",
       s2VfCap: "相手は、リンクを開くだけ。",
       flowWasTag: "従来", flowNowTag: "Lemma",
-      payHead: "渡すもの", mechEye: "仕組み",
+      payHead: "渡すもの", mechEye: "仕組み", mechH: "Lemma の核心メカニズム", mechMore: "詳しい仕組みを読む",
       flow: {
         insideLabel: "自社のなか",
         outsideLabel: "相手のところ",
@@ -113,8 +113,11 @@ const BASE_C = isJa
         toLabel: "相手・第三者",
         toNote: "リンクを開くだけ。アカウントもキーも要らない",
         wasPayload: ["記録の本文", "添付", "履歴"],
-        mechLead:
-          "発行者が結果を述語として発行し、受け取った側は原本に触れずに検証する。",
+        mechPoints: [
+          { t: "原本は外に出さない", d: "記録の本文（個人情報・機微データ）は自社内に留まる。渡さないので、漏洩のリスクが動かない。" },
+          { t: "渡すのは「証明された事実」だけ", d: "満たしているという事実のみを、約 200 バイトの ZK 証明として発行する。" },
+          { t: "相手はリンクを開くだけ", d: "受け取った側にアカウント作成は不要。「いつ・誰が・改ざんなく発行したか」を自力で確かめられる。" },
+        ],
       },
       baBeforeTitle: "原本・中身をそのまま渡す", baAfterTitle: "事実だけを証明付きで渡す",
       baFlowBefore: "↓ すべて外部・AI へ渡る", baFlowAfter: "↓ 必要な事実だけ",
@@ -170,7 +173,7 @@ const BASE_C = isJa
       s2VfKey: "Login / keys", s2VfKeyVal: "not needed",
       s2VfCap: "They just open a link.",
       flowWasTag: "Until now", flowNowTag: "With Lemma",
-      payHead: "What travels", mechEye: "How it works",
+      payHead: "What travels", mechEye: "How it works", mechH: "The mechanism, in three points", mechMore: "Read the full mechanism",
       flow: {
         insideLabel: "Your side",
         outsideLabel: "Their side",
@@ -185,8 +188,11 @@ const BASE_C = isJa
         toLabel: "The receiver",
         toNote: "They open a link. No account, no keys.",
         wasPayload: ["The document", "Attachments", "History"],
-        mechLead:
-          "The issuer publishes the result as a predicate; the receiver verifies it without ever touching the original.",
+        mechPoints: [
+          { t: "The original never leaves", d: "The record itself — personal and sensitive data — stays with you, so the leakage risk never moves." },
+          { t: "Only the proven fact travels", d: "Just the fact that the condition is met, issued as roughly 200 bytes of ZK proof." },
+          { t: "They only open a link", d: "No account needed on the receiving side. They check when, by whom, and untampered, themselves." },
+        ],
       },
       baBeforeTitle: "Hand over the raw source", baAfterTitle: "Share only the proven facts",
       baFlowBefore: "↓ all of it reaches the AI / outside", baFlowAfter: "↓ only the necessary facts",
@@ -499,12 +505,45 @@ const bytaskMembers = taskGroupMembers.filter(
 
           <section class="ucv-mech">
             <div class="ucv-mech-eye">{C.mechEye}</div>
-            <h3 class="ucv-mech-h">{flow.mechLead}</h3>
-            {v3 ? (
-              <p class="ucv-mech-body">{v3.approach[locale]}</p>
-            ) : (
-              <div class="ucv-mech-body" set:html={approachBody} />
-            )}
+            <h3 class="ucv-mech-h">{C.mechH}</h3>
+            {/* 散文の羅列だと読まれないので、要点 3 つを先に立てる。
+                しるしは順に 鍵（原本を出さない）→ 証明（渡るもの）→ 検証。 */}
+            <ol class="ucv-mech-pts">
+              {flow.mechPoints.map((m, i) => (
+                <li>
+                  <span class="ic" aria-hidden="true">
+                    {i === 0 && (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="4.5" y="10.5" width="15" height="10" rx="2" stroke-width="1.4" />
+                        <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke-width="1.4" stroke-linecap="round" />
+                      </svg>
+                    )}
+                    {i === 1 && (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M6 3.5h8l4 4V20a.5.5 0 0 1-.5.5h-11A.5.5 0 0 1 6 20V4a.5.5 0 0 1 .5-.5Z" stroke-width="1.4" stroke-linejoin="round" />
+                        <path d="M14 3.5V8h4" stroke-width="1.4" stroke-linejoin="round" />
+                        <path d="M9 14.5l2 2 4-4.5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    )}
+                    {i === 2 && (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M13 3 5.5 13.5H11L10.5 21 18.5 10H13z" stroke-width="1.4" stroke-linejoin="round" />
+                      </svg>
+                    )}
+                  </span>
+                  <b>{m.t}</b>
+                  <p>{m.d}</p>
+                </li>
+              ))}
+            </ol>
+            <details class="ucv-mech-more">
+              <summary>{C.mechMore}</summary>
+              {v3 ? (
+                <p class="ucv-mech-body">{v3.approach[locale]}</p>
+              ) : (
+                <div class="ucv-mech-body" set:html={approachBody} />
+              )}
+            </details>
             <a class="ucv-info-link" href={`${pillarsPath}/${PILLAR_ANCHOR[pillar.slug] ?? ""}`}>{C.approachLink}</a>
           </section>
 
@@ -824,11 +863,25 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-pay-row--was li { color: var(--muted); background: var(--lite-2); }
   .ucv-pay-row--now li { color: var(--tx); font-weight: 600; background: rgba(168, 224, 16, 0.14); border-color: rgba(124, 175, 0, 0.4); }
 
-  /* §2 ③仕組み — 散文の前に要約を 1 行立てて、節として読ませる。 */
-  .ucv-mech { margin: 30px 0 0; padding-left: 18px; border-left: 2px solid var(--ok); }
+  /* §2 ③仕組み — 散文の羅列をやめ、要点 3 つを先に立てる。散文は
+     details に畳んで、読みたい人だけが開く。 */
+  .ucv-mech { margin: 30px 0 0; }
   .ucv-mech-eye { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.2em; color: var(--ok-light); margin-bottom: 8px; }
-  .ucv-mech-h { font-family: var(--font-serif-jp); font-weight: 600; font-size: clamp(16px, 1.7vw, 19px); line-height: 1.7; letter-spacing: 0.02em; color: var(--tx); margin: 0 0 12px; max-width: 46ch; }
-  .ucv-mech-body { font-size: 13.5px; line-height: 1.95; color: var(--tx-soft); max-width: 68ch; margin: 0; }
+  .ucv-mech-h { font-family: var(--font-serif-jp); font-weight: 600; font-size: clamp(18px, 2vw, 22px); line-height: 1.6; letter-spacing: 0.03em; color: var(--tx); margin: 0 0 20px; }
+  .ucv-mech-pts { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; }
+  .ucv-mech-pts li { background: var(--card); border: 1px solid var(--line); border-top: 2px solid var(--ok); border-radius: 2px 2px 11px 11px; box-shadow: var(--sh-s); padding: 18px 18px 20px; }
+  .ucv-mech-pts .ic { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: rgba(168, 224, 16, 0.14); color: var(--ok-ink); margin-bottom: 12px; }
+  .ucv-mech-pts .ic svg { width: 19px; height: 19px; }
+  .ucv-mech-pts b { display: block; font-family: var(--font-serif-jp); font-weight: 600; font-size: 15.5px; line-height: 1.55; color: var(--tx); margin-bottom: 8px; }
+  .ucv-mech-pts p { margin: 0; font-size: 12.5px; line-height: 1.9; color: var(--tx-soft); }
+
+  .ucv-mech-more { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+  .ucv-mech-more > summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; color: var(--muted); }
+  .ucv-mech-more > summary::-webkit-details-marker { display: none; }
+  .ucv-mech-more > summary::before { content: "+"; width: 15px; height: 15px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; font-family: var(--font-body); font-size: 11px; line-height: 1; color: var(--ok-light); }
+  .ucv-mech-more[open] > summary::before { content: "−"; }
+  .ucv-mech-more > summary:hover { color: var(--tx); }
+  .ucv-mech-body { margin: 14px 0 0; font-size: 13.5px; line-height: 1.95; color: var(--tx-soft); max-width: 68ch; }
   .ucv-mech-body :global(p) { margin: 0 0 10px; }
   .ucv-mech-body :global(p:last-child) { margin-bottom: 0; }
   .ucv-info-link { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ok-light); border-bottom: 1px solid rgba(124, 175, 0, 0.35); }
@@ -924,6 +977,7 @@ const bytaskMembers = taskGroupMembers.filter(
     .ucv-cf-zone--out { padding-left: 0; }
     .ucv-pay-row { grid-template-columns: 1fr; gap: 8px; }
     .ucv-pay-row .k { justify-self: start; padding: 4px 14px; }
+    .ucv-mech-pts { grid-template-columns: 1fr; }
     .ucv-hero { grid-template-columns: 1fr; gap: 30px; }
     .ucv-hiw { grid-template-columns: 1fr; }
     .ucv-hiw-shot { aspect-ratio: auto; padding: 16px; }

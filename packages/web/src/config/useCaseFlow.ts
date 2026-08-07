@@ -36,8 +36,8 @@ export interface UseCaseFlow {
   readonly toNote: string;
   /** 「渡すもの」の新旧比較。now は results と同じでよい。 */
   readonly wasPayload: ReadonlyArray<string>;
-  /** 仕組みの節の見出し（散文の要約 1 行）。 */
-  readonly mechLead: string;
+  /** 仕組みの節 — 要点 3 つ。しるしは順に 🔒 / 証明 / 検証で固定。 */
+  readonly mechPoints: ReadonlyArray<{ readonly t: string; readonly d: string }>;
 }
 
 const FLOWS: Readonly<
@@ -58,8 +58,20 @@ const FLOWS: Readonly<
       toLabel: "取引先・グループ会社・監査人",
       toNote: "リンクを開くだけ。アカウントもキーも要らない",
       wasPayload: ["判定の理由", "スコア", "照会履歴", "リストの中身"],
-      mechLead:
-        "照合した発行者が結果を述語として発行し、受け取った側は原本に触れずに検証する。",
+      mechPoints: [
+        {
+          t: "原本は外に出さない",
+          d: "取引履歴・詳細スコア・照会履歴といった機微データは自社内に留まる。渡さないので、漏洩・名誉毀損のリスクが動かない。",
+        },
+        {
+          t: "渡すのは「判定結果」だけ",
+          d: "「反社リストに非該当」「与信区分が基準以上」という事実のみを、約 200 バイトの ZK 証明として発行する。",
+        },
+        {
+          t: "相手はリンクを開くだけ",
+          d: "取引先も監査人もアカウント作成は不要。受け取った証明から「いつ・誰が・改ざんなく発行したか」を自力で確かめられる。",
+        },
+      ],
     },
   },
 };
