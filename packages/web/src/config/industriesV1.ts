@@ -19,6 +19,10 @@ import manufacturingEn from "./industry-v1/manufacturing.en.html?raw";
 import publicSectorEn from "./industry-v1/public-sector.en.html?raw";
 import healthcareEn from "./industry-v1/healthcare.en.html?raw";
 import supplyChainEn from "./industry-v1/supply-chain.en.html?raw";
+import mediaEn from "./industry-v1/media.en.html?raw";
+import retailEn from "./industry-v1/retail.en.html?raw";
+import aiEn from "./industry-v1/ai.en.html?raw";
+import developersEn from "./industry-v1/developers.en.html?raw";
 
 /** 1ロケール分の本文。EN は「要点を絞った版」で、JA の逐語訳ではない。 */
 export interface IndustryCopy {
@@ -106,10 +110,58 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
       body: supplyChainEn,
     },
   },
-  { slug: "media", name: "メディア・コンテンツ", h1: "偽物が出回っても、本物はすぐ分かる。", description: "発信の瞬間に証明を付けると、本物かどうかを読者や取引先が自分で確かめられます。偽物への後手の対応を大きく減らします。", body: mediaJa },
-  { slug: "retail", name: "サービス・小売", h1: "会員資格や優待の確認を、その場で速く。", description: "本部への照会を挟まず、提示を受けたその場で判定できます。個人データを配らない仕組みで、お客様の待ち時間を大きく減らします。", body: retailJa },
-  { slug: "ai", name: "AI導入（業種横断）", h1: "AIに、安心して任せられる。", description: "AIの判断根拠と実行ログに証明を付けると、監査にも第三者にも「本物の記録」として示せます。説明の負担を大きく減らします。", body: aiJa },
-  { slug: "developers", name: "開発者・エージェント運用", h1: "権限の外は、実行されない。", description: "なりすましやプロンプトインジェクションは、権限チェックだけでは止まりません。Lemma は実行の前に依頼の出どころと権限証明を検証し、未承認の依頼をリクエスト時点で止めます。", body: developersJa },
+  {
+    slug: "media",
+    name: "メディア・コンテンツ",
+    h1: "偽物が出回っても、本物はすぐ分かる。",
+    description: "発信の瞬間に証明を付けると、本物かどうかを読者や取引先が自分で確かめられます。偽物への後手の対応を大きく減らします。",
+    body: mediaJa,
+    en: {
+      name: "Media & content",
+      h1: "Fakes will circulate. The real one stays obvious.",
+      description: "Attach a proof at the moment you publish, and readers and partners can check for themselves which one is genuine — instead of chasing every fake after the fact.",
+      body: mediaEn,
+    },
+  },
+  {
+    slug: "retail",
+    name: "サービス・小売",
+    h1: "会員資格や優待の確認を、その場で速く。",
+    description: "本部への照会を挟まず、提示を受けたその場で判定できます。個人データを配らない仕組みで、お客様の待ち時間を大きく減らします。",
+    body: retailJa,
+    en: {
+      name: "Services & retail",
+      h1: "Membership and entitlement checks, settled at the counter.",
+      description: "Decide on the spot, from what the customer presents, with no query to head office. Because customer data is never distributed to the sites, the waiting largely disappears.",
+      body: retailEn,
+    },
+  },
+  {
+    slug: "ai",
+    name: "AI導入（業種横断）",
+    h1: "AIに、安心して任せられる。",
+    description: "AIの判断根拠と実行ログに証明を付けると、監査にも第三者にも「本物の記録」として示せます。説明の負担を大きく減らします。",
+    body: aiJa,
+    en: {
+      name: "AI adoption (all industries)",
+      h1: "Hand work to AI, and still be able to account for it.",
+      description: "Attach proof to the grounds an AI decided on and to what it actually executed, and both can be shown to an auditor or a third party as a genuine record. The burden of explaining drops sharply.",
+      body: aiEn,
+    },
+  },
+  {
+    slug: "developers",
+    name: "開発者・エージェント運用",
+    h1: "権限の外は、実行されない。",
+    description: "なりすましやプロンプトインジェクションは、権限チェックだけでは止まりません。Lemma は実行の前に依頼の出どころと権限証明を検証し、未承認の依頼をリクエスト時点で止めます。",
+    body: developersJa,
+    en: {
+      name: "Developers & agent operations",
+      h1: "Outside the authority, nothing executes.",
+      description: "Impersonation and prompt injection do not stop at a permission check. Lemma verifies where a request came from, and the proof of its authority, before anything runs — so an unauthorized request is dropped at request time.",
+      body: developersEn,
+    },
+  },
 ];
 
 export function getIndustryBySlug(slug: string): IndustryEntry | undefined {

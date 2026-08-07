@@ -1,0 +1,18 @@
+---
+/**
+ * /solutions/use-cases/retail/ — 業界ハブ EN 版。
+ *
+ * 静的ルートなので、同ディレクトリの `[slug].astro`（ユースケース詳細）より
+ * 優先される。EN 本文を持たない業界には置かない（config の `entry.en` が正）。
+ */
+import IndustryDetailV1 from "../../../templates/IndustryDetailV1.astro";
+import { getIndustryBySlug } from "../../../config/industriesV1";
+import { getTranslations } from "../../../i18n/translations";
+
+const entry = getIndustryBySlug("retail");
+if (!entry) throw new Error("industry entry not found: retail");
+if (!entry.en) throw new Error("industry entry has no EN copy: retail");
+const t = getTranslations("en");
+---
+
+<IndustryDetailV1 locale="en" t={t} base="" entry={entry} />
