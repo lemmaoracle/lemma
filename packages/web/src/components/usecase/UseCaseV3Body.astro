@@ -98,7 +98,7 @@ const BASE_C = isJa
       s2VfKey: "ログイン・キー", s2VfKeyVal: "不要",
       s2VfCap: "相手は、リンクを開くだけ。",
       flowWasTag: "従来", flowNowTag: "Lemma",
-      payHead: "渡すもの", mechEye: "仕組み", mechH: "Lemma の核心メカニズム", mechMore: "詳しい仕組みを読む",
+      payHead: "渡すもの — 中身の落差", mechEye: "仕組み", mechH: "Lemma の核心メカニズム", mechMore: "詳しい仕組みを読む",
       flow: {
         insideLabel: "自社のなか",
         outsideLabel: "相手のところ",
@@ -112,7 +112,13 @@ const BASE_C = isJa
         crossLabel: "証明（約 200 バイト）",
         toLabel: "相手・第三者",
         toNote: "リンクを開くだけ。アカウントもキーも要らない",
-        wasPayload: ["記録の本文", "添付", "履歴"],
+        payLead: "「原本丸ごと」から「証明された事実（原本 0 文字）」へ。",
+        wasTitle: "原本データ（過剰共有）",
+        wasDetail: "記録の本文・添付・履歴",
+        wasVolume: "数千文字の詳細データ",
+        nowTitle: "ZK 証明（最小限）",
+        nowDetail: "条件を満たしているという事実のみ",
+        nowVolume: "約 200 バイト ／ 原本 0 文字",
         mechPoints: [
           { t: "原本は外に出さない", d: "記録の本文（個人情報・機微データ）は自社内に留まる。渡さないので、漏洩のリスクが動かない。" },
           { t: "渡すのは「証明された事実」だけ", d: "満たしているという事実のみを、約 200 バイトの ZK 証明として発行する。" },
@@ -173,7 +179,7 @@ const BASE_C = isJa
       s2VfKey: "Login / keys", s2VfKeyVal: "not needed",
       s2VfCap: "They just open a link.",
       flowWasTag: "Until now", flowNowTag: "With Lemma",
-      payHead: "What travels", mechEye: "How it works", mechH: "The mechanism, in three points", mechMore: "Read the full mechanism",
+      payHead: "What travels — the gap in substance", mechEye: "How it works", mechH: "The mechanism, in three points", mechMore: "Read the full mechanism",
       flow: {
         insideLabel: "Your side",
         outsideLabel: "Their side",
@@ -187,7 +193,13 @@ const BASE_C = isJa
         crossLabel: "Proof (~200 bytes)",
         toLabel: "The receiver",
         toNote: "They open a link. No account, no keys.",
-        wasPayload: ["The document", "Attachments", "History"],
+        payLead: "From “the whole record” to “the fact alone” — zero characters of the original.",
+        wasTitle: "The original (over-shared)",
+        wasDetail: "The document, attachments, history",
+        wasVolume: "Thousands of characters",
+        nowTitle: "ZK proof (minimal)",
+        nowDetail: "Only the fact that the condition is met",
+        nowVolume: "~200 bytes / 0 characters of the original",
         mechPoints: [
           { t: "The original never leaves", d: "The record itself — personal and sensitive data — stays with you, so the leakage risk never moves." },
           { t: "Only the proven fact travels", d: "Just the fact that the condition is met, issued as roughly 200 bytes of ZK proof." },
@@ -490,16 +502,20 @@ const bytaskMembers = taskGroupMembers.filter(
             </div>
           </div>
 
-          {/* 比較はここだけ。項目を並べず「渡すもの」1 点に絞る。 */}
+          {/* 比較はここ 1 点だけ。チップを並べると新旧が対等に見えてしまい、
+              データの重さの差が出ない。帯の長さで落差そのものを見せる。 */}
           <div class="ucv-pay">
             <div class="ucv-pay-h">{C.payHead}</div>
+            <p class="ucv-pay-lead">{flow.payLead}</p>
             <div class="ucv-pay-row ucv-pay-row--was">
-              <span class="k">{C.flowWasTag}</span>
-              <ul>{flow.wasPayload.map((v) => <li>{v}</li>)}</ul>
+              <div class="hd"><span class="mk" aria-hidden="true">✕</span>{C.flowWasTag}：{flow.wasTitle}</div>
+              <p class="dt">{flow.wasDetail}</p>
+              <div class="bar"><span style="width:100%"></span><em>{flow.wasVolume}</em></div>
             </div>
             <div class="ucv-pay-row ucv-pay-row--now">
-              <span class="k">{C.flowNowTag}</span>
-              <ul>{flow.results.map((v) => <li>{v}</li>)}</ul>
+              <div class="hd"><span class="mk" aria-hidden="true">✓</span>{C.flowNowTag}：{flow.nowTitle}</div>
+              <p class="dt">{flow.nowDetail}</p>
+              <div class="bar"><span style="width:2.5%"></span><em>{flow.nowVolume}</em></div>
             </div>
           </div>
 
@@ -850,18 +866,31 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-cf-to { display: block; margin-top: 12px; font-family: var(--font-serif-jp); font-weight: 600; font-size: 13px; line-height: 1.55; color: var(--tx); }
   .ucv-cf-tonote { margin: 4px 0 0; font-size: 11.5px; line-height: 1.75; color: var(--tx-soft); }
 
-  /* §2 ②「渡すもの」だけの新旧。項目を並べず、この 1 点に絞る。 */
+  /* §2 ②「渡すもの」— チップを並べると新旧が対等に見えるので、帯の長さで
+     データの重さの落差そのものを見せる。 */
   .ucv-pay { margin: 20px 0 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
-  .ucv-pay-h { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.16em; color: var(--muted); padding: 11px 16px; background: var(--lite-2); border-bottom: 1px solid var(--line); }
-  .ucv-pay-row { display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: center; gap: 14px; padding: 13px 16px; }
-  .ucv-pay-row + .ucv-pay-row { border-top: 1px solid var(--line); }
-  .ucv-pay-row .k { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-align: center; border-radius: 999px; padding: 4px 0; }
-  .ucv-pay-row--was .k { background: #dfe3dc; color: #4b5147; }
-  .ucv-pay-row--now .k { background: var(--ok); color: #1d2a00; }
-  .ucv-pay-row ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-  .ucv-pay-row li { font-size: 12.5px; line-height: 1.5; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); }
-  .ucv-pay-row--was li { color: var(--muted); background: var(--lite-2); }
-  .ucv-pay-row--now li { color: var(--tx); font-weight: 600; background: rgba(168, 224, 16, 0.14); border-color: rgba(124, 175, 0, 0.4); }
+  .ucv-pay-h { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.16em; color: var(--muted); padding: 11px 18px; background: var(--lite-2); border-bottom: 1px solid var(--line); }
+  .ucv-pay-lead { margin: 0; padding: 16px 18px 4px; font-family: var(--font-serif-jp); font-weight: 600; font-size: clamp(15px, 1.6vw, 17.5px); line-height: 1.7; letter-spacing: 0.02em; color: var(--tx); }
+  .ucv-pay-row { padding: 14px 18px 16px; }
+  .ucv-pay-row--now { border-top: 1px solid var(--line); }
+  .ucv-pay-row .hd { display: flex; align-items: center; gap: 8px; font-family: var(--font-serif-jp); font-weight: 600; font-size: 14px; line-height: 1.5; }
+  .ucv-pay-row .mk { display: grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; font-size: 10px; line-height: 1; flex: none; }
+  .ucv-pay-row--was .hd { color: var(--muted); }
+  .ucv-pay-row--was .mk { background: #dfe3dc; color: #6b7166; }
+  .ucv-pay-row--now .hd { color: var(--tx); }
+  .ucv-pay-row--now .mk { background: var(--ok); color: #1d2a00; }
+  .ucv-pay-row .dt { margin: 6px 0 0; font-size: 12.5px; line-height: 1.8; }
+  .ucv-pay-row--was .dt { color: var(--muted); }
+  .ucv-pay-row--now .dt { color: var(--tx-soft); }
+  /* 量の帯。従来は目一杯、Lemma はごく短く。 */
+  .ucv-pay-row .bar { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .ucv-pay-row .bar span { display: block; height: 10px; border-radius: 3px; min-width: 9px; flex: none; }
+  .ucv-pay-row .bar em { font-style: normal; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.08em; white-space: nowrap; }
+  .ucv-pay-row--was .bar span { flex: 1; }
+  .ucv-pay-row--was .bar span { background: repeating-linear-gradient(90deg, #c3c9bf 0 4px, #d4d9cf 4px 7px); }
+  .ucv-pay-row--was .bar em { color: var(--muted); }
+  .ucv-pay-row--now .bar span { background: var(--ok); }
+  .ucv-pay-row--now .bar em { color: var(--ok-ink); }
 
   /* §2 ③仕組み — 散文の羅列をやめ、要点 3 つを先に立てる。散文は
      details に畳んで、読みたい人だけが開く。 */
@@ -975,8 +1004,6 @@ const bytaskMembers = taskGroupMembers.filter(
     .ucv-cf-cross .arw i { left: 5px; right: auto; top: 0; bottom: 9px; width: 2px; height: auto; }
     .ucv-cf-cross .arw s { right: auto; left: 0; top: auto; bottom: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid var(--ok-light); border-bottom: none; }
     .ucv-cf-zone--out { padding-left: 0; }
-    .ucv-pay-row { grid-template-columns: 1fr; gap: 8px; }
-    .ucv-pay-row .k { justify-self: start; padding: 4px 14px; }
     .ucv-mech-pts { grid-template-columns: 1fr; }
     .ucv-hero { grid-template-columns: 1fr; gap: 30px; }
     .ucv-hiw { grid-template-columns: 1fr; }

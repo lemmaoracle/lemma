@@ -34,8 +34,14 @@ export interface UseCaseFlow {
   /** 受け手と、その人がすること。 */
   readonly toLabel: string;
   readonly toNote: string;
-  /** 「渡すもの」の新旧比較。now は results と同じでよい。 */
-  readonly wasPayload: ReadonlyArray<string>;
+  /** 「渡すもの」の落差。並べるのではなく、データの重さの違いを見せる。 */
+  readonly payLead: string;
+  readonly wasTitle: string;
+  readonly wasDetail: string;
+  readonly wasVolume: string;
+  readonly nowTitle: string;
+  readonly nowDetail: string;
+  readonly nowVolume: string;
   /** 仕組みの節 — 要点 3 つ。しるしは順に 🔒 / 証明 / 検証で固定。 */
   readonly mechPoints: ReadonlyArray<{ readonly t: string; readonly d: string }>;
 }
@@ -57,7 +63,13 @@ const FLOWS: Readonly<
       crossLabel: "証明（約 200 バイト）",
       toLabel: "取引先・グループ会社・監査人",
       toNote: "リンクを開くだけ。アカウントもキーも要らない",
-      wasPayload: ["判定の理由", "スコア", "照会履歴", "リストの中身"],
+      payLead: "「原本丸ごと」から「判定結果（原本 0 文字）」へ。",
+      wasTitle: "原本データ（過剰共有）",
+      wasDetail: "取引履歴・個人情報・社内スコア・照会履歴",
+      wasVolume: "数千文字の詳細データ",
+      nowTitle: "ZK 証明（最小限）",
+      nowDetail: "「反社リストに非該当」「与信区分が基準以上」の判定事実のみ",
+      nowVolume: "約 200 バイト ／ 原本 0 文字",
       mechPoints: [
         {
           t: "原本は外に出さない",
