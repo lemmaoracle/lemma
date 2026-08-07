@@ -14,8 +14,8 @@
     <div>
       <div class="crumb"><a href="/">Home</a><i>/</i><a href="/solutions/use-cases/">Use cases</a><i>/</i><span>Developers &amp; agent operations</span></div>
       <div class="ind-label">Developers &amp; agent operations</div>
-      <h1 class="ih1">Outside the authority, nothing executes.</h1>
-      <p class="ilead">Impersonation and prompt injection do not stop at a permission check. Lemma verifies where a request came from, and the proof of its authority, before anything runs — so an unauthorized request is dropped at request time.</p>
+      <h1 class="ih1">Outside its authority, nothing executes.</h1>
+      <p class="ilead">Impersonation and prompt injection are not stopped by a permission check. Lemma verifies where a request came from, and the proof of its authority, before anything runs, so an unauthorized request never reaches execution.</p>
       <div class="ictas">
         <a class="btn primary" href="https://tally.so/r/Pd2Rl5?uc=developers" target="_blank" rel="noopener">Talk to us</a>
         <a class="btn ghostd" href="/verify/">Verify a proof yourself</a>
@@ -61,7 +61,7 @@
     <div class="whywrap2">
       <div>
         <div class="isec-h"><span>01 — Why Lemma</span><b>Agents get deceived inside their legitimate authority.</b></div>
-        <p class="itext">Tightening roles and permissions leaves the route open. An attack does not break the authority — it operates inside it and lies about where the request came from. With a layer that independently establishes whose request this is before execution, a request that cannot be established never gets through in the first place.</p>
+        <p class="itext">Tightening roles and permissions does not close the route an attack actually takes. An attack does not break the authority — it operates inside it and lies about where the request came from. Add a layer that independently establishes whose request this is before execution, and a request whose origin cannot be established never gets through.</p>
         <p class="pull">Don't narrow the authority.<br/>Drop the requests that lie.</p>
       </div>
       <div class="shot img hero" style="aspect-ratio:4/3;">
@@ -76,7 +76,7 @@
     <div class="isec-h"><span>02 — What changes</span><b>Three things Lemma changes</b></div>
 
     <div class="featrow">
-      <div class="ftx"><b>A request that can't be verified doesn't run</b><p>The runtime demands a proof of authority from whoever sent the request and verifies it independently. What cannot be established never gets through.</p></div>
+      <div class="ftx"><b>A request that can't be verified doesn't run</b><p>The runtime requires a proof of authority from whoever sent the request and verifies it independently. Anything it cannot verify never runs.</p></div>
       <div class="screen-lite">
         <div class="sl-bar">Execution queue</div>
         <div class="sl-body">
@@ -102,7 +102,7 @@
     </div>
 
     <div class="featrow">
-      <div class="ftx"><b>Verification drops in — free, no key</b><p>Call <code>POST /v1/proofs/verify</code>. There is no authentication step to build.</p></div>
+      <div class="ftx"><b>Verification you can drop in — free, no key</b><p>Call <code>POST /v1/proofs/verify</code>. There is no authentication step to build.</p></div>
       <div class="ui"><div class="ui-bar"><span class="ui-dot"></span><span class="ui-dot"></span><span class="ui-dot"></span><span class="ui-url">POST /v1/proofs/verify</span></div>
         <div class="code"><span class="c">// No authentication required</span>
 { <span class="k">"docHash"</span>: <span class="s">"0x68d4…9f01"</span> }
@@ -116,10 +116,10 @@
   <!-- Threat cases -->
   <section class="isec">
     <div class="isec-h"><span>03 — Threat cases</span><b>What happened when the origin of a request was faked.</b></div>
-    <p class="itext">Three cases from this area, drawn from the Lemma Critical Briefs. In each one the origin of a request was faked from inside the legitimate authority.</p>
+    <p class="itext">Three cases from this area, drawn from the Lemma Critical Briefs. In each one the request looked legitimate, and nothing checked where it had actually come from.</p>
     <div class="icases">
-<a class="icase" href="/critical/briefs/062-claude-code-github-action-bot-trust/" target="_blank" rel="noopener"><span class="n">No. 062</span><span class="t">One request claiming to be "[bot]" was trusted, and the agent ran with privilege</span><span class="g">Agent Infrastructure</span></a>
-<a class="icase" href="/critical/briefs/114-aws-kiro-self-rewriting-mcp-config/" target="_blank" rel="noopener"><span class="n">No. 114</span><span class="t">A harmless summarize request made the agent rewrite its own config, and reached RCE</span><span class="g">Agent Infrastructure</span></a>
+<a class="icase" href="/critical/briefs/062-claude-code-github-action-bot-trust/" target="_blank" rel="noopener"><span class="n">No. 062</span><span class="t">One request claiming to be "[bot]" was trusted, and the agent ran with elevated privileges</span><span class="g">Agent Infrastructure</span></a>
+<a class="icase" href="/critical/briefs/114-aws-kiro-self-rewriting-mcp-config/" target="_blank" rel="noopener"><span class="n">No. 114</span><span class="t">A harmless-looking summarize request made the agent rewrite its own config — and ended in RCE</span><span class="g">Agent Infrastructure</span></a>
 <a class="icase" href="/critical/briefs/099-agentjacking-sentry-mcp/" target="_blank" rel="noopener"><span class="n">No. 099</span><span class="t">A fake error report was believed to be "resolution steps", and the attacker's commands ran</span><span class="g">AI Decision Integrity</span></a>
 </div>
     <p class="casemore" style="margin-top:12px;"><a href="/critical/briefs/" style="color:var(--ok-light);text-decoration:none;">See every Brief in this area →</a></p>
@@ -209,7 +209,7 @@
   <div class="artcta" style="margin:34px 0 0;">
     <div class="k">Developers</div>
     <h2>How much are you<br/>handing to agents?</h2>
-    <p>We map the routes for unintended actions, privilege abuse and prompt attacks, and design where verification belongs. It starts with a 30-minute call.</p>
+    <p>We map the routes to unintended actions, privilege abuse and prompt injection, and design where verification belongs. It starts with a 30-minute call.</p>
     <div class="row">
       <a class="btn primary" href="https://tally.so/r/Pd2Rl5?uc=developers" target="_blank" rel="noopener">Talk to us</a>
       <a class="btn ghost" href="/verify/">See the Verification Center</a>

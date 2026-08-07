@@ -118,8 +118,8 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
     body: mediaJa,
     en: {
       name: "Media & content",
-      h1: "Fakes will circulate. The real one stays obvious.",
-      description: "Attach a proof at the moment you publish, and readers and partners can check for themselves which one is genuine — instead of chasing every fake after the fact.",
+      h1: "Fakes will circulate. The real one can still be proven.",
+      description: "Attach a proof at the moment you publish, and readers and partners can check for themselves which one is genuine — instead of you chasing every fake after the fact.",
       body: mediaEn,
     },
   },
@@ -132,7 +132,7 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
     en: {
       name: "Services & retail",
       h1: "Membership and entitlement checks, settled at the counter.",
-      description: "Decide on the spot, from what the customer presents, with no query to head office. Because customer data is never distributed to the sites, the waiting largely disappears.",
+      description: "Decide on the spot from what the customer presents, with no query to head office. Because customer data is never pushed out to every store, most of the waiting disappears.",
       body: retailEn,
     },
   },
@@ -144,8 +144,8 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
     body: aiJa,
     en: {
       name: "AI adoption (all industries)",
-      h1: "Hand work to AI, and still be able to account for it.",
-      description: "Attach proof to the grounds an AI decided on and to what it actually executed, and both can be shown to an auditor or a third party as a genuine record. The burden of explaining drops sharply.",
+      h1: "Hand the work to AI. Still be able to show what it did.",
+      description: "Attach proof to the reasons behind an AI's decision and to what it actually executed, and both can be shown to an auditor or a third party as genuine records. The work of explaining afterwards drops sharply.",
       body: aiEn,
     },
   },
@@ -157,8 +157,8 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
     body: developersJa,
     en: {
       name: "Developers & agent operations",
-      h1: "Outside the authority, nothing executes.",
-      description: "Impersonation and prompt injection do not stop at a permission check. Lemma verifies where a request came from, and the proof of its authority, before anything runs — so an unauthorized request is dropped at request time.",
+      h1: "Outside its authority, nothing executes.",
+      description: "Impersonation and prompt injection are not stopped by a permission check. Lemma verifies where a request came from, and the proof of its authority, before anything runs, so an unauthorized request never reaches execution.",
       body: developersEn,
     },
   },
