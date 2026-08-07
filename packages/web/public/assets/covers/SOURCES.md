@@ -18,3 +18,4 @@
 | keep-ai-underwriting-without-data-handover.jpg | 2026.05.28 渡さずに、審査する（半透明の膜に光が透ける — 中は見えないが通る） | Daniele Levis Pelusi | https://unsplash.com/photos/pAEwRKQJcn8 | Unsplash License |
 | ai-explainability-management-crypto-proof.jpg | 2026.04.16 説明可能経営（番号付き私書箱の列 — 記録の在り処のスケール抽象） | Jinsoo Choi | https://unsplash.com/photos/a66u8vmMcMc | Unsplash License |
 | verified-attributes-travel-public-services.jpg | 2026.04.07 旅行・公共（空港のガラス面とシルエット — スケール抽象） | Artur Tumasjan | https://unsplash.com/photos/KZSNMN4VxR8 | Unsplash License |
+| verifiable-fx-rates-for-payments.jpg | 2026.08.07 決済レートに、証明を付ける（暗い隅に走る光の縁 — 渡したあとに残る痕跡） | Trophim Laptev | https://unsplash.com/photos/ZnRD3Bu4IAc | Unsplash License |
