@@ -1,10 +1,11 @@
 ---
-import PricingTemplate from "../templates/PricingTemplate.astro";
+/* Pricing。JA と同じ v12 テンプレ（断片は EN 版）。 */
+import PricingV12Template from "../templates/PricingV12Template.astro";
 import { getTranslations } from "../i18n/translations";
 
-const locale = "en";
+const locale = "en" as const;
 const t = getTranslations(locale);
-const base = "";
+const base = "" as const;
 ---
 
-<PricingTemplate locale={locale} t={t} base={base} />
+<PricingV12Template locale={locale} t={t} base={base} />
