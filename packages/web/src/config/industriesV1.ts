@@ -49,7 +49,7 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
     body: manufacturingJa,
     en: {
       name: "Manufacturing & critical infrastructure",
-      h1: "Shipments that don't stall on paperwork going back and forth.",
+      h1: "Shipments that don't stall on the paperwork round-trip.",
       description: "Whoever receives an inspection record or a measurement can confirm on the spot that it is genuine — removing most of the requests for originals, witness inspections and re-tests after submission.",
       body: manufacturingEn,
     },
@@ -75,7 +75,7 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
     body: financeJa,
     en: {
       name: "Finance & FinTech",
-      h1: "Cut out the round-trip. Shorten the review.",
+      h1: "Cut out the round-trip. Cut the review time.",
       description: "Judge a document's authenticity on the spot, without querying the issuer. Lemma attaches a proof to the document so the review never stalls.",
       body: financeEn,
     },
@@ -89,7 +89,7 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
     en: {
       name: "Healthcare",
       h1: "Credential checks stay rigorous. Staffing gets faster.",
-      description: "Confirm licences, training and fitness-to-work on the spot without collecting copies. Because you never hold the personal data, the wait before someone can be assigned largely disappears.",
+      description: "Confirm licenses, training and fitness-to-work on the spot, without collecting copies. Because you never hold the personal data, most of the waiting before an assignment disappears.",
       body: healthcareEn,
     },
   },
@@ -101,8 +101,8 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
     body: supplyChainJa,
     en: {
       name: "Procurement & supply chain",
-      h1: "Not “did it arrive” — “is it valid”, settled on the spot.",
-      description: "Instead of collecting licences and ISO certificates and checking them by eye, take them on presentation and settle it there and then. The wait in supplier review, and the work of checking, both drop sharply.",
+      h1: "Not whether it arrived — whether it's valid, settled on the spot.",
+      description: "Instead of collecting licenses and ISO certificates and checking them by eye, take them on presentation and settle it on the spot. Both the wait in supplier review and the checking workload drop sharply.",
       body: supplyChainEn,
     },
   },
