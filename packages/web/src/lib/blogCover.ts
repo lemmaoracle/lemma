@@ -98,8 +98,8 @@ const PATTERNS = {
    * 並んでも取り違えない。
    */
   Announcements: {
-    bg: ["#FBFCFA", "#F3F4F1", "#ECEEE9"],
-    glow: { cx: 85, cy: 4, opacity: 0.14, color: LIME },
+    bg: ["#E7ECE4", "#DCE3D7", "#D1D9CA"],
+    glow: { cx: 85, cy: 4, opacity: 0.1, color: LIME },
     rx: 56,
     light: true,
     blocks: [
@@ -275,7 +275,7 @@ export const coverArtwork = (
   const blocks = p.blocks.map((b) => blockSvg(b, p.rx, p.light)).join("");
   /* 格子。暗地は白、明地はインク——どちらも「地の上にごく薄く」。 */
   const gridStroke = p.light ? INK : "#FFFFFF";
-  const gridOpacity = p.light ? ".055" : ".05";
+  const gridOpacity = p.light ? ".07" : ".05";
   const opacity = options.blockOpacity;
   return [
     "<defs>",
@@ -295,8 +295,8 @@ export const coverArtwork = (
        別の絵のように分かれて見える。文字色は og/blogImage.ts が合わせる。 */
     options.bottomScrim === true
       ? `<linearGradient id="${id}-scrim" x1="0" y1="0" x2="0" y2="1">` +
-        `<stop offset="0" stop-color="${p.light ? "#F3F4F1" : "#141A16"}" stop-opacity="0"/>` +
-        `<stop offset="1" stop-color="${p.light ? "#F3F4F1" : "#141A16"}" stop-opacity="${p.light ? ".78" : ".55"}"/>` +
+        `<stop offset="0" stop-color="${p.light ? p.bg[1] : "#141A16"}" stop-opacity="0"/>` +
+        `<stop offset="1" stop-color="${p.light ? p.bg[1] : "#141A16"}" stop-opacity="${p.light ? ".78" : ".55"}"/>` +
         "</linearGradient>"
       : "",
     "</defs>",
