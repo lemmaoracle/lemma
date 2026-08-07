@@ -20,6 +20,16 @@ type CopyOverride = Readonly<Record<string, string>>;
 const OVERRIDES: Readonly<
   Record<string, Partial<Readonly<Record<Locale, CopyOverride>>>>
 > = {
+  "kyc-aml-selective-disclosure": {
+    ja: {
+      s2H2: "原本を渡さず、「結果の証明」だけを渡す。",
+      s2Catch: "現場の照合は増えない。相手の確認が変わる。",
+      s2AfterFact: "照合された事実",
+      s3Lead:
+        "「原本を渡さず照合する」「独立検証」「書き換えの検知」の 3 つが同時に要る業務こそが Lemma の領域です。",
+      thPass: "原本を渡さず照合",
+    },
+  },
   "counterparty-screening": {
     ja: {
       // §2 — 「事実を渡す」より「照合の結果を渡す」の方がこの業務の実態に近い。
@@ -27,6 +37,36 @@ const OVERRIDES: Readonly<
       s2Catch: "現場の照合は増えない。相手の確認が変わる。",
       s2AfterFact: "照合された事実",
       // §3 — リードと比較表の列見出しは同じ 3 語を指すので必ず揃える。
+      s3Lead:
+        "「原本を渡さず照合する」「独立検証」「書き換えの検知」の 3 つが同時に要る業務こそが Lemma の領域です。",
+      thPass: "原本を渡さず照合",
+    },
+  },
+  "age-eligibility-verification": {
+    ja: {
+      s2H2: "原本を渡さず、「結果の証明」だけを渡す。",
+      s2Catch: "現場の照合は増えない。相手の確認が変わる。",
+      s2AfterFact: "照合された事実",
+      s3Lead:
+        "「原本を渡さず照合する」「独立検証」「書き換えの検知」の 3 つが同時に要る業務こそが Lemma の領域です。",
+      thPass: "原本を渡さず照合",
+    },
+  },
+  "supplier-credential-verification": {
+    ja: {
+      s2H2: "原本を渡さず、「結果の証明」だけを渡す。",
+      s2Catch: "現場の照合は増えない。相手の確認が変わる。",
+      s2AfterFact: "照合された事実",
+      s3Lead:
+        "「原本を渡さず照合する」「独立検証」「書き換えの検知」の 3 つが同時に要る業務こそが Lemma の領域です。",
+      thPass: "原本を渡さず照合",
+    },
+  },
+  "credential-presentation": {
+    ja: {
+      s2H2: "原本を渡さず、「結果の証明」だけを渡す。",
+      s2Catch: "現場の照合は増えない。相手の確認が変わる。",
+      s2AfterFact: "照合された事実",
       s3Lead:
         "「原本を渡さず照合する」「独立検証」「書き換えの検知」の 3 つが同時に要る業務こそが Lemma の領域です。",
       thPass: "原本を渡さず照合",

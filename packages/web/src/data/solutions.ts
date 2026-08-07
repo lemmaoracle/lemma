@@ -273,7 +273,7 @@ export const SOLUTIONS: SolutionsContent = {
           en: 'Passports and address proofs stay put — only attributes like "over 18", "Japan resident", or "AML clear" disclose via BBS+.',
         },
         useCaseSlug: "kyc-aml-selective-disclosure",
-        linkLabel: { ja: "KYC/AML 選択的開示 →", en: "KYC/AML selective disclosure →" },
+        linkLabel: { ja: "本人属性照合（KYC/AML） →", en: "KYC/AML selective disclosure →" },
       },
       {
         roleLabel: { ja: "DevOps · 経理 · 購買", en: "DevOps · Finance · Procurement" },
