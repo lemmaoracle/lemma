@@ -112,6 +112,16 @@ const OVERRIDES: Readonly<
       thPass: "原本を渡さず照合",
     },
   },
+  "work-fitness-attestation": {
+    ja: {
+      s2H2: "原本を渡さず、「結果の証明」だけを渡す。",
+      s2Catch: "現場の照合は増えない。相手の確認が変わる。",
+      s2AfterFact: "照合された事実",
+      s3Lead:
+        "「原本を渡さず照合する」「独立検証」「書き換えの検知」の 3 つが同時に要る業務こそが Lemma の領域です。",
+      thPass: "原本を渡さず照合",
+    },
+  },
 };
 
 export function getUseCaseCopyOverride(
