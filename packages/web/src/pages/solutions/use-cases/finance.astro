@@ -1,0 +1,18 @@
+---
+/**
+ * /solutions/use-cases/finance/ — 業界ハブ EN 版（第1弾）。
+ *
+ * 静的ルートなので、同ディレクトリの `[slug].astro`（ユースケース詳細）より
+ * 優先される。残り8業界は EN 本文ができ次第、同じ形で足す。
+ */
+import IndustryDetailV1 from "../../../templates/IndustryDetailV1.astro";
+import { getIndustryBySlug } from "../../../config/industriesV1";
+import { getTranslations } from "../../../i18n/translations";
+
+const entry = getIndustryBySlug("finance");
+if (!entry) throw new Error("industry entry not found: finance");
+if (!entry.en) throw new Error("industry entry has no EN copy: finance");
+const t = getTranslations("en");
+---
+
+<IndustryDetailV1 locale="en" t={t} base="" entry={entry} />

@@ -9,6 +9,7 @@
  */
 import type { Locale, Translations } from "../i18n/translations";
 import type { IndustryEntry } from "../config/industriesV1";
+import { getIndustryCopy } from "../config/industriesV1";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
@@ -31,7 +32,14 @@ export interface IndustryDetailV1Props {
 
 const { locale, t, base, entry } = Astro.props as IndustryDetailV1Props;
 
-const metaTitle = `${entry.name}のユースケース — ${entry.h1} | Lemma`;
+const isJa = locale !== "en";
+/* 本文・見出し・description はロケール別（config/industriesV1）。EN 版が無い
+   業界は JA が返るが、そもそも EN のページ自体を置いていない。 */
+const copy = getIndustryCopy(entry, locale);
+
+const metaTitle = isJa
+  ? `${copy.name}のユースケース — ${copy.h1} | Lemma`
+  : `${copy.name} use cases — ${copy.h1} | Lemma`;
 
 /* ── Latest news 枠の実データ化（Latest news 出し分け設計 v1 §4.2）──
  * config/industry-v1/*.ja.html の「06 — Latest news」節はモック由来の
@@ -81,9 +89,9 @@ const bizPost =
  * 割り当て集合を作る。ラベルは data/criticalBriefs.ts の CATEGORY_LABELS
  * が正本なので、表記が揺れると build 時に警告を出して検知する。 */
 const labelToKey = new Map(
-  Object.entries(CATEGORY_LABELS).map(([key, l]) => [l.ja, key]),
+  Object.entries(CATEGORY_LABELS).map(([key, l]) => [isJa ? l.ja : l.en, key]),
 );
-const assignedLabels = [...entry.body.matchAll(/class="g">([^<]+)</g)].map((m) =>
+const assignedLabels = [...copy.body.matchAll(/class="g">([^<]+)</g)].map((m) =>
   m[1].trim(),
 );
 const industryThreatKeys = new Set(
@@ -115,7 +123,28 @@ const latestBrief =
     ? (briefsDesc.find(matchesPrimary) ?? briefsDesc.find(matchesSecondary))
     : undefined) ?? briefsDesc[0];
 
-let body = entry.body;
+/* §06 の枠ラベル。JA 決め打ちだと EN ページに日本語が混じるので分ける。 */
+const newsT = isJa
+  ? {
+      heading: "導入と、この領域の動き",
+      caseStudy: "導入事例",
+      comingSoon: "近日公開",
+      caseSoonTitle: "導入事例の公開を準備しています",
+      briefChip: "事案分析",
+      blog: "ブログ",
+      all: "ブログをすべて見る →",
+    }
+  : {
+      heading: "Adoption, and what is moving in this area",
+      caseStudy: "Case study",
+      comingSoon: "Coming soon",
+      caseSoonTitle: "A case study is on the way",
+      briefChip: "Case analysis",
+      blog: "Blog",
+      all: "See all blog posts →",
+    };
+
+let body = copy.body;
 if (bizPost && latestBrief) {
   const photo = resolveCoverImage(bizPost);
   const blogCover = photo
@@ -132,6 +161,9 @@ if (bizPost && latestBrief) {
      読めるのはこれだけ。チップ側は「事案分析」にして語の重複を避ける（D）。 */
   const briefThreat =
     CATEGORY_LABELS[latestBrief.data.primary_category as keyof typeof CATEGORY_LABELS]?.[locale] ?? "";
+  /* Brief のタイトルはロケール別（`title_en` は JA コレクションの全 Brief が
+     持つ）。BriefIndexTemplate / BriefTemplate と同じ流儀。 */
+  const briefTitle = isJa ? latestBrief.data.title : latestBrief.data.title_en;
   const briefCover = briefCardSvg({
     no: briefNo,
     threat: briefThreat,
@@ -148,31 +180,31 @@ if (bizPost && latestBrief) {
           locale: locale === "en" ? "en" : "ja",
           key: `${entry.slug}-${caseStudy.slug}`,
         })}</div>
-        <span class="meta"><em class="ja">導入事例</em><span>${caseStudy.date}</span></span>
+        <span class="meta"><em class="ja">${newsT.caseStudy}</em><span>${caseStudy.date}</span></span>
         <span class="t">${esc(clip(caseStudy.title, 90))}</span>
       </a>`
     : `<span class="newscard">
-        <div class="cover"><div class="cl"><em>導入事例</em>近日公開</div></div>
-        <span class="meta"><em>導入事例</em><span>近日公開</span></span>
-        <span class="t">導入事例の公開を準備しています</span>
+        <div class="cover"><div class="cl"><em>${newsT.caseStudy}</em>${newsT.comingSoon}</div></div>
+        <span class="meta"><em>${newsT.caseStudy}</em><span>${newsT.comingSoon}</span></span>
+        <span class="t">${newsT.caseSoonTitle}</span>
       </span>`;
   const newsHtml = `<!-- Latest news -->
   <section class="isec band alt">
-    <div class="isec-h"><span>06 — Latest news</span><b>導入と、この領域の動き</b></div>
+    <div class="isec-h"><span>06 — Latest news</span><b>${newsT.heading}</b></div>
     <div class="newsgrid">
       ${caseStudyHtml}
       <a class="newscard" href="${base}/critical/briefs/${briefSlug}/">
         <div class="cover">${briefCover}</div>
-        <span class="meta"><em class="ja">事案分析</em><span>${briefDate}</span></span>
-        <span class="t">${esc(clip(latestBrief.data.title, 90))}</span>
+        <span class="meta"><em class="ja">${newsT.briefChip}</em><span>${briefDate}</span></span>
+        <span class="t">${esc(clip(briefTitle, 90))}</span>
       </a>
       <a class="newscard" href="${base}/blog/${bizPost.slug}">
         <div class="cover">${blogCover}</div>
-        <span class="meta"><em>ブログ</em><span>${bizPost.date}</span></span>
+        <span class="meta"><em>${newsT.blog}</em><span>${bizPost.date}</span></span>
         <span class="t">${esc(clip(bizPost.title, 90))}</span>
       </a>
     </div>
-    <p class="hiwfoot"><a href="${base}/blog">ブログをすべて見る →</a></p>
+    <p class="hiwfoot"><a href="${base}/blog">${newsT.all}</a></p>
   </section>`;
   body = body.replace(/<!-- Latest news -->[\s\S]*?<\/section>/, newsHtml);
 }
@@ -181,10 +213,10 @@ if (bizPost && latestBrief) {
 <Layout
   locale={locale}
   title={metaTitle}
-  description={entry.description}
+  description={copy.description}
   metaType="page"
   pagePath={`/solutions/use-cases/${entry.slug}/`}
-  localesAvailable={["ja"] as ReadonlyArray<Locale>}
+  localesAvailable={(entry.en ? ["ja", "en"] : ["ja"]) as ReadonlyArray<Locale>}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
