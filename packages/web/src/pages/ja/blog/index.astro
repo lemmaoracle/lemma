@@ -25,8 +25,14 @@ const entries = [...articles, ...changelog].sort((a, b) =>
 // Announcements default to `section: Changelog` (see data/blog.ts), so
 // selecting from Essays alone kept the newest post off the top of the index
 // whenever it was an announcement — it only showed in the Changelog list.
-const featured = entries[0];
-const recent = entries.slice(1, 7);
+// 注目枠は導入事例（`tags: case-study`）を固定する。新着順で競争させると
+// 記事を1本出すたびに事例が押し出されるが、この枠は「実際に使われている」
+// ことを見せる場所なので性格を固定する（Latest news 3枠の設計と同じ考え方）。
+// 事例が複数になれば新しい方が出る。1本も無ければ従来どおり最新記事。
+const featured = entries.find((p) => p.tags?.includes("case-study")) ?? entries[0];
+// 注目枠に出た記事は Recent に重ねない（従来は featured=entries[0] 前提の
+// slice(1,7) だったので、固定にすると添字ではずれる）。
+const recent = entries.filter((p) => p.slug !== featured?.slug).slice(0, 6);
 
 // A release / Announcements post promoted into Featured or Recent stays in the
 // Changelog list as well — the list is the release history and should read as
