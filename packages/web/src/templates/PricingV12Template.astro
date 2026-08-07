@@ -8,14 +8,18 @@
  * 標準構成3条件・検証チップ標準・§3 発行者表示の注記を反映済み）。
  * IA は3枚構成 — 本体（このページ）／/pricing/api/／/pricing/trust402/。
  * 比較表・Option Packs・FAQ は本体から外れる（機能の言明は fit チェックと
- * サブページに集約）。EN は旧 PricingTemplate のまま。
+ * サブページに集約）。
+ *
+ * EN 版は 2026-08-07 追加（旧 PricingTemplate から移行）。金額は
+ * components/pricing/PlanPriceModule.astro の EN 正本と同じ値を使う。
  */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import body from "../config/pricing-v12.ja.html?raw";
+import bodyJa from "../config/pricing-v12.ja.html?raw";
+import bodyEn from "../config/pricing-v12.en.html?raw";
 import "../styles/pricing-v12.css";
 
 export interface PricingV12TemplateProps {
@@ -25,10 +29,15 @@ export interface PricingV12TemplateProps {
 }
 
 const { locale, t, base } = Astro.props as PricingV12TemplateProps;
+const isJa = locale === "ja";
+const body = isJa ? bodyJa : bodyEn;
 
-const metaTitle = "料金 — 自社の条件に合わせた3つの構成プラン | Lemma";
-const metaDescription =
-  "証明する対象とシステム連携の範囲で選べる3つの構成プラン。標準構成は月額5万円から。検証はいつでも無料、生データは預けません。";
+const metaTitle = isJa
+  ? "料金 — 自社の条件に合わせた3つの構成プラン | Lemma"
+  : "Pricing — three configurations, matched to your conditions | Lemma";
+const metaDescription = isJa
+  ? "証明する対象とシステム連携の範囲で選べる3つの構成プラン。標準構成は月額5万円から。検証はいつでも無料、生データは預けません。"
+  : "Three configurations, chosen by what you prove and how far the integration goes. Standard starts at $350/mo. Verification is always free and we never hold your raw data.";
 ---
 
 <Layout
