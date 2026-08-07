@@ -1,6 +1,6 @@
 ---
 brief_no: 124
-title: "Medicare の AI 事前承認 WISeR：不承認は下されたが、その判定が根拠データに照らして独立に検証された証跡は残らない — 医師はハルシネーションを疑う"
+title: "Medicare の AI 事前承認 WISeR：不承認は下されたが、どの記録に照らした判定かは残らない — 医師はハルシネーションを疑う"
 title_en: "Medicare's WISeR AI prior authorization: denials were issued, but no record that the judgment was independently verified against the patient's own evidence"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["078-tenncare-connect-medicaid-eligibility", "012-williams-frt-wrongful-arrest", "060-withers-aberdeen-ai-hallucinated-precedent", "115-mobley-workday-ai-hiring-bias"]
 status: published
-version: "1.0"
+version: "1.1"
 og_lead_ja: "Medicare の AI 事前承認モデル WISeR、不承認をめぐり医師がAIハルシネーションを指摘"
 og_lead_en: "Medicare's WISeR AI prior-authorization denials draw doctors' suspicions of AI hallucination"
 gap_detected: "判断の層は制度としては在った。最終的な非該当判断は機械でなく有資格の臨床医が下すと CMS は定め、事業者もそう説明する。"
@@ -48,7 +48,8 @@ analysis_lead_ja: "確かめられないのは、記録に照らしたかどう�
 
 公表後の対応と業界の動きは次のとおり。
 
-- CMS は「適切な医療を遅らせずに不適切な医療を減らす」ことが目的とし、決定は 72 時間以内に返すと説明する。問題のない請求は 15 日以内に支払われるはずだと現場の医師は述べるが、実務では「6〜8 週間の遅延」（タルサの放射線科医）が報告されている。アリゾナ州を担当する事業者の説明会（4 月）では、1 月まで遡る大きな支払い滞留が認められた。
+- CMS は「適切な医療を遅らせずに不適切な医療を減らす」ことが目的とし、決定は 72 時間以内に返すと説明する。
+- 現場の報告はこれと食い違う。問題のない請求は 15 日以内に支払われるはずだと医師は述べるが、実務では「6〜8 週間の遅延」（タルサの放射線科医）が報告されている。アリゾナ州を担当する事業者の説明会（4 月）でも、1 月まで遡る大きな支払い滞留が認められた。
 - 不服申立ては増えていると報じられ、CMS は申立件数の変動とそのコストを織り込んでいると述べた。対象サービスの一覧に「現時点で変更は検討していない」が、変更の要否は評価を続けるとする。
 - CMS イノベーションセンター長は「不正・濫費・濫用を行う医療者の割合は小さい」とも認めている。
 
@@ -75,11 +76,19 @@ Lemma がこの落差に対して提示する設計は次の通りである。
 <li><strong>支払側から独立した監査</strong>：報酬が削減額に連動する場合でも、判定がどの記録に基づくかの証跡を、支払いの当事者から独立に監査できる形で切り出す。</li>
 </ul>
 
-この層が担わないものも、あわせて書いておく。取り違えの有無を判断するのは、この結びつきを前提にした人である。来歴が示せるのは有資格の担当者がいつ承認操作を行ったかまでであり、その担当者が記録を実際に読んだかまでは示せない。経路にゲートを置くのは支払側であり、この層が出せるのはその判断材料までである。自社の操作ログとの違いもここにある。ログは自社が自社のために出すものであり、処分を受けた側が独立に確かめられない。
+担わないものも、あわせて書いておく。
+
+<ul class="bd-limit">
+<li>取り違えの有無を判断するのは、この結びつきを前提にした人である。</li>
+<li>来歴が示せるのは承認操作がいつ行われたかまでで、担当者が記録を読んだかまでは示せない。</li>
+<li>経路にゲートを置くのは支払側であり、この層が出せるのはその判断材料までである。</li>
+</ul>
+
+自社の操作ログとの違いはここにある。ログは自社が自社のために出すものであり、処分を受けた側が独立に確かめられない。
 
 報じられた 2 例は、性質が異なる。頸部への注射に対して胸椎を理由に返したとされる不承認は、申請側が自らの提出内容と突き合わせられるため、照合の相手が固定されていれば処分の前に争える。一方、記録に繰り返し明記された所見と矛盾する判定があったとすれば、それは記録の読み取りそのものに関わり、事前証明の射程外にある。同じ読み取りに依存する層では、同じ誤りを再生産するからである。後者を担うのは、AI の精度改善と人手の確認、そして不服申立てである。
 
-Lemma は医学的必要性を判定する製品ではなく、AI の誤りを検知するものでもない。射程は、不利益処分が確定する前に照合の相手と発行者を固定し、それを伴わない処分を差し止め可能にすることにある。AI の精度改善と人手の最終確認（臨床医レビュー、不服申立て、事後の是正）と、事前証明（照合の相手を処分の前に固定する証跡）は、代替ではなく補完の関係にある。前者は誤りを後から正し、後者は「照合したと説明されている」ことと「どの記録と照合されたかが確かめられる」ことのあいだ——検出が構造的に届かない一点を閉じる。この層をどう組むかは [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) に書いた。
+Lemma は医学的必要性を判定する製品ではなく、AI の誤りを検知するものでもない。AI の精度改善と人手の最終確認は、この層と代替ではなく補完の関係にある。前者は誤りを後から正し、後者は処分が確定する前の一点を閉じる。
 
 ## 6. Sources
 
@@ -87,4 +96,4 @@ Lemma は医学的必要性を判定する製品ではなく、AI の誤りを�
 - **CMS（一次・公式発表）**: “CMS Launches New Model to Target Wasteful, Inappropriate Services in Original Medicare”（2025-06-27）— <https://www.cms.gov/newsroom/press-releases/cms-launches-new-model-target-wasteful-inappropriate-services-original-medicare>
 - **CMS（一次・実務ガイド）**: “WISeR Model Provider and Supplier Operational Guide” — <https://www.cms.gov/priorities/innovation/files/wiser-provider-supplier-guide.pdf>
 
-参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference) · [Brief 078（TennCare 自動適格判定）](https://lemma.frame00.com/ja/critical/briefs/078-tenncare-connect-medicaid-eligibility/) · [Brief 012（顔認証の誤認逮捕）](https://lemma.frame00.com/ja/critical/briefs/012-williams-frt-wrongful-arrest/)
+参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference) · [Brief 078（TennCare 自動適格判定）](https://lemma.frame00.com/ja/critical/briefs/078-tenncare-connect-medicaid-eligibility/) · [Brief 012（顔認証の誤認逮捕）](https://lemma.frame00.com/ja/critical/briefs/012-williams-frt-wrongful-arrest/)
