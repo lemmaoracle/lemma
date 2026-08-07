@@ -3,18 +3,24 @@
  * Use cases index — v14 (業界別ソリューション索引).
  *
  * Renders the site chrome around the curated index fragment
- * (config/usecases-index-v14.ja.html), injected inside `<main class="ucx">`.
+ * (config/usecases-index-v14.{ja,en}.html), injected inside `<main class="ucx">`.
  * Two-axis IA: "Solutions — by industry" (9 cards) / "Use cases — by task"
- * (36-row curated list, 課題別01〜04 preserved). Card thumbnails are OFF
- * (実装指示 v1 §2.4 — 写真9枚が揃うまでONにしない).
+ * (36-row curated list, 課題別01〜04 preserved).
  * Spec: Lemma_ユースケース部分_実装指示_v1_2026-08-02.md / mock v14_1.
+ *
+ * EN 版は 2026-08-07 追加。JA が v14 に載ったあと EN だけ旧テンプレ
+ * （UseCasesIndexTemplate・v24）に取り残されていたのを揃えた。断片の
+ * 構造は JA と同一で、テキストとリンクの接頭辞だけ差し替えてある。
+ * EN で落としたもの: 電子署名・タイムスタンプとの比較への導線（/compare/ は
+ * EN 未提供）。
  */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import body from "../config/usecases-index-v14.ja.html?raw";
+import bodyJa from "../config/usecases-index-v14.ja.html?raw";
+import bodyEn from "../config/usecases-index-v14.en.html?raw";
 import "../styles/usecases-v14.css";
 
 export interface UseCasesIndexV14Props {
@@ -24,10 +30,15 @@ export interface UseCasesIndexV14Props {
 }
 
 const { locale, t, base } = Astro.props as UseCasesIndexV14Props;
+const isJa = locale === "ja";
+const body = isJa ? bodyJa : bodyEn;
 
-const metaTitle = "ユースケース — 業界別ソリューションと業務から探す | Lemma";
-const metaDescription =
-  "待たせる確認から、その場で完結する信頼へ。発行は一度、検証は無料で何度でも。9つの業界別ソリューションと、業界をまたいで使われる36の業務ユースケース。";
+const metaTitle = isJa
+  ? "ユースケース — 業界別ソリューションと業務から探す | Lemma"
+  : "Use cases — solutions by industry, and by task | Lemma";
+const metaDescription = isJa
+  ? "待たせる確認から、その場で完結する信頼へ。発行は一度、検証は無料で何度でも。9つの業界別ソリューションと、業界をまたいで使われる36の業務ユースケース。"
+  : "From checks that keep people waiting to trust settled on the spot. Issue once; verify free, any number of times. Nine solutions by industry, and 36 task-level use cases used across them.";
 ---
 
 <Layout
