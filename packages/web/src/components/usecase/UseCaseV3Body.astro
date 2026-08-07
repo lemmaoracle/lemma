@@ -25,6 +25,7 @@ import type { HideProvePair } from "../../config/useCaseHideProve";
 import type { UseCaseV3 } from "../../config/useCaseV3";
 import type { UseCaseBeforeAfter } from "../../config/useCaseBeforeAfter";
 import { USE_CASE_PLAN } from "../../data/useCasePlanMap";
+import { getUseCaseCopyOverride } from "../../config/useCaseCopyOverride";
 import { SEGMENT_URLS } from "../../config/navigation";
 
 export interface UseCaseV3BodyProps {
@@ -72,7 +73,7 @@ const trust402Href = `${base}/trust402/`;
 // Locale-resolved chrome. Authored §1/§2 strings stay hardcoded JA — the
 // authored path only renders for JA (v3 config is JA-gated). EN UCs all
 // render in derived mode, so only the common + derived strings are localized.
-const C = isJa
+const BASE_C = isJa
   ? {
       bcHome: "ホーム", bcUC: "ユースケース", readUnit: "分",
       credMid: "公共インフラ PoC 稼働中",
@@ -179,6 +180,10 @@ const C = isJa
       hiwChk1: "Signature", hiwChk2: "Integrity", hiwChk3: "Issuer",
       s5H2: "Related use cases",
     };
+
+// スラッグ単位のコピー上書き（config/useCaseCopyOverride.ts）。登録の無い UC は
+// 空オブジェクトが返るので、共有コピーがそのまま出る。
+const C = { ...BASE_C, ...getUseCaseCopyOverride(useCase.slug, locale) } as typeof BASE_C;
 
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
@@ -314,7 +319,7 @@ const bytaskMembers = taskGroupMembers.filter(
             <div><div class="ucv-uv-t">{isJa ? "改ざんされていません" : "Not tampered"}</div>{isJa && <div class="ucv-uv-en">NOT TAMPERED</div>}</div>
           </div>
           {hideProve && (
-            <div class="ucv-uv-row"><span class="l">{isJa ? "証明された事実" : "Proven fact"}</span><span class="r">{hideProve.prove}</span></div>
+            <div class="ucv-uv-row"><span class="l">{C.s2AfterFact}</span><span class="r">{hideProve.prove}</span></div>
           )}
           <div class="ucv-uv-row"><span class="l">{isJa ? "発行元への照会" : "Issuer round-trip"}</span><span class="r">{isJa ? "不要" : "Not needed"}</span></div>
           <div class="ucv-uv-row"><span class="l">{isJa ? "証明のサイズ" : "Proof size"}</span><span class="r">{isJa ? "約200バイト" : "~200 bytes"}</span></div>
