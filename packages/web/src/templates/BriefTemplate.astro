@@ -1006,6 +1006,15 @@ const gapRowLabels = isJa
     background: var(--ok-ink);
     border-radius: 2px;
   }
+  /* 担わないものの列挙。✓ リストと対で置くので、同じ形のまま色だけ落とす。
+     ✕ は失敗の記号に読まれるので使わない。 */
+  .brief-body :global(ul.bd-limit li::before) {
+    background: var(--muted);
+    opacity: 0.55;
+  }
+  .brief-body :global(ul.bd-limit li) {
+    color: var(--muted);
+  }
   /* できることの列挙は ✓ で走査させる。md 側で <ul class="bd-check"> と
      書いた箇所にだけ効くので、既定の箇条書き（事実の列挙）は不変。
      効能ではなく機能の列挙にだけ使うこと。 */
