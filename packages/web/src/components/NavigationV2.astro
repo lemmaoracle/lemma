@@ -59,8 +59,9 @@ type Item = {
   ext?: boolean;
 };
 
-const IND_HREF = (slug: string) =>
-  isJa ? `/ja/solutions/use-cases/${slug}/` : "/solutions/";
+/* 業界ハブは 2026-08-07 に EN も9本そろった（#805 / #810 / #813）。それまで
+   EN は行き先が無く、9項目すべてを総覧の `/solutions/` に潰していた。 */
+const IND_HREF = (slug: string) => `${base}/solutions/use-cases/${slug}/`;
 
 const L = isJa
   ? {
