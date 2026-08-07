@@ -80,6 +80,12 @@ const gap =
       }
     : null;
 
+// 照合フレームのトライアル (2026-08) — ヒーロー直下の一行「Lemma の照合分析」。
+// frontmatter に analysis_lead_* を書いた Brief にだけ出る（既存 Brief は不変）。
+const analysisLead = isJa
+  ? brief.data.analysis_lead_ja
+  : brief.data.analysis_lead_en;
+
 const showRevisionHistory = brief.data.version !== "1.0";
 
 const PILLAR_LABELS: Record<PillarSlug, { ja: string; en: string }> = {
@@ -224,7 +230,11 @@ const seoTitle = isJa
 
 // 章数はうたわない（9章→6章の移行中で、どちらの本文も通る）。
 const metaDescription = isJa
-  ? `${publishedStr}公開の${mainTitle}を構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何を証明していれば防げたか。AI のための、信頼インフラ — Lemma Critical Brief。`
+  // 旧: 「事前に何を証明していれば防げたか」。実在の進行中事案について
+  // 立証できない反実仮想を、検索結果と SNS カードの文面に載せていた。EN は
+  // 元から "what should have been provable beforehand" で踏み込んでいない
+  // ので、JA を EN に揃える。
+  ? `${publishedStr}公開の${mainTitle}を構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何が証明されている必要があったか。AI のための、信頼インフラ — Lemma Critical Brief。`
   : `Structural analysis of ${mainTitle}: what happened, why better detection doesn't close the gap, and what should have been provable beforehand. The Trust Layer for AI — Lemma Critical Brief.`;
 
 const banner = threatBannerCopy(primarySlug, locale);
@@ -244,6 +254,7 @@ const labels = isJa
       tocLabel: "Contents",
       progress: "読了",
       coreLabel: "この Brief の核心",
+      analysisLabel: "Lemma の照合分析",
       bannerLabel: "この脅威タイプへの対策",
       bannerBtn: "デモをリクエスト",
       relatedHeading: "関連する Brief",
@@ -272,6 +283,7 @@ const labels = isJa
       tocLabel: "Contents",
       progress: "Read",
       coreLabel: "The core of this Brief",
+      analysisLabel: "Lemma's cross-check analysis",
       bannerLabel: "Against this threat type",
       bannerBtn: "Request a demo",
       relatedHeading: "Related Briefs",
@@ -355,6 +367,12 @@ const gapRowLabels = isJa
               </div>
             )}
           </div>
+          {analysisLead && (
+            <aside class="bd-analysis">
+              <div class="bd-analysis-k">{labels.analysisLabel}</div>
+              <p class="bd-analysis-v">{analysisLead}</p>
+            </aside>
+          )}
         </header>
 
         <article class="brief-body">
@@ -830,6 +848,32 @@ const gapRowLabels = isJa
     color: var(--tx);
   }
 
+  /* 照合フレームのトライアル (2026-08) — ヒーロー直下の「Lemma の照合分析」。
+     右レールの核心パネルと役割が重ならないよう、白カード＋ライム縦罫の
+     地の面で本文の導入として置く（analysis_lead_* のある Brief だけ）。 */
+  .bd-analysis {
+    margin-top: 18px;
+    padding: 14px 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ok);
+    box-shadow: var(--sh-s);
+  }
+  .bd-analysis-k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: var(--ok-light);
+    margin-bottom: 6px;
+  }
+  .bd-analysis-v {
+    font-family: var(--font-serif-jp);
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--tx);
+    font-feature-settings: "palt" 1;
+  }
+
   /* ─── BODY (rendered markdown) — 記事テンプレートと同じ組み ─── */
   .brief-body {
     padding: 14px 0 0;
@@ -961,6 +1005,20 @@ const gapRowLabels = isJa
     height: 2px;
     background: var(--ok-ink);
     border-radius: 2px;
+  }
+  /* できることの列挙は ✓ で走査させる。md 側で <ul class="bd-check"> と
+     書いた箇所にだけ効くので、既定の箇条書き（事実の列挙）は不変。
+     効能ではなく機能の列挙にだけ使うこと。 */
+  .brief-body :global(ul.bd-check li::before) {
+    left: 4px;
+    top: 12px;
+    width: 6px;
+    height: 11px;
+    background: none;
+    border: solid var(--ok-ink);
+    border-width: 0 2px 2px 0;
+    border-radius: 0;
+    transform: rotate(42deg);
   }
   .brief-body :global(ol li) {
     counter-increment: brieflist;
