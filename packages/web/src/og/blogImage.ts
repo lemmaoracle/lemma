@@ -16,12 +16,22 @@
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
 import type { BlogPost } from "../data/blog";
-import { COVER_HEIGHT, COVER_WIDTH, coverArtwork } from "../lib/blogCover";
+import { COVER_HEIGHT, COVER_WIDTH, coverArtwork, isLightCover } from "../lib/blogCover";
 import { LEMMA_LOGO_PATHS } from "./lemmaWordmark";
 import { OG_FONT_DATA } from "./ogBase";
 
 const TITLE_INK = "#EBEFE6";
+/**
+ * 明地カバー（Announcements）の文字色。紙に `#EBEFE6` を置くと読めないので、
+ * 索引・記事テンプレートと同じインクへ入れ替える。カテゴリラベルのライムも、
+ * 紙の上では `--ok-ink` に落とさないとコントラストが足りない。
+ */
+const TITLE_INK_ON_LIGHT = "#0F1412";
 const LIME = "#A8E010";
+const LIME_ON_LIGHT = "#6F9C00";
+
+const inkFor = (light: boolean): string => (light ? TITLE_INK_ON_LIGHT : TITLE_INK);
+const limeFor = (light: boolean): string => (light ? LIME_ON_LIGHT : LIME);
 
 /** タイトルは 52px 固定・最大3行。あふれたら satori が末尾を「…」にする。 */
 const TITLE_SIZE = 52;
@@ -88,12 +98,12 @@ const LOGO_SCALE = LOGO_INK_HEIGHT / (LOGO_INK.y2 - LOGO_INK.y1);
 const LOGO_X = COVER_WIDTH - SIDE_PAD - LOGO_INK.x2 * LOGO_SCALE;
 const LOGO_Y = LOGO_INK_TOP - LOGO_INK.y1 * LOGO_SCALE;
 
-const logoSvg = (): string =>
-  `<g transform="translate(${LOGO_X.toFixed(1)},${LOGO_Y.toFixed(1)}) scale(${LOGO_SCALE.toFixed(4)})" fill="${TITLE_INK}">` +
+const logoSvg = (light: boolean): string =>
+  `<g transform="translate(${LOGO_X.toFixed(1)},${LOGO_Y.toFixed(1)}) scale(${LOGO_SCALE.toFixed(4)})" fill="${inkFor(light)}">` +
   LEMMA_LOGO_PATHS.map((d) => `<path d="${d}"/>`).join("") +
   "</g>";
 
-const textNode = (category: string, title: string): unknown => ({
+const textNode = (category: string, title: string, light: boolean): unknown => ({
   type: "div",
   props: {
     style: {
@@ -113,7 +123,7 @@ const textNode = (category: string, title: string): unknown => ({
             fontFamily: "Label",
             fontSize: LABEL_SIZE,
             letterSpacing: LABEL_TRACKING,
-            color: LIME,
+            color: limeFor(light),
             marginBottom: 20,
           },
           children: category.toUpperCase(),
@@ -128,7 +138,7 @@ const textNode = (category: string, title: string): unknown => ({
             fontWeight: 600,
             fontSize: TITLE_SIZE,
             lineHeight: TITLE_LINE_HEIGHT,
-            color: TITLE_INK,
+            color: inkFor(light),
             lineClamp: TITLE_MAX_LINES,
           },
           children: title,
@@ -139,15 +149,16 @@ const textNode = (category: string, title: string): unknown => ({
 });
 
 export async function renderBlogOg(post: BlogPost): Promise<Buffer> {
+  const light = isLightCover(post.category);
   const textSvg = await satori(
-    textNode(post.category, post.ogTitle ?? post.title) as Parameters<typeof satori>[0],
+    textNode(post.category, post.ogTitle ?? post.title, light) as Parameters<typeof satori>[0],
     { width: COVER_WIDTH, height: COVER_HEIGHT, fonts: FONTS },
   );
   const artwork =
     coverArtwork(post.category, post.slug, {
       blockOpacity: OG_BLOCK_OPACITY,
       bottomScrim: true,
-    }) + logoSvg();
+    }) + logoSvg(light);
   // satori が返す SVG の開き `<svg …>` の直後へ差し込む（＝文字の下に来る）。
   const svg = textSvg.replace(/<svg[^>]*>/, (open) => open + artwork);
   return new Resvg(svg, { fitTo: { mode: "width", value: COVER_WIDTH } }).render().asPng();

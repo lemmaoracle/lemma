@@ -38,6 +38,17 @@ const esc = (s: string): string =>
 const sanitizeId = (s: string): string => s.replace(/[^a-zA-Z0-9_-]/g, "-");
 
 /**
+ * 1ページに同じカバーが2回出ることがある（索引の「すべての記事」と、カテゴリ
+ * 絞り込み用の隠しリスト）。key だけで id を作ると2枚が同じ id を持ち、絞り込みで
+ * 前者が `display:none` になった瞬間、後者の `url(#…)` は非表示側の定義を指す。
+ * 非表示の subtree にある paint server は描画されないので、地・格子・環境光が
+ * まるごと塗られずカードが白く抜ける。呼ばれるたびに連番を足して分ける。
+ */
+let instanceSeq = 0;
+const nextId = (prefix: string, key: string): string =>
+  `${prefix}-${sanitizeId(key)}-${String(++instanceSeq)}`;
+
+/**
  * 地・格子・環境光（C-2 共通）。`gridSize` はカード 40／OGP 60。
  * 1ページに複数枚出るので id は呼び出し側の鍵で分ける。
  */
@@ -81,7 +92,7 @@ export interface BriefCardCoverInput {
  * 360px 幅まで縮んでも番号だけは残る、という前提の版面。
  */
 export const briefCardArtwork = (input: BriefCardCoverInput): string => {
-  const id = `bfc-${sanitizeId(input.key)}`;
+  const id = nextId("bfc", input.key);
   return [
     backdrop(id, 40),
     `<text x="72" y="94" font-family="'Space Mono',monospace" font-size="26" letter-spacing="7" fill="#79837C">CRITICAL BRIEF</text>`,
@@ -143,7 +154,7 @@ export interface BriefOgCoverInput {
 export const briefOgArtwork = (input: BriefOgCoverInput): string => {
   const size = ogThreatFontSize(input.threat);
   return [
-    backdrop(`bfo-${sanitizeId(input.key)}`, 60),
+    backdrop(nextId("bfo", input.key), 60),
     scanline(".35"),
     `<line x1="72" y1="432" x2="${String(ogUnderlineX2(input.threat, size))}" y2="432" stroke="${LIME}" stroke-width="5"/>`,
   ].join("");

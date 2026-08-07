@@ -41,6 +41,17 @@ const esc = (s: string): string =>
 
 const sanitizeId = (s: string): string => s.replace(/[^a-zA-Z0-9_-]/g, "-");
 
+/**
+ * 1ページに同じカバーが2回出ることがある（索引の「すべての記事」と、カテゴリ
+ * 絞り込み用の隠しリスト）。key だけで id を作ると2枚が同じ id を持ち、絞り込みで
+ * 前者が `display:none` になった瞬間、後者の `url(#…)` は非表示側の定義を指す。
+ * 非表示の subtree にある paint server は描画されないので、地・格子・環境光が
+ * まるごと塗られずカードが白く抜ける。呼ばれるたびに連番を足して分ける。
+ */
+let instanceSeq = 0;
+const nextId = (prefix: string, key: string): string =>
+  `${prefix}-${sanitizeId(key)}-${String(++instanceSeq)}`;
+
 /** 地・格子・環境光。briefCover.ts と同値（格子 40px）。 */
 const backdrop = (id: string): string =>
   [
@@ -81,7 +92,7 @@ const bodySize = (lines: ReadonlyArray<string>): number => {
 };
 
 export const caseStudyArtwork = (input: CaseStudyCoverInput): string => {
-  const id = `csc-${sanitizeId(input.key)}`;
+  const id = nextId("csc", input.key);
   const size = bodySize(input.lines);
   const lh = Math.round(size * 1.42);
   /* 主文の最終行を 530 に置く（下余白 100px）。行が増えたぶんは上へ伸ばす。 */
