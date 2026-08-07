@@ -559,8 +559,10 @@ const bytaskMembers = taskGroupMembers.filter(
               ) : (
                 <div class="ucv-mech-body" set:html={approachBody} />
               )}
+              {/* 柱ページへの導線は開いた中に置く。畳んだ状態で
+                  「詳しい仕組みを読む」と 2 つ並ぶと役割が重なるため。 */}
+              <a class="ucv-info-link" href={`${pillarsPath}/${PILLAR_ANCHOR[pillar.slug] ?? ""}`}>{C.approachLink}</a>
             </details>
-            <a class="ucv-info-link" href={`${pillarsPath}/${PILLAR_ANCHOR[pillar.slug] ?? ""}`}>{C.approachLink}</a>
           </section>
 
         </div>
