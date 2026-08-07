@@ -101,7 +101,7 @@ export const INDUSTRIES_V1: ReadonlyArray<IndustryEntry> = [
     body: supplyChainJa,
     en: {
       name: "Procurement & supply chain",
-      h1: "Not \"did it arrive\" — \"is it valid\", settled on the spot.",
+      h1: "Not “did it arrive” — “is it valid”, settled on the spot.",
       description: "Instead of collecting licences and ISO certificates and checking them by eye, take them on presentation and settle it there and then. The wait in supplier review, and the work of checking, both drop sharply.",
       body: supplyChainEn,
     },
