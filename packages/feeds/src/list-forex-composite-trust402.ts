@@ -5,7 +5,7 @@
  * archives the envelope by `request.date`, and publishes a Trust402 dataset
  * listing whose commitment is the fetcher Merkle root.
  */
-import { create as createTrust402, publish, nodeSigner } from "@trust402/sdk";
+import { create as createTrust402, publish } from "@trust402/sdk";
 import type { Listing, ClientConfig } from "@trust402/sdk";
 import { fetchAndCommit } from "@lemmaoracle/fetcher";
 import type { FetchResult } from "@lemmaoracle/fetcher";
