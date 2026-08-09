@@ -71,43 +71,38 @@ export const define = async <Raw, Norm>(schemaMeta: SchemaMeta): Promise<SchemaD
                     ))
                   : jsResponse.text().then((jsSource) => {
                       const dataUri = `data:text/javascript;base64,${toBase64(jsSource)}`;
-                      return import(/* @vite-ignore */ dataUri).then((shim: WasmShim) => {
-                        // eslint-disable-next-line functional/no-conditional-statements
-                        if (typeof shim.default === "function") {
-                          return shim.default(wasmBuffer).then((_) => shim);
-                        // eslint-disable-next-line functional/no-conditional-statements
-                        } else if (typeof shim.init === "function") {
-                          return shim.init(wasmBuffer).then((_) => shim);
-                        } else {
-                          console.warn("WASM JS shim does not export an initialization function (default or init)");
-                          return Promise.resolve(shim);
-                        }
-                      });
+                      return import(/* @vite-ignore */ dataUri).then((shim: WasmShim) =>
+                        typeof shim.default === "function"
+                          ? shim.default(wasmBuffer).then((_) => shim)
+                          : typeof shim.init === "function"
+                            ? shim.init(wasmBuffer).then((_) => shim)
+                            : (console.warn("WASM JS shim does not export an initialization function (default or init)"),
+                               Promise.resolve(shim))
+                      );
                     });
-              })().then((shim) => {
-                // eslint-disable-next-line functional/no-conditional-statements
-                if (typeof shim.normalize !== "function") {
-                  console.error("Shim object:", Object.keys(shim));
-                  return Promise.reject(new Error("WASM JS shim does not export a 'normalize' function"));
-                }
+              })().then((shim) =>
+                typeof shim.normalize !== "function"
+                  ? (console.error("Shim object:", Object.keys(shim)),
+                     Promise.reject(new Error("WASM JS shim does not export a 'normalize' function")))
+                  : (() => {
+                      // 5. Wrap the shim's normalize (string → string) function
+                      const normalize = (raw: Raw): Norm => {
+                        const rawJson = JSON.stringify(raw);
+                        const normJson = shim.normalize(rawJson);
+                        return JSON.parse(normJson) as Norm;
+                      };
 
-                // 5. Wrap the shim's normalize (string → string) function
-                const normalize = (raw: Raw): Norm => {
-                  const rawJson = JSON.stringify(raw);
-                  const normJson = shim.normalize(rawJson);
-                  return JSON.parse(normJson) as Norm;
-                };
-
-                // 6. Register in local registry
-                const schemaDef: SchemaDef<Raw, Norm> = {
-                  id: schemaMeta.id,
-                  normalize,
-                };
-                // imperative: schema registry mutation — no functional alternative
-                // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
-                registry[schemaMeta.id] = schemaDef as SchemaDef<unknown, unknown>;
-                return schemaDef;
-              });
+                      // 6. Register in local registry
+                      const schemaDef: SchemaDef<Raw, Norm> = {
+                        id: schemaMeta.id,
+                        normalize,
+                      };
+                      // imperative: schema registry mutation — no functional alternative
+                      // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
+                      registry[schemaMeta.id] = schemaDef as SchemaDef<unknown, unknown>;
+                      return schemaDef;
+                    })()
+              );
           });
       });
 };
