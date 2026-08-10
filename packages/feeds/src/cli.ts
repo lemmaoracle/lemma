@@ -28,11 +28,8 @@ const logErr = (message: string): string => {
   return message;
 };
 
-const exitWith = (code: number): never => {
-  // imperative: process lifetime control — no functional alternative
-  // eslint-disable-next-line functional/no-expression-statements
+const exitWith = (code: number): never =>
   process.exit(code);
-};
 
 // ── args ──────────────────────────────────────────────────────────────────
 

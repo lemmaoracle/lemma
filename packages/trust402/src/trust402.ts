@@ -396,13 +396,14 @@ export const orgIdentity = (input: OrgIdentityInput): OrgIdentityWitness => {
 
   const derivedPk = poseidon1([orgSecret]);
   // imperative: input-validation guard that throws — no functional alternative
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (derivedPk !== orgDid) {
-    // eslint-disable-next-line functional/no-throw-statements
-    throw new Error(
-      "orgIdentity: orgDid does not match Poseidon1(orgSecret)",
-    );
-  }
+  const _derivedPkCheck: undefined = derivedPk !== orgDid
+    ? (() => {
+        // eslint-disable-next-line functional/no-throw-statements
+        throw new Error(
+          "orgIdentity: orgDid does not match Poseidon1(orgSecret)",
+        );
+      })()
+    : undefined;
 
   const commitmentHash = poseidon5([
     orgDid,

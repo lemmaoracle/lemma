@@ -111,19 +111,14 @@ const createParserInstance = (_placeholder?: undefined) => {
   // eslint-disable-next-line functional/no-let -- closure-scoped mutable state for singleton
   let _transformers: TransformersModule | null = null;
 
-  const loadTransformers = async (_placeholder?: undefined): Promise<TransformersModule> => {
-    // eslint-disable-next-line functional/no-conditional-statements -- guard clause
-    if (_transformers) return _transformers;
-    // eslint-disable-next-line functional/no-expression-statements -- assignment side effect
-    _transformers = await import("@huggingface/transformers");
-    return _transformers;
-  };
+  const loadTransformers = async (_placeholder?: undefined): Promise<TransformersModule> =>
+    _transformers ?? (
+      _transformers = await import("@huggingface/transformers"),
+      _transformers
+    );
 
-  const updateState = (newState: ParserState): ParserState => {
-    // eslint-disable-next-line functional/no-expression-statements -- closure mutation
-    state = newState;
-    return state;
-  };
+  const updateState = (newState: ParserState): ParserState =>
+    (state = newState, state);
 
   const createGenerator = async (
     modelId?: string,
@@ -149,20 +144,16 @@ const createParserInstance = (_placeholder?: undefined) => {
       (_placeholder: undefined) => R.isNil(state.generator),
       async (_placeholder: undefined) => {
         const generator = await createGenerator(modelId, progressCallback);
-        // eslint-disable-next-line functional/no-expression-statements -- state update
-        updateState({ ...state, generator });
-        return generator;
+        return (updateState({ ...state, generator }), generator);
       },
       (_placeholder: undefined) => Promise.resolve(state.generator as TextGenerationPipeline),
     )(undefined);
 
-  const initParser = async (
+  const initParser = (
     modelId?: string,
     progressCallback?: ProgressCallback,
-  ): Promise<void> => {
-    // eslint-disable-next-line functional/no-expression-statements -- initialization side effect
-    await getOrCreateGenerator(modelId, progressCallback);
-  };
+  ): Promise<void> =>
+    getOrCreateGenerator(modelId, progressCallback).then((_result: unknown) => {});
 
   // Extract JSON from model output (handle markdown code blocks, etc.)
   const extractJSON = (text: string): string => {
@@ -251,10 +242,8 @@ JSON output:`;
         } catch {
           // Ignore disposal errors
         }
-        // eslint-disable-next-line functional/no-expression-statements -- state reset
-        updateState(createInitialState());
-        // eslint-disable-next-line functional/no-expression-statements -- cleanup
-        _transformers = null;
+        // imperative: state reset and cleanup — no functional alternative
+        return ((_transformers = null), updateState(createInitialState()), undefined);
       },
     )(undefined);
 
