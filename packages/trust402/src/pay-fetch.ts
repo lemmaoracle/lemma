@@ -307,8 +307,7 @@ export const payFetch = (options: PayFetchOptions): FetchLike =>
     const network = reqs.network;
 
     // imperative: callback side effect for payment notification — boundary
-    // eslint-disable-next-line functional/no-expression-statements
-    options.onPayment?.({
+    const _paymentNotified = options.onPayment?.({
       amount: reqs.maxAmountRequired,
       resource: reqs.resource,
     });

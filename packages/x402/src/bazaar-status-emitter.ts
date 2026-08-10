@@ -77,30 +77,25 @@ const readEmitterEnv = (_opts?: undefined): string | undefined => {
       : undefined;
 };
 
-// imperative: lazy singleton getter with mutable state — no functional alternative
-export const getBazaarStatusEmitter = (_opts?: undefined): BazaarStatusEmitter => {
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (cached) return cached;
+// imperative: lazy singleton with mutable state — no functional alternative
+export const getBazaarStatusEmitter = (_opts?: undefined): BazaarStatusEmitter =>
+  cached ?? (() => {
+    const envValue = readEmitterEnv();
 
-  const envValue = readEmitterEnv();
-
-  // imperative: lazy singleton with mutable cache assignment — no functional alternative
-  // eslint-disable-next-line functional/no-expression-statements
-  cached = envValue === "noop"
-    ? createNoopEmitter()
-    : envValue === "console" || envValue === undefined
-      ? createConsoleEmitter()
-      : (() => {
-          // Unknown emitter name — log once and fall back to console so we never
-          // silently drop observability data due to a typo.
-          console.warn(
-            `[lemma:bazaar] unknown LEMMA_BAZAAR_EMITTER="${envValue}", falling back to console`
-          );
-          return createConsoleEmitter();
-        })();
-
-  return cached;
-};
+    // imperative: lazy singleton with mutable cache assignment — no functional alternative
+    return (cached = envValue === "noop"
+      ? createNoopEmitter()
+      : envValue === "console" || envValue === undefined
+        ? createConsoleEmitter()
+        : (() => {
+            // Unknown emitter name — log once and fall back to console so we never
+            // silently drop observability data due to a typo.
+            console.warn(
+              `[lemma:bazaar] unknown LEMMA_BAZAAR_EMITTER="${envValue}", falling back to console`
+            );
+            return createConsoleEmitter();
+          })());
+  })();
 
 /**
  * Test-only setter. Lets unit tests inject a mock emitter and restore later
@@ -108,11 +103,8 @@ export const getBazaarStatusEmitter = (_opts?: undefined): BazaarStatusEmitter =
  */
 export const setBazaarStatusEmitterForTesting = (
   emitter: BazaarStatusEmitter | undefined
-): void => {
-  // imperative: test-only mutable injection — no functional alternative
-  // eslint-disable-next-line functional/no-expression-statements
-  cached = emitter;
-};
+): void =>
+  (cached = emitter, undefined);
 
 const STATUS_MAP: Readonly<Record<string, BazaarStatusEvent["status"]>> = {
   accepted: "accepted",
