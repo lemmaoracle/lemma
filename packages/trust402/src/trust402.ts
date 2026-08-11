@@ -471,32 +471,33 @@ const submitProof = async (
     headers: proofHeaders,
     body: JSON.stringify(submission),
   }).catch((e: unknown): never => {
-    // imperative: preserve Error instances verbatim — no functional alternative
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (e instanceof Error) throw e;
-    const message =
-      typeof e === "string"
-        ? e
-        : (e as Readonly<{ message?: unknown }>).message === "string"
-          ? (e as Readonly<{ message: string }>).message
-          : "Unknown error";
-    const code = (e as Readonly<{ code?: unknown }>).code;
-    const errMsg = `${message} (apiBase: ${client.apiBase}; apiKey: *** ? "set" : "unset"})`;
-    throw typeof code === "number"
-      ? Object.assign(new Error(errMsg), { code })
-      : new Error(errMsg);
+    throw e instanceof Error
+      ? e
+      : (() => {
+          const message =
+            typeof e === "string"
+              ? e
+              : (e as Readonly<{ message?: unknown }>).message === "string"
+                ? (e as Readonly<{ message: string }>).message
+                : "Unknown error";
+          const code = (e as Readonly<{ code?: unknown }>).code;
+          const errMsg = `${message} (apiBase: ${client.apiBase}; apiKey: *** ? "set" : "unset"})`;
+          return typeof code === "number"
+            ? Object.assign(new Error(errMsg), { code })
+            : new Error(errMsg);
+        })();
   });
 
   const errBody: unknown = proofRes.ok
     ? undefined
     : await proofRes.json().catch((_e: unknown) => ({}));
-  // imperative: HTTP non-2xx rejection — no functional alternative
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (errBody !== undefined) {
-    throw new Error(
-      `HTTP ${String(proofRes.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: *** ? "set" : "unset"})`,
-    );
-  }
+  return errBody !== undefined
+    ? Promise.reject(
+        new Error(
+          `HTTP ${String(proofRes.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: *** ? "set" : "unset"})`,
+        ),
+      )
+    : undefined;
 };
 
 /**
@@ -534,197 +535,176 @@ export const publish = async (
       : undefined;
   const randomness = signed?.randomness ?? "0x0";
 
-  // imperative: pre-condition guard that throws — no functional alternative
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (input.institutionalBinding !== undefined && input.commitmentSigner === undefined) {
-     
-    throw new Error(
-      "publish: commitmentSigner is required when institutionalBinding is set — wallet signature must bind to the listing salt",
-    );
-  }
+  // Pre-condition guard: institutionalBinding requires commitmentSigner.
+  return input.institutionalBinding !== undefined && input.commitmentSigner === undefined
+    ? Promise.reject(
+        new Error(
+          "publish: commitmentSigner is required when institutionalBinding is set — wallet signature must bind to the listing salt",
+        ),
+      )
+    : (async (): Promise<Listing> => {
+        // ── 1. Compute docHash = Poseidon2(commitment, chainId) ──
+        const docHash = bigintToHex(
+          poseidon2([BigInt(input.commitment), BigInt(chainId)]),
+        );
 
-  // ── 1. Compute docHash = Poseidon2(commitment, chainId) ──
-  // Binding chainId into docHash makes Sandbox/Production documents distinct,
-  // preventing INSERT OR IGNORE collisions when the same content is registered
-  // on multiple chains.
-  const docHash = bigintToHex(
-    poseidon2([BigInt(input.commitment), BigInt(chainId)]),
-  );
+        // ── 2. Generate per-schema (content) proof ──
+        const proof = await prove(client, {
+          circuitId: input.circuitId,
+          witness: input.witness,
+        });
 
-  // ── 2. Generate per-schema (content) proof ──
-  const proof = await prove(client, {
-    circuitId: input.circuitId,
-    witness: input.witness,
-  });
+        // ── 2b. Optional listing-binding-v2 proof ──
+        const binding =
+          input.institutionalBinding !== undefined
+            ? listingBinding({
+                commitment: input.commitment,
+                orgDid: input.institutionalBinding.orgDid,
+                authorDid: input.institutionalBinding.authorDid,
+                priceUsdc: input.price.amount,
+                schemaId: input.circuitId,
+                memberRoot: input.institutionalBinding.memberRoot,
+                merklePath: input.institutionalBinding.merklePath,
+                merkleIndices: input.institutionalBinding.merkleIndices,
+                memberSalt: input.institutionalBinding.memberSalt,
+                ...(signed !== undefined ? { salt: signed.randomness } : {}),
+              })
+            : undefined;
 
-  // ── 2b. Optional listing-binding-v2 proof ──
-  const binding =
-    input.institutionalBinding !== undefined
-      ? listingBinding({
-          commitment: input.commitment,
-          orgDid: input.institutionalBinding.orgDid,
-          authorDid: input.institutionalBinding.authorDid,
-          priceUsdc: input.price.amount,
-          schemaId: input.circuitId,
-          memberRoot: input.institutionalBinding.memberRoot,
-          merklePath: input.institutionalBinding.merklePath,
-          merkleIndices: input.institutionalBinding.merkleIndices,
-          memberSalt: input.institutionalBinding.memberSalt,
-          ...(signed !== undefined ? { salt: signed.randomness } : {}),
-        })
-      : undefined;
+        const listingProof =
+          binding !== undefined
+            ? await prove(client, {
+                circuitId: LISTING_BINDING_V2_CIRCUIT_ID,
+                witness: binding.witness,
+              })
+            : undefined;
 
-  const listingProof =
-    binding !== undefined
-      ? await prove(client, {
-          circuitId: LISTING_BINDING_V2_CIRCUIT_ID,
-          witness: binding.witness,
-        })
-      : undefined;
+        // Reject fallback (SHA-256) proofs for security-bearing circuits.
+        return listingProof !== undefined && listingProof.inputs.length === 0
+          ? Promise.reject(
+              new Error(
+                "publish: listing-binding-v2 proof generation fell back to SHA-256 mode — circuit artifacts unavailable. Cannot submit non-cryptographic proof for institutional binding.",
+              ),
+            )
+          : input.institutionalBinding !== undefined && proof.inputs.length === 0
+            ? Promise.reject(
+                new Error(
+                  "publish: content proof generation fell back to SHA-256 mode — circuit artifacts unavailable. Cannot submit non-cryptographic proof for institutional listing.",
+                ),
+              )
+            : (async (): Promise<Listing> => {
+                // ── 3. Register document ──
+                const _registerResult = await registerDocument(client, {
+                  docHash,
+                  schema: input.circuitId,
+                  cid: input.cid ?? "",
+                  issuerId: input.did,
+                  subjectId: input.did,
+                  chainId,
+                  commitments: {
+                    scheme: "poseidon" as const,
+                    root: docHash,
+                    leaves: [docHash],
+                    randomness,
+                  },
+                  revocation: { root: "" },
+                });
 
-  // Reject fallback (SHA-256) proofs for security-bearing circuits.
-  // The fallback returns empty inputs; real Groth16 proofs return public signals.
-  // imperative: security guard rejecting fallback proofs — no functional alternative
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (listingProof !== undefined && listingProof.inputs.length === 0) {
-     
-    throw new Error(
-      "publish: listing-binding-v2 proof generation fell back to SHA-256 mode — circuit artifacts unavailable. Cannot submit non-cryptographic proof for institutional binding.",
-    );
-  }
-  // imperative: security guard rejecting fallback proofs — no functional alternative
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (input.institutionalBinding !== undefined && proof.inputs.length === 0) {
-     
-    throw new Error(
-      "publish: content proof generation fell back to SHA-256 mode — circuit artifacts unavailable. Cannot submit non-cryptographic proof for institutional listing.",
-    );
-  }
+                // ── 4. Submit proof(s) sequentially ──
+                const _submitContentProof: undefined = (await submitProof(
+                  client,
+                  {
+                    docHash,
+                    circuitId: input.circuitId,
+                    proof: proof.proof,
+                    inputs: proof.inputs.length > 0 ? proof.inputs : [input.commitment],
+                  },
+                  input.environment,
+                ), undefined);
 
-  // ── 3. Register document ──
-  const _registerResult = await registerDocument(client, {
-    docHash,
-    schema: input.circuitId,
-    cid: input.cid ?? "",
-    issuerId: input.did,
-    subjectId: input.did,
-    chainId,
-    commitments: {
-      scheme: "poseidon" as const,
-      root: docHash,
-      leaves: [docHash],
-      randomness,
-    },
-    revocation: { root: "" },
-  });
+                const _submitListingProof: undefined =
+                  listingProof !== undefined && binding !== undefined
+                    ? (await submitProof(
+                        client,
+                        {
+                          docHash,
+                          circuitId: LISTING_BINDING_V2_CIRCUIT_ID,
+                          proof: listingProof.proof,
+                          inputs: listingProof.inputs,
+                        },
+                        input.environment,
+                      ), undefined)
+                    : undefined;
 
-  // ── 4. Submit proof(s) sequentially ──
-  // Content proof first, then listing-binding-v2 when institutional.
-  // SubmitProofRequest is one proof per call (spec unchanged).
-  // imperative: sequential HTTP side-effect — no functional alternative
-  // eslint-disable-next-line functional/no-expression-statements
-  await submitProof(
-    client,
-    {
-      docHash,
-      circuitId: input.circuitId,
-      proof: proof.proof,
-      // Prefer prover public signals (multi-input circuits). Fall back to the
-      // listing commitment when the SHA-256 prover path returns no signals.
-      inputs: proof.inputs.length > 0 ? proof.inputs : [input.commitment],
-    },
-    input.environment,
-  );
+                // ── 5. Compute listingRoot ──
+                const listingRootHex =
+                  binding !== undefined
+                    ? binding.listingRoot
+                    : (() => {
+                        const schemaIdScalar = toScalar(input.circuitId);
+                        const priceUsdc = toScalar(input.price.amount);
+                        const didScalar = toScalar(input.did);
+                        const salt = toScalar(randomHex(32));
+                        return bigintToHex(
+                          poseidon5([
+                            schemaIdScalar,
+                            BigInt(input.commitment),
+                            priceUsdc,
+                            didScalar,
+                            salt,
+                          ]),
+                        );
+                      })();
 
-  // imperative: conditional sequential HTTP side-effect — no functional alternative
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (listingProof !== undefined && binding !== undefined) {
-    // imperative: sequential HTTP side-effect — no functional alternative
-    // eslint-disable-next-line functional/no-expression-statements
-    await submitProof(
-      client,
-      {
-        docHash,
-        circuitId: LISTING_BINDING_V2_CIRCUIT_ID,
-        proof: listingProof.proof,
-        inputs: listingProof.inputs,
-      },
-      input.environment,
-    );
-  }
+                const listing: Listing = Object.freeze({
+                  listingRoot: listingRootHex,
+                  schemaId: input.circuitId,
+                  commitment: input.commitment,
+                  did: input.did,
+                  price: input.price,
+                  cid: input.cid,
+                  perSchemaProof: {
+                    circuitId: input.circuitId,
+                    proof: proof.proof,
+                    inputs: proof.inputs.length > 0 ? proof.inputs : [input.commitment],
+                  },
+                  metadata: input.metadata,
+                  environment: input.environment,
+                  ...(signed !== undefined
+                    ? {
+                        signedCommitment: Object.freeze({
+                          signature: signed.signature,
+                          recoveredAddress: signed.recoveredAddress,
+                          randomness: signed.randomness,
+                        }),
+                      }
+                    : {}),
+                  createdAt: Date.now(),
+                });
 
-  // ── 5. Compute listingRoot ──
-  // With institutional binding: use the ZK-bound listingRoot (orgDid).
-  // Without: client-side Poseidon5 with seller did (unchanged).
-  const listingRootHex =
-    binding !== undefined
-      ? binding.listingRoot
-      : (() => {
-          const schemaIdScalar = toScalar(input.circuitId);
-          const priceUsdc = toScalar(input.price.amount);
-          const didScalar = toScalar(input.did);
-          const salt = toScalar(randomHex(32));
-          return bigintToHex(
-            poseidon5([
-              schemaIdScalar,
-              BigInt(input.commitment),
-              priceUsdc,
-              didScalar,
-              salt,
-            ]),
-          );
-        })();
-
-  const listing: Listing = Object.freeze({
-    listingRoot: listingRootHex,
-    schemaId: input.circuitId,
-    commitment: input.commitment,
-    did: input.did,
-    price: input.price,
-    cid: input.cid,
-    perSchemaProof: {
-      circuitId: input.circuitId,
-      proof: proof.proof,
-      inputs: proof.inputs.length > 0 ? proof.inputs : [input.commitment],
-    },
-    metadata: input.metadata,
-    environment: input.environment,
-    ...(signed !== undefined
-      ? {
-          signedCommitment: Object.freeze({
-            signature: signed.signature,
-            recoveredAddress: signed.recoveredAddress,
-            randomness: signed.randomness,
-          }),
-        }
-      : {}),
-    createdAt: Date.now(),
-  });
-
-  // ── 6. Optional storefront upload (S2) ──
-  // If a file is provided, auto-upload to POST /api/cards so the listing
-  // is immediately visible to buyers. Skip when not provided (caller may
-  // use list() separately or the dashboard handles its own upload).
-  return input.file === undefined
-    ? listing
-    : Object.freeze({
-        ...listing,
-        cardId: (
-          await list(client, {
-            listing,
-            file: input.file,
-            category:
-              input.category ??
-              detectContentType({
-                type: (input.file as { type?: string }).type ?? "",
-                name: (input.file as { name: string }).name,
-              }),
-            priceUsdc: input.price.amount,
-            environment: input.environment ?? "sandbox",
-            payoutAddress: input.payoutAddress ?? "",
-          })
-        ).id,
-      });
+                // ── 6. Optional storefront upload (S2) ──
+                return input.file === undefined
+                  ? listing
+                  : Object.freeze({
+                      ...listing,
+                      cardId: (
+                        await list(client, {
+                          listing,
+                          file: input.file,
+                          category:
+                            input.category ??
+                            detectContentType({
+                              type: (input.file as { type?: string }).type ?? "",
+                              name: (input.file as { name: string }).name,
+                            }),
+                          priceUsdc: input.price.amount,
+                          environment: input.environment ?? "sandbox",
+                          payoutAddress: input.payoutAddress ?? "",
+                        })
+                      ).id,
+                    });
+              })();
+      })();
 };
 
 /* ------------------------------------------------------------------ */
@@ -869,22 +849,16 @@ export const list = async (
   };
 
   const res = await (client.fetcher ?? fetch)(url, {
-    method: "POST",
-    headers,
-    body: form,
-  });
+      method: "POST",
+      headers,
+      body: form,
+    });
 
-  // imperative: guard clause with async body — no ternary can wrap await
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (!res.ok) {
-    const errBody = (await res
-      .json()
-      .catch((_err: unknown): Record<string, unknown> => ({}))) as Record<string, unknown>;
-    throw new Error(
-      `HTTP ${String(res.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
-    );
-  }
-
-  const body = (await res.json()) as { id: string };
-  return { id: body.id };
+    return !res.ok
+      ? Promise.reject(
+          new Error(
+            `HTTP ${String(res.status)}: ${JSON.stringify((await res.json().catch((_err: unknown): Record<string, unknown> => ({}))) as Record<string, unknown>)} (apiBase: ${client.apiBase}; apiKey: *** ? "set" : "unset"})`,
+          ),
+        )
+      : res.json().then((body: unknown) => ({ id: (body as { id: string }).id }));
 };

@@ -213,27 +213,25 @@ const randomNonce = (_?: undefined): string => {
 const ensureChain = async (
   provider: Eip1193Provider,
   network: X402Network,
-): Promise<void> => {
-  // viem WalletClient and other non-wallet providers don't implement
-  // wallet_switchEthereumChain — skip and trust the configured chain.
-  // imperative: environment-based early return guard — boundary
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (typeof location === "undefined") return;
-  const chainId = `0x${X402_CHAIN_IDS[network].toString(16)}`;
-  const meta = CHAIN_METADATA[network];
-  const _switchResult = await provider.request({
-    method: "wallet_switchEthereumChain",
-    params: [{ chainId }],
-  }).catch(async (e: unknown): Promise<void> => {
-    const code = (e as Readonly<{ code?: unknown }> | null)?.code;
-    return code === 4902 || code === -32603
-      ? provider.request({
-          method: "wallet_addEthereumChain",
-          params: [{ chainId, ...meta }],
-        }).then((_: unknown) => undefined)
-      : Promise.reject(e instanceof Error ? e : new Error(String(e)));
-  });
-};
+): Promise<void> =>
+  typeof location === "undefined"
+    ? undefined
+    : (async () => {
+        const chainId = `0x${X402_CHAIN_IDS[network].toString(16)}`;
+        const meta = CHAIN_METADATA[network];
+        const _switchResult = await provider.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId }],
+        }).catch(async (e: unknown): Promise<void> => {
+          const code = (e as Readonly<{ code?: unknown }> | null)?.code;
+          return code === 4902 || code === -32603
+            ? provider.request({
+                method: "wallet_addEthereumChain",
+                params: [{ chainId, ...meta }],
+              }).then((_: unknown) => undefined)
+            : Promise.reject(e instanceof Error ? e : new Error(String(e)));
+        });
+      })();
 
 const transferWithAuthorizationTypedData = (
   reqs: PaymentRequirements,
@@ -281,86 +279,73 @@ const transferWithAuthorizationTypedData = (
 export const payFetch = (options: PayFetchOptions): FetchLike =>
   async (input, init) => {
     const res = await fetch(input, init);
-    // imperative: HTTP status guard — sequential boundary
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (res.status !== 402) return res;
-
     const url = requestUrl(input);
-    // imperative: null guard after URL parse — boundary
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (url === null) return res;
+    return res.status !== 402 || url === null
+      ? res
+      : parseRequirements(res).then((reqs) =>
+          reqs === null
+            ? res
+            : (() => {
+                const maxAmount =
+                  options.maxAmountMicroUsdc ?? DEFAULT_MAX_AMOUNT_MICRO_USDC;
+                const method = requestMethod(input, init);
+                return !isPayable(url, method, init?.body, reqs, maxAmount, options.apiBase ?? "")
+                  ? res
+                  : (async () => {
+                      const network = reqs.network;
 
-    const reqs = await parseRequirements(res);
-    // imperative: null guard after parse — boundary
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (reqs === null) return res;
+                      const _paymentNotified = options.onPayment?.({
+                        amount: reqs.maxAmountRequired,
+                        resource: reqs.resource,
+                      });
 
-    const maxAmount =
-      options.maxAmountMicroUsdc ?? DEFAULT_MAX_AMOUNT_MICRO_USDC;
-    // imperative: guard clause for payable check — boundary
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (
-      !isPayable(url, requestMethod(input, init), init?.body, reqs, maxAmount, options.apiBase ?? "")
-    ) {
-      return res;
-    }
-    const network = reqs.network;
+                      const signer = await options.getSigner();
+                      const _chainResult: undefined = (await ensureChain(signer.provider, network), undefined);
+                      const freshSigner = await options.getSigner();
+                      const authorization: ExactEvmAuthorization = {
+                        from: freshSigner.address,
+                        to: reqs.payTo,
+                        value: reqs.maxAmountRequired,
+                        validAfter: "0",
+                        validBefore: String(
+                          Math.floor(Date.now() / 1000) + reqs.maxTimeoutSeconds,
+                        ),
+                        nonce: randomNonce(),
+                      };
+                      const typedData = transferWithAuthorizationTypedData(
+                        reqs,
+                        network,
+                        authorization,
+                      ) as Readonly<{
+                        types: Readonly<Record<string, ReadonlyArray<unknown>>>;
+                        primaryType: string;
+                        domain: Readonly<Record<string, unknown>>;
+                        message: Readonly<Record<string, unknown>>;
+                      }>;
+                      const signature = freshSigner.signTypedData !== undefined
+                        ? await freshSigner.signTypedData({
+                            domain: typedData.domain,
+                            types: typedData.types,
+                            primaryType: typedData.primaryType,
+                            message: typedData.message,
+                          })
+                        : String(
+                            await freshSigner.provider.request({
+                              method: "eth_signTypedData_v4",
+                              params: [freshSigner.address, JSON.stringify(typedData)],
+                            }),
+                          );
 
-    // imperative: callback side effect for payment notification — boundary
-    const _paymentNotified = options.onPayment?.({
-      amount: reqs.maxAmountRequired,
-      resource: reqs.resource,
-    });
-
-    const signer = await options.getSigner();
-    // imperative: wallet chain switch — sequential RPC boundary
-    // eslint-disable-next-line functional/no-expression-statements
-    await ensureChain(signer.provider, network);
-    // Re-resolve signer after chain switch — wallet providers (MetaMask)
-    // may reset internal state during network transitions, making the
-    // pre-switch provider reference stale for eth_signTypedData_v4.
-    const freshSigner = await options.getSigner();
-    const authorization: ExactEvmAuthorization = {
-      from: freshSigner.address,
-      to: reqs.payTo,
-      value: reqs.maxAmountRequired,
-      validAfter: "0",
-      validBefore: String(
-        Math.floor(Date.now() / 1000) + reqs.maxTimeoutSeconds,
-      ),
-      nonce: randomNonce(),
-    };
-    const typedData = transferWithAuthorizationTypedData(
-      reqs,
-      network,
-      authorization,
-    ) as Readonly<{
-      types: Readonly<Record<string, ReadonlyArray<unknown>>>;
-      primaryType: string;
-      domain: Readonly<Record<string, unknown>>;
-      message: Readonly<Record<string, unknown>>;
-    }>;
-    const signature = freshSigner.signTypedData !== undefined
-      ? await freshSigner.signTypedData({
-          domain: typedData.domain,
-          types: typedData.types,
-          primaryType: typedData.primaryType,
-          message: typedData.message,
-        })
-      : String(
-          await freshSigner.provider.request({
-            method: "eth_signTypedData_v4",
-            params: [freshSigner.address, JSON.stringify(typedData)],
-          }),
+                      const payment: PaymentPayload = {
+                        x402Version: 1,
+                        scheme: "exact",
+                        network,
+                        payload: { signature, authorization },
+                      };
+                      const headers = new Headers(init?.headers);
+                      headers.set("X-PAYMENT", btoa(JSON.stringify(payment)));
+                      return fetch(input, { ...init, headers });
+                    })();
+              })(),
         );
-
-    const payment: PaymentPayload = {
-      x402Version: 1,
-      scheme: "exact",
-      network,
-      payload: { signature, authorization },
-    };
-    const headers = new Headers(init?.headers);
-    headers.set("X-PAYMENT", btoa(JSON.stringify(payment)));
-    return fetch(input, { ...init, headers });
   };
