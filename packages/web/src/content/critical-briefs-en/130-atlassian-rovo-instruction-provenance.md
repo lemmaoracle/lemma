@@ -1,7 +1,7 @@
 ---
 brief_no: 130
-title: "Atlassian Rovo が、アップロード文書や URL パラメータの指示に従い Jira・Confluence のデータを外部へ送った — 指示の出所が、行動の前に確かめられていない"
-title_en: "Atlassian Rovo followed instructions from an uploaded file and a URL parameter, sending Jira and Confluence data outward — the origin of the instruction was never verified before the action"
+title: "Atlassian Rovo は、アップロード文書や URL パラメータの指示に従って Jira・Confluence のデータを外部へ送りうる — 指示の出所が、行動の前に確かめられていない"
+title_en: "Atlassian Rovo can be tricked into sending Jira and Confluence data outward by instructions in an uploaded file or a URL parameter — the origin of the instruction is never verified before the action"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["ai-decision-integrity", "identity-auth"]
@@ -12,8 +12,8 @@ related_pack: ["C-agent-governance"]
 related_briefs: ["055-echoleak-m365-copilot-instruction-provenance", "059-vercel-contextai-oauth", "118-copilot-word-document-worm", "047-openclaw-agent-phishing", "094-cursor-duneslide-sandbox-escape"]
 status: published
 version: "1.0"
-og_lead_ja: "Atlassian Rovo が指示の出所を確かめず Jira/Confluence データを外部送信"
-og_lead_en: "Atlassian Rovo sent Jira/Confluence data out without verifying instruction origin"
+og_lead_ja: "Atlassian Rovo、指示の出所を確かめず Jira/Confluence データを外部送信しうる"
+og_lead_en: "Atlassian Rovo can be tricked into sending Jira/Confluence data out unverified"
 gap_detected: "Detection can work. Content scanning and egress monitoring can be designed as layers that catch malicious instructions or suspicious destinations."
 gap_missing: "Nothing verified, before the action, whether the instruction the agent followed came from the authenticated user's intent or from attacker-planted content."
 gap_fix: "Before an action like outbound transfer, insert a step that independently verifies the instruction's origin is the user's intent."
