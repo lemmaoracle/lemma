@@ -32,8 +32,7 @@ const td = new TextDecoder();
  * or other Node-oriented packages.
  */
 // imperative: polyfill injection on globalThis — no functional alternative
-// eslint-disable-next-line functional/functional-parameters
-export const ensureBufferPolyfill = (): void => {
+export const ensureBufferPolyfill = (_placeholder?: undefined): void => {
   // eslint-disable-next-line functional/no-conditional-statements
   if (typeof globalThis.Buffer === "undefined") {
     // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
@@ -67,8 +66,7 @@ ensureBufferPolyfill();
  * untouched.
  */
 // imperative: polyfill probe via URL API boundary — no functional alternative
-// eslint-disable-next-line functional/functional-parameters
-export const ensureUrlCreateObjectUrlPolyfill = (): void => {
+export const ensureUrlCreateObjectUrlPolyfill = (_placeholder?: undefined): void => {
   // Detect a stub that exists as a function but throws when invoked
   // (notably Cloudflare Workers, where `typeof URL.createObjectURL` is
   // "function" yet calling it rejects). A typeof guard alone cannot
