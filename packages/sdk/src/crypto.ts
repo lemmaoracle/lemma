@@ -207,17 +207,18 @@ const validateHolderKey = (holderKey: string): Uint8Array => {
   // Parse as hex string (without 0x prefix)
   const keyBytes = platformHexToBytes(normalizedKey);
 
-  // Validate the key is a valid point
-  /* eslint-disable-next-line functional/no-try-statements --
-   * Crypto boundary: validating cryptographic keys requires try-catch */
-  try {
-    // eslint-disable-next-line functional/no-expression-statements -- validation side effect
-    secp256k1.ProjectivePoint.fromHex(keyBytes);
-    return keyBytes;
-  } catch {
-    // eslint-disable-next-line functional/no-throw-statements -- crypto boundary validation
-    throw new Error("Invalid secp256k1 public key");
-  }
+  // Validate the key is a valid point (sync crypto boundary: R.tryCatch).
+  return R.tryCatch(
+    (_placeholder: undefined): Uint8Array => {
+      // eslint-disable-next-line functional/no-expression-statements -- validation side effect
+      secp256k1.ProjectivePoint.fromHex(keyBytes);
+      return keyBytes;
+    },
+    (_placeholder: undefined): never => {
+      // eslint-disable-next-line functional/no-throw-statements -- crypto boundary validation
+      throw new Error("Invalid secp256k1 public key");
+    },
+  )(undefined);
 };
 
 /**

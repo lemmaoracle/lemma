@@ -62,33 +62,40 @@ const failParse = (message: string): never => {
  * Throws if no deflated entry is found.
  */
 export const extractFirstZipEntry = (buf: Buffer): Buffer => {
-  // imperative: byte-level ZIP scanning — no functional alternative
-  // eslint-disable-next-line functional/no-let, functional/no-loop-statements
-  for (let i = 0; i < buf.length - 4; i++) {
-    const sig = buf.readUInt32LE(i);
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (sig !== ZIP_LOCAL_HEADER_SIG) continue;
+  const limit = Math.max(0, buf.length - 4);
 
-    const compression = buf.readUInt16LE(i + 8);
-    const compressedSize = buf.readUInt32LE(i + 18);
-    const fileNameLen = buf.readUInt16LE(i + 26);
-    const extraLen = buf.readUInt16LE(i + 28);
-    const dataStart = i + 30 + fileNameLen + extraLen;
+  // Parse the local file header at byte offset `i`, returning the entry
+  // payload (stored or deflated) or null when the offset does not begin a
+  // valid, complete entry.
+  const extractAt = (i: number): Buffer | null =>
+    buf.readUInt32LE(i) !== ZIP_LOCAL_HEADER_SIG
+      ? null
+      : (() => {
+          const compression = buf.readUInt16LE(i + 8);
+          const compressedSize = buf.readUInt32LE(i + 18);
+          const fileNameLen = buf.readUInt16LE(i + 26);
+          const extraLen = buf.readUInt16LE(i + 28);
+          const dataStart = i + 30 + fileNameLen + extraLen;
+          return dataStart + compressedSize > buf.length
+            ? null // truncated
+            : (() => {
+                const raw = buf.subarray(dataStart, dataStart + compressedSize);
+                return compression === 0
+                  ? raw // stored
+                  : compression === 8
+                    ? inflateRawSync(raw) // deflated
+                    : null;
+              })();
+        })();
 
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (dataStart + compressedSize > buf.length) continue; // truncated
+  // First (and only) valid entry, scanning byte offsets left-to-right.
+  const foundIndex = Array.from({ length: limit }, (_v, i) => i).find(
+    (i) => extractAt(i) !== null,
+  );
 
-    const raw = buf.subarray(dataStart, dataStart + compressedSize);
-
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (compression === 0) return raw; // stored
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (compression === 8) return inflateRawSync(raw); // deflated
-  }
-
-  // imperative: unrecoverable error — no functional alternative
-  // eslint-disable-next-line functional/no-throw-statements
-  throw new Error("jp-postal-codes: no valid ZIP entry found");
+  return foundIndex === undefined
+    ? failParse("jp-postal-codes: no valid ZIP entry found")
+    : (extractAt(foundIndex) ?? failParse("jp-postal-codes: no valid ZIP entry found"));
 };
 
 // ── parsing / normalisation ─────────────────────────────────────────────────
