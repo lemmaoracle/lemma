@@ -832,16 +832,8 @@ export const list = async (
 
   // Astro CSRF guard rejects cross-origin FormData POSTs without an
   // Origin header. Set it to the apiBase origin so server-side calls pass.
-  // imperative: new URL() may throw synchronously — wrap in Promise to use
-  // functional .catch() pattern instead of try-catch
-  const origin = await new Promise<string | undefined>((resolve) => {
-    // eslint-disable-next-line functional/no-try-statements
-    try {
-      resolve(new URL(client.apiBase).origin);
-    } catch {
-      resolve(undefined);
-    }
-  });
+  // URL.parse returns null (instead of throwing) on a malformed base.
+  const origin = URL.parse(client.apiBase)?.origin;
 
   const headers: Record<string, string> = {
     ...(client.apiKey !== undefined ? { "x-api-key": client.apiKey } : {}),

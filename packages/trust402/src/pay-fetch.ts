@@ -102,14 +102,8 @@ const requestUrl = (input: RequestInfo | URL): URL | null => {
         ? input.href
         : input.url;
   const base = typeof location !== "undefined" ? location.href : undefined;
-  // Sync URL parse: constructor throws on malformed input; catch via thenable would force async.
-  // imperative: URL constructor sync throw boundary — no functional alternative
-  // eslint-disable-next-line functional/no-try-statements
-  try {
-    return new URL(raw, base);
-  } catch {
-    return null;
-  }
+  // URL.parse returns null (instead of throwing) on malformed input.
+  return URL.parse(raw, base);
 };
 
 const requestMethod = (
@@ -168,13 +162,11 @@ const isPayableOrigin = (url: URL, apiBase: string): boolean =>
     ? url.origin === location.origin
     : (() => {
         // Node.js / server-side: allow only the configured apiBase.
-        // imperative: URL constructor sync throw boundary — no functional alternative
-        // eslint-disable-next-line functional/no-try-statements
-        try {
-          return url.origin === new URL(apiBase).origin;
-        } catch {
-          return false;
-        }
+        // URL.parse returns null (instead of throwing) on a malformed base.
+        const parsedApiBase = URL.parse(apiBase);
+        return parsedApiBase === null
+          ? false
+          : url.origin === parsedApiBase.origin;
       })();
 
 const isPayable = (
