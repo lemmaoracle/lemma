@@ -15,7 +15,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && mkdir -p dist/wasm && cp src/wasm/lemma_transform.js src/wasm/lemma_transform.d.ts dist/wasm/",
     "build:circuit": "cd circuits && bash scripts/build.sh",
     "build:normalize": "wasm-pack build normalize --target web",
     "test": "vitest run",

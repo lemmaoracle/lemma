@@ -18,8 +18,11 @@
  *
  * Chain binding: pass prevOutputCommitment from the previous stage.
  * For genesis (first stage), pass the inputCommitment itself.
+ *
+ * Environment-agnostic: the caller supplies the WASM binary bytes
+ * (Node: fs.readFile, browser: fetch) — this module never touches the
+ * filesystem or any other Node-only API.
  */
-import { readFile } from "node:fs/promises";
 import { sha256 } from "@noble/hashes/sha256";
 import { poseidon1, poseidon2 } from "poseidon-lite";
 import {
@@ -27,6 +30,7 @@ import {
   reduceElements,
 } from "@lemmaoracle/content";
 import { canonicalize } from "@lemmaoracle/sdk";
+import initNormalizer, { bind as bindNormalizer } from "./wasm/lemma_transform.js";
 import type {
   ExecutionRecord,
   TransformWitness,
@@ -78,45 +82,22 @@ export const computeArgsHash = (args: unknown): bigint => {
 
 // ── WASM normalizer loading ─────────────────────────────────────────────
 
-/**
- * Shape of the wasm-bindgen module at normalize/pkg (target: web).
- * `default` is the init function; `bind` computes the execution binding.
- */
-type NormalizeModule = Readonly<{
-  default: (opts: {
-    readonly module_or_path: Uint8Array;
-  }) => Promise<unknown>;
-  bind: (
-    inputBytes: Uint8Array,
-    outputBytes: Uint8Array,
-    transformCode: Uint8Array,
-    canonicalArgs: string,
-    runtime: string,
-    prevOutputCommitment?: string | null,
-  ) => string;
-}>;
-
-// eslint-disable-next-line functional/functional-parameters -- module-level lazy initializer
-const instantiateNormalizer = async (): Promise<NormalizeModule> => {
-  const pkgUrl = new URL("../normalize/pkg/lemma_transform.js", import.meta.url);
-  const wasmUrl = new URL(
-    "../normalize/pkg/lemma_transform_bg.wasm",
-    import.meta.url,
-  );
-  // Non-literal specifier: the pkg lives outside the TS rootDir and ships
-  // its own .d.ts; typed locally via NormalizeModule.
-  const mod = (await import(pkgUrl.href)) as NormalizeModule;
-  const wasmBytes = await readFile(wasmUrl);
-  return mod.default({ module_or_path: wasmBytes }).then((_init) => mod);
-};
-
 // imperative: memoized one-time WASM instantiation — module-level cache
 // eslint-disable-next-line functional/no-let
-let normalizerPromise: Promise<NormalizeModule> | undefined;
+let normalizerReady: Promise<typeof bindNormalizer> | undefined;
 
-// eslint-disable-next-line functional/functional-parameters -- memoized accessor
-const loadNormalizer = (): Promise<NormalizeModule> =>
-  (normalizerPromise ??= instantiateNormalizer());
+/**
+ * Instantiate the WASM normalizer from caller-supplied binary bytes and
+ * resolve to its `bind` entry point. wasm-bindgen init is one-time per
+ * module: the first call instantiates, later calls reuse the same
+ * instance (the bytes argument is ignored then).
+ */
+const loadNormalizer = (
+  wasmBytes: Uint8Array,
+): Promise<typeof bindNormalizer> =>
+  (normalizerReady ??= initNormalizer({ module_or_path: wasmBytes }).then(
+    (_init) => bindNormalizer,
+  ));
 
 /** JSON payload returned by the WASM `bind` entry point. */
 type BoundExecution = Readonly<{
@@ -132,16 +113,17 @@ type BoundExecution = Readonly<{
  * transformerId, argsHash, and byte counts are all computed inside Rust.
  */
 const bindExecution = async (
+  wasmBytes: Uint8Array,
   inputBytes: Uint8Array,
   outputBytes: Uint8Array,
   transformCode: Uint8Array,
   args: unknown,
   prevOutputCommitment?: string,
 ): Promise<TransformProofInput> => {
-  const normalizer = await loadNormalizer();
+  const bind = await loadNormalizer(wasmBytes);
   const canonical = canonicalize(args as import("@lemmaoracle/sdk").Json);
   const bound = JSON.parse(
-    normalizer.bind(
+    bind(
       inputBytes,
       outputBytes,
       transformCode,
@@ -175,15 +157,19 @@ export type TransformFn = (
  *
  * For the first stage, prevOutputCommitment = inputCommitment
  * (the circuit's chain-binding constraint is trivially satisfied).
+ *
+ * `wasmBytes` is the `lemma_transform_bg.wasm` binary, supplied by the
+ * caller (Node: fs.readFile, browser: fetch).
  */
 export const buildGenesisRecord = async (
+  wasmBytes: Uint8Array,
   transformFn: TransformFn,
   transformCode: Uint8Array,
   inputBytes: Uint8Array,
   args: unknown,
 ): Promise<TransformProofInput> => {
   const outputBytes = await transformFn(inputBytes, args);
-  return bindExecution(inputBytes, outputBytes, transformCode, args);
+  return bindExecution(wasmBytes, inputBytes, outputBytes, transformCode, args);
 };
 
 /**
@@ -192,8 +178,12 @@ export const buildGenesisRecord = async (
  * prevOutputCommitment is set to the previous stage's outputCommitment,
  * creating the chain binding: this stage's input MUST equal the previous
  * stage's output.
+ *
+ * `wasmBytes` is the `lemma_transform_bg.wasm` binary, supplied by the
+ * caller (Node: fs.readFile, browser: fetch).
  */
 export const buildChainedRecord = async (
+  wasmBytes: Uint8Array,
   transformFn: TransformFn,
   transformCode: Uint8Array,
   inputBytes: Uint8Array,
@@ -202,6 +192,7 @@ export const buildChainedRecord = async (
 ): Promise<TransformProofInput> => {
   const outputBytes = await transformFn(inputBytes, args);
   return bindExecution(
+    wasmBytes,
     inputBytes,
     outputBytes,
     transformCode,

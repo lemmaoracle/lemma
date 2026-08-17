@@ -1,6 +1,7 @@
 /**
  * Tests for the transform runner and chain verification.
  */
+import { readFile } from "node:fs/promises";
 import { describe, it, expect } from "vitest";
 import {
   fileHash,
@@ -14,6 +15,14 @@ import {
 import type { ExecutionRecord } from "../src/index.js";
 
 const encoder = new TextEncoder();
+
+// The runner is environment-agnostic: the caller supplies the WASM binary.
+// Tests run in Node, so load it from the wasm-pack output directory.
+const wasmBytes = new Uint8Array(
+  await readFile(
+    new URL("../normalize/pkg/lemma_transform_bg.wasm", import.meta.url),
+  ),
+);
 
 describe("fileHash", () => {
   it("produces deterministic results for same input", () => {
@@ -94,6 +103,7 @@ describe("buildGenesisRecord", () => {
     const transformFn = (input: Uint8Array): Uint8Array =>
       new TextEncoder().encode(`transformed:${new TextDecoder().decode(input)}`);
     const result = await buildGenesisRecord(
+      wasmBytes,
       transformFn,
       encoder.encode("test-transform"),
       encoder.encode("input-data"),
@@ -117,6 +127,7 @@ describe("buildGenesisRecord", () => {
     const transformFn = (input: Uint8Array): Uint8Array =>
       new TextEncoder().encode(`out:${new TextDecoder().decode(input)}`);
     const result = await buildGenesisRecord(
+      wasmBytes,
       transformFn,
       encoder.encode("t"),
       inputBytes,
@@ -135,6 +146,7 @@ describe("buildChainedRecord", () => {
     const transformFn = (input: Uint8Array): Uint8Array =>
       new TextEncoder().encode("output");
     const result = await buildChainedRecord(
+      wasmBytes,
       transformFn,
       encoder.encode("t"),
       encoder.encode("input"),
