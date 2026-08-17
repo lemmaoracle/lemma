@@ -17,10 +17,38 @@ export type SchemaDef<Raw, Norm> = Readonly<{
 export const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 
 /**
- * Convert an IPFS URI to an HTTP gateway URL; pass HTTPS URLs through unchanged.
+ * IPFS gateways tried in order for ipfs:// artifact resolution.
+ * Pinata is first because Lemma's normalize artifacts are uploaded via Pinata,
+ * so its gateway is the origin and avoids cross-gateway propagation delay.
+ * ipfs.io / dweb.link follow as fallbacks (mirrors the prover's gateway list).
  */
-const resolveArtifactUrl = (url: string): string =>
-  url.startsWith("ipfs://") ? `${IPFS_GATEWAY}${url.slice("ipfs://".length)}` : url;
+const IPFS_GATEWAYS: ReadonlyArray<string> = [
+  "https://gateway.pinata.cloud/ipfs/",
+  "https://ipfs.io/ipfs/",
+  "https://dweb.link/ipfs/",
+  "https://trustless-gateway.link/ipfs/",
+];
+
+/**
+ * Fetch an artifact URL (ipfs:// or https://), with gateway fallback for
+ * ipfs:// URLs. https:// URLs are passed through to a single fetch.
+ */
+const fetchArtifact = (url: string): Promise<Response> => {
+  if (!url.startsWith("ipfs://")) {
+    return fetch(url);
+  }
+  const cid = url.slice("ipfs://".length);
+  const gateways = [...IPFS_GATEWAYS];
+  const attempt = (index: number): Promise<Response> => {
+    const gateway = gateways[index];
+    return gateway === undefined
+      ? Promise.reject(
+          new Error(`Failed to fetch artifact from all IPFS gateways: ${url}`),
+        )
+      : fetch(`${gateway}${cid}`).then((res) => (res.ok ? res : attempt(index + 1)));
+  };
+  return attempt(0);
+};
 
 /**
  * Base64-encode a string in both Node.js and browser environments.
@@ -44,8 +72,7 @@ export const define = async <Raw, Norm>(schemaMeta: SchemaMeta): Promise<SchemaD
   const artifact = schemaMeta.normalize;
 
   // 1. Download WASM binary (supports both ipfs:// and https://)
-  const resolvedWasmUrl = resolveArtifactUrl(artifact.artifact.wasm);
-  const response = await fetch(resolvedWasmUrl);
+  const response = await fetchArtifact(artifact.artifact.wasm);
   return !response.ok
     ? Promise.reject(new Error(`Failed to download WASM from ${artifact.artifact.wasm}: ${String(response.status)}`))
     : response.arrayBuffer().then((wasmBuffer) => {
@@ -63,8 +90,7 @@ export const define = async <Raw, Norm>(schemaMeta: SchemaMeta): Promise<SchemaD
             ? Promise.reject(new Error(`WASM hash mismatch: expected ${artifact.hash}, got ${computedHash}`))
             : (async () => {
                 // 4. Fetch JS shim source, then dynamic-import via data: URI.
-                const resolvedJsUrl = resolveArtifactUrl(artifact.artifact.js);
-                const jsResponse = await fetch(resolvedJsUrl);
+                const jsResponse = await fetchArtifact(artifact.artifact.js);
                 return !jsResponse.ok
                   ? Promise.reject(new Error(
                       `Failed to download JS shim from ${artifact.artifact.js}: ${String(jsResponse.status)}`,
