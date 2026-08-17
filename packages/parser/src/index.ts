@@ -188,8 +188,7 @@ JSON output:`;
 
     const MAX_ATTEMPTS = 2;
 
-    // eslint-disable-next-line functional/no-loop-statements, functional/no-let -- retry loop with early return
-    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    const attemptParse = async (attempt: number): Promise<ParsedQuery> => {
       const output: TextGenerationResult = await generator(prompt, {
         max_new_tokens: 512,
         temperature: 0,
@@ -212,19 +211,17 @@ JSON output:`;
 
         return parsed as ParsedQuery;
       } catch (e) {
-        // eslint-disable-next-line functional/no-conditional-statements -- retry guard
-        if (attempt === MAX_ATTEMPTS - 1) {
-          return Promise.reject(
-            new Error(
-              `Failed to parse LLM response as valid query JSON after ${String(MAX_ATTEMPTS)} attempts: ${(e as Error).message}`,
-            ),
-          );
-        }
+        return attempt >= MAX_ATTEMPTS - 1
+          ? Promise.reject(
+              new Error(
+                `Failed to parse LLM response as valid query JSON after ${String(MAX_ATTEMPTS)} attempts: ${(e as Error).message}`,
+              ),
+            )
+          : attemptParse(attempt + 1);
       }
-    }
+    };
 
-    // Unreachable, but TypeScript needs it
-    return Promise.reject(new Error("Unexpected: exhausted all parse attempts"));
+    return attemptParse(0);
   };
 
   const cleanup = async (_placeholder?: undefined): Promise<void> =>
