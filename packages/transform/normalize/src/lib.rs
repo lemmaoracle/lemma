@@ -2,6 +2,11 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 use wasm_bindgen::prelude::*;
 
+mod poseidon_constants;
+
+pub mod binding;
+pub use binding::bind;
+
 // ── Input type: raw ExecutionRecord ──────────────────────────────────
 
 /// Raw execution record as produced by the transform runner.
