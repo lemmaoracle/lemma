@@ -593,9 +593,6 @@ importers:
 
   packages/transform:
     dependencies:
-      '@lemmaoracle/canonical-sort':
-        specifier: workspace:*
-        version: link:../canonical-sort
       '@lemmaoracle/content':
         specifier: workspace:*
         version: link:../content
