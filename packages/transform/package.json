@@ -1,0 +1,44 @@
+{
+  "name": "@lemmaoracle/transform",
+  "version": "0.1.0",
+  "description": "Transform — ZK circuit for verifiable file transformation execution proof with infinite-depth chaining.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:circuit": "cd circuits && bash scripts/build.sh",
+    "test": "vitest run",
+    "type-check": "tsc -p tsconfig.json --noEmit"
+  },
+  "keywords": [
+    "lemma",
+    "transform",
+    "zk",
+    "circuit",
+    "execution-proof"
+  ],
+  "author": "Lemma Oracle",
+  "license": "MIT",
+  "dependencies": {
+    "@lemmaoracle/content": "workspace:*",
+    "@lemmaoracle/sdk": "workspace:*",
+    "@noble/hashes": "^1.7.0",
+    "@types/node": "^26.2.0",
+    "poseidon-lite": "^0.3.0",
+    "snarkjs": "^0.7.6"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.0",
+    "vitest": "^3.0.0"
+  }
+}
