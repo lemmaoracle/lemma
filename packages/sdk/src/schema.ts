@@ -33,11 +33,7 @@ const IPFS_GATEWAYS: ReadonlyArray<string> = [
  * Fetch an artifact URL (ipfs:// or https://), with gateway fallback for
  * ipfs:// URLs. https:// URLs are passed through to a single fetch.
  */
-const fetchArtifact = (url: string): Promise<Response> => {
-  if (!url.startsWith("ipfs://")) {
-    return fetch(url);
-  }
-  const cid = url.slice("ipfs://".length);
+const fetchViaGateways = (cid: string, url: string): Promise<Response> => {
   const gateways = [...IPFS_GATEWAYS];
   const attempt = (index: number): Promise<Response> => {
     const gateway = gateways[index];
@@ -49,6 +45,11 @@ const fetchArtifact = (url: string): Promise<Response> => {
   };
   return attempt(0);
 };
+
+const fetchArtifact = (url: string): Promise<Response> =>
+  url.startsWith("ipfs://")
+    ? fetchViaGateways(url.slice("ipfs://".length), url)
+    : fetch(url);
 
 /**
  * Base64-encode a string in both Node.js and browser environments.
