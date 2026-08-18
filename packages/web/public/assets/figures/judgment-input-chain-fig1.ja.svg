@@ -1,0 +1,47 @@
+<svg viewBox="0 0 760 348" width="760" height="348" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig1title fig1desc">
+<title id="fig1title">図1 入力の記録と判断の記録の関係</title>
+<desc id="fig1desc">左に入力の記録として公式発表とセンサー値、中央に判断の記録があり、その中に判断の内容と参照した入力が含まれる。右に確認する側。記録時に入力が判断へ埋め込まれ、確認する側は判断から入力へ遡って辿る。</desc>
+<defs>
+<style>
+.t{font-family:"Space Grotesk","Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif}
+.lbl{font-family:"Space Grotesk","Noto Sans JP","Hiragino Sans",sans-serif;font-size:11px;letter-spacing:1.05px;fill:#5c6156}
+</style>
+<marker id="ah" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#5c6156"/></marker>
+<marker id="ah2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#6f9c00"/></marker>
+</defs>
+<rect x="0" y="0" width="760" height="348" fill="#fcfaf5"/>
+
+<text class="lbl" x="105" y="34" text-anchor="middle">入力の記録</text>
+<rect x="20" y="48" width="170" height="52" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
+<text class="t" x="105" y="72" text-anchor="middle" font-size="13" fill="#12140e">公式発表</text>
+<text class="t" x="105" y="90" text-anchor="middle" font-size="11" fill="#5c6156">取り込み時に登録</text>
+<rect x="20" y="112" width="170" height="52" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
+<text class="t" x="105" y="136" text-anchor="middle" font-size="13" fill="#12140e">センサー値</text>
+<text class="t" x="105" y="154" text-anchor="middle" font-size="11" fill="#5c6156">ハッシュ値を併記</text>
+
+<text class="lbl" x="400" y="34" text-anchor="middle">判断の記録</text>
+<rect x="290" y="48" width="220" height="116" rx="3" fill="#ebefe6" stroke="#6f9c00" stroke-width="1.5"/>
+<rect x="290" y="48" width="220" height="4" fill="#a8e010"/>
+<rect x="306" y="66" width="188" height="40" rx="2" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
+<text class="t" x="400" y="90" text-anchor="middle" font-size="13" fill="#12140e">判断の内容</text>
+<rect x="306" y="112" width="188" height="40" rx="2" fill="#ffffff" stroke="#6f9c00" stroke-width="1" stroke-dasharray="3 2"/>
+<text class="t" x="400" y="136" text-anchor="middle" font-size="13" fill="#4e7a00">参照した入力</text>
+
+<text class="lbl" x="655" y="34" text-anchor="middle">確認する側</text>
+<rect x="580" y="48" width="150" height="116" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
+<text class="t" x="655" y="99" text-anchor="middle" font-size="13" fill="#12140e">監査・経緯報告</text>
+<text class="t" x="655" y="119" text-anchor="middle" font-size="13" fill="#12140e">委託元・監督官庁</text>
+
+<line x1="196" y1="106" x2="282" y2="106" stroke="#5c6156" stroke-width="1.5" marker-end="url(#ah)"/>
+<text class="t" x="239" y="98" text-anchor="middle" font-size="11" fill="#5c6156">記録時に</text>
+<text class="t" x="239" y="124" text-anchor="middle" font-size="11" fill="#5c6156">埋め込む</text>
+
+<path d="M655 176 L655 216 L105 216 L105 178" fill="none" stroke="#6f9c00" stroke-width="1.5" marker-end="url(#ah2)"/>
+<line x1="400" y1="176" x2="400" y2="216" stroke="#6f9c00" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="328" y="206" width="144" height="20" fill="#fcfaf5"/>
+<text class="t" x="400" y="221" text-anchor="middle" font-size="12" fill="#4e7a00">あとから遡って辿る</text>
+
+<line x1="20" y1="262" x2="740" y2="262" stroke="#a8e010" stroke-width="2"/>
+<text class="t" x="20" y="288" font-size="11" fill="#5c6156">判断が確定した時点で、参照した入力ごと1件の記録として登録します。</text>
+<text class="t" x="20" y="308" font-size="11" fill="#5c6156">確認する側は、判断の記録を起点に、そのとき見ていた入力まで遡れます。</text>
+</svg>
