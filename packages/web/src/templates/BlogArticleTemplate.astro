@@ -1195,6 +1195,16 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
       overflow-x: auto;
       font-size: 12.5px;
     }
+    /* 図版（記事本文の <figure class="figure--diagram">）。幅に合わせて縮めると
+       図中の 11px の文字が判読できなくなるため、表と同じく横スクロールに逃がす。 */
+    .blog-body :global(figure.figure--diagram) {
+      overflow-x: auto;
+    }
+    .blog-body :global(figure.figure--diagram img) {
+      width: auto;
+      max-width: none;
+      min-width: 620px;
+    }
     .blog-body :global(th),
     .blog-body :global(td) {
       padding: 10px 11px;
