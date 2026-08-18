@@ -23,7 +23,7 @@
     "build:circuit": "cd circuits && npm run build",
     "build:all": "tsc -p tsconfig.json && ./scripts/build-wasm.sh && cd circuits && npm run build",
     "type-check": "tsc --noEmit",
-    "test": "cargo test --manifest-path normalize/Cargo.toml",
+    "test": "cargo test --manifest-path normalize/Cargo.toml && vitest run",
     "test:ts": "vitest run",
     "test:circuit": "cd circuits && npx vitest run",
     "register:schema": "tsx scripts/register-schema.ts",
