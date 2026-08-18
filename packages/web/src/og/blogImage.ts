@@ -19,7 +19,7 @@
  * resvg 側にフォントは要らない）、返ってきた SVG の `<svg>` 直後に絵を差し
  * 込む。先に入れたものが下に来るので、絵→ロゴ→文字の重なりになる。
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
@@ -107,12 +107,23 @@ const LOGO_SCALE = LOGO_INK_HEIGHT / (LOGO_INK.y2 - LOGO_INK.y1);
 const LOGO_X = COVER_WIDTH - SIDE_PAD - LOGO_INK.x2 * LOGO_SCALE;
 const LOGO_Y = LOGO_INK_TOP - LOGO_INK.y1 * LOGO_SCALE;
 
-const logoSvg = (light: boolean): string =>
-  `<g transform="translate(${LOGO_X.toFixed(1)},${LOGO_Y.toFixed(1)}) scale(${LOGO_SCALE.toFixed(4)})" fill="${inkFor(light)}">` +
+const logoPaths = (fill: string): string =>
+  `<g transform="translate(${LOGO_X.toFixed(1)},${LOGO_Y.toFixed(1)}) scale(${LOGO_SCALE.toFixed(4)})" fill="${fill}">` +
   LEMMA_LOGO_PATHS.map((d) => `<path d="${d}"/>`).join("") +
   "</g>";
 
-const textNode = (category: string, title: string, light: boolean): unknown => ({
+const logoSvg = (light: boolean): string => logoPaths(inkFor(light));
+
+/**
+ * 写真の上のワードマーク。空のように明るい場所に白を置くと読めないので、
+ * 同じ字形を暗色でぼかして下に敷く（太らせてから blur）。
+ */
+const logoHaloSvg = (): string =>
+  '<defs><filter id="og-logo-halo" x="-50%" y="-50%" width="200%" height="200%">' +
+  '<feGaussianBlur stdDeviation="9"/></filter></defs>' +
+  `<g filter="url(#og-logo-halo)" opacity=".95" stroke="#0A0E0B" stroke-width="9">${logoPaths("#0A0E0B")}</g>`;
+
+const textNode = (category: string, title: string, light: boolean, shadow: boolean): unknown => ({
   type: "div",
   props: {
     style: {
@@ -133,6 +144,7 @@ const textNode = (category: string, title: string, light: boolean): unknown => (
             fontSize: LABEL_SIZE,
             letterSpacing: LABEL_TRACKING,
             color: limeFor(light),
+            ...(shadow ? { textShadow: PHOTO_TEXT_SHADOW } : {}),
             marginBottom: 20,
           },
           children: category.toUpperCase(),
@@ -148,6 +160,7 @@ const textNode = (category: string, title: string, light: boolean): unknown => (
             fontSize: TITLE_SIZE,
             lineHeight: TITLE_LINE_HEIGHT,
             color: inkFor(light),
+            ...(shadow ? { textShadow: PHOTO_TEXT_SHADOW } : {}),
             lineClamp: TITLE_MAX_LINES,
           },
           children: title,
@@ -184,18 +197,33 @@ const VEIL = { x1: 771, y1: -156, x2: 429, y2: 786 } as const;
 
 /**
  * ライムの走査線。ページ側は高さ 62% だが、OGP は下半分がタイトルなので
- * そこに引くと取り消し線に見える。文字に触れない上側へ移す。
+ * そこに引くと取り消し線に見える。文字に触れない上側へ移す。太さはページの
+ * 2px を 1200px 幅に合わせて 3px に（生成カバーの縦線と同じ太さ）。
  */
 const SCAN_TOP = COVER_HEIGHT * 0.26;
 const SCAN_HEIGHT = 3;
 
 /**
- * 写真の上に置く文字を読ませるためのスクリム。ページ側のヴェールだけでは、
- * 明るい空のような写真でタイトルとカテゴリラベルが沈む。高さの 42% から
- * 下を暗く落とす（生成カバーの scrim より強い）。
+ * 写真の上に置く文字を読ませるためのスクリム。ページ側のヴェールだけでは
+ * 足りない——ヴェールは 200deg で右上がいちばん薄く（不透明度 .06）、明るい
+ * 空や外壁の写真だと、右上のワードマークと左のカテゴリラベルが沈む。
+ *
+ * 下は高さ 28% から、上は 150px の帯で落とす。それでも明るい空の写真では
+ * 3:1 に届かないが、そこまでスクリムを強めると写真が黒い板になる。スクリムは
+ * 「写真を残したまま沈める」ところまでにして、可読性は文字側の影
+ * （`PHOTO_TEXT_SHADOW` とワードマークのハロー）で担保する。
  */
-const PHOTO_SCRIM_TOP = COVER_HEIGHT * 0.3;
-const PHOTO_SCRIM_OPACITY = 0.85;
+const PHOTO_SCRIM_TOP = COVER_HEIGHT * 0.28;
+const PHOTO_SCRIM_OPACITY = 0.82;
+const PHOTO_TOP_SCRIM_HEIGHT = 150;
+const PHOTO_TOP_SCRIM_OPACITY = 0.42;
+
+/**
+ * 文字とワードマークの影。スクリムだけで写真を 3:1 まで沈めると、写真が
+ * ほぼ黒い板になってしまう。写真は明るいまま残し、文字側に影を持たせる
+ * ——文字は satori の `textShadow`、ワードマークは下に暗いぼかしを敷く。
+ */
+const PHOTO_TEXT_SHADOW = "0 2px 20px rgba(10,14,11,.96), 0 1px 4px rgba(10,14,11,.92)";
 
 /**
  * カバー写真を OGP の絵として返す。写真を持たない記事は `undefined`。
@@ -206,7 +234,13 @@ const PHOTO_SCRIM_OPACITY = 0.85;
 const photoArtwork = (post: BlogPost): string | undefined => {
   const src = resolveCoverImage(post);
   if (src === undefined) return undefined;
-  const jpeg = readFileSync(join(PUBLIC_DIR, src)).toString("base64");
+  // 起点の取り方が `lib/coverPhoto.ts`（import.meta.url）と違うので、ここでも
+  // 実在を見てから読む。取り違えても生成カバーに落ちるだけで、ビルドは落ちない。
+  const file = join(PUBLIC_DIR, src);
+  if (!existsSync(file)) return undefined;
+  // 現状の入稿は全て JPEG だが、PNG を置かれたときに黙って壊れないよう拡張子で見る。
+  const mime = src.toLowerCase().endsWith(".png") ? "image/png" : "image/jpeg";
+  const data = readFileSync(file).toString("base64");
   const w = String(COVER_WIDTH);
   const h = String(COVER_HEIGHT);
   return [
@@ -226,14 +260,19 @@ const photoArtwork = (post: BlogPost): string | undefined => {
     "</linearGradient>",
     '<linearGradient id="og-scrim" x1="0" y1="0" x2="0" y2="1">',
     '<stop offset="0" stop-color="#141A16" stop-opacity="0"/>',
-    '<stop offset=".35" stop-color="#141A16" stop-opacity=".38"/>',
-    '<stop offset=".7" stop-color="#141A16" stop-opacity=".72"/>',
+    '<stop offset=".3" stop-color="#141A16" stop-opacity=".5"/>',
+    '<stop offset=".65" stop-color="#141A16" stop-opacity=".78"/>',
     `<stop offset="1" stop-color="#141A16" stop-opacity="${String(PHOTO_SCRIM_OPACITY)}"/>`,
     "</linearGradient>",
+    '<linearGradient id="og-top" x1="0" y1="0" x2="0" y2="1">',
+    `<stop offset="0" stop-color="#141A16" stop-opacity="${String(PHOTO_TOP_SCRIM_OPACITY)}"/>`,
+    '<stop offset="1" stop-color="#141A16" stop-opacity="0"/>',
+    "</linearGradient>",
     "</defs>",
-    `<image href="data:image/jpeg;base64,${jpeg}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" filter="url(#og-grade)"/>`,
+    `<image href="data:${mime};base64,${data}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" filter="url(#og-grade)"/>`,
     `<rect width="${w}" height="${h}" fill="url(#og-veil)"/>`,
     `<rect y="${String(SCAN_TOP)}" width="${w}" height="${String(SCAN_HEIGHT)}" fill="${LIME}" opacity=".85"/>`,
+    `<rect width="${w}" height="${String(PHOTO_TOP_SCRIM_HEIGHT)}" fill="url(#og-top)"/>`,
     `<rect y="${String(PHOTO_SCRIM_TOP)}" width="${w}" height="${String(COVER_HEIGHT - PHOTO_SCRIM_TOP)}" fill="url(#og-scrim)"/>`,
   ].join("");
 };
@@ -243,15 +282,18 @@ export async function renderBlogOg(post: BlogPost): Promise<Buffer> {
   // 写真はヴェールとスクリムで暗くなるので、明地カバーの文字色は使わない。
   const light = photo === undefined && isLightCover(post.category);
   const textSvg = await satori(
-    textNode(post.category, post.ogTitle ?? post.title, light) as Parameters<typeof satori>[0],
+    textNode(post.category, post.ogTitle ?? post.title, light, photo !== undefined) as Parameters<
+      typeof satori
+    >[0],
     { width: COVER_WIDTH, height: COVER_HEIGHT, fonts: FONTS },
   );
   const artwork =
-    (photo ??
-      coverArtwork(post.category, post.slug, {
-        blockOpacity: OG_BLOCK_OPACITY,
-        bottomScrim: true,
-      })) + logoSvg(light);
+    photo === undefined
+      ? coverArtwork(post.category, post.slug, {
+          blockOpacity: OG_BLOCK_OPACITY,
+          bottomScrim: true,
+        }) + logoSvg(light)
+      : photo + logoHaloSvg() + logoSvg(false);
   // satori が返す SVG の開き `<svg …>` の直後へ差し込む（＝文字の下に来る）。
   const svg = textSvg.replace(/<svg[^>]*>/, (open) => open + artwork);
   return new Resvg(svg, { fitTo: { mode: "width", value: COVER_WIDTH } }).render().asPng();
