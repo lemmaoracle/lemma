@@ -1,6 +1,7 @@
 /**
  * Tests for the transform runner and chain verification.
  */
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { describe, it, expect } from "vitest";
 import {
@@ -18,11 +19,30 @@ const encoder = new TextEncoder();
 
 // The runner is environment-agnostic: the caller supplies the WASM binary.
 // Tests run in Node, so load it from the wasm-pack output directory.
-const wasmBytes = new Uint8Array(
-  await readFile(
-    new URL("../normalize/pkg/lemma_transform_bg.wasm", import.meta.url),
-  ),
+//
+// That directory only exists after `pnpm build:normalize` (rust + wasm-pack).
+// CI's `test` job is deliberately TypeScript-only and sets up neither — the
+// same reason `passthrough` is excluded from its build step. So the WASM is
+// optional here: the suites that need it are skipped when it is absent, and
+// the rest of the file (hashing, commitments, chain verification) still runs.
+// Run `pnpm --filter @lemmaoracle/transform build:normalize` to exercise them.
+const wasmUrl = new URL(
+  "../normalize/pkg/lemma_transform_bg.wasm",
+  import.meta.url,
 );
+const wasmBytes = existsSync(wasmUrl)
+  ? new Uint8Array(await readFile(wasmUrl))
+  : undefined;
+
+/** WASM がある環境でだけ走る describe。 */
+const describeWithWasm = wasmBytes === undefined ? describe.skip : describe;
+
+if (wasmBytes === undefined) {
+  console.warn(
+    "[transform] normalize/pkg/lemma_transform_bg.wasm not found — " +
+      "skipping the runner suites. Build it with `pnpm build:normalize`.",
+  );
+}
 
 describe("fileHash", () => {
   it("produces deterministic results for same input", () => {
@@ -98,12 +118,12 @@ describe("computeArgsHash", () => {
   });
 });
 
-describe("buildGenesisRecord", () => {
+describeWithWasm("buildGenesisRecord", () => {
   it("sets prevOutputCommitment = inputCommitment for genesis", async () => {
     const transformFn = (input: Uint8Array): Uint8Array =>
       new TextEncoder().encode(`transformed:${new TextDecoder().decode(input)}`);
     const result = await buildGenesisRecord(
-      wasmBytes,
+      wasmBytes as Uint8Array,
       transformFn,
       encoder.encode("test-transform"),
       encoder.encode("input-data"),
@@ -127,7 +147,7 @@ describe("buildGenesisRecord", () => {
     const transformFn = (input: Uint8Array): Uint8Array =>
       new TextEncoder().encode(`out:${new TextDecoder().decode(input)}`);
     const result = await buildGenesisRecord(
-      wasmBytes,
+      wasmBytes as Uint8Array,
       transformFn,
       encoder.encode("t"),
       inputBytes,
@@ -140,13 +160,13 @@ describe("buildGenesisRecord", () => {
   });
 });
 
-describe("buildChainedRecord", () => {
+describeWithWasm("buildChainedRecord", () => {
   it("sets prevOutputCommitment to the provided previous output", async () => {
     const prevOutputCommitment = "12345678901234567890";
     const transformFn = (input: Uint8Array): Uint8Array =>
       new TextEncoder().encode("output");
     const result = await buildChainedRecord(
-      wasmBytes,
+      wasmBytes as Uint8Array,
       transformFn,
       encoder.encode("t"),
       encoder.encode("input"),
