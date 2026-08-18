@@ -1195,21 +1195,27 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
       overflow-x: auto;
       font-size: 12.5px;
     }
-    /* 図版（記事本文の <figure class="figure--diagram">）。幅に合わせて縮めると
-       図中の 11px の文字が判読できなくなるため、表と同じく横スクロールに逃がす。 */
+    .blog-body :global(th),
+    .blog-body :global(td) {
+      padding: 10px 11px;
+    }
+  }
+  /* 図版（記事本文の <figure class="figure--diagram">）。本文カラムは viewport
+     864px 以上で 760px に固定され、それ未満では縮む。図を一緒に縮めると図中の
+     11px の文字が判読できなくなるため、カラムが図より狭くなる幅からは表と同じく
+     横スクロールに逃がし、図は原寸のまま置く。 */
+  @media (max-width: 863px) {
     .blog-body :global(figure.figure--diagram) {
       overflow-x: auto;
     }
     .blog-body :global(figure.figure--diagram img) {
       width: auto;
       max-width: none;
-      min-width: 620px;
-    }
-    .blog-body :global(th),
-    .blog-body :global(td) {
-      padding: 10px 11px;
+      /* overflow コンテナ内では影が切れるため、原寸表示のときは外す */
+      box-shadow: none;
     }
   }
+
   @media (max-width: 540px) {
     .related-item {
       flex-direction: column;
