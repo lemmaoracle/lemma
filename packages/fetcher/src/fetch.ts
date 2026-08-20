@@ -14,11 +14,8 @@
  * data-commitment-v1.1 is registered as a circuit with the Lemma API.
  * Both are resolved at runtime via the SDK, so this package has no
  * dependency on @lemmaoracle/canonical-sort or @lemmaoracle/data-commitment.
- *
- * imperative: uses SDK types that eslint's projectService cannot resolve
- * across workspace packages — no functional alternative.
  */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */
+
 import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
 import type { Json, CommitResult } from "@lemmaoracle/sdk";
 
