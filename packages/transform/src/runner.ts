@@ -23,7 +23,7 @@
  * (Node: fs.readFile, browser: fetch) — this module never touches the
  * filesystem or any other Node-only API.
  */
-import { sha256 } from "@noble/hashes/sha256";
+import { sha256 } from "@noble/hashes/sha2";
 import { poseidon1, poseidon2 } from "poseidon-lite";
 import {
   bytesToFieldElements,
@@ -209,22 +209,18 @@ export const buildChainedRecord = async (
  *   records[n].prevOutputCommitment === records[n-1].outputCommitment  (chain)
  */
 export const verifyChain = (records: readonly ExecutionRecord[]): boolean => {
-  if (records.length === 0) return false;
-
-  // Genesis: prevOutputCommitment must equal inputCommitment
-  const genesis = records[0];
-  if (!genesis || genesis.prevOutputCommitment !== genesis.inputCommitment) {
-    return false;
-  }
-
-  // Chain: each stage's prev must equal previous stage's output
-  for (let i = 1; i < records.length; i++) {
-    const prev = records[i - 1];
-    const curr = records[i];
-    if (!prev || !curr || curr.prevOutputCommitment !== prev.outputCommitment) {
-      return false;
-    }
-  }
-
-  return true;
+  const first = records.at(0);
+  return (
+    first !== undefined &&
+    first.prevOutputCommitment === first.inputCommitment &&
+    records
+      .slice(1)
+      .every((record, i) => {
+        const prev = records.at(i);
+        return (
+          prev !== undefined &&
+          record.prevOutputCommitment === prev.outputCommitment
+        );
+      })
+  );
 };

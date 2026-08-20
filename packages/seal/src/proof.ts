@@ -10,11 +10,8 @@
  * Both prove and verify delegate to `@lemmaoracle/sdk`, which handles
  * circuit artifact resolution and snarkjs orchestration. The vkey for
  * verification is resolved internally from the bundled JSON.
- *
- * imperative: uses SDK types that eslint's projectService cannot resolve
- * across workspace packages — no functional alternative.
  */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
+
 import { create, prover, verifier } from "@lemmaoracle/sdk";
 import type { LemmaClient } from "@lemmaoracle/sdk";
 import { secretToBits } from "./bits.js";
