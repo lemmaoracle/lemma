@@ -9,6 +9,7 @@
  */
 import type { CollectionEntry } from "astro:content";
 import type { Locale } from "../i18n/translations";
+import { briefsCategoryHref } from "../data/briefIndex";
 import {
   categoryLabel,
   type CategorySlug,
@@ -51,8 +52,8 @@ const {
   publishedStr,
 } = Astro.props as BriefHeroProps;
 
-const categoryHref = (slug: string) =>
-  `${base}/critical/briefs/?category=${slug}`;
+// 絞り込みの受け口は一覧トップではなくアーカイブ側（briefIndex.ts）。
+const categoryHref = (slug: string) => briefsCategoryHref(base, slug);
 
 const primarySlug = brief.data.primary_category as CategorySlug;
 const primaryCatLabel = categoryLabel(primarySlug, locale);

@@ -5,24 +5,38 @@
  * モック `lemma_brief_index_mock_v5.html` の面
  * （`Lemma_コンテンツテンプレート_実装指示_v1_2026-07-30.md` §4）。
  *
- * 構成: ヒーロー（h1／リード／RSS・メソドロジー・ニュースレター）→
- * 脅威タイプで探す（最上部・2列。ラインアイコン＋名称＋件数の横バー＋件数、
- * 先頭に「すべて 109」のピル）→ よく見られている（2列・1行クランプ）→
- * すべての Brief（見出し行の右端に虫眼鏡の検索）→ 月見出し＋2列カード。
+ * 在庫が 130 本を超えたため、2026-08-21 から**面を2つに割った**。同じ
+ * テンプレートを `variant` で切り替える（カード・トークン・CSS を1本に保つ）。
+ *
+ *   variant="latest"（既定・`/critical/briefs/`）
+ *     ヒーロー → 脅威タイプで探す（アーカイブへのリンク）→ よく見られている
+ *     → **最新 LATEST_COUNT 本をフラットに**（月見出しなし・タイトル一段大きく・
+ *     カード間の余白を広げる）→「すべての Brief を見る（全 N 本）」→
+ *     ニュースレター。全件はここには出さない。
+ *
+ *   variant="archive"（`/critical/briefs/archive/`）
+ *     旧一覧の月別 UI をそのまま移設。戻り導線 → 脅威タイプで探す（絞り込み
+ *     ボタン）→ すべての Brief（右端に虫眼鏡の検索）→ 月見出し＋2列カード。
  *
  * やらないこと（§4.3）: カバー画像／冒頭の統計パネル／「読み方」ブロック。
  *
- * 「すべての Brief」は SSR では全109件を出し（SEO と no-JS フォールバック、
- * §4.4）、表示はクライアント側で PAGE_SIZE 件ずつの**ページ送り**にする
- * （2026-07-30 レビューでの指示）。月見出しの件数はフィルタ後の月内総数、
- * 月の表示はそのページに1件でもあるかで決める——ページを跨ぐ月は次ページ
- * でも同じ見出しで続く。
+ * アーカイブは SSR で全件を出し（SEO と no-JS フォールバック、§4.4）、表示だけ
+ * クライアント側で PAGE_SIZE 件ずつの**ページ送り**にする（2026-07-30 レビュー
+ * での指示）。月見出しの件数はフィルタ後の月内総数、月の表示はそのページに
+ * 1件でもあるかで決める——ページを跨ぐ月は次ページでも同じ見出しで続く。
  *
  * フィルタ・検索はクライアント側の progressive enhancement で、従来どおり
  * URL パラメータ（?category=<slug> / ?pillar=p1..p4 / ?q=<keyword>）を
  * 読み書きする——Brief 記事のタグや柱ページからの deep link を壊さない。
- * 旧デザインのソート／密度切替は、月見出しの時系列一覧に役割を吸収された
- * ので持たない。
+ * ただし**受け口はアーカイブ側**に移ったので、トップに旧クエリ付きで来た
+ * 訪問者はアーカイブへ送る（`briefIndex.ts` 参照）。旧デザインのソート／
+ * 密度切替は、月見出しの時系列一覧に役割を吸収されたので持たない。
+ *
+ * 並び順は **published（＝カードに出る日付）の降順**。`incident_date` は
+ * 事案の発生日で、公開日と 124/133 本でずれる（例: No.126 は 2024-10-02）。
+ * 事案日で並べるとカード上の日付と一致せず一覧が乱れて見えるので、表示日で
+ * 並べる。番号が前後する（6月に 42/61 が混じる等）のは欠番と再編集の結果で、
+ * 日付順が主というのが仕様。
  */
 import { getCollection, type CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
@@ -36,17 +50,30 @@ import {
 } from "../data/criticalBriefs";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 import { POPULAR_BRIEF_SLUGS } from "../data/popularBriefs";
+import {
+  LATEST_COUNT,
+  briefsArchiveHref,
+  briefsIndexHref,
+  briefsCategoryHref,
+} from "../data/briefIndex";
 import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 
 export interface BriefIndexTemplateProps {
   locale: Locale;
+  /** "latest" = 一覧トップ（既定） / "archive" = 全件の月別アーカイブ */
+  variant?: "latest" | "archive";
 }
 
-const { locale } = Astro.props as BriefIndexTemplateProps;
+const { locale, variant = "latest" } = Astro.props as BriefIndexTemplateProps;
 const t = getTranslations(locale);
 const isJa = locale === "ja";
+const isArchive = variant === "archive";
 const base = isJa ? "/ja" : "";
-const pagePath = "/critical/briefs/";
+const pagePath = isArchive
+  ? "/critical/briefs/archive/"
+  : "/critical/briefs/";
+const indexHref = briefsIndexHref(base);
+const archiveHref = briefsArchiveHref(base);
 
 const PILLAR_PARAM: Record<PillarSlug, string> = {
   "01-verifiable-origin": "p1",
@@ -98,6 +125,10 @@ for (const b of briefsByPublishedDesc) {
   group.briefs.push(b);
 }
 
+// 一覧トップに出す最新分（月見出しなしのフラットな新着順）。件数は
+// `briefIndex.ts` の LATEST_COUNT 1箇所で調整する。
+const latestBriefs = briefsByPublishedDesc.slice(0, LATEST_COUNT);
+
 // Manually-curated "most-read" ranking (src/data/popularBriefs.ts), resolved to
 // Brief entries in listed order; unknown slugs are dropped.
 const briefById = new Map(allBriefs.map((b) => [b.id, b]));
@@ -121,6 +152,15 @@ const sortedCategories = Array.from(categoryUsage.entries()).sort(
 const maxCategoryCount = sortedCategories[0]?.[1] ?? 1;
 
 const briefsCount = allBriefs.length;
+/**
+ * 通し番号は欠番があるので、公開実数（briefsCount）と最新番号は一致しない。
+ * 「全 133 本 / 最新 No.135」のように**分けて**出し、どちらかで他方を
+ * 代弁させない。
+ */
+const latestBriefNo = allBriefs.reduce(
+  (max, b) => Math.max(max, b.data.brief_no),
+  0,
+);
 
 /**
  * 脅威タイプの 16px ラインアイコン（モックのものをカテゴリ slug に対応）。
@@ -216,10 +256,18 @@ const labels = isJa
       countUnit: (n: number) => `${n} 件`,
       noResults: "該当する Brief が見つかりませんでした。",
       showAll: "すべて表示",
+      latest: "最新の Brief",
+      latestEn: `Latest · ${LATEST_COUNT}`,
+      seeAll: `すべての Brief を見る（全 ${briefsCount} 本）`,
+      backToLatest: "最新の Brief へ戻る",
+      archiveH1: "Brief アーカイブ",
+      archiveMeta: `全 ${briefsCount} 本 · 最新は No.${latestBriefNo} · 公開月順`,
       pageTitle:
         "Lemma Critical Brief — 脅威インテリジェンス × 信頼インフラ",
       description:
         "AI・暗号インフラ・サプライチェーン・規制属性領域の重大事案を Lemma が構造的に解析するリファレンス集。各 Brief は「検出と証明の落差」を明示し、リスク評価・規制対応・信頼インフラ設計に活用できる。",
+      archivePageTitle: `Brief アーカイブ（全 ${briefsCount} 本）— Lemma Critical Brief`,
+      archiveDescription: `Lemma Critical Brief の全 ${briefsCount} 本を公開月ごとに一覧。AI・暗号インフラ・サプライチェーン・規制属性領域の重大事案を、脅威タイプとキーワードで絞り込める。`,
     }
   : {
       eyebrow: "Lemma Critical Brief",
@@ -244,10 +292,18 @@ const labels = isJa
       countUnit: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
       noResults: "No Briefs matched your filters.",
       showAll: "Show all",
+      latest: "Latest Briefs",
+      latestEn: `Latest · ${LATEST_COUNT}`,
+      seeAll: `Browse all ${briefsCount} Briefs`,
+      backToLatest: "Back to the latest Briefs",
+      archiveH1: "Brief archive",
+      archiveMeta: `${briefsCount} Briefs · latest No.${latestBriefNo} · by month of publication`,
       pageTitle:
         "Lemma Critical Brief — threat intelligence × trust infrastructure",
       description:
         "A structured-incident-analysis reference from Lemma. Major incidents across AI, cryptographic infrastructure, supply chains, and regulated attributes — each Brief makes the gap between detection and proof explicit for risk assessment, regulatory response, and trust-infrastructure design.",
+      archivePageTitle: `Brief archive (all ${briefsCount}) — Lemma Critical Brief`,
+      archiveDescription: `All ${briefsCount} Lemma Critical Briefs, grouped by month of publication. Major incidents across AI, cryptographic infrastructure, supply chains, and regulated attributes — filter by threat type or search by keyword.`,
     };
 
 const rssHref = `${base}/critical/briefs/feed.xml`;
@@ -258,38 +314,64 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   locale={locale}
   metaType="page"
   pagePath={pagePath}
-  title={labels.pageTitle}
-  description={labels.description}
+  title={isArchive ? labels.archivePageTitle : labels.pageTitle}
+  description={isArchive ? labels.archiveDescription : labels.description}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
-  <main class="cb-page">
+  <main class="cb-page" data-variant={variant} data-archive-href={archiveHref}>
     <div class="cb-wrap">
-      <!-- Hero -->
-      <section class="cb-hero">
-        <div class="cb-kicker">{labels.eyebrow}</div>
-        <h1>{labels.h1Lead}<br />{labels.h1Accent}</h1>
-        <p>
-          {labels.descLead}<strong>{labels.descStrong}</strong>{labels.descEnd}
-        </p>
-        <div class="cb-acts">
-          <a href={rssHref}>{labels.rssLabel}</a>
-          <a href={methodologyHref}>{labels.methodologyLabel}</a>
-          <a href="#newsletter">{labels.newsletterLabel}</a>
-        </div>
-      </section>
+      {/* Hero — アーカイブ側は戻り導線つきの簡素版 */}
+      {isArchive ? (
+        <section class="cb-hero cb-hero--archive">
+          <a class="cb-back" href={indexHref}>
+            <span aria-hidden="true">←</span> {labels.backToLatest}
+          </a>
+          <h1>{labels.archiveH1}</h1>
+          <p class="cb-archive-meta">{labels.archiveMeta}</p>
+        </section>
+      ) : (
+        <section class="cb-hero">
+          <div class="cb-kicker">{labels.eyebrow}</div>
+          <h1>{labels.h1Lead}<br />{labels.h1Accent}</h1>
+          <p>
+            {labels.descLead}<strong>{labels.descStrong}</strong>{labels.descEnd}
+          </p>
+          <div class="cb-acts">
+            <a href={rssHref}>{labels.rssLabel}</a>
+            <a href={methodologyHref}>{labels.methodologyLabel}</a>
+            <a href="#newsletter">{labels.newsletterLabel}</a>
+          </div>
+        </section>
+      )}
 
-      <!-- 脅威タイプで探す（最上部・2列・件数の横バー） -->
-      <section aria-label={labels.threatTypes}>
-        <div class="cb-label">
-          <b>{labels.threatTypes}</b><span>{labels.threatTypesEn}</span>
-        </div>
-        <button type="button" class="cb-allpill is-active" data-cat="all">
-          {labels.allChip} <i>{briefsCount}</i>
-        </button>
+      {/* 脅威タイプで探す。
+          トップ = 2列・件数の横バー（アーカイブへのリンク）。
+          アーカイブ = 横並びの小さいチップ（絞り込みボタン）。同じ面が2枚続くと
+          「遷移した感じ」が出ないので、アーカイブ側は畳んで一覧を上に出す。 */}
+      <section aria-label={labels.threatTypes} class={isArchive ? "cb-threats--chips" : undefined}>
+        {!isArchive && (
+          <div class="cb-label">
+            <b>{labels.threatTypes}</b><span>{labels.threatTypesEn}</span>
+          </div>
+        )}
+        {isArchive ? (
+          <button type="button" class="cb-allpill is-active" data-cat="all">
+            {labels.allChip} <i>{briefsCount}</i>
+          </button>
+        ) : (
+          <a class="cb-allpill" href={archiveHref}>
+            {labels.allChip} <i>{briefsCount}</i>
+          </a>
+        )}
         <div class="cb-distwrap">
-          {sortedCategories.map(([cat, count]) => (
-            <button type="button" class="cb-dist" data-cat={cat}>
+          {sortedCategories.map(([cat, count]) => {
+            const Tag = isArchive ? "button" : "a";
+            const tagProps = isArchive
+              ? { type: "button" as const }
+              : { href: briefsCategoryHref(base, cat) };
+            return (
+            <Tag class="cb-dist" data-cat={cat} {...tagProps}>
               <span class="di">
                 <svg
                   viewBox="0 0 16 16"
@@ -307,13 +389,15 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
                 <i style={`width:${Math.round((count / maxCategoryCount) * 100)}%`}></i>
               </span>
               <span class="dc">{count}</span>
-            </button>
-          ))}
+            </Tag>
+            );
+          })}
         </div>
       </section>
 
-      {/* よく見られている: manually-curated ranking (popularBriefs.ts) */}
-      {popularBriefs.length > 0 && (
+      {/* よく見られている（トップのみ）: GA4 実測ベースのランキング。
+          並びは popularBriefs.ts 1ファイル、更新は scripts/refresh-popular-briefs.py。 */}
+      {!isArchive && popularBriefs.length > 0 && (
         <section aria-label={labels.popular}>
           <div class="cb-label">
             <b>{labels.popular}</b><span>{labels.popularEn}</span>
@@ -332,7 +416,38 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         </section>
       )}
 
-      <!-- すべての Brief（見出し行の右端に虫眼鏡の検索） -->
+      {/* 最新（トップのみ）— 月見出しなしのフラットな新着順・カードは拡大版。 */}
+      {!isArchive && (
+        <section aria-label={labels.latest}>
+          <div class="cb-label">
+            <b>{labels.latest}</b><span>{labels.latestEn}</span>
+          </div>
+          <div class="cb-bcdgrid cb-bcdgrid--lg">
+            {latestBriefs.map((b) => {
+              const c = briefCardData(b);
+              return (
+                <a href={c.href} class="cb-bcd cb-bcd--lg">
+                  <div class="cb-bcd-no">{c.briefNo}</div>
+                  <div>
+                    <div class="cb-bcd-t">{c.mainTitle}</div>
+                    <div class="cb-bcd-foot">
+                      <span class="cb-bcd-tag">{c.primaryCatLabel}</span>
+                      <span class="cb-bcd-d">{c.dateShort}</span>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+          <a class="cb-seeall" href={archiveHref}>
+            <span>{labels.seeAll}</span>
+            <span class="cb-seeall-arrow" aria-hidden="true">→</span>
+          </a>
+        </section>
+      )}
+
+      {/* すべての Brief（アーカイブのみ・見出し行の右端に虫眼鏡の検索） */}
+      {isArchive && (
       <section aria-label={labels.allBriefs}>
         <div class="cb-listhead">
           <b>{labels.allBriefs}</b>
@@ -404,6 +519,15 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
 
         <div class="cb-no-results" hidden>{labels.noResults}</div>
       </section>
+      )}
+
+      {/* アーカイブ末尾にも戻り導線（長い一覧を下まで見た人向け）。 */}
+      {isArchive && (
+        <a class="cb-seeall cb-seeall--back" href={indexHref}>
+          <span class="cb-seeall-arrow" aria-hidden="true">←</span>
+          <span>{labels.backToLatest}</span>
+        </a>
+      )}
 
       <section id="newsletter" class="cb-newsletter">
         <NewsletterEmbed locale={locale} placement="briefs-index" />
@@ -557,6 +681,13 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   }
 
   /* ─── 脅威タイプで探す ─── */
+  /* `.cb-allpill` / `.cb-dist` はトップでは <a>、アーカイブでは <button>。
+     どちらでも同じ見た目になるようリンクの既定を打ち消す。 */
+  .cb-allpill,
+  .cb-dist {
+    text-decoration: none;
+    color: inherit;
+  }
   .cb-allpill {
     display: inline-flex;
     align-items: center;
@@ -901,6 +1032,150 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     margin-left: auto;
   }
 
+  /* ─── 最新（トップ）: タイトルを一段大きく・カード間の余白を広げる ───
+     1タイトルが主役になる密度。既定 12 本で 2 列 × 6 行。 */
+  .cb-bcdgrid--lg {
+    gap: 22px 20px;
+  }
+  .cb-bcd--lg {
+    grid-template-columns: 72px 1fr;
+    padding: 24px 24px 22px;
+    border-radius: 14px;
+  }
+  .cb-bcd--lg .cb-bcd-no {
+    font-size: 34px;
+  }
+  .cb-bcd--lg .cb-bcd-t {
+    font-size: 16.5px;
+    line-height: 1.72;
+    letter-spacing: 0.01em;
+  }
+  .cb-bcd--lg .cb-bcd-foot {
+    margin-top: 16px;
+  }
+
+  /* 「すべての Brief を見る（全 N 本）」— セクション末尾の遷移。 */
+  .cb-seeall {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 26px 0 0;
+    padding: 11px 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    font-size: 13px;
+    color: var(--tx);
+    text-decoration: none;
+    transition: border-color 0.18s, box-shadow 0.18s, color 0.18s;
+  }
+  .cb-seeall:hover {
+    border-color: rgba(124, 175, 0, 0.5);
+    box-shadow: var(--sh-s);
+    color: var(--ok-light);
+  }
+  .cb-seeall-arrow {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    transition: transform 0.18s, color 0.18s;
+  }
+  .cb-seeall:hover .cb-seeall-arrow {
+    color: var(--ok-light);
+    transform: translateX(2px);
+  }
+  .cb-seeall--back {
+    margin-top: 34px;
+  }
+  .cb-seeall--back:hover .cb-seeall-arrow {
+    transform: translateX(-2px);
+  }
+
+  /* ─── アーカイブのヒーロー（戻り導線つき・1行に圧縮） ───
+     トップと同じ面が2枚続くと遷移した感じが出ないので、eyebrow・リード段落・
+     RSS 行は落として、一覧を最初の画面に入れる。 */
+  .cb-hero--archive {
+    padding-bottom: 4px;
+  }
+  .cb-hero--archive h1 {
+    font-size: clamp(23px, 2.2vw, 28px);
+    margin: 6px 0 8px;
+  }
+  .cb-archive-meta {
+    margin: 0 !important;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  /* ─── 脅威タイプ: アーカイブ側の横並びチップ ───
+     `.cb-dist` のままなのでスクリプトの絞り込みはそのまま効く。横バーは隠す。 */
+  .cb-threats--chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 18px 0 4px;
+  }
+  .cb-threats--chips .cb-allpill {
+    margin: 0;
+  }
+  .cb-threats--chips .cb-distwrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .cb-threats--chips .cb-dist {
+    grid-template-columns: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    background: var(--card);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .cb-threats--chips .cb-dist:hover,
+  .cb-threats--chips .cb-dist.is-active {
+    border-color: rgba(124, 175, 0, 0.5);
+  }
+  .cb-threats--chips .cb-dist.is-active {
+    background: var(--ok);
+    border-color: var(--ok);
+  }
+  .cb-threats--chips .cb-dist.is-active .di,
+  .cb-threats--chips .cb-dist.is-active .dn,
+  .cb-threats--chips .cb-dist.is-active .dc {
+    color: var(--ink);
+  }
+  .cb-threats--chips .cb-dist .dn {
+    font-size: 12px;
+  }
+  .cb-threats--chips .cb-dist .db {
+    display: none;
+  }
+  .cb-threats--chips .cb-dist .dc {
+    font-size: 10.5px;
+  }
+  /* チップ行の直後は見出しの余白を詰める（罫線が二重に見えないように）。 */
+  .cb-threats--chips + section .cb-listhead {
+    margin-top: 26px;
+  }
+  .cb-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .cb-back:hover {
+    color: var(--ok-light);
+  }
+
   /* ─── ページ送り ─── */
   .cb-pager {
     display: flex;
@@ -1046,6 +1321,16 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 1020px) {
+    .cb-bcd--lg {
+      grid-template-columns: 60px 1fr;
+      padding: 20px 20px 18px;
+    }
+    .cb-bcd--lg .cb-bcd-no {
+      font-size: 30px;
+    }
+    .cb-bcd--lg .cb-bcd-t {
+      font-size: 15.5px;
+    }
     .cb-distwrap,
     .cb-popwrap,
     .cb-bcdgrid {
@@ -1064,9 +1349,47 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       width: 100%;
     }
   }
+  @media (max-width: 640px) {
+    /* チップを折り返すと 12 個で 400px 超を占めて一覧が画面外へ落ちるので、
+       スマホでは1行の横スクロールにする（スクロールバーは出さない）。 */
+    .cb-threats--chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+      /* 端で切れて見えるよう、ラッパーのパディング分だけ外へ出す。 */
+      margin-inline: -24px;
+      padding-inline: 24px;
+    }
+    .cb-threats--chips::-webkit-scrollbar {
+      display: none;
+    }
+    .cb-threats--chips .cb-distwrap {
+      flex-wrap: nowrap;
+    }
+    .cb-threats--chips .cb-allpill,
+    .cb-threats--chips .cb-dist {
+      flex: none;
+    }
+    /* モバイルは1列。拡大カードは行間を詰めすぎない（12本で過密にしない）。 */
+    .cb-bcdgrid--lg {
+      gap: 16px;
+    }
+    .cb-bcd--lg .cb-bcd-t {
+      font-size: 15px;
+      line-height: 1.78;
+    }
+    .cb-seeall {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
     .cb-bcd,
     .cb-bcd::before,
+    .cb-seeall,
+    .cb-seeall-arrow,
     .cb-nlbar {
       transition: none;
     }
@@ -1074,12 +1397,28 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
 </style>
 
 <script>
-  // フィルタ／検索 — progressive enhancement。SSR で全件出したうえで
-  // 表示だけを切り替え、URL パラメータ（?category / ?pillar / ?q）を
-  // 従来どおり読み書きする。
+  // フィルタ／検索 — progressive enhancement。アーカイブ側で SSR 全件を
+  // 出したうえで表示だけを切り替え、URL パラメータ（?category / ?pillar /
+  // ?q）を従来どおり読み書きする。
   (function () {
     const root = document.querySelector<HTMLElement>(".cb-page");
     if (!root) return;
+
+    // 一覧トップには全件が無いので、絞り込みの受け口はアーカイブ側だけ。
+    // 旧 deep link（Brief 記事のタグ・外部からのブックマーク）でトップに
+    // 来た訪問者は、同じクエリのままアーカイブへ送る。
+    if (root.dataset.variant !== "archive") {
+      const legacy = new URLSearchParams(location.search);
+      const archive = root.dataset.archiveHref;
+      if (
+        archive &&
+        (legacy.has("category") || legacy.has("pillar") || legacy.has("q"))
+      ) {
+        location.replace(archive + "?" + legacy.toString());
+      }
+      return;
+    }
+
     const cards = Array.from(root.querySelectorAll<HTMLElement>(".cb-bcd"));
     const months = Array.from(root.querySelectorAll<HTMLElement>("[data-month]"));
     const allPill = root.querySelector<HTMLElement>(".cb-allpill");
