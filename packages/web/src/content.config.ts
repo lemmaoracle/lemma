@@ -124,11 +124,15 @@ const briefSchema = z
      */
     cover: z.string().url().optional(),
     /**
-     * First-screen "detection vs proof" gap module (Brief restructure 2026-06).
-     * One-sentence each: what detection caught (ok), what was missing /
-     * unverified before the action (ng), and what pre-execution proof would
-     * have prevented it (fix). The module renders only when all three are set;
-     * briefs without them render unchanged. Authored per locale.
+     * **退役（2026-08-21）。どこにも描画されない。**
+     *
+     * 右レールの常設パネル「この Brief の核心」を駆動していた3点セット。
+     * 本文の TL;DR 末尾と §5 の言い換えで新規情報が無く、6画面ぶんの本文の
+     * 横に 11px で並走するだけで読まれていなかったため撤去した（PR #848）。
+     *
+     * 既存 133 本の値はそのまま残してあるので optional のまま置く。新しい
+     * Brief で書く必要は無い。復活させるなら本文カラムに全幅で置くこと——
+     * レールに戻すと同じ理由でまた読まれない。
      */
     gap_detected: z.string().optional(),
     gap_missing: z.string().optional(),
