@@ -31,9 +31,6 @@ const isJa = locale === "ja";
 const SITE = "https://lemma.frame00.com";
 const pageUrl = `${SITE}${base}/authenticity/`;
 const discoveryUrl = DISCOVERY_CALL_URL[locale];
-const newsletterUrl = isJa
-  ? "https://tally.so/r/EkMj82"
-  : "https://tally.so/r/rjvN2X";
 const anshinUrl = "https://lemma.frame00.com/ai-gyomu-anshin/";
 
 /** Locale-aware internal link helper. */
@@ -250,11 +247,6 @@ const C = isJa
           label: "Discovery Call（30分）",
           desc: "導入相談から。お問い合わせはこちら。",
           href: discoveryUrl,
-        },
-        {
-          label: "Lemma Critical Weekly（週次）",
-          desc: "実際のリスク事案の構造分析を、毎週メールで。",
-          href: newsletterUrl,
         },
         {
           label: "事案で見る — Lemma Critical Brief 一覧",
@@ -475,11 +467,6 @@ const C = isJa
           label: "Discovery Call (30 min)",
           desc: "Start from a conversation. Get in touch.",
           href: discoveryUrl,
-        },
-        {
-          label: "Lemma Critical Weekly",
-          desc: "A structural analysis of real risk incidents, in your inbox each week.",
-          href: newsletterUrl,
         },
         {
           label: "See the cases — Lemma Critical Briefs",

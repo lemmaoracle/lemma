@@ -27,7 +27,6 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/FooterRenewal.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import SchemaOrg from "@/components/SchemaOrg";
 import BlogCover from "../components/BlogCover.astro";
 import { resolveCoverImage } from "../lib/coverPhoto";
@@ -281,8 +280,6 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
           </ul>
         </section>
       )}
-
-      <NewsletterEmbed locale={locale} placement="blog-footer" />
 
       {/* CTA は本文のいちばん外側＝フッターの直前（指示書 §2.1 の 9 番）。
           v10 までは タグ → CTA → 前後記事 の順で、記事の続きが CTA の
@@ -893,7 +890,7 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
 
   /* ─── EVIDENCE（証拠ブロック・計器帯 §B）───
      面（背景色）を持たせない: 上辺のライム2pxと内部の1px縦罫だけで構成
-     （末尾はタグ・前後記事・ニュースレター・CTA と箱が並ぶため）。
+     （末尾はタグ・前後記事・CTA と箱が並ぶため）。
      ボタンは置かない。数値は Inter 200 / 27px — 検証センター・製品ページ
      の計器面（product-v18 の .rp-n）と同じ扱い。 */
   .evidence {
@@ -1089,23 +1086,6 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
   /* ─── NEWSLETTER ─── */
   /* 共有コンポーネントなので、この面に落ちたときだけ枠を寄せる。**中の
      申込フォームは Tally の iframe** で、こちらからは色を変えられない。 */
-  .blog-page :global(.newsletter-embed) {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    margin: 34px 0 0;
-  }
-  .blog-page :global(.newsletter-eyebrow) {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    color: var(--ok-ink);
-  }
-  .blog-page :global(.newsletter-lead) {
-    font-size: 13px;
-    line-height: 1.9;
-    color: var(--muted);
-  }
 
   /* ─── PREV / NEXT ─── */
   .blog-prevnext {

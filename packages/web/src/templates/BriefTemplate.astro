@@ -14,7 +14,7 @@
  *      出し分け。config/briefThreatBanner.ts）
  *
  * 末尾CTAは**証明の訴求**に一本化（「確かめられないものを、業務に入れない。」
- * ＋エンタープライズ相談／検証センター／Critical Weekly）。なりすまし等の
+ * ＋エンタープライズ相談／検証センター）。なりすまし等の
  * 脅威別訴求は右レールのバナーだけが持つ（§5.5）。旧 BriefAttackCta の
  * バナー／オープンループ／テールと BriefGapModule の本文挿入はここで退役。
  *
@@ -241,11 +241,6 @@ const metaDescription = isJa
 const banner = threatBannerCopy(primarySlug, locale);
 const demoFormId = isJa ? "EkBqDX" : "Pd2Rl5"; // Discovery Call form (JA / EN)
 const bannerDemoHref = `https://tally.so/r/${demoFormId}?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_demo`;
-const NEWSLETTER_URL: Record<Locale, string> = {
-  ja: "https://tally.so/r/EkMj82",
-  en: "https://tally.so/r/rjvN2X",
-};
-
 const labels = isJa
   ? {
       incidentDate: "事案日",
@@ -274,7 +269,6 @@ const labels = isJa
         "Lemma は、データや AI の実行に暗号技術で証明を付け、受け取った側が発行者に問い合わせることなく真正性を確認できるようにします。検出はそのままに、その前段へ一層を足す構成です。",
       ctaMain: "エンタープライズ相談",
       ctaVerify: "検証センターを見る",
-      ctaSub: "Critical Weekly を購読する →",
     }
   : {
       incidentDate: "Incident date",
@@ -303,7 +297,6 @@ const labels = isJa
         "Lemma attaches cryptographic proofs to data and AI execution, so the receiving side can confirm authenticity without asking the issuer. Detection stays; a proof layer is added in front of it.",
       ctaMain: "Talk to enterprise",
       ctaVerify: "See the verification center",
-      ctaSub: "Subscribe to Critical Weekly →",
     };
 
 // 核心パネル（レール2段目）の行ラベル。
@@ -469,12 +462,6 @@ const gapRowLabels = isJa
               data-cta="cta_tail"
             >{labels.ctaMain}</a>
             <a class="btn ghost" href={`${base}/verify/`}>{labels.ctaVerify}</a>
-            <a
-              class="ctasub"
-              href={NEWSLETTER_URL[locale]}
-              target="_blank"
-              rel="noopener"
-            >{labels.ctaSub}</a>
           </div>
         </section>
       </div>
@@ -1461,18 +1448,6 @@ const gapRowLabels = isJa
     border-color: #d8ddd1;
     color: #fff;
   }
-  .bd-cta .ctasub {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    color: #9ba296;
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-  .bd-cta .ctasub:hover {
-    color: var(--ok);
-  }
-
   /* ─── 右レール（§5.1/§5.3） ───
      レールがビューポートより背が高いと、sticky の一枚板では下段（核心・
      バナー）が本文の読了までずっと画面外に取り残される。ビューポートに
