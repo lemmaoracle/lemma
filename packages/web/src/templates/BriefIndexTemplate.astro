@@ -11,8 +11,8 @@
  *   variant="latest"（既定・`/critical/briefs/`）
  *     ヒーロー → 脅威タイプで探す（アーカイブへのリンク）→ よく見られている
  *     → **最新 LATEST_COUNT 本をフラットに**（月見出しなし・タイトル一段大きく・
- *     カード間の余白を広げる）→「すべての Brief を見る（全 N 本）」→
- *     ニュースレター。全件はここには出さない。
+ *     カード間の余白を広げる）→「すべての Brief を見る（全 N 本）」。
+ *     全件はここには出さない。
  *
  *   variant="archive"（`/critical/briefs/archive/`）
  *     旧一覧の月別 UI をそのまま移設。戻り導線 → 脅威タイプで探す（絞り込み
@@ -56,7 +56,6 @@ import {
   briefsIndexHref,
   briefsCategoryHref,
 } from "../data/briefIndex";
-import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 
 export interface BriefIndexTemplateProps {
   locale: Locale;
@@ -244,7 +243,6 @@ const labels = isJa
       descEnd: "に活用できるリファレンス集です。",
       rssLabel: "RSS フィード",
       methodologyLabel: "メソドロジー",
-      newsletterLabel: "ニュースレター",
       threatTypes: "脅威タイプで探す",
       threatTypesEn: `Threat Types · ${sortedCategories.length}`,
       popular: "よく見られている",
@@ -280,7 +278,6 @@ const labels = isJa
       descEnd: ".",
       rssLabel: "RSS feed",
       methodologyLabel: "Methodology",
-      newsletterLabel: "Newsletter",
       threatTypes: "Browse by threat type",
       threatTypesEn: `Threat Types · ${sortedCategories.length}`,
       popular: "Most-read",
@@ -340,7 +337,6 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
           <div class="cb-acts">
             <a href={rssHref}>{labels.rssLabel}</a>
             <a href={methodologyHref}>{labels.methodologyLabel}</a>
-            <a href="#newsletter">{labels.newsletterLabel}</a>
           </div>
         </section>
       )}
@@ -529,40 +525,8 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         </a>
       )}
 
-      <section id="newsletter" class="cb-newsletter">
-        <NewsletterEmbed locale={locale} placement="briefs-index" />
-      </section>
     </div>
 
-    {/* Dismissible sticky newsletter bar — tucks away at the footer #newsletter. */}
-    <div class="cb-nlbar" data-nlbar>
-      <div class="cb-nlbar-inner">
-        <div class="cb-nlbar-text">
-          <span class="cb-nlbar-title">Lemma Critical Weekly</span>
-          <span class="cb-nlbar-lead">
-            {isJa
-              ? "重大リスク事案の構造分析を、毎週メールで。"
-              : "Structural analysis of major risk incidents — weekly, by email."}
-          </span>
-        </div>
-        <div class="cb-nlbar-actions">
-          <button
-            type="button"
-            class="cb-nlbar-cta"
-            data-tally-open={isJa ? "EkMj82" : "rjvN2X"}
-            data-tally-layout="modal"
-            data-tally-width="540"
-            data-tally-emoji-text=""
-          >{isJa ? "メールで購読" : "Subscribe"}</button>
-          <button
-            type="button"
-            class="cb-nlbar-close"
-            data-nlbar-close
-            aria-label={isJa ? "閉じる" : "Dismiss"}
-          >✕</button>
-        </div>
-      </div>
-    </div>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
@@ -597,6 +561,9 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     letter-spacing: 0.01em;
     padding: 0;
     padding-top: 64px; /* sticky ナビ時代の margin-top:64px を padding に変換 — body 背景色の帯を出さない（H1 上の空白修正） */
+    /* 末尾のニュースレター欄を撤去したので、最後の要素とフッターの間の余白は
+       ページ側で持つ（2026-08-21）。 */
+    padding-bottom: 88px;
   }
   .cb-wrap {
     max-width: calc(1180px + 12vw);
@@ -1230,95 +1197,6 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     display: none;
   }
 
-  /* ─── NEWSLETTER ─── */
-  .cb-newsletter {
-    margin-top: 64px;
-  }
-  .cb-page :global(.newsletter-embed) {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-  }
-
-  /* ─── STICKY NEWSLETTER BAR ─── */
-  .cb-nlbar {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 90;
-    transform: translateY(110%);
-    transition: transform 0.3s ease;
-    pointer-events: none;
-  }
-  .cb-nlbar.is-visible {
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-  .cb-nlbar-inner {
-    display: flex;
-    align-items: center;
-    gap: 14px 22px;
-    flex-wrap: wrap;
-    max-width: 860px;
-    margin: 0 auto 14px;
-    padding: 13px 20px;
-    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
-    border-radius: 12px;
-    box-shadow: 0 18px 44px rgba(22, 30, 24, 0.3);
-  }
-  .cb-nlbar-text {
-    flex: 1;
-    min-width: 220px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .cb-nlbar-title {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    color: #a8e010;
-  }
-  .cb-nlbar-lead {
-    font-size: 12.5px;
-    line-height: 1.7;
-    color: #d8ddd1;
-  }
-  .cb-nlbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .cb-nlbar-cta {
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    font-weight: 600;
-    color: #0f1412;
-    background: #a8e010;
-    border: none;
-    border-radius: 7px;
-    padding: 9px 16px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(168, 224, 16, 0.3);
-    transition: filter 0.15s;
-  }
-  .cb-nlbar-cta:hover {
-    filter: brightness(1.06);
-  }
-  .cb-nlbar-close {
-    background: none;
-    border: none;
-    color: #9ba296;
-    font-size: 13px;
-    cursor: pointer;
-    padding: 6px;
-    transition: color 0.15s;
-  }
-  .cb-nlbar-close:hover {
-    color: #fff;
-  }
-
   /* ─── RESPONSIVE ─── */
   @media (max-width: 1020px) {
     .cb-bcd--lg {
@@ -1389,8 +1267,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     .cb-bcd,
     .cb-bcd::before,
     .cb-seeall,
-    .cb-seeall-arrow,
-    .cb-nlbar {
+    .cb-seeall-arrow {
       transition: none;
     }
   }
@@ -1636,48 +1513,4 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   })();
 </script>
 
-<!-- Sticky newsletter bar: reveal after scroll, hide near the footer #newsletter,
-     dismiss persists via localStorage. -->
-<script is:inline>
-  (function () {
-    var bar = document.querySelector("[data-nlbar]");
-    if (!bar) return;
-    try {
-      if (window.localStorage.getItem("lemma_nlbar_dismissed")) return;
-    } catch (e) {}
-    var nlSection = document.getElementById("newsletter");
-    var footerInView = false;
-    var revealed = false;
-    function sync() {
-      bar.classList.toggle("is-visible", revealed && !footerInView);
-    }
-    if (nlSection && "IntersectionObserver" in window) {
-      new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (e) {
-            footerInView = e.isIntersecting;
-            sync();
-          });
-        },
-        { rootMargin: "0px 0px -40px 0px" },
-      ).observe(nlSection);
-    }
-    function onScroll() {
-      if (!revealed && (window.scrollY || 0) > 300) {
-        revealed = true;
-        sync();
-      }
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    var closeBtn = bar.querySelector("[data-nlbar-close]");
-    if (closeBtn) {
-      closeBtn.addEventListener("click", function () {
-        bar.classList.remove("is-visible");
-        try {
-          window.localStorage.setItem("lemma_nlbar_dismissed", "1");
-        } catch (e) {}
-      });
-    }
-  })();
-</script>
+
