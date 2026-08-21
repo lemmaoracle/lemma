@@ -261,7 +261,7 @@ const labels = isJa
       seeAll: `すべての Brief を見る（全 ${briefsCount} 本）`,
       backToLatest: "最新の Brief へ戻る",
       archiveH1: "Brief アーカイブ",
-      archiveLead: `公開したすべての Critical Brief を、公開月ごとにまとめています。現在 ${briefsCount} 本（最新は No.${latestBriefNo}）。脅威タイプでの絞り込みと、キーワード検索が使えます。`,
+      archiveMeta: `全 ${briefsCount} 本 · 最新は No.${latestBriefNo} · 公開月順`,
       pageTitle:
         "Lemma Critical Brief — 脅威インテリジェンス × 信頼インフラ",
       description:
@@ -297,7 +297,7 @@ const labels = isJa
       seeAll: `Browse all ${briefsCount} Briefs`,
       backToLatest: "Back to the latest Briefs",
       archiveH1: "Brief archive",
-      archiveLead: `Every Critical Brief we have published, grouped by month of publication — ${briefsCount} so far (latest: No.${latestBriefNo}). Filter by threat type, or search by keyword.`,
+      archiveMeta: `${briefsCount} Briefs · latest No.${latestBriefNo} · by month of publication`,
       pageTitle:
         "Lemma Critical Brief — threat intelligence × trust infrastructure",
       description:
@@ -327,13 +327,8 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
           <a class="cb-back" href={indexHref}>
             <span aria-hidden="true">←</span> {labels.backToLatest}
           </a>
-          <div class="cb-kicker">{labels.eyebrow}</div>
           <h1>{labels.archiveH1}</h1>
-          <p>{labels.archiveLead}</p>
-          <div class="cb-acts">
-            <a href={rssHref}>{labels.rssLabel}</a>
-            <a href={methodologyHref}>{labels.methodologyLabel}</a>
-          </div>
+          <p class="cb-archive-meta">{labels.archiveMeta}</p>
         </section>
       ) : (
         <section class="cb-hero">
@@ -350,11 +345,16 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         </section>
       )}
 
-      <!-- 脅威タイプで探す（最上部・2列・件数の横バー） -->
-      <section aria-label={labels.threatTypes}>
-        <div class="cb-label">
-          <b>{labels.threatTypes}</b><span>{labels.threatTypesEn}</span>
-        </div>
+      {/* 脅威タイプで探す。
+          トップ = 2列・件数の横バー（アーカイブへのリンク）。
+          アーカイブ = 横並びの小さいチップ（絞り込みボタン）。同じ面が2枚続くと
+          「遷移した感じ」が出ないので、アーカイブ側は畳んで一覧を上に出す。 */}
+      <section aria-label={labels.threatTypes} class={isArchive ? "cb-threats--chips" : undefined}>
+        {!isArchive && (
+          <div class="cb-label">
+            <b>{labels.threatTypes}</b><span>{labels.threatTypesEn}</span>
+          </div>
+        )}
         {isArchive ? (
           <button type="button" class="cb-allpill is-active" data-cat="all">
             {labels.allChip} <i>{briefsCount}</i>
@@ -1090,9 +1090,77 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     transform: translateX(-2px);
   }
 
-  /* ─── アーカイブのヒーロー（戻り導線つきの簡素版） ─── */
+  /* ─── アーカイブのヒーロー（戻り導線つき・1行に圧縮） ───
+     トップと同じ面が2枚続くと遷移した感じが出ないので、eyebrow・リード段落・
+     RSS 行は落として、一覧を最初の画面に入れる。 */
+  .cb-hero--archive {
+    padding-bottom: 4px;
+  }
   .cb-hero--archive h1 {
-    font-size: clamp(24px, 2.4vw, 30px);
+    font-size: clamp(23px, 2.2vw, 28px);
+    margin: 6px 0 8px;
+  }
+  .cb-archive-meta {
+    margin: 0 !important;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  /* ─── 脅威タイプ: アーカイブ側の横並びチップ ───
+     `.cb-dist` のままなのでスクリプトの絞り込みはそのまま効く。横バーは隠す。 */
+  .cb-threats--chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 18px 0 4px;
+  }
+  .cb-threats--chips .cb-allpill {
+    margin: 0;
+  }
+  .cb-threats--chips .cb-distwrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .cb-threats--chips .cb-dist {
+    grid-template-columns: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    background: var(--card);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .cb-threats--chips .cb-dist:hover,
+  .cb-threats--chips .cb-dist.is-active {
+    border-color: rgba(124, 175, 0, 0.5);
+  }
+  .cb-threats--chips .cb-dist.is-active {
+    background: var(--ok);
+    border-color: var(--ok);
+  }
+  .cb-threats--chips .cb-dist.is-active .di,
+  .cb-threats--chips .cb-dist.is-active .dn,
+  .cb-threats--chips .cb-dist.is-active .dc {
+    color: var(--ink);
+  }
+  .cb-threats--chips .cb-dist .dn {
+    font-size: 12px;
+  }
+  .cb-threats--chips .cb-dist .db {
+    display: none;
+  }
+  .cb-threats--chips .cb-dist .dc {
+    font-size: 10.5px;
+  }
+  /* チップ行の直後は見出しの余白を詰める（罫線が二重に見えないように）。 */
+  .cb-threats--chips + section .cb-listhead {
+    margin-top: 26px;
   }
   .cb-back {
     display: inline-flex;
@@ -1282,6 +1350,28 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     }
   }
   @media (max-width: 640px) {
+    /* チップを折り返すと 12 個で 400px 超を占めて一覧が画面外へ落ちるので、
+       スマホでは1行の横スクロールにする（スクロールバーは出さない）。 */
+    .cb-threats--chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+      /* 端で切れて見えるよう、ラッパーのパディング分だけ外へ出す。 */
+      margin-inline: -24px;
+      padding-inline: 24px;
+    }
+    .cb-threats--chips::-webkit-scrollbar {
+      display: none;
+    }
+    .cb-threats--chips .cb-distwrap {
+      flex-wrap: nowrap;
+    }
+    .cb-threats--chips .cb-allpill,
+    .cb-threats--chips .cb-dist {
+      flex: none;
+    }
     /* モバイルは1列。拡大カードは行間を詰めすぎない（12本で過密にしない）。 */
     .cb-bcdgrid--lg {
       gap: 16px;
