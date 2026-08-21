@@ -32,6 +32,7 @@ import CiteBriefBox from "../components/CiteBriefBox.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
 import { getEnBriefMap } from "../data/getEnBriefMap";
+import { briefsCategoryHref } from "../data/briefIndex";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { threatBannerCopy } from "../config/briefThreatBanner";
 import {
@@ -156,8 +157,8 @@ const primaryCatLabel = categoryLabel(primarySlug, locale);
 const secondaryCats = (brief.data.secondary_categories as CategorySlug[]).map(
   (c) => ({ slug: c, label: categoryLabel(c, locale) }),
 );
-const categoryHref = (slug: string) =>
-  `${base}/critical/briefs/?category=${slug}`;
+// 絞り込みの受け口は一覧トップではなくアーカイブ側（briefIndex.ts）。
+const categoryHref = (slug: string) => briefsCategoryHref(base, slug);
 
 function relatedCardData(b: AnyBrief) {
   const titleLoc = isJa ? b.data.title : b.data.title_en;

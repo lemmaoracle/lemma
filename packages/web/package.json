@@ -8,7 +8,8 @@
     "type-check": "tsc --noEmit",
     "dev": "astro dev",
     "preview": "astro preview",
-    "lint": "eslint 'src/**/*.{ts,tsx}'"
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "refresh:popular-briefs": "python3 scripts/refresh-popular-briefs.py"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",

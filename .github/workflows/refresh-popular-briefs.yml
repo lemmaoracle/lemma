@@ -1,0 +1,73 @@
+# 一覧トップの「よく見られている / Most-read」を GA4 の実測から週次で更新する。
+#
+# 有効化には repo secret `GA4_SA_KEY`（GA4 プロパティに「閲覧者」を付けた
+# サービスアカウント鍵の JSON まるごと）が要る。未設定のあいだは何もせずに
+# 終わる（毎週赤くならないように、失敗ではなく no-op にしてある）。
+#
+# 直接 main へは push せず PR を出す。順位の入れ替わりを人が見てから入れる。
+name: Refresh popular Briefs
+
+on:
+  schedule:
+    # 毎週月曜 00:20 UTC（＝ JST 09:20）。前日までの28日分を集計する。
+    - cron: "20 0 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for GA4 credentials
+        id: creds
+        env:
+          GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}
+        run: |
+          if [ -z "$GA4_SA_KEY" ]; then
+            echo "GA4_SA_KEY が未設定のためスキップします。" >> "$GITHUB_STEP_SUMMARY"
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Python
+        if: steps.creds.outputs.present == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the GA4 client
+        if: steps.creds.outputs.present == 'true'
+        run: pip install --quiet google-analytics-data
+
+      - name: Refresh popularBriefs.ts
+        if: steps.creds.outputs.present == 'true'
+        env:
+          GA4_PROPERTY_ID: "527344455"
+          GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}
+        run: |
+          printf '%s' "$GA4_SA_KEY" > "$RUNNER_TEMP/ga4-sa.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/ga4-sa.json" \
+            python3 packages/web/scripts/refresh-popular-briefs.py \
+            >> "$GITHUB_STEP_SUMMARY"
+          rm -f "$RUNNER_TEMP/ga4-sa.json"
+
+      - name: Open a PR when the ranking moved
+        if: steps.creds.outputs.present == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/refresh-popular-briefs
+          title: "chore(briefs): refresh the most-read ranking from GA4"
+          commit-message: "chore(briefs): refresh the most-read ranking from GA4"
+          body: |
+            `packages/web/scripts/refresh-popular-briefs.py` の出力です。
+            直近28日の pageview（JA + EN 合算）で並び替えています。
+            順位に納得できればマージしてください。
+          add-paths: packages/web/src/data/popularBriefs.ts
+          delete-branch: true
