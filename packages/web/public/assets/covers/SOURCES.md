@@ -7,6 +7,7 @@
 
 | ファイル | 記事 | 撮影者 | 出所 | ライセンス |
 |---|---|---|---|---|
+| stablecoin-payment-reconciliation.jpg | 2026.08.21 請求書の内訳は、オンチェーンに乗らない（黒い空に一機、平行に伸びる2本の飛行機雲 — 同じ出来事から並走する2つの記録の抽象） | Joel & Jasmin Førestbird | https://unsplash.com/photos/P8b0bg-w_YA | Unsplash License |
 | ai-decision-record-with-inputs.jpg | 2026.08.18 AI の判断を、見ていたデータごと残す（夜明けの送電鉄塔の列 — 遠いほど霞に沈む、経路のスケール抽象） | An Tran | https://unsplash.com/photos/KQQFR2LNAp0 | Unsplash License |
 | verifiable-intent-provenance-layer-agent-payments.jpg | 2026.06.22 意図の証明に、根拠の検証を重ねる（金融街を望む窓辺のシルエット） | Charles Forerunner | https://unsplash.com/photos/3fPXt37X6UQ | Unsplash License |
 | verifiable-origin-bridge-exploits-2026.jpg | 2026.04.30 2026年のブリッジ事象 | Scott Rodgerson | https://unsplash.com/photos/PSpf_XgOM5w | Unsplash License |
