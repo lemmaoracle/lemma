@@ -7,6 +7,7 @@
 
 | ファイル | 記事 | 撮影者 | 出所 | ライセンス |
 |---|---|---|---|---|
+| stablecoin-payment-reconciliation.jpg | 2026.08.21 請求書の内訳は、送金に乗らない（淡い灰色のファサードに並ぶ正方形の窓 — 同じ形が延々と並び数枚だけ開いている、件数のスケール抽象。金融系カバーが暗く続いたため明るい方向に選定） | Pawel Czerwinski | https://unsplash.com/photos/KMICAjAH7fU | Unsplash License |
 | ai-decision-record-with-inputs.jpg | 2026.08.18 AI の判断を、見ていたデータごと残す（夜明けの送電鉄塔の列 — 遠いほど霞に沈む、経路のスケール抽象） | An Tran | https://unsplash.com/photos/KQQFR2LNAp0 | Unsplash License |
 | verifiable-intent-provenance-layer-agent-payments.jpg | 2026.06.22 意図の証明に、根拠の検証を重ねる（金融街を望む窓辺のシルエット） | Charles Forerunner | https://unsplash.com/photos/3fPXt37X6UQ | Unsplash License |
 | verifiable-origin-bridge-exploits-2026.jpg | 2026.04.30 2026年のブリッジ事象 | Scott Rodgerson | https://unsplash.com/photos/PSpf_XgOM5w | Unsplash License |
