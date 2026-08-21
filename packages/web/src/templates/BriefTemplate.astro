@@ -32,9 +32,9 @@ import CiteBriefBox from "../components/CiteBriefBox.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
 import { getEnBriefMap } from "../data/getEnBriefMap";
-import { briefsCategoryHref } from "../data/briefIndex";
-import { DISCOVERY_CALL_URL } from "../config/cta";
 import { threatBannerCopy } from "../config/briefThreatBanner";
+import { briefsCategoryHref } from "../data/briefIndex";
+import { BRIEF_RAIL_CTA_URL, DISCOVERY_CALL_URL } from "../config/cta";
 import {
   categoryLabel,
   type CategorySlug,
@@ -69,17 +69,6 @@ const briefUrl = `https://lemma.frame00.com${base}${briefPath}`;
 const ogImage = `https://lemma.frame00.com/og/critical-briefs/${locale}/${brief.id}.png`;
 
 const { Content, headings } = await render(brief);
-
-// 右レール2段目「この Brief の核心」— frontmatter の3文が揃うときだけ出す
-// （旧 BriefGapModule と同じ条件。無い Brief はレールが2段になるだけ）。
-const gap =
-  brief.data.gap_detected && brief.data.gap_missing && brief.data.gap_fix
-    ? {
-        detected: brief.data.gap_detected,
-        missing: brief.data.gap_missing,
-        fix: brief.data.gap_fix,
-      }
-    : null;
 
 // 照合フレームのトライアル (2026-08) — ヒーロー直下の一行「Lemma の照合分析」。
 // frontmatter に analysis_lead_* を書いた Brief にだけ出る（既存 Brief は不変）。
@@ -193,12 +182,6 @@ const tocSections = headings
   .filter((h) => !/配布について|distribution/i.test(h.text))
   .map((h, i) => ({ num: i + 1, text: h.text, slug: h.slug }));
 
-// 核心パネルの「§N … →」— 落差を扱う章へ（9章=検出と証明の落差／
-// 6章=なぜ止まらなかったか。無ければ出さない）。
-const gapSection = tocSections.find((s) =>
-  /落差|なぜ止まらなかった|detection|gap|why it wasn/i.test(s.text),
-);
-
 // 配布定型文（旧 §9）が本文に残っていない Brief には、テンプレート側で
 // 短い注記を描画する（6章化で md から定型文を落とすため。移行中の旧本文
 // と二重にならないように本文側を検出してゲート）。
@@ -238,9 +221,13 @@ const metaDescription = isJa
   ? `${publishedStr}公開の${mainTitle}を構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何が証明されている必要があったか。AI のための、信頼インフラ — Lemma Critical Brief。`
   : `Structural analysis of ${mainTitle}: what happened, why better detection doesn't close the gap, and what should have been provable beforehand. The Trust Layer for AI — Lemma Critical Brief.`;
 
+// 脅威タイプ別バナー（レール2段目）。CTA は「デモをリクエスト」から
+// 「知見を受け取る」に変更（2026-08-21）——Brief の目的は転換より認知で、
+// デモ直行は 90日クリック0、末尾CTAとも役割が重複していた。飛び先は
+// `BRIEF_RAIL_CTA_URL` 1か所で差し替えられる。
 const banner = threatBannerCopy(primarySlug, locale);
-const demoFormId = isJa ? "EkBqDX" : "Pd2Rl5"; // Discovery Call form (JA / EN)
-const bannerDemoHref = `https://tally.so/r/${demoFormId}?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_demo`;
+const bannerHref = BRIEF_RAIL_CTA_URL[locale];
+
 const labels = isJa
   ? {
       incidentDate: "事案日",
@@ -249,10 +236,7 @@ const labels = isJa
       pack: "関連 Pack",
       tocLabel: "Contents",
       progress: "読了",
-      coreLabel: "この Brief の核心",
       analysisLabel: "Lemma の照合分析",
-      bannerLabel: "この脅威タイプへの対策",
-      bannerBtn: "デモをリクエスト",
       relatedHeading: "関連する Brief",
       relatedHeadingEn: "Related",
       revisionHeading: "改訂履歴",
@@ -267,6 +251,12 @@ const labels = isJa
       ctaHead2: "業務に入れない。",
       ctaBody:
         "Lemma は、データや AI の実行に暗号技術で証明を付け、受け取った側が発行者に問い合わせることなく真正性を確認できるようにします。検出はそのままに、その前段へ一層を足す構成です。",
+      bannerLabel: "AI×信頼の最前線",
+      bannerBtn: "知見を受け取る",
+      brandLine1: "AI時代に、",
+      brandLine2: "何が本物かを証明する。",
+      brandSub: "発行は一度。検証は、無料で何度でも。",
+      brandMore: "Lemma とは →",
       ctaMain: "エンタープライズ相談",
       ctaVerify: "検証センターを見る",
     }
@@ -277,10 +267,7 @@ const labels = isJa
       pack: "Related Pack",
       tocLabel: "Contents",
       progress: "Read",
-      coreLabel: "The core of this Brief",
       analysisLabel: "Lemma's cross-check analysis",
-      bannerLabel: "Against this threat type",
-      bannerBtn: "Request a demo",
       relatedHeading: "Related Briefs",
       relatedHeadingEn: "Related",
       revisionHeading: "Revision History",
@@ -295,14 +282,15 @@ const labels = isJa
       ctaHead2: "it doesn't enter your operation.",
       ctaBody:
         "Lemma attaches cryptographic proofs to data and AI execution, so the receiving side can confirm authenticity without asking the issuer. Detection stays; a proof layer is added in front of it.",
+      bannerLabel: "The frontier of AI × trust",
+      bannerBtn: "Get the insights",
+      brandLine1: "Prove what's real",
+      brandLine2: "in the age of AI.",
+      brandSub: "Issue once. Verify free, any number of times.",
+      brandMore: "About Lemma →",
       ctaMain: "Talk to enterprise",
       ctaVerify: "See the verification center",
     };
-
-// 核心パネル（レール2段目）の行ラベル。
-const gapRowLabels = isJa
-  ? { detected: "検出は効いた", missing: "証明が無かった", fix: "Lemma で変わる" }
-  : { detected: "Detection worked", missing: "No proof existed", fix: "What Lemma changes" };
 ---
 
 <Layout
@@ -486,43 +474,31 @@ const gapRowLabels = isJa
           </ul>
         </div>
 
-        {/* 2段目: スレート小箱 — この Brief の核心。 */}
-        {gap && (
-          <div class="bd-railgap">
-            <div class="rg-h">{labels.coreLabel}</div>
-            <div class="rg-row">
-              <span class="mk ok">✓</span>
-              <div><b>{gapRowLabels.detected}</b><span>{gap.detected}</span></div>
-            </div>
-            <div class="rg-row">
-              <span class="mk ng">✕</span>
-              <div><b>{gapRowLabels.missing}</b><span>{gap.missing}</span></div>
-            </div>
-            <div class="rg-row">
-              <span class="mk ar">→</span>
-              <div><b>{gapRowLabels.fix}</b><span>{gap.fix}</span></div>
-            </div>
-            {gapSection && (
-              <a class="rg-more" href={`#${gapSection.slug}`}>
-                §{gapSection.num} {gapSection.text} →
-              </a>
-            )}
-          </div>
-        )}
-
-        {/* 3段目: 白＋ライム縁 — 脅威タイプ別バナー。 */}
+        {/* 2段目: 脅威タイプ別バナー（白＋ライム縁）。読んでいる事案に紐づく
+            「自社はどうか」の問いかけ。CTA は相談で、デモ直行にはしない。 */}
         <div class="bd-railad" data-catkey={primarySlug}>
           <div class="ra-k">{labels.bannerLabel}</div>
           <div class="ra-t">{banner.head}</div>
           <p>{banner.desc}</p>
           <a
             class="ra-btn"
-            href={bannerDemoHref}
+            href={bannerHref}
             target="_blank"
             rel="noopener"
-            data-brief-cta-ev="brief_rail_demo"
-            data-cta="rail_demo"
+            data-brief-cta-ev="brief_rail_weekly"
+            data-cta="rail_weekly"
           >{labels.bannerBtn}</a>
+        </div>
+
+        {/* 3段目: Lemma のコンセプト。Brief 個別の要約でも転換 CTA でもなく、
+            「Lemma というものがある」を持ち帰ってもらうためのブランド面
+            （2026-08-21）。マスターコピーはトップ h1・フッター・OG と同一の
+            文言を使う。ボタンは置かない——転換は末尾 CTA が受ける。 */}
+        <div class="bd-railbrand">
+          <div class="rb-k">Lemma</div>
+          <div class="rb-t">{labels.brandLine1}<br />{labels.brandLine2}</div>
+          <p>{labels.brandSub}</p>
+          <a class="rb-more" href={base || "/"}>{labels.brandMore}</a>
         </div>
       </aside>
     </div>
@@ -1459,7 +1435,9 @@ const gapRowLabels = isJa
     margin-top: 46px;
     max-height: calc(100vh - 96px - 24px);
     overflow-y: auto;
-    padding: 2px 8px 24px;
+    /* 下 padding は影のクリップ避け。3段（目次741px）が 907px 級の画面で
+       内部スクロールせずに収まるところまで詰めてある。 */
+    padding: 2px 8px 14px;
     margin-left: -8px;
     margin-right: -8px;
     scrollbar-width: thin;
@@ -1550,91 +1528,7 @@ const gapRowLabels = isJa
   }
 
   /* 2段目: スレート小箱。 */
-  .bd-railgap {
-    margin-top: 14px;
-    position: relative;
-    overflow: hidden;
-    border-radius: 12px;
-    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
-    box-shadow: 0 14px 32px rgba(22, 30, 24, 0.2);
-    padding: 15px 17px 13px;
-  }
-  .bd-railgap::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      125% 78% at 92% -18%,
-      rgba(168, 224, 16, 0.16),
-      rgba(168, 224, 16, 0) 62%
-    );
-  }
-  .bd-railgap > * {
-    position: relative;
-    z-index: 2;
-  }
-  .rg-h {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: #8b9285;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #4a544b;
-    margin-bottom: 4px;
-  }
-  .rg-row {
-    display: grid;
-    grid-template-columns: 14px 1fr;
-    gap: 9px;
-    padding: 9px 0;
-  }
-  .rg-row .mk {
-    font-size: 11px;
-    line-height: 1.5;
-  }
-  .rg-row .ok {
-    color: var(--ok);
-  }
-  .rg-row .ng {
-    color: #e0906f;
-  }
-  .rg-row .ar {
-    color: #9ba296;
-  }
-  .rg-row b {
-    display: block;
-    font-family: var(--font-serif-jp);
-    font-weight: 600;
-    font-size: 12.5px;
-    color: #ebefe6;
-    margin-bottom: 2px;
-  }
-  /* gap_* frontmatter は旧・本文内モジュール向けに長文で書かれているものが
-     ある。このパネルはダイジェスト（全文は §4/§5 と下の「§N →」リンクが
-     担う）なので 4 行でクランプして、レールの背丈を抑える。 */
-  .rg-row span {
-    font-size: 11.2px;
-    line-height: 1.65;
-    color: #aeb5a9;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .rg-more {
-    display: block;
-    margin-top: 8px;
-    padding-top: 10px;
-    border-top: 1px solid #4a544b;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    color: var(--ok);
-    text-decoration: none;
-  }
-
-  /* 3段目: 脅威タイプ別バナー（白＋ライム縁・上辺3pxのライムバー）。 */
+  /* ─── レール2段目: 脅威タイプ別バナー（白＋ライム縁） ─── */
   .bd-railad {
     margin-top: 14px;
     padding: 16px 17px 15px;
@@ -1691,6 +1585,65 @@ const gapRowLabels = isJa
   }
   .ra-btn:hover {
     filter: brightness(1.06);
+  }
+
+  /* ─── レール3段目: Lemma のコンセプト ───
+     スレート地＝ブランド面。ボタンは置かず、静かなテキストリンク1本だけ。
+     旧「この Brief の核心」（本文の TL;DR と §5 の言い換えだった）を畳んで
+     ここに替えた。レール総高は 938px → 約 740px。 */
+  .bd-railbrand {
+    margin-top: 14px;
+    padding: 20px 18px 18px;
+    background: var(--ink);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bd-railbrand::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 3px;
+    background: var(--ok);
+  }
+  .rb-k {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ok);
+    margin: 0 0 12px;
+  }
+  .rb-t {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+    color: #f3f4f1;
+    margin: 0 0 12px;
+  }
+  .bd-railbrand p {
+    margin: 0 0 16px;
+    font-size: 11.5px;
+    line-height: 1.8;
+    color: #9ba296;
+  }
+  .rb-more {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ok);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(168, 224, 16, 0.35);
+    padding-bottom: 2px;
+    transition: border-color 0.15s;
+  }
+  .rb-more:hover {
+    border-color: var(--ok);
   }
 
   /* ─── COPY TOAST ─── */
