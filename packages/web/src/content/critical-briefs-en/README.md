@@ -20,7 +20,7 @@ EN-specific rules:
   write them for new Briefs.** They used to feed the always-on right-rail panel
   ("The core of this Brief"), which restated the TL;DR's closing line and §5 and
   went unread beside the body, so it was removed (PR #848). Existing values are
-  kept on the 133 published Briefs but render nowhere. `og_lead_*` is still
+  kept on existing Briefs but render nowhere. `og_lead_*` is still
   written in English in this collection.
 
 ## The six chapters
@@ -37,7 +37,8 @@ Headings are **numbered**; the table of contents (§1–§6) aligns with them.
 | 6 | `## 6. Sources` | Primary sources |
 
 **The detection–proof gap is not a standalone chapter.** It is the skeleton of
-§4 and §5 (its summary lives permanently in the right-rail gap panel). "The
+§4 and §5 (its summary is carried by the TL;DR's closing line; the old
+right-rail gap panel is retired). "The
 detection–proof gap" and "structural / by construction" remain brand
 vocabulary in the body text.
 

@@ -6,17 +6,22 @@
  * モック `lemma_brief_article_mock_v5.html` の面
  * （`Lemma_コンテンツテンプレート_実装指示_v1_2026-07-30.md` §5）。
  *
- * 本文（minmax(0,1fr)）＋右レール 268px の2カラム。右レールは3段:
+ * 本文（minmax(0,1fr)）＋右レール 268px の2カラム。右レールは3段（2026-08-21
+ * 改訂・PR #848）:
  *   1. 白カード — 読了プログレス＋Contents（scrollspy）
- *   2. スレート小箱 — 「この Brief の核心」（frontmatter の gap_* 3文。
- *      旧 BriefGapModule が本文中で担っていた役割の常設化）
- *   3. 白＋ライム縁 — 脅威タイプ別バナー（primary_category で文言を
- *      出し分け。config/briefThreatBanner.ts）
+ *   2. 白＋ライム縁 — 脅威タイプ別バナー（primary_category で文言を
+ *      出し分け。config/briefThreatBanner.ts）。CTA の飛び先は
+ *      config/cta.ts の BRIEF_RAIL_CTA_URL 1か所で差し替える
+ *   3. スレート — Lemma のコンセプト。マスターコピーはトップ h1・フッター・
+ *      OG と同一文言。ボタンは置かずテキストリンク1本
+ *
+ * 旧2段目「この Brief の核心」（gap_* 3文）はここで退役した。TL;DR 末尾と §5
+ * の言い換えで新規情報が無く、本文の横で読まれていなかったため。
  *
  * 末尾CTAは**証明の訴求**に一本化（「確かめられないものを、業務に入れない。」
  * ＋エンタープライズ相談／検証センター）。なりすまし等の
  * 脅威別訴求は右レールのバナーだけが持つ（§5.5）。旧 BriefAttackCta の
- * バナー／オープンループ／テールと BriefGapModule の本文挿入はここで退役。
+ * バナー／オープンループ／テールと BriefGapModule の本文挿入も退役済み。
  *
  * 章立ては §5.4 の6章（1. TL;DR〜6. Sources）へ移行中（2026-07-30 可否確定・
  * パイロットから順次）。目次は記事の h2 から動的に生成するので、9章の旧本文
