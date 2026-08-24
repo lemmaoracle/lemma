@@ -1617,7 +1617,9 @@ const DOC = {
 
   @media (max-width: 620px) {
     .v9 .vboards {
-      grid-template-columns: 1fr;
+      /* 1列でも理屈は同じ。min-content を切っておかないと、桁の増えた数字が
+         パネルごと横に押し広げる。 */
+      grid-template-columns: minmax(0, 1fr);
     }
     .v9 .vboard + .vboard {
       border-left: none;
