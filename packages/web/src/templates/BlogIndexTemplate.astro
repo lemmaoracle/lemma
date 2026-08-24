@@ -98,9 +98,19 @@ const CATEGORY_DESC: Record<string, Record<Locale, string>> = {
   },
 };
 
+// 購読導線は RSS だけ（メール購読は 2026-08 に全廃）。`<head>` の
+// rel="alternate" はリーダーの自動検出用で人には見えないので、面にも出す。
+// Brief 一覧（BriefIndexTemplate の `.cb-acts`）と同じ扱い。
+const rssHref = `${base}/rss.xml`;
+
+// リードは「何が置いてあるか」ではなく**読み手の判断**を書く。旧文は
+// 「証明基盤の設計と実装…技術仕様まで」と成果物を並べていたが、置いてある
+// ものの案内は直下のカテゴリカード4枚が既にやっている。声はトップの
+// ヒーローに揃える（言い切りの1文＋敬体の1文）。
 const C = isJa
   ? {
-      lead: "証明基盤の設計と実装、AI時代の信頼をめぐる論点。新機能のアナウンスから技術仕様まで。",
+      lead: "AI が下した判断も、現場でつくられた記録も、後から「本物だ」と確かめられる形にする。導入をどう判断し、どの業務から効くのかを書いています。",
+      rss: "RSS フィード",
       allDesc: "全カテゴリの記事を新着順に",
       featured: "注目の記事",
       featuredEn: "Featured",
@@ -111,7 +121,8 @@ const C = isJa
       changelogEn: "Changelog",
     }
   : {
-      lead: "Design and implementation of proof infrastructure, and the questions of trust in the AI era — from announcements to technical specs.",
+      lead: "Making AI decisions — and the records your teams produce — something anyone can verify later. How to weigh adoption, and where it pays off first.",
+      rss: "RSS feed",
       allDesc: "Every category, newest first",
       featured: "Featured",
       featuredEn: "Featured",
@@ -140,6 +151,9 @@ const C = isJa
             他ページの kicker は情報を足しているので残している。 */}
         <h1 class="bi-h1">{t.blog.title}</h1>
         <p class="bi-lead">{C.lead}</p>
+        <div class="bi-acts">
+          <a href={rssHref}>{C.rss}</a>
+        </div>
         {/* カテゴリの提示はここ1箇所（説明1行付きのカード型フィルタ）。
             旧構成では末尾にも説明付きカードがあり二重だったため、丁寧な
             方の表記を冒頭に統合した。 */}
@@ -322,6 +336,23 @@ const C = isJa
     line-height: 1.95;
     color: var(--tx-soft);
     max-width: 62ch;
+  }
+  /* 購読導線（RSS）。Brief 一覧の `.cb-acts` と同じ見た目・同じ位置。 */
+  .bi-acts {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 14px 0 0;
+    font-size: 12.5px;
+  }
+  .bi-acts a {
+    color: var(--ok-ink);
+    border-bottom: 1px solid rgba(111, 156, 0, 0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.15s;
+  }
+  .bi-acts a:hover {
+    border-color: var(--ok-ink);
   }
   /* カテゴリフィルタ — 説明1行付きのカード型（旧・末尾カテゴリカードの
      表記をフィルタに統合）。 */
