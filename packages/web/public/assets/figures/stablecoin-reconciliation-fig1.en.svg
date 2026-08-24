@@ -1,6 +1,6 @@
-<svg viewBox="0 0 760 298" width="760" height="298" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig1title fig1desc">
+<svg viewBox="0 0 760 348" width="760" height="348" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig1title fig1desc">
 <title id="fig1title">Figure 1 — Reconciling your record, your counterparty's, and the on-chain settlement without disclosure</title>
-<desc id="fig1desc">On the left, the on-chain settlement record and the payer's ledger. On the right, the payee's ledger. Each side computes a hash from its own record, and only the hashes are exchanged and compared in the center. The contents are never shown. A match clears the item; a mismatch points to the field to check.</desc>
+<desc id="fig1desc">On the left, the on-chain settlement record and the payer's ledger. In the centre, the reconciliation registry. On the right, the payee's ledger. Each payment is recorded at the time it is made, then matched by transaction hash or quote number. The contents stay private and are never registered. A match clears automatically; a mismatch points to the field to check.</desc>
 <defs>
 <style>
 .t{font-family:"Space Grotesk","Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif}
@@ -9,7 +9,7 @@
 <marker id="ah" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#5c6156"/></marker>
 <marker id="ah2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#6f9c00"/></marker>
 </defs>
-<rect x="0" y="0" width="760" height="298" fill="#fcfaf5"/>
+<rect x="0" y="0" width="760" height="348" fill="#fcfaf5"/>
 
 <text class="lbl" x="105" y="34" text-anchor="middle">INPUTS — PAYER SIDE</text>
 <rect x="20" y="48" width="170" height="52" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
@@ -18,15 +18,15 @@
 
 <rect x="20" y="112" width="170" height="52" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
 <text class="t" x="105" y="136" text-anchor="middle" font-size="13" fill="#12140e">Payer's ledger</text>
-<text class="t" x="105" y="154" text-anchor="middle" font-size="11" fill="#5c6156">held in-house</text>
+<text class="t" x="105" y="154" text-anchor="middle" font-size="11" fill="#5c6156">encoded privately</text>
 
-<text class="lbl" x="400" y="34" text-anchor="middle">RECONCILIATION</text>
+<text class="lbl" x="400" y="34" text-anchor="middle">RECONCILIATION REGISTRY</text>
 <rect x="290" y="48" width="220" height="116" rx="3" fill="#ebefe6" stroke="#6f9c00" stroke-width="1.5"/>
 <rect x="290" y="48" width="220" height="4" fill="#a8e010"/>
 <rect x="306" y="66" width="188" height="40" rx="2" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
-<text class="t" x="400" y="90" text-anchor="middle" font-size="13" fill="#12140e">Compare all three hashes</text>
+<text class="t" x="400" y="90" text-anchor="middle" font-size="13" fill="#12140e">Payment matching</text>
 <rect x="306" y="112" width="188" height="40" rx="2" fill="#ffffff" stroke="#6f9c00" stroke-width="1" stroke-dasharray="3 2"/>
-<text class="t" x="400" y="136" text-anchor="middle" font-size="13" fill="#4e7a00">Contents stay private</text>
+<text class="t" x="400" y="136" text-anchor="middle" font-size="12" fill="#4e7a00">Private — never registered</text>
 
 <text class="lbl" x="655" y="34" text-anchor="middle">THE CHECKING SIDE</text>
 <rect x="580" y="48" width="150" height="116" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
@@ -34,14 +34,16 @@
 <text class="t" x="655" y="119" text-anchor="middle" font-size="13" fill="#12140e">(the checking side)</text>
 
 <line x1="196" y1="106" x2="282" y2="106" stroke="#5c6156" stroke-width="1.5" marker-end="url(#ah)"/>
-<text class="t" x="239" y="98" text-anchor="middle" font-size="11" fill="#5c6156">computed on</text>
-<text class="t" x="239" y="124" text-anchor="middle" font-size="11" fill="#5c6156">each side</text>
+<text class="t" x="239" y="98" text-anchor="middle" font-size="11" fill="#5c6156">recorded at</text>
+<text class="t" x="239" y="124" text-anchor="middle" font-size="11" fill="#5c6156">payment time</text>
 
-<line x1="514" y1="106" x2="572" y2="106" stroke="#6f9c00" stroke-width="1.5" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
-<text class="t" x="543" y="98" text-anchor="middle" font-size="11" fill="#4e7a00">compare</text>
+<path d="M655 176 L655 216 L105 216 L105 178" fill="none" stroke="#6f9c00" stroke-width="1.5" marker-end="url(#ah2)"/>
+<line x1="400" y1="176" x2="400" y2="216" stroke="#6f9c00" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="286" y="206" width="228" height="20" fill="#fcfaf5"/>
+<text class="t" x="400" y="221" text-anchor="middle" font-size="12" fill="#4e7a00">matched by tx / quote no.</text>
 
-<line x1="20" y1="200" x2="740" y2="200" stroke="#a8e010" stroke-width="2"/>
-<text class="t" x="20" y="226" font-size="11" fill="#5c6156">The payer, the chain and the payee each compute a hash from their own record.</text>
-<text class="t" x="20" y="246" font-size="11" fill="#5c6156">Only the hashes are compared, so amounts and counterparties never leave either side.</text>
-<text class="t" x="20" y="266" font-size="11" fill="#5c6156">A match clears without anyone reviewing it; a mismatch points to the one field to check.</text>
+<line x1="20" y1="262" x2="740" y2="262" stroke="#a8e010" stroke-width="2"/>
+<text class="t" x="20" y="288" font-size="11" fill="#5c6156">The payer records at payment time. The contents stay private and never go onto the registry.</text>
+<text class="t" x="20" y="308" font-size="11" fill="#5c6156">The checking side matches the same payment by transaction hash, quote number, or similar keys.</text>
+<text class="t" x="20" y="328" font-size="11" fill="#5c6156">A match clears without anyone reviewing it; a mismatch points to the one field to check.</text>
 </svg>
