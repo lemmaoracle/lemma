@@ -1,0 +1,12 @@
+import fs from "node:fs";
+import { fileCommitment } from "@lemmaoracle/transform";
+const read = (p: string) => new Uint8Array(fs.readFileSync(p));
+const LATEST = "10684812376862293955859166744996473385693027168398915282185627969428680499624";
+const a = read("/root/demo-files/日本の城ベスト30(a).xlsx");
+const npdf = read("/root/demo-files/新日本の城ベスト30.pdf");
+const opdf = read("/root/demo-files/日本の城ベスト30.pdf");
+console.log("(a).xlsx commit :", fileCommitment(a).toString());
+console.log("  == latestCommitment ?", fileCommitment(a).toString() === LATEST);
+console.log("新PDF commit     :", fileCommitment(npdf).toString());
+console.log("旧PDF commit     :", fileCommitment(opdf).toString());
+console.log("新 != 旧 ?", fileCommitment(npdf).toString() !== fileCommitment(opdf).toString());

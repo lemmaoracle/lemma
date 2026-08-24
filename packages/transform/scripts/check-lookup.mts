@@ -1,0 +1,13 @@
+import { create, proofs } from "@lemmaoracle/sdk";
+import fs from "node:fs";
+const RESULT = JSON.parse(fs.readFileSync("/root/demo-files/proof-result.json","utf8"));
+const toBytes32Hex = (d: string) => "0x" + BigInt(d).toString(16).padStart(64, "0");
+const docHash = toBytes32Hex(RESULT.outputCommitment);
+const client = create({ apiBase: "https://workers.lemma.workers.dev", apiKey: process.env.LEMMA_API_KEY! });
+const r: any = await proofs.getByDocHash(client, docHash);
+console.log("=== getByDocHash full response ===");
+console.log("keys:", Object.keys(r));
+console.log("docHash:", r.docHash);
+console.log("circuitId:", r.circuitId);
+console.log("status:", r.status);
+console.log("inputs present:", "inputs" in r, JSON.stringify(r.inputs ?? r.publicSignals ?? null));

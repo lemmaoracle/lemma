@@ -1,0 +1,14 @@
+import fs from "node:fs";
+import { fileCommitment } from "@lemmaoracle/transform";
+const read = (p: string) => new Uint8Array(fs.readFileSync(p));
+const short = (h: string) => "0x" + h.slice(0, 24) + "...";
+const a = read("/root/demo-files/日本の城ベスト30.xlsx");
+const b = read("/root/demo-files/日本の城ベスト30.pdf");
+const c = read("/root/demo-files/日本の城ベスト30(a).xlsx");
+const ca = fileCommitment(a).toString();
+const cb = fileCommitment(b).toString();
+const cc = fileCommitment(c).toString();
+console.log("input (旧xlsx)  :", short(ca), "("+a.length+"B)");
+console.log("output (pdf)    :", short(cb), "("+b.length+"B)");
+console.log("latest ((a)xlsx):", short(cc), "("+c.length+"B)");
+console.log("input vs latest 一致?", ca === cc, "←", ca === cc ? "⚠ 一致(登録側が(a))" : "✓ 不一致(想定どおり)");
