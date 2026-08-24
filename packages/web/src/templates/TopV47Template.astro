@@ -285,6 +285,7 @@ const ogDescription = isJa
         var chip = document.getElementById("plive");
         function off() {
           V.textContent = "———";
+          V.style.fontSize = "";
           I.textContent = "—";
           V.classList.add("off");
           S.textContent = REG.perr;
@@ -295,13 +296,29 @@ const ogDescription = isJa
         function num(n) {
           return (n || 0).toLocaleString(REG.numLocale);
         }
+        /* 桁数に合わせて字を詰める。
+           .bignum の clamp() は画面幅しか知らないので、検証済み証明数が 100万
+           （区切り込み9文字）に乗った時点でパネル幅を超え、overflow:hidden の
+           .rpanel に末尾が切られていた。文字幅はフォントサイズに比例するので、
+           はみ出し比 (clientWidth/scrollWidth) をそのまま掛けて縮める。以降
+           1000万・1億と桁が増えても同じ理屈で収まる。 */
+        function fit(el) {
+          el.style.fontSize = "";
+          var avail = el.clientWidth;
+          if (!avail) return;
+          var need = el.scrollWidth;
+          if (need <= avail) return;
+          var base = parseFloat(getComputedStyle(el).fontSize);
+          el.style.fontSize = Math.floor((base * avail) / need) + "px";
+        }
         /* 読み込み時に数字が上がる (検証センター /verify/ と同じ 1300ms・cubic-out)。
            reduced-motion では最終値を直接出す。 */
         function countUp(el, to) {
-          if (reduced) {
-            el.textContent = num(to);
-            return;
-          }
+          /* 先に最終値を入れて幅を決める。tabular-nums なので途中値の幅は
+             最終値を超えず、アニメーション中に字が揺れない。 */
+          el.textContent = num(to);
+          fit(el);
+          if (reduced) return;
           var t0 = performance.now(),
             dur = 1300,
             from = Math.max(0, to - Math.min(to, 600));
@@ -342,6 +359,7 @@ const ogDescription = isJa
                 first = false;
               } else {
                 V.textContent = num(v.count);
+                fit(V);
                 if (hasIssued) I.textContent = num(s.count);
               }
               /* 内訳はトップでは出さない（pfoot の「内訳を見る →」＝ /verify/ が正）。
@@ -364,6 +382,14 @@ const ogDescription = isJa
         }
         load();
         setInterval(load, 45000);
+        /* 幅が変われば clamp() の基準も変わるので、測り直す。 */
+        var refitTimer;
+        window.addEventListener("resize", function () {
+          clearTimeout(refitTimer);
+          refitTimer = setTimeout(function () {
+            fit(V);
+          }, 150);
+        });
       })();
 
       /* ---- ヒーロー第2CTA に実在の docHash を埋める ----

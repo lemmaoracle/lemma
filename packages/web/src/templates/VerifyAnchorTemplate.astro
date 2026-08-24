@@ -666,11 +666,34 @@ const DOC = {
       );
     }
 
+    /* 桁数に合わせて字を詰める。
+       .bignum の clamp() は画面幅しか知らないため、検証済み証明数が 100万
+       （区切り込み9文字）に乗ると列幅を超える。文字幅はフォントサイズに比例
+       するので、はみ出し比 (clientWidth/scrollWidth) をそのまま掛けて縮める。 */
+    function fitSize(el) {
+      el.style.fontSize = "";
+      const base = parseFloat(getComputedStyle(el).fontSize);
+      const avail = el.clientWidth;
+      const need = el.scrollWidth;
+      if (!avail || need <= avail) return base;
+      return Math.floor((base * avail) / need);
+    }
+
+    /* 2枚のボードは横に並ぶので、大きさは小さい方に揃える。片方だけ縮むと
+       検証済みと発行済みが別の重みに見えてしまう。 */
+    function fitTotals() {
+      const v = $("vtotal"),
+        i = $("itotal");
+      const px = Math.min(fitSize(v), fitSize(i));
+      v.style.fontSize = px + "px";
+      i.style.fontSize = px + "px";
+    }
+
     function countUp(el, to) {
-      if (reduced) {
-        el.textContent = fmt(to);
-        return;
-      }
+      /* 先に最終値を入れて幅を決める。tabular-nums なので途中値の幅は
+         最終値を超えず、アニメーション中に字が揺れない。 */
+      el.textContent = fmt(to);
+      if (reduced) return;
       const t0 = performance.now(),
         dur = 1300,
         from = Math.max(0, to - Math.min(to, 600));
@@ -693,12 +716,17 @@ const DOC = {
         const vt = j.verified.bySource.reduce((a, b) => a + b.count, 0);
         const it = j.issued.byBucket.reduce((a, b) => a + b.count, 0);
         if (first) {
+          /* 最終値を入れてから大きさを決め、そのうえで数える。 */
+          $("vtotal").textContent = fmt(vt);
+          $("itotal").textContent = fmt(it);
+          fitTotals();
           countUp($("vtotal"), vt);
           countUp($("itotal"), it);
           first = false;
         } else {
           $("vtotal").textContent = fmt(vt);
           $("itotal").textContent = fmt(it);
+          fitTotals();
         }
         board($("vboard-verified"), j.verified.bySource, STR.src);
         board($("vboard-issued"), j.issued.byBucket, STR.bkt);
@@ -712,6 +740,8 @@ const DOC = {
         $("vboard-issued").innerHTML = "";
         $("vtotal").textContent = "—";
         $("itotal").textContent = "—";
+        $("vtotal").style.fontSize = "";
+        $("itotal").style.fontSize = "";
         $("vupd").textContent = "—";
         $("iupd").textContent = "—";
         $("perr").hidden = false;
@@ -739,6 +769,12 @@ const DOC = {
       $("doc-mode").hidden = true;
       load();
       setInterval(load, 45000);
+      /* 幅が変われば clamp() の基準も変わるので、測り直す。 */
+      let refitTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(refitTimer);
+        refitTimer = setTimeout(fitTotals, 150);
+      });
     }
   })();
 </script>
@@ -917,7 +953,10 @@ const DOC = {
     position: relative;
     z-index: 2;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* 1fr の自動最小サイズは min-content。数字は途中で折り返せないので、
+       桁が増えるとこの列が相方から幅を奪って左右が非対称になる。
+       minmax(0,1fr) で最小を 0 に落とし、幅は常に半々に固定する。 */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 0;
   }
   .v9 .vboard {
