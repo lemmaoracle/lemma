@@ -1,6 +1,6 @@
-<svg viewBox="0 0 760 298" width="760" height="298" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig1title fig1desc">
+<svg viewBox="0 0 760 348" width="760" height="348" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig1title fig1desc">
 <title id="fig1title">図1 自社・相手・オンチェーンの記録を、開示せずに照合</title>
-<desc id="fig1desc">左に決済記録と支払う側の会計、右に受け取る側の会計。3者ともそれぞれの記録からハッシュ値を計算し、中央でハッシュ値だけをやり取りして照合する。中身は見せない。一致すれば消込完了、不一致なら項目を特定する。</desc>
+<desc id="fig1desc">左に決済記録と支払う側の会計、中央に決済レジストリ、右に受け取る側の会計。支払い時に記録し、取引txや見積番号などで照合する。中身は非公開で登録もしない。一致すれば自動で完了、不一致なら項目を特定する。</desc>
 <defs>
 <style>
 .t{font-family:"Space Grotesk","Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif}
@@ -9,7 +9,7 @@
 <marker id="ah" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#5c6156"/></marker>
 <marker id="ah2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#6f9c00"/></marker>
 </defs>
-<rect x="0" y="0" width="760" height="298" fill="#fcfaf5"/>
+<rect x="0" y="0" width="760" height="348" fill="#fcfaf5"/>
 
 <text class="lbl" x="105" y="34" text-anchor="middle">入力・支払う側</text>
 <rect x="20" y="48" width="170" height="52" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
@@ -18,15 +18,15 @@
 
 <rect x="20" y="112" width="170" height="52" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
 <text class="t" x="105" y="136" text-anchor="middle" font-size="13" fill="#12140e">支払う側の会計</text>
-<text class="t" x="105" y="154" text-anchor="middle" font-size="11" fill="#5c6156">自社が保持</text>
+<text class="t" x="105" y="154" text-anchor="middle" font-size="11" fill="#5c6156">秘密コード化</text>
 
-<text class="lbl" x="400" y="34" text-anchor="middle">照合</text>
+<text class="lbl" x="400" y="34" text-anchor="middle">決済レジストリ</text>
 <rect x="290" y="48" width="220" height="116" rx="3" fill="#ebefe6" stroke="#6f9c00" stroke-width="1.5"/>
 <rect x="290" y="48" width="220" height="4" fill="#a8e010"/>
 <rect x="306" y="66" width="188" height="40" rx="2" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
-<text class="t" x="400" y="90" text-anchor="middle" font-size="13" fill="#12140e">3者のハッシュ値を照合</text>
+<text class="t" x="400" y="90" text-anchor="middle" font-size="13" fill="#12140e">支払いの照合</text>
 <rect x="306" y="112" width="188" height="40" rx="2" fill="#ffffff" stroke="#6f9c00" stroke-width="1" stroke-dasharray="3 2"/>
-<text class="t" x="400" y="136" text-anchor="middle" font-size="13" fill="#4e7a00">中身は見せない</text>
+<text class="t" x="400" y="136" text-anchor="middle" font-size="13" fill="#4e7a00">中身は非公開・登録もしない</text>
 
 <text class="lbl" x="655" y="34" text-anchor="middle">確認する側</text>
 <rect x="580" y="48" width="150" height="116" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
@@ -34,14 +34,16 @@
 <text class="t" x="655" y="119" text-anchor="middle" font-size="13" fill="#12140e">（確認する側）</text>
 
 <line x1="196" y1="106" x2="282" y2="106" stroke="#5c6156" stroke-width="1.5" marker-end="url(#ah)"/>
-<text class="t" x="239" y="98" text-anchor="middle" font-size="11" fill="#5c6156">各自で</text>
-<text class="t" x="239" y="124" text-anchor="middle" font-size="11" fill="#5c6156">計算</text>
+<text class="t" x="239" y="98" text-anchor="middle" font-size="11" fill="#5c6156">支払い時に</text>
+<text class="t" x="239" y="124" text-anchor="middle" font-size="11" fill="#5c6156">記録</text>
 
-<line x1="514" y1="106" x2="572" y2="106" stroke="#6f9c00" stroke-width="1.5" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
-<text class="t" x="543" y="98" text-anchor="middle" font-size="11" fill="#4e7a00">照合</text>
+<path d="M655 176 L655 216 L105 216 L105 178" fill="none" stroke="#6f9c00" stroke-width="1.5" marker-end="url(#ah2)"/>
+<line x1="400" y1="176" x2="400" y2="216" stroke="#6f9c00" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="292" y="206" width="216" height="20" fill="#fcfaf5"/>
+<text class="t" x="400" y="221" text-anchor="middle" font-size="12" fill="#4e7a00">取引 tx・見積番号などで照合</text>
 
-<line x1="20" y1="200" x2="740" y2="200" stroke="#a8e010" stroke-width="2"/>
-<text class="t" x="20" y="226" font-size="11" fill="#5c6156">支払う側・オンチェーン・受け取る側、それぞれの記録からハッシュ値を計算します。</text>
-<text class="t" x="20" y="246" font-size="11" fill="#5c6156">値だけを照合するので、金額や取引先などの中身はどちらにも渡りません。</text>
-<text class="t" x="20" y="266" font-size="11" fill="#5c6156">一致すれば担当者の確認なしで完了、不一致ならその項目だけを担当者が確認します。</text>
+<line x1="20" y1="262" x2="740" y2="262" stroke="#a8e010" stroke-width="2"/>
+<text class="t" x="20" y="288" font-size="11" fill="#5c6156">支払う側は支払い時に記録します。中身そのものは非公開で、レジストリにも載せません。</text>
+<text class="t" x="20" y="308" font-size="11" fill="#5c6156">確認する側は、取引 tx や見積番号などで同じ支払いを突き合わせます。</text>
+<text class="t" x="20" y="328" font-size="11" fill="#5c6156">一致すれば担当者の確認なしで完了、不一致ならその項目だけを担当者が確認します。</text>
 </svg>
