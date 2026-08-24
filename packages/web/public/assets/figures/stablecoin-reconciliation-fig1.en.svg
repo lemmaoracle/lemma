@@ -1,6 +1,6 @@
 <svg viewBox="0 0 760 348" width="760" height="348" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig1title fig1desc">
 <title id="fig1title">Figure 1 — Reconciling your record, your counterparty's, and the on-chain settlement without disclosure</title>
-<desc id="fig1desc">On the left, the on-chain settlement record and the payer's ledger. In the centre, the settlement registry. On the right, the payee's ledger. Each payment is recorded at the time it is made, then matched by transaction hash or quote number. The contents stay private and are never registered. A match clears automatically; a mismatch points to the field to check.</desc>
+<desc id="fig1desc">On the left, the on-chain settlement record and the payer's ledger. In the centre, the reconciliation registry. On the right, the payee's ledger. Each payment is recorded at the time it is made, then matched by transaction hash or quote number. The contents stay private and are never registered. A match clears automatically; a mismatch points to the field to check.</desc>
 <defs>
 <style>
 .t{font-family:"Space Grotesk","Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif}
@@ -20,7 +20,7 @@
 <text class="t" x="105" y="136" text-anchor="middle" font-size="13" fill="#12140e">Payer's ledger</text>
 <text class="t" x="105" y="154" text-anchor="middle" font-size="11" fill="#5c6156">encoded privately</text>
 
-<text class="lbl" x="400" y="34" text-anchor="middle">SETTLEMENT REGISTRY</text>
+<text class="lbl" x="400" y="34" text-anchor="middle">RECONCILIATION REGISTRY</text>
 <rect x="290" y="48" width="220" height="116" rx="3" fill="#ebefe6" stroke="#6f9c00" stroke-width="1.5"/>
 <rect x="290" y="48" width="220" height="4" fill="#a8e010"/>
 <rect x="306" y="66" width="188" height="40" rx="2" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
