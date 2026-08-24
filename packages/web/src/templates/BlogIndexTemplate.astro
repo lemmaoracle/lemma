@@ -103,9 +103,13 @@ const CATEGORY_DESC: Record<string, Record<Locale, string>> = {
 // Brief 一覧（BriefIndexTemplate の `.cb-acts`）と同じ扱い。
 const rssHref = `${base}/rss.xml`;
 
+// リードは「何が置いてあるか」ではなく**読み手の判断**を書く。旧文は
+// 「証明基盤の設計と実装…技術仕様まで」と成果物を並べていたが、置いてある
+// ものの案内は直下のカテゴリカード4枚が既にやっている。声はトップの
+// ヒーローに揃える（言い切りの1文＋敬体の1文）。
 const C = isJa
   ? {
-      lead: "証明基盤の設計と実装、AI時代の信頼をめぐる論点。新機能のアナウンスから技術仕様まで。",
+      lead: "AI が下した判断も、現場でつくられた記録も、後から「本物だ」と確かめられる形にする。導入をどう判断し、どの業務から効くのかを書いています。",
       rss: "RSS フィード",
       allDesc: "全カテゴリの記事を新着順に",
       featured: "注目の記事",
@@ -117,7 +121,7 @@ const C = isJa
       changelogEn: "Changelog",
     }
   : {
-      lead: "Design and implementation of proof infrastructure, and the questions of trust in the AI era — from announcements to technical specs.",
+      lead: "Making AI decisions — and the records your teams produce — something anyone can verify later. How to weigh adoption, and where it pays off first.",
       rss: "RSS feed",
       allDesc: "Every category, newest first",
       featured: "Featured",
