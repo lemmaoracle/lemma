@@ -21,4 +21,4 @@
 | ai-explainability-management-crypto-proof.jpg | 2026.04.16 説明可能経営（番号付き私書箱の列 — 記録の在り処のスケール抽象） | Jinsoo Choi | https://unsplash.com/photos/a66u8vmMcMc | Unsplash License |
 | verified-attributes-travel-public-services.jpg | 2026.04.07 旅行・公共（空港のガラス面とシルエット — スケール抽象） | Artur Tumasjan | https://unsplash.com/photos/KZSNMN4VxR8 | Unsplash License |
 | verifiable-fx-rates-for-payments.jpg | 2026.08.07 決済レートに、証明を付ける（白い中庭を横切る一人 — スケール抽象。金融系カバーが暗く続いたため明るい方向に差し替え） | Jan Genge | https://unsplash.com/photos/GvnIvq7LPkY | Unsplash License |
-| incident-response-record-proof.jpg | 2026.09.01 クレーム・事故対応記録を、非改ざんで証明する（ホテル/レストランのテーブルセッティング — 顧客対応の現場） | Yanhao Fang | https://unsplash.com/photos/wMaKUAsEcSQ | Unsplash License |
+| incident-response-record-proof.jpg | 2026.08.26 クレーム・事故対応記録を、非改ざんで証明する（ホテル/レストランのテーブルセッティング — 顧客対応の現場） | Yanhao Fang | https://unsplash.com/photos/wMaKUAsEcSQ | Unsplash License |
