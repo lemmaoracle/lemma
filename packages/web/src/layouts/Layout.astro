@@ -132,7 +132,7 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="256x256" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#f5f6f4" />
-    <meta property="og:site_name" content="Lemma" />
+    <meta property="og:site_name" content={t.layout.siteName} />
     <meta name="twitter:card" content="summary_large_image" />
     {
       shouldRenderMetaTags && Astro.props.metaType === "home" && (

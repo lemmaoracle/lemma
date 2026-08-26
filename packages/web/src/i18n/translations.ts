@@ -270,6 +270,9 @@ export interface Translations {
   readonly layout: Readonly<{
     readonly defaultTitle: string;
     readonly defaultDescription: string;
+    /** og:site_name。ソーシャルカードの見出し上に出る小さなラベル。
+     * ロケールごとに分ける（ベタ書きだと EN のカードに日本語が出る）。 */
+    readonly siteName: string;
   }>;
   readonly services: Readonly<{
     readonly title: string;
