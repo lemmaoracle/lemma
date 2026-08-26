@@ -1,0 +1,51 @@
+<svg viewBox="0 0 760 348" width="760" height="348" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig1title fig1desc">
+<title id="fig1title">図1 現場は保存するだけ、本部は照合するだけ</title>
+<desc id="fig1desc">左は現場。対応記録を保存すると、その内容から計算したハッシュ値が自動で発行される。中央は書き換えられない登録先で、登録時点のハッシュ値だけが載り、記録の本文は載らない。右は本部。検証リンクを開くと、いまの記録から計算した値と登録時点の値が照合され、NOT TAMPERED が表示される。原本の取り寄せも店舗への電話も要らない。</desc>
+<defs>
+<style>
+.t{font-family:"Space Grotesk","Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif}
+.lbl{font-family:"Space Grotesk","Noto Sans JP","Hiragino Sans",sans-serif;font-size:11px;letter-spacing:1.05px;fill:#5c6156}
+</style>
+<marker id="ir-ah" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#5c6156"/></marker>
+<marker id="ir-ah2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#6f9c00"/></marker>
+</defs>
+<rect x="0" y="0" width="760" height="348" fill="#fcfaf5"/>
+
+<text class="lbl" x="105" y="34" text-anchor="middle">① 現場は保存するだけ</text>
+<rect x="20" y="48" width="170" height="52" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
+<text class="t" x="105" y="72" text-anchor="middle" font-size="13" fill="#12140e">対応記録を保存</text>
+<text class="t" x="105" y="90" text-anchor="middle" font-size="11" fill="#5c6156">顧客情報・詳細は社内のまま</text>
+
+<rect x="20" y="112" width="170" height="52" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
+<text class="t" x="105" y="136" text-anchor="middle" font-size="13" fill="#12140e">ハッシュ値を自動発行</text>
+<text class="t" x="105" y="154" text-anchor="middle" font-size="11" fill="#5c6156">送るのはこの値だけ</text>
+
+<text class="lbl" x="400" y="34" text-anchor="middle">書き換えられない登録先</text>
+<rect x="290" y="48" width="220" height="116" rx="3" fill="#ebefe6" stroke="#6f9c00" stroke-width="1.5"/>
+<rect x="290" y="48" width="220" height="4" fill="#a8e010"/>
+<rect x="306" y="66" width="188" height="40" rx="2" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
+<text class="t" x="400" y="90" text-anchor="middle" font-size="13" fill="#12140e">登録時点のハッシュ値</text>
+<rect x="306" y="112" width="188" height="40" rx="2" fill="#ffffff" stroke="#6f9c00" stroke-width="1" stroke-dasharray="3 2"/>
+<text class="t" x="400" y="136" text-anchor="middle" font-size="13" fill="#4e7a00">記録の本文は載せない</text>
+
+<text class="lbl" x="655" y="34" text-anchor="middle">② 本部は照合するだけ</text>
+<rect x="580" y="48" width="150" height="116" rx="3" fill="#ffffff" stroke="#c3cabb" stroke-width="1"/>
+<text class="t" x="655" y="80" text-anchor="middle" font-size="13" fill="#12140e">検証リンクを開く</text>
+<rect x="596" y="94" width="118" height="28" rx="2" fill="#ebefe6" stroke="#6f9c00" stroke-width="1"/>
+<text class="t" x="655" y="113" text-anchor="middle" font-size="12" letter-spacing="0.8" fill="#4e7a00">NOT TAMPERED</text>
+<text class="t" x="655" y="145" text-anchor="middle" font-size="11" fill="#5c6156">店舗への電話は不要</text>
+
+<line x1="196" y1="106" x2="282" y2="106" stroke="#5c6156" stroke-width="1.5" marker-end="url(#ir-ah)"/>
+<text class="t" x="239" y="98" text-anchor="middle" font-size="11" fill="#5c6156">保存と同時に</text>
+<text class="t" x="239" y="124" text-anchor="middle" font-size="11" fill="#5c6156">登録</text>
+
+<path d="M655 176 L655 216 L105 216 L105 178" fill="none" stroke="#6f9c00" stroke-width="1.5" marker-end="url(#ir-ah2)"/>
+<line x1="400" y1="176" x2="400" y2="216" stroke="#6f9c00" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="292" y="206" width="216" height="20" fill="#fcfaf5"/>
+<text class="t" x="400" y="221" text-anchor="middle" font-size="12" fill="#4e7a00">いまの記録から計算した値と照合</text>
+
+<line x1="20" y1="262" x2="740" y2="262" stroke="#a8e010" stroke-width="2"/>
+<text class="t" x="20" y="288" font-size="11" fill="#5c6156">現場はいつも通り保存するだけです。記録の本文は送信も開示もされず、社内に留まります。</text>
+<text class="t" x="20" y="308" font-size="11" fill="#5c6156">本部はリンクを開くだけで、いまの記録と登録時点の値が一致するかを数秒で確かめられます。</text>
+<text class="t" x="20" y="328" font-size="11" fill="#5c6156">分かるのは「正当な手順・権限で対応した」という記載が書き換えられていないこと、その一点です。</text>
+</svg>
