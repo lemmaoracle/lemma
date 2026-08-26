@@ -29,6 +29,7 @@ import Footer from "../components/FooterRenewal.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import SchemaOrg from "@/components/SchemaOrg";
 import BlogCover from "../components/BlogCover.astro";
+import BlogCoverAuto from "../components/BlogCoverAuto.astro";
 import { resolveCoverImage } from "../lib/coverPhoto";
 import { caseStudyCardSvg } from "../lib/caseStudyCover";
 import { DISCOVERY_CALL_URL } from "../config/cta";
@@ -45,6 +46,11 @@ export interface BlogArticleTemplateProps {
   };
   related: Array<{
     cover?: string;
+    /* 写真カバーの判定に要る。ここが欠けていたので関連記事カードだけ
+       生成カバーに落ちていた（索引の BlogCoverAuto は渡している）。 */
+    coverPhoto?: string;
+    tags?: ReadonlyArray<string>;
+    coverLines?: ReadonlyArray<string>;
     category: string;
     date: string;
     title: string;
@@ -266,7 +272,7 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
               <li>
                 <a href={`${blogPath}/${r.slug}`} class="related-item">
                   <div class="related-thumb">
-                    <BlogCover category={r.category} slug={r.slug} />
+                    <BlogCoverAuto category={r.category} slug={r.slug} coverPhoto={r.coverPhoto} cover={r.cover} tags={r.tags} coverLines={r.coverLines} locale={locale} />
                   </div>
                   <div class="related-body">
                     <div class="related-cat">
@@ -863,6 +869,9 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     padding: 16px 18px;
   }
   .related-thumb {
+    /* 96px 幅では既定の 2px 走査線が太く見えるので 1px に落とす
+       （BlogCoverAuto が変数で開けている調整点）。 */
+    --cover-scan-height: 1px;
     width: 96px;
     height: 64px;
     flex-shrink: 0;
@@ -870,7 +879,8 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     border-radius: 8px;
     overflow: hidden;
   }
-  .related-thumb :global(svg) {
+  .related-thumb :global(svg),
+  .related-thumb :global(.cover-photo) {
     width: 100%;
     height: 100%;
     display: block;
