@@ -678,6 +678,7 @@
   },
   "layout": {
     "defaultTitle": "Lemma — AI のための信頼インフラ",
+    "siteName": "Lemma — AI証明基盤",
     "defaultDescription": "独自の暗号技術で、AI とエージェントに証明された事実だけを渡す。証明できる判断を、データを持たないままで。エンタープライズ AI・エージェント決済・規制対応に効く信頼インフラ。"
   },
   "demoCta": {

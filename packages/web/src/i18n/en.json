@@ -664,6 +664,7 @@
   },
   "layout": {
     "defaultTitle": "Lemma — Trust Infrastructure for AI",
+    "siteName": "Lemma — Proof Infrastructure for AI",
     "defaultDescription": "Cryptographic proof that AI and agents act on verified facts only. Decisions you can prove, without holding the data. Trust infrastructure for enterprise AI, agent payments, and compliance."
   },
   "demoCta": {
