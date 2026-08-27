@@ -68,28 +68,27 @@ const base32lower = (bytes: Uint8Array): string => {
     const newBuffer = (state.buffer << 8) | byte;
     const newBufferBits = state.bufferBits + 8;
 
-    // Extract as many 5-bit groups as possible using iteration
+    // Extract as many 5-bit groups as possible using R.reduce (FP)
     const extractAllGroups = (
       buffer: number,
       bufferBits: number,
       output: readonly string[],
     ): readonly string[] => {
-      const groups: string[] = [];
-      /* eslint-disable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements --
-       * Bit manipulation requires imperative style */
-      let currentBuffer = buffer;
-      let currentBits = bufferBits;
-
-      while (currentBits >= 5) {
-        const shift = currentBits - 5;
-        const charIndex = (currentBuffer >> shift) & 0x1f;
-        groups.push(BASE32_CHARS.charAt(charIndex));
-        currentBuffer = currentBuffer & ((1 << shift) - 1);
-        currentBits -= 5;
-      }
-      /* eslint-enable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements */
-
-      return [...output, ...groups];
+      const numGroups = Math.floor(bufferBits / 5);
+      const result = R.reduce(
+        (acc: EncodeState, _i: number): EncodeState => {
+          const shift = acc.bufferBits - 5;
+          const charIndex = (acc.buffer >> shift) & 0x1f;
+          return {
+            buffer: acc.buffer & ((1 << shift) - 1),
+            bufferBits: acc.bufferBits - 5,
+            output: [...acc.output, BASE32_CHARS.charAt(charIndex)],
+          };
+        },
+        { buffer, bufferBits, output: [] as readonly string[] } as EncodeState,
+        R.range(0, numGroups),
+      );
+      return [...output, ...result.output];
     };
 
     const newOutput = extractAllGroups(newBuffer, newBufferBits, state.output);

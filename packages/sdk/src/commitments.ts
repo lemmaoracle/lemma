@@ -247,46 +247,40 @@ const buildMerkleTree = (
     const zero = 0n;
     const padded: bigint[] = [...leaves, ...R.repeat(zero, size - leafCount)];
 
-    // Build layers bottom-up, storing each level for proof extraction
-    const layers: bigint[][] = [padded];
+    // Build layers bottom-up using R.reduce (FP)
+    const layers: readonly (readonly bigint[])[] = R.reduce(
+      (acc: readonly (readonly bigint[])[], _level: number): readonly (readonly bigint[])[] => {
+        const current = acc[acc.length - 1] ?? [];
+        const pairs = R.range(0, Math.floor(current.length / 2));
+        const next = R.map(
+          (i: number): bigint => poseidon2([current[i * 2] ?? 0n, current[i * 2 + 1] ?? 0n]),
+          pairs,
+        );
+        return [...acc, next];
+      },
+      [padded] as readonly (readonly bigint[])[],
+      R.range(0, depth),
+    );
 
-        /* eslint-disable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements --
-         * Tree construction requires imperative mutation for perf-critical Merkle computation */
-        let current = padded;
-        while (current.length > 1) {
-          const next: bigint[] = [];
-          for (let i = 0; i < current.length; i += 2) {
-            const left = current[i] ?? 0n;
-            const right = current[i + 1] ?? 0n;
-            const hashResult = poseidon2([left, right]);
-            next.push(hashResult);
-          }
-          layers.push(next);
-          current = next;
-        }
-        /* eslint-enable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements */
+    const root = (layers[layers.length - 1] ?? [])[0] ?? zero;
 
-        const root = current[0] ?? zero;
-
-        // Extract inclusion proof for each original leaf
-        const inclusionProofs: InclusionProof[] = R.times((leafIdx: number) => {
-          const siblings: string[] = [];
-          const indices: number[] = [];
-
-          /* eslint-disable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements --
-           * Proof extraction requires imperative index tracking */
-          let idx = leafIdx;
-          for (let level = 0; level < depth; level++) {
-            const siblingIdx = idx ^ 1; // XOR to get sibling
-            const sibling = layers[level]?.[siblingIdx] ?? zero;
-            siblings.push(toHex(sibling));
-            indices.push(idx & 1); // 0 = left, 1 = right
-            idx = Math.floor(idx / 2);
-          }
-          /* eslint-enable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements */
-
-          return { siblings, indices };
-        }, leafCount);
+    // Extract inclusion proof for each original leaf using R.reduce (FP)
+    const inclusionProofs: ReadonlyArray<InclusionProof> = R.times((leafIdx: number) => {
+      const result = R.reduce(
+        (acc: Readonly<{ idx: number; siblings: readonly string[]; indices: readonly number[] }>, level: number) => {
+          const siblingIdx = acc.idx ^ 1;
+          const sibling = layers[level]?.[siblingIdx] ?? zero;
+          return {
+            idx: Math.floor(acc.idx / 2),
+            siblings: [...acc.siblings, toHex(sibling)],
+            indices: [...acc.indices, acc.idx & 1],
+          };
+        },
+        { idx: leafIdx, siblings: [] as readonly string[], indices: [] as readonly number[] },
+        R.range(0, depth),
+      );
+      return { siblings: result.siblings, indices: result.indices };
+    }, leafCount);
 
         return { root, depth, inclusionProofs };
       })();
