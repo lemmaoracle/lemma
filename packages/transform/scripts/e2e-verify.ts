@@ -36,12 +36,11 @@ async function loadWasmNormalizer() {
     throw new Error(`JS shim not found at ${jsPath}`);
   }
 
-  // Dynamic import of the wasm-bindgen JS shim
-  const wasmModule = await import(jsPath);
-  // In Node.js, use initSync with the raw WASM bytes instead of fetch
+  // Dynamic import of the wasm-bindgen JS shim (bundler target: the wasm
+  // is imported statically by pkg/lemma_transform.js — no initSync needed)
+  await import(jsPath);
   const wasmBytes = fs.readFileSync(wasmPath);
-  wasmModule.initSync(wasmBytes);
-  return wasmModule;
+  return { bytes: new Uint8Array(wasmBytes) };
 }
 
 /* ── Main ──────────────────────────────────────────────────────────── */
@@ -64,7 +63,9 @@ async function main() {
     return encoder.encode(`out:${decoded}`);
   };
 
+  const wasm = await loadWasmNormalizer();
   const { record, witness } = await buildGenesisRecord(
+    wasm.bytes,
     transformFn,
     transformCode,
     inputBytes,
@@ -90,11 +91,13 @@ async function main() {
   // ── Step 2: Normalize via WASM ──────────────────────────────────────
   console.log("Step 2: Normalize ExecutionRecord via WASM normalizer...");
 
-  const wasmModule = await loadWasmNormalizer();
   const rawJson = JSON.stringify(record);
   console.log(`  Raw JSON: ${rawJson.substring(0, 80)}...`);
 
-  const normalizedJson = wasmModule.normalize(rawJson);
+  const { normalize } = await import(
+    path.join(PKG_ROOT, "normalize/pkg/lemma_transform_bg.js")
+  );
+  const normalizedJson = normalize(rawJson);
   const normalized = JSON.parse(normalizedJson);
 
   console.log("  ✓ Normalized via WASM:");

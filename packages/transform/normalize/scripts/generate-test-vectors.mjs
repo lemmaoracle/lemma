@@ -18,8 +18,13 @@ import { bytesToFieldElements, reduceElements } from "@lemmaoracle/content";
 const fileHash = (bytes) =>
   reduceElements(bytesToFieldElements(bytes), poseidon2);
 const fileCommitment = (bytes) => poseidon1([fileHash(bytes)]);
+// SDK toScalar convention: SHA-256 mapped into the BN254 scalar field
+// (reduced mod the prime). transformerId is consumed as a Groth16 public
+// signal, and out-of-field values cannot be verified by snarkjs.
+const BN254_PRIME =
+  21888242871839275222246405745257275088548364400416034343698204186575808495617n;
 const sha256Int = (bytes) =>
-  BigInt("0x" + createHash("sha256").update(bytes).digest("hex"));
+  BigInt("0x" + createHash("sha256").update(bytes).digest("hex")) % BN254_PRIME;
 
 const enc = new TextEncoder();
 

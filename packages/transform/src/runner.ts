@@ -57,12 +57,21 @@ export const fileCommitment = (bytes: Uint8Array): bigint => {
 };
 
 /**
- * Compute SHA-256 of a byte array, returned as a decimal string (field element).
+ * Compute SHA-256 of a byte array, mapped into the BN254 scalar field
+ * (reduced mod the prime — the SDK `toScalar` convention).
+ *
+ * NOTE: the result is consumed as a Groth16 public signal (transformerId);
+ * out-of-field values are rejected by snarkjs verification ("Public inputs
+ * are not valid"), so the mod-prime reduction is load-bearing.
  */
 export const sha256Field = (bytes: Uint8Array): string => {
   const hash = sha256(bytes);
-  // Convert 32-byte hash to BigInt, then to decimal string
-  return hash.reduce((val, byte) => (val << 8n) | BigInt(byte), 0n).toString();
+  // Convert 32-byte hash to BigInt, reduce into the BN254 scalar field,
+  // then to decimal string
+  const BN254_PRIME =
+    21888242871839275222246405745257275088548364400416034343698204186575808495617n;
+  const val = hash.reduce((val, byte) => (val << 8n) | BigInt(byte), 0n);
+  return (val % BN254_PRIME).toString();
 };
 
 /**

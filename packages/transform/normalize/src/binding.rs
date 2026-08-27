@@ -157,10 +157,15 @@ pub fn file_commitment(data: &[u8]) -> BigUint {
 
 // ── SHA-256 helpers ──────────────────────────────────────────────────
 
-/// SHA-256 as a big-endian 256-bit integer (NOT reduced mod the prime —
-/// matches the JS `sha256Field` / argsHash scalar behaviour).
+/// SHA-256 mapped into the BN254 scalar field (reduced mod the prime —
+/// the SDK `toScalar` convention). transformerId becomes a Groth16 public
+/// signal, and out-of-field values cannot even be consumed by snarkjs
+/// verification ("Public inputs are not valid"), so the reduction here is
+/// load-bearing. Pre-image resistance is preserved: the map is
+/// deterministic and its 254-bit image keeps collision probability
+/// negligible.
 pub fn sha256_scalar(bytes: &[u8]) -> BigUint {
-    BigUint::from_bytes_be(&Sha256::digest(bytes))
+    BigUint::from_bytes_be(&Sha256::digest(bytes)) % prime()
 }
 
 /// argsHash = Poseidon1(SHA-256(canonicalArgs UTF-8)).
