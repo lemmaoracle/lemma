@@ -16,6 +16,14 @@ import * as R from "ramda";
 import type { LemmaClient } from "@lemmaoracle/spec";
 import { hexToBytes as platformHexToBytes, utf8ToBytes, bytesToUtf8 } from "./platform.js";
 
+/** Raise a validation error at the crypto API boundary. */
+// imperative: pre-condition validation — no functional alternative for call-site abort
+/* eslint-disable functional/no-throw-statements */
+const raise = (message: string): never => {
+  throw new Error(message);
+};
+/* eslint-enable functional/no-throw-statements */
+
 /**
  * Derive the compressed secp256k1 public key from a private key.
  *
@@ -196,10 +204,7 @@ const validateHolderKey = (holderKey: string): Uint8Array => {
     stripPrefix,
     R.when(
       (key: string) => !isValidLength(key),
-      (_key: string): string => {
-        // eslint-disable-next-line functional/no-throw-statements -- crypto boundary validation
-        throw new Error("Invalid secp256k1 public key");
-      },
+      (_key: string): never => raise("Invalid secp256k1 public key"),
     ),
   )(holderKey);
 
@@ -207,16 +212,12 @@ const validateHolderKey = (holderKey: string): Uint8Array => {
   const keyBytes = platformHexToBytes(normalizedKey);
 
   // Validate the key is a valid point (sync crypto boundary: R.tryCatch).
+  // R.always keeps the original bytes while fromHex validates (throws on
+  // invalid points) as the discarded argument expression.
   return R.tryCatch(
-    (_placeholder: undefined): Uint8Array => {
-      // eslint-disable-next-line functional/no-expression-statements -- validation side effect
-      secp256k1.ProjectivePoint.fromHex(keyBytes);
-      return keyBytes;
-    },
-    (_placeholder: undefined): never => {
-      // eslint-disable-next-line functional/no-throw-statements -- crypto boundary validation
-      throw new Error("Invalid secp256k1 public key");
-    },
+    (_placeholder: undefined): Uint8Array =>
+      R.always(keyBytes)(secp256k1.ProjectivePoint.fromHex(keyBytes)),
+    (_placeholder: undefined): never => raise("Invalid secp256k1 public key"),
   )(undefined);
 };
 
@@ -282,26 +283,22 @@ export const decrypt = (input: DecryptInput): Promise<DecryptOutput> => {
   const _algorithm = input.algorithm ?? "aes-256-gcm";
 
   // Parse wire format: first 33 bytes = ephemeralPubKey, next 12 = IV, rest = ciphertext
-  /* eslint-disable functional/no-conditional-statements, functional/no-throw-statements --
-   * Crypto boundary: input validation requires conditionals and error throwing */
-  if (encryptedDoc.length < 45) {
-    throw new Error("Encrypted document too short");
-  }
-  /* eslint-enable functional/no-conditional-statements, functional/no-throw-statements */
-
-  const ephemeralPubKey = encryptedDoc.slice(0, 33);
-  const iv = encryptedDoc.slice(33, 45);
-  const ciphertext = encryptedDoc.slice(45);
+  const lengthChecked: Uint8Array =
+    encryptedDoc.length < 45 ? raise("Encrypted document too short") : encryptedDoc;
 
   // Validate ephemeral public key
-  // eslint-disable-next-line functional/no-expression-statements -- validation side effect
-  R.tryCatch(
-    (_placeholder: undefined) => secp256k1.ProjectivePoint.fromHex(bytesToHex(ephemeralPubKey)),
-    (_placeholder: undefined): never => {
-      // eslint-disable-next-line functional/no-throw-statements -- crypto boundary validation
-      throw new Error("Invalid ephemeral public key in encrypted document");
-    },
-  )(undefined);
+  // (fromHex throws on invalid points; the R.tryCatch onError converts it to
+  // the crypto boundary error). R.always keeps the validated bytes.
+  const ephemeralPubKey = R.tryCatch(
+    (doc: Uint8Array): Uint8Array =>
+      R.always(doc.slice(0, 33))(
+        secp256k1.ProjectivePoint.fromHex(bytesToHex(doc.slice(0, 33))),
+      ),
+    (_placeholder: undefined): never =>
+      raise("Invalid ephemeral public key in encrypted document"),
+  )(lengthChecked);
+  const iv = lengthChecked.slice(33, 45);
+  const ciphertext = lengthChecked.slice(45);
 
   // Parse holder private key (remove 0x prefix if present)
   const holderPrivKeyBytes = R.pipe(

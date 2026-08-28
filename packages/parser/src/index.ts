@@ -197,28 +197,25 @@ JSON output:`;
 
       const content: string = R.pathOr("", [0, "generated_text"], output);
 
-      // eslint-disable-next-line functional/no-try-statements -- JSON.parse requires try-catch
-      try {
-        const jsonStr = extractJSON(content);
-        const parsed: unknown = JSON.parse(jsonStr);
-        const parsedObj = parsed as Readonly<{ attributes?: unknown }>;
-
-        // eslint-disable-next-line functional/no-conditional-statements -- validation guard
-        if (R.isNil(parsedObj.attributes) || !Array.isArray(parsedObj.attributes)) {
-          // eslint-disable-next-line functional/no-throw-statements -- validation
-          throw new Error("Missing or invalid 'attributes' array");
-        }
-
-        return parsed as ParsedQuery;
-      } catch (e) {
-        return attempt >= MAX_ATTEMPTS - 1
-          ? Promise.reject(
-              new Error(
-                `Failed to parse LLM response as valid query JSON after ${String(MAX_ATTEMPTS)} attempts: ${(e as Error).message}`,
-              ),
-            )
-          : attemptParse(attempt + 1);
-      }
+      // JSON.parse / extractJSON / validation failures become promise
+      // rejections (no try-catch needed) and feed the retry logic below.
+      return Promise.resolve(content)
+        .then((text) => JSON.parse(extractJSON(text)) as unknown)
+        .then((parsed: unknown) => {
+          const parsedObj = parsed as Readonly<{ attributes?: unknown }>;
+          return R.isNil(parsedObj.attributes) || !Array.isArray(parsedObj.attributes)
+            ? Promise.reject(new Error("Missing or invalid 'attributes' array"))
+            : (parsed as ParsedQuery);
+        })
+        .catch((e: unknown) =>
+          attempt >= MAX_ATTEMPTS - 1
+            ? Promise.reject(
+                new Error(
+                  `Failed to parse LLM response as valid query JSON after ${String(MAX_ATTEMPTS)} attempts: ${(e as Error).message}`,
+                ),
+              )
+            : attemptParse(attempt + 1),
+        );
     };
 
     return attemptParse(0);
@@ -229,18 +226,18 @@ JSON output:`;
       (_p: undefined) => R.isNil(state.generator),
       async (_p: undefined) => {},
       async (_p: undefined) => {
-        // eslint-disable-next-line functional/no-try-statements -- disposal may fail
-        try {
-          // eslint-disable-next-line functional/no-conditional-statements -- disposal guard
-          if (state.generator?.dispose) {
-            // eslint-disable-next-line functional/no-expression-statements -- disposal side effect
-            await state.generator.dispose();
-          }
-        } catch {
-          // Ignore disposal errors
-        }
-        // imperative: state reset and cleanup — no functional alternative
-        return ((_transformers = null), updateState(createInitialState()), undefined);
+        const gen = state.generator;
+        // Disposal runs inside the promise chain; errors are swallowed by
+        // `.catch` (no try-catch needed) before the state reset below.
+        return gen?.dispose
+          ? Promise.resolve(gen)
+              .then((g) => (g.dispose ? g.dispose() : undefined))
+              .catch((_e: unknown) => undefined)
+              .then((_result: unknown) => {
+                // imperative: state reset and cleanup — no functional alternative
+                return ((_transformers = null), updateState(createInitialState()), undefined);
+              })
+          : ((_transformers = null), updateState(createInitialState()), undefined);
       },
     )(undefined);
 
