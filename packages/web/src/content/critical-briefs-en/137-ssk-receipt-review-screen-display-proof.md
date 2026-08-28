@@ -13,7 +13,7 @@ related_briefs: ["124-wiser-medicare-ai-prior-authorization", "076-dillon-frt-wr
 status: published
 version: "1.0"
 og_lead_ja: "支払基金の「1 秒以上の目視」目標、達成率は実態より大きく報告"
-og_lead_en: "Japan's claims Fund met its one-second review target with a tool"
+og_lead_en: "Staff met Japan's claims-Fund one-second target with a tool"
 ---
 
 ## 1. TL;DR
@@ -26,13 +26,13 @@ Japan's Social Insurance Medical Fee Payment Fund set a business target of revie
 - In its current system, claims first pass computer checks — intake and administrative screening, the electronic fee schedule, and cross-checks. A first sorting stage then files them into three groups: claims a human inspects, claims routed to the AI, and claims whose disposition is clear. The AI itself (Minhash and Xgboost) operates at the second sorting stage. The share requiring human review had been narrowed from 20% at launch to 15% in October 2022 and 10% from October 2023.
 - In normal operation, a reviewer inspects each claim on the review screen and presses a "confirmed" button or the Enter key, which marks the claim confirmed and advances to the next. For fiscal 2022 H2 and fiscal 2023, the Fund set a business target of a 100% human-inspection rate for claims flagged for visual review, measured by whether the claim had been displayed for at least one second.
 - The tool in use pressed Enter automatically after a set number of seconds, advancing to the next claim. It was built with spreadsheet software already installed on the review terminals and spread through shared folders. Use began around June 2022.
-- In the Fund's nationwide survey, 290 of the 3,630 staff who had ever performed review work — 8.0% — reported having used the tool at least once.
+- Through the nationwide survey and the interviews, 290 of the 3,630 staff who had ever performed review work — 8.0% — were confirmed to have used the tool at least once.
 - Of the 290 users, 81 reported having left their desk while the tool ran. The Fund states that all 81 still performed visual inspection on computer-check-flagged claims and review work driven by extraction conditions — but that for 27 of those 81, some claims triggering neither had been marked confirmed by the tool alone, so the possibility that no visual inspection took place cannot be ruled out.
 
 With the tool in the loop, the review record forms like this:
 
 1. The computer checks and AI sorting narrow the claim down as one requiring visual inspection.
-2. The tool presses Enter after a set interval and advances to the next claim. But **auto-advance halts on any claim carrying a computer-check flag**, so the only claims the tool can pass are those that triggered neither a computer check nor an extraction condition.
+2. The tool presses Enter after a set interval and advances to the next claim. But **auto-advance halts on any claim carrying a computer-check or similar flag**. The claims that could be marked confirmed by the tool alone were those triggering neither a computer check nor an extraction condition.
 3. The system logs that the screen was displayed for at least one second, and that log counts toward the inspection-rate numerator.
 4. The log cannot distinguish whether a person looked at the content.
 
@@ -61,9 +61,9 @@ Responses and open points:
 
 The failure here is not that staff neglected their reviews, nor any sophistication in the tool. It is that **the business target was measured by a proxy for the act of inspection — elapsed display time — and that measurement was then reported upward as the record of having inspected**.
 
-A proxy can be satisfied independently of whether the underlying judgment occurred. The reasons staff gave in interviews were almost uniformly about avoiding a missed target: "I was being coached by my supervisor because my one-second inspection rate wasn't reaching 100%"; "once you cleared 90% they asked for 100%, and I built it without thinking it through." What they used was not sophisticated technology either — something buildable in the spreadsheet software already on the terminal.
+A proxy can be satisfied independently of whether the underlying judgment occurred. The Fund grouped the reasons given in interviews into four categories — meeting the target, work efficiency, review performance, and dissatisfaction with the target itself — and avoiding a missed target is the most heavily represented: "I was being coached by my supervisor because my one-second inspection rate wasn't reaching 100%." One who built the tool said, "once you cleared 90% they asked for 100%, and I built it without thinking it through." What they used was not sophisticated technology either — something buildable in the spreadsheet software already on the terminal.
 
-Detection worked — within two months of the discovery at a single center, the Fund had swept 3,630 staff and identified 290 users, 27 of whom might not have inspected at all. What didn't work sits earlier: a layer that, at the moment the record is written, confirms the record represents a human judgment. That is the **detection–proof gap**.
+Detection worked — within a month of the discovery at a single center, the Fund had swept 3,630 staff and identified 290 users, and by disclosure had pinned down 27 who might not have inspected at all. What didn't work sits earlier: a layer that, at the moment the record is written, confirms the record represents a human judgment. That is the **detection–proof gap**.
 
 The Fund's own words state the consequence most clearly:
 
