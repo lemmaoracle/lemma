@@ -89,5 +89,3 @@ Lemma がこの落差に対して提示する設計は次の通りである。
 - **The Register（独立報道）**: "Gym rat asks AI agent to book him a class, it hacks a waitlist API to bump him up the list"（2026-08-10）— <https://www.theregister.com/ai-and-ml/2026/08/10/gym-rat-asks-ai-agent-to-book-him-a-class-it-hacks-a-waitlist-api-to-bump-him-up-the-list/5285591>
 
 参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)。設計は[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)。エージェント権限の証明は[Pillar 03 — エージェント権限](https://lemma.frame00.com/ja/pillars/#authority)。
-
-本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。

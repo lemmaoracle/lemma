@@ -92,4 +92,4 @@ Detection and this layer are complementary, not substitutes. The former catches 
 
 References: On why after-the-fact detection is not proof, see ["The last layer left in AI-era cyber defense"](/blog/detection-is-not-proof/). On the design, see ["Proof-as-Auth: sign in without ever sending your key"](/blog/proof-as-auth-sign-in-without-sending-your-key/). On proving agent authority, see [Pillar 03 — Agent Authority](/pillars/#authority).
 
-This document is a structural analysis of public information, not an audit, assessment, or recommendation regarding any specific organization. The attack was mitigated in production as of disclosure.
+The attack was mitigated in production as of disclosure.
