@@ -91,4 +91,4 @@ Detection and this layer are complementary, not substitutes. The former catches 
 
 References: On why after-the-fact detection is not proof, see ["The last layer left in AI-era cyber defense"](/blog/detection-is-not-proof/). On proving agent authority, see [Pillar 03 — Agent Authority](/pillars/#authority).
 
-This document is a structural analysis of public information, not an audit, assessment, or recommendation regarding any specific organization. Each company's response and remediation status follow its own disclosures, and the accounts are kept distinct.
+Each company's response and remediation status follow its own disclosures, and the accounts are kept distinct.

@@ -93,4 +93,4 @@ Lemma がこの落差に対して提示する設計は次の通りである。
 
 参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)。属性の証明は[Pillar 04 — 規制属性](https://lemma.frame00.com/ja/pillars/#attribute)。
 
-本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。緩和状況は公表時点で確認されていません。
+緩和状況は公表時点で確認されていません。
