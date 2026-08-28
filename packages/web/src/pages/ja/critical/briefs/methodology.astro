@@ -26,7 +26,7 @@ const sections: MethodologySection[] = [
     heading: "Detection ≠ Proof thesis",
     body: `<p>Lemma の核思想は <strong>検出は証明ではない (Detection ≠ Proof)</strong> という認識にある。</p>
 <p>検出ツールが返す信頼度スコア — 例えば「99.7% の確率で異常」— は、規制報告や行政手続き、訴訟で「許可されていない権限行使があった」と立証する材料にはならない。検出は damage が flight 中になってからの blast window を狭める層であって、bridge / system / agent が「何を accept するか」自体を変えない。</p>
-<p>事前証明 (pre-execution attestation) はこの構造的 gap を埋める。取引前に「何が・誰に・どこまで許可されたか」を暗号で証跡化することで、検出に頼らず、検証に頼る防御線が成立する。検出と事前証明は競合ではなく相補的:検出は事象後の blast window を狭める、事前証明は事象前の trust boundary を独立検証する。</p>
+<p>事前証明 (pre-execution attestation) はこの検出と証明の落差を埋める。取引前に「何が・誰に・どこまで許可されたか」を暗号で証跡化することで、検出に頼らず、検証に頼る防御線が成立する。検出と事前証明は競合ではなく相補的:検出は事象後の blast window を狭める、事前証明は事象前の trust boundary を独立検証する。</p>
 <p>各 Brief は §4「なぜ止まらなかったか」と §5「証明があれば、何が変わるか」で、対象事案の文脈にこの thesis を適用する。</p>`,
   },
   {
@@ -37,10 +37,10 @@ const sections: MethodologySection[] = [
 <li><strong>§2 何が起きたか</strong> — 事実のみ。規模・主体・調査方法の概要と、失敗が成立する連鎖</li>
 <li><strong>§3 時系列 — 公表と対応</strong> — 発覚・開示・修正の時系列。一次ソースの限定や研究環境である旨を注記し、公表後の対応と業界の動きを続ける</li>
 <li><strong>§4 なぜ止まらなかったか</strong> — 構造的論点。検出は効いたが証明が無かったという<strong>検出と証明の落差</strong>を本文で示す</li>
-<li><strong>§5 証明があれば、何が変わるか</strong> — 事前証明が経路のどこに 1 段挟まるか。Lemma が担う設計と担わない範囲を並記し、検出との相補で締める</li>
+<li><strong>§5 証明があれば、何が変わるか</strong> — 事前証明が経路のどこに 1 段挟まるか。Lemma の設計を事案に合う軸で並べ、検出との相補で締める</li>
 <li><strong>§6 Sources</strong> — 一次ソースを優先し、各行に位置づけ (一次 / 独立報道 等) を添える</li>
 </ul>
-<p>本シリーズは 2026 年 7 月まで TL;DR + §1〜§9 の 9 章構成を採っていた。現在は既刊分を含むすべての Brief が上記の 6 章構成に移行している。配布についての定型注記は本文の章ではなくなり、各 Brief の末尾に 1 行として描画される。</p>
+<p>本シリーズは 2026 年 7 月まで TL;DR + §1〜§9 の構成を採っていた。現在は既刊分を含むすべての Brief が上記の 6 つの章見出しを用いている。章内の作法は 2026-07-30 以降に書かれた Brief から順次適用しており、既刊分は見出しの移行にとどまるものがある。配布についての定型注記は本文の章ではなくなり、各 Brief の末尾に 1 行として描画される。</p>
 <p>同カテゴリ・隣接カテゴリの関連 Brief への横リンクは、frontmatter <code>related_briefs</code> から自動生成される navigation cards として本文の下部に配置され、Category archive / Pillar archive を経由した発見動線と併走する。</p>
 <p>文体は sober、業界用語は注釈なく使用、検出ツール・既存ベンダー (Blockaid・PeckShield・Mandiant 等) を否定せず役割分担として描く。</p>`,
   },
@@ -62,9 +62,9 @@ const sections: MethodologySection[] = [
 <p>引用は以下の形式で行うことが推奨される。<strong>Plain text</strong> は Brief 001 を具体例として示し、<strong>BibTeX</strong> と <strong>APA</strong> はテンプレ形式で示す。</p>
 <p><strong>Plain text</strong></p>
 <pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
-"KelpDAO rsETH 不正ミント".
+"KelpDAO / rsETH 不正アンロック — DVN 観測層への RPC 改ざん攻撃".
 Lemma Critical Brief No.001. Lemma / FRAME00, Inc.
-https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
+https://lemma.frame00.com/ja/critical/briefs/001-kelpdao-rseth/</code></pre>
 <p><strong>BibTeX</strong></p>
 <pre style="${codeBlockStyle}"><code>@techreport{lemma_critical_&lt;NN&gt;,
   author      = {{Lemma Critical Team}},
@@ -85,7 +85,7 @@ https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
     body: `<p>Brief は公開後、以下の方針で維持される:</p>
 <ul>
 <li><strong>Typo / 軽微修正</strong> (誤字、URL リンク切れ、表記揺れ等):上書き、版番号変更なし</li>
-<li><strong>内容改訂</strong> (事実追加、解釈変更、新事実の反映):版番号付与で履歴保持。frontmatter の <code>version</code> が 1.0 → 1.1 (軽微) / 2.0 (大規模) で incrementing し、Brief 末尾に「改訂履歴」セクションを設けて各版の変更点を簡潔に記録する</li>
+<li><strong>内容改訂</strong> (事実追加、解釈変更、新事実の反映):版番号付与で履歴保持。frontmatter の <code>version</code> が 1.0 → 1.1 (軽微) / 2.0 (大規模) で incrementing し、テンプレートが Brief 末尾に「改訂履歴」(現在の版) を描画する。変更点の要約が要る場合は、本文冒頭に改訂注記の blockquote を置く</li>
 <li><strong>撤回</strong> (誤情報・誤分類が判明した場合):元 URL に retraction notice を残し、内容を撤回。Permanent URL ポリシーのため URL は削除しない</li>
 </ul>`,
   },

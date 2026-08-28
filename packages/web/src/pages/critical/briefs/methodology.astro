@@ -26,27 +26,27 @@ const sections: MethodologySection[] = [
     heading: "Detection ≠ Proof thesis",
     body: `<p>Lemma's core thesis is the recognition that <strong>detection is not proof (Detection ≠ Proof)</strong>.</p>
 <p>Confidence scores returned by detection tools — for example, "99.7% probability of anomaly" — do not constitute evidence in regulatory reporting, administrative procedures, or litigation that "an unauthorized exercise of authority occurred." Detection is a layer that narrows the blast window once damage is already in flight; it does not change what a bridge / system / agent will accept in the first place.</p>
-<p>Pre-execution attestation closes this structural gap. By cryptographically committing "what / to whom / up to where authority was granted" before a transaction, the defense line shifts from reliance on detection to reliance on verification. Detection and pre-execution attestation are not competing approaches but complementary ones: detection narrows the blast window after an event; pre-execution attestation independently verifies the trust boundary before the event.</p>
+<p>Pre-execution attestation closes this detection–proof gap. By cryptographically committing "what / to whom / up to where authority was granted" before a transaction, the defense line shifts from reliance on detection to reliance on verification. Detection and pre-execution attestation are not competing approaches but complementary ones: detection narrows the blast window after an event; pre-execution attestation independently verifies the trust boundary before the event.</p>
 <p>Each Brief applies this thesis to the context of its target incident in §4 "Why it wasn't stopped" and §5 "What proof would have changed."</p>`,
   },
   {
     heading: "Brief structure",
     body: `<p>Each Brief consists of the following 6 chapters:</p>
 <ul>
-<li><strong>§1 TL;DR</strong> — the incident and the layer that did not work, in a few sentences, closing on the form "What didn't work was a layer that …"</li>
+<li><strong>§1 TL;DR</strong> — the incident and the layer that did not work, in a few sentences, closing by naming the layer that was missing and stopping there</li>
 <li><strong>§2 What happened</strong> — facts only: scale, parties, and method of investigation, followed by the chain by which the failure holds</li>
 <li><strong>§3 Timeline — disclosure and response</strong> — discovery, disclosure, and remediation in sequence, with a note on the limits of the primary sources or on research-environment caveats, then the response and industry movement that followed</li>
-<li><strong>§4 Why it wasn't stopped</strong> — the structural argument: detection worked, proof did not exist. The <strong>detection&#8211;proof gap</strong> is carried in the prose</li>
-<li><strong>§5 What proof would have changed</strong> — where proof up front inserts one step into the path. What Lemma's design carries and what it does not, closing on complementarity with detection</li>
+<li><strong>§4 Why it wasn't stopped</strong> — the structural argument: detection worked, proof did not exist. The <strong>detection–proof gap</strong> is carried in the prose</li>
+<li><strong>§5 What proof would have changed</strong> — where proof up front inserts one step into the path, then the Lemma design bullets that fit the case, closing on complementarity with detection</li>
 <li><strong>§6 Sources</strong> — primary sources first, each line labelled with its standing (primary / independent reporting, etc.)</li>
 </ul>
-<p>Until July 2026 the series used a 9-section structure (TL;DR plus §1–§9). Every Brief, including the back catalogue, now follows the 6-chapter structure above. The distribution note is no longer a chapter of the body; it is rendered as a single line at the foot of each Brief.</p>
+<p>Until July 2026 the series used a TL;DR plus §1–§9 structure. Every Brief, including the back catalogue, now uses the six numbered chapter headings above. The conventions within each chapter have been applied to Briefs written from 2026-07-30 onward; for part of the back catalogue the migration reached the headings only. The distribution note is no longer a chapter of the body; it is rendered as a single line at the foot of each Brief.</p>
 <p>Cross-links to neighbouring Briefs in the same or adjacent categories are auto-generated from the frontmatter <code>related_briefs</code> field as navigation cards rendered below the body, alongside discovery via the Category and Pillar archives.</p>
 <p>The voice is sober. Industry terminology is used without annotation. Detection tools and existing vendors (Blockaid, PeckShield, Mandiant, etc.) are not framed as adversaries but as complementary roles.</p>`,
   },
   {
     heading: "Pillar / Category framework",
-    body: `<p>Briefs are classified according to Lemma's <strong>proof classes</strong>:</p>
+    body: `<p>Briefs are classified according to Lemma's <strong>4 Pillars</strong>:</p>
 <ul>
 <li><strong>Pillar 01 — Verifiable Origin</strong>: the layer that independently verifies the origin of messages, data, and code</li>
 <li><strong>Pillar 02 — Verifiable AI</strong>: the layer that ZK-commits the process of AI judgment</li>
@@ -85,7 +85,7 @@ https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
     body: `<p>After publication, each Brief is maintained according to the following policy:</p>
 <ul>
 <li><strong>Typos / minor corrections</strong> (misspellings, broken links, notation inconsistencies): overwritten in place, no version change</li>
-<li><strong>Content revisions</strong> (factual additions, interpretive changes, incorporation of new facts): retained via version numbering. The frontmatter <code>version</code> increments from 1.0 → 1.1 (minor) or 2.0 (major). A "Revision History" section is added at the end of the Brief, briefly recording the changes in each version</li>
+<li><strong>Content revisions</strong> (factual additions, interpretive changes, incorporation of new facts): retained via version numbering. The frontmatter <code>version</code> increments from 1.0 → 1.1 (minor) or 2.0 (major). the template renders a "Revision History" (current version) at the foot of the Brief. Where a summary of the changes is needed, a revision blockquote sits at the top of the body</li>
 <li><strong>Retraction</strong> (when misinformation or misclassification is identified): a retraction notice is left at the original URL and the content is withdrawn. Per the Permanent URL policy, the URL itself is not deleted</li>
 </ul>`,
   },
