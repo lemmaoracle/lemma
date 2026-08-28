@@ -179,10 +179,33 @@ const DLINK = {
   api: "https://dashboard.lemma.workers.dev",
 };
 
-// 発行者は「CLUBS」固定（生の issuerId は表示に使わない・CTO 方針）。subjectId は一切扱わない。
-// 証明クラス（来歴）は API が返さないため UI 固定ラベル。EXPLORER は Base 導入まで空＝無効表示。
+// 発行者表示は API 応答の schemaId / issuerId から写像する（#766）。
+// 生の issuerId は表示に使わない（CTO 方針）。subjectId は一切扱わない。
+// - clubs.* スキーマ → CLUBS。日報の issuerId は agentName で可変のため
+//   schemaId で判定する（シール clubs.seal-issuance.v1 は issuerId が固定 'clubs' だが同一扱い）。
+// - {feed.id}-pipeline → 集計モードのバケット語彙（SRC_LABELS と同じ訳語）。
+//   feeds pipeline は issuerId を `${feed.id}-pipeline` で登録する（packages/feeds/src/pipeline.ts）。
+// - どちらにも一致しない（外部 issuer・lemma-x402 等）→ 発行者行を非表示。
 const DOC = {
-  issuer: "CLUBS",
+  issuerBySchema: {
+    "clubs.nippo.v1": "CLUBS",
+    "clubs.seal-issuance.v1": "CLUBS",
+  },
+  issuerByFeedId: isJa
+    ? {
+        "forex/composite": "為替データフィード",
+        "forex/er-api": "為替データフィード",
+        "forex/frankfurter": "為替データフィード",
+        "jp-holidays": "祝日データフィード",
+        "jp-postal-codes": "郵便番号データフィード",
+      }
+    : {
+        "forex/composite": "FX data feed",
+        "forex/er-api": "FX data feed",
+        "forex/frankfurter": "FX data feed",
+        "jp-holidays": "JP holidays feed",
+        "jp-postal-codes": "JP postal codes feed",
+      },
   api: API_BASE,
   rawBase: `${API_BASE}/documents/`,
   explorer: "",
@@ -421,9 +444,18 @@ const DOC = {
       const st = DOC.states[doc.status] || DOC.states.pending;
       const verified = doc.status === "registered" || doc.status === "anchored";
       const recAt = fmtJst(doc.registeredAt);
-      // 発行者は CLUBS 固定。subjectId・生の issuerId は使わない。
+      // 発行者の写像（#766）。schemaId → clubs、issuerId の -pipeline 接尾辞 → feed.id。
+      // どちらにも一致しない場合は発行者行を出さない（虚偽の帰属より非表示が正）。
+      const feedId =
+        typeof doc.issuerId === "string" && doc.issuerId.endsWith("-pipeline")
+          ? doc.issuerId.slice(0, -"-pipeline".length)
+          : null;
+      const issuer =
+        (doc.schemaId && DOC.issuerBySchema[doc.schemaId]) ||
+        (feedId && DOC.issuerByFeedId[feedId]) ||
+        null;
       const facts = [
-        [DOC.f.issuerJa, DOC.f.issuerEn, DOC.issuer],
+        issuer ? [DOC.f.issuerJa, DOC.f.issuerEn, issuer] : null,
         recAt ? [DOC.f.recAtJa, DOC.f.recAtEn, recAt] : null,
         doc.date ? [DOC.f.recDateJa, DOC.f.recDateEn, esc(doc.date)] : null,
       ]
@@ -615,12 +647,15 @@ const DOC = {
           return;
         }
         const j = await r.json();
-        // 描画に使うフィールドだけを取り出す。subjectId・生の issuerId は取り込まない。
+        // 描画に使うフィールドだけを取り出す。subjectId は取り込まない。
+        // issuerId・schemaId は発行者表示の写像にのみ使う（生値は表示しない・#766）。
         renderDoc({
           status: j.status,
           docHash: hash,
           registeredAt: j.registeredAt,
           onchainTxHash: j.onchainTxHash ?? null,
+          schemaId: j.schemaId ?? null,
+          issuerId: j.issuerId ?? null,
           date,
         });
         // 登録済みなら描画直後に proof verify を自動実行（初期表示は「検証中…」）。
