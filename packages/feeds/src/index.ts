@@ -31,6 +31,19 @@ export { erApiForex } from "./feeds/forex-er-api.js";
 export { forexComposite, fetchComposite } from "./feeds/forex-composite.js";
 export { jpHolidays } from "./feeds/jp-holidays.js";
 export { jpPostalCodes } from "./feeds/jp-postal-codes.js";
+export {
+  domainDns,
+  lemmaTxtName,
+  concatTxtChunks,
+  parseLemmaTxt,
+  txtAnswers,
+  lemmaAnswer,
+  buildSnapshot as buildDomainVerifySnapshot,
+} from "./feeds/domain-dns.js";
+export type {
+  DomainVerifyRecord,
+  DomainVerifySnapshot,
+} from "./feeds/domain-dns.js";
 
 // Pipeline
 export { runProofPipeline, runMultiPipeline, runAverageProofPipeline } from "./pipeline.js";
