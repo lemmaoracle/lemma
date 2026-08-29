@@ -108,14 +108,14 @@ const createParserInstance = (_placeholder?: undefined) => {
   // 3. The closure encapsulates mutation, exposing only pure-ish functions
   // eslint-disable-next-line functional/no-let -- closure-scoped mutable state for singleton
   let state: ParserState = createInitialState();
-  // eslint-disable-next-line functional/no-let -- closure-scoped mutable state for singleton
-  let _transformers: TransformersModule | null = null;
 
-  const loadTransformers = async (_placeholder?: undefined): Promise<TransformersModule> =>
-    _transformers ?? (
-      _transformers = await import("@huggingface/transformers"),
-      _transformers
-    );
+  // Memoised once: the ES module registry makes repeat dynamic imports
+  // idempotent, so the previous mutable `_transformers` cache variable was
+  // redundant — R.once caches the (always identical) resolved module.
+  const loadTransformers = R.once(
+    async (_placeholder?: undefined): Promise<TransformersModule> =>
+      import("@huggingface/transformers"),
+  );
 
   const updateState = (newState: ParserState): ParserState =>
     (state = newState, state);
@@ -229,15 +229,16 @@ JSON output:`;
         const gen = state.generator;
         // Disposal runs inside the promise chain; errors are swallowed by
         // `.catch` (no try-catch needed) before the state reset below.
+        const resetState = (_p2?: undefined): Promise<undefined> =>
+          Promise.resolve(updateState(createInitialState())).then(
+            (_s: ParserState) => undefined,
+          );
         return gen?.dispose
           ? Promise.resolve(gen)
               .then((g) => (g.dispose ? g.dispose() : undefined))
               .catch((_e: unknown) => undefined)
-              .then((_result: unknown) => {
-                // imperative: state reset and cleanup — no functional alternative
-                return ((_transformers = null), updateState(createInitialState()), undefined);
-              })
-          : ((_transformers = null), updateState(createInitialState()), undefined);
+              .then((_result: unknown) => resetState())
+          : resetState();
       },
     )(undefined);
 

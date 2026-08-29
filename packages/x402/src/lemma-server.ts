@@ -136,22 +136,31 @@ class LemmaResourceServer extends BaseResourceServer {
         try {
           const settlementResult = context.result;
 
+          // Wire-format view: the settle context is parsed from facilitator
+          // JSON. Core types mark these fields as required, but older spec
+          // versions may omit them on the wire, so they are viewed as
+          // optional here instead of guarded with linter-suppressed
+          // "unnecessary" conditions.
+          const wire = context.requirements as Readonly<{
+            extra?: Record<string, unknown>;
+            payTo?: string;
+            amount?: string;
+          }>;
+          const wireResult = settlementResult as Readonly<{
+            transaction?: string;
+          }>;
+
           // Build submission context from settlement data
           const _docHash =
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            (context.requirements.extra?.docHash as string | undefined) ??
-            settlementResult.transaction ??
+            (wire.extra?.docHash as string | undefined) ??
+            wireResult.transaction ??
             "unknown";
 
-          const schema =
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            (context.requirements.extra?.schema as string | undefined) ??
-            "default";
+          const schema = (wire.extra?.schema as string | undefined) ?? "default";
 
           // Extract payment details for proof witness
           // The circuit expects specific inputs matching X402Payment circuit
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          const txHash = (settlementResult.transaction ?? "").replace(/^0x/, "");
+          const txHash = (wireResult.transaction ?? "").replace(/^0x/, "");
           const bn128Prime = BigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
           
           // Split 256-bit tx hash into 2 field elements (128-bit each)
@@ -163,14 +172,12 @@ class LemmaResourceServer extends BaseResourceServer {
             : (BigInt(`0x${txHash}`) % bn128Prime).toString();
           
           // Recipient address (payTo) - split into low/high
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          const payTo = (context.requirements.payTo ?? "").replace(/^0x/, "").padStart(40, "0");
+          const payTo = (wire.payTo ?? "").replace(/^0x/, "").padStart(40, "0");
           const recipientLow = (BigInt(`0x${payTo.slice(-16)}`) % bn128Prime).toString();
           const recipientHigh = (BigInt(`0x${payTo.slice(0, -16) || "0"}`) % bn128Prime).toString();
           
           // Amount (USDC has 6 decimals, x402 uses smallest unit)
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          const amount = context.requirements.amount ?? "1000";
+          const amount = wire.amount ?? "1000";
           
           // Timestamp - use current time for freshness
           const timestamp = Math.floor(Date.now() / 1000).toString();

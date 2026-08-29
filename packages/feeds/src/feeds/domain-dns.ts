@@ -102,12 +102,12 @@ export const parseLemmaTxt = (
     .filter((t) => t.length > 0);
 
   const first = tags[0];
-  // imperative: sync validation boundary must throw (see `fail`)
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (first !== "v=lemma1") {
-    // eslint-disable-next-line functional/no-expression-statements -- imperative: sync validation must throw
-    fail(`domain-dns: record does not start with v=lemma1: "${joined}"`);
-  }
+  // imperative: sync validation boundary must throw (see `fail`) — expressed
+  // as a conditional expression per FP style; `_vTagChecked` is never used.
+  const _vTagChecked: undefined =
+    first !== "v=lemma1"
+      ? fail(`domain-dns: record does not start with v=lemma1: "${joined}"`)
+      : undefined;
 
   const pairs = tags
     .slice(1)
@@ -119,19 +119,17 @@ export const parseLemmaTxt = (
     });
   const unknownTag = pairs.find(([k]) => k !== "did" && k !== "verified");
   // imperative: sync validation boundary must throw (see `fail`)
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (unknownTag !== undefined) {
-    // eslint-disable-next-line functional/no-expression-statements -- imperative: sync validation must throw
-    fail(`domain-dns: unknown tag "${unknownTag[0]}"`);
-  }
+  const _knownTagsChecked: undefined =
+    unknownTag !== undefined
+      ? fail(`domain-dns: unknown tag "${unknownTag[0]}"`)
+      : undefined;
 
   const orgDid = pairs.find(([k]) => k === "did")?.[1];
   // imperative: sync validation boundary must throw (see `fail`)
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (orgDid === undefined || orgDid === "") {
-    // eslint-disable-next-line functional/no-expression-statements -- imperative: sync validation must throw
-    fail("domain-dns: missing did= tag");
-  }
+  const _didChecked: undefined =
+    orgDid === undefined || orgDid === ""
+      ? fail("domain-dns: missing did= tag")
+      : undefined;
   const verifiedAt = pairs.find(([k]) => k === "verified")?.[1] ?? null;
 
   return { domain: stripRootDot(domain), orgDid: orgDid ?? "", verifiedAt };
@@ -149,17 +147,15 @@ export const txtAnswers = (
   name: string,
 ): ReadonlyArray<string> => {
   // imperative: sync validation boundary must throw (see `fail`)
-  // eslint-disable-next-line functional/no-conditional-statements, functional/no-expression-statements -- imperative: sync validation must throw
-  if (!isRecord(response)) fail("domain-dns: DoH response is not an object");
-  const obj = response as Readonly<Record<string, Json>>;
+  const obj: Readonly<Record<string, Json>> = isRecord(response)
+    ? response
+    : fail("domain-dns: DoH response is not an object");
   const answers = obj["Answer"];
   // imperative: sync validation boundary must throw (see `fail`)
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (answers === undefined || answers === null || !Array.isArray(answers)) {
-    // eslint-disable-next-line functional/no-expression-statements -- imperative: sync validation must throw
-    fail("domain-dns: DoH response has no Answer");
-  }
-  const list: ReadonlyArray<unknown> = answers as ReadonlyArray<unknown>;
+  const list: ReadonlyArray<unknown> =
+    answers === undefined || answers === null || !Array.isArray(answers)
+      ? fail("domain-dns: DoH response has no Answer")
+      : (answers as ReadonlyArray<unknown>);
 
   const want = stripRootDot(name);
   const rows: ReadonlyArray<Readonly<Record<string, Json>>> = list.filter(
