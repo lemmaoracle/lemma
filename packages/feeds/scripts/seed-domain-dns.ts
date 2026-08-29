@@ -17,7 +17,7 @@
  * Requires (secrets — run by the key holder, not committed):
  *   LEMMA_API_BASE        e.g. https://workers.lemma.workers.dev
  *   LEMMA_API_KEY         a key for the lemma-data scope
- *   LEMMA_DOMAIN          the domain to verify (e.g. frame00.com)
+ *   LEMMA_DOMAIN          the domain to verify (e.g. example.com)
  *   HOLIDAYS_CIRCUIT_ID   the Merkle-inclusion circuit id (same as the other feeds)
  * Optional:
  *   FEED_MAX_DEPTH        Merkle depth, must match the circuit (default 16)
