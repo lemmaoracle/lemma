@@ -168,7 +168,13 @@ export type OnchainHook = Readonly<{
 }>;
 
 export type RegisterDocumentRequest = Readonly<{
-  schema: string;
+  /**
+   * Optional. When omitted (or empty), the server stores the document under
+   * the registered identity-normalize schema `passthrough-v1` — i.e. input
+   * normalized to itself. Provide a schema only when the document needs
+   * typed normalization or schema-keyed consumers.
+   */
+  schema?: string;
   docHash: string;
   cid: string;
   /** Issuer identifier (DID, address, or any string). Hashed to bytes32 via keccak256 for on-chain storage. */

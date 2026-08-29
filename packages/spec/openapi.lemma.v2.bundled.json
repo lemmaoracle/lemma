@@ -1547,7 +1547,8 @@
         "type": "object",
         "properties": {
           "schema": {
-            "type": "string"
+            "type": "string",
+            "description": "Optional. When omitted or empty, the server stores the document under the registered identity-normalize schema `passthrough-v1`."
           },
           "docHash": {
             "type": "string"
@@ -1580,7 +1581,6 @@
           }
         },
         "required": [
-          "schema",
           "docHash",
           "cid",
           "issuerId",
