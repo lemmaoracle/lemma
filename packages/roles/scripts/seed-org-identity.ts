@@ -2,7 +2,7 @@
 /**
  * Seed the org-identity-v1 commitment for a domain (#766 issuer track).
  *
- * This is Step 4 of the frame00.com verification chain:
+ * This is Step 4 of the domain-verification chain:
  *   1. Generate/hold the org key pair (orgSecret → orgDid = Poseidon1(orgSecret))
  *   2. Publish `did=<orgDid>` in the domain's `_lemma.<domain>` TXT record
  *   3. Run `seed:domain-dns` — commits the DNS answer with data-commitment-v1
@@ -29,7 +29,7 @@
  *   ORG_MEMBER_ROOT       hex field element — Poseidon Merkle root of members
  * Optional:
  *   ORG_SALT              hex — commitmentHash blinding (default: random per run)
- *   ORG_DOMAIN            default frame00.com
+ *   ORG_DOMAIN            default example.com
  *   ORG_IDENTITY_CIRCUIT  default org-identity-v1
  *   ORG_SCHEMA            default passthrough-v1 (the registered circuit schema)
  *   DRY_RUN=1             witness + local checks only; no registration/proof
@@ -51,7 +51,7 @@ dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
 const CIRCUIT_ID = process.env["ORG_IDENTITY_CIRCUIT"] ?? "org-identity-v1";
 const SCHEMA = process.env["ORG_SCHEMA"] ?? "passthrough-v1";
-const DOMAIN = process.env["ORG_DOMAIN"] ?? "frame00.com";
+const DOMAIN = process.env["ORG_DOMAIN"] ?? "example.com";
 
 const required = (name: string): string => {
   const v = process.env[name];
