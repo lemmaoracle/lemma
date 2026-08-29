@@ -369,7 +369,7 @@ export type OrgIdentityInput = Readonly<{
   orgDid: string;
   /** Hex field element — Poseidon Merkle root of members. */
   memberRoot: string;
-  /** Domain string (e.g. "frame00.com") — converted via toScalar. */
+  /** Domain string (e.g. "example.com") — converted via toScalar. */
   domain: string;
   /** Unix seconds — when the membership tree was committed. */
   timestamp: number;
