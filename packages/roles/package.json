@@ -22,6 +22,7 @@
   ],
   "scripts": {
     "build:circuit": "cd circuits && npm run build",
+    "seed:org-identity": "tsx scripts/seed-org-identity.ts",
     "test": "vitest run --passWithNoTests",
     "test:circuit": "cd circuits && npx vitest run"
   },
@@ -37,6 +38,8 @@
   "dependencies": {
     "@lemmaoracle/sdk": "workspace:*",
     "@lemmaoracle/spec": "workspace:*",
+    "@trust402/sdk": "workspace:*",
+    "dotenv": "^16.4.5",
     "snarkjs": "^0.7.6"
   },
   "devDependencies": {
