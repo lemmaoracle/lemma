@@ -221,8 +221,12 @@ export const domainDns: FeedSource = {
   fetch: async (config?: FetcherConfig): Promise<FetchResult> => {
     const domain = env("LEMMA_DOMAIN", "");
     // imperative: fetch entry point must throw on misconfiguration (see `fail`)
-    // eslint-disable-next-line functional/no-conditional-statements, functional/no-expression-statements -- imperative: misconfiguration must throw
-    if (domain === "") fail("domain-dns: LEMMA_DOMAIN env is required");
+    // — expressed as a conditional expression per FP style; `_domainChecked`
+    // is never used.
+    const _domainChecked: undefined =
+      domain === ""
+        ? fail("domain-dns: LEMMA_DOMAIN env is required")
+        : undefined;
     const doh = env("LEMMA_DOH_URL", DEFAULT_DOH);
     const name = lemmaTxtName(domain);
     const url = `${doh}?name=${encodeURIComponent(name)}&type=TXT`;

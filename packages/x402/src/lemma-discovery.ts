@@ -20,6 +20,7 @@ import type {
   LemmaDiscoveryConfig,
   LemmaRouteDiscovery,
 } from "./lemma-config.js";
+import { safeParseJsonEnv } from "./lemma-config.js";
 
 /** Resolve discovery config from env. */
 // imperative: env-accessing config resolver — no functional alternative
@@ -32,30 +33,23 @@ const resolveDiscoveryConfig = (_opts?: undefined): LemmaDiscoveryConfig | undef
   return !raw
     ? undefined
     : (() => {
-        // imperative: JSON.parse can throw on malformed env config — no functional alternative
-        // eslint-disable-next-line functional/no-try-statements
-        try {
-          const parsed = JSON.parse(raw) as Record<string, unknown>;
-          // If LEMMA_CONFIG, extract discovery sub-object; otherwise use root
-          const discovery = (parsed.discovery ?? parsed) as Record<
-            string,
-            unknown
-          >;
+        const parsed = safeParseJsonEnv(raw);
+        // If LEMMA_CONFIG, extract discovery sub-object; otherwise use root
+        const discovery = (parsed?.discovery ?? parsed) as
+          | Record<string, unknown>
+          | undefined;
 
-          return discovery.schemas || discovery.hints || discovery.routes
-            ? ({
-                schemas: discovery.schemas as string[] | undefined,
-                hints: discovery.hints as
-                  | Record<string, unknown>
-                  | undefined,
-                routes: discovery.routes as
-                  | Record<string, LemmaRouteDiscovery>
-                  | undefined,
-              })
-            : undefined;
-        } catch {
-          return undefined;
-        }
+        return discovery?.schemas || discovery?.hints || discovery?.routes
+          ? ({
+              schemas: discovery.schemas as string[] | undefined,
+              hints: discovery.hints as
+                | Record<string, unknown>
+                | undefined,
+              routes: discovery.routes as
+                | Record<string, LemmaRouteDiscovery>
+                | undefined,
+            })
+          : undefined;
       })();
 };
 
