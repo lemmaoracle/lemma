@@ -20,6 +20,7 @@ import type {
   SettleResultContext,
 } from "@x402/core/server";
 import type { LemmaConfig, ResolvedLemmaConfig } from "./lemma-config.js";
+import { safeParseJsonEnv } from "./lemma-config.js";
 import { createLemmaSubmissionHandler } from "./lemma-submission.js";
 import { poseidon6 } from "poseidon-lite";
 
@@ -60,27 +61,21 @@ const resolveFromEnv = (_?: undefined): ResolvedLemmaConfig | undefined => {
   return !jsonStr
     ? resolveFromIndividualEnvVars()
     : (() => {
-        // imperative: JSON.parse can throw on malformed config — no functional alternative
-        // eslint-disable-next-line functional/no-try-statements
-        try {
-          const parsed = JSON.parse(jsonStr) as Record<string, unknown>;
-          const apiBase = parsed.apiBase as string | undefined;
-          return apiBase
-            ? ({
-                apiBase,
-                apiKey: parsed.apiKey as string | undefined,
-                circuitId:
-                  typeof parsed.circuitId === "string"
-                    ? parsed.circuitId
-                    : DEFAULT_CIRCUIT_ID,
-                relayUrl: parsed.relayUrl as string | undefined,
-                discovery:
-                  parsed.discovery as LemmaConfig["discovery"] | undefined,
-              })
-            : resolveFromIndividualEnvVars();
-        } catch {
-          return resolveFromIndividualEnvVars();
-        }
+        const parsed = safeParseJsonEnv(jsonStr);
+        const apiBase = parsed?.apiBase as string | undefined;
+        return apiBase
+          ? ({
+              apiBase,
+              apiKey: parsed?.apiKey as string | undefined,
+              circuitId:
+                typeof parsed?.circuitId === "string"
+                  ? parsed.circuitId
+                  : DEFAULT_CIRCUIT_ID,
+              relayUrl: parsed?.relayUrl as string | undefined,
+              discovery:
+                parsed?.discovery as LemmaConfig["discovery"] | undefined,
+            })
+          : resolveFromIndividualEnvVars();
       })();
 };
 

@@ -47,6 +47,26 @@ type ResolvedLemmaConfig = Readonly<
   & { readonly apiBase: string; readonly circuitId: string }
 >;
 
+/**
+ * Parse a JSON env-config string, returning `undefined` on malformed input
+ * instead of throwing.
+ *
+ * imperative: `JSON.parse` is a throwing external API — the exception is
+ * contained in this single boundary helper so env-config call sites can
+ * stay try-free.
+ */
+/* eslint-disable functional/no-try-statements -- imperative: contains the throwing JSON.parse for env-config parsing; no functional alternative */
+export const safeParseJsonEnv = (
+  raw: string,
+): Record<string, unknown> | undefined => {
+  try {
+    return JSON.parse(raw) as Record<string, unknown>;
+  } catch {
+    return undefined;
+  }
+};
+/* eslint-enable functional/no-try-statements */
+
 export type {
   LemmaConfig,
   LemmaDiscoveryConfig,
