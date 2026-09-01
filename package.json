@@ -26,6 +26,6 @@
     "prettier-plugin-solidity": "^1.4.3",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tsx": "^4.23.13",
-    "typescript-eslint": "^8.68.0"
+    "typescript-eslint": "^8.69.0"
   }
 }
