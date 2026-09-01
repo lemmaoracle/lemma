@@ -15,7 +15,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import { getCollection } from "astro:content";
-import { getAllPosts } from "../data/blog";
+import { byDateDesc, getAllPosts } from "../data/blog";
 import { resolveCoverImage } from "../lib/coverPhoto";
 import { coverArtwork, COVER_WIDTH, COVER_HEIGHT } from "../lib/blogCover";
 import { CATEGORY_LABELS } from "../data/criticalBriefs";
@@ -68,7 +68,7 @@ const clip = (s: string, n: number): string => (s.length > n ? `${s.slice(0, n)}
  * 無い業界は business 全体の最新へフォールバックし、枠を空けない（設計 v1 §5）。 */
 const bizPosts = (await getAllPosts(locale))
   .filter((p) => p.audience === "business")
-  .sort((a, b) => (a.date > b.date ? -1 : 1));
+  .sort(byDateDesc);
 
 /* 枠1: 導入事例（`tags: case-study`）の最新1本。無ければ「近日公開」のまま
  * （下の newsHtml 参照）。

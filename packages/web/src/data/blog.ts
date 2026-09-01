@@ -89,6 +89,40 @@ export interface BlogPost {
 }
 
 /**
+ * Comparable form of a post `date`.
+ *
+ * Almost every post writes `YYYY.MM.DD`, but `faq.{ja,en}.md` writes
+ * `YYYY-MM-DD`. Compared as raw strings those never meet: `-` (0x2D) sorts
+ * before `.` (0x2E), so a hyphenated date lands before every dotted date in
+ * the same year regardless of the day. Both forms are zero-padded, so
+ * normalizing the separator makes them compare correctly.
+ */
+const dateKey = (date: string): string => date.replace(/-/g, ".");
+
+/**
+ * Sort posts newest first, breaking ties by slug.
+ *
+ * `date` carries no time component, so when two posts share a day there is no
+ * fact that makes one newer. Returning 0 for that case would hand the order to
+ * whatever the input order happens to be — for the blog that is the order the
+ * GitHub Contents API returned, which is outside our control and undocumented.
+ * Deciding it by slug keeps the order stable across builds.
+ *
+ * The previous comparator returned 1 on a tie, i.e. "a sorts after b", so a
+ * stable sort actively reordered same-day posts instead of leaving them be.
+ *
+ * A ja/en pair shares both `date` and `slug` and so still compares equal; no
+ * caller depends on that order, since every one of them filters by locale.
+ */
+export const byDateDesc = <T extends { readonly date: string; readonly slug: string }>(
+  a: T,
+  b: T,
+): number => {
+  const [ka, kb] = [dateKey(a.date), dateKey(b.date)];
+  return ka === kb ? (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0) : ka > kb ? -1 : 1;
+};
+
+/**
  * Return true if the post surfaces under the given category — either as
  * its primary `category` or via `secondary_categories`. Use this anywhere
  * a category archive page, filter pill, or category count is computed.
@@ -495,7 +529,7 @@ const loadPosts = (() => {
           return entries
             .map((e) => parsePost(e.name, e.content))
             .filter((p): p is BlogPost => p !== undefined)
-            .toSorted((a, b) => (a.date > b.date ? -1 : 1));
+            .toSorted(byDateDesc);
         })());
 })();
 
