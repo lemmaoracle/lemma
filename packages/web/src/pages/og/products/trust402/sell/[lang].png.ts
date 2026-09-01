@@ -4,7 +4,7 @@ import type { Locale } from "../../../../../i18n/translations";
 
 export const prerender = true;
 
-export async function getStaticPaths() {
+export function getStaticPaths() {
   return [{ params: { lang: "ja" } }, { params: { lang: "en" } }];
 }
 
