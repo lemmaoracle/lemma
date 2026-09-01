@@ -24,7 +24,7 @@ import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import bodyJa from "../config/top-v47.ja.html?raw";
 import bodyEn from "../config/top-v47.en.html?raw";
 import { getCollection } from "astro:content";
-import { getAllPosts, postInCategory, type BlogPost } from "../data/blog";
+import { byDateDesc, getAllPosts, postInCategory, type BlogPost } from "../data/blog";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 import { resolveCoverImage } from "../lib/coverPhoto";
 import { coverArtwork, COVER_WIDTH, COVER_HEIGHT } from "../lib/blogCover";
@@ -60,7 +60,7 @@ const firstSentence = (v: string): string => {
   return en ? en[0] : v;
 };
 
-const postsDesc = [...(await getAllPosts(locale))].sort((a, b) => (a.date > b.date ? -1 : 1));
+const postsDesc = [...(await getAllPosts(locale))].sort(byDateDesc);
 
 /** 枠1 に出す導入事例の slug（下の「最近の動き」で使う）。 */
 const CASE_STUDY_SLUG = "metawater-mizudako-resident-record-proof";

@@ -93,6 +93,24 @@ export interface BlogPost {
  * its primary `category` or via `secondary_categories`. Use this anywhere
  * a category archive page, filter pill, or category count is computed.
  */
+/**
+ * Sort posts newest first, breaking ties by slug.
+ *
+ * `date` is `YYYY.MM.DD` with no time component, so when two posts share a
+ * day there is no fact that makes one newer. Returning 0 for that case would
+ * hand the order to whatever the input order happens to be — for the blog
+ * that is the order the GitHub Contents API returned, which is outside our
+ * control and undocumented. Deciding it by slug keeps every build identical.
+ *
+ * The previous comparator returned 1 on a tie, i.e. "a sorts after b", so a
+ * stable sort actively reordered same-day posts instead of leaving them be.
+ */
+export const byDateDesc = <T extends { readonly date: string; readonly slug: string }>(
+  a: T,
+  b: T,
+): number =>
+  a.date === b.date ? (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0) : a.date > b.date ? -1 : 1;
+
 export const postInCategory = (
   post: BlogPost,
   category: string,
@@ -495,7 +513,7 @@ const loadPosts = (() => {
           return entries
             .map((e) => parsePost(e.name, e.content))
             .filter((p): p is BlogPost => p !== undefined)
-            .toSorted((a, b) => (a.date > b.date ? -1 : 1));
+            .toSorted(byDateDesc);
         })());
 })();
 

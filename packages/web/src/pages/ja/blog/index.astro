@@ -1,6 +1,6 @@
 ---
 import BlogIndexTemplate from "../../../templates/BlogIndexTemplate.astro";
-import { getBlogSections, isDocCategory } from "../../../data/blog";
+import { byDateDesc, getBlogSections, isDocCategory } from "../../../data/blog";
 import { getTranslations } from "../../../i18n/translations";
 
 const locale = "ja";
@@ -17,9 +17,7 @@ const changelog = (
 ).filter((p) => !isDocCategory(p.category));
 
 // All category-filterable entries (articles + changelog), newest first.
-const entries = [...articles, ...changelog].sort((a, b) =>
-  a.date > b.date ? -1 : 1,
-);
+const entries = [...articles, ...changelog].sort(byDateDesc);
 
 // Featured / Recent draw from *all* entries, not just the Essays section.
 // Announcements default to `section: Changelog` (see data/blog.ts), so
