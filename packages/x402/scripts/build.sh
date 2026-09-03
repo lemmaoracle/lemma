@@ -5,7 +5,13 @@ set -euo pipefail
 
 CIRCUIT="circuits/payment.circom"
 BUILD_DIR="build"
-PTAU="build/pot14_final.ptau"
+# Powers of Tau。ネットから落とさず、リポジトリにコミット済みのものを使う。
+# 2026-09: 配布元 (storage.googleapis.com/zkevm/ptau) が 403 を返すようになり、
+# curl が 403 の本文をそのまま .ptau に書いて snarkjs が
+# "Invalid File format" で落ちていた。pot15 は 2^15 で、この回路
+# (非線形制約 357) には十分。
+PTAU_SRC="../data-commitment/circuits/build/ptau/pot15_final.ptau"
+PTAU="build/pot15_final.ptau"
 LIBS_DIR="$BUILD_DIR/libs"
 
 mkdir -p "$BUILD_DIR"
@@ -19,10 +25,14 @@ cp -rL node_modules/circomlib "$LIBS_DIR/circomlib"
 echo "1/5  Compiling x402 payment circuit..."
 npx circom2 "$CIRCUIT" --r1cs --wasm --sym -o "$BUILD_DIR" -l "$LIBS_DIR"
 
-echo "2/5  Downloading Powers of Tau (Hermez, 14)..."
+echo "2/5  Preparing Powers of Tau (repo-local, 15)..."
 if [ ! -f "$PTAU" ]; then
-  curl -L -o "$PTAU" \
-    "https://storage.googleapis.com/zkevm/ptau/powersOfTau28_hez_final_14.ptau"
+  if [ ! -f "$PTAU_SRC" ]; then
+    echo "ERROR: Powers of Tau not found at $PTAU_SRC" >&2
+    echo "       This file is committed to the repository — check your checkout." >&2
+    exit 1
+  fi
+  cp "$PTAU_SRC" "$PTAU"
 fi
 
 echo "3/5  Groth16 setup..."
