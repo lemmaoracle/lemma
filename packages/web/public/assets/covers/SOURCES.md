@@ -22,3 +22,4 @@
 | verified-attributes-travel-public-services.jpg | 2026.04.07 旅行・公共（空港のガラス面とシルエット — スケール抽象） | Artur Tumasjan | https://unsplash.com/photos/KZSNMN4VxR8 | Unsplash License |
 | verifiable-fx-rates-for-payments.jpg | 2026.08.07 決済レートに、証明を付ける（白い中庭を横切る一人 — スケール抽象。金融系カバーが暗く続いたため明るい方向に差し替え） | Jan Genge | https://unsplash.com/photos/GvnIvq7LPkY | Unsplash License |
 | incident-response-record-proof.jpg | 2026.08.26 クレーム・事故対応記録を、非改ざんで証明する（ホテル/レストランのテーブルセッティング — 顧客対応の現場） | Yanhao Fang | https://unsplash.com/photos/wMaKUAsEcSQ | Unsplash License |
+| j-alert-spoofing-origin-verification-gap.jpg | 2026.09.02 Jアラート報道が示す、「発信元証明」の不在（横に流れた光の帯 — 何かが渡っていくが輪郭は確かめられない、の抽象） | Marcel Strauss | https://unsplash.com/photos/aObZjmUI_yA | Unsplash License |
