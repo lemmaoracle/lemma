@@ -34,7 +34,7 @@ The source was identified through the following chain.
 3. Researcher Zach Edwards found his own record as well. Edwards had not rented a car in Vegas, but had handed over his license at a TSA checkpoint, at a marijuana dispensary in the city, and at his hotel, the Aria.
 4. What these share is in-person document verification with infrared and ultraviolet scanning. IDScan.net says its systems perform more than 21 million verifications monthly at more than 20,000 locations worldwide, and in August 2022 announced an ID verification agreement with Planet 13's dispensaries.
 5. IDScan.net's Jillian Kossman told Krebs only that "at this point I'm not able to share any additional information, but the updates you have provided have been welcome, and helpful to our team's investigation."
-6. Caesars Entertainment, listed as a client on IDScan.net's own site, said that "Caesars has not been a client of IDScan.net and has not used VeriScan since February 2025, despite IDScan.net listing them as a client on their website."
+6. Caesars Entertainment, listed as a client on IDScan.net's own site, said it has not been a client and has not used VeriScan since February 2025, disputing the listing itself.
 7. The FBI's New Orleans field office told Krebs on September 1 that it had opened a formal investigation into a suspected breach involving IDScan.net.
 
 ## 3. Timeline — disclosure and response
