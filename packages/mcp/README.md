@@ -1,6 +1,6 @@
 # `@lemmaoracle/mcp`
 
-[![smithery badge](https://smithery.ai/badge/@lemmaoracle/lemma)](https://smithery.ai/servers/lemmaoracle/lemma)
+[![LightNow capabilities](https://lightnow.ai/badge/io.github.lemmaoracle/mcp)](https://lightnow.ai/servers/io.github.lemmaoracle/mcp)
 [![npm version](https://img.shields.io/npm/v/@lemmaoracle/mcp.svg)](https://www.npmjs.com/package/@lemmaoracle/mcp)
 
 `@lemmaoracle/mcp` is the **Model Context Protocol (MCP) server** that gives
