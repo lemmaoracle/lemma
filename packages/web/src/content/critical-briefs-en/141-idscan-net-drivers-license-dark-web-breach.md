@@ -55,9 +55,9 @@ The response and industry movement since publication:
 
 ## 4. Why it wasn't stopped
 
-This wasn't broken cryptography or a simple misconfiguration. **A one-time check of an ID at a counter had been replaced by the accumulation, over years, of original document images down to infrared and ultraviolet — with no way for the person who handed the ID over, or the business that asked for it, to check where those images live, for how long, or who can reach them.**
+This wasn't broken cryptography or a simple misconfiguration. **A one-time check of an ID at a counter had been replaced by the ongoing accumulation of original document images down to infrared and ultraviolet — with no way for the person who handed the ID over, or the business that asked for it, to check where those images live, for how long, or who can reach them.**
 
-What the counter needs is a momentary judgment: this person holds this document and meets the condition. What actually gets generated and stored is the original image that judgment rested on. The judgment ends; the image carries no expiry. That Krebs and Edwards could find handovers from years earlier, timestamped, is itself evidence that the images outlived the checks that produced them.
+What the counter needs is a momentary judgment: this person holds this document and meets the condition. What actually gets generated and stored is the original image that judgment rested on. The judgment ends; the image carries no expiry. That Krebs and Edwards could find their own past handovers, timestamped, is itself evidence that the images outlived the checks that produced them.
 
 Detection worked. Researchers pointed to the source within days using their own documents, the FBI opened a case the same day, and Nexus went down hours after publication. What failed is the layer before that: between the moment of handover and the moment a breach becomes public, neither the individual nor the client business could independently confirm who had access.
 
