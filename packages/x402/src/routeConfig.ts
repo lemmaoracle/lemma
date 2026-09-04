@@ -127,6 +127,8 @@ const failConfigured = (message: string): never => {
  * incoming request.
  */
 export const assertDiscoverableConfigured = (config: LemmaRouteConfig): void =>
+  // imperative: void discards the throw-branch; eslint doesn't track never-return — no meaningful alternative
+  // eslint-disable-next-line @typescript-eslint/no-meaningless-void-operator
   void (config.discoverable
     ? ((missing: ReadonlyArray<string>) =>
         missing.length > 0
