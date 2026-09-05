@@ -25,7 +25,7 @@
  * big-endian encoding are inherently imperative operations — no
  * functional alternative without unacceptable performance cost.
  */
-/* eslint-disable functional/no-let, functional/no-loop-statements, functional/no-conditional-statements, functional/no-expression-statements, functional/immutable-data, functional/no-throw-statements, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/restrict-template-expressions */
+/* eslint-disable functional/no-let, functional/no-loop-statements, functional/no-conditional-statements, functional/no-expression-statements, functional/immutable-data, functional/no-throw-statements, @typescript-eslint/restrict-template-expressions */
 
 /** BN254 field prime (alt_bn128 curve order). */
 export const BN254_PRIME = BigInt(
@@ -54,7 +54,7 @@ export function bytesToFieldElements(data: Uint8Array): bigint[] {
   }
 
   const numChunks = paddedLen / CHUNK_SIZE;
-  const elements: bigint[] = new Array(numChunks);
+  const elements: bigint[] = new Array<bigint>(numChunks);
 
   for (let i = 0; i < numChunks; i++) {
     const offset = i * CHUNK_SIZE;
