@@ -13,7 +13,10 @@ export async function GET(context) {
     title: 'Lemma ブログ',
     description: '分散ロジックと自動推論の研究、理論、応用',
     site: context.site,
-    trailingSlash: false,
+    // 記事の実体は末尾スラッシュ有り（無い形は 308 で転送される）。canonical /
+    // og:url / JSON-LD もそちらに揃えているので、フィードの <link> も揃える。
+    // アグリゲータは <item><link> を保存して再配信するため、ここが転送形だと
+    // 転送される URL が外に出回る。
     items: posts.map((post) => ({
       title: post.title,
       pubDate: new Date(post.date),

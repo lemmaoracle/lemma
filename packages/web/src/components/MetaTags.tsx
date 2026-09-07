@@ -60,7 +60,10 @@ export default function MetaTags(props: MetaTagsProps) {
     const { title = "Lemma", description, ogDescription, base, locale } = props;
     const shareDescription = ogDescription ?? description;
     const ogImage = props.ogImage ?? getDefaultOgImage(locale);
-    const url = `https://lemma.frame00.com${base}`;
+    // 末尾スラッシュ必須。`base` は EN が `""`・JA が `/ja` なので、これが
+    // 無いと EN はパス無しの裸のオリジン、JA は 308 で転送される `/ja` になり、
+    // どちらも canonical（`/` と `/ja/`）と食い違う。
+    const url = `https://lemma.frame00.com${base}/`;
 
     return (
       <>
@@ -103,7 +106,8 @@ export default function MetaTags(props: MetaTagsProps) {
     const ogImage = props.ogImage ?? post.cover ?? getDefaultOgImage(locale);
     // blogPath already includes the locale prefix (e.g. "/ja/blog"); do NOT
     // re-prefix with `base`, that would yield "/ja/ja/blog/<slug>".
-    const url = `https://lemma.frame00.com${blogPath}/${post.slug}`;
+    // 末尾スラッシュ必須（canonical と同じ形。無い形は 308 で転送される）。
+    const url = `https://lemma.frame00.com${blogPath}/${post.slug}/`;
 
     // og:/twitter:title use the short `ogTitle` when set; the on-page
     // <title> and H1 keep the full SEO title (set elsewhere, unchanged).
