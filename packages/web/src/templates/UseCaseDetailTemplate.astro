@@ -36,8 +36,13 @@ import { USE_CASE_PLAN } from "../data/useCasePlanMap";
 import { SEGMENT_URLS } from "../config/navigation";
 import { USE_CASE_TASK_GROUPS_JA } from "../config/useCaseTaskGroups";
 import { getAllUseCases } from "../data/useCases";
-import { useCaseIndexPath, useCasePath } from "../lib/urls";
-import { localePath } from "../lib/urls";
+import {
+  SITE_ORIGIN,
+  absoluteUrl,
+  localePath,
+  useCaseIndexPath,
+  useCasePath,
+} from "../lib/urls";
 
 const resolveCTA = (cta: CTA, lc: Locale): { readonly label: string; readonly href: string } =>
   cta.type === "talk-to-us"
@@ -128,26 +133,55 @@ const demoPairSampleId = getUseCasePairSample(useCase.slug);
 const homeLabel = locale === "ja" ? "ホーム" : "Home";
 const minLabel = locale === "ja" ? "分" : "min read";
 
-const SITE = "https://lemma.frame00.com";
-const useCaseUrl = `${SITE}${useCasesPath}/${useCase.slug}/`;
-const articleJsonLd = {
-  "@context": "https://schema.org",
+const SITE = SITE_ORIGIN;
+const useCaseUrl = absoluteUrl(useCasePath(base, useCase.slug));
+const ogImageUrl = `${SITE}/og/use-cases/${useCase.slug}/${locale}.png`;
+
+/* Google は `headline` を 110 字で切る。超える分は落とさず `name` に残す。 */
+const HEADLINE_MAX = 110;
+const ucHeadline =
+  useCase.title.length <= HEADLINE_MAX
+    ? useCase.title
+    : `${useCase.title.slice(0, HEADLINE_MAX - 1)}…`;
+
+/*
+ * Article は `@graph` の1ノードとして Layout に渡す。以前はここで
+ * `@context` 付きの独立ブロックを2つ出しており、Layout の Organization /
+ * WebSite グラフと合わせて1ページに3ブロック並んでいた。参照が繋がらず、
+ * 同じ Organization を2通りの書き方で重複して主張していた。
+ *
+ * `datePublished` は posts 側 README の frontmatter 由来。無ければ出さない
+ * ——日付は事実の主張なので、埋めるために作らない。
+ */
+const useCaseSchema = {
   "@type": "Article",
-  headline: useCase.title,
+  "@id": `${useCaseUrl}#article`,
+  headline: ucHeadline,
+  name: useCase.title,
   description: useCase.abstract,
   url: useCaseUrl,
-  inLanguage: locale,
-  author: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "Lemma" },
-  publisher: { "@id": `${SITE}/#organization` },
   mainEntityOfPage: { "@type": "WebPage", "@id": useCaseUrl },
-  about: pillar ? { "@type": "Thing", name: pillar.title[locale] } : undefined,
+  ...(useCase.published ? { datePublished: useCase.published } : {}),
+  ...(useCase.updated ? { dateModified: useCase.updated } : {}),
+  inLanguage: locale,
+  image: ogImageUrl,
+  author: { "@id": `${SITE}/#organization` },
+  publisher: { "@id": `${SITE}/#organization` },
+  ...(pillar ? { about: { "@type": "Thing", name: pillar.title[locale] } } : {}),
+  ...(useCase.tags?.length ? { keywords: useCase.tags.join(", ") } : {}),
 };
-const breadcrumbJsonLd = {
-  "@context": "https://schema.org",
+
+const breadcrumbSchema = {
   "@type": "BreadcrumbList",
+  "@id": `${useCaseUrl}#breadcrumb`,
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Lemma", item: `${SITE}${base || ""}/` },
-    { "@type": "ListItem", position: 2, name: useCaseT.title, item: `${SITE}${useCasesPath}/` },
+    { "@type": "ListItem", position: 1, name: "Lemma", item: absoluteUrl(localePath(base)) },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: useCaseT.title,
+      item: absoluteUrl(useCaseIndexPath(base)),
+    },
     { "@type": "ListItem", position: 3, name: useCase.title, item: useCaseUrl },
   ],
 };
@@ -159,11 +193,9 @@ const breadcrumbJsonLd = {
   description={useCase.abstract}
   metaType="page"
   pagePath={`/solutions/use-cases/${useCase.slug}/`}
-  ogImage={`https://lemma.frame00.com/og/use-cases/${useCase.slug}/${locale}.png`}
+  ogImage={ogImageUrl}
+  jsonLd={[useCaseSchema, breadcrumbSchema]}
 >
-  <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
-  <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />
-
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
