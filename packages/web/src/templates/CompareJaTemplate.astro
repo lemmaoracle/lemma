@@ -159,7 +159,7 @@ const mk = (v: "o" | "t" | "x") => (v === "o" ? "○" : v === "t" ? "△" : "✕
     is:inline
     set:html={JSON.stringify(breadcrumbJsonLd)}
   />
-  <Navigation locale={locale} t={t.nav} base={base} />
+  <Navigation locale={locale} t={t.nav} base={base} otherLocaleAvailable={false} />
   <HubSpotDrawer />
 
   <main class="cmp-page">
@@ -662,7 +662,13 @@ const mk = (v: "o" | "t" | "x") => (v === "o" ? "○" : v === "t" ? "△" : "✕
     </div>
   </main>
 
-  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+  <Footer
+    locale={locale}
+    t={t.nav}
+    footerT={t.footer}
+    base={base}
+    otherLocaleAvailable={false}
+  />
 </Layout>
 
 <style>

@@ -15,9 +15,15 @@ import { DASHBOARD_URL } from "../config/cta";
 import { localePath } from "../lib/urls";
 
 interface Props {
+  /**
+   * 対向ロケールの同じ面が存在するか。`false` で言語切替を出さない。
+   * 切替先は現在のパスから機械的に組み立てるので、片方の言語にしか無い面
+   * （`/ja/compare/` など）では既定のままだと 404 を指す。
+   */
+  otherLocaleAvailable?: boolean;
   locale?: "ja" | "en";
 }
-const { locale = "ja" } = Astro.props as Props;
+const { locale = "ja", otherLocaleAvailable = true } = Astro.props as Props;
 const isJa = locale === "ja";
 const base = isJa ? "/ja" : "";
 
@@ -174,7 +180,7 @@ const pricingHref = localePath(base, "/pricing/");
       <a href={p.href} target={p.ext ? "_blank" : undefined} rel={p.ext ? "noopener" : undefined}><span class="mmi" aria-hidden="true" set:html={p.icon} /><span class="mmt"><b>{p.label}</b><span>{p.sub}</span></span></a>
     ))}</div></div></div></div></div></div>
   </div>
-  <a class="navlang" href={languageSwitchHref}>{L.lang}</a>
+  {otherLocaleAvailable && <a class="navlang" href={languageSwitchHref}>{L.lang}</a>}
   <a class="navcta" href={DASHBOARD_URL} target="_blank" rel="noopener">{L.cta}</a>
   <button class="nv2-burger" id="nv2Burger" aria-label={L.burger} aria-expanded="false">
     <span></span><span></span><span></span>
@@ -204,7 +210,7 @@ const pricingHref = localePath(base, "/pricing/");
   </details>
   <div class="nv2-drawer-cta">
     <a href={DASHBOARD_URL} target="_blank" rel="noopener">{L.cta}</a>
-    <a class="nv2-drawer-en" href={languageSwitchHref}>{L.lang}</a>
+    {otherLocaleAvailable && <a class="nv2-drawer-en" href={languageSwitchHref}>{L.lang}</a>}
   </div>
 </div>
 

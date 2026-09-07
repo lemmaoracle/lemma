@@ -30,9 +30,11 @@ interface Props {
   base: string;
   /** ダッシュボードボタン/リンクの飛び先の差し替え (Trust402 面が使用)。 */
   dashboardUrl?: string;
+  /** 対向ロケールの同じ面が無い場合に言語切替を隠す。 */
+  otherLocaleAvailable?: boolean;
 }
 
-const { locale, footerT, base, dashboardUrl } = Astro.props;
+const { locale, footerT, base, dashboardUrl, otherLocaleAvailable = true } = Astro.props;
 const dashHref = dashboardUrl ?? DASHBOARD_URL;
 const isJa = locale === "ja";
 const L = (path: string) => localePath(base, path);
@@ -99,7 +101,9 @@ const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
         external: true,
       },
       { label: isJa ? "真正性とは" : "What is authenticity", href: L("/authenticity") },
-      { label: languageSwitchLabel, href: languageSwitchHref },
+      ...(otherLocaleAvailable
+        ? [{ label: languageSwitchLabel, href: languageSwitchHref }]
+        : []),
     ],
   },
 ];

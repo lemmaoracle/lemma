@@ -11,9 +11,11 @@ interface Props {
   locale: Locale;
   t: Translations["nav"];
   base: string;
+  /** 対向ロケールの同じ面が無い場合に言語切替を隠す。 */
+  otherLocaleAvailable?: boolean;
 }
 
-const { locale } = Astro.props;
+const { locale, otherLocaleAvailable } = Astro.props;
 ---
 
-<NavigationV2 locale={locale} />
+<NavigationV2 locale={locale} otherLocaleAvailable={otherLocaleAvailable} />

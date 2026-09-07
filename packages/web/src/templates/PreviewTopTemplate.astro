@@ -164,11 +164,12 @@ const MEGA: ReadonlyArray<{
   locale={locale}
   noindex={true}
   bodyClass="pv-page"
+  localesAvailable={["ja"] as ReadonlyArray<Locale>}
 >
   <div class="pv-bar">PREVIEW — 新トップページ案 v5.8 / 社内確認用</div>
 
   {/* 1020px 以下でだけ出す既存ナビ（モバイルドロワーは既存実装に委ねる・指示 §3.1） */}
-  <Navigation locale={locale} t={t.nav} base={base} />
+  <Navigation locale={locale} t={t.nav} base={base} otherLocaleAvailable={false} />
 
   <div class="pv">
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -482,7 +483,13 @@ const MEGA: ReadonlyArray<{
     </section>
   </div>
 
-  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+  <Footer
+    locale={locale}
+    t={t.nav}
+    footerT={t.footer}
+    base={base}
+    otherLocaleAvailable={false}
+  />
 </Layout>
 
 <style is:global>

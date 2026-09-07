@@ -21,14 +21,15 @@
  *   - dead（404）。行き先をどこに変えるかは文面の判断であって、
  *     ビルドが決められることではない。一覧は出す。
  *
+ * `public/_redirects`（Cloudflare Pages）で救われている URL は 404 ではない。
+ * 旧 URL からの 301 が効いているので警告に留める。ただしリンク自体を新しい
+ * URL に書き換えれば1ホップ減るので、黙らせはしない。
+ *
  * `LEMMA_POSTS_REPO` が無いビルド（CI の `pnpm -r build`）では記事と
  * ユースケースが posts リポジトリから取れず、そのページ自体が出力されない。
  * そこへのリンクは当然 404 になるので、この条件では dead を数えない
  * （680件を超える偽の警告で本物が埋まる）。redirect の検査は影響を受けない。
  *
- * `/preview/` 配下は検査しない。社内プレビュー面（noindex・sitemap 除外・
- * どこからもリンクしない）で、EN 版を作らない前提なので言語切替が構造的に
- * 行き先を持たない。
  */
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative, sep } from "node:path";
@@ -40,8 +41,6 @@ const CONTENT_CONTAINERS = [
   // 記事 frontmatter の `resources`（関連リンク）。中身は posts 側。
   { klass: "blog-resources", tag: "section" },
 ];
-
-const SKIP_PREFIXES = ["/preview/", "/ja/preview/"];
 
 async function* walk(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
@@ -76,6 +75,26 @@ function contentRanges(html) {
 
 const ORIGIN = "https://lemma.frame00.com";
 
+/**
+ * `_redirects` を読み、転送元のパスを集める。
+ *
+ * 形式は `<from> <to> <status>` の空白区切り。`*` を含む行は前方一致
+ * （`/use-cases/*`）なので接頭辞として持つ。コメントと空行は捨てる。
+ */
+function parseRedirects(text) {
+  const exact = new Set();
+  const prefixes = [];
+  for (const line of text.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const [from] = trimmed.split(/\s+/);
+    if (!from?.startsWith("/")) continue;
+    if (from.endsWith("*")) prefixes.push(from.slice(0, -1));
+    else exact.add(from);
+  }
+  return { exact, prefixes };
+}
+
 export default function checkInternalLinks() {
   return {
     name: "lemma:check-internal-links",
@@ -95,14 +114,22 @@ export default function checkInternalLinks() {
         // posts が取れないビルドでは記事ページが存在しないので 404 を数えない。
         const postsAvailable = Boolean(process.env.LEMMA_POSTS_REPO);
 
+        // Cloudflare Pages の転送規則。public/ の中身は dist にコピーされる。
+        let redirects = { exact: new Set(), prefixes: [] };
+        try {
+          redirects = parseRedirects(await readFile(join(root, "_redirects"), "utf8"));
+        } catch {
+          // _redirects が無いビルドもある。その場合は転送なしとして扱う。
+        }
+        const isRedirected = (target) =>
+          redirects.exact.has(target) || redirects.prefixes.some((p) => target.startsWith(p));
+
         const errors = [];
         const warnings = [];
 
         for await (const path of walk(root)) {
           if (!path.endsWith(".html")) continue;
           const page = `/${relative(root, path).split(sep).join("/")}`.replace(/index\.html$/, "");
-          if (SKIP_PREFIXES.some((p) => page.startsWith(p))) continue;
-
           const html = await readFile(path, "utf8");
           const ranges = contentRanges(html);
           const inContent = (i) => ranges.some(([a, b]) => i >= a && i < b);
@@ -123,9 +150,12 @@ export default function checkInternalLinks() {
               kind = "dead";
             }
             if (!kind) continue;
+            // _redirects が拾う旧 URL は 404 ではない。書き換えれば1ホップ減る。
+            if (kind === "dead" && isRedirected(target)) kind = "legacy";
             if (kind === "dead" && !postsAvailable) continue;
 
-            const finding = `${kind === "redirect" ? "308" : "404"} ${target}  (on ${page})`;
+            const label = { redirect: "308", dead: "404", legacy: "301" }[kind];
+            const finding = `${label} ${target}  (on ${page})`;
             const fixable = kind === "redirect" && !inContent(m.index);
             (fixable ? errors : warnings).push(finding);
           }
@@ -134,7 +164,7 @@ export default function checkInternalLinks() {
         if (warnings.length) {
           const uniq = [...new Set(warnings)];
           logger.warn(
-            `要修正リンク ${warnings.length} 件（404、および記事本文の 308）:\n  ` +
+            `要修正リンク ${warnings.length} 件（404 / 旧URLの301 / 記事本文の308）:\n  ` +
               uniq.slice(0, 20).join("\n  ") +
               (uniq.length > 20 ? `\n  …他 ${uniq.length - 20} 件` : ""),
           );

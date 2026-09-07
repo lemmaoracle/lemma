@@ -16,9 +16,18 @@ interface Props {
   base: string;
   /** Trust402 面などがダッシュボードの飛び先を差し替えるための旧契約 (S1)。 */
   dashboardUrl?: string;
+  /** 対向ロケールの同じ面が無い場合に言語切替を隠す。 */
+  otherLocaleAvailable?: boolean;
 }
 
-const { locale, t, footerT, base, dashboardUrl } = Astro.props;
+const { locale, t, footerT, base, dashboardUrl, otherLocaleAvailable } = Astro.props;
 ---
 
-<FooterRenewal locale={locale} t={t} footerT={footerT} base={base} dashboardUrl={dashboardUrl} />
+<FooterRenewal
+  locale={locale}
+  t={t}
+  footerT={footerT}
+  base={base}
+  dashboardUrl={dashboardUrl}
+  otherLocaleAvailable={otherLocaleAvailable}
+/>
