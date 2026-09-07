@@ -45,6 +45,10 @@ export interface UseCase {
   readonly tags?: ReadonlyArray<string>;
   readonly sections: ReadonlyArray<UseCaseSection>;
   readonly readingTime: number;
+  /** ISO 8601 (YYYY-MM-DD)。posts 側 README の frontmatter 由来。 */
+  readonly published?: string;
+  /** ISO 8601 (YYYY-MM-DD)。同上。 */
+  readonly updated?: string;
 }
 
 /* ── Config ─────────────────────────────────────────────────────── */
@@ -101,6 +105,10 @@ interface UseCaseFrontmatter {
   readonly relatedUseCases?: ReadonlyArray<string>;
   readonly cover?: string;
   readonly tags?: ReadonlyArray<string>;
+  // YAML の裸の日付は gray-matter が Date にして返す。文字列で書かれる
+  // こともあるので両方受ける。
+  readonly published?: string | Date;
+  readonly updated?: string | Date;
 }
 
 /* ── GitHub fetching ────────────────────────────────────────────── */
@@ -220,6 +228,22 @@ function extractTitleFromContent(content: string): string | undefined {
   return match ? match[1].trim() : undefined;
 }
 
+/**
+ * frontmatter の日付を `YYYY-MM-DD` に揃える。
+ *
+ * YAML の裸の日付（`published: 2026-05-07`）は gray-matter が Date にして
+ * 返し、クォートで括られていれば文字列のまま来る。日付として読めない値は
+ * 捨てる。構造化データの日付は事実の主張なので、曖昧なものは出さない。
+ */
+function normalizeDate(value: string | Date | undefined): string | undefined {
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? undefined : value.toISOString().slice(0, 10);
+  }
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return /^\d{4}-\d{2}-\d{2}$/.test(trimmed) ? trimmed : undefined;
+}
+
 function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | undefined {
   const readmeSuffix = locale === "ja" ? ".ja.md" : ".en.md";
   const readmeFile =
@@ -294,6 +318,8 @@ function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | u
     tags: fm.tags && fm.tags.length > 0 ? fm.tags : undefined,
     sections,
     readingTime: calculateReadingTime(totalContent, locale),
+    published: normalizeDate(fm.published),
+    updated: normalizeDate(fm.updated),
   };
 }
 
