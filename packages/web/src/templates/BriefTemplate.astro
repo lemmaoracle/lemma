@@ -233,9 +233,12 @@ const metaDescription = isJa
  * 生成AI・検索の双方から「誰がいつ書いた何なのか」が読めなかった。Layout の
  * `@graph` に連結して1ページ1 JSON-LD に保つ。
  *
- * 値は**画面に出ている事実だけ**。`dateModified` は version が 1.0 のあいだ
- * `published` と同じで、改訂を出した Brief だけが差分を持つ（改訂履歴の節と
- * 同じ条件なので、画面と構造化データがずれない）。
+ * 値は**画面に出ている事実だけ**。frontmatter に改訂日のフィールドは無く
+ * （あるのは `version` だけで、改訂履歴の節も日付を持たない）、`dateModified`
+ * を出せるのは未改訂＝`version === "1.0"` の Brief に限る。改訂済みの3本で
+ * `published` を `dateModified` として出すと**偽の日付を主張する**ことになる
+ * ので、その場合はキーごと落とす。schema.org でも必須ではない。
+ * 改訂日を持たせたくなったら frontmatter に足すのが先。
  */
 const briefSchema = {
   "@type": "Article",
@@ -246,7 +249,7 @@ const briefSchema = {
   url: briefUrl,
   mainEntityOfPage: { "@type": "WebPage", "@id": briefUrl },
   datePublished: publishedStr,
-  dateModified: publishedStr,
+  ...(showRevisionHistory ? {} : { dateModified: publishedStr }),
   inLanguage: isJa ? "ja" : "en",
   image: ogImage,
   author: brief.data.authors.map((name) => ({
