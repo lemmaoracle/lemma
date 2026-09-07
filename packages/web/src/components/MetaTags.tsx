@@ -60,7 +60,10 @@ export default function MetaTags(props: MetaTagsProps) {
     const { title = "Lemma", description, ogDescription, base, locale } = props;
     const shareDescription = ogDescription ?? description;
     const ogImage = props.ogImage ?? getDefaultOgImage(locale);
-    const url = `https://lemma.frame00.com${base}`;
+    // 末尾スラッシュ必須。`base` は EN が `""`・JA が `/ja` なので、これが
+    // 無いと EN はパス無しの裸のオリジン、JA は 308 で転送される `/ja` になり、
+    // どちらも canonical（`/` と `/ja/`）と食い違う。
+    const url = `https://lemma.frame00.com${base}/`;
 
     return (
       <>

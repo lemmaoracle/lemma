@@ -151,7 +151,11 @@ const blogSchema = {
   "@id": `${articleUrl}#article`,
   headline: blogHeadline,
   name: post.title,
-  description: post.abstract,
+  // `parsePost` は `abstract` / `category` を `""` で既定化する（data/blog.ts）。
+  // 記事は外部の posts リポジトリ由来でビルドを落とさずに欠けうるので、空なら
+  // キーごと落とす。空文字の `articleSection` や、先頭にカンマの付いた
+  // `keywords`（", Announcements"）を出さないため。
+  ...(post.abstract ? { description: post.abstract } : {}),
   url: articleUrl,
   mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
   ...(publishedIso ? { datePublished: publishedIso, dateModified: publishedIso } : {}),
@@ -159,9 +163,13 @@ const blogSchema = {
   image: `${SITE}/og/blog/${locale}/${post.slug}.png`,
   author: { "@id": `${SITE}/#organization` },
   publisher: { "@id": `${SITE}/#organization` },
-  articleSection: post.category,
-  ...(post.secondaryCategories?.length
-    ? { keywords: [post.category, ...post.secondaryCategories].join(", ") }
+  ...(post.category ? { articleSection: post.category } : {}),
+  ...(post.category || post.secondaryCategories?.length
+    ? {
+        keywords: [post.category, ...(post.secondaryCategories ?? [])]
+          .filter(Boolean)
+          .join(", "),
+      }
     : {}),
 };
 
