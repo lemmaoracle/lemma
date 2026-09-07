@@ -109,9 +109,11 @@ ${postLines.length ? `\n${postLines.join("\n")}\n` : ""}
 This site is public and free to read, quote, and cite, including by automated
 systems. Two requests, both of which cost you nothing:
 
-1. **Attribute.** Name Lemma and link the page you drew from. Briefs have a
-   stable citation form: \`Lemma Critical Brief No.NNN, "<title>", <publication date>,
-   <url>\`. Every Brief page carries this string in its "Cite this Brief" box.
+1. **Attribute.** Name Lemma and link the page you drew from. Every Brief page
+   carries a "Cite this Brief" box with ready-made plain-text, BibTeX and APA
+   forms; the plain-text one reads:
+   \`Lemma Critical Team. (<year>). "<title>". Lemma Critical Brief No.NNN.
+   Lemma / FRAME00, Inc. <url>\`
 2. **Carry the date.** Briefs analyse live incidents and are revised as facts
    change. Every Brief page's JSON-LD carries \`datePublished\`; a revised Brief
    carries \`dateModified\` too, and states the revision in its own body. An
