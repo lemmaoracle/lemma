@@ -226,6 +226,83 @@ const metaDescription = isJa
   ? `${publishedStr}公開の${mainTitle}を構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何が証明されている必要があったか。AI のための、信頼インフラ — Lemma Critical Brief。`
   : `Structural analysis of ${mainTitle}: what happened, why better detection doesn't close the gap, and what should have been provable beforehand. The Trust Layer for AI — Lemma Critical Brief.`;
 
+/**
+ * 記事の構造化データ（2026-09-07）。
+ *
+ * Brief は本文・日付・出典が揃っているのに `@type: Article` を出しておらず、
+ * 生成AI・検索の双方から「誰がいつ書いた何なのか」が読めなかった。Layout の
+ * `@graph` に連結して1ページ1 JSON-LD に保つ。
+ *
+ * 値は**画面に出ている事実だけ**。`dateModified` の出どころは3通りある:
+ *   - 改訂済み（`version !== "1.0"`）で本文に改訂注記があれば、そこの日付。
+ *     注記は `> **改訂（v2.0 / 2026-07-03）**` / `> **Revision (v1.1 / …)**`
+ *     の形で本文の先頭付近に置かれ、画面にも出ている（077・109）。
+ *   - 未改訂なら `published`。「公開以降さわっていない」は主張してよい事実。
+ *   - 改訂済みなのに注記が無い場合（124）は**キーごと落とす**。`published` を
+ *     入れると改訂された日を公開日だと偽ることになり、`/llms.txt` で
+ *     「日付を落とすな」と書いている側が誤った日付を出すことになる。
+ * frontmatter に `revised` を足せばこの解析は不要になる。足すのが本筋。
+ */
+const revisionDate = brief.body?.match(
+  /^>\s*\*\*(?:改訂|Revision)\s*[（(]v[\d.]+\s*\/\s*(\d{4}-\d{2}-\d{2})[）)]/m,
+)?.[1];
+const dateModified = showRevisionHistory ? revisionDate : publishedStr;
+
+/**
+ * `headline` は Google の Article 構造化データで **110字** を超えると
+ * リッチリザルトの対象外になりうる。Brief のタイトルは長く、`seoTitle` の
+ * まま出すと 139本中 57本が超える（最長205字）。全文は `name` が持つので、
+ * ここは超えた分だけ畳む。
+ */
+const HEADLINE_MAX = 110;
+const headline =
+  seoTitle.length <= HEADLINE_MAX
+    ? seoTitle
+    : `${seoTitle.slice(0, HEADLINE_MAX - 1)}…`;
+const briefSchema = {
+  "@type": "Article",
+  "@id": `${briefUrl}#article`,
+  headline,
+  name: localizedTitle,
+  description: metaDescription,
+  url: briefUrl,
+  mainEntityOfPage: { "@type": "WebPage", "@id": briefUrl },
+  datePublished: publishedStr,
+  ...(dateModified ? { dateModified } : {}),
+  inLanguage: isJa ? "ja" : "en",
+  image: ogImage,
+  author: brief.data.authors.map((name) => ({
+    "@type": "Organization",
+    name,
+  })),
+  publisher: { "@id": "https://lemma.frame00.com/#organization" },
+  isPartOf: {
+    "@type": "PublicationIssue",
+    issueNumber: brief.data.brief_no,
+    isPartOf: {
+      "@type": "Periodical",
+      "@id": "https://lemma.frame00.com/critical/briefs/#series",
+      name: "Lemma Critical Brief",
+      url: "https://lemma.frame00.com/critical/briefs/",
+      publisher: { "@id": "https://lemma.frame00.com/#organization" },
+    },
+  },
+  articleSection: primaryCatLabel,
+  keywords: [
+    brief.data.primary_category,
+    ...brief.data.secondary_categories,
+  ].join(", "),
+  // 事案の発生日。公開日と区別が付くよう `about` に持たせる。`Event` にすると
+  // location / endDate を要求するリッチリザルトの契約を 278ページ全部が背負い、
+  // Search Console が全件エラーとして挙げてくる。日付を伝えたいだけなので
+  // 契約を持たない `Thing` + `disambiguatingDescription` にする。
+  about: {
+    "@type": "Thing",
+    name: localizedTitle,
+    disambiguatingDescription: `${isJa ? "事案発生日" : "Incident date"}: ${incidentDateStr}`,
+  },
+};
+
 // 脅威タイプ別バナー（レール2段目）。CTA は「デモをリクエスト」から
 // 「知見を受け取る」に変更（2026-08-21）——Brief の目的は転換より認知で、
 // デモ直行は 90日クリック0、末尾CTAとも役割が重複していた。飛び先は
@@ -306,6 +383,7 @@ const labels = isJa
   ogTitle={pageTitle}
   description={metaDescription}
   ogImage={ogImage}
+  jsonLd={[briefSchema]}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 

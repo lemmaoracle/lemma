@@ -45,6 +45,17 @@ interface Props {
    * （検索の文はそのまま保つ）。
    */
   ogDescription?: string;
+  /**
+   * ページ固有の schema.org ノード。Layout が持つ `@graph`
+   * （Organization / WebSite）の後ろに連結する。
+   *
+   * ブロックを増やさず1ページ1 JSON-LD に保つための口。`publisher` などは
+   * `{ "@id": "https://lemma.frame00.com/#organization" }` で既存ノードを
+   * 参照できる。
+   *
+   * 生成AI・検索の双方が読む面なので、値は**画面に出ている事実**だけを入れる。
+   */
+  jsonLd?: ReadonlyArray<Record<string, unknown>>;
 }
 
 const { locale = "en", bodyClass, noindex, noindexFollow } = Astro.props;
@@ -199,8 +210,14 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
             publisher: { "@id": `${SITE_ORIGIN}/#organization` },
             inLanguage: ["en", "ja"],
           },
+          ...(Astro.props.jsonLd ?? []),
         ],
-      })}
+      })
+        // `JSON.stringify` は `<` を素通しするので、記事タイトル等に
+        // `</script>` が入るとインライン script がそこで閉じ、JSON-LD も
+        // 周りのマークアップも壊れる。ページ固有ノードを受けるようになった
+        // ＝値が本文由来になったので、直列化の時点で潰しておく。
+        .replace(/</g, "\\u003c")}
     />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <!-- Tally widget runtime — required by every `data-tally-open` button and
