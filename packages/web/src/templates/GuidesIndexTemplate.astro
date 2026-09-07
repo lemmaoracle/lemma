@@ -14,6 +14,8 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import { blogArticlePath } from "../lib/urls";
+import { absoluteUrl, blogArticlePath } from "../lib/urls";
 
 export interface GuidesIndexTemplateProps {
   locale: Locale;
@@ -24,7 +26,6 @@ export interface GuidesIndexTemplateProps {
 }
 
 const { locale, t, base, guides, foundations } = Astro.props as GuidesIndexTemplateProps;
-const blogPath = base ? `${base}/blog` : "/blog";
 const guidesPath = base ? `${base}/guides` : "/guides";
 const title =
   locale === "ja" ? `${t.blog.index.guidesTitle} — Lemma` : `${t.blog.index.guidesTitle} — Lemma`;
@@ -45,7 +46,7 @@ const collectionJsonLd = {
       "@type": "ListItem",
       position: i + 1,
       name: post.title,
-      url: `${SITE}${blogPath}/${post.slug}/`,
+      url: absoluteUrl(blogArticlePath(base, post.slug)),
     })),
   },
 };
@@ -71,7 +72,7 @@ const collectionJsonLd = {
             <ul class="gd-grid">
               {guides.map((post) => (
                 <li>
-                  <a href={`${blogPath}/${post.slug}`} class="gd-card">
+                  <a href={blogArticlePath(base, post.slug)} class="gd-card">
                     <div class="gd-card-meta">
                       <span class="gd-card-cat">{post.category}</span>
                       <span class="gd-card-date">{post.date}</span>
@@ -103,7 +104,7 @@ const collectionJsonLd = {
             <ul class="gd-foundations">
               {foundations.map((post) => (
                 <li>
-                  <a href={`${blogPath}/${post.slug}`} class="gd-foundations-card">
+                  <a href={blogArticlePath(base, post.slug)} class="gd-foundations-card">
                     <div class="gd-foundations-text">
                       <h3 class="gd-foundations-title">{post.title}</h3>
                       <p class="gd-foundations-abstract">{post.abstract}</p>

@@ -21,6 +21,7 @@
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import LemmaOracle from "../components/LemmaOracle.astro";
+import { localePath } from "../lib/urls";
 
 export interface VerifyAnchorTemplateProps {
   locale: Locale;
@@ -30,7 +31,7 @@ export interface VerifyAnchorTemplateProps {
 
 const { locale, base } = Astro.props as VerifyAnchorTemplateProps;
 const isJa = locale === "ja";
-const L = (path: string) => `${base}${path}`;
+const L = (path: string) => localePath(base, path);
 
 const API_BASE = "https://workers.lemma.workers.dev/v1";
 const RAW_COUNTERS = `${API_BASE}/counters`;

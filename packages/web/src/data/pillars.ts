@@ -173,7 +173,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     useCaseSlugs: ["long-term-contract-record", "supplier-credential-verification", "supply-chain-component-provenance", "rag-content-provenance", "credential-presentation", "qualified-worker-attestation", "internal-control-approval-proof"],
     primaryCTA: {
       label: "Talk to us",
-      href: "/solutions",
+      href: "/solutions/",
       type: "talk-to-us",
     },
     secondaryCTA: {
@@ -286,8 +286,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
           },
         ],
         links: [
-          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
-          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs/" },
+          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides/" },
         ],
       },
       scenarios: [
@@ -354,7 +354,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "エンタープライズ向けの提供形態。",
             en: "Enterprise delivery model.",
           },
-          href: "/pricing",
+          href: "/pricing/",
         },
         {
           label: { ja: "Specs", en: "Specs" },
@@ -363,7 +363,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "信頼インフラの技術仕様。",
             en: "Technical specification of the trust infrastructure.",
           },
-          href: "/guides",
+          href: "/guides/",
         },
       ],
     },
@@ -408,7 +408,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     useCaseSlugs: ["ai-audit-log-proof", "ai-document-isolation", "rag-source-attestation"],
     primaryCTA: {
       label: "Talk to us",
-      href: "/solutions",
+      href: "/solutions/",
       type: "talk-to-us",
     },
     secondaryCTA: {
@@ -512,8 +512,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
           },
         ],
         links: [
-          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
-          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs/" },
+          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides/" },
         ],
       },
       scenarios: [
@@ -580,7 +580,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "エンタープライズ向けの提供形態。",
             en: "Enterprise delivery model.",
           },
-          href: "/pricing",
+          href: "/pricing/",
         },
         {
           label: { ja: "Specs", en: "Specs" },
@@ -589,7 +589,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "信頼インフラの技術仕様。",
             en: "Technical specification of the trust infrastructure.",
           },
-          href: "/guides",
+          href: "/guides/",
         },
       ],
     },
@@ -822,8 +822,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
           },
         ],
         links: [
-          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
-          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs/" },
+          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides/" },
         ],
       },
       scenarios: [
@@ -890,7 +890,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "x402 上のエージェント信頼インフラ。",
             en: "Trust layer for agents on x402.",
           },
-          href: "/trust402",
+          href: "/trust402/",
         },
         {
           label: { ja: "Specs", en: "Specs" },
@@ -899,7 +899,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "信頼インフラの技術仕様。",
             en: "Technical specification of the trust infrastructure.",
           },
-          href: "/guides",
+          href: "/guides/",
         },
       ],
     },
@@ -1042,8 +1042,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
           },
         ],
         links: [
-          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
-          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs/" },
+          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides/" },
         ],
       },
       scenarios: [
@@ -1110,7 +1110,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "金融・規制対応向けの提供形態。",
             en: "Delivery model for finance and regulated operations.",
           },
-          href: "/pricing",
+          href: "/pricing/",
         },
         {
           label: { ja: "Specs", en: "Specs" },
@@ -1119,7 +1119,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "信頼インフラの技術仕様。",
             en: "Technical specification of the trust infrastructure.",
           },
-          href: "/guides",
+          href: "/guides/",
         },
       ],
     },

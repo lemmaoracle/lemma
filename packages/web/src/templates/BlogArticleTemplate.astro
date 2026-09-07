@@ -32,6 +32,8 @@ import BlogCoverAuto from "../components/BlogCoverAuto.astro";
 import { resolveCoverImage } from "../lib/coverPhoto";
 import { caseStudyCardSvg } from "../lib/caseStudyCover";
 import { DISCOVERY_CALL_URL } from "../config/cta";
+import { blogArticlePath, blogCategoryPath, blogIndexPath } from "../lib/urls";
+import { localePath } from "../lib/urls";
 
 export interface BlogArticleTemplateProps {
   locale: Locale;
@@ -195,12 +197,12 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
   <main class="blog-page">
     <div class="blog-container">
       <div class="blog-breadcrumb">
-        <a href={base || "/"}>{homeLabel}</a>
+        <a href={localePath(base)}>{homeLabel}</a>
         <span class="blog-breadcrumb-sep">/</span>
-        <a href={blogPath}>Blog</a>
+        <a href={blogIndexPath(base)}>Blog</a>
         <span class="blog-breadcrumb-sep">/</span>
         {isBlogCategory(post.category) ? (
-          <a href={`${blogPath}/category/${categorySlug(post.category)}`}>
+          <a href={blogCategoryPath(base, categorySlug(post.category))}>
             {post.category}
           </a>
         ) : (
@@ -295,7 +297,7 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
         <section class="blog-prevnext">
           {navigation.prev && (
             <a
-              href={`${blogPath}/${navigation.prev.slug}`}
+              href={blogArticlePath(base, navigation.prev.slug)}
               class="prevnext-card prev"
             >
               <div class="prevnext-dir">← Previous</div>
@@ -307,7 +309,7 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
           )}
           {navigation.next && (
             <a
-              href={`${blogPath}/${navigation.next.slug}`}
+              href={blogArticlePath(base, navigation.next.slug)}
               class="prevnext-card next"
             >
               <div class="prevnext-dir">Next →</div>
@@ -326,7 +328,7 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
           <ul class="related-list">
             {related.map((r) => (
               <li>
-                <a href={`${blogPath}/${r.slug}`} class="related-item">
+                <a href={blogArticlePath(base, r.slug)} class="related-item">
                   <div class="related-thumb">
                     <BlogCoverAuto category={r.category} slug={r.slug} coverPhoto={r.coverPhoto} cover={r.cover} tags={r.tags} coverLines={r.coverLines} locale={locale} />
                   </div>

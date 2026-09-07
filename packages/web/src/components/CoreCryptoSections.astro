@@ -14,12 +14,13 @@
  * overflow-x: hidden なのでスクロールバーは出ない）。
  */
 import type { Locale } from "../i18n/translations";
+import { localePath } from "../lib/urls";
 
 interface Props {
   locale: Locale;
   /** "" for EN, "/ja" for JA — used for the technical-spec CTA. */
   base: string;
-  /** 技術仕様書 CTA の行き先。既定は /pillars と同じ `${base}/guides`。 */
+  /** 技術仕様書 CTA の行き先。既定は /pillars と同じ `${base}/guides/`。 */
   specsHref?: string;
   /** 仕組み節の id（既定 "mechanism"）。 */
   mechId?: string;
@@ -29,7 +30,7 @@ interface Props {
 const {
   locale,
   base,
-  specsHref = `${base}/guides`,
+  specsHref = localePath(base, "/guides/"),
   mechId = "mechanism",
   coresId = "cores",
 } = Astro.props as Props;

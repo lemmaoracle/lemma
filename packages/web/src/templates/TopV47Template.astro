@@ -33,6 +33,7 @@ import { caseStudyCardSvg } from "../lib/caseStudyCover";
 import { categoryLabel } from "../data/criticalBriefs";
 import type { CategorySlug } from "../data/criticalBriefs";
 import "../styles/top-v47.css";
+import { blogArticlePath } from "../lib/urls";
 
 export interface TopV47TemplateProps {
   locale: Locale;
@@ -74,7 +75,7 @@ const latestAnnouncement = postsDesc.find(
   (p) => postInCategory(p, "Announcements") && p.slug !== caseStudy?.slug,
 );
 const tickerHtml = latestAnnouncement
-  ? `<div class="ticker"><span class="tk">NEW</span><a href="${base}/blog/${latestAnnouncement.slug}">${esc(latestAnnouncement.title)} →</a></div>`
+  ? `<div class="ticker"><span class="tk">NEW</span><a href="${blogArticlePath(base, latestAnnouncement.slug)}">${esc(latestAnnouncement.title)} →</a></div>`
   : "";
 
 /* ── 最近の動き（Latest news 出し分け設計 v1 §4.1）────────────────────
@@ -157,7 +158,7 @@ const postCoverHtml = (p: BlogPost): string => {
 };
 
 const postCardHtml = (p: BlogPost, label: string): string =>
-  `<a href="${base}/blog/${p.slug}"><div class="card"><figure class="latimg">${postCoverHtml(p)}</figure><div class="cbody">
+  `<a href="${blogArticlePath(base, p.slug)}"><div class="card"><figure class="latimg">${postCoverHtml(p)}</figure><div class="cbody">
         <div class="lb">${esc(label)}</div>
         <b>${esc(clip(p.title, isJa ? 44 : 72))}</b>
         <span>${esc(clip(firstSentence(p.abstract), isJa ? 54 : 116))}${latSep}${LAT.readPost}</span>

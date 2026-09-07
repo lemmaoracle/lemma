@@ -3,6 +3,7 @@ import GuidesIndexTemplate from "../../../templates/GuidesIndexTemplate.astro";
 import CoreCryptoSections from "../../../components/CoreCryptoSections.astro";
 import { getBlogSections } from "../../../data/blog";
 import { getTranslations } from "../../../i18n/translations";
+import { blogArticlePath } from "../../../lib/urls";
 
 const locale = "ja";
 const t = getTranslations(locale);
@@ -56,6 +57,6 @@ const foundations = sections
     locale={locale}
     base={base}
     coresId="core-crypto"
-    specsHref={`${base}/blog/lemma-oracle-specs`}
+    specsHref={blogArticlePath(base, "lemma-oracle-specs")}
   />
 </GuidesIndexTemplate>

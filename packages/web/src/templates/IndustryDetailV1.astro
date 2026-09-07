@@ -22,6 +22,7 @@ import { CATEGORY_LABELS } from "../data/criticalBriefs";
 import { briefCardSvg } from "../lib/briefCover";
 import { caseStudyCardSvg } from "../lib/caseStudyCover";
 import "../styles/industry-v1.css";
+import { blogArticlePath, blogIndexPath } from "../lib/urls";
 
 export interface IndustryDetailV1Props {
   locale: Locale;
@@ -177,7 +178,7 @@ if (bizPost && latestBrief) {
      同じ生成 SVG（lib/caseStudyCover）——写真用の処理はライムを潰すため、
      図版はその経路に乗せない。 */
   const caseStudyHtml = caseStudy
-    ? `<a class="newscard" href="${base}/blog/${caseStudy.slug}">
+    ? `<a class="newscard" href="${blogArticlePath(base, caseStudy.slug)}">
         <div class="cover">${caseStudyCardSvg({
           lines: caseStudy.coverLines ?? [],
           locale: locale === "en" ? "en" : "ja",
@@ -201,13 +202,13 @@ if (bizPost && latestBrief) {
         <span class="meta"><em class="ja">${newsT.briefChip}</em><span>${briefDate}</span></span>
         <span class="t">${esc(clip(briefTitle, 90))}</span>
       </a>
-      <a class="newscard" href="${base}/blog/${bizPost.slug}">
+      <a class="newscard" href="${blogArticlePath(base, bizPost.slug)}">
         <div class="cover">${blogCover}</div>
         <span class="meta"><em>${newsT.blog}</em><span>${bizPost.date}</span></span>
         <span class="t">${esc(clip(bizPost.title, 90))}</span>
       </a>
     </div>
-    <p class="hiwfoot"><a href="${base}/blog">${newsT.all}</a></p>
+    <p class="hiwfoot"><a href="${blogIndexPath(base)}">${newsT.all}</a></p>
   </section>`;
   body = body.replace(/<!-- Latest news -->[\s\S]*?<\/section>/, newsHtml);
 }

@@ -26,6 +26,7 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import ProofCover from "../components/ProofCover.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
+import { localePath } from "../lib/urls";
 
 export interface AuthenticityJaTemplateProps {
   locale: Locale;
@@ -40,7 +41,7 @@ const pageUrl = `${SITE}${base}/authenticity/`;
 /** 問い合わせの経由面を Tally 側で拾うためのパラメータ（plan 隠しフィールド）。 */
 const discoveryUrl = `${DISCOVERY_CALL_URL[locale]}?plan=authenticity`;
 const anshinUrl = `${SITE}/ai-gyomu-anshin/`;
-const L = (path: string) => `${base}${path}`;
+const L = (path: string) => localePath(base, path);
 
 /** 本文を最後に見直した日。表示と JSON-LD の dateModified で同じ値を使う。 */
 const UPDATED = "2026-07-29";
@@ -266,7 +267,7 @@ const breadcrumbJsonLd = {
       "@type": "ListItem",
       position: 1,
       name: "ホーム",
-      item: `${SITE}${base || "/"}`,
+      item: `${SITE}${localePath(base)}`,
     },
     { "@type": "ListItem", position: 2, name: "真正性", item: pageUrl },
   ],
@@ -301,7 +302,7 @@ const breadcrumbJsonLd = {
   <main class="au2-page">
     <div class="au2-wrap">
       <div class="crumb">
-        <a href={base || "/"}>ホーム</a>
+        <a href={localePath(base)}>ホーム</a>
         <i>/</i>
         <span>真正性とは</span>
       </div>

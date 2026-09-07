@@ -215,12 +215,12 @@
         {
           "title": "Where it fits in your industry",
           "desc": "Use cases and products (Civic / Critical / Compliance)",
-          "href": "/solutions/use-cases"
+          "href": "/solutions/use-cases/"
         },
         {
           "title": "Technical implementation",
           "desc": "Developer guides and Trust402",
-          "href": "/guides"
+          "href": "/guides/"
         },
         {
           "title": "Why detection alone is not enough",
@@ -288,7 +288,7 @@
             "links": [
               {
                 "label": "Lemma API",
-                "href": "/pillars"
+                "href": "/pillars/"
               },
               {
                 "label": "Critical Brief library",
@@ -424,7 +424,7 @@
               },
               {
                 "label": "Lemma Civic",
-                "href": "/pricing#civic"
+                "href": "/pricing/#civic"
               }
             ]
           }

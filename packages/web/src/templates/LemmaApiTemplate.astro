@@ -16,6 +16,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import { DISCOVERY_CALL_URL, DASHBOARD_URL } from "../config/cta";
 import { PROOF_CLASSES, proofClassHref } from "../config/proofClasses";
+import { localePath } from "../lib/urls";
 
 interface Props {
   locale: Locale;
@@ -30,7 +31,7 @@ const { locale, t, base, pagePath = "/pillars/", ogImage } = Astro.props as Prop
 const isJa = locale === "ja";
 
 const sandboxUrl = DASHBOARD_URL;
-const specsHref = `${base}/guides`;
+const specsHref = localePath(base, "/guides/");
 const pricingHref = `${base}/pricing/`;
 const discoveryUrl = `${DISCOVERY_CALL_URL[locale]}?source=lemma-api`;
 const githubUrl = "https://github.com/lemmaoracle";

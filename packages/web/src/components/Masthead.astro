@@ -1,6 +1,7 @@
 ---
 import type { Translations } from "../i18n/translations";
 import { ProvenanceChainBg } from "./ProvenanceChainBg";
+import { blogIndexPath } from "../lib/urls";
 
 interface Props {
   t: Translations["masthead"];
@@ -29,7 +30,7 @@ const { t, locale } = Astro.props;
     {/* CTA button */}
     <div class="flex items-center justify-center">
       <a
-        href={locale === "ja" ? "/ja/blog" : "/blog"}
+        href={blogIndexPath(locale === "ja" ? "/ja" : "")}
         class="border border-black bg-black px-4 py-2 font-mono text-xs tracking-wide text-white uppercase transition-colors hover:bg-black/90 sm:px-5 sm:py-2.5 lg:px-6 lg:py-3"
       >
         {t.ctaGetStarted}

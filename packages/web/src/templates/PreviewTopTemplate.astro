@@ -38,6 +38,7 @@ import Footer from "../components/Footer.astro";
 import LemmaOracle from "../components/LemmaOracle.astro";
 import { DISCOVERY_CALL_URL, DASHBOARD_URL } from "../config/cta";
 import { SEGMENT_URLS } from "../config/navigation";
+import { localePath } from "../lib/urls";
 
 export interface PreviewTopTemplateProps {
   locale: Locale;
@@ -46,7 +47,7 @@ export interface PreviewTopTemplateProps {
 }
 
 const { locale, t, base } = Astro.props as PreviewTopTemplateProps;
-const L = (path: string) => `${base}${path}`;
+const L = (path: string) => localePath(base, path);
 
 const API_BASE = "https://workers.lemma.workers.dev/v1";
 const RAW_COUNTERS = `${API_BASE}/counters`;
@@ -163,11 +164,12 @@ const MEGA: ReadonlyArray<{
   locale={locale}
   noindex={true}
   bodyClass="pv-page"
+  localesAvailable={["ja"] as ReadonlyArray<Locale>}
 >
   <div class="pv-bar">PREVIEW — 新トップページ案 v5.8 / 社内確認用</div>
 
   {/* 1020px 以下でだけ出す既存ナビ（モバイルドロワーは既存実装に委ねる・指示 §3.1） */}
-  <Navigation locale={locale} t={t.nav} base={base} />
+  <Navigation locale={locale} t={t.nav} base={base} otherLocaleAvailable={false} />
 
   <div class="pv">
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -195,7 +197,7 @@ const MEGA: ReadonlyArray<{
     </svg>
 
     <nav class="pv-nav">
-      <a class="pv-logo" href={base || "/"} aria-label="Lemma">
+      <a class="pv-logo" href={localePath(base)} aria-label="Lemma">
         <LemmaOracle />
       </a>
       <div class="mm">
@@ -481,7 +483,13 @@ const MEGA: ReadonlyArray<{
     </section>
   </div>
 
-  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+  <Footer
+    locale={locale}
+    t={t.nav}
+    footerT={t.footer}
+    base={base}
+    otherLocaleAvailable={false}
+  />
 </Layout>
 
 <style is:global>
