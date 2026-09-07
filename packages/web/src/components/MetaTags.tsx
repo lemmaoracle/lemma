@@ -103,7 +103,8 @@ export default function MetaTags(props: MetaTagsProps) {
     const ogImage = props.ogImage ?? post.cover ?? getDefaultOgImage(locale);
     // blogPath already includes the locale prefix (e.g. "/ja/blog"); do NOT
     // re-prefix with `base`, that would yield "/ja/ja/blog/<slug>".
-    const url = `https://lemma.frame00.com${blogPath}/${post.slug}`;
+    // 末尾スラッシュ必須（canonical と同じ形。無い形は 308 で転送される）。
+    const url = `https://lemma.frame00.com${blogPath}/${post.slug}/`;
 
     // og:/twitter:title use the short `ogTitle` when set; the on-page
     // <title> and H1 keep the full SEO title (set elsewhere, unchanged).

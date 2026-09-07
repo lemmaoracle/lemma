@@ -27,7 +27,6 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/FooterRenewal.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import SchemaOrg from "@/components/SchemaOrg";
 import BlogCover from "../components/BlogCover.astro";
 import BlogCoverAuto from "../components/BlogCoverAuto.astro";
 import { resolveCoverImage } from "../lib/coverPhoto";
@@ -117,6 +116,55 @@ const evidence = isJa
       ],
       go: "See real issuance and verification numbers in the Verify Center →",
     };
+/**
+ * 記事の構造化データ（2026-09-07 に作り直し）。
+ *
+ * 旧 `components/SchemaOrg.tsx` を置き換える。直していること:
+ *   - `image` が `/ogp-default.png` を指しており **全記事で 404** だった。
+ *     Google は Article 系で有効な `image` を要求するので、この時点で
+ *     リッチリザルトの対象外。ページには `/og/blog/{locale}/{slug}.png` が
+ *     必ず生成されている（Layout の `ogImage` と同じもの）ので、それを使う。
+ *   - URL が末尾スラッシュ無しで、308 で転送される形を指していた。
+ *   - `publisher` が Organization を**その場で作り直して**いたため、Layout の
+ *     `@graph` にある正規の Organization（`sameAs` 等を持つ）と別実体に
+ *     見えていた。`@id` 参照に変える。
+ *   - `inLanguage` が無かった。
+ *   - JSON-LD ブロックが2つに割れていた。`jsonLd` プロップで `@graph` に
+ *     連結し、Brief と同じく1ページ1ブロックにする。
+ *
+ * `dateModified` は `datePublished` と同じ。ブログは改訂の記録を持たないので
+ * 「公開以降さわっていない」を主張する形になる。改訂を追うなら posts 側の
+ * frontmatter に日付を足すのが先（Brief の改訂注記と同じ考え方）。
+ */
+const SITE = "https://lemma.frame00.com";
+const articleUrl = `${SITE}${blogPath}/${post.slug}/`;
+const publishedIso = post.date ? `${post.date.replace(/\./g, "-")}T00:00:00+09:00` : undefined;
+
+// `headline` は Google の Article 構造化データで 110字を超えるとリッチリザルト
+// の対象外になりうる。全文は `name` が持つので、超えた分だけ畳む。
+const HEADLINE_MAX = 110;
+const blogHeadline =
+  post.title.length <= HEADLINE_MAX ? post.title : `${post.title.slice(0, HEADLINE_MAX - 1)}…`;
+
+const blogSchema = {
+  "@type": "BlogPosting",
+  "@id": `${articleUrl}#article`,
+  headline: blogHeadline,
+  name: post.title,
+  description: post.abstract,
+  url: articleUrl,
+  mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+  ...(publishedIso ? { datePublished: publishedIso, dateModified: publishedIso } : {}),
+  inLanguage: locale,
+  image: `${SITE}/og/blog/${locale}/${post.slug}.png`,
+  author: { "@id": `${SITE}/#organization` },
+  publisher: { "@id": `${SITE}/#organization` },
+  articleSection: post.category,
+  ...(post.secondaryCategories?.length
+    ? { keywords: [post.category, ...post.secondaryCategories].join(", ") }
+    : {}),
+};
+
 const builtForHeading = isJa
   ? "意思決定のために"
   : "Built for decisions";
@@ -131,8 +179,8 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
   post={post}
   blogPath={blogPath}
   ogImage={`https://lemma.frame00.com/og/blog/${locale}/${post.slug}.png`}
+  jsonLd={[blogSchema]}
 >
-  {post && <SchemaOrg post={post} blogPath={blogPath} />}
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 

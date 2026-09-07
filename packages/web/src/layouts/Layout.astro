@@ -103,7 +103,10 @@ function buildLocalePath(targetLocale: Locale): string {
     Astro.props.blogPath
   ) {
     const blogPathBase = Astro.props.blogPath.replace(/^\/ja/, "");
-    return `${prefix}${blogPathBase}/${Astro.props.post.slug}`;
+    // 末尾スラッシュ必須。無い形は 308 で有る形へ転送され、sitemap も有る形で
+    // 出しているので、canonical / hreflang / og:url が「転送される URL」を
+    // 指していた（記事ページだけの取りこぼし。他の面は pagePath が持っている）。
+    return `${prefix}${blogPathBase}/${Astro.props.post.slug}/`;
   }
   // Fallback: derive from current URL. Strip the JA prefix so the path
   // is locale-neutral, then re-apply the target locale's prefix.
