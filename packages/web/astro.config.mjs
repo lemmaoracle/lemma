@@ -3,6 +3,7 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { rehypeBriefSectionNumber } from "./src/lib/rehype-brief-section-number.mjs";
+import { stripHtmlComments } from "./src/lib/strip-html-comments.mjs";
 
 export default defineConfig({
   site: "https://lemma.frame00.com",
@@ -23,6 +24,9 @@ export default defineConfig({
         // 社内プレビュー面（noindex）。sitemap には収載しない。
         !page.includes("/preview/"),
     }),
+    // 開発者コメントを出力 HTML から落とす。生成AI・スクレイパの本文抽出に
+    // 実装メモが混ざるのを防ぐ（src 側のコメントはそのまま残せる）。
+    stripHtmlComments(),
   ],
   vite: {
     plugins: [tailwindcss()],

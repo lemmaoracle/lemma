@@ -1,5 +1,60 @@
+# Lemma — https://lemma.frame00.com
+#
+# このサイトは読まれることを前提に公開している。生成AI・検索の双方に開いており、
+# 名乗るクローラは下に明示的に許可した。引用の作法（帰属と日付）は /llms.txt に
+# 書いてある。取り込むなら、そこまで読んでほしい。
+#
+# Site map for LLMs and agents: https://lemma.frame00.com/llms.txt
+
 User-agent: *
 Allow: /
 Disallow: /thank-you/
+
+# 検索インデックス。
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# 生成AIの学習・取得・引用。名乗るものは歓迎する。
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
 
 Sitemap: https://lemma.frame00.com/sitemap-index.xml

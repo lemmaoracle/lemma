@@ -14,7 +14,15 @@
  * fall back to whatever default they prefer.
  */
 
-const TLDR_REGEX = /##\s*TL;DR\s*\n+([\s\S]+?)(?:\n+##\s|$)/;
+/**
+ * 見出しの採番は任意。§5.4 の6章立て（`## 1. TL;DR` 〜 `## 6. Sources`）へ
+ * 移行した Brief と、旧9章の `## TL;DR` の両方を拾う。採番を見ていなかった
+ * 2026-09-07 以前は移行済みの Brief 全件で "" を返しており、RSS の
+ * description と BriefCard は副題へのフォールバックだけで動いていた。
+ * 番号の剥がしは表示側の rehype-brief-section-number が担当していて、
+ * ここは**生の markdown** を見るので採番がそのまま残っている点に注意。
+ */
+const TLDR_REGEX = /##\s*(?:\d+\.\s*)?TL;DR\s*\n+([\s\S]+?)(?:\n+##\s|$)/;
 const MD_LINK = /\[([^\]]+)\]\([^)]+\)/g;
 const MD_BOLD = /\*\*([^*]+)\*\*/g;
 const MD_ITALIC = /\*([^*]+)\*/g;
