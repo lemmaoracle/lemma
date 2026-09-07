@@ -126,10 +126,10 @@ const failConfigured = (message: string): never => {
  * on misconfiguration so the failure surfaces at deploy time, not on first
  * incoming request.
  */
-export const assertDiscoverableConfigured = (config: LemmaRouteConfig): void =>
-  // imperative: void discards the throw-branch; eslint doesn't track never-return — no meaningful alternative
-  // eslint-disable-next-line @typescript-eslint/no-meaningless-void-operator
-  void (config.discoverable
+export const assertDiscoverableConfigured = (config: LemmaRouteConfig): void => {
+  // Bind validation result per functional/no-expression-statements.
+  // The throw branch returns `never`; binding it as `null` suffices.
+  const _validated = config.discoverable
     ? ((missing: ReadonlyArray<string>) =>
         missing.length > 0
           ? failConfigured(
@@ -146,4 +146,5 @@ export const assertDiscoverableConfigured = (config: LemmaRouteConfig): void =>
             (field) => !config[field],
           ),
         )
-    : null);
+    : null;
+};
