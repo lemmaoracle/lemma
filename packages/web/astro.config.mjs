@@ -4,6 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { rehypeBriefSectionNumber } from "./src/lib/rehype-brief-section-number.mjs";
 import { stripHtmlComments } from "./src/lib/strip-html-comments.mjs";
+import checkInternalLinks from "./src/lib/check-internal-links.mjs";
 
 export default defineConfig({
   site: "https://lemma.frame00.com",
@@ -27,6 +28,9 @@ export default defineConfig({
     // 開発者コメントを出力 HTML から落とす。生成AI・スクレイパの本文抽出に
     // 実装メモが混ざるのを防ぐ（src 側のコメントはそのまま残せる）。
     stripHtmlComments(),
+    // 内部リンクが 308 転送や 404 にならないことを出力側で保証する。
+    // テンプレート由来はビルドを落とす。記事本文（posts リポジトリ）は警告。
+    checkInternalLinks(),
   ],
   vite: {
     plugins: [tailwindcss()],

@@ -28,6 +28,8 @@ import { USE_CASE_PLAN } from "../../data/useCasePlanMap";
 import { getUseCaseCopyOverride } from "../../config/useCaseCopyOverride";
 import { getUseCaseFlow } from "../../config/useCaseFlow";
 import { SEGMENT_URLS } from "../../config/navigation";
+import { useCaseIndexPath } from "../../lib/urls";
+import { localePath } from "../../lib/urls";
 
 export interface UseCaseV3BodyProps {
   taskGroup?: { readonly id: string; readonly heading: string } | undefined;
@@ -288,9 +290,9 @@ const bytaskMembers = taskGroupMembers.filter(
 <main class="ucv-page">
   <div class="ucv-container">
     <nav class="ucv-breadcrumb" aria-label="breadcrumb">
-      <a href={base || "/"}>{C.bcHome}</a>
+      <a href={localePath(base)}>{C.bcHome}</a>
       <span class="ucv-bc-sep">/</span>
-      <a href={useCasesPath}>{C.bcUC}</a>
+      <a href={useCaseIndexPath(base)}>{C.bcUC}</a>
       <span class="ucv-bc-sep">/</span>
       <span>{useCase.title}</span>
     </nav>

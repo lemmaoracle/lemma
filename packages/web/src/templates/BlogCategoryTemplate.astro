@@ -20,6 +20,8 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import BlogCover from "../components/BlogCover.astro";
+import { blogArticlePath, blogCategoryPath, blogIndexPath } from "../lib/urls";
+import { localePath } from "../lib/urls";
 
 export interface BlogCategoryTemplateProps {
   locale: Locale;
@@ -55,9 +57,9 @@ const countLabel = isJa
   <main class="bc-page">
     <div class="bc-container">
       <div class="bc-breadcrumb">
-        <a href={base || "/"}>{homeLabel}</a>
+        <a href={localePath(base)}>{homeLabel}</a>
         <span class="bc-breadcrumb-sep">/</span>
-        <a href={blogPath}>{t.blog.title}</a>
+        <a href={blogIndexPath(base)}>{t.blog.title}</a>
         <span class="bc-breadcrumb-sep">/</span>
         <span>{category}</span>
       </div>
@@ -72,7 +74,7 @@ const countLabel = isJa
         <nav class="bc-siblings" aria-label="Other categories">
           {categories.map((c) => (
             <a
-              href={`${blogPath}/category/${categorySlug(c)}`}
+              href={blogCategoryPath(base, categorySlug(c))}
               class={c === category ? "bc-chip is-active" : "bc-chip"}
             >
               {c}
@@ -91,14 +93,14 @@ const countLabel = isJa
               ? "このカテゴリの記事は現在編成中です。"
               : "Articles in this category are currently being compiled."}
           </p>
-          <a class="bc-empty-cta" href={blogPath}>
+          <a class="bc-empty-cta" href={blogIndexPath(base)}>
             {t.blog.backToBlog} →
           </a>
         </section>
       ) : (
         <section class="bc-grid" aria-label={category}>
           {posts.map((post) => (
-            <a href={`${blogPath}/${post.slug}`} class="bc-card">
+            <a href={blogArticlePath(base, post.slug)} class="bc-card">
               <div class="bc-card-thumb">
                 <BlogCover category={post.category} slug={post.slug} />
               </div>
@@ -118,7 +120,7 @@ const countLabel = isJa
         </section>
       )}
 
-      <a href={blogPath} class="bc-back-link">← {t.blog.backToBlog}</a>
+      <a href={blogIndexPath(base)} class="bc-back-link">← {t.blog.backToBlog}</a>
     </div>
   </main>
 

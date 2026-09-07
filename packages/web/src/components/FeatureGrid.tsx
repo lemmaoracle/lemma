@@ -1,5 +1,6 @@
 import { ShieldCheck, FileLock, Eye, FileSearch, FileType, Anchor } from "lucide-react";
 import type { Translations } from "../i18n/translations";
+import { blogArticlePath } from "../lib/urls";
 
 interface FeatureItemProps {
   icon: React.ReactNode;
@@ -10,7 +11,7 @@ interface FeatureItemProps {
 }
 
 function FeatureItem({ icon, heading, body, slug, locale }: FeatureItemProps) {
-  const blogPath = locale === "ja" ? `/ja/blog/${slug}` : `/blog/${slug}`;
+  const blogPath = blogArticlePath(locale === "ja" ? "/ja" : "", slug);
 
   return (
     <div className="border border-black/5 p-4 transition-colors hover:bg-black/[0.01] sm:p-6 lg:p-8">

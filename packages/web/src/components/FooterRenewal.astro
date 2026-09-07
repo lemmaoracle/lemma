@@ -21,6 +21,7 @@
 import type { Locale, Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
 import { DASHBOARD_URL } from "../config/cta";
+import { localePath } from "../lib/urls";
 
 interface Props {
   locale: Locale;
@@ -34,7 +35,7 @@ interface Props {
 const { locale, footerT, base, dashboardUrl } = Astro.props;
 const dashHref = dashboardUrl ?? DASHBOARD_URL;
 const isJa = locale === "ja";
-const L = (path: string) => (base ? `${base}${path}` : path);
+const L = (path: string) => localePath(base, path);
 
 const currentPath = Astro.url.pathname;
 const languageSwitchHref = isJa
@@ -108,7 +109,7 @@ const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
   <div class="rfooter-wrap">
     <div class="rfooter-head">
       <div class="rfooter-brand">
-        <a href={base || "/"} class="rfooter-logo" aria-label="Lemma">
+        <a href={localePath(base)} class="rfooter-logo" aria-label="Lemma">
           <LemmaOracle class="rfooter-mark" />
         </a>
         <p>

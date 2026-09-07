@@ -3,6 +3,7 @@ import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import LemmaOracle from "../components/LemmaOracle.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
+import { localePath } from "../lib/urls";
 
 export interface ThankYouTemplateProps {
   locale: Locale;
@@ -13,7 +14,7 @@ export interface ThankYouTemplateProps {
 const { locale, t, base } = Astro.props as ThankYouTemplateProps;
 const ty = t.thankYou;
 
-const homePath = base || "/";
+const homePath = localePath(base);
 const langSwitchHref =
   locale === "ja" ? "/thank-you/" : "/ja/thank-you/";
 const langSwitchLabel = locale === "ja" ? "English" : "日本語";

@@ -18,6 +18,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
+import { localePath } from "../lib/urls";
 
 export interface AuthenticityTemplateProps {
   locale: Locale;
@@ -34,7 +35,7 @@ const discoveryUrl = DISCOVERY_CALL_URL[locale];
 const anshinUrl = "https://lemma.frame00.com/ai-gyomu-anshin/";
 
 /** Locale-aware internal link helper. */
-const L = (path: string) => `${base}${path}`;
+const L = (path: string) => localePath(base, path);
 
 const C = isJa
   ? {
@@ -514,7 +515,7 @@ const breadcrumbJsonLd = {
       "@type": "ListItem",
       position: 1,
       name: C.breadcrumbHome,
-      item: `${SITE}${base || "/"}`,
+      item: `${SITE}${localePath(base)}`,
     },
     { "@type": "ListItem", position: 2, name: C.breadcrumbHere, item: pageUrl },
   ],

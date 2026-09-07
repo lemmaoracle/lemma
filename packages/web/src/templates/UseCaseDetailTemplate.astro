@@ -36,6 +36,8 @@ import { USE_CASE_PLAN } from "../data/useCasePlanMap";
 import { SEGMENT_URLS } from "../config/navigation";
 import { USE_CASE_TASK_GROUPS_JA } from "../config/useCaseTaskGroups";
 import { getAllUseCases } from "../data/useCases";
+import { useCaseIndexPath, useCasePath } from "../lib/urls";
+import { localePath } from "../lib/urls";
 
 const resolveCTA = (cta: CTA, lc: Locale): { readonly label: string; readonly href: string } =>
   cta.type === "talk-to-us"
@@ -186,9 +188,9 @@ const breadcrumbJsonLd = {
   <main class="ucd-page">
     <div class="ucd-container">
       <nav class="ucd-breadcrumb" aria-label="breadcrumb">
-        <a href={base || "/"}>{homeLabel}</a>
+        <a href={localePath(base)}>{homeLabel}</a>
         <span class="ucd-breadcrumb-sep">/</span>
-        <a href={useCasesPath}>{useCaseT.title}</a>
+        <a href={useCaseIndexPath(base)}>{useCaseT.title}</a>
         <span class="ucd-breadcrumb-sep">/</span>
         <span>{useCase.title}</span>
       </nav>
@@ -264,7 +266,7 @@ const breadcrumbJsonLd = {
                   <ul class="ucd-related-grid">
                     {relatedUseCases.map((r) => (
                       <li class="ucd-related-item">
-                        <a href={`${useCasesPath}/${r.slug}`} class="ucd-related-card">
+                        <a href={useCasePath(base, r.slug)} class="ucd-related-card">
                           {r.thesis && (
                             <div class="ucd-related-thesis">{r.thesis}</div>
                           )}
@@ -347,10 +349,10 @@ const breadcrumbJsonLd = {
         </article>
         {pillar && (
           <nav class="ucd-foot-links" aria-label={isJa ? "関連リンク" : "Related links"}>
-            <a class="ucd-pillar-foot" href={`${pillarsPath}/${pillar.slug}`}>
+            <a class="ucd-pillar-foot" href={`${pillarsPath}/${pillar.slug}/`}>
               {isJa ? "仕組みについて知る" : "Learn how it works"} — {pillar.title[locale]} →
             </a>
-            <a class="ucd-pillar-foot" href={`${pricingPath}#api`}>
+            <a class="ucd-pillar-foot" href={`${pricingPath}/#api`}>
               {isJa ? "料金・API 仕様" : "Pricing & API"} →
             </a>
           </nav>

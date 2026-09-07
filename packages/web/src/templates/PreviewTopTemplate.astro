@@ -38,6 +38,7 @@ import Footer from "../components/Footer.astro";
 import LemmaOracle from "../components/LemmaOracle.astro";
 import { DISCOVERY_CALL_URL, DASHBOARD_URL } from "../config/cta";
 import { SEGMENT_URLS } from "../config/navigation";
+import { localePath } from "../lib/urls";
 
 export interface PreviewTopTemplateProps {
   locale: Locale;
@@ -46,7 +47,7 @@ export interface PreviewTopTemplateProps {
 }
 
 const { locale, t, base } = Astro.props as PreviewTopTemplateProps;
-const L = (path: string) => `${base}${path}`;
+const L = (path: string) => localePath(base, path);
 
 const API_BASE = "https://workers.lemma.workers.dev/v1";
 const RAW_COUNTERS = `${API_BASE}/counters`;
@@ -195,7 +196,7 @@ const MEGA: ReadonlyArray<{
     </svg>
 
     <nav class="pv-nav">
-      <a class="pv-logo" href={base || "/"} aria-label="Lemma">
+      <a class="pv-logo" href={localePath(base)} aria-label="Lemma">
         <LemmaOracle />
       </a>
       <div class="mm">

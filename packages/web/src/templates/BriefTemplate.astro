@@ -40,6 +40,7 @@ import { getEnBriefMap } from "../data/getEnBriefMap";
 import { threatBannerCopy } from "../config/briefThreatBanner";
 import { briefsCategoryHref } from "../data/briefIndex";
 import { BRIEF_RAIL_CTA_URL, DISCOVERY_CALL_URL } from "../config/cta";
+import { localePath } from "../lib/urls";
 import {
   categoryLabel,
   type CategorySlug,
@@ -391,7 +392,7 @@ const labels = isJa
     <div class="bd-shell">
       <div class="bd-main">
         <div class="brief-breadcrumb">
-          <a href={base || "/"}>{labels.home}</a>
+          <a href={localePath(base)}>{labels.home}</a>
           <span class="brief-breadcrumb-sep">/</span>
           <a href={`${base}/critical/briefs/`}>{labels.breadcrumbBriefs}</a>
           <span class="brief-breadcrumb-sep">/</span>
@@ -581,7 +582,7 @@ const labels = isJa
           <div class="rb-k">Lemma</div>
           <div class="rb-t">{labels.brandLine1}<br />{labels.brandLine2}</div>
           <p>{labels.brandSub}</p>
-          <a class="rb-more" href={base || "/"}>{labels.brandMore}</a>
+          <a class="rb-more" href={localePath(base)}>{labels.brandMore}</a>
         </div>
       </aside>
     </div>

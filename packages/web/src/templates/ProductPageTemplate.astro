@@ -38,6 +38,7 @@ import Footer from "../components/Footer.astro";
 import { DISCOVERY_CALL_URL, DASHBOARD_URL } from "../config/cta";
 import { COUNTERS_API_URL } from "../config/counters";
 import "../styles/product-v18.css";
+import { localePath } from "../lib/urls";
 
 interface Props {
   locale: Locale;
@@ -52,7 +53,7 @@ const { locale, t, base, pagePath = "/pillars/", ogImage } = Astro.props as Prop
 const fpBody = locale === "ja" ? fpJa : fpEn;
 const isJa = locale === "ja";
 
-const L = (path: string) => `${base}${path}`;
+const L = (path: string) => localePath(base, path);
 
 // リンク先はすべて実在する面へ（指示書 §6）。Sandbox / 仕様書 / ドキュメント /
 // 相談フォームは、これまで同じ URL で運用してきた既存の定数をそのまま使う。

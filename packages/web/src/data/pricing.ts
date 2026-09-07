@@ -311,7 +311,7 @@ export const PRICING: PricingContent = {
       },
     ],
     ctaPrimary: { label: { ja: "ウェイトリストに登録 →", en: "Join the waitlist →" }, href: TRUST402_WAITLIST },
-    ctaSecondary: { label: { ja: "製品ページを見る ↗", en: "Product page ↗" }, href: { ja: "/trust402", en: "/trust402" } },
+    ctaSecondary: { label: { ja: "製品ページを見る ↗", en: "Product page ↗" }, href: { ja: "/trust402/", en: "/trust402/" } },
     footerNote: {
       ja: "詳細な料金とドキュメントはリリース時に提供されます。",
       en: "Detailed pricing and documentation publish at release.",

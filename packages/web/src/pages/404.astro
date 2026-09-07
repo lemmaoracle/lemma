@@ -20,6 +20,11 @@ import { getTranslations } from "../i18n/translations";
 const locale = "en";
 const t = getTranslations(locale);
 const base = "";
+
+/* JA 版の 404 は存在しない（Cloudflare Pages は見つからないパスすべてに
+   dist/404.html を返す）。既定のままだと hreflang="ja" が実在しない
+   /ja/404/ を指すので、EN だけに絞る。 */
+const EN_ONLY = ["en"] as const;
 ---
 
 <Layout
@@ -27,6 +32,7 @@ const base = "";
   title="Page not found — Lemma"
   description="The page you were looking for does not exist."
   noindex
+  localesAvailable={EN_ONLY}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <main class="nf">
@@ -38,9 +44,9 @@ const base = "";
     <p class="nf-go">
       <a href="/">Home</a>
       <span aria-hidden="true">/</span>
-      <a href="/blog">Blog</a>
+      <a href="/blog/">Blog</a>
       <span aria-hidden="true">/</span>
-      <a href="/critical/briefs">Critical Brief</a>
+      <a href="/critical/briefs/">Critical Brief</a>
     </p>
   </main>
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />

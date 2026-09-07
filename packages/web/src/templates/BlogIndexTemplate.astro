@@ -25,6 +25,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/FooterRenewal.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import BlogCoverAuto from "../components/BlogCoverAuto.astro";
+import { blogArticlePath } from "../lib/urls";
 
 export interface BlogIndexTemplateProps {
   locale: Locale;
@@ -180,7 +181,7 @@ const C = isJa
               <b>{C.featured}</b><span>{C.featuredEn}</span>
             </div>
             {/* カード装飾は付けない — サムネイル＋テキストのみ（§3.1-3）。 */}
-            <a class="bi-feat" href={`${blogPath}/${featured.slug}`}>
+            <a class="bi-feat" href={blogArticlePath(base, featured.slug)}>
               <div class="bi-thumb">
                 <BlogCoverAuto category={featured.category} slug={featured.slug} coverPhoto={featured.coverPhoto} cover={featured.cover} tags={featured.tags} coverLines={featured.coverLines} locale={locale} />
               </div>
@@ -208,7 +209,7 @@ const C = isJa
                 ページ送りは SSR 全件 + 表示切り替え（Brief 一覧と同じ方式）。 */}
             <div class="bi-grid">
               {entries.filter((post) => post.slug !== featured?.slug).map((post) => (
-                <a class="bi-card" href={`${blogPath}/${post.slug}`}>
+                <a class="bi-card" href={blogArticlePath(base, post.slug)}>
                   <div class="bi-thumb">
                     <BlogCoverAuto category={post.category} slug={post.slug} coverPhoto={post.coverPhoto} cover={post.cover} tags={post.tags} coverLines={post.coverLines} locale={locale} />
                   </div>
@@ -234,7 +235,7 @@ const C = isJa
             </div>
             <div>
               {changelog.map((post) => (
-                <a class="bi-crow" href={`${blogPath}/${post.slug}`}>
+                <a class="bi-crow" href={blogArticlePath(base, post.slug)}>
                   <span class="bi-acat">{post.category}</span>
                   <span class="bi-ctitle">{post.title}</span>
                   <span class="bi-adate">{post.date}</span>
@@ -256,7 +257,7 @@ const C = isJa
           {entries.map((post) => (
             <a
               class="bi-card bi-filtered-card"
-              href={`${blogPath}/${post.slug}`}
+              href={blogArticlePath(base, post.slug)}
               data-category={[post.category, ...(post.secondaryCategories ?? [])].join("|")}
             >
               <div class="bi-thumb">

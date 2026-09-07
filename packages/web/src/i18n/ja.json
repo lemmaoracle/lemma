@@ -215,12 +215,12 @@
         {
           "title": "業界での使いどころ",
           "desc": "ユースケースと製品 (Civic / Critical / Compliance)",
-          "href": "/ja/solutions/use-cases"
+          "href": "/ja/solutions/use-cases/"
         },
         {
           "title": "技術実装",
           "desc": "開発者ガイドと Trust402",
-          "href": "/ja/guides"
+          "href": "/ja/guides/"
         },
         {
           "title": "検出で足りない理由",
@@ -282,7 +282,7 @@
             "links": [
               {
                 "label": "Lemma API",
-                "href": "/ja/pillars"
+                "href": "/ja/pillars/"
               }
             ]
           }
@@ -302,7 +302,7 @@
             "links": [
               {
                 "label": "Lemma API",
-                "href": "/ja/pillars"
+                "href": "/ja/pillars/"
               },
               {
                 "label": "Critical Brief 一覧",
@@ -438,7 +438,7 @@
               },
               {
                 "label": "Lemma Civic",
-                "href": "/ja/pricing#civic"
+                "href": "/ja/pricing/#civic"
               }
             ]
           }

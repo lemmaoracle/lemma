@@ -2,6 +2,7 @@
 import Layout from "../../../layouts/Layout.astro";
 import Navigation from "../../../components/Navigation.astro";
 import { getTranslations } from "../../../i18n/translations";
+import { localePath } from "../../../lib/urls";
 
 const locale = "ja";
 const t = getTranslations(locale);
@@ -10,7 +11,7 @@ const repo = "lemmaoracle/lemma";
 const workflowFile = "deploy-pages.yml";
 const workflowUrl = `https://github.com/${repo}/actions/workflows/${encodeURIComponent(workflowFile)}`;
 const apiUrl = `https://api.github.com/repos/${repo}/dispatches`;
-const homeHref = base;
+const homeHref = localePath(base);
 ---
 
 <Layout
