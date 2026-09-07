@@ -212,7 +212,12 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
           },
           ...(Astro.props.jsonLd ?? []),
         ],
-      })}
+      })
+        // `JSON.stringify` は `<` を素通しするので、記事タイトル等に
+        // `</script>` が入るとインライン script がそこで閉じ、JSON-LD も
+        // 周りのマークアップも壊れる。ページ固有ノードを受けるようになった
+        // ＝値が本文由来になったので、直列化の時点で潰しておく。
+        .replace(/</g, "\\u003c")}
     />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <!-- Tally widget runtime — required by every `data-tally-open` button and

@@ -233,23 +233,42 @@ const metaDescription = isJa
  * 生成AI・検索の双方から「誰がいつ書いた何なのか」が読めなかった。Layout の
  * `@graph` に連結して1ページ1 JSON-LD に保つ。
  *
- * 値は**画面に出ている事実だけ**。frontmatter に改訂日のフィールドは無く
- * （あるのは `version` だけで、改訂履歴の節も日付を持たない）、`dateModified`
- * を出せるのは未改訂＝`version === "1.0"` の Brief に限る。改訂済みの3本で
- * `published` を `dateModified` として出すと**偽の日付を主張する**ことになる
- * ので、その場合はキーごと落とす。schema.org でも必須ではない。
- * 改訂日を持たせたくなったら frontmatter に足すのが先。
+ * 値は**画面に出ている事実だけ**。`dateModified` の出どころは3通りある:
+ *   - 改訂済み（`version !== "1.0"`）で本文に改訂注記があれば、そこの日付。
+ *     注記は `> **改訂（v2.0 / 2026-07-03）**` / `> **Revision (v1.1 / …)**`
+ *     の形で本文の先頭付近に置かれ、画面にも出ている（077・109）。
+ *   - 未改訂なら `published`。「公開以降さわっていない」は主張してよい事実。
+ *   - 改訂済みなのに注記が無い場合（124）は**キーごと落とす**。`published` を
+ *     入れると改訂された日を公開日だと偽ることになり、`/llms.txt` で
+ *     「日付を落とすな」と書いている側が誤った日付を出すことになる。
+ * frontmatter に `revised` を足せばこの解析は不要になる。足すのが本筋。
  */
+const revisionDate = brief.body?.match(
+  /^>\s*\*\*(?:改訂|Revision)\s*[（(]v[\d.]+\s*\/\s*(\d{4}-\d{2}-\d{2})[）)]/m,
+)?.[1];
+const dateModified = showRevisionHistory ? revisionDate : publishedStr;
+
+/**
+ * `headline` は Google の Article 構造化データで **110字** を超えると
+ * リッチリザルトの対象外になりうる。Brief のタイトルは長く、`seoTitle` の
+ * まま出すと 139本中 57本が超える（最長205字）。全文は `name` が持つので、
+ * ここは超えた分だけ畳む。
+ */
+const HEADLINE_MAX = 110;
+const headline =
+  seoTitle.length <= HEADLINE_MAX
+    ? seoTitle
+    : `${seoTitle.slice(0, HEADLINE_MAX - 1)}…`;
 const briefSchema = {
   "@type": "Article",
   "@id": `${briefUrl}#article`,
-  headline: seoTitle,
+  headline,
   name: localizedTitle,
   description: metaDescription,
   url: briefUrl,
   mainEntityOfPage: { "@type": "WebPage", "@id": briefUrl },
   datePublished: publishedStr,
-  ...(showRevisionHistory ? {} : { dateModified: publishedStr }),
+  ...(dateModified ? { dateModified } : {}),
   inLanguage: isJa ? "ja" : "en",
   image: ogImage,
   author: brief.data.authors.map((name) => ({
@@ -273,11 +292,14 @@ const briefSchema = {
     brief.data.primary_category,
     ...brief.data.secondary_categories,
   ].join(", "),
-  // 事案の発生日。公開日と区別が付くよう `about` の Event に持たせる。
+  // 事案の発生日。公開日と区別が付くよう `about` に持たせる。`Event` にすると
+  // location / endDate を要求するリッチリザルトの契約を 278ページ全部が背負い、
+  // Search Console が全件エラーとして挙げてくる。日付を伝えたいだけなので
+  // 契約を持たない `Thing` + `disambiguatingDescription` にする。
   about: {
-    "@type": "Event",
+    "@type": "Thing",
     name: localizedTitle,
-    startDate: incidentDateStr,
+    disambiguatingDescription: `${isJa ? "事案発生日" : "Incident date"}: ${incidentDateStr}`,
   },
 };
 

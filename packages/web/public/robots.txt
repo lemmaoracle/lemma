@@ -4,6 +4,10 @@
 # 名乗るクローラは下に明示的に許可した。引用の作法（帰属と日付）は /llms.txt に
 # 書いてある。取り込むなら、そこまで読んでほしい。
 #
+# ⚠ REP ではクローラは**最も限定的に一致する1グループだけ**に従う。名前付きの
+#   グループを足すと、そのクローラは `*` の内容を一切継承しない。だから
+#   `Disallow` は全グループに書き写す。ここを増やすときも同じこと。
+#
 # Site map for LLMs and agents: https://lemma.frame00.com/llms.txt
 
 User-agent: *
@@ -13,48 +17,63 @@ Disallow: /thank-you/
 # 検索インデックス。
 User-agent: Googlebot
 Allow: /
+Disallow: /thank-you/
 
 User-agent: Bingbot
 Allow: /
+Disallow: /thank-you/
 
 # 生成AIの学習・取得・引用。名乗るものは歓迎する。
 User-agent: GPTBot
 Allow: /
+Disallow: /thank-you/
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /thank-you/
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /thank-you/
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /thank-you/
 
 User-agent: Claude-User
 Allow: /
+Disallow: /thank-you/
 
 User-agent: Claude-SearchBot
 Allow: /
+Disallow: /thank-you/
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /thank-you/
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /thank-you/
 
 User-agent: Perplexity-User
 Allow: /
+Disallow: /thank-you/
 
 User-agent: Applebot
 Allow: /
+Disallow: /thank-you/
 
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /thank-you/
 
 User-agent: CCBot
 Allow: /
+Disallow: /thank-you/
 
 User-agent: meta-externalagent
 Allow: /
+Disallow: /thank-you/
 
 Sitemap: https://lemma.frame00.com/sitemap-index.xml

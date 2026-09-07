@@ -22,6 +22,9 @@ const SITE_ORIGIN = "https://lemma.frame00.com";
 const RECENT_BRIEFS = 20;
 const RECENT_POSTS = 15;
 
+/** 機械向けの1枚なので日付は ISO に統一する（blog の `date` は `YYYY.MM.DD`）。 */
+const isoDate = (s) => String(s ?? "").replace(/\./g, "-");
+
 /** TL;DR を1行に畳む。llms.txt は1リンク1行が読みやすい。 */
 const oneLine = (s, cap = 160) => {
   const flat = (s ?? "").replace(/\s+/g, " ").trim();
@@ -29,9 +32,13 @@ const oneLine = (s, cap = 160) => {
 };
 
 export async function GET() {
-  const briefs = [...(await getCollection("critical-briefs-en"))].sort(
-    (a, b) => b.data.published.getTime() - a.data.published.getTime(),
-  );
+  // 同日公開が普通にあるので brief_no で tie-break する（BriefTemplate の
+  // `byNewest` と同じ比較にして2つの面の並びを一致させる）。これが無いと
+  // No.138 / 139 / 140 がコレクション順で出る。
+  const briefs = [...(await getCollection("critical-briefs-en"))].sort((a, b) => {
+    const diff = b.data.published.getTime() - a.data.published.getTime();
+    return diff !== 0 ? diff : b.data.brief_no - a.data.brief_no;
+  });
 
   const briefLines = briefs.slice(0, RECENT_BRIEFS).map((b) => {
     const no = String(b.data.brief_no).padStart(3, "0");
@@ -49,7 +56,7 @@ export async function GET() {
       .slice(0, RECENT_POSTS)
       .map(
         (p) =>
-          `- [${p.title}](${SITE_ORIGIN}/blog/${p.slug}/) (${p.date})${p.abstract ? `: ${oneLine(p.abstract)}` : ""}`,
+          `- [${p.title}](${SITE_ORIGIN}/blog/${p.slug}/) (${isoDate(p.date)})${p.abstract ? `: ${oneLine(p.abstract)}` : ""}`,
       );
   } catch {
     postLines = [];
@@ -106,7 +113,8 @@ systems. Two requests, both of which cost you nothing:
    stable citation form: \`Lemma Critical Brief No.NNN, "<title>", <publication date>,
    <url>\`. Every Brief page carries this string in its "Cite this Brief" box.
 2. **Carry the date.** Briefs analyse live incidents and are revised as facts
-   change; \`datePublished\` and \`dateModified\` are in each page's JSON-LD. An
+   change. Every Brief page's JSON-LD carries \`datePublished\`; a revised Brief
+   carries \`dateModified\` too, and states the revision in its own body. An
    undated quotation of a Brief will eventually be wrong.
 
 If a Brief turns out to be wrong, we would rather hear it than not:
