@@ -125,8 +125,9 @@ export const define = async <Raw, Norm>(schemaMeta: SchemaMeta): Promise<SchemaD
                         normalize,
                       };
                       // imperative: schema registry mutation — no functional alternative
-                      // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
-                      registry[schemaMeta.id] = schemaDef as SchemaDef<unknown, unknown>;
+                      // Bind the registry write so it is not a bare expression statement.
+                      // eslint-disable-next-line functional/immutable-data -- schema registry mutation
+                      const _registered = (registry[schemaMeta.id] = schemaDef as SchemaDef<unknown, unknown>);
                       return schemaDef;
                     })()
               );

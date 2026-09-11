@@ -140,8 +140,9 @@ const fetchArtifactCached = (
                   : reject(`Failed to fetch circuit artifact: ${url}`),
               );
         // imperative: Map in-memory artifact cache — no functional alternative
-        // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
-        artifactCache.set(url, promise);
+        // Bind the cache write so it is not a bare expression statement.
+        // eslint-disable-next-line functional/immutable-data -- in-memory Map cache
+        const _cached = artifactCache.set(url, promise);
         return promise;
       })();
 };

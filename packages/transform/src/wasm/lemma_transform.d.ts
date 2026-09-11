@@ -1,5 +1,5 @@
 /* tslint:disable */
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents -- generated wasm-bindgen declarations; DOM/Node globals resolve to error types in this project's lib */
 
 /**
  * Bind input file + transform logic + output file into the canonical

@@ -141,8 +141,9 @@ const instantiate = async (bytes: Uint8Array): Promise<WasmExports> => {
     buildImports(moduleName, cell),
   );
   const ex = instance.exports as unknown as WasmExports;
-  // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
-  cell.current = ex;
+  // Bind the cell write so it is not a bare expression statement.
+  // eslint-disable-next-line functional/immutable-data -- mutable instantiation cell
+  const _instantiated = (cell.current = ex);
   ex.__wbindgen_start();
   return ex;
 };
