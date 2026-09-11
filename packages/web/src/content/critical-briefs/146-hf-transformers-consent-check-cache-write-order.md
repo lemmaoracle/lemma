@@ -18,7 +18,7 @@ og_lead_en: "Transformers writes remote code to disk before consent check (CVE-2
 
 ## 1. TL;DR
 
-2026年9月1日、CERT/CC(カーネギーメロン大学)は、Hugging FaceのTransformersライブラリ(v4.49.0〜v5.8.1)に、リモートのPythonコードをユーザーの同意確認より前にローカルディスクへ書き込んでしまう脆弱性(CVE-2026-80047、VU#456290)が存在すると公表した。`GenerativePreTrainedModel.load_custom_generate()`は、モデルリポジトリのリモートPythonモジュールを取得しキャッシュへ書き込む処理を、ユーザーが信頼確認プロンプト(`trust_remote_code`)に同意する前に無条件で実行しており、ユーザーが確認プロンプトを拒否した場合でも、書き込まれたコードはディスク上に残り続ける。ライブラリ内の他のリモートコード読み込み経路(AutoConfig・AutoModel等)はいずれも同意確認を先に行っているが、この関数だけがその順序を守っていなかった。<strong>取得と書き込みは「同意を確認してから行う」設計のはずが、実際には同意が確認される前に完了しており、同意という仕組みが実行だけしか止められていなかった。</strong>報告者からベンダーへの通知は2026年8月4日、CERT/CC公表時点(09-01)では修正は出ていなかったが、その7日後の2026年9月8日に取得と同意確認の順序を入れ替える修正がマージされ、翌9日公開のv5.17.0に収録された。
+2026年9月1日、CERT/CCは、Hugging FaceのTransformersライブラリに、リモートのPythonコードをユーザーの同意確認より前にローカルディスクへ書き込む脆弱性(CVE-2026-80047、VU#456290)があると公表した。`load_custom_generate()`だけが、取得とキャッシュ書き込みを`trust_remote_code`の同意確認より先に無条件で実行しており、ユーザーが拒否しても書き込まれたコードはディスク上に残る。他の読み込み経路(AutoConfig・AutoModel等)はいずれも同意確認を先に行っていた。<strong>同意という仕組みが止めていたのは実行だけで、取得と書き込みはその手前で終わっていた。</strong>修正は公表の7日後、9月8日にマージされv5.17.0に収録された。影響を受けるのは4.49.0〜5.16.1で、CVEの記載(4.49.0〜5.8.1)より広い。
 
 ## 2. 何が起きたか
 
@@ -26,7 +26,7 @@ og_lead_en: "Transformers writes remote code to disk before consent check (CVE-2
 - ライブラリには`trust_remote_code`という同意確認の仕組みがあり、モデルリポジトリに含まれるリモートのカスタムPythonコードを実行してよいかをユーザーに確認したうえで、初めて取得・実行する設計になっている。
 - ところが`GenerativePreTrainedModel.load_custom_generate()`だけは、リポジトリの`custom_generate/generate.py`を`get_cached_module_file()`で取得しローカルキャッシュ(`~/.cache/huggingface/modules`)へ書き込む処理を、`resolve_trust_remote_code()`による同意確認より先に、無条件で実行していた。
 - CERT/CCによれば、コードの実行自体は正しく同意確認によってゲートされていたが、取得と書き込みは同意の有無にかかわらず発生し、しかもロールバック不可能だった。ユーザーが確認プロンプトで拒否しても、書き込まれたファイルはディスク上に残る。
-- 根本原因は`dynamic_module_utils.py`内の、同意確認より前に実行される無条件のファイルコピー処理にあるとCERT/CCは特定している。
+- 根本原因は`dynamic_module_utils.py`内の、同意確認より前に実行される無条件のファイルコピー処理にあるとCERT/CCは特定している。なお後述の修正(PR #48620)が変更したのは`generation/utils.py`のみで、`dynamic_module_utils.py`は手つかずである——直ったのはこの呼び出し経路の順序であって、`get_cached_module_file()`自体は呼ばれれば無条件に書き込む。
 - 同ライブラリの他のリモートコード読み込み経路(AutoConfig・AutoModel・AutoTokenizer・AutoImageProcessor)は、いずれもリモートコンテンツの取得・書き込みより先に`trust_remote_code`の確認を行っており、`load_custom_generate()`だけがこの順序から逸脱していた。
 - 攻撃者は悪意ある`custom_generate/generate.py`を含むモデルリポジトリを公開するだけでよく、下流の利用者がそのモデル参照を読み込む(通常のモデルロード操作)だけで、特権の昇格や追加の操作を要さずにこのファイル書き込みが発生する。
 - キャッシュパスが使い回される環境では、以前に書き込まれた攻撃者ファイルが、後の信頼できるモデルの読み込み時に読み出され、意図しない実行につながりうるとCERT/CCは指摘している。
