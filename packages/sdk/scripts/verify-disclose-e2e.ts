@@ -37,14 +37,11 @@ const samplePayload = {
 } as const;
 
 const log = (msg: string): void => {
-  // eslint-disable-next-line functional/no-expression-statements -- script CLI output
   console.log(msg);
 };
 
 const fail = (step: string, detail: string): never => {
-  // eslint-disable-next-line functional/no-expression-statements -- script CLI output
   console.error(`FAIL [${step}]: ${detail}`);
-  // eslint-disable-next-line functional/no-expression-statements -- script exit
   process.exit(1);
 };
 
@@ -144,8 +141,6 @@ const main = async (): Promise<void> => {
 };
 
 main().catch((err: unknown) => {
-  // eslint-disable-next-line functional/no-expression-statements -- script CLI output
   console.error("Unhandled error:", err);
-  // eslint-disable-next-line functional/no-expression-statements -- script exit
   process.exit(1);
 });

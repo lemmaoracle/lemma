@@ -32,13 +32,11 @@ const td = new TextDecoder();
  * or other Node-oriented packages.
  */
 // imperative: polyfill injection on globalThis — no functional alternative
-export const ensureBufferPolyfill = (_placeholder?: undefined): void => {
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (typeof globalThis.Buffer === "undefined") {
-    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
-    (globalThis as Record<string, unknown>).Buffer = BufferPolyfill;
-  }
-};
+export const ensureBufferPolyfill = (_placeholder?: undefined): void =>
+  typeof globalThis.Buffer === "undefined"
+    ? // eslint-disable-next-line functional/immutable-data -- polyfill injection on globalThis
+      (((globalThis as Record<string, unknown>).Buffer = BufferPolyfill), undefined)
+    : undefined;
 
 // Auto-inject on import so that any consumer gets the polyfill
 // before third-party modules evaluate their top-level code.
@@ -73,8 +71,9 @@ export const ensureUrlCreateObjectUrlPolyfill = (_placeholder?: undefined): void
   // distinguish this from a real implementation, so probe it.
   // eslint-disable-next-line functional/no-try-statements -- polyfill boundary probe
   try {
-    // eslint-disable-next-line functional/no-expression-statements -- boundary probe
-    URL.createObjectURL(new Blob([""]));
+    // Bind the probe result to a discard var (`_`-prefixed) instead of
+    // leaving it as a bare expression statement.
+    const _probe = URL.createObjectURL(new Blob([""]));
     return;
   } catch {
     // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
