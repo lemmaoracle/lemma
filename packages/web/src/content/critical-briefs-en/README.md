@@ -23,6 +23,20 @@ EN-specific rules:
   kept on existing Briefs but render nowhere. `og_lead_*` is still
   written in English in this collection.
 
+### Title
+
+Rules every recent Brief follows that were missing here (checked against the
+latest 11 on 2026-09-12). Same principles as the JA canon.
+
+- **Put the searchable proper noun early in the half before the `—`** (product,
+  organisation, vulnerability, code name). Rankings and index pages show only
+  that half, so a title without a proper noun there cannot be found.
+- The `Name: ` colon form is fine when the noun should lead.
+- **Put the source or identifier at the end of that half, in parentheses**
+  (e.g. `(Unit 42 research)`, `(CVE-2026-59822, added to CISA KEV)`).
+- The H1 is a **statement** (something happened), not a noun phrase.
+- The half after the `—` says, in one sentence, **what was structurally missing**.
+
 ## The six chapters
 
 Headings are **numbered**; the table of contents (§1–§6) aligns with them.
