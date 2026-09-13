@@ -69,18 +69,21 @@ export const ensureUrlCreateObjectUrlPolyfill = (_placeholder?: undefined): void
   // (notably Cloudflare Workers, where `typeof URL.createObjectURL` is
   // "function" yet calling it rejects). A typeof guard alone cannot
   // distinguish this from a real implementation, so probe it.
-  // eslint-disable-next-line functional/no-try-statements -- polyfill boundary probe
-  try {
+  // `R.tryCatch` contains the probe's synchronous throw; a try statement is
+  // avoided so this boundary helper stays free of imperative flow.
+  const probeUrl = (_blob: Blob): void => {
     // Bind the probe result to a discard var (`_`-prefixed) instead of
     // leaving it as a bare expression statement.
-    const _probe = URL.createObjectURL(new Blob([""]));
-    return;
-  } catch {
-    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
-    (URL as unknown as { createObjectURL: (blob: Blob) => string }).createObjectURL =
-      // imperative: polyfill placeholder for Cloudflare Workers stub
-      (_blob?: Blob) => "blob:snarkjs-shim";
-  }
+    const _probe = URL.createObjectURL(_blob);
+  };
+  const installShim = (_error: unknown): void => {
+    const _installed: (blob: Blob) => string =
+      // eslint-disable-next-line functional/immutable-data -- polyfill placeholder for Cloudflare Workers stub
+      ((URL as unknown as { createObjectURL: (blob: Blob) => string }).createObjectURL = (
+        _blob?: Blob,
+      ) => "blob:snarkjs-shim");
+  };
+  R.tryCatch(probeUrl, installShim)(new Blob([""]));
 };
 
 // Auto-inject on import so that any consumer gets the polyfill
@@ -95,8 +98,7 @@ ensureUrlCreateObjectUrlPolyfill();
 export const utf8ToBytes = (str: string): Uint8Array => te.encode(str);
 
 /** Decode UTF-8 bytes to a string. */
-export const bytesToUtf8 = (bytes: Uint8Array | ArrayBuffer): string =>
-  td.decode(bytes);
+export const bytesToUtf8 = (bytes: Uint8Array | ArrayBuffer): string => td.decode(bytes);
 
 /** Encode a hex string (with or without `0x` prefix) to Uint8Array. */
 export const hexToBytes = (hex: string): Uint8Array => {
@@ -113,10 +115,7 @@ export const hexToBytes = (hex: string): Uint8Array => {
 export const bytesToHex = (bytes: Uint8Array): string =>
   R.join(
     "",
-    R.map(
-      (b: number) => b.toString(16).padStart(2, "0"),
-      Array.from(bytes),
-    ),
+    R.map((b: number) => b.toString(16).padStart(2, "0"), Array.from(bytes)),
   );
 
 /** Encode a string to base64 (UTF-8 safe, works in browser and Node). */
@@ -124,9 +123,8 @@ export const toBase64 = (source: string): string =>
   typeof Buffer !== "undefined"
     ? Buffer.from(source).toString("base64")
     : btoa(
-        encodeURIComponent(source).replace(
-          /%([0-9A-F]{2})/g,
-          (_match, p1: string) => String.fromCharCode(parseInt(p1, 16)),
+        encodeURIComponent(source).replace(/%([0-9A-F]{2})/g, (_match, p1: string) =>
+          String.fromCharCode(parseInt(p1, 16)),
         ),
       );
 
@@ -138,17 +136,14 @@ export const toBase64 = (source: string): string =>
 export const sha256Bytes = (data: Uint8Array): Uint8Array => sha256(data);
 
 /** SHA-256 hash, returned as hex string (no `0x` prefix). */
-export const sha256Hex = (data: Uint8Array): string =>
-  bytesToHex(sha256(data));
+export const sha256Hex = (data: Uint8Array): string => bytesToHex(sha256(data));
 
 /** SHA-256 hash of a string, returned as base64. */
 export const sha256Base64 = (s: string): string =>
   toBase64(String.fromCharCode(...sha256(te.encode(s))));
 
 /** Cryptographically secure random bytes (32 bytes by default). */
-export const randomBytes = (length: number = 32): Uint8Array =>
-  nobleRandomBytes(length);
+export const randomBytes = (length: number = 32): Uint8Array => nobleRandomBytes(length);
 
 /** Cryptographically secure random bytes as hex string (no `0x` prefix). */
-export const randomHex = (length: number = 32): string =>
-  bytesToHex(nobleRandomBytes(length));
+export const randomHex = (length: number = 32): string => bytesToHex(nobleRandomBytes(length));
