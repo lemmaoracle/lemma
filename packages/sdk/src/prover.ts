@@ -8,6 +8,7 @@
  * so the module works in both Node.js and browser runtimes.
  */
 import type { LemmaClient } from "@lemmaoracle/spec";
+import * as R from "ramda";
 import { reject, resolveFetch } from "./internal.js";
 import type {
   CircuitArtifactLocation,
@@ -69,20 +70,6 @@ type SnarkjsModule = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Artifact cache                                                     */
-/* ------------------------------------------------------------------ */
-
-/**
- * Module-level cache for circuit artifacts (wasm / zkey / params).
- *
- * Stores the Promise rather than the resolved value so concurrent calls
- * for the same URL share a single in-flight fetch.  The cache lives for
- * the lifetime of the module import — typical for batch proving (e.g.
- * feeds pipeline looping over 32 leaves).
- */
-const artifactCache = new Map<string, Promise<Uint8Array>>();
-
-/* ------------------------------------------------------------------ */
 /*  Artifact handling                                                  */
 /* ------------------------------------------------------------------ */
 
@@ -112,40 +99,32 @@ const fetchArtifactIpfs = (
     );
 
 /**
- * Fetch an artifact (wasm or zkey) from an IPFS or HTTPS URL,
- * with module-level caching so repeated calls for the same URL
- * reuse the resolved buffer (e.g. batch proving over many leaves).
+ * Fetch an artifact (wasm or zkey) from an IPFS or HTTPS URL.
+ *
+ * Memoised by URL via `R.memoizeWith`, so repeated calls reuse the resolved
+ * Promise and concurrent callers share a single in-flight fetch.  The memo
+ * lives for the lifetime of the module import — typical for batch proving
+ * (e.g. feeds pipeline looping over 32 leaves).
  *
  * For IPFS URLs, tries multiple gateways in order until one succeeds.
  * Returns a Uint8Array because snarkjs delegates to fastfile which
  * only recognises Uint8Array | string (file path).  A raw ArrayBuffer
  * would cause "Invalid FastFile type: undefined".
  */
-const fetchArtifactCached = (
-  client: LemmaClient,
-  url: string,
-): Promise<Uint8Array> => {
-  const cached = artifactCache.get(url);
-  return cached !== undefined
-    ? cached
-    : (() => {
-        const fetchFn = resolveFetch(client);
-        const cid = url.startsWith("ipfs://") ? url.slice("ipfs://".length) : null;
-        const promise: Promise<Uint8Array> =
-          cid !== null
-            ? fetchArtifactIpfs(fetchFn, IPFS_GATEWAYS, cid, url)
-            : fetchFn(url).then((res) =>
-                res.ok
-                  ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
-                  : reject(`Failed to fetch circuit artifact: ${url}`),
-              );
-        // imperative: Map in-memory artifact cache — no functional alternative
-        // Bind the cache write so it is not a bare expression statement.
-        // eslint-disable-next-line functional/immutable-data -- in-memory Map cache
-        const _cached = artifactCache.set(url, promise);
-        return promise;
-      })();
-};
+const fetchArtifactCached = R.memoizeWith(
+  (_client: LemmaClient, url: string): string => url,
+  (client: LemmaClient, url: string): Promise<Uint8Array> => {
+    const fetchFn = resolveFetch(client);
+    const cid = url.startsWith("ipfs://") ? url.slice("ipfs://".length) : null;
+    return cid !== null
+      ? fetchArtifactIpfs(fetchFn, IPFS_GATEWAYS, cid, url)
+      : fetchFn(url).then((res) =>
+          res.ok
+            ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
+            : reject(`Failed to fetch circuit artifact: ${url}`),
+        );
+  },
+);
 
 /**
  * Fetch circuit metadata by circuitId.
