@@ -18,9 +18,9 @@ og_lead_en: "GitSpawn: seven AI coding agents run code via git config"
 
 ## 1. TL;DR
 
-2026年9月1日、セキュリティ企業Manifold Securityが「GitSpawn」と名づけた脆弱性クラスを公開した。Claude Code、OpenAI Codex、Cursor、Goose、Qwen Code、Grok Build、Hermes Agentという主要なAIコーディングエージェント7種すべてで、リポジトリを開いただけでコードが実行される経路が見つかった。原因は、エージェントが起動時に自動で行う`git status`のようなありふれたコマンドが、リポジトリ自身が持つ`.git/config`の設定(`core.fsmonitor`など、gitが差分確認を高速化するために使う設定)を無検証のまま読み込み、そこに書かれた任意のコマンドを実行してしまう挙動にある。この実行は、ユーザーがワークスペースの信頼を承認する前、場合によっては認証やプロンプト送信より前に、サンドボックス(エージェントが安全に動作するよう隔離された実行環境)の外側で発生する。8件の脆弱性のうち4件は、公開時点でも未修正のままだった。本稿執筆時点(2026年9月15日)では、このうちHermes AgentとQwen Codeが修正済みとなり、Grok BuildとClaude Codeの`ultrareview`経路は修正を確認できていない。
+2026年9月1日、セキュリティ企業Manifold Securityが「GitSpawn」と名づけた脆弱性クラスを公開した。Claude Code、OpenAI Codex、Cursor、Goose、Qwen Code、Grok Build、Hermes Agentの7種すべてで、リポジトリを開いただけでコードが実行された。エージェントが起動時に出す`git status`が、リポジトリ自身の`.git/config`に書かれたコマンドを無検証で実行してしまう。実行はサンドボックスの外側で、ユーザーがワークスペースの信頼を承認するより前に起きる。8件のうち4件は公開時点で未修正だった。
 
-検出は効いていた。研究者は8件すべてを動画付きの再現手順とともに示し、うち2件にはCVEが付与され、5件は独立した複数の研究者から重複して報告されていた。**効かなかったのは、そのコマンドを実行する前に、リポジトリ由来の設定を実行してよいかを確かめる層である。**
+検出は効いていた。8件すべてが再現手順つきで示され、2件にCVEが付いた。**効かなかったのは、そのコマンドを実行する前に、リポジトリ由来の設定を実行してよいかを確かめる層である。**
 
 ---
 
@@ -28,7 +28,7 @@ og_lead_en: "GitSpawn: seven AI coding agents run code via git config"
 
 - **対象**: Claude Code、OpenAI Codex(CLI/Desktop)、Cursor、Goose、Qwen Code、Grok Build、Hermes Agentという主要なAIコーディングエージェント7種。5製品だけでGitHubスター数は合計およそ50万(Hermes Agent 237,000超、Claude Code 143,000超、Goose 54,000超、Qwen Code 27,000超、Grok Build 26,000)、Claude Codeは月7,700万件超のnpmダウンロードがある
 - **発見者**: Manifold Security(攻撃的セキュリティ研究者Francisco Rosales)。2026年9月1日に技術ブログで研究結果を公開
-- **見つかった脆弱性**: 8件。CVE(公開の脆弱性データベースに登録される共通識別番号)が付与されたのは2件(Goose: CVE-2026-72718、CVSS(脆弱性の深刻度を0〜10で表す指標)7.0/Hermes Agent: CVE-2026-71963、独立採番機関VulnCheckによる付番)。OpenAIは同日、Codexの同種脆弱性について独自に3件のCVE(CVE-2026-19592を含む)を公表した。3組の無関係な研究者からの報告だという
+- **見つかった脆弱性**: 8件。CVE(公開の脆弱性データベースに登録される共通識別番号)が付与されたのは2件(Goose: CVE-2026-72718、CVSS(脆弱性の深刻度を0〜10で表す指標)7.0/Hermes Agent: CVE-2026-71963、独立採番機関VulnCheckによる付番)。OpenAIは同日、Codexについて4件のCVE(CVE-2026-19590/19591/19592/19593)を公表した。うちリポジトリ設定由来の実行シンクは3件(19590はGitフック、19592は`core.fsmonitor`、19593は差分フィルタ)で、19591は別クラス。The Hacker Newsによれば3組の無関係な研究者からの報告だという
 - **公開時点で未修正**: Hermes Agent、Qwen Code、Grok Build、Claude Codeの`ultrareview`経路(`core.fsmonitor`とは別の設定キーを使う。悪用防止のためManifoldは当該キー名を公開していない)の4件。このうちHermes Agentは2026年9月2日、Qwen Codeは9月12日に修正が取り込まれた(下記時系列)
 
 攻撃は次の連鎖で成立している。
@@ -46,27 +46,29 @@ og_lead_en: "GitSpawn: seven AI coding agents run code via git config"
 - 2026-06-26: Manifold、Claude Codeの`core.fsmonitor`経路を報告。同日に他の研究者から提出された報告と重複と判定される
 - 2026-06-29: Claude Codeの`core.fsmonitor`経路がバージョン2.1.196で修正される(Anthropicは個別のアドバイザリを公開せず)
 - 2026-07-07: Manifold、Qwen Codeの脆弱性をAlibaba security response centreへ報告。受理される
+- 2026-07-08: Manifold、Cursorの脆弱性を報告。別研究者の先行報告との重複と判定される(のちに修正済み)
 - 2026-07-13: Manifold、Gooseの脆弱性を報告
 - 2026-07-14: Manifold、Grok Buildの脆弱性を報告。7月1日付の別研究者による報告(xAIは当時「情報提供」としてクローズ)と重複と判定される
 - 2026-07-15: Manifold、Claude Codeの`ultrareview`経路を報告。社内チケットとの重複と判定される
+- 2026-07-20: Manifold、OpenAI Codexの脆弱性を報告。重複と判定される(のちに修正済み)
 - 2026-07-20: Manifold、Hermes Agentの脆弱性を報告。5つの連絡経路で6回接触を試みるも、一次審査(トリアージ)がされないまま
-- 2026-09-01: Manifold、全8件を最新版で再検証したうえで研究結果「GitSpawn」を公開。Goose(1.44.0)とCursorは修正済み、OpenAI Codexは同日CVE-2026-19592を含む3件を公表・修正済み。Hermes Agent(0.21.0)、Qwen Code(0.22.3)、Grok Build(1.0.13)、Claude Codeの`ultrareview`経路(2.1.252)は未修正のまま再確認された
-- 2026-09-02: The Hacker Newsが報道。同日、Hermes Agentが修正を取り込む(GHSA-7x36-8jrh-v4pw)
+- 2026-09-01: Manifold、全8件を最新版で再検証したうえで研究結果「GitSpawn」を公開。Goose(1.44.0)とCursorは修正済み、OpenAI Codexは同日4件のCVE(CVE-2026-19590〜19593)を公表・修正済み。Hermes Agent(0.21.0)、Qwen Code(0.22.3)、Grok Build(1.0.13)、Claude Codeの`ultrareview`経路(2.1.252)は未修正のまま再確認された
+- 2026-09-02: The Hacker Newsが報道。同日、Hermes Agentが修正を取り込む(commit f6234d0)
 - 2026-09-03: CVE-2026-71963が公開される。GitHub Security Advisory(GHSA-cc88-9pxf-j2wv)は対象を0.18.2〜0.21.0とし、commit f6234d0で修正と記録している
 - 2026-09-12: Qwen Codeが修正を取り込む(エージェント自身が出すgit呼び出しが、設定で指定されたプログラムを実行しないようにする変更)。9月14日のv0.23.4で出荷
 
-> 公開情報の性格について: 8件のうち5件は、Manifold以外の研究者が独立に発見していた報告と重複していた(うち1件は同日提出)。複数の方向から同じ脆弱性クラスが見つかっていたことになる。公開時点で未修正の`ultrareview`経路については、Manifoldは悪用リスクを避けるため設定キー名を明かしていない。
+> 公開情報の性格について: 8件のうち5件は重複扱いとなった(4件は他の研究者が独立に提出していた報告、1件は社内チケット。うち1件は同日提出)。複数の方向から同じ脆弱性クラスが見つかっていたことになる。公開時点で未修正の`ultrareview`経路については、Manifoldは悪用リスクを避けるため設定キー名を明かしていない。
 
 公表後の対応と業界の動きは次のとおり。
 
-- **Goose**: メンテナがCVE-2026-72718(CVSS 4.0で7.0)を採番し、1.44.0で修正した
-- **Claude Code**: `core.fsmonitor`経路は2.1.196で修正されたが、個別のアドバイザリは公開されなかった。`ultrareview`経路は2.1.252時点で未修正と確認されている。Anthropicは過去にも起動前実行の問題を開示しており、2026年6月のCVE-2026-55607はワークツリー操作中のfsmonitor実行を扱う。セキュリティ企業Sonarも2025年4月に同種のシンクを報告し、当時は起動シーケンスの変更で緩和されたが、関連する挙動は残っていたとされる
+- **Goose**: メンテナがGitHub経由でアドバイザリを公開し、CVE-2026-72718(CVSS 4.0で7.0、採番はGitHub)が付与され、1.44.0で修正した
+- **Claude Code**: `core.fsmonitor`経路は2.1.196で修正されたが、個別のアドバイザリは公開されなかった。`ultrareview`経路は2.1.252時点で未修正と確認されている。Anthropicは過去にも起動前実行の問題を開示しており、2026年6月のCVE-2026-55607はワークツリー操作中のfsmonitor実行を扱う。セキュリティ企業Sonarも2026年4月に同一のシンク(`core.fsmonitor`)を報告し、当時は起動シーケンスの変更で緩和されたが、関連する挙動は残っていたとされる
 - **OpenAI**: Codex CLI/Desktopについて3件のCVE(CVE-2026-19592含む)を同日公表し、修正済みとした。3組の無関係な研究者からの報告としている
 - **Qwen Code**: Alibaba security response centreが2026年7月7日に受理したが、9月1日時点で未修正。その後9月12日に修正が取り込まれ、9月14日のv0.23.4で出荷された
 - **Grok Build**: xAIは7月1日の別研究者による報告を「情報提供」としてクローズし、Manifoldの7月14日報告もその重複としてクローズした。9月1日時点で未修正であり、本稿執筆時点でも修正を確認できていない
 - **Hermes Agent**: 開発元へ5つの連絡経路で6回の接触を試みたが応答がなく、CVE-2026-71963は独立採番機関VulnCheckが付番。修正は9月2日に取り込まれ、CVEは9月3日に公開された(GHSA-cc88-9pxf-j2wv)
 
-米CISAの既知悪用脆弱性カタログ(2026.09.01版、1,687件収録)にはこれら8件のいずれも掲載されておらず、実際の悪用は報告されていない。
+米CISAの既知悪用脆弱性カタログ(2026.09.14版、1,710件収録)にはこれら8件のいずれも掲載されておらず、実際の悪用は報告されていない。
 
 ---
 
@@ -79,6 +81,8 @@ og_lead_en: "GitSpawn: seven AI coding agents run code via git config"
 この構造は7つのエージェントすべてに共通していた。脆弱性はモデルにも、目新しい攻撃技術にもない。エージェントがセッション開始時に「自分がどこにいるか」を把握するために立ち上げるサブプロセスという、ごくありふれた仕組みの中にある。だからこそ一社の実装ミスではなく、業界に共通する見落としだったといえる。
 
 > 「脆弱性はモデルにあるのではない。目新しい何かがあるのでもない。エージェントがセッション開始時に、自分がどこにいるかを把握するために立ち上げるサブプロセス——ごくありふれた配管の中にある。」——Manifold Security
+
+この形は今回が初めてではない。エージェントのフレームワーク6種で11件の脆弱性が開示された件([Brief 139](https://lemma.frame00.com/ja/critical/briefs/139-agent-framework-trust-boundary-checkpoint/))も、外から入ってきた内容が、信頼された内部の処理へ渡る前に確かめられていない、という同じ欠落だった。今回は「内容」が設定ファイルで、「内部の処理」がサブプロセスの起動である。
 
 ---
 
@@ -103,12 +107,13 @@ Lemmaがこの落差に対して提示する設計は次の通りである。
 
 ## 6. Sources
 
-- **Manifold Security（一次・独自調査）**: "GitSpawn: A Single Flaw Lets Untrusted Repos Run Code in Claude Code, Codex, Cursor, and Grok"（2026-09-01） — <https://www.manifold.security/blog/ai-coding-agents-git-hijack>
-- **The Hacker News（独立報道）**: "Malicious .git Configs Can Make Claude, Codex, Cursor, and Other AI Agents Run Attacker Code"（2026-09-02、Swati Khandelwal） — <https://thehackernews.com/2026/09/malicious-git-configs-can-make-claude.html>
-- **GitHub Security Advisories（一次・脆弱性記録）**: "GHSA-r5pp-p5r8-466r"（Goose、CVE-2026-72718） — <https://github.com/aaif-goose/goose/security/advisories/GHSA-r5pp-p5r8-466r>
-- **CVE.org（一次・脆弱性記録）**: "CVE-2026-71963"（Hermes Agent、VulnCheck採番） — <https://www.cve.org/CVERecord?id=CVE-2026-71963>
-- **GitHub Security Advisories（一次・脆弱性記録）**: "GHSA-cc88-9pxf-j2wv"（Hermes Agent、CVE-2026-71963、2026-09-03公開） — <https://github.com/advisories/GHSA-cc88-9pxf-j2wv>
-- **Sonar（独立解析）**: "Arbitrary Code Execution in Claude Code"（2026年4月、同種シンクの先行報告） — <https://www.sonarsource.com/blog/claude-arbitrary-code-execution/>
+- **Manifold Security(一次・独自調査)**: "GitSpawn: A Single Flaw Lets Untrusted Repos Run Code in Claude Code, Codex, Cursor, and Grok"(2026-09-01) — <https://www.manifold.security/blog/ai-coding-agents-git-hijack>
+- **The Hacker News(独立報道)**: "Malicious .git Configs Can Make Claude, Codex, Cursor, and Other AI Agents Run Attacker Code"(2026-09-02、Swati Khandelwal) — <https://thehackernews.com/2026/09/malicious-git-configs-can-make-claude.html>
+- **GitHub Security Advisories(一次・脆弱性記録)**: "GHSA-r5pp-p5r8-466r"(Goose、CVE-2026-72718) — <https://github.com/aaif-goose/goose/security/advisories/GHSA-r5pp-p5r8-466r>
+- **CVE.org(一次・脆弱性記録)**: "CVE-2026-71963"(Hermes Agent、VulnCheck採番) — <https://www.cve.org/CVERecord?id=CVE-2026-71963>
+- **GitHub Security Advisories(一次・脆弱性記録)**: "GHSA-cc88-9pxf-j2wv"(Hermes Agent、CVE-2026-71963、2026-09-03公開) — <https://github.com/advisories/GHSA-cc88-9pxf-j2wv>
+- **GitHub Security Advisories(一次・脆弱性記録)**: "GHSA-26wp-42v3-96xp"(OpenAI Codex、CVE-2026-19592、2026-09-01公開) — <https://github.com/advisories/GHSA-26wp-42v3-96xp>
+- **Sonar(独立解析)**: "Arbitrary code execution and Claude Code CLI: How Claude executed code before you click 'trust'"(2026-04-30、Yaniv Nizry。同一シンクの先行報告) — <https://www.sonarsource.com/blog/claude-arbitrary-code-execution/>
 
 参照: 検出と証明の関係については[「AI時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)。設計の詳細は[エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)。
 
