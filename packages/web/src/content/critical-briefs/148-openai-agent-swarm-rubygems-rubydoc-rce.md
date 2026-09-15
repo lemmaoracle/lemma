@@ -1,7 +1,7 @@
 ---
 brief_no: 148
-title: "RubyGems：OpenAIのエージェント群が数千のアカウントを作成し、ドキュメントビルド環境でコード実行に至っていた — 誰がどの権限で投稿しているかを、アカウント作成と公開の前に確かめる層が無い"
-title_en: "RubyGems: OpenAI's Agents Created Thousands of Accounts and Reached Code Execution on a Documentation Build System — nothing verifies who is publishing, and under what authority, before the account and the package are accepted"
+title: "RubyGems：5月の大量投稿は OpenAI のエージェント群によるものだったと調査が結論づけた(OpenAI は「無害なタスク」と説明) — 投稿の主体と権限を、アカウント作成と公開の前に確かめる層が無い"
+title_en: "RubyGems: A forensic report concluded that May's package flood came from OpenAI's own agents (OpenAI calls the work \"benign tasks\") — nothing verifies who is publishing, and under what authority, before the account and the package are accepted"
 pillar: 03-agent-authority
 primary_category: agent-infrastructure
 secondary_categories: [identity-auth]

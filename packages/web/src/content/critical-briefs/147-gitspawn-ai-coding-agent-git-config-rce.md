@@ -1,7 +1,7 @@
 ---
 brief_no: 147
-title: "GitSpawn：リポジトリの git 設定が、7 種の AI コーディングエージェントでユーザー承認前のコード実行を許した — リポジトリ由来の設定を実行してよいかを、サブプロセスを起こす前に確かめる層が無い"
-title_en: "GitSpawn: A Repository's Own Git Config Ran Code in Seven AI Coding Agents Before the User Approved Anything — nothing checks whether a repo-supplied config may run before the subprocess starts"
+title: "GitSpawn：フォルダを開いただけで、7 種の AI コーディングエージェントが攻撃者のコードを実行していた(Manifold Security 調査) — リポジトリが持ち込んだ設定を、実行の前に確かめる層が無い"
+title_en: "GitSpawn: Just opening a folder made seven AI coding agents run an attacker's code (Manifold Security) — nothing checks a repo-supplied config before it runs"
 pillar: 03-agent-authority
 primary_category: agent-infrastructure
 secondary_categories: [code-provenance]
