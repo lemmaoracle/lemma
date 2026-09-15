@@ -614,10 +614,16 @@ importers:
       poseidon-lite:
         specifier: ^0.3.0
         version: 0.3.0
+      ramda:
+        specifier: ^0.30.1
+        version: 0.30.1
       snarkjs:
         specifier: ^0.7.6
         version: 0.7.6
     devDependencies:
+      '@types/ramda':
+        specifier: ^0.30.1
+        version: 0.30.1
       tsx:
         specifier: ^4.23.0
         version: 4.23.12
