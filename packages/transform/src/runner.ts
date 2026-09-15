@@ -25,6 +25,7 @@
  */
 import { sha256 } from "@noble/hashes/sha2";
 import { poseidon1, poseidon2 } from "poseidon-lite";
+import * as R from "ramda";
 import {
   bytesToFieldElements,
   reduceElements,
@@ -91,22 +92,20 @@ export const computeArgsHash = (args: unknown): bigint => {
 
 // ── WASM normalizer loading ─────────────────────────────────────────────
 
-// imperative: memoized one-time WASM instantiation — module-level cache
-// eslint-disable-next-line functional/no-let
-let normalizerReady: Promise<typeof bindNormalizer> | undefined;
-
 /**
  * Instantiate the WASM normalizer from caller-supplied binary bytes and
  * resolve to its `bind` entry point. wasm-bindgen init is one-time per
  * module: the first call instantiates, later calls reuse the same
  * instance (the bytes argument is ignored then).
+ *
+ * `R.once` memoises the first call's promise (and coalesces concurrent
+ * first calls), matching the previous `??=` module-cache semantics without
+ * a mutable binding.
  */
-const loadNormalizer = (
-  wasmBytes: Uint8Array,
-): Promise<typeof bindNormalizer> =>
-  (normalizerReady ??= initNormalizer({ module_or_path: wasmBytes }).then(
-    (_init) => bindNormalizer,
-  ));
+const loadNormalizer = R.once(
+  (wasmBytes: Uint8Array): Promise<typeof bindNormalizer> =>
+    initNormalizer({ module_or_path: wasmBytes }).then((_init) => bindNormalizer),
+);
 
 /** JSON payload returned by the WASM `bind` entry point. */
 type BoundExecution = Readonly<{
