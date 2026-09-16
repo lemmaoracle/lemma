@@ -1,0 +1,31 @@
+{
+  "name": "@lemmaoracle/artifacts",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemmaoracle/lemma.git",
+    "directory": "packages/artifacts"
+  },
+  "homepage": "https://github.com/lemmaoracle/lemma/tree/main/packages/artifacts#readme",
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "type-check": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint 'src/**/*.ts'",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250101.0",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "eslint": "^9.39.3",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-functional": "^9.0.4",
+    "typescript": "^5.5.0",
+    "vitest": "^2.1.0",
+    "wrangler": "^4.0.0"
+  }
+}
