@@ -15,7 +15,12 @@ pnpm-lock.yaml
 # Build Artifacts and Generated Code
 # ----------------------------------------------------------------------------
 **/dist/**
+# Hardhat compile output. `packages/artifacts/` is source (the IPFS CDN Worker).
 **/artifacts/**
+!packages/artifacts/
+!packages/artifacts/**
+packages/artifacts/node_modules/**
+packages/artifacts/dist/**
 **/cache/**
 **/typechain-types/**
 **/coverage/**

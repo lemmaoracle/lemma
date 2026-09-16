@@ -24,15 +24,14 @@ import { sha256Base64, toBase64 } from "./platform.js";
 /* ------------------------------------------------------------------ */
 
 /**
- * IPFS gateways tried in order. Pinata is first because Lemma's circuit
- * artifacts are uploaded via Pinata, so its gateway is the origin and
- * avoids any cross-gateway propagation delay. ipfs.io / dweb.link are
- * the IPFS Foundation's public gateways; trustless-gateway.link is the
- * newer verifiable-response gateway. w3s.link is kept as a last resort
- * — it 301-redirects cross-origin to dweb.link, which some browsers
- * reject under CORS re-validation.
+ * IPFS gateways tried in order. Lemma's artifacts CDN is first so
+ * in-browser loads hit Cloudflare's cache instead of waiting on public
+ * gateway cold-start or 429s. Remaining gateways are fallbacks: Pinata
+ * (upload origin), then IPFS Foundation public gateways, then
+ * trustless-gateway.link and w3s.link.
  */
 const IPFS_GATEWAYS: ReadonlyArray<string> = [
+  "https://artifacts.lemma.workers.dev/ipfs/",
   "https://gateway.pinata.cloud/ipfs/",
   "https://ipfs.io/ipfs/",
   "https://dweb.link/ipfs/",

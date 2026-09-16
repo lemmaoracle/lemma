@@ -4,7 +4,12 @@ coverage/
 .env
 .env.local
 .DS_Store
+# Hardhat compile output. `packages/artifacts/` is the IPFS CDN Worker source.
 artifacts/
+!packages/artifacts/
+!packages/artifacts/**
+packages/artifacts/node_modules/
+packages/artifacts/dist/
 cache/
 typechain-types/
 .pnpm-store/
