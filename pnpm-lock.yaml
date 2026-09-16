@@ -12,8 +12,8 @@ importers:
         specifier: ^9.39.5
         version: 9.39.5
       '@types/node':
-        specifier: ^22.20.2
-        version: 22.20.2
+        specifier: ^22.20.3
+        version: 22.20.3
       astro-eslint-parser:
         specifier: ^1.4.0
         version: 1.4.0
@@ -30,17 +30,17 @@ importers:
         specifier: ^9.0.5
         version: 9.0.5(eslint@9.39.5(jiti@2.6.1))(typescript@5.9.3)
       prettier:
-        specifier: ^3.9.6
-        version: 3.9.6
+        specifier: ^3.9.7
+        version: 3.9.7
       prettier-plugin-astro:
         specifier: ^0.14.1
         version: 0.14.1
       prettier-plugin-solidity:
         specifier: ^1.4.3
-        version: 1.4.3(prettier@3.9.6)
+        version: 1.4.3(prettier@3.9.7)
       prettier-plugin-tailwindcss:
         specifier: ^0.8.1
-        version: 0.8.1(prettier-plugin-astro@0.14.1)(prettier@3.9.6)
+        version: 0.8.1(prettier-plugin-astro@0.14.1)(prettier@3.9.7)
       tsx:
         specifier: ^4.23.13
         version: 4.23.13
@@ -3462,8 +3462,8 @@ packages:
   '@types/node@22.20.1':
     resolution: {integrity: sha512-EANqOCF9QFyra+4pfxUcX9STKJpCLjMbObVzljIJomAWSnuSIEAvyzEU53GaajbXJEgdh0iEcPL+DGvpUd4k1Q==}
 
-  '@types/node@22.20.2':
-    resolution: {integrity: sha512-xlvWf4Vs9n1PEVYwP1n4vvG07M6y8WgvJ2t0vbrWTmijsIHp1cS+uJ2kMIRdY3nHZK0nCYKrPeD171+SzF4/zw==}
+  '@types/node@22.20.3':
+    resolution: {integrity: sha512-DZmzkmwHzXrLPAXPyKNDzlIwMMUZCVacoD25ywdy5YTKGbOx/2ld+Q38Im2zJ0vBuZP5Prd3VZutKZyXwkOS8A==}
 
   '@types/node@22.7.5':
     resolution: {integrity: sha512-jML7s2NAzMWc//QSJ1a3prpk78cOPchGvXJsC3C6R6PSMoooztvRVQEz89gmBTBY1SPMaqo5teB4uNHPdetShQ==}
@@ -6335,8 +6335,8 @@ packages:
       prettier-plugin-svelte:
         optional: true
 
-  prettier@3.9.6:
-    resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
+  prettier@3.9.7:
+    resolution: {integrity: sha512-T3mF5P7HFzZVLDQuCUNtJj6WK1pcpLMweMNUVwGb01bLNkH9AkKxtZvmInw8K6bnn2O3d6/5RHl6zSHiBAD0Og==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -9628,7 +9628,7 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/node@22.20.2':
+  '@types/node@22.20.3':
     dependencies:
       undici-types: 6.21.0
 
@@ -13711,22 +13711,22 @@ snapshots:
   prettier-plugin-astro@0.14.1:
     dependencies:
       '@astrojs/compiler': 2.13.1
-      prettier: 3.9.6
+      prettier: 3.9.7
       sass-formatter: 0.7.9
 
-  prettier-plugin-solidity@1.4.3(prettier@3.9.6):
+  prettier-plugin-solidity@1.4.3(prettier@3.9.7):
     dependencies:
       '@solidity-parser/parser': 0.20.2
-      prettier: 3.9.6
+      prettier: 3.9.7
       semver: 7.8.5
 
-  prettier-plugin-tailwindcss@0.8.1(prettier-plugin-astro@0.14.1)(prettier@3.9.6):
+  prettier-plugin-tailwindcss@0.8.1(prettier-plugin-astro@0.14.1)(prettier@3.9.7):
     dependencies:
-      prettier: 3.9.6
+      prettier: 3.9.7
     optionalDependencies:
       prettier-plugin-astro: 0.14.1
 
-  prettier@3.9.6: {}
+  prettier@3.9.7: {}
 
   pretty-format@29.7.0:
     dependencies:
@@ -13763,7 +13763,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 22.20.2
+      '@types/node': 22.20.3
       long: 5.3.2
 
   proxy-addr@2.0.7:
