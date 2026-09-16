@@ -63,13 +63,18 @@ const headOf = (response: Response): Response =>
 const adaptMethod = (method: string, response: Response): Response =>
   method === "HEAD" ? headOf(response) : response;
 
+const retryTimes = <T>(times: number, fn: () => Promise<T>): Promise<T> =>
+  times <= 1 ? fn() : fn().catch((_err: unknown) => retryTimes(times - 1, fn));
+
 const fetchFromGateways = (cid: string): Promise<ArrayBuffer> =>
-  Promise.any(
-    IPFS_GATEWAYS.map((gateway) =>
-      fetch(`${gateway}${cid}`).then((res) =>
-        res.ok
-          ? res.arrayBuffer()
-          : Promise.reject(new Error(`gateway-fail ${gateway}`)),
+  retryTimes(3, (_?: undefined) =>
+    Promise.any(
+      IPFS_GATEWAYS.map((gateway) =>
+        fetch(`${gateway}${cid}`).then((res) =>
+          res.ok
+            ? res.arrayBuffer()
+            : Promise.reject(new Error(`gateway-fail ${gateway}`)),
+        ),
       ),
     ),
   );

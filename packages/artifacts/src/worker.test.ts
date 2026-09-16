@@ -173,6 +173,30 @@ describe("artifacts worker", () => {
     expect(cache.put).not.toHaveBeenCalled();
   });
 
+  it("retries the gateway relay before giving up", async () => {
+    let attempts = 0;
+    const fetchMock = vi.fn((url: string) => {
+      attempts += 1;
+      // First two rounds (5 gateways each) fail, simulating a cold Pinata
+      // plus rate-limited public gateways; the third round recovers.
+      return attempts <= GATEWAYS.length * 2
+        ? Promise.resolve(new Response(null, { status: 404 }))
+        : url.startsWith("https://gateway.pinata.cloud/")
+          ? Promise.resolve(new Response(okBody("recovered"), { status: 200 }))
+          : Promise.resolve(new Response(null, { status: 404 }));
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const res = await worker.fetch(new Request(artifactUrl(CID_V0)), {}, ctx);
+
+    expect(res.status).toBe(200);
+    expect(await res.text()).toBe("recovered");
+    // 3 retry rounds × 5 gateways, all fired in parallel per round.
+    expect(fetchMock).toHaveBeenCalledTimes(GATEWAYS.length * 3);
+    expect(ctx.waitUntil).toHaveBeenCalledTimes(1);
+    expect(cache.put).toHaveBeenCalledTimes(1);
+  });
+
   it("HEAD returns headers without a body and still caches the GET payload", async () => {
     vi.stubGlobal(
       "fetch",
