@@ -1,6 +1,6 @@
 {
   "name": "@lemmaoracle/verify",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Verify — Lemma's verification SDK. Circuit-agnostic claim verification: proof guardrails, settlement (着金) checks, and future verification APIs.",
   "license": "Apache-2.0",
   "type": "module",
