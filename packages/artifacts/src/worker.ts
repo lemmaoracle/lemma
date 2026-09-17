@@ -1,14 +1,19 @@
 /**
  * Cloudflare Worker: Lemma IPFS CDN.
  *
- *   GET|HEAD /ipfs/{CID}  — cache-first relay across public IPFS gateways
+ *   GET|HEAD /ipfs/{CID}  — colo cache → R2 → gateway relay
  *
  * Address: artifacts.lemma.workers.dev
  *
- * Cache-first because CIDs are immutable. On miss, all gateways are
- * fetched in parallel (Promise.any) so a single cold/429 gateway cannot
- * stall the client. No arbitrary-URL proxy: {CID} must be a plausible
- * IPFS CID.
+ * Resolution order:
+ *   1. colo cache (caches.default) — per-data-center read acceleration
+ *   2. R2 (ARTIFACTS bucket)       — durable, cross-colo source of truth
+ *   3. gateway relay               — lazy fill; writes back to R2 + colo cache
+ *
+ * CIDs are immutable, so R2 is the source of truth and the colo cache is pure
+ * read acceleration. On a durable miss, all gateways are fetched in parallel
+ * (Promise.any) with retry so a single cold/429 gateway cannot stall the
+ * client. No arbitrary-URL proxy: {CID} must be a plausible IPFS CID.
  */
 import { isIpfsCid } from "./cid.js";
 
@@ -27,6 +32,8 @@ const CORS: Readonly<Record<string, string>> = {
 };
 
 const CID_PATH = /^\/ipfs\/([^/]+)$/;
+
+type Env = Readonly<{ ARTIFACTS?: R2Bucket }>;
 
 const jsonError = (error: string, status: number): Response =>
   new Response(JSON.stringify({ error }), {
@@ -57,6 +64,17 @@ const toArtifactResponse = (body: ArrayBuffer): Response =>
     },
   });
 
+const toObjectResponse = (obj: R2ObjectBody): Response =>
+  new Response(obj.body, {
+    status: 200,
+    headers: {
+      "Content-Type": obj.httpMetadata?.contentType ?? "application/octet-stream",
+      "Content-Length": String(obj.size),
+      "Cache-Control": "public, max-age=31536000, immutable",
+      ...CORS,
+    },
+  });
+
 const headOf = (response: Response): Response =>
   new Response(null, { status: response.status, headers: response.headers });
 
@@ -79,6 +97,16 @@ const fetchFromGateways = (cid: string): Promise<ArrayBuffer> =>
     ),
   );
 
+const readR2 = (env: Env, cid: string): Promise<R2ObjectBody | null> =>
+  env.ARTIFACTS === undefined ? Promise.resolve(null) : env.ARTIFACTS.get(cid);
+
+const writeR2 = (env: Env, cid: string, body: ArrayBuffer): Promise<unknown> =>
+  env.ARTIFACTS === undefined
+    ? Promise.resolve(undefined)
+    : env.ARTIFACTS.put(cid, body, {
+        httpMetadata: { contentType: "application/octet-stream" },
+      });
+
 const cacheAndReturn = (
   cache: Cache,
   cacheKey: Request,
@@ -93,30 +121,36 @@ const cacheAndReturn = (
 const onMiss = (
   cache: Cache,
   cacheKey: Request,
+  env: Env,
   cid: string,
   method: string,
   ctx: ExecutionContext,
 ): Promise<Response> =>
   fetchFromGateways(cid)
     .then((body) =>
-      cacheAndReturn(cache, cacheKey, toArtifactResponse(body), method, ctx),
+      writeR2(env, cid, body).then((_res: unknown) =>
+        cacheAndReturn(cache, cacheKey, toArtifactResponse(body), method, ctx),
+      ),
     )
     .catch((_err: unknown) => jsonError("artifact unavailable", 502));
 
 const serveCid = (
   request: Request,
   cid: string,
+  env: Env,
   ctx: ExecutionContext,
 ): Promise<Response> => {
   const cache = caches.default;
   const cacheKey = new Request(request.url, { method: "GET" });
-  return cache
-    .match(cacheKey)
-    .then((cached) =>
-      cached !== undefined
-        ? adaptMethod(request.method, cached)
-        : onMiss(cache, cacheKey, cid, request.method, ctx),
-    );
+  return cache.match(cacheKey).then((cached) =>
+    cached !== undefined
+      ? adaptMethod(request.method, cached)
+      : readR2(env, cid).then((obj) =>
+          obj !== null
+            ? adaptMethod(request.method, toObjectResponse(obj))
+            : onMiss(cache, cacheKey, env, cid, request.method, ctx),
+        ),
+  );
 };
 
 const cidFromPath = (pathname: string): string | undefined =>
@@ -125,14 +159,16 @@ const cidFromPath = (pathname: string): string | undefined =>
 const handleIpfs = (
   request: Request,
   cid: string,
+  env: Env,
   ctx: ExecutionContext,
 ): Promise<Response> | Response =>
   isIpfsCid(cid)
-    ? serveCid(request, cid, ctx)
+    ? serveCid(request, cid, env, ctx)
     : jsonError("not an IPFS CID", 400);
 
 const handleRequest = (
   request: Request,
+  env: Env,
   ctx: ExecutionContext,
 ): Promise<Response> | Response => {
   const url = new URL(request.url);
@@ -143,13 +179,13 @@ const handleRequest = (
       ? jsonError("not found", 404)
       : request.method !== "GET" && request.method !== "HEAD"
         ? jsonError("method not allowed", 405)
-        : handleIpfs(request, cid, ctx);
+        : handleIpfs(request, cid, env, ctx);
 };
 
 export default {
   fetch: (
     request: Request,
-    _env: unknown,
+    env: Env,
     ctx: ExecutionContext,
-  ): Promise<Response> | Response => handleRequest(request, ctx),
+  ): Promise<Response> | Response => handleRequest(request, env, ctx),
 };

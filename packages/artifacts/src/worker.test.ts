@@ -32,6 +32,22 @@ const mockCache = (): {
   put: vi.fn().mockResolvedValue(undefined),
 });
 
+const mockR2 = (): {
+  get: ReturnType<typeof vi.fn>;
+  put: ReturnType<typeof vi.fn>;
+} => ({
+  get: vi.fn().mockResolvedValue(null),
+  put: vi.fn().mockResolvedValue(undefined),
+});
+
+const r2Body = (bytes: string): ReadableStream<Uint8Array> =>
+  new ReadableStream<Uint8Array>({
+    start(controller) {
+      controller.enqueue(new TextEncoder().encode(bytes));
+      controller.close();
+    },
+  });
+
 describe("artifacts worker", () => {
   const cache = mockCache();
   const ctx = mockCtx();
@@ -195,6 +211,49 @@ describe("artifacts worker", () => {
     expect(fetchMock).toHaveBeenCalledTimes(GATEWAYS.length * 3);
     expect(ctx.waitUntil).toHaveBeenCalledTimes(1);
     expect(cache.put).toHaveBeenCalledTimes(1);
+  });
+
+  it("serves from R2 on a durable hit without a gateway relay", async () => {
+    const r2 = mockR2();
+    r2.get.mockResolvedValue({
+      body: r2Body("r2-bytes"),
+      size: 8,
+      httpMetadata: { contentType: "application/octet-stream" },
+    });
+
+    const res = await worker.fetch(
+      new Request(artifactUrl(CID_V0)),
+      { ARTIFACTS: r2 as unknown as R2Bucket },
+      ctx,
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Length")).toBe("8");
+    expect(r2.get).toHaveBeenCalledWith(CID_V0);
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(r2.put).not.toHaveBeenCalled();
+  });
+
+  it("writes the relayed body to R2 on a durable miss", async () => {
+    const r2 = mockR2();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response(okBody("relayed"), { status: 200 })),
+    );
+
+    const res = await worker.fetch(
+      new Request(artifactUrl(CID_V0)),
+      { ARTIFACTS: r2 as unknown as R2Bucket },
+      ctx,
+    );
+
+    expect(res.status).toBe(200);
+    expect(r2.get).toHaveBeenCalledWith(CID_V0);
+    expect(r2.put).toHaveBeenCalledTimes(1);
+    expect(r2.put.mock.calls[0]?.[0]).toBe(CID_V0);
+    expect(r2.put.mock.calls[0]?.[2]).toEqual({
+      httpMetadata: { contentType: "application/octet-stream" },
+    });
   });
 
   it("HEAD returns headers without a body and still caches the GET payload", async () => {

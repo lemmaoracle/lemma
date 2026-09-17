@@ -3,3 +3,7 @@ name = "artifacts"
 main = "src/worker.ts"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
+
+[[r2_buckets]]
+binding = "ARTIFACTS"
+bucket_name = "lemma-artifacts"
