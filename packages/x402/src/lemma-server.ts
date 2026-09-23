@@ -105,7 +105,7 @@ const resolveFromIndividualEnvVars = (_?: undefined): ResolvedLemmaConfig | unde
  *
  * imperative: extends upstream OOP SDK class — no functional alternative
  */
-/* eslint-disable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-expression-statements, functional/no-this-expressions, functional/no-try-statements */
+/* eslint-disable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-expression-statements, functional/no-this-expressions */
 class LemmaResourceServer extends BaseResourceServer {
   constructor(
     facilitatorClient?: FacilitatorClient | FacilitatorClient[],
@@ -124,11 +124,14 @@ class LemmaResourceServer extends BaseResourceServer {
     // extensions.lemma is included in the PAYMENT-RESPONSE header.
     this.registerExtension({
       key: "lemma",
-      enrichSettlementResponse: async (
+      enrichSettlementResponse: (
         _declaration: unknown,
         context: SettleResultContext,
       ): Promise<unknown> => {
-        try {
+        // imperative: sync + async boundary — errors are caught via
+        // Promise `.catch` (no try-catch) so a proof-generation failure is
+        // non-fatal to the already-successful settlement.
+        const buildExtData = async (_p?: undefined): Promise<unknown> => {
           const settlementResult = context.result;
 
           // Wire-format view: the settle context is parsed from facilitator
@@ -222,15 +225,16 @@ class LemmaResourceServer extends BaseResourceServer {
             generatedAt: Date.now(),
           };
           return extData;
-        } catch (err) {
+        };
+        return buildExtData(undefined).catch((err: unknown): undefined => {
           // Non-fatal -- settlement succeeded even if proof submission fails.
           console.error("[Lemma] enrichSettlementResponse error:", err);
           return undefined;
-        }
+        });
       },
     });
   }
 }
-/* eslint-enable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-expression-statements, functional/no-this-expressions, functional/no-try-statements */
+/* eslint-enable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-expression-statements, functional/no-this-expressions */
 
 export { LemmaResourceServer as x402ResourceServer };

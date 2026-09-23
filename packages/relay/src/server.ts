@@ -79,7 +79,7 @@ const COMPILED_ROUTES: readonly CompiledRoute[] = ROUTES.map((route) => {
 /** Parse request body as JSON. */
 const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
   new Promise<unknown>((resolve) => {
-    /* eslint-disable functional/no-expression-statements, functional/immutable-data, functional/no-try-statements -- imperative Node.js stream handling */
+    /* eslint-disable functional/no-expression-statements, functional/immutable-data -- imperative Node.js stream handling */
     const chunks: Buffer[] = [];
 
     req.on("data", (chunk: Buffer) => {
@@ -88,17 +88,16 @@ const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
 
     req.on("end", (_: unknown) => {
       const body = Buffer.concat(chunks).toString();
+      // `R.tryCatch` contains JSON.parse's synchronous throw (no try-catch).
+      const parseBody = R.tryCatch(
+        (s: string) => JSON.parse(s) as unknown,
+        (_e: unknown) => undefined,
+      );
       resolve(
         R.ifElse(
           (s: string) => s === "",
           R.always(undefined),
-          (s: string) => {
-            try {
-              return JSON.parse(s) as unknown;
-            } catch {
-              return undefined;
-            }
-          },
+          parseBody,
         )(body),
       );
     });
@@ -106,7 +105,7 @@ const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
     req.on("error", (_err: unknown) => {
       resolve(undefined);
     });
-    /* eslint-enable functional/no-expression-statements, functional/immutable-data, functional/no-try-statements */
+    /* eslint-enable functional/no-expression-statements, functional/immutable-data */
   });
 
 /** Convert headers object to record. */
