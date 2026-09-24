@@ -1235,6 +1235,10 @@ const labels = isJa
     gap: 10px;
     margin: 44px 0 0;
   }
+  /* カード列の後に注記段落が続く Brief がある（132〜150）。カードに貼り付かないよう空ける。 */
+  .brief-body :global(div[data-brief-refs] + *) {
+    margin-top: 28px;
+  }
   .brief-body :global(div[data-brief-refs] a) {
     position: relative;
     display: block;
