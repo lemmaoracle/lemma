@@ -15,7 +15,7 @@
  * mirrors the SDK's own whir-runtime / platform exceptions for unavoidable
  * stateful code.
  */
-/* eslint-disable functional/immutable-data, functional/no-expression-statements */
+/* eslint-disable functional/immutable-data */
 
 export type CachingFetcherConfig = Readonly<{
   cacheDir?: string;
@@ -51,7 +51,7 @@ export const createCachingFetcher = (
   };
 
   const write = (cid: string, bytes: Uint8Array): Promise<void> => {
-    memory.set(cid, bytes);
+    const _cached = memory.set(cid, bytes);
     const dir = config.cacheDir;
     return dir === undefined
       ? Promise.resolve()

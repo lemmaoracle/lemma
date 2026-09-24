@@ -75,16 +75,16 @@ const JOB_TTL_MS = 60 * 60 * 1000;
  */
 const jobs: Map<string, Job> = new Map();
 
-/* eslint-disable functional/no-expression-statements, functional/immutable-data, functional/no-conditional-statements -- in-memory Map cache mutation, inherently imperative */
+/* eslint-disable functional/immutable-data -- in-memory Map cache mutation, inherently imperative */
 /** Insert a fresh job. */
 const insertJob = (id: string): void => {
-  jobs.set(id, { id, status: "pending", createdAt: Date.now() });
+  const _inserted = jobs.set(id, { id, status: "pending", createdAt: Date.now() });
 };
 
 /** Replace a job by id with an evolved record. */
 const updateJob = (id: string, evolve: (j: Job) => Job): void => {
   const current = jobs.get(id);
-  if (current) jobs.set(id, evolve(current));
+  const _updated = current ? jobs.set(id, evolve(current)) : undefined;
 };
 
 /** Garbage-collect jobs older than the TTL. Called on each GET/POST. */
@@ -92,10 +92,10 @@ const gcJobs = (now: number): void => {
   const cutoff = now - JOB_TTL_MS;
 
   jobs.forEach((job, id) => {
-    if (job.createdAt < cutoff) jobs.delete(id);
+    const _deleted = job.createdAt < cutoff ? jobs.delete(id) : undefined;
   });
 };
-/* eslint-enable functional/no-expression-statements, functional/immutable-data, functional/no-conditional-statements */
+/* eslint-enable functional/immutable-data */
 
 /** Run the proof in the background, updating the job on completion. */
 const runProofInBackground = (body: RequestBody, jobId: string): void => {

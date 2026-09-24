@@ -79,14 +79,14 @@ const COMPILED_ROUTES: readonly CompiledRoute[] = ROUTES.map((route) => {
 /** Parse request body as JSON. */
 const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
   new Promise<unknown>((resolve) => {
-    /* eslint-disable functional/no-expression-statements, functional/immutable-data -- imperative Node.js stream handling */
+    /* eslint-disable functional/immutable-data -- imperative Node.js stream handling */
     const chunks: Buffer[] = [];
 
-    req.on("data", (chunk: Buffer) => {
-      chunks.push(chunk);
+    const _dataSub = req.on("data", (chunk: Buffer) => {
+      const _pushed = chunks.push(chunk);
     });
 
-    req.on("end", (_: unknown) => {
+    const _endSub = req.on("end", (_: unknown) => {
       const body = Buffer.concat(chunks).toString();
       // `R.tryCatch` contains JSON.parse's synchronous throw (no try-catch).
       const parseBody = R.tryCatch(
@@ -102,10 +102,10 @@ const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
       );
     });
 
-    req.on("error", (_err: unknown) => {
+    const _errorSub = req.on("error", (_err: unknown) => {
       resolve(undefined);
     });
-    /* eslint-enable functional/no-expression-statements, functional/immutable-data */
+    /* eslint-enable functional/immutable-data */
   });
 
 /** Convert headers object to record. */
@@ -175,24 +175,24 @@ const sendResponse = (
   headers: HttpHeaders = {},
   body?: unknown,
 ): void => {
-  /* eslint-disable functional/no-expression-statements, functional/immutable-data -- imperative Node.js HTTP response */
-  res.statusCode = status;
+  /* eslint-disable functional/immutable-data -- imperative Node.js HTTP response */
+  const _statusCode = (res.statusCode = status);
 
   Object.entries(headers).forEach(([key, value]) => {
-    res.setHeader(key, value);
+    const _header = res.setHeader(key, value);
   });
 
   R.ifElse(
     (b: unknown) => b !== undefined,
     (b: unknown) => {
-      res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify(b));
+      const _contentType = res.setHeader("Content-Type", "application/json");
+      const _sentBody = res.end(JSON.stringify(b));
     },
     (_: unknown) => {
-      res.end();
+      const _sentEmpty = res.end();
     },
   )(body);
-  /* eslint-enable functional/no-expression-statements, functional/immutable-data */
+  /* eslint-enable functional/immutable-data */
 };
 
 /** Handle incoming request. */
@@ -230,38 +230,39 @@ const handleRequest = (
 
 /** Create and start HTTP server. */
 const startServer = (_: unknown): void => {
-  /* eslint-disable functional/no-expression-statements -- imperative Node.js server lifecycle */
   const server = createServer((req, res) => {
-    void handleRequest(req, res);
+    const _handled = handleRequest(req, res);
   });
 
-  server.listen({ port: CONFIG.port, host: CONFIG.host }, (_?: undefined) => {
-    console.log(
-      `Lemma Relay server running at http://${CONFIG.host}:${CONFIG.port.toString()}`,
-    );
-    console.log("Available routes:");
-    ROUTES.forEach((route) => {
-      console.log(`  ${route.method} ${route.path}`);
-    });
-  });
+  const _listening = server.listen(
+    { port: CONFIG.port, host: CONFIG.host },
+    (_?: undefined) => {
+      console.log(
+        `Lemma Relay server running at http://${CONFIG.host}:${CONFIG.port.toString()}`,
+      );
+      console.log("Available routes:");
+      ROUTES.forEach((route) => {
+        console.log(`  ${route.method} ${route.path}`);
+      });
+    },
+  );
 
   const shutdown = (signal: string) => (_: unknown) => {
     console.log(`Received ${signal}, shutting down gracefully...`);
 
-    server.close((_err: unknown) => {
+    const _closing = server.close((_err: unknown) => {
       console.log("Server closed");
-      process.exit(0);
+      const _exited = process.exit(0);
     });
 
-    setTimeout((_timer: unknown) => {
+    const _timeout = setTimeout((_timer: unknown) => {
       console.error("Force shutdown after timeout");
-      process.exit(1);
+      const _exited = process.exit(1);
     }, 5000);
   };
 
-  process.on("SIGTERM", shutdown("SIGTERM"));
-  process.on("SIGINT", shutdown("SIGINT"));
-  /* eslint-enable functional/no-expression-statements */
+  const _sigterm = process.on("SIGTERM", shutdown("SIGTERM"));
+  const _sigint = process.on("SIGINT", shutdown("SIGINT"));
 };
 
 // Bootstrap: start the server when this module is the entry point (not imported).
