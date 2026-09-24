@@ -98,4 +98,4 @@ This layer complements detection rather than replacing it. Detection finds signs
 
 References: On why after-the-fact detection is not proof, see ["The last layer left in AI-era cyber defense"](/blog/detection-is-not-proof/). On proving attributes, see [Pillar 04 — Regulatory Attribute Proof](/pillars/#attribute). On key-bound presentation, see [Seal](/seal/).
 
-> As of this writing, the location of the laptop farm and the date it was dismantled, the number of enablers involved, and the names of Japanese companies that commissioned work from North Korean IT workers have not been disclosed. All figures in this Brief are as stated in the joint document by the seven agencies.
+As of this writing, the location of the laptop farm and the date it was dismantled, the number of enablers involved, and the names of Japanese companies that commissioned work from North Korean IT workers have not been disclosed. All figures in this Brief are as stated in the joint document by the seven agencies.
