@@ -105,7 +105,7 @@ const resolveFromIndividualEnvVars = (_?: undefined): ResolvedLemmaConfig | unde
  *
  * imperative: extends upstream OOP SDK class — no functional alternative
  */
-/* eslint-disable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-expression-statements, functional/no-this-expressions */
+/* eslint-disable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-this-expressions */
 class LemmaResourceServer extends BaseResourceServer {
   constructor(
     facilitatorClient?: FacilitatorClient | FacilitatorClient[],
@@ -122,7 +122,9 @@ class LemmaResourceServer extends BaseResourceServer {
     // Register Lemma extension to enrich settlement response with proof data.
     // enrichSettlementResponse runs BEFORE createSettlementHeaders, so
     // extensions.lemma is included in the PAYMENT-RESPONSE header.
-    this.registerExtension({
+    // Bind the registration so it is not a bare non-void expression statement
+    // (functional/no-expression-statements).
+    const _registeredExtension = this.registerExtension({
       key: "lemma",
       enrichSettlementResponse: (
         _declaration: unknown,
@@ -235,6 +237,6 @@ class LemmaResourceServer extends BaseResourceServer {
     });
   }
 }
-/* eslint-enable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-expression-statements, functional/no-this-expressions */
+/* eslint-enable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-this-expressions */
 
 export { LemmaResourceServer as x402ResourceServer };
