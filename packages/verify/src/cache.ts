@@ -9,13 +9,12 @@
  * - memory cache always (per module instance)
  * - filesystem cache (Node only) when `cacheDir` is set — persists across runs
  *
- * `eslint-disable` below: a cache is inherently stateful. The memory map is
- * mutated on write (functional/immutable-data) and that write is a
- * side-effecting expression (functional/no-expression-statements). This
- * mirrors the SDK's own whir-runtime / platform exceptions for unavoidable
- * stateful code.
+ * The module is otherwise pure: the single unavoidable mutation — the
+ * in-memory `Map` write inside `write` — carries a narrowly scoped
+ * `eslint-disable-next-line` (imperative: Map cache mutation, no functional
+ * alternative). This mirrors the SDK's own whir-runtime / platform
+ * exceptions for unavoidable stateful code.
  */
-/* eslint-disable functional/immutable-data */
 
 export type CachingFetcherConfig = Readonly<{
   cacheDir?: string;
@@ -51,6 +50,8 @@ export const createCachingFetcher = (
   };
 
   const write = (cid: string, bytes: Uint8Array): Promise<void> => {
+    // imperative: Map cache mutation — no functional alternative
+    // eslint-disable-next-line functional/immutable-data
     const _cached = memory.set(cid, bytes);
     const dir = config.cacheDir;
     return dir === undefined

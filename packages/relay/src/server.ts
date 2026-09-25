@@ -79,10 +79,11 @@ const COMPILED_ROUTES: readonly CompiledRoute[] = ROUTES.map((route) => {
 /** Parse request body as JSON. */
 const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
   new Promise<unknown>((resolve) => {
-    /* eslint-disable functional/immutable-data -- imperative Node.js stream handling */
     const chunks: Buffer[] = [];
 
     const _dataSub = req.on("data", (chunk: Buffer) => {
+      // imperative: Node.js stream chunk accumulation — no functional alternative
+      // eslint-disable-next-line functional/immutable-data
       const _pushed = chunks.push(chunk);
     });
 
@@ -105,7 +106,6 @@ const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
     const _errorSub = req.on("error", (_err: unknown) => {
       resolve(undefined);
     });
-    /* eslint-enable functional/immutable-data */
   });
 
 /** Convert headers object to record. */
@@ -175,7 +175,8 @@ const sendResponse = (
   headers: HttpHeaders = {},
   body?: unknown,
 ): void => {
-  /* eslint-disable functional/immutable-data -- imperative Node.js HTTP response */
+  // imperative: Node.js HTTP response mutation — no functional alternative
+  // eslint-disable-next-line functional/immutable-data
   const _statusCode = (res.statusCode = status);
 
   Object.entries(headers).forEach(([key, value]) => {
@@ -192,7 +193,6 @@ const sendResponse = (
       const _sentEmpty = res.end();
     },
   )(body);
-  /* eslint-enable functional/immutable-data */
 };
 
 /** Handle incoming request. */
