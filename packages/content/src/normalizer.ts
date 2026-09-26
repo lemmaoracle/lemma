@@ -25,7 +25,7 @@
  * big-endian encoding are inherently imperative operations — no
  * functional alternative without unacceptable performance cost.
  */
-/* eslint-disable functional/no-let, functional/no-loop-statements, functional/no-conditional-statements, functional/no-expression-statements, functional/immutable-data, functional/no-throw-statements, @typescript-eslint/restrict-template-expressions */
+/* eslint-disable functional/no-let, functional/no-loop-statements, functional/no-conditional-statements, functional/no-expression-statements, functional/immutable-data, functional/no-throw-statements */
 
 /** BN254 field prime (alt_bn128 curve order). */
 export const BN254_PRIME = BigInt(
@@ -111,10 +111,10 @@ export function fieldElementsToBytes(elements: readonly bigint[]): Uint8Array {
   for (let i = 0; i < chunkCount; i++) {
     const element = elements[i];
     if (element === undefined) {
-      throw new Error(`Missing element at index ${i}`);
+      throw new Error(`Missing element at index ${String(i)}`);
     }
     if (element >= BN254_PRIME) {
-      throw new Error(`Field element at index ${i} exceeds BN254 prime`);
+      throw new Error(`Field element at index ${String(i)} exceeds BN254 prime`);
     }
     writeBigEndian(element, padded, i * CHUNK_SIZE);
   }
@@ -122,7 +122,7 @@ export function fieldElementsToBytes(elements: readonly bigint[]): Uint8Array {
   // Verify PKCS7 padding
   const padLen = padded[paddedLen - 1];
   if (padLen === undefined || padLen < 1 || padLen > CHUNK_SIZE) {
-    throw new Error(`Invalid PKCS7 padding length: ${padLen}`);
+    throw new Error(`Invalid PKCS7 padding length: ${String(padLen)}`);
   }
   for (let i = paddedLen - padLen; i < paddedLen; i++) {
     const byte = padded[i];
