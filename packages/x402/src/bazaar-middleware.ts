@@ -139,7 +139,7 @@ export const bazaarPaymentMiddleware = (
   const upstream = upstreamPaymentMiddleware(enrichedConfig);
 
   return async (c: Context, next: Next) => {
-    /* eslint-disable functional/no-conditional-statements, functional/no-expression-statements, @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-unsafe-argument -- imperative Hono middleware request/response lifecycle */
+    /* eslint-disable functional/no-conditional-statements, @typescript-eslint/no-unsafe-argument -- imperative Hono middleware request/response lifecycle */
     if (config.discoverable) {
       c.set(
         "lemma:bazaar:discoverable",
@@ -159,13 +159,17 @@ export const bazaarPaymentMiddleware = (
       );
     }
 
-    await upstream(c, next);
+    const _upstreamResult = await upstream(c, next);
+    // Widened view: the runtime response is set by the upstream middleware, but
+    // older Hono versions may leave it unset, so model it as optional here
+    // rather than suppressing the (otherwise "unnecessary") guard.
+    const res = c.res as typeof c.res | undefined;
 
-    if (config.discoverable && c.res) {
+    if (config.discoverable && res) {
       // CDP returns Bazaar metadata processing status in EXTENSION-RESPONSES.
       // The header is absent for non-CDP facilitators (e.g. x402.org), in
       // which case we skip emission silently.
-      const headerValue = c.res.headers.get("EXTENSION-RESPONSES");
+      const headerValue = res.headers.get("EXTENSION-RESPONSES");
       if (headerValue) {
         getBazaarStatusEmitter().emit({
           routePath: c.req.path,
@@ -184,6 +188,6 @@ export const bazaarPaymentMiddleware = (
         c.header("X-Lemma-Bazaar-Category", config.bazaarCategory);
       }
     }
-    /* eslint-enable functional/no-conditional-statements, functional/no-expression-statements, @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-unsafe-argument */
+    /* eslint-enable functional/no-conditional-statements, @typescript-eslint/no-unsafe-argument */
   };
 };
