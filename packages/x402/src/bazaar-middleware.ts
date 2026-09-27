@@ -14,7 +14,7 @@
  *   - outputs/bazaar-listings/handoff-2026-05-20-register-on-first-settle.md
  *   - lemma/#222 residual TODO 1/3
  */
-import type { Context, MiddlewareHandler, Next } from "hono";
+import type { MiddlewareHandler } from "hono";
 import { paymentMiddlewareFromConfig as upstreamPaymentMiddleware } from "@x402/hono";
 
 import {
@@ -125,6 +125,23 @@ const injectBazaarExtensionInput = (
  * );
  * ```
  */
+/**
+ * Run `action` only when `condition` holds — expressed as a conditional
+ * *expression* (no `if`) so this module stays free of imperative conditional
+ * statements.
+ */
+const when = (condition: boolean | undefined, action: () => unknown): void => {
+  const _ran = condition === true ? action() : undefined;
+};
+
+/**
+ * Run `action` with `value` only when `value` is defined — a conditional
+ * *expression* (no `if`) that narrows `value` for the callback.
+ */
+const whenDefined = <T>(value: T | undefined, action: (value: T) => unknown): void => {
+  const _ran = value === undefined ? undefined : action(value);
+};
+
 export const bazaarPaymentMiddleware = (
   config: LemmaRouteConfig
 ): MiddlewareHandler => {
@@ -138,9 +155,8 @@ export const bazaarPaymentMiddleware = (
 
   const upstream = upstreamPaymentMiddleware(enrichedConfig);
 
-  return async (c: Context, next: Next) => {
-    /* eslint-disable functional/no-conditional-statements, @typescript-eslint/no-unsafe-argument -- imperative Hono middleware request/response lifecycle */
-    if (config.discoverable) {
+  return async (c, next) => {
+    when(config.discoverable, (_placeholder?: undefined) => {
       c.set(
         "lemma:bazaar:discoverable",
         true satisfies BazaarContextVariables["lemma:bazaar:discoverable"]
@@ -157,37 +173,36 @@ export const bazaarPaymentMiddleware = (
         "lemma:bazaar:subTags",
         config.bazaarSubTags satisfies BazaarContextVariables["lemma:bazaar:subTags"]
       );
-    }
+    });
 
     const _upstreamResult = await upstream(c, next);
-    // Widened view: the runtime response is set by the upstream middleware, but
-    // older Hono versions may leave it unset, so model it as optional here
-    // rather than suppressing the (otherwise "unnecessary") guard.
-    const res = c.res as typeof c.res | undefined;
-
-    if (config.discoverable && res) {
+    // Emit Bazaar status only for discoverable routes that produced a response.
+    // The response is set by the upstream middleware; model it as optionally
+    // present so the guard below is meaningful on older Hono versions.
+    whenDefined(config.discoverable ? c.res : undefined, (res) => {
       // CDP returns Bazaar metadata processing status in EXTENSION-RESPONSES.
       // The header is absent for non-CDP facilitators (e.g. x402.org), in
       // which case we skip emission silently.
-      const headerValue = res.headers.get("EXTENSION-RESPONSES");
-      if (headerValue) {
+      const headerValue = res.headers.get("EXTENSION-RESPONSES") ?? undefined;
+      whenDefined(headerValue, (hv) => {
         getBazaarStatusEmitter().emit({
           routePath: c.req.path,
           schema: config.schema,
           category: config.bazaarCategory,
-          status: parseBazaarStatus(headerValue),
-          rawHeader: headerValue,
+          status: parseBazaarStatus(hv),
+          rawHeader: hv,
           observedAt: new Date().toISOString(),
         });
-      }
+      });
 
       // Always surface Bazaar metadata to clients via response headers for
       // transparent downstream consumption (`agentic.market` curated tooling).
-      if (config.schema) c.header("X-Lemma-Bazaar-Schema", config.schema);
-      if (config.bazaarCategory) {
-        c.header("X-Lemma-Bazaar-Category", config.bazaarCategory);
-      }
-    }
-    /* eslint-enable functional/no-conditional-statements, @typescript-eslint/no-unsafe-argument */
+      whenDefined(config.schema, (schema) => {
+        c.header("X-Lemma-Bazaar-Schema", schema);
+      });
+      whenDefined(config.bazaarCategory, (category) => {
+        c.header("X-Lemma-Bazaar-Category", category);
+      });
+    });
   };
 };

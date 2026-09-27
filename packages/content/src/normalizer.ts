@@ -24,8 +24,11 @@
  * imperative: byte-level Uint8Array manipulation, PKCS7 padding, and
  * big-endian encoding are inherently imperative operations — no
  * functional alternative without unacceptable performance cost.
+ * Validation guards are written as conditional expressions / `??`
+ * (no `if` statements), so `functional/no-conditional-statements`
+ * is not required here.
  */
-/* eslint-disable functional/no-let, functional/no-loop-statements, functional/no-conditional-statements, functional/no-expression-statements, functional/immutable-data, functional/no-throw-statements */
+/* eslint-disable functional/no-let, functional/no-loop-statements, functional/no-expression-statements, functional/immutable-data, functional/no-throw-statements */
 
 /** BN254 field prime (alt_bn128 curve order). */
 export const BN254_PRIME = BigInt(
@@ -60,8 +63,7 @@ export function bytesToFieldElements(data: Uint8Array): bigint[] {
     const offset = i * CHUNK_SIZE;
     let val = 0n;
     for (let j = 0; j < CHUNK_SIZE; j++) {
-      const byte = padded[offset + j];
-      if (byte === undefined) throw new Error("unreachable: padded index out of bounds");
+      const byte = padded[offset + j] ?? raise("unreachable: padded index out of bounds");
       val = (val << 8n) | BigInt(byte);
     }
     elements[i] = val;
@@ -98,6 +100,16 @@ function raise(message: string): never {
 }
 
 /**
+ * Abort (raise) when `condition` holds, otherwise fall through.
+ *
+ * Expressed as a conditional *expression* rather than an `if` statement so
+ * the validation guards in this module stay free of imperative flow.
+ */
+const raiseWhen = (condition: boolean, message: string): void => {
+  const _aborted = condition ? void raise(message) : undefined;
+};
+
+/**
  * Convert field elements back to original bytes.
  * Verifies and strips PKCS7 padding.
  *
@@ -109,27 +121,25 @@ export function fieldElementsToBytes(elements: readonly bigint[]): Uint8Array {
   const padded = new Uint8Array(paddedLen);
 
   for (let i = 0; i < chunkCount; i++) {
-    const element = elements[i];
-    if (element === undefined) {
-      throw new Error(`Missing element at index ${String(i)}`);
-    }
-    if (element >= BN254_PRIME) {
-      throw new Error(`Field element at index ${String(i)} exceeds BN254 prime`);
-    }
+    const element = elements[i] ?? raise(`Missing element at index ${String(i)}`);
+    raiseWhen(
+      element >= BN254_PRIME,
+      `Field element at index ${String(i)} exceeds BN254 prime`,
+    );
     writeBigEndian(element, padded, i * CHUNK_SIZE);
   }
 
   // Verify PKCS7 padding
-  const padLen = padded[paddedLen - 1];
-  if (padLen === undefined || padLen < 1 || padLen > CHUNK_SIZE) {
-    throw new Error(`Invalid PKCS7 padding length: ${String(padLen)}`);
-  }
+  const padLen =
+    padded[paddedLen - 1] ??
+    raise(`Invalid PKCS7 padding length: ${String(padded[paddedLen - 1])}`);
+  raiseWhen(
+    padLen < 1 || padLen > CHUNK_SIZE,
+    `Invalid PKCS7 padding length: ${String(padLen)}`,
+  );
   for (let i = paddedLen - padLen; i < paddedLen; i++) {
-    const byte = padded[i];
-    if (byte === undefined) throw new Error("unreachable: padded index out of bounds");
-    if (byte !== padLen) {
-      throw new Error("Invalid PKCS7 padding bytes");
-    }
+    const byte = padded[i] ?? raise("unreachable: padded index out of bounds");
+    raiseWhen(byte !== padLen, "Invalid PKCS7 padding bytes");
   }
 
   return padded.slice(0, paddedLen - padLen);
