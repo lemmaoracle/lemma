@@ -24,6 +24,7 @@ import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
 import type { Json } from "@lemmaoracle/sdk";
 import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
 import { createHash } from "node:crypto";
+import { fail } from "./fail.js";
 
 const DEFAULT_URL =
   "https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv";
@@ -39,13 +40,6 @@ const jsonString = (v: Json | undefined, fallback: string): string =>
     : typeof v === "number" || typeof v === "boolean"
       ? String(v)
       : fallback;
-
-/** Sync validation boundary for parsers — no Promise-returning alternative. */
-const fail = (message: string): never => {
-  // imperative: sync parser API must throw — no functional alternative
-  // eslint-disable-next-line functional/no-throw-statements
-  throw new Error(message);
-};
 
 // ── parsing / normalisation ─────────────────────────────────────────────────
 
