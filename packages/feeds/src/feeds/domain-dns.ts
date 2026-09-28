@@ -29,6 +29,7 @@ import type { FeedSource } from "../types.js";
 import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
 import type { Json } from "@lemmaoracle/sdk";
 import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
+import { fail } from "./fail.js";
 
 const DEFAULT_DOH = "https://cloudflare-dns.com/dns-query";
 const TYPE = "dns-domain-verify-v1";
@@ -49,13 +50,6 @@ export type DomainVerifySnapshot = Readonly<{
 }>;
 
 // ── helpers ─────────────────────────────────────────────────────────────────
-
-/** Sync validation boundary for parsers — no Promise-returning alternative. */
-const fail = (message: string): never => {
-  // imperative: sync parser API must throw — no functional alternative
-  // eslint-disable-next-line functional/no-throw-statements
-  throw new Error(message);
-};
 
 const isRecord = (v: unknown): v is Readonly<Record<string, Json>> =>
   typeof v === "object" && v !== null && !Array.isArray(v);

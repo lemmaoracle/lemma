@@ -25,6 +25,7 @@ import type { Json } from "@lemmaoracle/sdk";
 import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
 import { createHash } from "node:crypto";
 import { inflateRawSync } from "node:zlib";
+import { fail } from "./fail.js";
 
 const DEFAULT_URL =
   "https://www.post.japanpost.jp/service/search/zipcode/download/utf/zip/utf_ken_all.zip";
@@ -43,13 +44,6 @@ export type PostalCodeRecord = Readonly<{
 // ── ZIP extraction (minimal, zero-dependency) ─────────────────────────────
 
 const ZIP_LOCAL_HEADER_SIG = 0x04034b50;
-
-/** Fail helper for sync validation boundaries. */
-const failParse = (message: string): never => {
-  // imperative: sync validation boundary must throw — no functional alternative
-  // eslint-disable-next-line functional/no-throw-statements
-  throw new Error(message);
-};
 
 /**
  * Extract the first (and only) file from a ZIP buffer.
@@ -94,8 +88,8 @@ export const extractFirstZipEntry = (buf: Buffer): Buffer => {
   );
 
   return foundIndex === undefined
-    ? failParse("jp-postal-codes: no valid ZIP entry found")
-    : (extractAt(foundIndex) ?? failParse("jp-postal-codes: no valid ZIP entry found"));
+    ? fail("jp-postal-codes: no valid ZIP entry found")
+    : (extractAt(foundIndex) ?? fail("jp-postal-codes: no valid ZIP entry found"));
 };
 
 // ── parsing / normalisation ─────────────────────────────────────────────────
@@ -135,7 +129,7 @@ export const parsePostalCodes = (
     .filter((r) => /^\d{7}$/.test(r.code));
 
   return records.length === 0
-    ? failParse("jp-postal-codes: no valid records parsed")
+    ? fail("jp-postal-codes: no valid records parsed")
     : [...records].sort((a, b) => a.code.localeCompare(b.code));
 };
 
@@ -176,7 +170,7 @@ export const buildSnapshot = (
   records: ReadonlyArray<PostalCodeRecord>,
 ): Snapshot =>
   records.length === 0
-    ? failParse("jp-postal-codes: empty record set")
+    ? fail("jp-postal-codes: empty record set")
     : (() => {
         const contentHash = sha256hex(canonicalPostalCodes(records));
         return {
