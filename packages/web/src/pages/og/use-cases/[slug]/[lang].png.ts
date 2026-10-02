@@ -22,7 +22,6 @@ export async function getStaticPaths() {
     }
   }
   for (const uc of enCases) {
-    const dup = seen.has(uc.slug);
     seen.add(uc.slug);
     paths.push({
       params: { slug: uc.slug, lang: "en" },
@@ -32,7 +31,7 @@ export async function getStaticPaths() {
   return paths;
 }
 
-export const GET: APIRoute = async ({ params, props }) => {
+export const GET: APIRoute = async ({ props }) => {
   const { title, pillar } = props as { title: string; pillar: string };
   const png = await renderUseCaseOg(title, pillar);
   return new Response(new Uint8Array(png), {

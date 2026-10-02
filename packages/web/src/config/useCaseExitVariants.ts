@@ -23,7 +23,7 @@ export interface ExitVariant {
   readonly planLabel: string;
 }
 
-const PILLAR_FROM_SLUG: Record<string, ExitPillarCode> = {
+const PILLAR_FROM_SLUG: Record<string, ExitPillarCode | undefined> = {
   "01-verifiable-origin": "P1",
   "02-verifiable-ai": "P2",
   "03-agent-authority": "P3",
@@ -55,7 +55,7 @@ export const INDUSTRY_LABEL_JA: Record<ExitIndustry, string> = {
 
 /* Per-slug assignments transcribed from the handoff in
    usecase_exit_cta_block.html ([全19ユースケースの割り当て早見]). */
-export const USE_CASE_EXIT_VARIANTS: Readonly<Record<string, ExitVariant>> = {
+export const USE_CASE_EXIT_VARIANTS: Readonly<Record<string, ExitVariant | undefined>> = {
   // Enterprise — Finance → Compliance
   "kyc-aml-selective-disclosure": { reader: "enterprise", pillarCode: "P4", industry: "finance", planLabel: "(Compliance)" },
   "financial-data-exfiltration":  { reader: "enterprise", pillarCode: "P4", industry: "finance", planLabel: "(Compliance)" },

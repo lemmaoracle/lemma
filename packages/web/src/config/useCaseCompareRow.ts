@@ -18,7 +18,7 @@ interface L10n {
   readonly en: string;
 }
 
-const USE_CASE_COMPARE_ROW: Readonly<Record<string, L10n>> = {
+const USE_CASE_COMPARE_ROW: Readonly<Record<string, L10n | undefined>> = {
   "financial-data-exfiltration": { ja: "SIEM / DLP 監視のみ", en: "SIEM / DLP monitoring only" },
   "ai-audit-log-proof": { ja: "ログ・監視のみ", en: "Logging / monitoring only" },
   "incident-response-record": { ja: "インシデント監視のみ", en: "Incident monitoring only" },

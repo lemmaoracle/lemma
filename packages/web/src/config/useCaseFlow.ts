@@ -47,7 +47,7 @@ export interface UseCaseFlow {
 }
 
 const FLOWS: Readonly<
-  Record<string, Partial<Readonly<Record<Locale, UseCaseFlow>>>>
+  Record<string, Partial<Readonly<Record<Locale, UseCaseFlow>>> | undefined>
 > = {
   "kyc-aml-selective-disclosure": {
     ja: {

@@ -33,7 +33,7 @@ export async function getStaticPaths() {
     const en = enById.get(ja.id) ?? ja;
     paths.push({
       params: { lang: "en", slug: ja.id },
-      props: { brief: en as typeof ja },
+      props: { brief: en },
     });
   }
   return paths;
