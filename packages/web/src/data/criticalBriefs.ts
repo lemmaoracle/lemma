@@ -242,7 +242,7 @@ export function categoryDescription(
 export function pillarFor(category: CategorySlug): PillarSlug | null {
   for (const pillar of PILLAR_SLUGS) {
     if (
-      (CATEGORIES_BY_PILLAR[pillar] as ReadonlyArray<CategorySlug>).includes(
+      (CATEGORIES_BY_PILLAR[pillar]).includes(
         category,
       )
     ) {

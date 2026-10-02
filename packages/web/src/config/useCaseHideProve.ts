@@ -32,7 +32,7 @@ interface HideProveL10n {
   readonly prove: L10n;
 }
 
-const USE_CASE_HIDE_PROVE: Readonly<Record<string, HideProveL10n>> = {
+const USE_CASE_HIDE_PROVE: Readonly<Record<string, HideProveL10n | undefined>> = {
   // P4 規制属性証明
   "counterparty-screening": {
     hide: { ja: "判定の理由・スコア・照会履歴", en: "the reasoning, score and lookup history" },

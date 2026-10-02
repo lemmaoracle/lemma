@@ -483,11 +483,13 @@ export function buildOgArtboard(input: OgArtboardInput) {
 
   const layers: Array<unknown> = [];
 
-  if (resolved.hasCover) {
+  const coverDataUri = resolved.coverDataUri;
+  const overlay = resolved.overlay;
+  if (coverDataUri !== undefined && overlay !== undefined) {
     layers.push({
       type: "img",
       props: {
-        src: resolved.coverDataUri!,
+        src: coverDataUri,
         width: OG_WIDTH,
         height: OG_HEIGHT,
         style: {
@@ -507,7 +509,7 @@ export function buildOgArtboard(input: OgArtboardInput) {
           inset: 0,
           width: OG_WIDTH,
           height: OG_HEIGHT,
-          background: `linear-gradient(180deg, ${resolved.overlay!.top} 0%, ${resolved.overlay!.mid} 60%, ${resolved.overlay!.bottom} 100%)`,
+          background: `linear-gradient(180deg, ${overlay.top} 0%, ${overlay.mid} 60%, ${overlay.bottom} 100%)`,
         },
       },
     });

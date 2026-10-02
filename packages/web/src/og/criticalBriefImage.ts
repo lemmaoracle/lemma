@@ -34,7 +34,7 @@ import { CATEGORY_LABELS } from "../data/criticalBriefs";
 
 type BriefEntry =
   | CollectionEntry<"critical-briefs">
-  | CollectionEntry<"critical-briefs-en">;
+   ;
 
 const SERIES_LABEL = "CRITICAL BRIEF";
 

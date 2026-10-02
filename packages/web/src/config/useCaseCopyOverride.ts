@@ -18,7 +18,7 @@ import type { Locale } from "../i18n/translations";
 type CopyOverride = Readonly<Record<string, string>>;
 
 const OVERRIDES: Readonly<
-  Record<string, Partial<Readonly<Record<Locale, CopyOverride>>>>
+  Record<string, Partial<Readonly<Record<Locale, CopyOverride>>> | undefined>
 > = {
   "kyc-aml-selective-disclosure": {
     ja: {
