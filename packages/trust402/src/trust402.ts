@@ -819,7 +819,7 @@ export const list = async (
   // Convert FileInput to Blob for FormData. File and Blob pass through.
   const fileBlob =
     "body" in input.file
-      ? new Blob([input.file.body], { type: input.file.type ?? "application/octet-stream" })
+      ? new Blob([input.file.body as BlobPart], { type: input.file.type ?? "application/octet-stream" })
       : input.file;
   const fileName =
     "name" in input.file ? input.file.name : (fileBlob as File).name;
