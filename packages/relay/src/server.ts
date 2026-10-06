@@ -6,6 +6,7 @@
 
 import * as R from "ramda";
 import { createServer } from "node:http";
+import { text as streamText } from "node:stream/consumers";
 import { URL } from "node:url";
 import type {
   HttpMethod,
@@ -78,35 +79,22 @@ const COMPILED_ROUTES: readonly CompiledRoute[] = ROUTES.map((route) => {
 
 /** Parse request body as JSON. */
 const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
-  new Promise<unknown>((resolve) => {
-    const chunks: Buffer[] = [];
-
-    const _dataSub = req.on("data", (chunk: Buffer) => {
-      // imperative: Node.js stream chunk accumulation — no functional alternative
-      // eslint-disable-next-line functional/immutable-data
-      const _pushed = chunks.push(chunk);
-    });
-
-    const _endSub = req.on("end", (_: unknown) => {
-      const body = Buffer.concat(chunks).toString();
+  // `stream/consumers.text` drains the stream asynchronously — the previous
+  // `chunks.push` accumulation (a `functional/immutable-data` disable) is gone.
+  streamText(req)
+    .catch((_err: unknown) => "")
+    .then((body: string) => {
       // `R.tryCatch` contains JSON.parse's synchronous throw (no try-catch).
       const parseBody = R.tryCatch(
         (s: string) => JSON.parse(s) as unknown,
         (_e: unknown) => undefined,
       );
-      resolve(
-        R.ifElse(
-          (s: string) => s === "",
-          R.always(undefined),
-          parseBody,
-        )(body),
-      );
+      return R.ifElse(
+        (s: string) => s === "",
+        R.always(undefined),
+        parseBody,
+      )(body);
     });
-
-    const _errorSub = req.on("error", (_err: unknown) => {
-      resolve(undefined);
-    });
-  });
 
 /** Convert headers object to record. */
 const headersToRecord = (
