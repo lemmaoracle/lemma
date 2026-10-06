@@ -6,8 +6,10 @@
  *   2. Explicit: passed directly to augmented x402ResourceServer constructor
  *
  * The augmented x402ResourceServer reads from explicit config first,
- * falling back to LEMMA_CONFIG env var if no explicit config is provided.
+ *   falling back to LEMMA_CONFIG env var if no explicit config is provided.
  */
+
+import * as R from "ramda";
 
 /** Per-route discovery metadata applied to x402 route accepts[].extra. */
 type LemmaRouteDiscovery = Readonly<{
@@ -51,21 +53,17 @@ type ResolvedLemmaConfig = Readonly<
  * Parse a JSON env-config string, returning `undefined` on malformed input
  * instead of throwing.
  *
- * imperative: `JSON.parse` is a throwing external API — the exception is
- * contained in this single boundary helper so env-config call sites can
- * stay try-free.
+ * `R.tryCatch` contains `JSON.parse`'s synchronous throw (the exception is
+ * confined to this single boundary helper so env-config call sites can stay
+ * try-free) — no try-statement required.
  */
-/* eslint-disable functional/no-try-statements -- imperative: contains the throwing JSON.parse for env-config parsing; no functional alternative */
 export const safeParseJsonEnv = (
   raw: string,
-): Record<string, unknown> | undefined => {
-  try {
-    return JSON.parse(raw) as Record<string, unknown>;
-  } catch {
-    return undefined;
-  }
-};
-/* eslint-enable functional/no-try-statements */
+): Record<string, unknown> | undefined =>
+  R.tryCatch(
+    (s: string) => JSON.parse(s) as Record<string, unknown>,
+    R.always(undefined),
+  )(raw);
 
 export type {
   LemmaConfig,
