@@ -163,24 +163,15 @@ const sendResponse = (
   headers: HttpHeaders = {},
   body?: unknown,
 ): void => {
-  // imperative: Node.js HTTP response mutation — no functional alternative
-  // eslint-disable-next-line functional/immutable-data
-  const _statusCode = (res.statusCode = status);
-
-  Object.entries(headers).forEach(([key, value]) => {
-    const _header = res.setHeader(key, value);
-  });
-
-  R.ifElse(
-    (b: unknown) => b !== undefined,
-    (b: unknown) => {
-      const _contentType = res.setHeader("Content-Type", "application/json");
-      const _sentBody = res.end(JSON.stringify(b));
-    },
-    (_: unknown) => {
-      const _sentEmpty = res.end();
-    },
-  )(body);
+  // Content-Type is decided upfront so `writeHead` carries the status and
+  // all headers in one declarative call — no `res.statusCode` assignment.
+  const allHeaders: HttpHeaders =
+    body !== undefined
+      ? { ...headers, "Content-Type": "application/json" }
+      : headers;
+  const _head = res.writeHead(status, allHeaders);
+  const _sent =
+    body !== undefined ? res.end(JSON.stringify(body)) : res.end();
 };
 
 /** Handle incoming request. */
