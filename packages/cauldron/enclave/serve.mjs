@@ -22,7 +22,7 @@ const redact = (text, secret) => {
 
 /** snarkjs 0.7 は -e が無いと stdin の 1 行を entropy として読む。引数列には出さない。 */
 export function contributeArgv() {
-  return ["zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final", "-n", "lemma-tee-setup"];
+  return ["zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final", "-n", "lemma-cauldron"];
 }
 
 function contribute(entropy) {

@@ -1,4 +1,4 @@
-# @lemmaoracle/tee-setup
+# @lemmaoracle/cauldron
 
 Groth16 の trusted setup **Phase 2（`snarkjs zkey contribute`）を AWS Nitro Enclaves 内で実行**し、
 attestation doc を証跡として残す TEE setup フロー。複数回路（seal / mizudako など）のビルドから共用する。
@@ -9,40 +9,40 @@ AWS Nitro Hypervisor 署名の attestation doc で示します。証明システ
 ## 導入形（3つ）
 
 1. **npm global install（推奨）** — 回路ビルドは sh（`build.sh` 等）なので、
-   `npm i -g @lemmaoracle/tee-setup` で `tee-setup` コマンドを置き、シェルから呼ぶ。
+   `npm i -g @lemmaoracle/cauldron` で `cauldron` コマンドを置き、シェルから呼ぶ。
    どのリポジトリ・どの回路からも同じコマンドが使える。
 
    ```bash
    # build.sh（回路ごと）から
-   tee-setup phase2 --r1cs "$BUILD_DIR/$CIRCUIT_NAME.r1cs" \
+   cauldron phase2 --r1cs "$BUILD_DIR/$CIRCUIT_NAME.r1cs" \
      --zkey-in "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey" \
      --zkey-out "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
      --ptau "$PTAU"
    ```
 
-2. **コピー実行（オフライン・手軽）** — `scripts/tee-setup.mjs` はゼロ依存の単一ファイル。
-   回路リポジトリへ `cp` して `node tee-setup.mjs …` で動く。npm インストール不要。
+2. **コピー実行（オフライン・手軽）** — `scripts/cauldron.mjs` はゼロ依存の単一ファイル。
+   回路リポジトリへ `cp` して `node cauldron.mjs …` で動く。npm インストール不要。
 3. **workspace 参照** — 同一 monorepo かつ pnpm-workspace のメンバーであれば
-   `"@lemmaoracle/tee-setup": "workspace:*"` で依存できる。
+   `"@lemmaoracle/cauldron": "workspace:*"` で依存できる。
    `packages/seal/circuits` のようなネスト階層や別リポジトリからは使えない。
 
 ## 使い方
 
 ```bash
 # 一括: provision → enclave 内 contribute → オフライン検証 → teardown
-# （global install 後は tee-setup、未導入なら node scripts/tee-setup.mjs）
-tee-setup phase2 \
+# （global install 後は cauldron、未導入なら node scripts/cauldron.mjs）
+cauldron phase2 \
   --r1cs circuit.r1cs --zkey-in circuit_0000.zkey --zkey-out circuit_final.zkey \
   --ptau pot17_final.ptau          # 付けると snarkjs zkey verify も実行
 
 # 手順の確認だけ（AWS に触れない）
-node tee-setup.mjs phase2 --dry-run --r1cs X --zkey-in Y --zkey-out Z
+node cauldron.mjs phase2 --dry-run --r1cs X --zkey-in Y --zkey-out Z
 
 # 後から誰でも再検証（AWS API 不要）
 # nonce = sha256(zkey_0000) || sha256(zkey_final)。入力だけのハッシュでは通らない。
 # 同じ入出力 zkey を再提示したとき nonce が一致するのは、結び付きとして正しい。
 # attestation の timestamp は検証時刻の ±15 分。過去の証跡は --now <epoch-ms> でその時刻に合わせる。
-node tee-setup.mjs verify \
+node cauldron.mjs verify \
   --attestation circuit_final.zkey.attestation.cbor \
   --pcrs circuit_final.zkey.pcrs.json \
   --zkey-in circuit_0000.zkey \
@@ -50,7 +50,7 @@ node tee-setup.mjs verify \
   --golden enclave/expected-pcrs.json   # 計測済みのときだけ。未計測プレースホルダは失敗する
 
 # 孤児リソースの掃除
-node tee-setup.mjs teardown --run-id <id>
+node cauldron.mjs teardown --run-id <id>
 ```
 
 成果物: `zkey_final` / `zkey_final.attestation.cbor` / `zkey_final.pcrs.json`。
@@ -59,7 +59,7 @@ zkey の転送は 4 byte の長さ前置で、1GiB を超えるフレームは�
 
 ## 何が起きるか
 
-1. keypair（名前 `lemma-tee-<run-id>`）・security group・EC2（enclave 対応）を**ゼロから作成**。instance と security group にはタグ `lemma-tee-setup=<run-id>` を付ける
+1. keypair（名前 `lemma-tee-<run-id>`）・security group・EC2（enclave 対応）を**ゼロから作成**。instance と security group にはタグ `lemma-cauldron=<run-id>` を付ける
 2. enclave イメージをビルド → `nitro-cli build-enclave` → **PCR0/1/2 の期待測定値を manifest に保存**
 3. enclave 起動 → vsock 経由で `zkey_0000` を送信
 4. enclave 内: CSPRNG で `zkey contribute`（乱数は snarkjs の stdin。`-e` には載せない）→ `sha256(zkey_0000) || sha256(zkey_final)` を nonce に NSM attestation doc を取得
@@ -102,11 +102,11 @@ SHA-256 指紋: `64:1A:03:21:A3:E2:44:EF:E4:56:46:31:95:D6:06:31:7E:D7:CD:CC:3C:
 2. イメージの入力は固定してある。ベースは `node:20.20.2-alpine3.22@sha256:8f47899606d000b0704e992f927fe7335adcd0d6c98851600072fb6e14a13e60`。apk は `python3=3.12.15-r0`、`py3-pip=25.1.1-r0`、`socat=1.8.1.3-r0`。npm は同梱の `package-lock.json` で `npm ci`。pip は `requirements.txt` の `==` と `--require-hashes`。
 3. Nitro Enclaves 対応のインスタンスで `enclave/setup-and-run.sh` と同じ順に `docker build` と `nitro-cli build-enclave` を実行し、`nitro-cli describe-eif` の PCR0/1/2 を読む。
 4. 読んだ 96 hex を `enclave/expected-pcrs.json` の `pcrs` に書き、`measured` を `true` にする。`build.inputs` はそのビルドに使ったファイルのハッシュのまま残す。
-5. `tee-setup verify --attestation … --pcrs … --zkey-in … --zkey-out … --golden enclave/expected-pcrs.json` で、ホスト manifest とゴールデンの両方を attestation の PCR と照合する。
+5. `cauldron verify --attestation … --pcrs … --zkey-in … --zkey-out … --golden enclave/expected-pcrs.json` で、ホスト manifest とゴールデンの両方を attestation の PCR と照合する。
 
 ホストが返した manifest だけを見ると、同じ親インスタンスの自己比較になります。ゴールデンが未計測の本番実行は警告を出してホスト manifest だけで進みます。
 
 ## テスト
 
-`pnpm --filter @lemmaoracle/tee-setup test`（vitest・実 AWS は呼ばない。
+`pnpm --filter @lemmaoracle/cauldron test`（vitest・実 AWS は呼ばない。
 COSE_Sign1 検証は openssl 生成のテスト用チェーンで確認）。

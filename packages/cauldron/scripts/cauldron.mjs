@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// @lemmaoracle/tee-setup — Groth16 Phase 2 (zkey contribute) を AWS Nitro Enclaves 内で実行する TEE setup フロー
+// @lemmaoracle/cauldron — Groth16 Phase 2 (zkey contribute) を AWS Nitro Enclaves 内で実行する TEE setup フロー
 //
 // ゼロ依存（Node 標準ライブラリのみ）。単一ファイルで完結し、cp して実行できる。
-// 使い方: node tee-setup.mjs phase2 --r1cs <r1cs> --zkey-in <zkey_0000> --zkey-out <zkey_final>
-//        node tee-setup.mjs verify --attestation <doc.cbor> --pcrs <pcrs.json> --zkey-in <in> --zkey-out <out>
-//        node tee-setup.mjs teardown --run-id <id>
+// 使い方: node cauldron.mjs phase2 --r1cs <r1cs> --zkey-in <zkey_0000> --zkey-out <zkey_final>
+//        node cauldron.mjs verify --attestation <doc.cbor> --pcrs <pcrs.json> --zkey-in <in> --zkey-out <out>
+//        node cauldron.mjs teardown --run-id <id>
 //
 // trust model の留保: AWS Nitro が信頼の中心点。検証はオフラインで完結し AWS API を呼ばない。
 // nonce は sha256(zkey_0000)||sha256(zkey_final)。入力だけだと親が出力 zkey をすり替えられる。
@@ -19,7 +19,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ROOT_CERT = path.join(HERE, "..", "certs", "aws-nitro-root.pem");
-const TAG_KEY = "lemma-tee-setup";
+const TAG_KEY = "lemma-cauldron";
 // AWS Nitro Enclaves Root-G1。certs/aws-nitro-root.pem と README の指紋と同じ。
 export const PINNED_ROOT_FINGERPRINT =
   "64:1A:03:21:A3:E2:44:EF:E4:56:46:31:95:D6:06:31:7E:D7:CD:CC:3C:17:56:E0:98:93:F3:C6:8F:79:BB:5B";
@@ -137,7 +137,7 @@ export function goldenPcrsFrom(doc) {
   return { measured: true, pcrs };
 }
 
-const log = (msg) => process.stderr.write(`[tee-setup] ${msg}\n`);
+const log = (msg) => process.stderr.write(`[cauldron] ${msg}\n`);
 
 export function isIpv4(value) {
   const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(value ?? "");
@@ -272,8 +272,8 @@ export async function provision({ region, instanceType, ami, keepResources = fal
   const keyPath = path.join(os.tmpdir(), `${keyName}.pem`);
   const knownHosts = path.join(os.tmpdir(), `${keyName}.known_hosts`);
   const state = { id, instanceId: undefined, ip: undefined, keyPath: undefined, knownHosts, keyName, sgId: undefined, region };
-  const instanceTags = `ResourceType=instance,Tags=[{Key=${TAG_KEY},Value=${id}},{Key=Name,Value=lemma-tee-setup}]`;
-  const sgTags = `ResourceType=security-group,Tags=[{Key=${TAG_KEY},Value=${id}},{Key=Name,Value=lemma-tee-setup}]`;
+  const instanceTags = `ResourceType=instance,Tags=[{Key=${TAG_KEY},Value=${id}},{Key=Name,Value=lemma-cauldron}]`;
+  const sgTags = `ResourceType=security-group,Tags=[{Key=${TAG_KEY},Value=${id}},{Key=Name,Value=lemma-cauldron}]`;
   let createdKey = false;
   try {
     log(`run-id ${id}: keypair 作成`);
@@ -289,7 +289,7 @@ export async function provision({ region, instanceType, ami, keepResources = fal
     log(`run-id ${id}: security group 作成`);
     const sg = JSON.parse(await aws([
       "ec2", "create-security-group", "--group-name", groupName,
-      "--description", `lemma tee-setup ${id}`, "--tag-specifications", sgTags,
+      "--description", `lemma cauldron ${id}`, "--tag-specifications", sgTags,
       "--region", region, "--output", "json",
     ]));
     state.sgId = sg.GroupId;
@@ -942,7 +942,7 @@ export async function phase2(opts) {
       "-o", "ConnectTimeout=10",
     ];
     const host = `ec2-user@${res.ip}`;
-    const remoteDir = "/home/ec2-user/tee-setup";
+    const remoteDir = "/home/ec2-user/cauldron";
 
     log("scp: enclave バンドル + zkey を転送");
     await retry("ssh", () => exec("ssh", [...sshBase, host, "mkdir -p " + remoteDir]), 12, 5000);
@@ -953,7 +953,7 @@ export async function phase2(opts) {
     await exec("ssh", [...sshBase, host, `cd ${remoteDir} && sudo bash enclave/setup-and-run.sh`], { timeout: PHASE2_TIMEOUT_MS });
 
     log("collect: 結果をステージしてから検証する");
-    const stage = fs.mkdtempSync(path.join(os.tmpdir(), `tee-setup-${res.id}-`));
+    const stage = fs.mkdtempSync(path.join(os.tmpdir(), `cauldron-${res.id}-`));
     try {
       const stagedZkey = path.join(stage, "zkey_final");
       const stagedAtt = path.join(stage, "attestation.cbor");
@@ -1032,7 +1032,7 @@ async function main() {
     const out = await teardownByRunId(opts["run-id"], opts.region ?? "us-east-1");
     process.stdout.write(JSON.stringify(out) + "\n");
   } else {
-    process.stderr.write("usage: tee-setup phase2|verify|teardown [options]\n");
+    process.stderr.write("usage: cauldron phase2|verify|teardown [options]\n");
     process.exit(1);
   }
 }

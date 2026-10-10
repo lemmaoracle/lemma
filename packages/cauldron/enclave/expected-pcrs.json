@@ -1,5 +1,5 @@
 {
-  "schema": "lemma-tee-setup.pcrs.v1",
+  "schema": "lemma-cauldron.pcrs.v1",
   "measured": false,
   "pcrs": {
     "0": null,
@@ -7,9 +7,9 @@
     "2": null
   },
   "build": {
-    "schema": "lemma-tee-setup.build.v1",
+    "schema": "lemma-cauldron.build.v1",
     "inputs": {
-      "Dockerfile": "b3615524cc832391da9b6f87ba027deec5b6ff847489a911a70acdb48ecbf176",
+      "Dockerfile": "ae43f59c0241737f3a3da3a8da7571853a983b6846422b43a42cbc9a81a49fc4",
       "package.json": "ab6a8f05c571263cfa749fd7397d8b1f7cc5788f28d65e14edc9d98a1bd71b27",
       "package-lock.json": "eb9e68134f28038b84161638b8f2fe53e2048b697ac52a0d3b7b604cfb3192fe",
       "requirements.txt": "6120a64554909d9383d13833487572ef1856bfaa1008a08370ad5de76c8c37c2"

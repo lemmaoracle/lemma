@@ -112,7 +112,7 @@ export async function readFrame(stream, maxBytes = MAX_FRAME) {
   return reader.readExact(len);
 }
 
-/** nonce = sha256(zkey_in) || sha256(zkey_out)。serve.mjs と tee-setup.mjs が同じ形にする。 */
+/** nonce = sha256(zkey_in) || sha256(zkey_out)。serve.mjs と cauldron.mjs が同じ形にする。 */
 export function commitmentNonceHex(zkeyIn, zkeyOut) {
   const a = createHash("sha256").update(zkeyIn).digest();
   const b = createHash("sha256").update(zkeyOut).digest();

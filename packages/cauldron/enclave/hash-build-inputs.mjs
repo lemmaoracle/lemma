@@ -5,7 +5,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 export const BUILD_INPUT_FILES = ["Dockerfile", "package.json", "package-lock.json", "requirements.txt"];
-export const BUILD_SCHEMA = "lemma-tee-setup.build.v1";
+export const BUILD_SCHEMA = "lemma-cauldron.build.v1";
 
 export function hashBuildInputs(dir) {
   const inputs = {};

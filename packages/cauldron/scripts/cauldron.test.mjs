@@ -33,7 +33,7 @@ import {
   verifyAttestation,
   verifyBundle,
   warnIfZkeyTooLarge,
-} from "./tee-setup.mjs";
+} from "./cauldron.mjs";
 import { commitmentNonceHex as serveNonce, frame, MAX_FRAME, readFrame } from "../enclave/frame.mjs";
 import { BUILD_INPUT_FILES as enclaveBuildFiles, hashBuildInputs as enclaveHashBuildInputs } from "../enclave/hash-build-inputs.mjs";
 import { contributeArgv } from "../enclave/serve.mjs";
@@ -50,7 +50,7 @@ let rootDer;
 let tmp;
 
 beforeAll(() => {
-  tmp = fs.mkdtempSync(path.join(os.tmpdir(), "tee-setup-test-"));
+  tmp = fs.mkdtempSync(path.join(os.tmpdir(), "cauldron-test-"));
   const run = (args) => execFileSync("openssl", args, { cwd: tmp, stdio: ["ignore", "pipe", "ignore"] });
   run(["ecparam", "-name", "secp384r1", "-genkey", "-noout", "-out", "root.key"]);
   run(["req", "-x509", "-key", "root.key", "-out", "root.pem", "-days", "30",
@@ -509,14 +509,14 @@ describe("golden PCRs and build inputs", () => {
     expect(BUILD_INPUT_FILES).toEqual(enclaveBuildFiles);
     expect(hashBuildInputs(enclaveDir)).toEqual(enclaveHashBuildInputs(enclaveDir));
     const expected = JSON.parse(fs.readFileSync(path.join(enclaveDir, "expected-pcrs.json"), "utf8"));
-    expect(expected.schema).toBe("lemma-tee-setup.pcrs.v1");
+    expect(expected.schema).toBe("lemma-cauldron.pcrs.v1");
     expect(expected.measured).toBe(false);
     expect(expected.pcrs).toEqual({ 0: null, 1: null, 2: null });
     expect(verifyBuildInputs(expected.build.inputs, enclaveDir).ok).toBe(true);
 
     const { attPath, pcrsPath } = writeBundle("build", {
       ...basePcrs(),
-      build: { schema: "lemma-tee-setup.build.v1", inputs: hashBuildInputs(enclaveDir) },
+      build: { schema: "lemma-cauldron.build.v1", inputs: hashBuildInputs(enclaveDir) },
     });
     expect(verifyBundle({
       attestationPath: attPath, pcrsPath, nonceHash: Buffer.alloc(32, 9).toString("hex"),
@@ -524,7 +524,7 @@ describe("golden PCRs and build inputs", () => {
     }).ok).toBe(true);
     const drifted = writeBundle("build-drift", {
       ...basePcrs(),
-      build: { schema: "lemma-tee-setup.build.v1", inputs: { Dockerfile: "ab".repeat(32) } },
+      build: { schema: "lemma-cauldron.build.v1", inputs: { Dockerfile: "ab".repeat(32) } },
     });
     expect(verifyBundle({
       attestationPath: drifted.attPath, pcrsPath: drifted.pcrsPath,
@@ -632,7 +632,7 @@ print(json.dumps(enclave_ids_from_describe({"EnclaveID": "d"})))
     const argv = contributeArgv();
     expect(argv).not.toContain("-e");
     expect(argv.join(" ")).not.toContain("super-secret-entropy");
-    expect(argv).toEqual(["zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final", "-n", "lemma-tee-setup"]);
+    expect(argv).toEqual(["zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final", "-n", "lemma-cauldron"]);
   });
 
   it("pins the image digest, apk versions, npm ci and pip hashes", () => {

@@ -3,7 +3,7 @@
 # docker で EIF をビルド → enclave 内で zkey contribute → vsock 経由で回収。
 set -euo pipefail
 
-cd "$(dirname "$0")/.."          # remoteDir (= /home/ec2-user/tee-setup)
+cd "$(dirname "$0")/.."          # remoteDir (= /home/ec2-user/cauldron)
 OUT="$PWD/out"
 mkdir -p "$OUT"
 # t3.xlarge は 4 vCPU / 16 GiB。親 OS に CPU を残す（4 全部渡すと allocator が失敗する）。
