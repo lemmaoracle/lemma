@@ -8,19 +8,30 @@ AWS Nitro Hypervisor 署名の attestation doc で示します。証明システ
 
 ## 導入形（3つ）
 
-1. **コピー実行（推奨・別リポジトリから）** — `scripts/tee-setup.mjs` はゼロ依存の単一ファイル。
+1. **npm global install（推奨）** — 回路ビルドは sh（`build.sh` 等）なので、
+   `npm i -g @lemmaoracle/tee-setup` で `tee-setup` コマンドを置き、シェルから呼ぶ。
+   どのリポジトリ・どの回路からも同じコマンドが使える。
+
+   ```bash
+   # build.sh（回路ごと）から
+   tee-setup phase2 --r1cs "$BUILD_DIR/$CIRCUIT_NAME.r1cs" \
+     --zkey-in "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey" \
+     --zkey-out "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
+     --ptau "$PTAU"
+   ```
+
+2. **コピー実行（オフライン・手軽）** — `scripts/tee-setup.mjs` はゼロ依存の単一ファイル。
    回路リポジトリへ `cp` して `node tee-setup.mjs …` で動く。npm インストール不要。
-2. **workspace 参照** — 同一 monorepo かつ pnpm-workspace のメンバーであれば
+3. **workspace 参照** — 同一 monorepo かつ pnpm-workspace のメンバーであれば
    `"@lemmaoracle/tee-setup": "workspace:*"` で依存できる。
-   `packages/seal/circuits` のようなネスト階層や別リポジトリからは使えない
-   （このパッケージも単一ファイル設計にしてあるのはこのため）。
-3. **npm 公開後** — `npx @lemmaoracle/tee-setup …`（将来）。
+   `packages/seal/circuits` のようなネスト階層や別リポジトリからは使えない。
 
 ## 使い方
 
 ```bash
 # 一括: provision → enclave 内 contribute → オフライン検証 → teardown
-node tee-setup.mjs phase2 \
+# （global install 後は tee-setup、未導入なら node scripts/tee-setup.mjs）
+tee-setup phase2 \
   --r1cs circuit.r1cs --zkey-in circuit_0000.zkey --zkey-out circuit_final.zkey \
   --ptau pot17_final.ptau          # 付けると snarkjs zkey verify も実行
 

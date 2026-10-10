@@ -414,7 +414,15 @@ async function main() {
   }
 }
 
-const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+// npm global install 経由だと argv[1] が bin のシンボリックリンクになるため realpath で照合する
+const isMain = (() => {
+  if (!process.argv[1]) return false;
+  try {
+    return import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href;
+  } catch {
+    return import.meta.url === pathToFileURL(process.argv[1]).href;
+  }
+})();
 if (isMain) {
   main().catch((e) => { log(String(e.message ?? e)); process.exit(1); });
 }
