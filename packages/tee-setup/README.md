@@ -39,10 +39,12 @@ tee-setup phase2 \
 node tee-setup.mjs phase2 --dry-run --r1cs X --zkey-in Y --zkey-out Z
 
 # 後から誰でも再検証（AWS API 不要）
+# nonce = sha256(zkey_0000) || sha256(zkey_final)。入力だけのハッシュでは通らない。
 node tee-setup.mjs verify \
   --attestation circuit_final.zkey.attestation.cbor \
   --pcrs circuit_final.zkey.pcrs.json \
-  --nonce-hash <sha256(zkey_0000) の hex>
+  --zkey-in circuit_0000.zkey \
+  --zkey-out circuit_final.zkey
 
 # 孤児リソースの掃除
 node tee-setup.mjs teardown --run-id <id>
@@ -50,20 +52,24 @@ node tee-setup.mjs teardown --run-id <id>
 
 成果物: `zkey_final` / `zkey_final.attestation.cbor` / `zkey_final.pcrs.json`。
 attestation doc と PCR manifest は zkey と同じ台帳に置いてください（誰でも再検証できる証跡）。
+zkey の転送は 4 byte の長さ前置で、1GiB を超えるフレームは拒否します（想定する zkey は約 650MB まで）。リモート実行の待ちは最大 10 時間です。
 
 ## 何が起きるか
 
-1. keypair・security group・EC2（enclave 対応、タグ `lemma-tee-setup=<run-id>`）を**ゼロから作成**
+1. keypair（名前 `lemma-tee-<run-id>`）・security group・EC2（enclave 対応）を**ゼロから作成**。instance と security group にはタグ `lemma-tee-setup=<run-id>` を付ける
 2. enclave イメージをビルド → `nitro-cli build-enclave` → **PCR0/1/2 の期待測定値を manifest に保存**
 3. enclave 起動 → vsock 経由で `zkey_0000` を送信
-4. enclave 内: CSPRNG で `zkey contribute` → 入力 zkey の SHA-256 を nonce に NSM attestation doc を取得
-5. 帰ってきた `zkey_final` + attestation を**オフライン検証**（COSE_Sign1 署名 → 証明書チェーン → PCR0/1/2 → nonce）
-6. **teardown（失敗時も必ず実行）**: instance 終了 → keypair / security group 削除
+4. enclave 内: CSPRNG で `zkey contribute` → `sha256(zkey_0000) || sha256(zkey_final)` を nonce に NSM attestation doc を取得
+5. 帰ってきた `zkey_final` + attestation を**オフライン検証**（COSE_Sign1 / ES384 の raw 署名 → ピン留めしたルートへの証明書チェーン → PCR0/1/2 → nonce）。検証が通るまで `zkey_out` には書き出さない
+6. **teardown（失敗時も、keypair や security group だけ作れた段階でも実行）**: instance 終了 → keypair / security group 削除
 
 ## trust model の留保
 
 - **AWS Nitro が信頼の中心点**（中央集権的な信頼の置き場）。対外説明では必ず明記する。
 - 検証は **PCR0 のみでなく PCR0/1/2 を見る**（PCR0 だけでは入れ子イメージの差を検知できない）。
+  `pcrs.json` はビルドした EIF の測定値。第三者は同じイメージをビルドし直して照合する（インスタンスが書いた manifest をそのまま信じない）。
+- nonce は入力と出力の両方に結ぶ。親インスタンスは vsock の中継なので、入力ハッシュだけでは `zkey_final` をすり替えられる。
+- 既定のルート証明書はソースに指紋をピン留めしてある。`--root-cert` はテスト用で、渡した PEM が新しい信頼の起点になる。
 - EIF のメタデータは attestation されない。サイドチャネルは脅威モデル外（業界標準と同じ）。
 - 二重化: contribute の後に `snarkjs zkey beacon`（公開ランダムネスでの finalize）を掛けると、
   「AWS か beacon のどちらか一方が誠実なら安全」という MPC と同型の保証になる（推奨）。
@@ -72,7 +78,7 @@ attestation doc と PCR manifest は zkey と同じ台帳に置いてくださ�
 
 `ec2:CreateKeyPair` / `DeleteKeyPair` / `CreateSecurityGroup` / `DeleteSecurityGroup` /
 `AuthorizeSecurityGroupIngress` / `RunInstances` / `TerminateInstances` / `DescribeInstances` /
-`DescribeSecurityGroups` / `ssm:GetParameter`。KMS は不要（鍵を持たない設計）。
+`DescribeSecurityGroups` / `ssm:GetParameter`。インスタンスには IAM ロールを付けず、IMDS も止める。KMS は不要（鍵を持たない設計）。
 検証（`verify`）には AWS 権限すら不要。
 
 ## 検証に使うルート証明書

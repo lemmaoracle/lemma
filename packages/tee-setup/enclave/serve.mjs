@@ -1,58 +1,88 @@
 #!/usr/bin/env node
 // enclave 内で動く処理。stdin で zkey_0000 を受け、enclave 内 CSPRNG の乱数で
-// snarkjs zkey contribute を実行し、入力 zkey の SHA-256 を nonce に
-// NSM attestation doc を取得して返す。toxic waste（乱数）は enclave 外に出ない。
+// snarkjs zkey contribute を実行し、sha256(zkey_0000)||sha256(zkey_final) を nonce に
+// NSM attestation doc を取得して返す。
+//
+// toxic waste（貢献乱数）はプロセス引数にしか載せない。失敗時の Error や stderr には
+// 出さない（enclave console と SSH の stderr は親から読める）。
 
-import { execFileSync } from "node:child_process";
-import { createHash, randomBytes } from "node:crypto";
+import { spawnSync } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import fs from "node:fs";
+import { pathToFileURL } from "node:url";
+import { commitmentNonceHex, readFrame, writeFrame } from "./frame.mjs";
 
-const frame = (buf) => {
-  const h = Buffer.alloc(4);
-  h.writeUInt32BE(buf.length);
-  return Buffer.concat([h, buf]);
+export { commitmentNonceHex };
+
+const redact = (text, secret) => {
+  const s = String(text ?? "");
+  if (!secret) return s;
+  return s.split(secret).join("[redacted]");
 };
 
-const readFrame = () =>
-  new Promise((resolve, reject) => {
-    let state = "len"; let need = 4; let chunks = []; let got = 0;
-    const onData = (c) => {
-      chunks.push(c); got += c.length;
-      if (got < need) return;
-      const buf = Buffer.concat(chunks); chunks = []; got = 0;
-      if (state === "len") {
-        need = buf.readUInt32BE(0); state = "body";
-        if (need === 0) { cleanup(); resolve(Buffer.alloc(0)); }
-      } else { cleanup(); resolve(buf.subarray(0, need)); }
-    };
-    const cleanup = () => process.stdin.off("data", onData);
-    process.stdin.on("data", onData);
-    process.stdin.on("error", (e) => { cleanup(); reject(e); });
-    process.stdin.on("end", () => { cleanup(); reject(new Error("stdin ended")); });
-  });
-
-const main = async () => {
-  const zkey0 = await readFrame();
-  const nonce = createHash("sha256").update(zkey0).digest("hex");
-  process.stderr.write(`[serve] zkey_0000 ${zkey0.length} bytes, nonce=${nonce}\n`);
-
-  fs.writeFileSync("/tmp/zkey_0000", zkey0);
-  const entropy = randomBytes(32).toString("hex"); // enclave 内 CSPRNG
-  execFileSync("node", [
-    "/usr/local/lib/node_modules/snarkjs/build/cli.cjs",
+const contribute = (entropy) => {
+  // グローバルインストールの snarkjs を PATH から起動する。ヒープは zkey 全体を載せる。
+  const child = spawnSync("snarkjs", [
     "zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final",
     "-n", "lemma-tee-setup", "-e", entropy,
-  ], { stdio: ["ignore", "ignore", "inherit"] });
-
-  // toxic waste の消去（enclave 破棄で物理的に消えるが、念のため上書き削除）
-  fs.rmSync("/tmp/zkey_0000", { force: true });
-
-  const zkeyFinal = fs.readFileSync("/tmp/zkey_final");
-  const attestation = execFileSync("python3", ["/app/attest.py", nonce]);
-  process.stderr.write(`[serve] zkey_final ${zkeyFinal.length} bytes, attestation ${attestation.length} bytes\n`);
-  process.stdout.write(frame(zkeyFinal));
-  process.stdout.write(frame(attestation));
-  process.exit(0);
+  ], {
+    stdio: ["ignore", "pipe", "pipe"],
+    env: { ...process.env, NODE_OPTIONS: process.env.NODE_OPTIONS ?? "--max-old-space-size=6144" },
+  });
+  if (child.error || child.status !== 0) {
+    const stderr = redact(child.stderr, entropy);
+    const stdout = redact(child.stdout, entropy);
+    const spawnErr = redact(child.error?.message, entropy);
+    throw new Error(
+      `zkey contribute failed (status ${child.status}, signal ${child.signal}): ${spawnErr} ${stderr.slice(-1500)} ${stdout.slice(-500)}`,
+    );
+  }
 };
 
-main().catch((e) => { process.stderr.write(String(e) + "\n"); process.exit(1); });
+const attest = (nonceHex) => {
+  const child = spawnSync("python3", ["/app/attest.py", nonceHex], { stdio: ["ignore", "pipe", "pipe"] });
+  if (child.error || child.status !== 0) {
+    const stderr = Buffer.from(child.stderr ?? Buffer.alloc(0)).toString("utf8");
+    throw new Error(`attestation failed (status ${child.status}): ${stderr.slice(-1500)}`);
+  }
+  return Buffer.from(child.stdout ?? Buffer.alloc(0));
+};
+
+const rmQuiet = (p) => { try { fs.rmSync(p, { force: true }); } catch { /* enclave 終了時に消える */ } };
+
+const main = async () => {
+  let entropy = "";
+  try {
+    const zkey0 = await readFrame(process.stdin);
+    fs.writeFileSync("/tmp/zkey_0000", zkey0, { mode: 0o600 });
+    entropy = randomBytes(32).toString("hex");
+    contribute(entropy);
+    const zkeyFinal = fs.readFileSync("/tmp/zkey_final");
+    const nonce = commitmentNonceHex(zkey0, zkeyFinal);
+    const doc = attest(nonce);
+    process.stderr.write(`[serve] zkey_0000 ${zkey0.length} bytes, zkey_final ${zkeyFinal.length} bytes, attestation ${doc.length} bytes\n`);
+    await writeFrame(process.stdout, zkeyFinal);
+    await writeFrame(process.stdout, doc);
+  } catch (e) {
+    throw new Error(redact(e.message, entropy));
+  } finally {
+    entropy = "";
+    rmQuiet("/tmp/zkey_0000");
+    rmQuiet("/tmp/zkey_final");
+  }
+};
+
+const isMain = (() => {
+  if (!process.argv[1]) return false;
+  try {
+    return import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href;
+  } catch {
+    return import.meta.url === pathToFileURL(process.argv[1]).href;
+  }
+})();
+
+if (isMain) {
+  main()
+    .then(() => process.exit(0))
+    .catch((e) => { process.stderr.write(`${e.message || e}\n`); process.exit(1); });
+}

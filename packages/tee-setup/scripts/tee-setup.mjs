@@ -3,13 +3,14 @@
 //
 // ゼロ依存（Node 標準ライブラリのみ）。単一ファイルで完結し、cp して実行できる。
 // 使い方: node tee-setup.mjs phase2 --r1cs <r1cs> --zkey-in <zkey_0000> --zkey-out <zkey_final>
-//        node tee-setup.mjs verify --attestation <doc.cbor> --pcrs <pcrs.json> --nonce-hash <hex>
+//        node tee-setup.mjs verify --attestation <doc.cbor> --pcrs <pcrs.json> --zkey-in <in> --zkey-out <out>
 //        node tee-setup.mjs teardown --run-id <id>
 //
 // trust model の留保: AWS Nitro が信頼の中心点。検証はオフラインで完結し AWS API を呼ばない。
+// nonce は sha256(zkey_0000)||sha256(zkey_final)。入力だけだと親が出力 zkey をすり替えられる。
 
 import { execFile } from "node:child_process";
-import { createHash, createVerify, X509Certificate } from "node:crypto";
+import { createHash, createVerify, randomBytes, X509Certificate } from "node:crypto";
 import fs from "node:fs";
 import https from "node:https";
 import os from "node:os";
@@ -19,6 +20,14 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ROOT_CERT = path.join(HERE, "..", "certs", "aws-nitro-root.pem");
 const TAG_KEY = "lemma-tee-setup";
+// AWS Nitro Enclaves Root-G1。certs/aws-nitro-root.pem と README の指紋と同じ。
+export const PINNED_ROOT_FINGERPRINT =
+  "64:1A:03:21:A3:E2:44:EF:E4:56:46:31:95:D6:06:31:7E:D7:CD:CC:3C:17:56:E0:98:93:F3:C6:8F:79:BB:5B";
+const COSE_ALG_ES384 = -35;
+const ES384_SIG_BYTES = 96;
+const PHASE2_TIMEOUT_MS = 10 * 60 * 60 * 1000;
+const SCP_TIMEOUT_MS = 2 * 60 * 60 * 1000;
+const RUN_ID_RE = /^lts-[0-9a-z]+-[0-9a-z]+$/;
 
 /* ============================================================
  * 小さな実行ユーティリティ
@@ -32,9 +41,85 @@ export const exec = (cmd, args, opts = {}) =>
     });
   });
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function retry(label, fn, tries, delayMs) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      last = e;
+      log(`${label} 失敗 (${i + 1}/${tries}): ${String(e.message ?? e).split("\n")[0]}`);
+      if (i + 1 < tries) await delay(delayMs);
+    }
+  }
+  throw last;
+}
+
 export const sha256Hex = (buf) => createHash("sha256").update(buf).digest("hex");
 
+/** 大きい zkey をまとめて読まずに SHA-256 する。 */
+export function sha256FileHex(filePath) {
+  const hash = createHash("sha256");
+  const fd = fs.openSync(filePath, "r");
+  try {
+    const buf = Buffer.alloc(1024 * 1024);
+    let n = 0;
+    while ((n = fs.readSync(fd, buf, 0, buf.length, null)) > 0) hash.update(buf.subarray(0, n));
+  } finally {
+    fs.closeSync(fd);
+  }
+  return hash.digest("hex");
+}
+
+/** nonce = sha256(zkey_in) || sha256(zkey_out)。enclave/frame.mjs の commitmentNonceHex と同じ。 */
+export function commitmentNonceHex(zkeyIn, zkeyOut) {
+  return sha256Hex(zkeyIn) + sha256Hex(zkeyOut);
+}
+
+export function commitmentNonceHexFromFiles(zkeyIn, zkeyOut) {
+  return sha256FileHex(zkeyIn) + sha256FileHex(zkeyOut);
+}
+
 const log = (msg) => process.stderr.write(`[tee-setup] ${msg}\n`);
+
+export function isIpv4(value) {
+  const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(value ?? "");
+  return Boolean(m) && m.slice(1).every((n) => Number(n) <= 255);
+}
+
+export function assertRunId(id) {
+  if (!RUN_ID_RE.test(id ?? "")) throw new Error(`invalid run-id: ${id}`);
+  return id;
+}
+
+function shred(filePath) {
+  try {
+    const fd = fs.openSync(filePath, fs.constants.O_RDWR | fs.constants.O_NOFOLLOW);
+    try {
+      const st = fs.fstatSync(fd);
+      if (st.size > 0) {
+        fs.writeSync(fd, Buffer.alloc(st.size), 0, st.size, 0);
+        fs.fsyncSync(fd);
+      }
+    } finally {
+      fs.closeSync(fd);
+    }
+  } catch { /* missing, or a symlink we refuse to follow */ }
+  fs.rmSync(filePath, { force: true });
+}
+
+function moveFile(src, dest) {
+  fs.mkdirSync(path.dirname(path.resolve(dest)), { recursive: true });
+  try {
+    fs.renameSync(src, dest);
+  } catch (e) {
+    if (e.code !== "EXDEV") throw e;
+    fs.copyFileSync(src, dest);
+    fs.rmSync(src, { force: true });
+  }
+}
 
 /* ============================================================
  * 引数
@@ -66,7 +151,7 @@ export function planLifecycle() {
     "transfer: enclave バンドル + zkey_0000 を scp",
     "remote: docker ビルド → nitro-cli build-enclave → PCR manifest 保存",
     "remote: enclave 起動 → vsock 経由で zkey 送信 → contribute (enclave 内 CSPRNG)",
-    "remote: attestation doc (nonce = sha256(zkey_0000)) 取得 → zkey_final と一括で返送",
+    "remote: attestation doc (nonce = sha256(zkey_0000)||sha256(zkey_final)) 取得 → zkey_final と一括で返送",
     "collect: zkey_final + attestation doc + PCR manifest を回収",
     "verify: COSE_Sign1 署名 → 証明書チェーン → PCR0/1/2 → nonce をオフライン検証",
     "verify: snarkjs zkey verify（--skip-zkey-verify で省略可）",
@@ -90,80 +175,138 @@ export async function resolveAmi(region) {
 }
 
 export async function fetchMyIp() {
-  return new Promise((resolve, reject) => {
-    https.get("https://checkip.amazonaws.com", (res) => {
+  const ip = await new Promise((resolve, reject) => {
+    let settled = false;
+    const fail = (err) => { if (!settled) { settled = true; reject(err); } };
+    const ok = (value) => { if (!settled) { settled = true; resolve(value); } };
+    const req = https.get("https://checkip.amazonaws.com", (res) => {
+      if (res.statusCode !== 200) {
+        res.resume();
+        fail(new Error(`checkip status ${res.statusCode}`));
+        return;
+      }
       let data = "";
-      res.on("data", (c) => (data += c));
-      res.on("end", () => resolve(data.trim()));
-    }).on("error", reject);
+      res.on("data", (c) => {
+        data += c;
+        if (data.length > 64) {
+          req.destroy();
+          fail(new Error("checkip response too long"));
+        }
+      });
+      res.on("end", () => ok(data.trim()));
+    });
+    req.setTimeout(10_000, () => req.destroy(new Error("checkip timeout")));
+    req.on("error", fail);
   });
+  if (!isIpv4(ip)) throw new Error("checkip did not return an IPv4 address");
+  return ip;
 }
 
 export function runId() {
-  return `lts-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+  return `lts-${Date.now().toString(36)}-${randomBytes(4).toString("hex")}`;
 }
 
-export async function provision({ region, instanceType, ami }) {
+function idsFromText(out) {
+  return String(out ?? "").trim().split(/\s+/).filter((x) => x && x !== "None");
+}
+
+export async function provision({ region, instanceType, ami, keepResources = false }) {
   const id = runId();
   const keyName = `lemma-tee-${id}`;
   const groupName = `lemma-tee-${id}`;
   const keyPath = path.join(os.tmpdir(), `${keyName}.pem`);
-  const tags = `ResourceType=instance,Tags=[{Key=${TAG_KEY},Value=${id}},{Key=Name,Value=lemma-tee-setup}]`;
+  const knownHosts = path.join(os.tmpdir(), `${keyName}.known_hosts`);
+  const state = { id, instanceId: undefined, ip: undefined, keyPath: undefined, knownHosts, keyName, sgId: undefined, region };
+  const instanceTags = `ResourceType=instance,Tags=[{Key=${TAG_KEY},Value=${id}},{Key=Name,Value=lemma-tee-setup}]`;
+  const sgTags = `ResourceType=security-group,Tags=[{Key=${TAG_KEY},Value=${id}},{Key=Name,Value=lemma-tee-setup}]`;
+  let createdKey = false;
+  try {
+    log(`run-id ${id}: keypair 作成`);
+    const kp = JSON.parse(await aws([
+      "ec2", "create-key-pair", "--key-name", keyName, "--region", region, "--output", "json",
+    ]));
+    if (!kp.KeyMaterial) throw new Error("create-key-pair returned no KeyMaterial");
+    createdKey = true;
+    const fd = fs.openSync(keyPath, "wx", 0o600);
+    state.keyPath = keyPath;
+    try { fs.writeFileSync(fd, kp.KeyMaterial); } finally { fs.closeSync(fd); }
 
-  log(`run-id ${id}: keypair 作成`);
-  const kp = JSON.parse(await aws(["ec2", "create-key-pair", "--key-name", keyName, "--region", region]));
-  fs.writeFileSync(keyPath, kp.KeyMaterial, { mode: 0o600 });
+    log(`run-id ${id}: security group 作成`);
+    const sg = JSON.parse(await aws([
+      "ec2", "create-security-group", "--group-name", groupName,
+      "--description", `lemma tee-setup ${id}`, "--tag-specifications", sgTags,
+      "--region", region, "--output", "json",
+    ]));
+    state.sgId = sg.GroupId;
+    const myIp = await fetchMyIp();
+    await aws(["ec2", "authorize-security-group-ingress", "--group-id", sg.GroupId,
+      "--protocol", "tcp", "--port", "22", "--cidr", `${myIp}/32`, "--region", region]);
 
-  log(`run-id ${id}: security group 作成`);
-  const sg = JSON.parse(await aws(["ec2", "create-security-group", "--group-name", groupName,
-    "--description", `lemma tee-setup ${id}`, "--region", region]));
-  const myIp = await fetchMyIp();
-  await aws(["ec2", "authorize-security-group-ingress", "--group-id", sg.GroupId,
-    "--protocol", "tcp", "--port", "22", "--cidr", `${myIp}/32`, "--region", region]);
+    log(`run-id ${id}: EC2 起動 (${instanceType}, ${ami})`);
+    const run = JSON.parse(await aws(["ec2", "run-instances",
+      "--image-id", ami, "--instance-type", instanceType,
+      "--key-name", keyName, "--security-group-ids", sg.GroupId,
+      "--enclave-options", "Enabled=true",
+      "--metadata-options", "HttpEndpoint=disabled",
+      "--tag-specifications", instanceTags, "--region", region, "--output", "json"]));
+    state.instanceId = run.Instances[0].InstanceId;
 
-  log(`run-id ${id}: EC2 起動 (${instanceType}, ${ami})`);
-  const run = JSON.parse(await aws(["ec2", "run-instances",
-    "--image-id", ami, "--instance-type", instanceType,
-    "--key-name", keyName, "--security-group-ids", sg.GroupId,
-    "--enclave-options", "Enabled=true",
-    "--tag-specifications", tags, "--region", region, "--output", "json"]));
-  const instanceId = run.Instances[0].InstanceId;
-
-  await aws(["ec2", "wait", "instance-running", "--instance-ids", instanceId, "--region", region]);
-  const desc = JSON.parse(await aws(["ec2", "describe-instances", "--instance-ids", instanceId,
-    "--region", region, "--query", "Reservations[0].Instances[0].PublicIpAddress", "--output", "json"]));
-  const ip = String(desc).trim();
-  log(`run-id ${id}: ${instanceId} @ ${ip}`);
-
-  return { id, instanceId, ip, keyPath, keyName, sgId: sg.GroupId, region };
+    await aws(["ec2", "wait", "instance-running", "--instance-ids", state.instanceId, "--region", region]);
+    const desc = JSON.parse(await aws(["ec2", "describe-instances", "--instance-ids", state.instanceId,
+      "--region", region, "--query", "Reservations[0].Instances[0].PublicIpAddress", "--output", "json"]));
+    const ip = String(desc ?? "").trim();
+    if (!isIpv4(ip)) throw new Error(`instance ${state.instanceId} has no public IPv4`);
+    state.ip = ip;
+    log(`run-id ${id}: ${state.instanceId} @ ${ip}`);
+    return state;
+  } catch (e) {
+    if (!keepResources && (createdKey || state.sgId || state.instanceId)) {
+      await teardownById(state).catch((te) => log(String(te.message ?? te)));
+    } else if (keepResources) {
+      log(`--keep-resources: partial run ${id} を残しました`);
+    }
+    throw e;
+  }
 }
 
-export async function teardownById({ id, instanceId, keyName, sgId, region }) {
-  log(`teardown: ${id}`);
+export async function teardownById({ id, instanceId, keyName, sgId, region, keyPath, knownHosts }) {
+  log(`teardown: ${id ?? "(unknown)"}`);
   if (instanceId) {
     await aws(["ec2", "terminate-instances", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
     await aws(["ec2", "wait", "instance-terminated", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
   }
   if (keyName) await aws(["ec2", "delete-key-pair", "--key-name", keyName, "--region", region]).catch((e) => log(String(e.message)));
   if (sgId) await aws(["ec2", "delete-security-group", "--group-id", sgId, "--region", region]).catch((e) => log(String(e.message)));
-  if (instanceId || keyName || sgId) fs.rmSync(path.join(os.tmpdir(), `${keyName}.pem`), { force: true });
+  const pem = keyPath ?? (keyName ? path.join(os.tmpdir(), `${keyName}.pem`) : null);
+  if (pem) shred(pem);
+  if (knownHosts) fs.rmSync(knownHosts, { force: true });
+  else if (keyName) fs.rmSync(path.join(os.tmpdir(), `${keyName}.known_hosts`), { force: true });
 }
 
-/** run-id タグから孤児リソースを探して消す（teardown コマンド用） */
+/** run-id タグと名前から孤児リソースを探して消す（teardown コマンド用） */
 export async function teardownByRunId(id, region) {
-  const out = await aws(["ec2", "describe-instances", "--filters", `Name=tag:${TAG_KEY},Values=${id}`,
+  assertRunId(id);
+  const out = await aws(["ec2", "describe-instances",
+    "--filters", `Name=tag:${TAG_KEY},Values=${id}`,
+    "Name=instance-state-name,Values=pending,running,stopping,stopped",
     "--region", region, "--query", "Reservations[].Instances[].InstanceId", "--output", "text"]);
-  const ids = out.trim().split(/\s+/).filter(Boolean);
+  const ids = idsFromText(out);
   for (const instanceId of ids) {
-    await aws(["ec2", "terminate-instances", "--instance-ids", instanceId, "--region", region]);
-    await aws(["ec2", "wait", "instance-terminated", "--instance-ids", instanceId, "--region", region]);
+    await aws(["ec2", "terminate-instances", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
+    await aws(["ec2", "wait", "instance-terminated", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
   }
   await aws(["ec2", "delete-key-pair", "--key-name", `lemma-tee-${id}`, "--region", region]).catch(() => {});
-  const sg = await aws(["ec2", "describe-security-groups", "--filters", `Name=tag:${TAG_KEY},Values=${id}`,
-    "--region", region, "--query", "SecurityGroups[].GroupId", "--output", "text"]).catch(() => "");
-  for (const sgId of sg.trim().split(/\s+/).filter(Boolean)) {
-    await aws(["ec2", "delete-security-group", "--group-id", sgId, "--region", region]).catch(() => {});
+  const sgIds = new Set();
+  for (const filter of [`Name=group-name,Values=lemma-tee-${id}`, `Name=tag:${TAG_KEY},Values=${id}`]) {
+    const sg = await aws(["ec2", "describe-security-groups", "--filters", filter,
+      "--region", region, "--query", "SecurityGroups[].GroupId", "--output", "text"]).catch(() => "");
+    for (const sgId of idsFromText(sg)) sgIds.add(sgId);
   }
+  for (const sgId of sgIds) {
+    await aws(["ec2", "delete-security-group", "--group-id", sgId, "--region", region]).catch((e) => log(String(e.message)));
+  }
+  shred(path.join(os.tmpdir(), `lemma-tee-${id}.pem`));
+  fs.rmSync(path.join(os.tmpdir(), `lemma-tee-${id}.known_hosts`), { force: true });
   return { terminated: ids };
 }
 
@@ -171,32 +314,61 @@ export async function teardownByRunId(id, region) {
  * attestation 検証（オフライン・CBOR/COSE_Sign1 の最小型）
  * ============================================================ */
 
-// --- 最小 CBOR デコーダ（必要な型のみ） ---
-export function cborDecode(buf, offset = 0) {
+// --- 最小 CBOR デコーダ（必要な型のみ。不定長と tag 18 以外は拒否） ---
+export function cborDecode(buf, offset = 0, depth = 0) {
+  if (!Buffer.isBuffer(buf)) buf = Buffer.from(buf);
+  if (depth > 32) throw new Error("cbor nesting too deep");
+  if (offset < 0 || offset >= buf.length) throw new Error("cbor truncated");
   const ib = buf[offset++];
   const major = ib >> 5;
-  let len = ib & 0x1f;
-  if (len === 24) len = buf.readUInt8(offset), offset += 1;
-  else if (len === 25) len = buf.readUInt16BE(offset), offset += 2;
-  else if (len === 26) len = buf.readUInt32BE(offset), offset += 4;
-  else if (len === 27) { len = Number(buf.readBigUInt64BE(offset)); offset += 8; }
+  const ai = ib & 0x1f;
+  if (ai === 31) throw new Error("indefinite length unsupported");
+  let len = ai;
+  const take = (n) => {
+    if (offset + n > buf.length) throw new Error("cbor truncated");
+    const v = buf.subarray(offset, offset + n);
+    offset += n;
+    return v;
+  };
+  if (ai === 24) len = take(1).readUInt8(0);
+  else if (ai === 25) len = take(2).readUInt16BE(0);
+  else if (ai === 26) len = take(4).readUInt32BE(0);
+  else if (ai === 27) {
+    const big = take(8).readBigUInt64BE(0);
+    if (big > BigInt(Number.MAX_SAFE_INTEGER)) throw new Error("cbor integer too large");
+    len = Number(big);
+  }
   if (major === 0) return [len, offset];
   if (major === 1) return [-1 - len, offset];
-  if (major === 2) return [buf.subarray(offset, offset + len), offset + len];
-  if (major === 3) return [buf.subarray(offset, offset + len).toString("utf8"), offset + len];
-  if (major === 4) {
-    const arr = [];
-    for (let i = 0; i < len; i++) { const [v, o] = cborDecode(buf, offset); arr.push(v); offset = o; }
-    return [arr, offset];
+  if (major === 2 || major === 3) {
+    if (len > buf.length - offset) throw new Error("cbor truncated");
+    const s = buf.subarray(offset, offset + len);
+    offset += len;
+    return [major === 3 ? s.toString("utf8") : s, offset];
   }
-  if (major === 5) {
+  if (major === 4 || major === 5) {
+    if (len > buf.length - offset) throw new Error("cbor truncated");
+    if (major === 4) {
+      const arr = [];
+      for (let i = 0; i < len; i++) {
+        const [v, o] = cborDecode(buf, offset, depth + 1);
+        arr.push(v);
+        offset = o;
+      }
+      return [arr, offset];
+    }
     const map = new Map();
     for (let i = 0; i < len; i++) {
-      const [k, o1] = cborDecode(buf, offset);
-      const [v, o2] = cborDecode(buf, o1);
-      map.set(k, v); offset = o2;
+      const [k, o1] = cborDecode(buf, offset, depth + 1);
+      const [v, o2] = cborDecode(buf, o1, depth + 1);
+      map.set(k, v);
+      offset = o2;
     }
     return [map, offset];
+  }
+  if (major === 6) {
+    if (len !== 18) throw new Error(`unsupported cbor tag ${len}`);
+    return cborDecode(buf, offset, depth + 1);
   }
   if (major === 7) {
     if (len === 20) return [false, offset];
@@ -235,63 +407,100 @@ export function cborEncode(value) {
   return Buffer.concat(parts);
 }
 
-const derToPem = (der) =>
-  `-----BEGIN CERTIFICATE-----\n${der.toString("base64").replace(/(.{64})/g, "$1\n")}\n-----END CERTIFICATE-----\n`;
+function issuedBy(child, parent) {
+  try {
+    return Boolean(parent.ca) && child.checkIssued(parent) && child.verify(parent.publicKey);
+  } catch {
+    return false;
+  }
+}
 
-/** 証明書チェーン（leaf → … → root）の署名・期限・発行関係を確認 */
+/** 証明書チェーン（leaf → … → root）の署名・期限・CA ビット・発行関係を確認 */
 export function verifyChain(leafDer, bundleDers, rootPem, now = Date.now()) {
   const leaf = new X509Certificate(leafDer);
   const chain = [leaf, ...bundleDers.map((d) => new X509Certificate(d))];
   const root = new X509Certificate(rootPem);
+  if (!root.ca) return { ok: false, reason: "pinned root is not a CA" };
   const notBefore = (c) => Date.parse(c.validFrom);
   const notAfter = (c) => Date.parse(c.validTo);
   for (const c of [...chain, root]) {
-    if (now < notBefore(c) || now > notAfter(c)) return { ok: false, reason: "cert expired or not yet valid" };
+    const from = notBefore(c);
+    const to = notAfter(c);
+    if (Number.isNaN(from) || Number.isNaN(to) || now < from || now > to) {
+      return { ok: false, reason: "cert expired or not yet valid" };
+    }
   }
   for (let i = 0; i < chain.length - 1; i++) {
-    const child = chain[i]; const parent = chain[i + 1];
-    if (!child.checkIssued(parent) || !child.verify(parent.publicKey))
-      return { ok: false, reason: `chain broken at ${child.subject}` };
+    const child = chain[i];
+    const parent = chain[i + 1];
+    if (!issuedBy(child, parent)) return { ok: false, reason: `chain broken at ${child.subject}` };
   }
   const last = chain[chain.length - 1];
-  if (!last.checkIssued(root) || !last.verify(root.publicKey))
-    return { ok: false, reason: `cabundle does not chain to pinned root (${last.subject})` };
+  if (!issuedBy(last, root)) return { ok: false, reason: `cabundle does not chain to pinned root (${last.subject})` };
   return { ok: true, leafSubject: leaf.subject, leafFingerprint: leaf.fingerprint256 };
 }
 
-/**
- * Nitro attestation doc (COSE_Sign1) をオフライン検証する。
- * 検証に AWS API は一切呼ばない（ルート証明書は同梱の PEM を使う）。
- */
-export function verifyAttestation(coseBuf, { rootCertPem, now = Date.now() } = {}) {
-  const rootPem = rootCertPem ?? fs.readFileSync(DEFAULT_ROOT_CERT, "utf8");
+function loadRootPem(rootCertPem) {
+  if (rootCertPem != null) return rootCertPem;
+  const pem = fs.readFileSync(DEFAULT_ROOT_CERT, "utf8");
+  const fp = new X509Certificate(pem).fingerprint256;
+  if (fp !== PINNED_ROOT_FINGERPRINT) throw new Error("bundled root cert fingerprint mismatch");
+  return pem;
+}
+
+function verifyAttestationInner(coseBuf, { rootCertPem, now = Date.now() } = {}) {
+  const rootPem = loadRootPem(rootCertPem);
   const [head, off1] = cborDecode(coseBuf);
   if (!Array.isArray(head) || head.length !== 4) return { ok: false, reason: "not COSE_Sign1" };
-  const [protectedBstr, unprotected, payloadBstr, signature] = head;
   if (off1 !== coseBuf.length) return { ok: false, reason: "trailing bytes" };
+  const [protectedBstr, unprotected, payloadBstr, signature] = head;
+  if (!Buffer.isBuffer(protectedBstr) || !Buffer.isBuffer(payloadBstr) || !(unprotected instanceof Map)) {
+    return { ok: false, reason: "malformed COSE_Sign1" };
+  }
 
-  // 保護ヘッダ: {1: alg, 4: kid}。alg = -7 (ES384) を想定
-  const [protectedMap] = cborDecode(protectedBstr);
+  // 保護ヘッダは署名対象の生バイトのまま使う。Nitro は ES384 = alg -35（-7 は ES256）。
+  const [protectedMap, protectedEnd] = cborDecode(protectedBstr);
+  if (protectedEnd !== protectedBstr.length || !(protectedMap instanceof Map)) {
+    return { ok: false, reason: "malformed protected header" };
+  }
   const alg = protectedMap.get(1);
-  if (alg !== -7) return { ok: false, reason: `unsupported alg ${alg}` };
+  if (alg !== COSE_ALG_ES384) return { ok: false, reason: `unsupported alg ${alg} (want ES384 / -35)` };
 
-  // 非保護ヘッダ: 34=leaf 証明書(DER), 33=cabundle(DER の配列)
   const leafDer = unprotected.get(34);
   const bundleDers = unprotected.get(33) ?? [];
   if (!Buffer.isBuffer(leafDer)) return { ok: false, reason: "leaf certificate missing" };
+  if (!Array.isArray(bundleDers)) return { ok: false, reason: "cabundle malformed" };
+  if (!Buffer.isBuffer(signature) || signature.length !== ES384_SIG_BYTES) {
+    return { ok: false, reason: "signature must be 96-byte raw R||S" };
+  }
 
   // Sig_structure = ["Signature1", protected, external_aad, payload]
   const sigStructure = cborEncode(["Signature1", protectedBstr, Buffer.alloc(0), payloadBstr]);
   const verifier = createVerify("SHA384");
   verifier.update(sigStructure);
   const leaf = new X509Certificate(leafDer);
-  const sigOk = verifier.verify({ key: leaf.publicKey, dsaEncoding: "der" }, signature);
+  if (leaf.publicKey.asymmetricKeyDetails?.namedCurve !== "secp384r1") {
+    return { ok: false, reason: "signing key is not P-384" };
+  }
+  let sigOk = false;
+  try {
+    sigOk = verifier.verify({ key: leaf.publicKey, dsaEncoding: "ieee-p1363" }, signature);
+  } catch {
+    sigOk = false;
+  }
   if (!sigOk) return { ok: false, reason: "COSE signature invalid" };
 
   const chain = verifyChain(leafDer, bundleDers, rootPem, now);
   if (!chain.ok) return chain;
 
-  const [doc] = cborDecode(payloadBstr);
+  const [doc, docEnd] = cborDecode(payloadBstr);
+  if (!(doc instanceof Map) || docEnd !== payloadBstr.length) return { ok: false, reason: "malformed payload" };
+  if (doc.get("digest") !== "SHA384") return { ok: false, reason: "digest is not SHA384" };
+  const payloadCert = doc.get("certificate");
+  if (!Buffer.isBuffer(payloadCert) || !payloadCert.equals(leafDer)) {
+    return { ok: false, reason: "payload certificate does not match signing certificate" };
+  }
+
   return {
     ok: true,
     digest: doc.get("digest"),
@@ -304,27 +513,67 @@ export function verifyAttestation(coseBuf, { rootCertPem, now = Date.now() } = {
   };
 }
 
-/** PCR0/1/2 を期待 manifest と照合（PCR0 のみだと入れ子イメージの差を検知できない） */
+/**
+ * Nitro attestation doc (COSE_Sign1, tag 18 可) をオフライン検証する。
+ * 検証に AWS API は一切呼ばない。既定のルートは指紋でピン留めする。
+ * --root-cert を渡したときだけピンを外す（テスト用。信頼できない PEM を渡さない）。
+ */
+export function verifyAttestation(coseBuf, opts = {}) {
+  try {
+    return verifyAttestationInner(coseBuf, opts);
+  } catch (e) {
+    return { ok: false, reason: `malformed attestation: ${e.message}` };
+  }
+}
+
+/** PCR0/1/2 を期待 manifest と照合。値は SHA-384（96 hex）でなければならない。 */
 export function pcrsMatch(expected, actual) {
+  const norm = (v) => String(v ?? "").toLowerCase().replace(/^0x/, "").trim();
+  const pick = (obj, k) => norm(obj?.[k] ?? obj?.[`PCR${k}`]);
   const diffs = [];
   for (const k of ["0", "1", "2"]) {
-    const e = String(expected[k] ?? "").toLowerCase();
-    const a = String(actual[k] ?? "").toLowerCase();
-    if (!e || !a || e !== a) diffs.push({ pcr: k, expected: e || "(missing)", actual: a || "(missing)" });
+    const e = pick(expected, k);
+    const a = pick(actual, k);
+    if (!/^[0-9a-f]{96}$/.test(e) || e !== a) diffs.push({ pcr: k, expected: e || "(missing)", actual: a || "(missing)" });
   }
   return diffs.length === 0 ? { ok: true } : { ok: false, diffs };
 }
 
-/** ローカル検証の一括実行 */
-export function verifyBundle({ attestationPath, pcrsPath, nonceHash, rootCertPem, zkeyIn }) {
-  const coseBuf = fs.readFileSync(attestationPath);
-  const expected = JSON.parse(fs.readFileSync(pcrsPath, "utf8"));
-  const att = verifyAttestation(coseBuf, { rootCertPem });
+/** ローカル検証の一括実行。nonce の結び付きが無い成功は返さない。 */
+export function verifyBundle({ attestationPath, pcrsPath, nonceHash, rootCertPem, zkeyIn, zkeyOut }) {
+  if (!attestationPath || !pcrsPath) return { ok: false, reason: "attestation and pcrs paths are required" };
+  let att;
+  try {
+    att = verifyAttestation(fs.readFileSync(attestationPath), { rootCertPem });
+  } catch (e) {
+    return { ok: false, reason: `cannot read attestation: ${e.message}` };
+  }
   if (!att.ok) return att;
+  let expected;
+  try {
+    expected = JSON.parse(fs.readFileSync(pcrsPath, "utf8"));
+  } catch (e) {
+    return { ok: false, reason: `cannot read pcrs: ${e.message}` };
+  }
   const pcr = pcrsMatch(expected, att.pcrs);
   if (!pcr.ok) return { ok: false, reason: "PCR mismatch", ...pcr };
-  const want = String(nonceHash ?? (zkeyIn ? sha256Hex(fs.readFileSync(zkeyIn)) : "")).toLowerCase();
-  if (want && att.nonce !== want) return { ok: false, reason: `nonce mismatch: doc=${att.nonce} want=${want}` };
+
+  let fromFiles = "";
+  if (zkeyIn || zkeyOut) {
+    if (!zkeyIn || !zkeyOut) return { ok: false, reason: "both zkey-in and zkey-out are required to bind the nonce" };
+    try {
+      fromFiles = commitmentNonceHexFromFiles(zkeyIn, zkeyOut);
+    } catch (e) {
+      return { ok: false, reason: `cannot hash zkey: ${e.message}` };
+    }
+  }
+  const fromHash = nonceHash ? String(nonceHash).toLowerCase().replace(/^0x/, "") : "";
+  if (!fromFiles && !fromHash) return { ok: false, reason: "nonce binding required" };
+  if (fromFiles && fromHash && fromFiles !== fromHash) {
+    return { ok: false, reason: "nonce-hash does not match zkey files" };
+  }
+  const want = fromFiles || fromHash;
+  if (att.nonce !== want) return { ok: false, reason: `nonce mismatch: doc=${att.nonce} want=${want}` };
   return { ok: true, pcrs: att.pcrs, nonce: att.nonce, leafSubject: att.leafSubject };
 }
 
@@ -335,7 +584,9 @@ export function verifyBundle({ attestationPath, pcrsPath, nonceHash, rootCertPem
 export async function phase2(opts) {
   const region = opts.region ?? "us-east-1";
   const instanceType = opts["instance-type"] ?? "t3.xlarge"; // seal(222k gate) の contribute に 8GB enclave + 親を収める
-  const r1cs = opts.r1cs, zkeyIn = opts["zkey-in"], zkeyOut = opts["zkey-out"];
+  const r1cs = opts.r1cs;
+  const zkeyIn = opts["zkey-in"];
+  const zkeyOut = opts["zkey-out"];
   if (!r1cs || !zkeyIn || !zkeyOut) throw new Error("--r1cs / --zkey-in / --zkey-out が必要");
 
   if (opts["dry-run"]) {
@@ -347,38 +598,62 @@ export async function phase2(opts) {
   const ami = opts.ami ?? (await resolveAmi(region));
   let res = null;
   try {
-    res = await provision({ region, instanceType, ami });
-    const sshBase = ["-i", res.keyPath, "-o", "StrictHostKeyChecking=accept-new", "-o", "ConnectTimeout=10"];
+    res = await provision({
+      region, instanceType, ami, keepResources: Boolean(opts["keep-resources"]),
+    });
+    const sshBase = [
+      "-i", res.keyPath,
+      "-o", "StrictHostKeyChecking=accept-new",
+      "-o", `UserKnownHostsFile=${res.knownHosts}`,
+      "-o", "IdentitiesOnly=yes",
+      "-o", "BatchMode=yes",
+      "-o", "PasswordAuthentication=no",
+      "-o", "ServerAliveInterval=30",
+      "-o", "ServerAliveCountMax=120",
+      "-o", "ConnectTimeout=10",
+    ];
     const host = `ec2-user@${res.ip}`;
     const remoteDir = "/home/ec2-user/tee-setup";
 
     log("scp: enclave バンドル + zkey を転送");
-    await exec("ssh", [...sshBase, host, "mkdir -p " + remoteDir]);
-    await exec("scp", [...sshBase, "-r", path.join(HERE, "..", "enclave"), `${host}:${remoteDir}/`]);
-    await exec("scp", [...sshBase, zkeyIn, `${host}:${remoteDir}/zkey_0000`]);
+    await retry("ssh", () => exec("ssh", [...sshBase, host, "mkdir -p " + remoteDir]), 12, 5000);
+    await exec("scp", [...sshBase, "-r", path.join(HERE, "..", "enclave"), `${host}:${remoteDir}/`], { timeout: SCP_TIMEOUT_MS });
+    await exec("scp", [...sshBase, zkeyIn, `${host}:${remoteDir}/zkey_0000`], { timeout: SCP_TIMEOUT_MS });
 
     log("remote: setup-and-run（EIF ビルド → enclave 内 contribute → 回収）");
-    await exec("ssh", [...sshBase, host, `cd ${remoteDir} && sudo bash enclave/setup-and-run.sh`], { timeout: 3600_000 });
+    await exec("ssh", [...sshBase, host, `cd ${remoteDir} && sudo bash enclave/setup-and-run.sh`], { timeout: PHASE2_TIMEOUT_MS });
 
-    log("collect: 結果を回収");
-    await exec("scp", [...sshBase, `${host}:${remoteDir}/out/zkey_final`, zkeyOut]);
-    await exec("scp", [...sshBase, `${host}:${remoteDir}/out/attestation.cbor`, `${zkeyOut}.attestation.cbor`]);
-    await exec("scp", [...sshBase, `${host}:${remoteDir}/out/pcrs.json`, `${zkeyOut}.pcrs.json`]);
+    log("collect: 結果をステージしてから検証する");
+    const stage = fs.mkdtempSync(path.join(os.tmpdir(), `tee-setup-${res.id}-`));
+    try {
+      const stagedZkey = path.join(stage, "zkey_final");
+      const stagedAtt = path.join(stage, "attestation.cbor");
+      const stagedPcrs = path.join(stage, "pcrs.json");
+      await exec("scp", [...sshBase, `${host}:${remoteDir}/out/zkey_final`, stagedZkey], { timeout: SCP_TIMEOUT_MS });
+      await exec("scp", [...sshBase, `${host}:${remoteDir}/out/attestation.cbor`, stagedAtt], { timeout: SCP_TIMEOUT_MS });
+      await exec("scp", [...sshBase, `${host}:${remoteDir}/out/pcrs.json`, stagedPcrs], { timeout: SCP_TIMEOUT_MS });
 
-    log("verify: attestation（オフライン）");
-    const nonceHash = sha256Hex(fs.readFileSync(zkeyIn));
-    const v = verifyBundle({
-      attestationPath: `${zkeyOut}.attestation.cbor`,
-      pcrsPath: `${zkeyOut}.pcrs.json`,
-      nonceHash,
-      rootCertPem: opts["root-cert"] ? fs.readFileSync(opts["root-cert"], "utf8") : undefined,
-    });
-    if (!v.ok) throw new Error(`attestation 検証失敗: ${JSON.stringify(v)}`);
-    log(`attestation OK: ${v.leafSubject}`);
+      log("verify: attestation（オフライン）");
+      const v = verifyBundle({
+        attestationPath: stagedAtt,
+        pcrsPath: stagedPcrs,
+        zkeyIn,
+        zkeyOut: stagedZkey,
+        rootCertPem: opts["root-cert"] ? fs.readFileSync(opts["root-cert"], "utf8") : undefined,
+      });
+      if (!v.ok) throw new Error(`attestation 検証失敗: ${JSON.stringify(v)}`);
+      log(`attestation OK: ${v.leafSubject}`);
 
-    if (!opts["skip-zkey-verify"] && opts.ptau) {
-      log("verify: snarkjs zkey verify");
-      await exec("npx", ["snarkjs", "zkey", "verify", r1cs, opts.ptau, zkeyOut], { timeout: 3600_000 });
+      if (!opts["skip-zkey-verify"] && opts.ptau) {
+        log("verify: snarkjs zkey verify");
+        await exec("npx", ["snarkjs", "zkey", "verify", r1cs, opts.ptau, stagedZkey], { timeout: PHASE2_TIMEOUT_MS });
+      }
+
+      moveFile(stagedAtt, `${zkeyOut}.attestation.cbor`);
+      moveFile(stagedPcrs, `${zkeyOut}.pcrs.json`);
+      moveFile(stagedZkey, zkeyOut);
+    } finally {
+      fs.rmSync(stage, { recursive: true, force: true });
     }
     return { ok: true, zkeyOut, attestation: `${zkeyOut}.attestation.cbor`, pcrs: `${zkeyOut}.pcrs.json` };
   } finally {
@@ -396,16 +671,19 @@ async function main() {
   if (command === "phase2") {
     await phase2(opts);
   } else if (command === "verify") {
+    if (!opts.attestation || !opts.pcrs) throw new Error("--attestation と --pcrs が必要");
     const v = verifyBundle({
       attestationPath: opts.attestation,
       pcrsPath: opts.pcrs,
       nonceHash: opts["nonce-hash"],
       zkeyIn: opts["zkey-in"],
+      zkeyOut: opts["zkey-out"],
       rootCertPem: opts["root-cert"] ? fs.readFileSync(opts["root-cert"], "utf8") : undefined,
     });
     if (!v.ok) { log(JSON.stringify(v, null, 2)); process.exit(1); }
     process.stdout.write(JSON.stringify(v, null, 2) + "\n");
   } else if (command === "teardown") {
+    if (!opts["run-id"]) throw new Error("--run-id が必要");
     const out = await teardownByRunId(opts["run-id"], opts.region ?? "us-east-1");
     process.stdout.write(JSON.stringify(out) + "\n");
   } else {

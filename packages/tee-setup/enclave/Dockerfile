@@ -8,7 +8,7 @@ RUN pip3 install --quiet --break-system-packages aws-nitro-enclaves-attestation 
     pip3 install --quiet aws-nitro-enclaves-attestation
 
 WORKDIR /app
-COPY serve.mjs attest.py entry.sh /app/
+COPY serve.mjs attest.py entry.sh frame.mjs /app/
 RUN chmod +x /app/entry.sh
 
 ENTRYPOINT ["/app/entry.sh"]
