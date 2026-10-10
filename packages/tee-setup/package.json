@@ -1,0 +1,26 @@
+{
+  "name": "@lemmaoracle/tee-setup",
+  "version": "0.1.0",
+  "description": "Groth16 Phase 2 (zkey contribute) を AWS Nitro Enclaves 内で実行し、attestation を証跡として残す TEE setup フロー",
+  "type": "module",
+  "bin": {
+    "tee-setup": "scripts/tee-setup.mjs"
+  },
+  "files": [
+    "scripts",
+    "enclave",
+    "certs",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "dry-run": "node scripts/tee-setup.mjs phase2 --dry-run --r1cs X --zkey-in Y --zkey-out Z"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
+  },
+  "license": "Apache-2.0"
+}
