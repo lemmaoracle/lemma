@@ -26,6 +26,20 @@ export const PINNED_ROOT_FINGERPRINT =
 const COSE_ALG_ES384 = -35;
 const ES384_SIG_BYTES = 96;
 const PHASE2_TIMEOUT_MS = 10 * 60 * 60 * 1000;
+export const ATTESTATION_MAX_SKEW_MS = 15 * 60 * 1000;
+export const ENCLAVE_MEMORY_LIMIT_BYTES = 8192 * 1024 * 1024;
+const MEMORY_ZKEY_FACTOR = 16;
+const MEMORY_HEADROOM_BYTES = 512 * 1024 * 1024;
+export const BUILD_INPUT_FILES = ["Dockerfile", "package.json", "package-lock.json", "requirements.txt"];
+const EKU_SERVER_AUTH = "1.3.6.1.5.5.7.3.1";
+const EKU_CLIENT_AUTH = "1.3.6.1.5.5.7.3.2";
+const TLS_EKU = new Set([EKU_SERVER_AUTH, EKU_CLIENT_AUTH]);
+const OID_KEY_USAGE = "2.5.29.15";
+const OID_EXT_KEY_USAGE = "2.5.29.37";
+const OID_NAME_CONSTRAINTS = "2.5.29.30";
+const OID_SUBJECT_ALT_NAME = "2.5.29.17";
+const KU_NAMES = ["digitalSignature", "nonRepudiation", "keyEncipherment", "dataEncipherment", "keyAgreement", "keyCertSign", "cRLSign", "encipherOnly", "decipherOnly"];
+const DN_ATTR = { "2.5.4.6": "C", "2.5.4.10": "O", "2.5.4.11": "OU", "2.5.4.3": "CN", "2.5.4.7": "L", "2.5.4.8": "ST" };
 const SCP_TIMEOUT_MS = 2 * 60 * 60 * 1000;
 const RUN_ID_RE = /^lts-[0-9a-z]+-[0-9a-z]+$/;
 
@@ -80,6 +94,47 @@ export function commitmentNonceHex(zkeyIn, zkeyOut) {
 
 export function commitmentNonceHexFromFiles(zkeyIn, zkeyOut) {
   return sha256FileHex(zkeyIn) + sha256FileHex(zkeyOut);
+}
+
+/** snarkjs は旧 zkey・新 zkey・作業コピーを同時に持つ。16 倍 + 512MiB は実測前の上限見積もり。 */
+export function estimateContributeMemory(zkeyBytes) {
+  const bytes = zkeyBytes * MEMORY_ZKEY_FACTOR + MEMORY_HEADROOM_BYTES;
+  return { bytes, limitBytes: ENCLAVE_MEMORY_LIMIT_BYTES, exceeds: bytes > ENCLAVE_MEMORY_LIMIT_BYTES };
+}
+
+export function warnIfZkeyTooLarge(zkeyPath) {
+  let size = 0;
+  try { size = fs.statSync(zkeyPath).size; } catch { return; }
+  const est = estimateContributeMemory(size);
+  if (!est.exceeds) return;
+  log(`警告: zkey ${size} bytes の見積もり使用メモリ ${est.bytes} bytes が enclave 上限 ${est.limitBytes} bytes を超えます。ENCLAVE_MEMORY_MB の引き上げを検討してください（650MB 級は実機未計測）。`);
+}
+
+export function hashBuildInputs(dir) {
+  const inputs = {};
+  for (const name of BUILD_INPUT_FILES) {
+    inputs[name] = sha256Hex(fs.readFileSync(path.join(dir, name)));
+  }
+  return inputs;
+}
+
+export function verifyBuildInputs(inputs, dir) {
+  const diffs = [];
+  for (const [name, expected] of Object.entries(inputs ?? {})) {
+    let actual = "(missing)";
+    try { actual = sha256Hex(fs.readFileSync(path.join(dir, name))); } catch { /* missing file */ }
+    if (actual !== String(expected).toLowerCase()) diffs.push({ file: name, expected, actual });
+  }
+  return diffs.length === 0 ? { ok: true } : { ok: false, reason: "build input hash mismatch", diffs };
+}
+
+export function goldenPcrsFrom(doc) {
+  if (!doc || typeof doc !== "object") return { measured: false, reason: "golden PCR manifest is not an object" };
+  if (doc.measured === false) return { measured: false, reason: "golden PCRs have not been measured" };
+  const pcrs = doc.pcrs ?? doc;
+  const sample = pcrs[0] ?? pcrs["0"];
+  if (sample == null || sample === "") return { measured: false, reason: "golden PCRs have not been measured" };
+  return { measured: true, pcrs };
 }
 
 const log = (msg) => process.stderr.write(`[tee-setup] ${msg}\n`);
@@ -269,6 +324,37 @@ export async function provision({ region, instanceType, ami, keepResources = fal
   }
 }
 
+/** terminate 後に ENI が残ると DependencyViolation になる。外れるまで待ってから SG を消す。 */
+export async function deleteSecurityGroupWithRetry({
+  sgId, instanceId, region, attempts = 12, delayMs = 10_000, awsImpl = aws, sleep = delay,
+}) {
+  let last = new Error(`failed to delete security group ${sgId}`);
+  for (let i = 0; i < attempts; i++) {
+    const out = await awsImpl([
+      "ec2", "describe-network-interfaces",
+      "--filters", `Name=group-id,Values=${sgId}`,
+      "--region", region, "--query", "NetworkInterfaces[].NetworkInterfaceId", "--output", "text",
+    ]).catch(() => "");
+    if (idsFromText(out).length) {
+      last = new Error(`ENI still attached to ${instanceId ?? sgId}`);
+      if (i + 1 === attempts) throw last;
+      await sleep(delayMs);
+      continue;
+    }
+    try {
+      await awsImpl(["ec2", "delete-security-group", "--group-id", sgId, "--region", region]);
+      return { ok: true, attempts: i + 1 };
+    } catch (e) {
+      const msg = String(e.message ?? e);
+      if (/InvalidGroup\.NotFound|does not exist/i.test(msg)) return { ok: true, attempts: i + 1 };
+      last = e;
+      if (!/DependencyViolation|dependent object/i.test(msg) || i + 1 === attempts) throw e;
+      await sleep(delayMs);
+    }
+  }
+  throw last;
+}
+
 export async function teardownById({ id, instanceId, keyName, sgId, region, keyPath, knownHosts }) {
   log(`teardown: ${id ?? "(unknown)"}`);
   if (instanceId) {
@@ -276,7 +362,9 @@ export async function teardownById({ id, instanceId, keyName, sgId, region, keyP
     await aws(["ec2", "wait", "instance-terminated", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
   }
   if (keyName) await aws(["ec2", "delete-key-pair", "--key-name", keyName, "--region", region]).catch((e) => log(String(e.message)));
-  if (sgId) await aws(["ec2", "delete-security-group", "--group-id", sgId, "--region", region]).catch((e) => log(String(e.message)));
+  if (sgId) {
+    await deleteSecurityGroupWithRetry({ sgId, instanceId, region }).catch((e) => log(String(e.message)));
+  }
   const pem = keyPath ?? (keyName ? path.join(os.tmpdir(), `${keyName}.pem`) : null);
   if (pem) shred(pem);
   if (knownHosts) fs.rmSync(knownHosts, { force: true });
@@ -303,7 +391,7 @@ export async function teardownByRunId(id, region) {
     for (const sgId of idsFromText(sg)) sgIds.add(sgId);
   }
   for (const sgId of sgIds) {
-    await aws(["ec2", "delete-security-group", "--group-id", sgId, "--region", region]).catch((e) => log(String(e.message)));
+    await deleteSecurityGroupWithRetry({ sgId, region }).catch((e) => log(String(e.message)));
   }
   shred(path.join(os.tmpdir(), `lemma-tee-${id}.pem`));
   fs.rmSync(path.join(os.tmpdir(), `lemma-tee-${id}.known_hosts`), { force: true });
@@ -407,6 +495,202 @@ export function cborEncode(value) {
   return Buffer.concat(parts);
 }
 
+function readDer(buf, offset = 0) {
+  if (offset >= buf.length) throw new Error("der truncated");
+  const tag = buf[offset++];
+  if (offset >= buf.length) throw new Error("der truncated");
+  let len = buf[offset++];
+  if (len === 0x80) throw new Error("indefinite der unsupported");
+  if (len & 0x80) {
+    const n = len & 0x7f;
+    if (n === 0 || n > 4 || offset + n > buf.length) throw new Error("der truncated");
+    len = 0;
+    for (let i = 0; i < n; i++) len = (len * 256) + buf[offset++];
+  }
+  if (offset + len > buf.length) throw new Error("der truncated");
+  return { tag, value: buf.subarray(offset, offset + len), end: offset + len };
+}
+
+function derChildren(value) {
+  const out = [];
+  let offset = 0;
+  while (offset < value.length) {
+    const tlv = readDer(value, offset);
+    out.push(tlv);
+    offset = tlv.end;
+  }
+  return out;
+}
+
+function oidToString(value) {
+  if (!value.length) return "";
+  const parts = [Math.floor(value[0] / 40), value[0] % 40];
+  let acc = 0;
+  for (let i = 1; i < value.length; i++) {
+    acc = (acc * 128) + (value[i] & 0x7f);
+    if ((value[i] & 0x80) === 0) { parts.push(acc); acc = 0; }
+  }
+  return parts.join(".");
+}
+
+function parseKeyUsageBits(extValue) {
+  const bitString = readDer(extValue, 0);
+  if (bitString.tag !== 0x03 || bitString.value.length < 1) return [];
+  const data = bitString.value.subarray(1);
+  const names = [];
+  for (let i = 0; i < KU_NAMES.length; i++) {
+    const byte = data[Math.floor(i / 8)];
+    if (byte === undefined) break;
+    if ((byte >> (7 - (i % 8))) & 1) names.push(KU_NAMES[i]);
+  }
+  return names;
+}
+
+function parseEku(extValue) {
+  const seq = readDer(extValue, 0);
+  return derChildren(seq.value).filter((t) => t.tag === 0x06).map((t) => oidToString(t.value));
+}
+
+function parseDn(nameValue) {
+  const dn = {};
+  for (const set of derChildren(nameValue)) {
+    for (const atv of derChildren(set.value)) {
+      const parts = derChildren(atv.value);
+      if (parts.length < 2) continue;
+      const key = DN_ATTR[oidToString(parts[0].value)] ?? oidToString(parts[0].value);
+      dn[key] = parts[1].value.toString("utf8");
+    }
+  }
+  return dn;
+}
+
+function parseGeneralName(tlv) {
+  if (tlv.tag === 0xa4) {
+    const name = readDer(tlv.value, 0);
+    return { type: "directoryName", dn: parseDn(name.value) };
+  }
+  if (tlv.tag === 0x82) return { type: "dNSName", value: tlv.value.toString("ascii") };
+  return { type: "unsupported", tag: tlv.tag };
+}
+
+function parseNameConstraints(extValue) {
+  const seq = readDer(extValue, 0);
+  const permitted = [];
+  const excluded = [];
+  for (const part of derChildren(seq.value)) {
+    const bucket = part.tag === 0xa0 ? permitted : part.tag === 0xa1 ? excluded : null;
+    if (!bucket) continue;
+    for (const subtree of derChildren(part.value)) {
+      bucket.push(parseGeneralName(readDer(subtree.value, 0)));
+    }
+  }
+  return { permitted, excluded };
+}
+
+function parseSanDns(extValue) {
+  const seq = readDer(extValue, 0);
+  const names = [];
+  for (const name of derChildren(seq.value)) {
+    if (name.tag === 0x82) names.push(name.value.toString("ascii"));
+  }
+  return names;
+}
+
+export function extensionsOf(raw) {
+  const cert = readDer(raw, 0);
+  const tbs = readDer(cert.value, 0);
+  let extensions = null;
+  for (const field of derChildren(tbs.value)) {
+    if (field.tag === 0xa3) extensions = field;
+  }
+  const found = {
+    keyUsage: [], eku: [], nameConstraints: null, sanDns: [], critical: new Set(),
+  };
+  if (!extensions) return found;
+  const wrapper = readDer(extensions.value, 0);
+  for (const ext of derChildren(wrapper.value)) {
+    const parts = derChildren(ext.value);
+    const oid = oidToString(parts[0].value);
+    const critical = parts.length === 3;
+    const octet = parts[parts.length - 1];
+    if (critical) found.critical.add(oid);
+    if (oid === OID_KEY_USAGE) found.keyUsage = parseKeyUsageBits(octet.value);
+    else if (oid === OID_EXT_KEY_USAGE) found.eku = parseEku(octet.value);
+    else if (oid === OID_NAME_CONSTRAINTS) found.nameConstraints = parseNameConstraints(octet.value);
+    else if (oid === OID_SUBJECT_ALT_NAME) found.sanDns = parseSanDns(octet.value);
+  }
+  return found;
+}
+
+function legacyDn(cert) {
+  const subject = cert.toLegacyObject().subject ?? {};
+  const dn = {};
+  for (const [key, value] of Object.entries(subject)) {
+    dn[key] = Array.isArray(value) ? String(value[value.length - 1]) : String(value);
+  }
+  return dn;
+}
+
+function dnWithin(constraint, subject) {
+  return Object.entries(constraint).every(([key, value]) => String(subject[key] ?? "") === String(value));
+}
+
+function dnsWithin(constraint, name) {
+  const base = constraint.toLowerCase().replace(/^\*\./, "").replace(/^\./, "");
+  const host = name.toLowerCase().replace(/\.$/, "");
+  return host === base || host.endsWith(`.${base}`);
+}
+
+export function nameConstraintsAllow(nameConstraints, cert) {
+  if (!nameConstraints) return null;
+  const names = [...nameConstraints.permitted, ...nameConstraints.excluded];
+  if (names.some((name) => name.type === "unsupported")) return "unsupported name constraint";
+  const subject = legacyDn(cert);
+  const excludedDir = nameConstraints.excluded.filter((name) => name.type === "directoryName");
+  const permittedDir = nameConstraints.permitted.filter((name) => name.type === "directoryName");
+  if (excludedDir.some((name) => dnWithin(name.dn, subject))) return "subject is excluded by name constraints";
+  if (permittedDir.length && !permittedDir.some((name) => dnWithin(name.dn, subject))) {
+    return "subject is outside permitted directoryName constraints";
+  }
+  const excludedDns = nameConstraints.excluded.filter((name) => name.type === "dNSName");
+  const permittedDns = nameConstraints.permitted.filter((name) => name.type === "dNSName");
+  const profile = extensionsOf(cert.raw);
+  for (const dns of profile.sanDns) {
+    if (excludedDns.some((name) => dnsWithin(name.value, dns))) return "SAN dNSName is excluded by name constraints";
+    if (permittedDns.length && !permittedDns.some((name) => dnsWithin(name.value, dns))) {
+      return "SAN dNSName is outside permitted name constraints";
+    }
+  }
+  return null;
+}
+
+function checkChainProfile(chain, root) {
+  const certs = [...chain, root];
+  const profiles = certs.map((cert) => extensionsOf(cert.raw));
+  const leafReason = profiles[0].keyUsage.includes("digitalSignature") ? null : "leaf keyUsage lacks digitalSignature";
+  if (leafReason) return { ok: false, reason: leafReason };
+  if (certs[0].ca) return { ok: false, reason: "attestation leaf is a CA" };
+  if (profiles[0].eku.some((oid) => TLS_EKU.has(oid))) {
+    return { ok: false, reason: "leaf EKU includes TLS serverAuth or clientAuth" };
+  }
+  for (let i = 1; i < certs.length; i++) {
+    if (!certs[i].ca) return { ok: false, reason: `issuer is not a CA (${certs[i].subject})` };
+    if (!profiles[i].keyUsage.includes("keyCertSign")) {
+      return { ok: false, reason: `CA keyUsage lacks keyCertSign (${certs[i].subject})` };
+    }
+    if (profiles[i].eku.some((oid) => TLS_EKU.has(oid))) {
+      return { ok: false, reason: `CA EKU includes TLS serverAuth or clientAuth (${certs[i].subject})` };
+    }
+    const nc = profiles[i].nameConstraints;
+    if (!nc) continue;
+    for (let j = 0; j < i; j++) {
+      const violation = nameConstraintsAllow(nc, certs[j]);
+      if (violation) return { ok: false, reason: `${violation} (${certs[j].subject})` };
+    }
+  }
+  return null;
+}
+
 function issuedBy(child, parent) {
   try {
     return Boolean(parent.ca) && child.checkIssued(parent) && child.verify(parent.publicKey);
@@ -437,6 +721,8 @@ export function verifyChain(leafDer, bundleDers, rootPem, now = Date.now()) {
   }
   const last = chain[chain.length - 1];
   if (!issuedBy(last, root)) return { ok: false, reason: `cabundle does not chain to pinned root (${last.subject})` };
+  const profile = checkChainProfile(chain, root);
+  if (profile) return profile;
   return { ok: true, leafSubject: leaf.subject, leafFingerprint: leaf.fingerprint256 };
 }
 
@@ -448,7 +734,20 @@ function loadRootPem(rootCertPem) {
   return pem;
 }
 
-function verifyAttestationInner(coseBuf, { rootCertPem, now = Date.now() } = {}) {
+function checkAttestationTime(timestamp, now, maxSkewMs) {
+  if (typeof timestamp !== "number" || !Number.isFinite(timestamp)) {
+    return { ok: false, reason: "attestation timestamp missing" };
+  }
+  if (Math.abs(now - timestamp) > maxSkewMs) {
+    return { ok: false, reason: `attestation timestamp outside ±${maxSkewMs}ms` };
+  }
+  return { ok: true };
+}
+
+function verifyAttestationInner(coseBuf, { rootCertPem, now = Date.now(), maxSkewMs = ATTESTATION_MAX_SKEW_MS } = {}) {
+  if (!Number.isFinite(now) || !Number.isFinite(maxSkewMs)) {
+    return { ok: false, reason: "invalid attestation time window" };
+  }
   const rootPem = loadRootPem(rootCertPem);
   const [head, off1] = cborDecode(coseBuf);
   if (!Array.isArray(head) || head.length !== 4) return { ok: false, reason: "not COSE_Sign1" };
@@ -500,6 +799,8 @@ function verifyAttestationInner(coseBuf, { rootCertPem, now = Date.now() } = {})
   if (!Buffer.isBuffer(payloadCert) || !payloadCert.equals(leafDer)) {
     return { ok: false, reason: "payload certificate does not match signing certificate" };
   }
+  const fresh = checkAttestationTime(doc.get("timestamp"), now, maxSkewMs);
+  if (!fresh.ok) return fresh;
 
   return {
     ok: true,
@@ -540,11 +841,22 @@ export function pcrsMatch(expected, actual) {
 }
 
 /** ローカル検証の一括実行。nonce の結び付きが無い成功は返さない。 */
-export function verifyBundle({ attestationPath, pcrsPath, nonceHash, rootCertPem, zkeyIn, zkeyOut }) {
+function matchGolden(source, actual, label) {
+  const golden = goldenPcrsFrom(source);
+  if (!golden.measured) return { ok: false, reason: golden.reason };
+  const matched = pcrsMatch(golden.pcrs, actual);
+  if (!matched.ok) return { ok: false, reason: label, ...matched };
+  return { ok: true };
+}
+
+export function verifyBundle({
+  attestationPath, pcrsPath, nonceHash, rootCertPem, zkeyIn, zkeyOut,
+  goldenPath, buildDir, skipBuildCheck = false, now, maxSkewMs,
+}) {
   if (!attestationPath || !pcrsPath) return { ok: false, reason: "attestation and pcrs paths are required" };
   let att;
   try {
-    att = verifyAttestation(fs.readFileSync(attestationPath), { rootCertPem });
+    att = verifyAttestation(fs.readFileSync(attestationPath), { rootCertPem, now, maxSkewMs });
   } catch (e) {
     return { ok: false, reason: `cannot read attestation: ${e.message}` };
   }
@@ -555,8 +867,24 @@ export function verifyBundle({ attestationPath, pcrsPath, nonceHash, rootCertPem
   } catch (e) {
     return { ok: false, reason: `cannot read pcrs: ${e.message}` };
   }
-  const pcr = pcrsMatch(expected, att.pcrs);
+  const pcr = pcrsMatch(expected.pcrs ?? expected, att.pcrs);
   if (!pcr.ok) return { ok: false, reason: "PCR mismatch", ...pcr };
+  if (expected.golden) {
+    const embedded = matchGolden(expected.golden, att.pcrs, "golden PCR mismatch");
+    if (!embedded.ok) return embedded;
+  }
+  if (goldenPath) {
+    let goldenDoc;
+    try { goldenDoc = JSON.parse(fs.readFileSync(goldenPath, "utf8")); }
+    catch (e) { return { ok: false, reason: `cannot read golden PCRs: ${e.message}` }; }
+    const golden = matchGolden(goldenDoc, att.pcrs, "golden PCR mismatch");
+    if (!golden.ok) return golden;
+  }
+  if (!skipBuildCheck && expected.build?.inputs) {
+    const dir = buildDir ?? path.join(HERE, "..", "enclave");
+    const built = verifyBuildInputs(expected.build.inputs, dir);
+    if (!built.ok) return built;
+  }
 
   let fromFiles = "";
   if (zkeyIn || zkeyOut) {
@@ -588,6 +916,7 @@ export async function phase2(opts) {
   const zkeyIn = opts["zkey-in"];
   const zkeyOut = opts["zkey-out"];
   if (!r1cs || !zkeyIn || !zkeyOut) throw new Error("--r1cs / --zkey-in / --zkey-out が必要");
+  warnIfZkeyTooLarge(zkeyIn);
 
   if (opts["dry-run"]) {
     const steps = planLifecycle();
@@ -634,11 +963,23 @@ export async function phase2(opts) {
       await exec("scp", [...sshBase, `${host}:${remoteDir}/out/pcrs.json`, stagedPcrs], { timeout: SCP_TIMEOUT_MS });
 
       log("verify: attestation（オフライン）");
+      const enclaveDir = path.join(HERE, "..", "enclave");
+      const defaultGolden = opts.golden ?? path.join(enclaveDir, "expected-pcrs.json");
+      let goldenPath;
+      if (opts.golden) goldenPath = opts.golden;
+      else if (fs.existsSync(defaultGolden)) {
+        const preset = JSON.parse(fs.readFileSync(defaultGolden, "utf8"));
+        if (preset.measured === true) goldenPath = defaultGolden;
+        else log("警告: enclave/expected-pcrs.json は未計測です。ホスト manifest だけの PCR 比較は独立した照合になりません。EIF を再ビルドして --golden を計測値で更新してください。");
+      }
       const v = verifyBundle({
         attestationPath: stagedAtt,
         pcrsPath: stagedPcrs,
         zkeyIn,
         zkeyOut: stagedZkey,
+        goldenPath,
+        buildDir: enclaveDir,
+        skipBuildCheck: Boolean(opts["skip-build-check"]),
         rootCertPem: opts["root-cert"] ? fs.readFileSync(opts["root-cert"], "utf8") : undefined,
       });
       if (!v.ok) throw new Error(`attestation 検証失敗: ${JSON.stringify(v)}`);
@@ -678,6 +1019,10 @@ async function main() {
       nonceHash: opts["nonce-hash"],
       zkeyIn: opts["zkey-in"],
       zkeyOut: opts["zkey-out"],
+      goldenPath: opts.golden,
+      buildDir: opts["build-dir"],
+      skipBuildCheck: Boolean(opts["skip-build-check"]),
+      now: opts.now === undefined ? undefined : Number(opts.now),
       rootCertPem: opts["root-cert"] ? fs.readFileSync(opts["root-cert"], "utf8") : undefined,
     });
     if (!v.ok) { log(JSON.stringify(v, null, 2)); process.exit(1); }

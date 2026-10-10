@@ -26,6 +26,10 @@ if ! command -v node >/dev/null 2>&1 && command -v node-20 >/dev/null 2>&1; then
 fi
 modprobe nitro_enclaves || true
 
+echo "→ socat の VSOCK 対応を確認"
+SOCAT_HELP=$(socat -hh 2>&1 || true)
+printf '%s' "$SOCAT_HELP" | node enclave/socat-vsock.mjs
+
 echo "→ enclave allocator (${ENCLAVE_CPU} CPU / ${ENCLAVE_MEMORY_MB} MiB)"
 mkdir -p /etc/nitro_enclaves
 cat > /etc/nitro_enclaves/allocator.yaml <<EOF
@@ -42,22 +46,26 @@ docker build -q -t lemma-tee-contribute enclave
 echo "→ EIF build"
 nitro-cli build-enclave --docker-uri lemma-tee-contribute --output-file "$OUT/lemma-tee.eif"
 
-echo "→ PCR manifest（期待測定値）を保存"
+echo "→ PCR manifest（期待測定値とビルド入力ハッシュ）を保存"
 nitro-cli describe-eif --eif-path "$OUT/lemma-tee.eif" | python3 enclave/parse_pcrs.py "$OUT/pcrs.json"
+node enclave/hash-build-inputs.mjs enclave "$OUT/pcrs.json"
 
 EID=""
 PROXY_PID=""
 cleanup() {
   if [ -n "${PROXY_PID}" ]; then kill "$PROXY_PID" 2>/dev/null || true; fi
   if [ -n "${EID}" ]; then nitro-cli terminate-enclave --enclave-id "$EID" >/dev/null 2>&1 || true; fi
+  # ID 解析に失敗しても、起動済みの enclave を describe して止める。
+  nitro-cli describe-enclaves 2>/dev/null | python3 enclave/parse_run.py stop || true
 }
 trap cleanup EXIT
 
 echo "→ enclave 起動"
 RUN=$(nitro-cli run-enclave --cpu-count "$ENCLAVE_CPU" --memory "$ENCLAVE_MEMORY_MB" \
   --eif-path "$OUT/lemma-tee.eif" --enclave-cid 16)
-EID=$(printf '%s' "$RUN" | python3 -c 'import json,sys; print(json.load(sys.stdin)["EnclaveID"])')
-CID=$(printf '%s' "$RUN" | python3 -c 'import json,sys; print(json.load(sys.stdin)["EnclaveCID"])')
+META=$(printf '%s' "$RUN" | python3 enclave/parse_run.py run)
+EID=$(printf '%s\n' "$META" | sed -n '1p')
+CID=$(printf '%s\n' "$META" | sed -n '2p')
 case "$CID" in ''|*[!0-9]*) echo "invalid EnclaveCID" >&2; exit 1 ;; esac
 
 echo "→ vsock プロキシ起動（127.0.0.1:5000 → enclave vsock:${CID}:5001）"

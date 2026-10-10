@@ -1,0 +1,9 @@
+{
+  "name": "lemma-tee-enclave",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Pinned snarkjs for the Nitro enclave image. Not a workspace package.",
+  "dependencies": {
+    "snarkjs": "0.7.6"
+  }
+}

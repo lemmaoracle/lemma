@@ -1,0 +1,8 @@
+# Alpine 3.22 / Python 3.12 (musllinux) wheels. pip install --require-hashes --only-binary=:all:
+aws-nsm-interface==1.0.0 \
+    --hash=sha256:5a234d683949d5bf7a02d533f7788806e6a793af1ef2ce1b003700f6cb6f3474
+cbor2==6.1.5 \
+    --hash=sha256:09eeb76177758a0fdf1627a9428b384756872b048c6c0d7d158106b29b207d2c \
+    --hash=sha256:694f75fdcdb8c6b9a71ab77f789f56be1deab20bbdbf948d5ff53cd7c2543dfc
+ioctl-opt==1.3.1 \
+    --hash=sha256:7617a734e7083fd0ff5607c821ca67f75f4dd009c55b3f96db5c55621e64ee9a
