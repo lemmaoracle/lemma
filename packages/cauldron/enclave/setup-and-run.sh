@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."          # remoteDir (= /home/ec2-user/cauldron)
 OUT="$PWD/out"
 mkdir -p "$OUT"
-# t3.xlarge は 4 vCPU / 16 GiB。親 OS に CPU を残す（4 全部渡すと allocator が失敗する）。
+# m6i.xlarge は 4 vCPU / 16 GiB。親 OS に CPU を残す（4 全部渡すと allocator が失敗する）。
 ENCLAVE_MEMORY_MB="${ENCLAVE_MEMORY_MB:-8192}"
 ENCLAVE_CPU="${ENCLAVE_CPU:-2}"
 # contribute 中は vsock が無通信になる。650MB 級の zkey でも足りる総時間。
@@ -76,6 +76,8 @@ sleep 1
 kill -0 "$PROXY_PID"
 
 echo "→ contribute（enclave 内で実行・乱数は enclave 内 CSPRNG）"
-node enclave/client.mjs --port 5000 --zkey zkey_0000 --out "$OUT" --timeout-ms "$CLIENT_TIMEOUT_MS"
+HEAP_MB=$(node --input-type=module -e 'import { enclaveHeapMb } from "./enclave/frame.mjs"; process.stdout.write(String(enclaveHeapMb(Number(process.env.ENCLAVE_MEMORY_MB))))')
+case "$HEAP_MB" in ''|*[!0-9]*) echo "invalid enclave heap" >&2; exit 1 ;; esac
+node enclave/client.mjs --port 5000 --zkey zkey_0000 --out "$OUT" --timeout-ms "$CLIENT_TIMEOUT_MS" --max-old-space-size "$HEAP_MB"
 
 echo "✓ done: $OUT/{zkey_final,attestation.cbor,pcrs.json}"

@@ -38,6 +38,12 @@ cauldron phase2 \
 # 手順の確認だけ（AWS に触れない）
 node cauldron.mjs phase2 --dry-run --r1cs X --zkey-in Y --zkey-out Z
 
+# 既定は m6i.xlarge（4 vCPU / 16 GiB）。バースト型（t3 など）は Nitro Enclaves を起動できないので拒否する。
+# enclave のメモリ・CPU・待ち時間はフラグで渡し、リモートでは sudo env 経由で届く。
+cauldron phase2 \
+  --r1cs circuit.r1cs --zkey-in circuit_0000.zkey --zkey-out circuit_final.zkey \
+  --instance-type m6i.xlarge --enclave-memory-mb 8192 --enclave-cpu 2
+
 # 後から誰でも再検証（AWS API 不要）
 # nonce = sha256(zkey_0000) || sha256(zkey_final)。入力だけのハッシュでは通らない。
 # 同じ入出力 zkey を再提示したとき nonce が一致するのは、結び付きとして正しい。
@@ -59,7 +65,7 @@ zkey の転送は 4 byte の長さ前置で、1GiB を超えるフレームは�
 
 ## 何が起きるか
 
-1. keypair（名前 `lemma-tee-<run-id>`）・security group・EC2（enclave 対応）を**ゼロから作成**。instance と security group にはタグ `lemma-cauldron=<run-id>` を付ける
+1. keypair（名前 `lemma-tee-<run-id>`）・security group・EC2 を**ゼロから作成**する。既定のインスタンスは **`m6i.xlarge`（4 vCPU / 16 GiB）**。`t2` / `t3` / `t3a` / `t4g` / `a1` / `g5g` / `im4gn` / `is4gen`、ベアメタル、`u-*` は起動前に拒否する。subnet は default VPC のパブリック subnet（IGW への経路があるもの）を明示し、`--associate-public-ip-address` でパブリック IPv4 を割り当てる。使える subnet が無ければ `10.66.0.0/16` の専用 VPC と IGW を作り、終了時に消す。security group はその VPC に作る。instance と security group（専用 VPC を作ったときは VPC / subnet / IGW も）にタグ `lemma-cauldron=<run-id>` を付ける
 2. enclave イメージをビルド → `nitro-cli build-enclave` → **PCR0/1/2 の期待測定値を manifest に保存**
 3. enclave 起動 → vsock 経由で `zkey_0000` を送信
 4. enclave 内: CSPRNG で `zkey contribute`（乱数は snarkjs の stdin。`-e` には載せない）→ `sha256(zkey_0000) || sha256(zkey_final)` を nonce に NSM attestation doc を取得
@@ -75,7 +81,7 @@ zkey の転送は 4 byte の長さ前置で、1GiB を超えるフレームは�
   **同じ入出力 zkey への attestation の再提示は、この結び付きとして正しい**（timestamp 窓の外なら `--now` で当時の時刻を指定する）。
 - 既定のルート証明書はソースに指紋をピン留めしてある。`--root-cert` はテスト用で、渡した PEM が新しい信頼の起点になる。
 - 証明書は CA ビットと keyUsage に加え、EKU と name constraints を見る。attestation の leaf に TLS の serverAuth / clientAuth があってはならない。name constraints は CA が拡張を載せているときだけ適用する（AWS のルートには無い）。
-- zkey サイズから必要メモリを `zkey × 16 + 512MiB` で見積もり、enclave の 8GiB を超えそうなら実行前に警告する。650MB 級の実 Nitro 計測はまだ無い。警告は見積もりであり、実行は止めない。
+- zkey サイズから必要メモリを `zkey × 16 + 512MiB` で見積もり、`--enclave-memory-mb`（既定 8192）を超えそうなら実行前に警告する。この値は `sudo env ENCLAVE_MEMORY_MB=…` でリモートの `setup-and-run.sh` に渡る。enclave 内の snarkjs ヒープはその 3/4（8192 なら 6144）で、貢献乱数は argv にも環境変数にも載らない。650MB 級の実 Nitro 計測はまだ無い。警告は見積もりであり、実行は止めない。メモリを増やすときは、親 OS の分を残せる `--instance-type` も上げる。
 - EIF のメタデータは attestation されない。サイドチャネルは脅威モデル外（業界標準と同じ）。
 - 二重化: contribute の後に `snarkjs zkey beacon`（公開ランダムネスでの finalize）を掛けると、
   「AWS か beacon のどちらか一方が誠実なら安全」という MPC と同型の保証になる（推奨）。
@@ -84,7 +90,11 @@ zkey の転送は 4 byte の長さ前置で、1GiB を超えるフレームは�
 
 `ec2:CreateKeyPair` / `DeleteKeyPair` / `CreateSecurityGroup` / `DeleteSecurityGroup` /
 `AuthorizeSecurityGroupIngress` / `RunInstances` / `TerminateInstances` / `DescribeInstances` /
-`DescribeSecurityGroups` / `DescribeNetworkInterfaces` / `ssm:GetParameter`。インスタンスには IAM ロールを付けず、IMDS も止める。KMS は不要（鍵を持たない設計）。
+`DescribeSecurityGroups` / `DescribeNetworkInterfaces` / `DescribeVpcs` / `DescribeSubnets` /
+`DescribeRouteTables` / `DescribeInternetGateways` / `CreateVpc` / `DeleteVpc` / `CreateSubnet` /
+`DeleteSubnet` / `ModifySubnetAttribute` / `CreateInternetGateway` / `DeleteInternetGateway` /
+`AttachInternetGateway` / `DetachInternetGateway` / `CreateRoute` / `ssm:GetParameter`。
+default VPC にパブリック subnet があるアカウントでは CreateVpc 以降は使わない。インスタンスには IAM ロールを付けず、IMDS も止める。KMS は不要（鍵を持たない設計）。
 検証（`verify`）には AWS 権限すら不要。
 
 ## 検証に使うルート証明書

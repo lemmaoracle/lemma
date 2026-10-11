@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// enclave 内で動く処理。stdin で zkey_0000 を受け、enclave 内 CSPRNG の乱数で
+// enclave 内で動く処理。stdin の最初のフレームはヒープサイズ、次が zkey_0000。enclave 内 CSPRNG の乱数で
 // snarkjs zkey contribute を実行し、sha256(zkey_0000)||sha256(zkey_final) を nonce に
 // NSM attestation doc を取得して返す。
 //
@@ -10,7 +10,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import fs from "node:fs";
 import { pathToFileURL } from "node:url";
-import { commitmentNonceHex, readFrame, writeFrame } from "./frame.mjs";
+import { commitmentNonceHex, parseContributeJobHeader, readFrame, writeFrame } from "./frame.mjs";
 
 export { commitmentNonceHex };
 
@@ -25,15 +25,18 @@ export function contributeArgv() {
   return ["zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final", "-n", "lemma-cauldron"];
 }
 
-function contribute(entropy) {
+function contribute(entropy, nodeOptions) {
   const argv = contributeArgv();
   if (argv.includes("-e") || argv.includes(entropy)) {
     return Promise.reject(new Error("refusing to place contribution entropy on argv"));
   }
+  if (String(nodeOptions).includes(entropy)) {
+    return Promise.reject(new Error("refusing to place contribution entropy in the environment"));
+  }
   return new Promise((resolve, reject) => {
     const child = spawn("snarkjs", argv, {
       stdio: ["pipe", "pipe", "pipe"],
-      env: { ...process.env, NODE_OPTIONS: process.env.NODE_OPTIONS ?? "--max-old-space-size=6144" },
+      env: { ...process.env, NODE_OPTIONS: nodeOptions },
     });
     const out = [];
     const err = [];
@@ -65,10 +68,11 @@ const rmQuiet = (p) => { try { fs.rmSync(p, { force: true }); } catch { /* encla
 const main = async () => {
   let entropy = "";
   try {
+    const { nodeOptions } = parseContributeJobHeader(await readFrame(process.stdin));
     const zkey0 = await readFrame(process.stdin);
     fs.writeFileSync("/tmp/zkey_0000", zkey0, { mode: 0o600 });
     entropy = randomBytes(32).toString("hex");
-    await contribute(entropy);
+    await contribute(entropy, nodeOptions);
     const zkeyFinal = fs.readFileSync("/tmp/zkey_final");
     const nonce = commitmentNonceHex(zkey0, zkeyFinal);
     const doc = attest(nonce);

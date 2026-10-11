@@ -16,9 +16,26 @@ import {
   cborDecode,
   commitmentNonceHex,
   commitmentNonceHexFromFiles,
+  assertEnclaveInstanceType,
+  DEFAULT_CLIENT_TIMEOUT_MS,
+  DEFAULT_ENCLAVE_CPU,
+  DEFAULT_ENCLAVE_MEMORY_MB,
+  DEFAULT_INSTANCE_TYPE,
   deleteSecurityGroupWithRetry,
   ENCLAVE_MEMORY_LIMIT_BYTES,
+  enclaveMemoryLimitBytes,
   estimateContributeMemory,
+  parseEnclaveResources,
+  pickPublicSubnet,
+  phase2,
+  provision,
+  REMOTE_DIR,
+  remoteSetupCommand,
+  resolveLaunchNetwork,
+  routeTableForSubnet,
+  runInstancesArgs,
+  teardownById,
+  teardownByRunId,
   extensionsOf,
   goldenPcrsFrom,
   hashBuildInputs,
@@ -34,7 +51,7 @@ import {
   verifyBundle,
   warnIfZkeyTooLarge,
 } from "./cauldron.mjs";
-import { commitmentNonceHex as serveNonce, frame, MAX_FRAME, readFrame } from "../enclave/frame.mjs";
+import { commitmentNonceHex as serveNonce, contributeJobHeader, enclaveHeapMb, frame, MAX_FRAME, parseContributeJobHeader, readFrame } from "../enclave/frame.mjs";
 import { BUILD_INPUT_FILES as enclaveBuildFiles, hashBuildInputs as enclaveHashBuildInputs } from "../enclave/hash-build-inputs.mjs";
 import { contributeArgv } from "../enclave/serve.mjs";
 import { socatSupportsVsock } from "../enclave/socat-vsock.mjs";
@@ -169,11 +186,14 @@ describe("parseArgs / planLifecycle", () => {
     expect(opts.r1cs).toBe("a.r1cs");
     expect(opts["dry-run"]).toBe(true);
   });
-  it("lists 12 steps and orders provision before teardown", () => {
+  it("lists the launch steps and orders provision before teardown", () => {
     const steps = planLifecycle();
-    expect(steps).toHaveLength(12);
+    expect(steps).toHaveLength(13);
     expect(steps.findIndex((s) => s.startsWith("provision"))).toBeLessThan(steps.findIndex((s) => s.startsWith("teardown")));
     expect(steps.some((s) => s.includes("sha256(zkey_0000)||sha256(zkey_final)"))).toBe(true);
+    expect(steps.some((s) => s.includes(DEFAULT_INSTANCE_TYPE))).toBe(true);
+    expect(steps.some((s) => s.includes("sudo env"))).toBe(true);
+    expect(steps.some((s) => s.includes("専用 VPC"))).toBe(true);
   });
 });
 
@@ -569,7 +589,13 @@ describe("enclave preflight and teardown", () => {
     }
     const text = chunks.join("");
     expect(text).toMatch(/警告/);
+    expect(text).toMatch(/--enclave-memory-mb 8192/);
     expect(text.match(/警告/g)).toHaveLength(1);
+    const raised = enclaveMemoryLimitBytes(16384);
+    expect(estimateContributeMemory(huge, raised).exceeds).toBe(false);
+    process.stderr.write = (chunk, ...rest) => { chunks.push(String(chunk)); return orig(chunk, ...rest); };
+    try { warnIfZkeyTooLarge(big, raised); } finally { process.stderr.write = orig; }
+    expect(chunks.join("").match(/警告/g)).toHaveLength(1);
   });
 
   it("retries security group deletion while an ENI or dependency remains", async () => {
@@ -650,5 +676,210 @@ print(json.dumps(enclave_ids_from_describe({"EnclaveID": "d"})))
     const reqs = fs.readFileSync(path.join(__dirname, "..", "enclave", "requirements.txt"), "utf8");
     expect(reqs).toMatch(/aws-nsm-interface==1\.0\.0/);
     expect(reqs).toMatch(/--hash=sha256:[0-9a-f]{64}/);
+    const setup = fs.readFileSync(path.join(__dirname, "..", "enclave", "setup-and-run.sh"), "utf8");
+    expect(setup).toMatch(/enclaveHeapMb/);
+    expect(setup).toMatch(/--max-old-space-size/);
+    expect(setup).not.toMatch(/t3\.xlarge/);
+  });
+});
+
+describe("phase2 launch", () => {
+  const publicTable = {
+    Associations: [{ Main: true }],
+    Routes: [
+      { DestinationCidrBlock: "10.0.0.0/16", GatewayId: "local" },
+      { DestinationCidrBlock: "0.0.0.0/0", GatewayId: "igw-abc" },
+    ],
+  };
+  const privateTable = {
+    Associations: [{ SubnetId: "subnet-aaa1" }],
+    Routes: [{ DestinationCidrBlock: "0.0.0.0/0", NatGatewayId: "nat-abc" }],
+  };
+
+  it("dry-run keeps the Nitro instance type and the enclave flags", async () => {
+    const out = await phase2({
+      "dry-run": true, r1cs: "X", "zkey-in": "Y", "zkey-out": "Z", "enclave-memory-mb": "1024",
+    });
+    expect(out).toMatchObject({
+      dryRun: true,
+      instanceType: "m6i.xlarge",
+      resources: { memoryMb: 1024, cpu: DEFAULT_ENCLAVE_CPU, timeoutMs: DEFAULT_CLIENT_TIMEOUT_MS },
+    });
+    await expect(phase2({
+      "dry-run": true, r1cs: "X", "zkey-in": "Y", "zkey-out": "Z", "instance-type": "t3.xlarge",
+    })).rejects.toThrow(/Nitro Enclaves/);
+  });
+
+  it("rejects burstable and bare-metal parents and defaults to m6i.xlarge", () => {
+    expect(DEFAULT_INSTANCE_TYPE).toBe("m6i.xlarge");
+    expect(assertEnclaveInstanceType("m6i.xlarge")).toBe("m6i.xlarge");
+    expect(assertEnclaveInstanceType("c6i.2xlarge")).toBe("c6i.2xlarge");
+    for (const type of ["t3.xlarge", "t3a.xlarge", "t4g.xlarge", "t2.micro", "u-6tb1.56xlarge", "m6i.metal", "a1.xlarge"]) {
+      expect(() => assertEnclaveInstanceType(type)).toThrow(/Nitro Enclaves/);
+    }
+    expect(() => assertEnclaveInstanceType("not-an-instance")).toThrow(/invalid instance type/);
+  });
+
+  it("passes enclave memory, cpu, and timeout through sudo env", () => {
+    expect(parseEnclaveResources({})).toEqual({
+      memoryMb: DEFAULT_ENCLAVE_MEMORY_MB,
+      cpu: DEFAULT_ENCLAVE_CPU,
+      timeoutMs: DEFAULT_CLIENT_TIMEOUT_MS,
+    });
+    const resources = parseEnclaveResources({ "enclave-memory-mb": "12288", "enclave-cpu": "4", "client-timeout-ms": "1000" });
+    expect(resources).toEqual({ memoryMb: 12288, cpu: 4, timeoutMs: 1000 });
+    expect(remoteSetupCommand(REMOTE_DIR, resources)).toBe(
+      `cd ${REMOTE_DIR} && sudo env ENCLAVE_MEMORY_MB=12288 ENCLAVE_CPU=4 CLIENT_TIMEOUT_MS=1000 bash enclave/setup-and-run.sh`,
+    );
+    expect(() => parseEnclaveResources({ "enclave-memory-mb": "8191" })).toThrow(/enclave-memory-mb/);
+    expect(() => parseEnclaveResources({ "enclave-cpu": "1" })).toThrow(/enclave-cpu/);
+    expect(() => parseEnclaveResources({ "client-timeout-ms": "abc" })).toThrow(/client-timeout-ms/);
+    expect(() => remoteSetupCommand("/tmp/other", resources)).toThrow(/remote dir/);
+  });
+
+  it("sizes the enclave node heap from memory and rejects injected options", () => {
+    expect(enclaveHeapMb(8192)).toBe(6144);
+    expect(enclaveHeapMb(12288)).toBe(9216);
+    const header = contributeJobHeader(6144);
+    expect(parseContributeJobHeader(header)).toEqual({ nodeOptions: "--max-old-space-size=6144" });
+    expect(parseContributeJobHeader(contributeJobHeader(undefined))).toEqual({ nodeOptions: "--max-old-space-size=6144" });
+    expect(() => parseContributeJobHeader(Buffer.from(JSON.stringify({ v: 1, maxOldSpaceSize: "6144 --inspect" })))).toThrow(/max-old-space-size/);
+    expect(() => parseContributeJobHeader(Buffer.from(JSON.stringify({ v: 1, maxOldSpaceSize: 128 })))).toThrow(/max-old-space-size/);
+    expect(() => enclaveHeapMb(512)).toThrow(/ENCLAVE_MEMORY_MB/);
+  });
+
+  it("selects only a subnet whose route table reaches an internet gateway", () => {
+    expect(routeTableForSubnet("subnet-bbb2", [publicTable, privateTable])).toBe(publicTable);
+    expect(routeTableForSubnet("subnet-aaa1", [publicTable, privateTable])).toBe(privateTable);
+    expect(pickPublicSubnet([
+      { SubnetId: "subnet-aaa1", State: "available" },
+      { SubnetId: "subnet-bbb2", State: "available" },
+    ], [publicTable, privateTable])).toBe("subnet-bbb2");
+    expect(pickPublicSubnet([{ SubnetId: "subnet-aaa1", State: "available" }], [publicTable, privateTable])).toBeNull();
+  });
+
+  it("launches into an explicit public subnet and assigns a public IPv4", () => {
+    const args = runInstancesArgs({
+      ami: "ami-123", instanceType: "m6i.xlarge", keyName: "lemma-tee-lts-1-abcd",
+      sgId: "sg-abc", subnetId: "subnet-bbb2", instanceTags: "ResourceType=instance,Tags=[]", region: "us-east-1",
+    });
+    expect(args).toContain("--subnet-id");
+    expect(args).toContain("subnet-bbb2");
+    expect(args).toContain("--associate-public-ip-address");
+    expect(args).not.toContain("--network-interfaces");
+    expect(() => runInstancesArgs({
+      ami: "ami-123", instanceType: "m6i.xlarge", keyName: "k", sgId: "sg-abc",
+      subnetId: "default", instanceTags: "t", region: "us-east-1",
+    })).toThrow(/subnet/);
+  });
+
+  it("uses the default VPC public subnet when one exists", async () => {
+    const calls = [];
+    const awsImpl = async (args) => {
+      calls.push(args.join(" "));
+      if (args[1] === "describe-vpcs") return JSON.stringify(["vpc-def"]);
+      if (args[1] === "describe-subnets") return JSON.stringify({ Subnets: [{ SubnetId: "subnet-bbb2", State: "available" }] });
+      if (args[1] === "describe-route-tables") return JSON.stringify({ RouteTables: [publicTable] });
+      throw new Error(`unexpected ${args[1]}`);
+    };
+    const network = await resolveLaunchNetwork({ region: "us-east-1", id: "lts-abc-deadbeef", awsImpl });
+    expect(network).toEqual({ created: false, vpcId: "vpc-def", subnetId: "subnet-bbb2" });
+    expect(calls.some((line) => line.includes("create-vpc"))).toBe(false);
+  });
+
+  it("creates a dedicated VPC when the region has no public subnet, and tears it down", async () => {
+    const calls = [];
+    const awsImpl = async (args) => {
+      calls.push(args);
+      const api = args[1];
+      if (api === "create-key-pair") return JSON.stringify({ KeyMaterial: "KEY" });
+      if (api === "describe-vpcs" && args.includes("Name=is-default,Values=true")) return "[]";
+      if (api === "describe-vpcs") return JSON.stringify(["vpc-abc"]);
+      if (api === "create-vpc") return JSON.stringify({ Vpc: { VpcId: "vpc-abc" } });
+      if (api === "create-subnet") return JSON.stringify({ Subnet: { SubnetId: "subnet-abc" } });
+      if (api === "modify-subnet-attribute") return "";
+      if (api === "create-internet-gateway") return JSON.stringify({ InternetGateway: { InternetGatewayId: "igw-abc" } });
+      if (api === "attach-internet-gateway") return "";
+      if (api === "describe-route-tables") return JSON.stringify({ RouteTables: [{ RouteTableId: "rtb-abc" }] });
+      if (api === "create-route") return "";
+      if (api === "create-security-group") return JSON.stringify({ GroupId: "sg-abc" });
+      if (api === "authorize-security-group-ingress") return "";
+      if (api === "run-instances") return JSON.stringify({ Instances: [{ InstanceId: "i-abc" }] });
+      if (api === "wait") return "";
+      if (api === "describe-instances") return JSON.stringify("203.0.113.10");
+      if (api === "terminate-instances" || api === "delete-key-pair") return "";
+      if (api === "describe-network-interfaces") return "";
+      if (api === "delete-security-group" || api === "delete-subnet" || api === "detach-internet-gateway" || api === "delete-internet-gateway" || api === "delete-vpc") return "";
+      if (api === "describe-subnets") return JSON.stringify(["subnet-abc"]);
+      if (api === "describe-internet-gateways") return JSON.stringify(["igw-abc"]);
+      throw new Error(`unexpected ${args.join(" ")}`);
+    };
+    const state = await provision({
+      region: "us-east-1", instanceType: "m6i.xlarge", ami: "ami-123",
+      awsImpl, fetchIp: async () => "203.0.113.4", sleep: async () => {},
+    });
+    try {
+      expect(state.network).toMatchObject({ created: true, vpcId: "vpc-abc", subnetId: "subnet-abc", igwId: "igw-abc" });
+      expect(state.ip).toBe("203.0.113.10");
+      const sg = calls.find((args) => args[1] === "create-security-group");
+      expect(sg).toContain("--vpc-id");
+      expect(sg).toContain("vpc-abc");
+      const run = calls.find((args) => args[1] === "run-instances");
+      expect(run).toContain("--subnet-id");
+      expect(run).toContain("subnet-abc");
+      expect(run).toContain("--associate-public-ip-address");
+      expect(run).toContain("m6i.xlarge");
+      const vpc = calls.find((args) => args[1] === "create-vpc");
+      expect(vpc).toContain("10.66.0.0/16");
+    } finally {
+      await teardownById(state, { awsImpl, sleep: async () => {} });
+    }
+    expect(calls.some((args) => args[1] === "delete-vpc" && args.includes("vpc-abc"))).toBe(true);
+    expect(calls.some((args) => args[1] === "delete-subnet")).toBe(true);
+    expect(calls.some((args) => args[1] === "detach-internet-gateway")).toBe(true);
+
+    calls.length = 0;
+    await teardownByRunId("lts-abc123-deadbeef", "us-east-1", { awsImpl, sleep: async () => {} });
+    expect(calls.some((args) => args[1] === "delete-vpc")).toBe(true);
+  });
+
+  it("leaves a default VPC in place when phase2 did not create it", async () => {
+    const calls = [];
+    await teardownById({
+      id: "lts-abc123-deadbeef",
+      region: "us-east-1",
+      sgId: "sg-abc",
+      network: { created: false, vpcId: "vpc-def", subnetId: "subnet-bbb2" },
+    }, {
+      awsImpl: async (args) => { calls.push(args[1]); return ""; },
+      sleep: async () => {},
+    });
+    expect(calls).toContain("delete-security-group");
+    expect(calls).not.toContain("delete-vpc");
+    expect(calls).not.toContain("delete-subnet");
+  });
+
+  it("builds a dedicated VPC when the default VPC has no public subnet", async () => {
+    const calls = [];
+    const awsImpl = async (args) => {
+      calls.push(args[1]);
+      if (args[1] === "describe-vpcs") return JSON.stringify(["vpc-def"]);
+      if (args[1] === "describe-subnets") return JSON.stringify({ Subnets: [{ SubnetId: "subnet-aaa1", State: "available" }] });
+      if (args[1] === "describe-route-tables" && calls.filter((name) => name === "describe-route-tables").length === 1) {
+        return JSON.stringify({ RouteTables: [privateTable] });
+      }
+      if (args[1] === "create-vpc") return JSON.stringify({ Vpc: { VpcId: "vpc-abc" } });
+      if (args[1] === "create-subnet") return JSON.stringify({ Subnet: { SubnetId: "subnet-abc" } });
+      if (args[1] === "modify-subnet-attribute") return "";
+      if (args[1] === "create-internet-gateway") return JSON.stringify({ InternetGateway: { InternetGatewayId: "igw-abc" } });
+      if (args[1] === "attach-internet-gateway") return "";
+      if (args[1] === "describe-route-tables") return JSON.stringify({ RouteTables: [{ RouteTableId: "rtb-abc" }] });
+      if (args[1] === "create-route") return "";
+      throw new Error(`unexpected ${args.join(" ")}`);
+    };
+    const network = await resolveLaunchNetwork({ region: "us-east-1", id: "lts-abc123-deadbeef", awsImpl });
+    expect(network.created).toBe(true);
+    expect(network.vpcId).toBe("vpc-abc");
+    expect(calls).toContain("create-vpc");
   });
 });

@@ -118,3 +118,40 @@ export function commitmentNonceHex(zkeyIn, zkeyOut) {
   const b = createHash("sha256").update(zkeyOut).digest();
   return Buffer.concat([a, b]).toString("hex");
 }
+
+/** enclave メモリの 3/4 を V8 ヒープに使う。8192 MiB のとき既定の 6144 になる。 */
+export function enclaveHeapMb(memoryMb) {
+  const mb = Number(memoryMb);
+  if (!Number.isInteger(mb) || mb < 1024 || mb % 2 !== 0) throw new Error("invalid ENCLAVE_MEMORY_MB");
+  const heap = Math.floor(mb * 3 / 4);
+  if (heap < 512 || heap > 262144) throw new Error("enclave heap out of range");
+  return heap;
+}
+
+/** ホストが渡せるのは整数だけ。NODE_OPTIONS の文字列は enclave 側で組み立てる。 */
+export function heapNodeOptions(maxOldSpaceSize) {
+  const raw = maxOldSpaceSize == null ? 6144 : maxOldSpaceSize;
+  if (typeof raw !== "number" || !Number.isInteger(raw) || raw < 512 || raw > 262144) {
+    throw new Error("invalid max-old-space-size");
+  }
+  return `--max-old-space-size=${raw}`;
+}
+
+export function contributeJobHeader(maxOldSpaceSize) {
+  const value = maxOldSpaceSize == null || maxOldSpaceSize === "" ? undefined : Number(maxOldSpaceSize);
+  const size = Number(heapNodeOptions(value).slice("--max-old-space-size=".length));
+  return Buffer.from(JSON.stringify({ v: 1, maxOldSpaceSize: size }));
+}
+
+export function parseContributeJobHeader(buf) {
+  let doc;
+  try {
+    doc = JSON.parse(Buffer.from(buf).toString("utf8"));
+  } catch {
+    throw new Error("contribute header is not json");
+  }
+  if (!doc || doc.v !== 1 || !Object.hasOwn(doc, "maxOldSpaceSize")) {
+    throw new Error("unsupported contribute header");
+  }
+  return { nodeOptions: heapNodeOptions(doc.maxOldSpaceSize) };
+}
