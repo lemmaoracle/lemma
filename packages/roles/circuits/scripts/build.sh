@@ -53,10 +53,7 @@ $SNARKJS groth16 setup \
   "$PTAU" \
   "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey"
 
-$SNARKJS zkey contribute \
-  "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey" \
-  "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
-  --name="lemma role-spend-limit" -v -e="lemma role-spend-limit $(date +%s)"
+cauldron phase2 --circuit "$BUILD_DIR/$CIRCUIT_NAME" --ptau "$PTAU"
 
 echo "→ exporting verification key"
 $SNARKJS zkey export verificationkey \
@@ -101,10 +98,7 @@ $SNARKJS groth16 setup \
   "$PTAU2" \
   "$BUILD_DIR/${CIRCUIT2_NAME}_0000.zkey"
 
-$SNARKJS zkey contribute \
-  "$BUILD_DIR/${CIRCUIT2_NAME}_0000.zkey" \
-  "$BUILD_DIR/${CIRCUIT2_NAME}_final.zkey" \
-  --name="lemma listing-binding" -v -e="lemma listing-binding $(date +%s)"
+cauldron phase2 --circuit "$BUILD_DIR/$CIRCUIT2_NAME" --ptau "$PTAU2"
 
 echo "→ exporting verification key"
 $SNARKJS zkey export verificationkey \
@@ -149,10 +143,7 @@ $SNARKJS groth16 setup \
   "$PTAU3" \
   "$BUILD_DIR/${CIRCUIT3_NAME}_0000.zkey"
 
-$SNARKJS zkey contribute \
-  "$BUILD_DIR/${CIRCUIT3_NAME}_0000.zkey" \
-  "$BUILD_DIR/${CIRCUIT3_NAME}_final.zkey" \
-  --name="lemma org-identity" -v -e="lemma org-identity $(date +%s)"
+cauldron phase2 --circuit "$BUILD_DIR/$CIRCUIT3_NAME" --ptau "$PTAU3"
 
 echo "→ exporting verification key"
 $SNARKJS zkey export verificationkey \

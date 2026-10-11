@@ -1,13 +1,14 @@
 #!/usr/bin/env node
-// @lemmaoracle/cauldron — Groth16 Phase 2 (zkey contribute) を AWS Nitro Enclaves 内で実行する TEE setup フロー
+// @lemmaoracle/cauldron — TEE setup that runs Groth16 phase 2 (zkey contribute) inside AWS Nitro Enclaves.
 //
-// ゼロ依存（Node 標準ライブラリのみ）。単一ファイルで完結し、cp して実行できる。
-// 使い方: node cauldron.mjs phase2 --r1cs <r1cs> --zkey-in <zkey_0000> --zkey-out <zkey_final>
-//        node cauldron.mjs verify --attestation <doc.cbor> --pcrs <pcrs.json> --zkey-in <in> --zkey-out <out>
+// Zero dependencies (Node standard library only). One file, so it can be copied and run.
+// Usage: node cauldron.mjs phase2 --circuit <name|build/name>
+//        node cauldron.mjs verify --circuit <name|build/name>
 //        node cauldron.mjs teardown --run-id <id>
+// SSH private keys are not arguments. Each run creates one and deletes it from AWS and from disk.
 //
-// trust model の留保: AWS Nitro が信頼の中心点。検証はオフラインで完結し AWS API を呼ばない。
-// nonce は sha256(zkey_0000)||sha256(zkey_final)。入力だけだと親が出力 zkey をすり替えられる。
+// Trust boundary: AWS Nitro is the root of trust. Verification is offline and does not call the AWS API.
+// The nonce is sha256(zkey_0000)||sha256(zkey_final). A hash of the input alone lets the parent swap the output zkey.
 
 import { execFile } from "node:child_process";
 import { createHash, createVerify, randomBytes, X509Certificate } from "node:crypto";
@@ -28,6 +29,18 @@ const ES384_SIG_BYTES = 96;
 const PHASE2_TIMEOUT_MS = 10 * 60 * 60 * 1000;
 export const ATTESTATION_MAX_SKEW_MS = 15 * 60 * 1000;
 export const ENCLAVE_MEMORY_LIMIT_BYTES = 8192 * 1024 * 1024;
+export const DEFAULT_INSTANCE_TYPE = "m6i.xlarge"; // 4 vCPU / 16 GiB. Burstable families such as t3 cannot run Nitro Enclaves.
+export const DEFAULT_ENCLAVE_MEMORY_MB = 8192;
+export const DEFAULT_ENCLAVE_CPU = 2;
+export const DEFAULT_CLIENT_TIMEOUT_MS = 28_800_000;
+export const REMOTE_DIR = "/home/ec2-user/cauldron";
+const MAX_CLIENT_TIMEOUT_MS = 24 * 60 * 60 * 1000;
+const DEDICATED_VPC_CIDR = "10.66.0.0/16";
+const DEDICATED_SUBNET_CIDR = "10.66.1.0/24";
+const VPC_ID_RE = /^vpc-[0-9a-f]+$/;
+const SUBNET_ID_RE = /^subnet-[0-9a-f]+$/;
+const IGW_ID_RE = /^igw-[0-9a-f]+$/;
+const UNSUPPORTED_ENCLAVE_INSTANCE = /^(?:t3a|t4g|t3|t2|a1|g5g|im4gn|is4gen)\.|^u-|\.metal/i;
 const MEMORY_ZKEY_FACTOR = 16;
 const MEMORY_HEADROOM_BYTES = 512 * 1024 * 1024;
 export const BUILD_INPUT_FILES = ["Dockerfile", "package.json", "package-lock.json", "requirements.txt"];
@@ -97,17 +110,22 @@ export function commitmentNonceHexFromFiles(zkeyIn, zkeyOut) {
 }
 
 /** snarkjs は旧 zkey・新 zkey・作業コピーを同時に持つ。16 倍 + 512MiB は実測前の上限見積もり。 */
-export function estimateContributeMemory(zkeyBytes) {
+export function estimateContributeMemory(zkeyBytes, limitBytes = ENCLAVE_MEMORY_LIMIT_BYTES) {
   const bytes = zkeyBytes * MEMORY_ZKEY_FACTOR + MEMORY_HEADROOM_BYTES;
-  return { bytes, limitBytes: ENCLAVE_MEMORY_LIMIT_BYTES, exceeds: bytes > ENCLAVE_MEMORY_LIMIT_BYTES };
+  return { bytes, limitBytes, exceeds: bytes > limitBytes };
 }
 
-export function warnIfZkeyTooLarge(zkeyPath) {
+export function enclaveMemoryLimitBytes(memoryMb) {
+  return memoryMb * 1024 * 1024;
+}
+
+export function warnIfZkeyTooLarge(zkeyPath, limitBytes = ENCLAVE_MEMORY_LIMIT_BYTES) {
   let size = 0;
   try { size = fs.statSync(zkeyPath).size; } catch { return; }
-  const est = estimateContributeMemory(size);
+  const est = estimateContributeMemory(size, limitBytes);
   if (!est.exceeds) return;
-  log(`警告: zkey ${size} bytes の見積もり使用メモリ ${est.bytes} bytes が enclave 上限 ${est.limitBytes} bytes を超えます。ENCLAVE_MEMORY_MB の引き上げを検討してください（650MB 級は実機未計測）。`);
+  const memoryMb = Math.floor(est.limitBytes / (1024 * 1024));
+  log(`warning: estimated memory for a ${size} byte zkey is ${est.bytes} bytes, above the enclave limit of ${est.limitBytes} bytes (--enclave-memory-mb ${memoryMb}). Raise --enclave-memory-mb and choose an --instance-type that can hold it (650MB-class zkeys are not yet measured on Nitro).`);
 }
 
 export function hashBuildInputs(dir) {
@@ -193,24 +211,102 @@ export function parseArgs(argv) {
   return { command, opts };
 }
 
+function pathsFromStem(stem) {
+  return {
+    r1cs: `${stem}.r1cs`,
+    zkeyIn: `${stem}_0000.zkey`,
+    zkeyOut: `${stem}_final.zkey`,
+  };
+}
+
+function stemFromCircuitFile(file) {
+  if (file.endsWith(".r1cs")) return file.slice(0, -".r1cs".length);
+  if (file.endsWith("_0000.zkey")) return file.slice(0, -"_0000.zkey".length);
+  if (file.endsWith("_final.zkey")) return file.slice(0, -"_final.zkey".length);
+  return null;
+}
+
+/**
+ * Derive the r1cs, the initial zkey, and the final zkey from --circuit.
+ * A bare name prefers build/<name>. A filename is accepted too.
+ */
+export function resolveCircuit(spec, { cwd = process.cwd(), exists = fs.existsSync } = {}) {
+  if (spec == null || spec === "" || spec === true) throw new Error("--circuit is required (example: --circuit build/seal-identity)");
+  const text = String(spec);
+  const abs = path.resolve(cwd, text);
+  const fileStem = stemFromCircuitFile(abs);
+  if (fileStem) return pathsFromStem(fileStem);
+  const bare = !path.isAbsolute(text) && !text.includes("/") && !text.includes("\\");
+  const stems = bare ? [path.join(cwd, "build", text), path.join(cwd, text)] : [abs];
+  for (const stem of stems) {
+    const paths = pathsFromStem(stem);
+    if (exists(paths.r1cs) || exists(paths.zkeyIn)) return paths;
+  }
+  return pathsFromStem(stems[0]);
+}
+
+/** When exactly one *_final.ptau sits beside the circuit, use it for zkey verify. */
+export function findSoleFinalPtau(circuitDir, { listDir = fs.readdirSync } = {}) {
+  const places = [path.join(circuitDir, "ptau"), circuitDir];
+  for (const dir of places) {
+    let names;
+    try { names = listDir(dir); } catch { continue; }
+    const finals = names.filter((name) => name.endsWith("_final.ptau")).map((name) => path.join(dir, name));
+    if (finals.length === 1) return finals[0];
+    if (finals.length > 1) return null;
+  }
+  return null;
+}
+
+export function resolvePhase2Circuit(opts, deps = {}) {
+  const cwd = deps.cwd ?? process.cwd();
+  const derived = opts.circuit ? resolveCircuit(opts.circuit, { cwd, exists: deps.exists }) : null;
+  const r1cs = opts.r1cs ?? derived?.r1cs;
+  const zkeyIn = opts["zkey-in"] ?? derived?.zkeyIn;
+  const zkeyOut = opts["zkey-out"] ?? derived?.zkeyOut;
+  if (!r1cs || !zkeyIn || !zkeyOut) throw new Error("--circuit is required (example: --circuit build/seal-identity)");
+  const r1csAbs = path.resolve(cwd, r1cs);
+  const ptau = opts.ptau
+    ? path.resolve(cwd, opts.ptau)
+    : findSoleFinalPtau(path.dirname(r1csAbs), { listDir: deps.listDir });
+  return {
+    r1cs: r1csAbs,
+    zkeyIn: path.resolve(cwd, zkeyIn),
+    zkeyOut: path.resolve(cwd, zkeyOut),
+    ptau: ptau ?? null,
+  };
+}
+
+export function resolveVerifyInputs(opts, deps = {}) {
+  const circuit = opts.circuit ? resolveCircuit(opts.circuit, deps) : null;
+  const zkeyOut = opts["zkey-out"] ?? circuit?.zkeyOut;
+  return {
+    attestationPath: opts.attestation ?? (zkeyOut ? `${zkeyOut}.attestation.cbor` : undefined),
+    pcrsPath: opts.pcrs ?? (zkeyOut ? `${zkeyOut}.pcrs.json` : undefined),
+    zkeyIn: opts["zkey-in"] ?? circuit?.zkeyIn,
+    zkeyOut,
+  };
+}
+
 /* ============================================================
- * ライフサイクル計画（dry-run と本実行で同じ手順を使う）
+ * Lifecycle plan (dry-run and a real run share these steps)
  * ============================================================ */
 
 export function planLifecycle() {
   return [
-    "provision: ami 解決 (SSM パラメータ)",
-    "provision: keypair 作成",
-    "provision: security group 作成 + ssh(22) を自 IP のみ許可",
-    `provision: EC2 起動 (enclave 対応, タグ ${TAG_KEY}=<run-id>)`,
-    "transfer: enclave バンドル + zkey_0000 を scp",
-    "remote: docker ビルド → nitro-cli build-enclave → PCR manifest 保存",
-    "remote: enclave 起動 → vsock 経由で zkey 送信 → contribute (enclave 内 CSPRNG)",
-    "remote: attestation doc (nonce = sha256(zkey_0000)||sha256(zkey_final)) 取得 → zkey_final と一括で返送",
-    "collect: zkey_final + attestation doc + PCR manifest を回収",
-    "verify: COSE_Sign1 署名 → 証明書チェーン → PCR0/1/2 → nonce をオフライン検証",
-    "verify: snarkjs zkey verify（--skip-zkey-verify で省略可）",
-    "teardown: instance 終了 → keypair / security group 削除（--keep-resources で残す）",
+    "provision: resolve the AMI (SSM parameter)",
+    "provision: create a keypair",
+    "provision: resolve a public subnet (create a dedicated VPC and IGW when the default VPC has none)",
+    "provision: create a security group in that VPC and allow ssh(22) from this IP only",
+    `provision: launch EC2 (default ${DEFAULT_INSTANCE_TYPE}, explicit subnet, public IPv4, tag ${TAG_KEY}=<run-id>)`,
+    "transfer: scp the enclave bundle and zkey_0000",
+    "remote: pass ENCLAVE_MEMORY_MB / ENCLAVE_CPU / CLIENT_TIMEOUT_MS via sudo env, then docker build → nitro-cli build-enclave → save the PCR manifest",
+    "remote: start the enclave → send the zkey over vsock → contribute (CSPRNG inside the enclave)",
+    "remote: fetch the attestation doc (nonce = sha256(zkey_0000)||sha256(zkey_final)) → return it with zkey_final",
+    "collect: retrieve zkey_final, the attestation doc, and the PCR manifest",
+    "verify: offline check of the COSE_Sign1 signature → certificate chain → PCR0/1/2 → nonce",
+    "verify: snarkjs zkey verify (omit with --skip-zkey-verify)",
+    "teardown: terminate the instance → delete the keypair and security group (and the dedicated VPC when this run created one; --keep-resources leaves them)",
   ];
 }
 
@@ -265,58 +361,318 @@ function idsFromText(out) {
   return String(out ?? "").trim().split(/\s+/).filter((x) => x && x !== "None");
 }
 
-export async function provision({ region, instanceType, ami, keepResources = false }) {
+function requirePositiveInt(name, value, fallback, { min = 1, max = Number.MAX_SAFE_INTEGER, even = false } = {}) {
+  const raw = value === undefined ? fallback : value;
+  if (typeof raw === "boolean" || !/^[0-9]+$/.test(String(raw))) throw new Error(`invalid ${name}`);
+  const n = Number(raw);
+  if (!Number.isSafeInteger(n) || n < min || n > max || (even && n % 2 !== 0)) throw new Error(`invalid ${name}`);
+  return n;
+}
+
+/** Nitro Enclaves do not start on burstable, bare-metal, or u-* instances. The default is m6i.xlarge. */
+export function assertEnclaveInstanceType(instanceType) {
+  const type = String(instanceType ?? "");
+  if (!/^[a-z][a-z0-9-]*\.[a-z0-9-]+$/i.test(type)) throw new Error(`invalid instance type: ${type}`);
+  if (UNSUPPORTED_ENCLAVE_INSTANCE.test(type)) {
+    throw new Error(`${type} cannot start Nitro Enclaves. Use the default ${DEFAULT_INSTANCE_TYPE} (4 vCPU / 16 GiB) or another non-burstable, non-bare-metal type`);
+  }
+  return type;
+}
+
+export function parseEnclaveResources(opts = {}) {
+  const memoryMb = requirePositiveInt("enclave-memory-mb", opts["enclave-memory-mb"], DEFAULT_ENCLAVE_MEMORY_MB, { min: 1024, even: true });
+  const cpu = requirePositiveInt("enclave-cpu", opts["enclave-cpu"], DEFAULT_ENCLAVE_CPU, { min: 2, max: 128 });
+  const timeoutMs = requirePositiveInt("client-timeout-ms", opts["client-timeout-ms"], DEFAULT_CLIENT_TIMEOUT_MS, { min: 1000, max: MAX_CLIENT_TIMEOUT_MS });
+  return { memoryMb, cpu, timeoutMs };
+}
+
+/** sudo drops the environment. Pass only integers as command arguments. */
+export function remoteSetupCommand(remoteDir, resources) {
+  if (remoteDir !== REMOTE_DIR) throw new Error("invalid remote dir");
+  const { memoryMb, cpu, timeoutMs } = resources ?? {};
+  if (![memoryMb, cpu, timeoutMs].every((n) => Number.isSafeInteger(n) && n > 0)) {
+    throw new Error("invalid enclave resources");
+  }
+  return `cd ${remoteDir} && sudo env ENCLAVE_MEMORY_MB=${memoryMb} ENCLAVE_CPU=${cpu} CLIENT_TIMEOUT_MS=${timeoutMs} bash enclave/setup-and-run.sh`;
+}
+
+export function sshTimeoutFor(resources) {
+  return Math.max(PHASE2_TIMEOUT_MS, resources.timeoutMs + 60 * 60 * 1000);
+}
+
+function tagSpec(resourceType, id) {
+  return `ResourceType=${resourceType},Tags=[{Key=${TAG_KEY},Value=${id}},{Key=Name,Value=lemma-cauldron}]`;
+}
+
+function requireId(value, re, label) {
+  const id = String(value ?? "");
+  if (!re.test(id)) throw new Error(`invalid ${label}: ${id}`);
+  return id;
+}
+
+function parseAwsJson(text, label) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`${label} returned invalid JSON`);
+  }
+}
+
+function parseIdList(text) {
+  if (text == null || String(text).trim() === "" || String(text).trim() === "None") return [];
+  const parsed = parseAwsJson(text, "id list");
+  if (parsed == null) return [];
+  if (!Array.isArray(parsed)) throw new Error("expected a JSON list");
+  return parsed.map(String);
+}
+
+export function routeTableForSubnet(subnetId, routeTables) {
+  const tables = routeTables ?? [];
+  const specific = tables.find((rt) => (rt.Associations ?? []).some((a) => a.SubnetId === subnetId));
+  if (specific) return specific;
+  return tables.find((rt) => (rt.Associations ?? []).some((a) => a.Main === true)) ?? null;
+}
+
+export function routeTableHasIgw(table) {
+  return (table?.Routes ?? []).some((r) => r.DestinationCidrBlock === "0.0.0.0/0" && IGW_ID_RE.test(String(r.GatewayId ?? "")));
+}
+
+/** A subnet is public only when its route table sends 0.0.0.0/0 to an IGW. */
+export function pickPublicSubnet(subnets, routeTables) {
+  const hit = (subnets ?? []).find((s) => SUBNET_ID_RE.test(String(s?.SubnetId ?? ""))
+    && s.State !== "pending"
+    && routeTableHasIgw(routeTableForSubnet(s.SubnetId, routeTables)));
+  return hit?.SubnetId ?? null;
+}
+
+export function runInstancesArgs({ ami, instanceType, keyName, sgId, subnetId, instanceTags, region }) {
+  requireId(subnetId, SUBNET_ID_RE, "subnet");
+  return [
+    "ec2", "run-instances",
+    "--image-id", ami,
+    "--instance-type", instanceType,
+    "--key-name", keyName,
+    "--security-group-ids", sgId,
+    "--subnet-id", subnetId,
+    "--associate-public-ip-address",
+    "--enclave-options", "Enabled=true",
+    "--metadata-options", "HttpEndpoint=disabled",
+    "--tag-specifications", instanceTags,
+    "--region", region,
+    "--output", "json",
+  ];
+}
+
+async function createDedicatedNetwork({ region, id, awsImpl, network }) {
+  network.created = true;
+  log(`run-id ${id}: no public subnet in the default VPC; creating a dedicated VPC`);
+  const vpc = parseAwsJson(await awsImpl([
+    "ec2", "create-vpc", "--cidr-block", DEDICATED_VPC_CIDR,
+    "--tag-specifications", tagSpec("vpc", id),
+    "--region", region, "--output", "json",
+  ]), "create-vpc");
+  network.vpcId = requireId(vpc?.Vpc?.VpcId, VPC_ID_RE, "vpc");
+  const subnet = parseAwsJson(await awsImpl([
+    "ec2", "create-subnet", "--vpc-id", network.vpcId, "--cidr-block", DEDICATED_SUBNET_CIDR,
+    "--tag-specifications", tagSpec("subnet", id),
+    "--region", region, "--output", "json",
+  ]), "create-subnet");
+  network.subnetId = requireId(subnet?.Subnet?.SubnetId, SUBNET_ID_RE, "subnet");
+  await awsImpl([
+    "ec2", "modify-subnet-attribute", "--subnet-id", network.subnetId,
+    "--map-public-ip-on-launch", "Value=true", "--region", region,
+  ]);
+  const igw = parseAwsJson(await awsImpl([
+    "ec2", "create-internet-gateway",
+    "--tag-specifications", tagSpec("internet-gateway", id),
+    "--region", region, "--output", "json",
+  ]), "create-internet-gateway");
+  network.igwId = requireId(igw?.InternetGateway?.InternetGatewayId, IGW_ID_RE, "igw");
+  await awsImpl([
+    "ec2", "attach-internet-gateway", "--internet-gateway-id", network.igwId,
+    "--vpc-id", network.vpcId, "--region", region,
+  ]);
+  const tables = parseAwsJson(await awsImpl([
+    "ec2", "describe-route-tables",
+    "--filters", `Name=vpc-id,Values=${network.vpcId}`, "Name=association.main,Values=true",
+    "--region", region, "--output", "json",
+  ]), "describe-route-tables");
+  const routeTableId = tables?.RouteTables?.[0]?.RouteTableId;
+  if (!/^rtb-[0-9a-f]+$/.test(String(routeTableId ?? ""))) throw new Error("dedicated VPC has no main route table");
+  await awsImpl([
+    "ec2", "create-route", "--route-table-id", routeTableId,
+    "--destination-cidr-block", "0.0.0.0/0", "--gateway-id", network.igwId, "--region", region,
+  ]);
+  return network;
+}
+
+export async function resolveLaunchNetwork({ region, id, awsImpl = aws, network = { created: false } }) {
+  const vpcs = parseIdList(await awsImpl([
+    "ec2", "describe-vpcs",
+    "--filters", "Name=is-default,Values=true",
+    "--region", region, "--query", "Vpcs[].VpcId", "--output", "json",
+  ]));
+  const vpcId = vpcs.find((v) => VPC_ID_RE.test(v));
+  if (vpcId) {
+    const subnetsDoc = parseAwsJson(await awsImpl([
+      "ec2", "describe-subnets",
+      "--filters", `Name=vpc-id,Values=${vpcId}`, "Name=state,Values=available",
+      "--region", region, "--output", "json",
+    ]), "describe-subnets");
+    const rtDoc = parseAwsJson(await awsImpl([
+      "ec2", "describe-route-tables",
+      "--filters", `Name=vpc-id,Values=${vpcId}`,
+      "--region", region, "--output", "json",
+    ]), "describe-route-tables");
+    const subnetId = pickPublicSubnet(subnetsDoc.Subnets, rtDoc.RouteTables);
+    if (subnetId) {
+      network.created = false;
+      network.vpcId = vpcId;
+      network.subnetId = subnetId;
+      return network;
+    }
+  }
+  return createDedicatedNetwork({ region, id, awsImpl, network });
+}
+
+const notFound = (e) => /NotFound|does not exist|InvalidVpcID|InvalidSubnetID|InvalidInternetGatewayID|InvalidRouteTableID/i.test(String(e?.message ?? e));
+
+export async function deleteDedicatedNetwork({
+  vpcId, subnetId, subnetIds, igwId, igwIds, region, awsImpl = aws, sleep = delay, attempts = 6,
+}) {
+  const subnets = subnetIds ?? (subnetId ? [subnetId] : []);
+  const igws = igwIds ?? (igwId ? [igwId] : []);
+  const retryDelete = async (args) => {
+    let last = new Error(args.join(" "));
+    for (let i = 0; i < attempts; i++) {
+      try {
+        await awsImpl(args);
+        return;
+      } catch (e) {
+        if (notFound(e)) return;
+        last = e;
+        if (!/DependencyViolation|dependent object/i.test(String(e.message ?? e)) || i + 1 === attempts) throw e;
+        await sleep(10_000);
+      }
+    }
+    throw last;
+  };
+  for (const id of subnets) {
+    if (SUBNET_ID_RE.test(id)) await retryDelete(["ec2", "delete-subnet", "--subnet-id", id, "--region", region]);
+  }
+  for (const id of igws) {
+    if (!IGW_ID_RE.test(id)) continue;
+    if (vpcId && VPC_ID_RE.test(vpcId)) {
+      await awsImpl(["ec2", "detach-internet-gateway", "--internet-gateway-id", id, "--vpc-id", vpcId, "--region", region]).catch((e) => {
+        if (!notFound(e) && !/not attached|Gateway.NotAttached/i.test(String(e.message ?? e))) log(String(e.message ?? e));
+      });
+    }
+    await retryDelete(["ec2", "delete-internet-gateway", "--internet-gateway-id", id, "--region", region]);
+  }
+  if (vpcId && VPC_ID_RE.test(vpcId)) await retryDelete(["ec2", "delete-vpc", "--vpc-id", vpcId, "--region", region]);
+}
+
+async function deleteNetworksForRun({ id, region, awsImpl, sleep }) {
+  const vpcs = parseIdList(await awsImpl([
+    "ec2", "describe-vpcs",
+    "--filters", `Name=tag:${TAG_KEY},Values=${id}`,
+    "--region", region, "--query", "Vpcs[].VpcId", "--output", "json",
+  ]).catch((e) => { log(String(e.message ?? e)); return "[]"; }));
+  const taggedIgws = parseIdList(await awsImpl([
+    "ec2", "describe-internet-gateways",
+    "--filters", `Name=tag:${TAG_KEY},Values=${id}`,
+    "--region", region, "--query", "InternetGateways[].InternetGatewayId", "--output", "json",
+  ]).catch((e) => { log(String(e.message ?? e)); return "[]"; }));
+  const seenIgw = new Set();
+  for (const vpcId of vpcs) {
+    if (!VPC_ID_RE.test(vpcId)) continue;
+    const subnets = parseIdList(await awsImpl([
+      "ec2", "describe-subnets",
+      "--filters", `Name=vpc-id,Values=${vpcId}`,
+      "--region", region, "--query", "Subnets[].SubnetId", "--output", "json",
+    ]).catch(() => "[]"));
+    const attached = parseIdList(await awsImpl([
+      "ec2", "describe-internet-gateways",
+      "--filters", `Name=attachment.vpc-id,Values=${vpcId}`,
+      "--region", region, "--query", "InternetGateways[].InternetGatewayId", "--output", "json",
+    ]).catch(() => "[]"));
+    const igws = [...attached, ...taggedIgws].filter((igw) => {
+      if (seenIgw.has(igw)) return false;
+      seenIgw.add(igw);
+      return true;
+    });
+    await deleteDedicatedNetwork({ vpcId, subnetIds: subnets, igwIds: igws, region, awsImpl, sleep }).catch((e) => log(String(e.message ?? e)));
+  }
+  for (const igwId of taggedIgws) {
+    if (seenIgw.has(igwId) || !IGW_ID_RE.test(igwId)) continue;
+    await deleteDedicatedNetwork({ igwIds: [igwId], region, awsImpl, sleep }).catch((e) => log(String(e.message ?? e)));
+  }
+}
+
+export async function provision({
+  region, instanceType, ami, keepResources = false, awsImpl = aws, fetchIp = fetchMyIp, sleep = delay,
+}) {
+  assertEnclaveInstanceType(instanceType);
   const id = runId();
   const keyName = `lemma-tee-${id}`;
   const groupName = `lemma-tee-${id}`;
   const keyPath = path.join(os.tmpdir(), `${keyName}.pem`);
   const knownHosts = path.join(os.tmpdir(), `${keyName}.known_hosts`);
-  const state = { id, instanceId: undefined, ip: undefined, keyPath: undefined, knownHosts, keyName, sgId: undefined, region };
-  const instanceTags = `ResourceType=instance,Tags=[{Key=${TAG_KEY},Value=${id}},{Key=Name,Value=lemma-cauldron}]`;
-  const sgTags = `ResourceType=security-group,Tags=[{Key=${TAG_KEY},Value=${id}},{Key=Name,Value=lemma-cauldron}]`;
+  const network = { created: false };
+  const state = {
+    id, instanceId: undefined, ip: undefined, keyPath: undefined, knownHosts, keyName, sgId: undefined, region, network,
+  };
   let createdKey = false;
   try {
-    log(`run-id ${id}: keypair 作成`);
-    const kp = JSON.parse(await aws([
+    log(`run-id ${id}: creating a disposable keypair (deleted from AWS and from disk on exit)`);
+    const kp = parseAwsJson(await awsImpl([
       "ec2", "create-key-pair", "--key-name", keyName, "--region", region, "--output", "json",
-    ]));
+    ]), "create-key-pair");
     if (!kp.KeyMaterial) throw new Error("create-key-pair returned no KeyMaterial");
     createdKey = true;
     const fd = fs.openSync(keyPath, "wx", 0o600);
     state.keyPath = keyPath;
     try { fs.writeFileSync(fd, kp.KeyMaterial); } finally { fs.closeSync(fd); }
 
-    log(`run-id ${id}: security group 作成`);
-    const sg = JSON.parse(await aws([
+    log(`run-id ${id}: resolving a public subnet`);
+    await resolveLaunchNetwork({ region, id, awsImpl, network });
+
+    log(`run-id ${id}: creating a security group (${network.vpcId})`);
+    const sg = parseAwsJson(await awsImpl([
       "ec2", "create-security-group", "--group-name", groupName,
-      "--description", `lemma cauldron ${id}`, "--tag-specifications", sgTags,
+      "--description", `lemma cauldron ${id}`, "--vpc-id", network.vpcId,
+      "--tag-specifications", tagSpec("security-group", id),
       "--region", region, "--output", "json",
-    ]));
-    state.sgId = sg.GroupId;
-    const myIp = await fetchMyIp();
-    await aws(["ec2", "authorize-security-group-ingress", "--group-id", sg.GroupId,
+    ]), "create-security-group");
+    state.sgId = requireId(sg.GroupId, /^sg-[0-9a-f]+$/, "security group");
+    const myIp = await fetchIp();
+    await awsImpl(["ec2", "authorize-security-group-ingress", "--group-id", state.sgId,
       "--protocol", "tcp", "--port", "22", "--cidr", `${myIp}/32`, "--region", region]);
 
-    log(`run-id ${id}: EC2 起動 (${instanceType}, ${ami})`);
-    const run = JSON.parse(await aws(["ec2", "run-instances",
-      "--image-id", ami, "--instance-type", instanceType,
-      "--key-name", keyName, "--security-group-ids", sg.GroupId,
-      "--enclave-options", "Enabled=true",
-      "--metadata-options", "HttpEndpoint=disabled",
-      "--tag-specifications", instanceTags, "--region", region, "--output", "json"]));
+    log(`run-id ${id}: launching EC2 (${instanceType}, ${ami}, ${network.subnetId})`);
+    const run = parseAwsJson(await awsImpl(runInstancesArgs({
+      ami, instanceType, keyName, sgId: state.sgId, subnetId: network.subnetId,
+      instanceTags: tagSpec("instance", id), region,
+    })), "run-instances");
     state.instanceId = run.Instances[0].InstanceId;
 
-    await aws(["ec2", "wait", "instance-running", "--instance-ids", state.instanceId, "--region", region]);
-    const desc = JSON.parse(await aws(["ec2", "describe-instances", "--instance-ids", state.instanceId,
-      "--region", region, "--query", "Reservations[0].Instances[0].PublicIpAddress", "--output", "json"]));
-    const ip = String(desc ?? "").trim();
+    await awsImpl(["ec2", "wait", "instance-running", "--instance-ids", state.instanceId, "--region", region]);
+    let ip = "";
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const desc = parseAwsJson(await awsImpl(["ec2", "describe-instances", "--instance-ids", state.instanceId,
+        "--region", region, "--query", "Reservations[0].Instances[0].PublicIpAddress", "--output", "json"]), "describe-instances");
+      ip = String(desc ?? "").trim();
+      if (isIpv4(ip)) break;
+      await sleep(5000);
+    }
     if (!isIpv4(ip)) throw new Error(`instance ${state.instanceId} has no public IPv4`);
     state.ip = ip;
     log(`run-id ${id}: ${state.instanceId} @ ${ip}`);
     return state;
   } catch (e) {
-    if (!keepResources && (createdKey || state.sgId || state.instanceId)) {
-      await teardownById(state).catch((te) => log(String(te.message ?? te)));
+    const dirty = createdKey || state.sgId || state.instanceId || state.network?.created;
+    if (!keepResources && dirty) {
+      await teardownById(state, { awsImpl, sleep }).catch((te) => log(String(te.message ?? te)));
     } else if (keepResources) {
       log(`--keep-resources: partial run ${id} を残しました`);
     }
@@ -355,15 +711,21 @@ export async function deleteSecurityGroupWithRetry({
   throw last;
 }
 
-export async function teardownById({ id, instanceId, keyName, sgId, region, keyPath, knownHosts }) {
+export async function teardownById(state, deps = {}) {
+  const { id, instanceId, keyName, sgId, region, keyPath, knownHosts, network } = state;
+  const awsImpl = deps.awsImpl ?? aws;
+  const sleep = deps.sleep ?? delay;
   log(`teardown: ${id ?? "(unknown)"}`);
   if (instanceId) {
-    await aws(["ec2", "terminate-instances", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
-    await aws(["ec2", "wait", "instance-terminated", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
+    await awsImpl(["ec2", "terminate-instances", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
+    await awsImpl(["ec2", "wait", "instance-terminated", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
   }
-  if (keyName) await aws(["ec2", "delete-key-pair", "--key-name", keyName, "--region", region]).catch((e) => log(String(e.message)));
+  if (keyName) await awsImpl(["ec2", "delete-key-pair", "--key-name", keyName, "--region", region]).catch((e) => log(String(e.message)));
   if (sgId) {
-    await deleteSecurityGroupWithRetry({ sgId, instanceId, region }).catch((e) => log(String(e.message)));
+    await deleteSecurityGroupWithRetry({ sgId, instanceId, region, awsImpl, sleep }).catch((e) => log(String(e.message)));
+  }
+  if (network?.created) {
+    await deleteDedicatedNetwork({ ...network, region, awsImpl, sleep }).catch((e) => log(String(e.message)));
   }
   const pem = keyPath ?? (keyName ? path.join(os.tmpdir(), `${keyName}.pem`) : null);
   if (pem) shred(pem);
@@ -372,27 +734,30 @@ export async function teardownById({ id, instanceId, keyName, sgId, region, keyP
 }
 
 /** run-id タグと名前から孤児リソースを探して消す（teardown コマンド用） */
-export async function teardownByRunId(id, region) {
+export async function teardownByRunId(id, region, deps = {}) {
   assertRunId(id);
-  const out = await aws(["ec2", "describe-instances",
+  const awsImpl = deps.awsImpl ?? aws;
+  const sleep = deps.sleep ?? delay;
+  const out = await awsImpl(["ec2", "describe-instances",
     "--filters", `Name=tag:${TAG_KEY},Values=${id}`,
     "Name=instance-state-name,Values=pending,running,stopping,stopped",
     "--region", region, "--query", "Reservations[].Instances[].InstanceId", "--output", "text"]);
   const ids = idsFromText(out);
   for (const instanceId of ids) {
-    await aws(["ec2", "terminate-instances", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
-    await aws(["ec2", "wait", "instance-terminated", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
+    await awsImpl(["ec2", "terminate-instances", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
+    await awsImpl(["ec2", "wait", "instance-terminated", "--instance-ids", instanceId, "--region", region]).catch((e) => log(String(e.message)));
   }
-  await aws(["ec2", "delete-key-pair", "--key-name", `lemma-tee-${id}`, "--region", region]).catch(() => {});
+  await awsImpl(["ec2", "delete-key-pair", "--key-name", `lemma-tee-${id}`, "--region", region]).catch(() => {});
   const sgIds = new Set();
   for (const filter of [`Name=group-name,Values=lemma-tee-${id}`, `Name=tag:${TAG_KEY},Values=${id}`]) {
-    const sg = await aws(["ec2", "describe-security-groups", "--filters", filter,
+    const sg = await awsImpl(["ec2", "describe-security-groups", "--filters", filter,
       "--region", region, "--query", "SecurityGroups[].GroupId", "--output", "text"]).catch(() => "");
     for (const sgId of idsFromText(sg)) sgIds.add(sgId);
   }
   for (const sgId of sgIds) {
-    await deleteSecurityGroupWithRetry({ sgId, region }).catch((e) => log(String(e.message)));
+    await deleteSecurityGroupWithRetry({ sgId, region, awsImpl, sleep }).catch((e) => log(String(e.message)));
   }
+  await deleteNetworksForRun({ id, region, awsImpl, sleep });
   shred(path.join(os.tmpdir(), `lemma-tee-${id}.pem`));
   fs.rmSync(path.join(os.tmpdir(), `lemma-tee-${id}.known_hosts`), { force: true });
   return { terminated: ids };
@@ -909,20 +1274,23 @@ export function verifyBundle({
  * phase2 — provision → run → verify → teardown
  * ============================================================ */
 
-export async function phase2(opts) {
+export async function phase2(opts, deps = {}) {
   const region = opts.region ?? "us-east-1";
-  const instanceType = opts["instance-type"] ?? "t3.xlarge"; // seal(222k gate) の contribute に 8GB enclave + 親を収める
-  const r1cs = opts.r1cs;
-  const zkeyIn = opts["zkey-in"];
-  const zkeyOut = opts["zkey-out"];
-  if (!r1cs || !zkeyIn || !zkeyOut) throw new Error("--r1cs / --zkey-in / --zkey-out が必要");
-  warnIfZkeyTooLarge(zkeyIn);
+  const instanceType = assertEnclaveInstanceType(opts["instance-type"] ?? DEFAULT_INSTANCE_TYPE);
+  const resources = parseEnclaveResources(opts);
+  const circuit = resolvePhase2Circuit(opts, deps);
+  const { r1cs, zkeyIn, zkeyOut } = circuit;
+  warnIfZkeyTooLarge(zkeyIn, enclaveMemoryLimitBytes(resources.memoryMb));
+  log(`circuit ${zkeyIn} → ${zkeyOut}${circuit.ptau ? ` (ptau ${path.basename(circuit.ptau)})` : ""}`);
 
   if (opts["dry-run"]) {
     const steps = planLifecycle();
     steps.forEach((s, i) => log(`${i + 1}. ${s}`));
-    return { dryRun: true, steps };
+    log(`instance-type ${instanceType}, enclave ${resources.memoryMb} MiB / ${resources.cpu} CPU, client timeout ${resources.timeoutMs} ms`);
+    return { dryRun: true, steps, instanceType, resources, circuit };
   }
+  if (!fs.existsSync(r1cs)) throw new Error(`r1cs not found: ${r1cs}`);
+  if (!fs.existsSync(zkeyIn)) throw new Error(`initial zkey not found: ${zkeyIn}`);
 
   const ami = opts.ami ?? (await resolveAmi(region));
   let res = null;
@@ -942,15 +1310,14 @@ export async function phase2(opts) {
       "-o", "ConnectTimeout=10",
     ];
     const host = `ec2-user@${res.ip}`;
-    const remoteDir = "/home/ec2-user/cauldron";
 
     log("scp: enclave バンドル + zkey を転送");
-    await retry("ssh", () => exec("ssh", [...sshBase, host, "mkdir -p " + remoteDir]), 12, 5000);
-    await exec("scp", [...sshBase, "-r", path.join(HERE, "..", "enclave"), `${host}:${remoteDir}/`], { timeout: SCP_TIMEOUT_MS });
-    await exec("scp", [...sshBase, zkeyIn, `${host}:${remoteDir}/zkey_0000`], { timeout: SCP_TIMEOUT_MS });
+    await retry("ssh", () => exec("ssh", [...sshBase, host, "mkdir -p " + REMOTE_DIR]), 12, 5000);
+    await exec("scp", [...sshBase, "-r", path.join(HERE, "..", "enclave"), `${host}:${REMOTE_DIR}/`], { timeout: SCP_TIMEOUT_MS });
+    await exec("scp", [...sshBase, zkeyIn, `${host}:${REMOTE_DIR}/zkey_0000`], { timeout: SCP_TIMEOUT_MS });
 
-    log("remote: setup-and-run（EIF ビルド → enclave 内 contribute → 回収）");
-    await exec("ssh", [...sshBase, host, `cd ${remoteDir} && sudo bash enclave/setup-and-run.sh`], { timeout: PHASE2_TIMEOUT_MS });
+    log(`remote: setup-and-run（enclave ${resources.memoryMb} MiB / ${resources.cpu} CPU）`);
+    await exec("ssh", [...sshBase, host, remoteSetupCommand(REMOTE_DIR, resources)], { timeout: sshTimeoutFor(resources) });
 
     log("collect: 結果をステージしてから検証する");
     const stage = fs.mkdtempSync(path.join(os.tmpdir(), `cauldron-${res.id}-`));
@@ -958,9 +1325,9 @@ export async function phase2(opts) {
       const stagedZkey = path.join(stage, "zkey_final");
       const stagedAtt = path.join(stage, "attestation.cbor");
       const stagedPcrs = path.join(stage, "pcrs.json");
-      await exec("scp", [...sshBase, `${host}:${remoteDir}/out/zkey_final`, stagedZkey], { timeout: SCP_TIMEOUT_MS });
-      await exec("scp", [...sshBase, `${host}:${remoteDir}/out/attestation.cbor`, stagedAtt], { timeout: SCP_TIMEOUT_MS });
-      await exec("scp", [...sshBase, `${host}:${remoteDir}/out/pcrs.json`, stagedPcrs], { timeout: SCP_TIMEOUT_MS });
+      await exec("scp", [...sshBase, `${host}:${REMOTE_DIR}/out/zkey_final`, stagedZkey], { timeout: SCP_TIMEOUT_MS });
+      await exec("scp", [...sshBase, `${host}:${REMOTE_DIR}/out/attestation.cbor`, stagedAtt], { timeout: SCP_TIMEOUT_MS });
+      await exec("scp", [...sshBase, `${host}:${REMOTE_DIR}/out/pcrs.json`, stagedPcrs], { timeout: SCP_TIMEOUT_MS });
 
       log("verify: attestation（オフライン）");
       const enclaveDir = path.join(HERE, "..", "enclave");
@@ -985,9 +1352,9 @@ export async function phase2(opts) {
       if (!v.ok) throw new Error(`attestation 検証失敗: ${JSON.stringify(v)}`);
       log(`attestation OK: ${v.leafSubject}`);
 
-      if (!opts["skip-zkey-verify"] && opts.ptau) {
+      if (!opts["skip-zkey-verify"] && circuit.ptau) {
         log("verify: snarkjs zkey verify");
-        await exec("npx", ["snarkjs", "zkey", "verify", r1cs, opts.ptau, stagedZkey], { timeout: PHASE2_TIMEOUT_MS });
+        await exec("npx", ["snarkjs", "zkey", "verify", r1cs, circuit.ptau, stagedZkey], { timeout: PHASE2_TIMEOUT_MS });
       }
 
       moveFile(stagedAtt, `${zkeyOut}.attestation.cbor`);
@@ -1012,13 +1379,14 @@ async function main() {
   if (command === "phase2") {
     await phase2(opts);
   } else if (command === "verify") {
-    if (!opts.attestation || !opts.pcrs) throw new Error("--attestation と --pcrs が必要");
+    const inputs = resolveVerifyInputs(opts);
+    if (!inputs.attestationPath || !inputs.pcrsPath) throw new Error("--circuit is required, or pass both --attestation and --pcrs");
     const v = verifyBundle({
-      attestationPath: opts.attestation,
-      pcrsPath: opts.pcrs,
+      attestationPath: inputs.attestationPath,
+      pcrsPath: inputs.pcrsPath,
       nonceHash: opts["nonce-hash"],
-      zkeyIn: opts["zkey-in"],
-      zkeyOut: opts["zkey-out"],
+      zkeyIn: inputs.zkeyIn,
+      zkeyOut: inputs.zkeyOut,
       goldenPath: opts.golden,
       buildDir: opts["build-dir"],
       skipBuildCheck: Boolean(opts["skip-build-check"]),

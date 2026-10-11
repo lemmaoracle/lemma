@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "test": "vitest run",
-    "dry-run": "node scripts/cauldron.mjs phase2 --dry-run --r1cs X --zkey-in Y --zkey-out Z"
+    "dry-run": "node scripts/cauldron.mjs phase2 --dry-run --circuit X"
   },
   "engines": {
     "node": ">=18"

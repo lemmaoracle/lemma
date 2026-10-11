@@ -1,112 +1,111 @@
 # @lemmaoracle/cauldron
 
-Groth16 の trusted setup **Phase 2（`snarkjs zkey contribute`）を AWS Nitro Enclaves 内で実行**し、
-attestation doc を証跡として残す TEE setup フロー。複数回路（seal / mizudako など）のビルドから共用する。
+TEE setup that runs Groth16 trusted-setup **phase 2 (`snarkjs zkey contribute`) inside AWS Nitro Enclaves**
+and keeps the attestation document as evidence. Circuit builds (seal, mizudako, and others) share it.
 
-MPC セレモニーの代替として「toxic waste（貢献乱数）は enclave 内で生成・破棄された」ことを、
-AWS Nitro Hypervisor 署名の attestation doc で示します。証明システムは **Groth16 のまま**です。
+As an alternative to an MPC ceremony, an attestation document signed by the AWS Nitro hypervisor shows that
+the toxic waste (contribution entropy) was generated and discarded inside the enclave. The proof system stays **Groth16**.
 
-## 導入形（3つ）
+## Three ways to install
 
-1. **npm global install（推奨）** — 回路ビルドは sh（`build.sh` 等）なので、
-   `npm i -g @lemmaoracle/cauldron` で `cauldron` コマンドを置き、シェルから呼ぶ。
-   どのリポジトリ・どの回路からも同じコマンドが使える。
+1. **npm global install (recommended).** Circuit builds are shell scripts (`build.sh` and similar), so
+   `npm i -g @lemmaoracle/cauldron` puts a `cauldron` command on `PATH`.
+   The same command works from any repository and any circuit.
 
    ```bash
-   # build.sh（回路ごと）から
-   cauldron phase2 --r1cs "$BUILD_DIR/$CIRCUIT_NAME.r1cs" \
-     --zkey-in "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey" \
-     --zkey-out "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
-     --ptau "$PTAU"
+   # Circuit build.sh files in this repository call the same command.
+   # If cauldron is not on PATH, the build stops there.
+   cauldron phase2 --circuit "$BUILD_DIR/$CIRCUIT_NAME" --ptau "$PTAU"
    ```
 
-2. **コピー実行（オフライン・手軽）** — `scripts/cauldron.mjs` はゼロ依存の単一ファイル。
-   回路リポジトリへ `cp` して `node cauldron.mjs …` で動く。npm インストール不要。
-3. **workspace 参照** — 同一 monorepo かつ pnpm-workspace のメンバーであれば
-   `"@lemmaoracle/cauldron": "workspace:*"` で依存できる。
-   `packages/seal/circuits` のようなネスト階層や別リポジトリからは使えない。
+2. **Copy and run (offline).** `scripts/cauldron.mjs` is a single file with no dependencies.
+   Copy it into a circuit repository and run `node cauldron.mjs …`. No npm install.
+3. **Workspace dependency.** Inside this monorepo, a pnpm workspace member can depend on
+   `"@lemmaoracle/cauldron": "workspace:*"`.
+   Nested packages such as `packages/seal/circuits`, and other repositories, cannot.
 
-## 使い方
+## Usage
+
+The only required argument is `--circuit`. AWS credentials are not flags. Leave them to the environment the `aws` CLI already reads (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, plus `AWS_SESSION_TOKEN` for temporary credentials) or to a profile. Do not pass an SSH private key. Each run creates `lemma-tee-<run-id>`, deletes that key pair from AWS on exit, and shreds the local pem.
+
+`--circuit` names `build/<name>.r1cs` and `build/<name>_0000.zkey`. The output is `build/<name>_final.zkey`. A bare name looks at `./build/<name>` first. A path ending in `.r1cs` or `_0000.zkey` is accepted too. When the neighboring `ptau/` directory contains exactly one `*_final.ptau`, phase 2 uses it for `snarkjs zkey verify`.
 
 ```bash
-# 一括: provision → enclave 内 contribute → オフライン検証 → teardown
-# （global install 後は cauldron、未導入なら node scripts/cauldron.mjs）
-cauldron phase2 \
-  --r1cs circuit.r1cs --zkey-in circuit_0000.zkey --zkey-out circuit_final.zkey \
-  --ptau pot17_final.ptau          # 付けると snarkjs zkey verify も実行
+# From the circuit directory. Region, instance type, and enclave size stay at their defaults.
+cauldron phase2 --circuit seal-identity
+# Same thing: cauldron phase2 --circuit build/seal-identity
 
-# 手順の確認だけ（AWS に触れない）
-node cauldron.mjs phase2 --dry-run --r1cs X --zkey-in Y --zkey-out Z
+# Print the steps only. This does not call AWS.
+node cauldron.mjs phase2 --dry-run --circuit seal-identity
 
-# 後から誰でも再検証（AWS API 不要）
-# nonce = sha256(zkey_0000) || sha256(zkey_final)。入力だけのハッシュでは通らない。
-# 同じ入出力 zkey を再提示したとき nonce が一致するのは、結び付きとして正しい。
-# attestation の timestamp は検証時刻の ±15 分。過去の証跡は --now <epoch-ms> でその時刻に合わせる。
-node cauldron.mjs verify \
-  --attestation circuit_final.zkey.attestation.cbor \
-  --pcrs circuit_final.zkey.pcrs.json \
-  --zkey-in circuit_0000.zkey \
-  --zkey-out circuit_final.zkey \
-  --golden enclave/expected-pcrs.json   # 計測済みのときだけ。未計測プレースホルダは失敗する
+# Anyone can re-verify later. No AWS API.
+# nonce = sha256(zkey_0000) || sha256(zkey_final). A hash of the input alone does not pass.
+node cauldron.mjs verify --circuit seal-identity
 
-# 孤児リソースの掃除
+# Clean up resources left by a failed run. A normal exit does not need this.
 node cauldron.mjs teardown --run-id <id>
 ```
 
-成果物: `zkey_final` / `zkey_final.attestation.cbor` / `zkey_final.pcrs.json`。
-attestation doc と PCR manifest は zkey と同じ台帳に置いてください（誰でも再検証できる証跡）。
-zkey の転送は 4 byte の長さ前置で、1GiB を超えるフレームは拒否します（想定する zkey は約 650MB まで）。リモート実行の待ちは最大 10 時間です。
+The default region is `us-east-1`, the parent is `m6i.xlarge` (4 vCPU / 16 GiB), and the enclave is 8192 MiB / 2 vCPU. Pass `--region`, `--instance-type`, `--enclave-memory-mb`, `--enclave-cpu`, or `--ptau` only when those defaults are wrong. Pass `--r1cs`, `--zkey-in`, and `--zkey-out` only when the filenames do not follow the convention.
 
-## 何が起きるか
+Outputs: `zkey_final`, `zkey_final.attestation.cbor`, and `zkey_final.pcrs.json`.
+Keep the attestation document and the PCR manifest next to the zkey (evidence anyone can re-verify).
+Zkey transfer uses a 4-byte length prefix and rejects a frame over 1 GiB (expected zkeys are about 650 MB). The remote run waits at most 10 hours.
 
-1. keypair（名前 `lemma-tee-<run-id>`）・security group・EC2（enclave 対応）を**ゼロから作成**。instance と security group にはタグ `lemma-cauldron=<run-id>` を付ける
-2. enclave イメージをビルド → `nitro-cli build-enclave` → **PCR0/1/2 の期待測定値を manifest に保存**
-3. enclave 起動 → vsock 経由で `zkey_0000` を送信
-4. enclave 内: CSPRNG で `zkey contribute`（乱数は snarkjs の stdin。`-e` には載せない）→ `sha256(zkey_0000) || sha256(zkey_final)` を nonce に NSM attestation doc を取得
-5. 帰ってきた `zkey_final` + attestation を**オフライン検証**（COSE_Sign1 / ES384 の raw 署名 → ピン留めしたルートへの証明書チェーン → PCR0/1/2 → ゴールデン PCR → ビルド入力ハッシュ → nonce → timestamp）。検証が通るまで `zkey_out` には書き出さない
-6. **teardown（失敗時も、keypair や security group だけ作れた段階でも実行）**: instance 終了 → ENI が外れるまで待って keypair / security group 削除
+## What happens
 
-## trust model の留保
+1. Create a key pair (name `lemma-tee-<run-id>`), a security group, and an EC2 instance **from scratch**. The default instance is **`m6i.xlarge` (4 vCPU / 16 GiB)**. `t2` / `t3` / `t3a` / `t4g` / `a1` / `g5g` / `im4gn` / `is4gen`, bare metal, and `u-*` are rejected before launch. The subnet is an explicit public subnet of the default VPC (one whose route table sends traffic to an IGW), and `--associate-public-ip-address` assigns a public IPv4 address. If no such subnet exists, the run creates a dedicated VPC `10.66.0.0/16` and an IGW, and deletes them on exit. The security group is created in that VPC. The instance and the security group (and the VPC, subnet, and IGW when this run created them) are tagged `lemma-cauldron=<run-id>`.
+2. Build the enclave image → `nitro-cli build-enclave` → **save the expected PCR0/1/2 measurements in the manifest**.
+3. Start the enclave → send `zkey_0000` over vsock.
+4. Inside the enclave: `zkey contribute` with a CSPRNG (entropy on snarkjs stdin, not `-e`) → fetch an NSM attestation document whose nonce is `sha256(zkey_0000) || sha256(zkey_final)`.
+5. **Verify offline** the returned `zkey_final` and attestation (COSE_Sign1 / ES384 raw signature → certificate chain to the pinned root → PCR0/1/2 → golden PCRs → build-input hashes → nonce → timestamp). `zkey_out` is not written until verification passes.
+6. **Teardown (also on failure, and even if only the key pair or security group was created)**: terminate the instance → wait until the ENI detaches → delete the key pair and security group.
 
-- **AWS Nitro が信頼の中心点**（中央集権的な信頼の置き場）。対外説明では必ず明記する。
-- 検証は **PCR0 のみでなく PCR0/1/2 を見る**（PCR0 だけでは入れ子イメージの差を検知できない）。
-  ホストが書いた `pcrs.json` は、そのインスタンスがビルドした EIF の自己申告です。独立した照合はリポジトリの `enclave/expected-pcrs.json`（`--golden`）です。
-- nonce は入力と出力の両方に結ぶ。親インスタンスは vsock の中継なので、入力ハッシュだけでは `zkey_final` をすり替えられる。
-  **同じ入出力 zkey への attestation の再提示は、この結び付きとして正しい**（timestamp 窓の外なら `--now` で当時の時刻を指定する）。
-- 既定のルート証明書はソースに指紋をピン留めしてある。`--root-cert` はテスト用で、渡した PEM が新しい信頼の起点になる。
-- 証明書は CA ビットと keyUsage に加え、EKU と name constraints を見る。attestation の leaf に TLS の serverAuth / clientAuth があってはならない。name constraints は CA が拡張を載せているときだけ適用する（AWS のルートには無い）。
-- zkey サイズから必要メモリを `zkey × 16 + 512MiB` で見積もり、enclave の 8GiB を超えそうなら実行前に警告する。650MB 級の実 Nitro 計測はまだ無い。警告は見積もりであり、実行は止めない。
-- EIF のメタデータは attestation されない。サイドチャネルは脅威モデル外（業界標準と同じ）。
-- 二重化: contribute の後に `snarkjs zkey beacon`（公開ランダムネスでの finalize）を掛けると、
-  「AWS か beacon のどちらか一方が誠実なら安全」という MPC と同型の保証になる（推奨）。
+## Trust-model limits
 
-## 必要な AWS 権限
+- **AWS Nitro is the root of trust** (a centralized place to put trust). Say so whenever this is explained externally.
+- Verification checks **PCR0, PCR1, and PCR2**, not PCR0 alone (PCR0 cannot tell nested images apart).
+  The host-written `pcrs.json` is that instance's own report of the EIF it built. The independent check is `enclave/expected-pcrs.json` in this repository (`--golden`).
+- The nonce binds both the input and the output. The parent instance relays vsock, so an input-only hash lets it swap `zkey_final`.
+  **Re-presenting an attestation for the same input and output zkeys is a valid binding** (outside the timestamp window, pass the original time with `--now`).
+- The default root certificate is pinned by fingerprint in source. `--root-cert` is for tests: the PEM you pass becomes the new trust anchor.
+- Certificates are checked for the CA bit and keyUsage, plus EKU and name constraints. An attestation leaf must not carry TLS serverAuth or clientAuth. Name constraints apply only when the CA includes the extension (the AWS root does not).
+- Required memory is estimated as `zkey × 16 + 512 MiB`. If that exceeds `--enclave-memory-mb` (default 8192), phase 2 warns before it runs. The value reaches the remote `setup-and-run.sh` as `sudo env ENCLAVE_MEMORY_MB=…`. The in-enclave snarkjs heap is three quarters of that (6144 when memory is 8192), and contribution entropy is not placed on argv or in the environment. 650 MB-class zkeys are not yet measured on real Nitro hardware. The warning is an estimate and does not stop the run. When you raise memory, also raise `--instance-type` so the parent OS still has room.
+- EIF metadata is not attested. Side channels are outside the threat model (same as the usual industry model).
+- Defense in depth: after contribute, `snarkjs zkey beacon` (finalize with public randomness) gives an MPC-shaped guarantee that
+  **the setup is safe if either AWS or the beacon is honest** (recommended).
+
+## AWS permissions
 
 `ec2:CreateKeyPair` / `DeleteKeyPair` / `CreateSecurityGroup` / `DeleteSecurityGroup` /
 `AuthorizeSecurityGroupIngress` / `RunInstances` / `TerminateInstances` / `DescribeInstances` /
-`DescribeSecurityGroups` / `DescribeNetworkInterfaces` / `ssm:GetParameter`。インスタンスには IAM ロールを付けず、IMDS も止める。KMS は不要（鍵を持たない設計）。
-検証（`verify`）には AWS 権限すら不要。
+`DescribeSecurityGroups` / `DescribeNetworkInterfaces` / `DescribeVpcs` / `DescribeSubnets` /
+`DescribeRouteTables` / `DescribeInternetGateways` / `CreateVpc` / `DeleteVpc` / `CreateSubnet` /
+`DeleteSubnet` / `ModifySubnetAttribute` / `CreateInternetGateway` / `DeleteInternetGateway` /
+`AttachInternetGateway` / `DetachInternetGateway` / `CreateRoute` / `ssm:GetParameter`.
+Accounts whose default VPC already has a public subnet do not use `CreateVpc` or the calls after it. The instance has no IAM role, and IMDS is disabled. KMS is not required (the design holds no key).
+`verify` needs no AWS permissions at all.
 
-## 検証に使うルート証明書
+## Root certificate used for verification
 
-`certs/aws-nitro-root.pem` は AWS 公式配布の **AWS_NitroEnclaves_Root-G1**（subject: `CN=aws.nitro-enclaves`）。
-出典: <https://aws-nitro-enclaves.amazonaws.com/AWS_NitroEnclaves_Root-G1.zip>
-（AWS ドキュメント「Verifying the root of trust」記載の公開 CA）。
-SHA-256 指紋: `64:1A:03:21:A3:E2:44:EF:E4:56:46:31:95:D6:06:31:7E:D7:CD:CC:3C:17:56:E0:98:93:F3:C6:8F:79:BB:5B`
+`certs/aws-nitro-root.pem` is the official **AWS_NitroEnclaves_Root-G1** (subject: `CN=aws.nitro-enclaves`).
+Source: <https://aws-nitro-enclaves.amazonaws.com/AWS_NitroEnclaves_Root-G1.zip>
+(the public CA named in the AWS document "Verifying the root of trust").
+SHA-256 fingerprint: `64:1A:03:21:A3:E2:44:EF:E4:56:46:31:95:D6:06:31:7E:D7:CD:CC:3C:17:56:E0:98:93:F3:C6:8F:79:BB:5B`
 
-## 第三者が EIF を再ビルドして PCR を確認する
+## Rebuilding the EIF and checking PCRs
 
-`enclave/expected-pcrs.json` は未計測のあいだ `measured: false` で、PCR0/1/2 は `null` です。このファイルを `--golden` に渡すと検証は失敗します（プレースホルダを期待値として通さない）。
+`enclave/expected-pcrs.json` stays `measured: false` with PCR0/1/2 set to `null` until it is measured. Passing that file as `--golden` fails verification (a placeholder is not accepted as an expected value).
 
-1. `enclave/` の Dockerfile、`package-lock.json`、`requirements.txt` が手元のファイルと一致することを確認する。`verify` は manifest の `build.inputs`（各ファイルの SHA-256）をローカルの `enclave/` と照合する。意図的に外すときは `--skip-build-check`。
-2. イメージの入力は固定してある。ベースは `node:20.20.2-alpine3.22@sha256:8f47899606d000b0704e992f927fe7335adcd0d6c98851600072fb6e14a13e60`。apk は `python3=3.12.15-r0`、`py3-pip=25.1.1-r0`、`socat=1.8.1.3-r0`。npm は同梱の `package-lock.json` で `npm ci`。pip は `requirements.txt` の `==` と `--require-hashes`。
-3. Nitro Enclaves 対応のインスタンスで `enclave/setup-and-run.sh` と同じ順に `docker build` と `nitro-cli build-enclave` を実行し、`nitro-cli describe-eif` の PCR0/1/2 を読む。
-4. 読んだ 96 hex を `enclave/expected-pcrs.json` の `pcrs` に書き、`measured` を `true` にする。`build.inputs` はそのビルドに使ったファイルのハッシュのまま残す。
-5. `cauldron verify --attestation … --pcrs … --zkey-in … --zkey-out … --golden enclave/expected-pcrs.json` で、ホスト manifest とゴールデンの両方を attestation の PCR と照合する。
+1. Confirm that `enclave/Dockerfile`, `package-lock.json`, and `requirements.txt` match the files you have. `verify` compares the manifest `build.inputs` (SHA-256 of each file) with the local `enclave/` directory. Use `--skip-build-check` only when you mean to skip that.
+2. Image inputs are pinned. The base is `node:20.20.2-alpine3.22@sha256:8f47899606d000b0704e992f927fe7335adcd0d6c98851600072fb6e14a13e60`. apk pins `python3=3.12.15-r0`, `py3-pip=25.1.1-r0`, and `socat=1.8.1.3-r0`. npm uses the vendored `package-lock.json` via `npm ci`. pip uses `==` and `--require-hashes` from `requirements.txt`.
+3. On a Nitro Enclaves instance, run `docker build` and `nitro-cli build-enclave` in the same order as `enclave/setup-and-run.sh`, and read PCR0/1/2 from `nitro-cli describe-eif`.
+4. Write those 96 hex digits into `pcrs` in `enclave/expected-pcrs.json` and set `measured` to `true`. Leave `build.inputs` as the hashes of the files that build used.
+5. `cauldron verify --attestation … --pcrs … --zkey-in … --zkey-out … --golden enclave/expected-pcrs.json` checks both the host manifest and the golden file against the attestation PCRs.
 
-ホストが返した manifest だけを見ると、同じ親インスタンスの自己比較になります。ゴールデンが未計測の本番実行は警告を出してホスト manifest だけで進みます。
+Looking only at the manifest the host returned is that parent instance comparing itself with itself. A production run whose golden file is still unmeasured warns and continues with the host manifest alone.
 
-## テスト
+## Tests
 
-`pnpm --filter @lemmaoracle/cauldron test`（vitest・実 AWS は呼ばない。
-COSE_Sign1 検証は openssl 生成のテスト用チェーンで確認）。
+`pnpm --filter @lemmaoracle/cauldron test` (vitest; it does not call real AWS.
+COSE_Sign1 verification is checked with a chain generated by openssl).

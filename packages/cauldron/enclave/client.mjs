@@ -5,7 +5,7 @@
 import fs from "node:fs";
 import net from "node:net";
 import { pathToFileURL } from "node:url";
-import { readFrame, writeFrame } from "./frame.mjs";
+import { contributeJobHeader, readFrame, writeFrame } from "./frame.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, arr) => {
@@ -32,6 +32,8 @@ const main = async () => {
   }, timeoutMs);
   try {
     await new Promise((res, rej) => { socket.once("connect", res); socket.once("error", rej); });
+    const heap = args["max-old-space-size"];
+    await writeFrame(socket, contributeJobHeader(heap === true ? "" : heap));
     await writeFrame(socket, zkey);
     const zkeyFinal = await readFrame(socket);
     const attestation = await readFrame(socket);

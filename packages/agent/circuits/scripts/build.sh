@@ -39,10 +39,7 @@ $SNARKJS groth16 setup \
   "$PTAU" \
   "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey"
 
-$SNARKJS zkey contribute \
-  "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey" \
-  "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
-  --name="First contribution" -v -e="lemma agent-identity"
+cauldron phase2 --circuit "$BUILD_DIR/$CIRCUIT_NAME" --ptau "$PTAU"
 
 echo "→ exporting verification key"
 $SNARKJS zkey export verificationkey \
