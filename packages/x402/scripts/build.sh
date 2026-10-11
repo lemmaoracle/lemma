@@ -3,9 +3,6 @@
 # Compiles circuit → trusted setup → export verifier contract
 set -euo pipefail
 
-# Phase 2 は Nitro Enclave。packages/cauldron をこのリポジトリから呼ぶ。
-source "$(cd "$(dirname "$0")/../../cauldron/scripts" && pwd)/phase2.sh"
-
 CIRCUIT="circuits/payment.circom"
 BUILD_DIR="build"
 # Powers of Tau。ネットから落とさず、リポジトリにコミット済みのものを使う。
@@ -45,7 +42,7 @@ npx snarkjs groth16 setup \
   "$BUILD_DIR/payment_0000.zkey"
 
 echo "4/5  Phase 2 in a Nitro Enclave..."
-lemma_phase2 "$BUILD_DIR/payment" "$PTAU"
+cauldron phase2 --circuit "$BUILD_DIR/payment" --ptau "$PTAU"
 
 echo "5/5  Exporting verification key and Solidity verifier..."
 # Export verification key (for off-chain verification)

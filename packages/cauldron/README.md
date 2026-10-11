@@ -13,9 +13,9 @@ AWS Nitro Hypervisor 署名の attestation doc で示します。証明システ
    どのリポジトリ・どの回路からも同じコマンドが使える。
 
    ```bash
-   # このリポジトリの回路 build.sh は lemma_phase2 経由で同じことをする。
-   # 手で呼ぶときは:
-   cauldron phase2 --circuit "$BUILD_DIR/$CIRCUIT_NAME"
+   # このリポジトリの回路 build.sh も同じコマンドを呼ぶ。
+   # cauldron が PATH に無いと、その場で止まって終わる。
+   cauldron phase2 --circuit "$BUILD_DIR/$CIRCUIT_NAME" --ptau "$PTAU"
    ```
 
 2. **コピー実行（オフライン・手軽）** — `scripts/cauldron.mjs` はゼロ依存の単一ファイル。

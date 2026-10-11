@@ -70,11 +70,17 @@ the snarkjs argument vector.
 - **THEN** the contribute header requests `--max-old-space-size=6144`
 
 ### Requirement: Circuit builds delegate phase 2
-Every Groth16 circuit `build.sh` in this repository MUST source
-`packages/cauldron/scripts/phase2.sh` and MUST run phase 2 through
-`lemma_phase2`. Phase 1 (`groth16 setup` and powers of tau) stays in the
-build script. Those scripts MUST NOT invoke `snarkjs zkey contribute`.
+Every Groth16 circuit `build.sh` in this repository MUST run phase 2 by
+invoking the global `cauldron` command (`cauldron phase2 --circuit …`).
+The scripts MUST NOT source a path into `packages/cauldron`. Phase 1
+(`groth16 setup` and powers of tau) stays in the build script. Those
+scripts MUST NOT invoke `snarkjs zkey contribute`. When `cauldron` is not
+on `PATH`, the build MUST stop.
 
-#### Scenario: A circuit build calls the helper
+#### Scenario: A circuit build calls cauldron
 - **WHEN** a circuit `build.sh` finishes `groth16 setup`
-- **THEN** it calls `lemma_phase2` with the circuit stem and the final ptau
+- **THEN** it runs `cauldron phase2` with `--circuit` and `--ptau`
+
+#### Scenario: cauldron is not installed
+- **WHEN** a circuit build reaches phase 2 and `cauldron` is not on `PATH`
+- **THEN** the script exits because the command is missing

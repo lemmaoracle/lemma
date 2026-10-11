@@ -13,8 +13,6 @@ BUILD_DIR="$SCRIPT_DIR/build"
 PTAU_DIR="$BUILD_DIR/ptau"
 CIRCOMLIB_DIR="$SCRIPT_DIR/node_modules"
 SNARKJS="npx snarkjs"
-# Phase 2 は Nitro Enclave。packages/cauldron をこのリポジトリから呼ぶ。
-source "$(cd "$(dirname "$0")/../../../cauldron/scripts" && pwd)/phase2.sh"
 
 # SHA-256 over a 512-bit pre-image compiles to ~60k R1CS constraints
 # (two 512-bit blocks), so phase-1 powers of tau must cover 2^17.
@@ -54,7 +52,7 @@ $SNARKJS groth16 setup \
   "$PTAU" \
   "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey"
 
-lemma_phase2 "$BUILD_DIR/$CIRCUIT_NAME" "$PTAU"
+cauldron phase2 --circuit "$BUILD_DIR/$CIRCUIT_NAME" --ptau "$PTAU"
 
 echo "→ exporting verification key"
 $SNARKJS zkey export verificationkey \

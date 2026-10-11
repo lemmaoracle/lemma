@@ -26,4 +26,4 @@
 
 ## 6. Circuit builds
 
-- [x] 6.1 Replace `snarkjs zkey contribute` in every circuit `build.sh` with `lemma_phase2`
+- [x] 6.1 Replace `snarkjs zkey contribute` in every circuit `build.sh` with `cauldron phase2`

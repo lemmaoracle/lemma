@@ -700,7 +700,7 @@ describe("phase2 launch", () => {
     Routes: [{ DestinationCidrBlock: "0.0.0.0/0", NatGatewayId: "nat-abc" }],
   };
 
-  it("wires every circuit build.sh to lemma_phase2", () => {
+  it("wires every circuit build.sh to the global cauldron command", () => {
     const root = path.resolve(__dirname, "../../..");
     const builds = [
       "packages/seal/circuits/scripts/build.sh",
@@ -712,29 +712,46 @@ describe("phase2 launch", () => {
       "packages/attestation/circuits/scripts/build.sh",
       "packages/x402/scripts/build.sh",
     ];
-    const helper = path.join(root, "packages/cauldron/scripts/phase2.sh");
-    execFileSync("bash", ["-n", helper]);
+    const recorded = path.join(tmp, "cauldron-argv");
+    const bin = path.join(tmp, "bin-cauldron");
+    fs.mkdirSync(bin, { recursive: true });
+    fs.writeFileSync(path.join(bin, "cauldron"), `#!/bin/sh\nprintf '%s\\n' "$@" > ${JSON.stringify(recorded)}\n`);
+    fs.chmodSync(path.join(bin, "cauldron"), 0o755);
+    const circuitEnv = {
+      ...process.env,
+      PATH: `${bin}:${process.env.PATH}`,
+      BUILD_DIR: "/tmp/build",
+      CIRCUIT_NAME: "seal-identity",
+      PTAU: "/tmp/pot_final.ptau",
+      CIRCUIT2_NAME: "listing-binding",
+      PTAU2: "/tmp/pot2_final.ptau",
+      CIRCUIT3_NAME: "org-identity",
+      PTAU3: "/tmp/pot3_final.ptau",
+    };
     for (const rel of builds) {
       const file = path.join(root, rel);
       const text = fs.readFileSync(file, "utf8");
-      expect(text, rel).toMatch(/phase2\.sh/);
-      expect(text, rel).toMatch(/lemma_phase2 /);
+      expect(text, rel).toMatch(/\bcauldron phase2 --circuit /);
+      expect(text, rel).not.toMatch(/phase2\.sh/);
+      expect(text, rel).not.toMatch(/lemma_phase2/);
       expect(text, rel).not.toMatch(/zkey contribute/);
+      expect(text, rel).toMatch(/set -euo pipefail/);
       execFileSync("bash", ["-n", file]);
+      const calls = [...text.matchAll(/^cauldron phase2 .+$/gm)].map((m) => m[0]);
+      expect(calls.length, rel).toBeGreaterThan(0);
+      for (const call of calls) {
+        fs.rmSync(recorded, { force: true });
+        execFileSync("bash", ["-c", call], { env: circuitEnv });
+        const argv = fs.readFileSync(recorded, "utf8").trim().split("\n");
+        expect(argv[0], rel).toBe("phase2");
+        expect(argv, rel).toContain("--circuit");
+        expect(argv, rel).toContain("--ptau");
+        expect(argv.at(-1), rel).toMatch(/\.ptau$/);
+      }
     }
-    const recorded = path.join(tmp, "phase2-argv");
-    const bin = path.join(tmp, "bin");
-    fs.mkdirSync(bin, { recursive: true });
-    fs.writeFileSync(path.join(bin, "node"), `#!/bin/sh\nprintf '%s\\n' "$@" > ${JSON.stringify(recorded)}\n`);
-    fs.chmodSync(path.join(bin, "node"), 0o755);
-    execFileSync("bash", ["-c", `
-      export PATH=${JSON.stringify(bin)}:$PATH
-      source ${JSON.stringify(helper)}
-      lemma_phase2 /tmp/build/seal-identity /tmp/pot_final.ptau
-    `]);
-    const argv = fs.readFileSync(recorded, "utf8").trim().split("\n");
-    expect(argv[0]).toMatch(/cauldron\.mjs$/);
-    expect(argv.slice(1)).toEqual(["phase2", "--circuit", "/tmp/build/seal-identity", "--ptau", "/tmp/pot_final.ptau"]);
+    expect(() => execFileSync("bash", ["-c", "set -euo pipefail\ncauldron phase2 --circuit /tmp/c --ptau /tmp/p"], {
+      env: { PATH: "/usr/bin:/bin" },
+    })).toThrow(/command not found/);
   });
 
   it("requires a circuit and derives r1cs, zkeys, and a single ptau", async () => {

@@ -19,8 +19,8 @@ cannot be acted on.
 - Leave `enclave/expected-pcrs.json` at `measured: false` until a real
   `nitro-cli describe-eif` is recorded
 - Replace `snarkjs zkey contribute` in every circuit `build.sh` with
-  `lemma_phase2` from `packages/cauldron/scripts/phase2.sh`. Phase 1 stays
-  local
+  `cauldron phase2`. The scripts assume a global install and stop when
+  `cauldron` is not on `PATH`. Phase 1 stays local
 
 ## Capabilities
 
@@ -36,6 +36,6 @@ cannot be acted on.
 ## Impact
 
 - `packages/cauldron` CLI, enclave client/server framing, and README
-- Every Groth16 circuit `build.sh` now requires AWS credentials at phase 2
+- Every Groth16 circuit `build.sh` calls the global `cauldron` binary and needs AWS credentials at phase 2
 - Extra EC2 permissions when a dedicated VPC is created
 - No change to attestation verification or the contribution-entropy rule
