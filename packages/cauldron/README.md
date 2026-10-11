@@ -13,7 +13,8 @@ AWS Nitro Hypervisor 署名の attestation doc で示します。証明システ
    どのリポジトリ・どの回路からも同じコマンドが使える。
 
    ```bash
-   # build.sh（回路ごと）から。必須は --circuit だけ
+   # このリポジトリの回路 build.sh は lemma_phase2 経由で同じことをする。
+   # 手で呼ぶときは:
    cauldron phase2 --circuit "$BUILD_DIR/$CIRCUIT_NAME"
    ```
 

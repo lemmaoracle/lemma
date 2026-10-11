@@ -700,6 +700,43 @@ describe("phase2 launch", () => {
     Routes: [{ DestinationCidrBlock: "0.0.0.0/0", NatGatewayId: "nat-abc" }],
   };
 
+  it("wires every circuit build.sh to lemma_phase2", () => {
+    const root = path.resolve(__dirname, "../../..");
+    const builds = [
+      "packages/seal/circuits/scripts/build.sh",
+      "packages/agent/circuits/scripts/build.sh",
+      "packages/roles/circuits/scripts/build.sh",
+      "packages/content/circuits/scripts/build.sh",
+      "packages/blog-article/circuits/scripts/build.sh",
+      "packages/transform/circuits/scripts/build.sh",
+      "packages/attestation/circuits/scripts/build.sh",
+      "packages/x402/scripts/build.sh",
+    ];
+    const helper = path.join(root, "packages/cauldron/scripts/phase2.sh");
+    execFileSync("bash", ["-n", helper]);
+    for (const rel of builds) {
+      const file = path.join(root, rel);
+      const text = fs.readFileSync(file, "utf8");
+      expect(text, rel).toMatch(/phase2\.sh/);
+      expect(text, rel).toMatch(/lemma_phase2 /);
+      expect(text, rel).not.toMatch(/zkey contribute/);
+      execFileSync("bash", ["-n", file]);
+    }
+    const recorded = path.join(tmp, "phase2-argv");
+    const bin = path.join(tmp, "bin");
+    fs.mkdirSync(bin, { recursive: true });
+    fs.writeFileSync(path.join(bin, "node"), `#!/bin/sh\nprintf '%s\\n' "$@" > ${JSON.stringify(recorded)}\n`);
+    fs.chmodSync(path.join(bin, "node"), 0o755);
+    execFileSync("bash", ["-c", `
+      export PATH=${JSON.stringify(bin)}:$PATH
+      source ${JSON.stringify(helper)}
+      lemma_phase2 /tmp/build/seal-identity /tmp/pot_final.ptau
+    `]);
+    const argv = fs.readFileSync(recorded, "utf8").trim().split("\n");
+    expect(argv[0]).toMatch(/cauldron\.mjs$/);
+    expect(argv.slice(1)).toEqual(["phase2", "--circuit", "/tmp/build/seal-identity", "--ptau", "/tmp/pot_final.ptau"]);
+  });
+
   it("requires a circuit and derives r1cs, zkeys, and a single ptau", async () => {
     const dir = fs.mkdtempSync(path.join(tmp, "circuit-"));
     const build = path.join(dir, "build");

@@ -23,3 +23,7 @@
 
 - [x] 5.1 Require only `--circuit`; derive r1cs, initial zkey, final zkey, and a sole final ptau
 - [x] 5.2 Keep SSH keypairs disposable and out of the CLI arguments
+
+## 6. Circuit builds
+
+- [x] 6.1 Replace `snarkjs zkey contribute` in every circuit `build.sh` with `lemma_phase2`

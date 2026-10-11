@@ -12,6 +12,8 @@ BUILD_DIR="$SCRIPT_DIR/build"
 PTAU_DIR="$BUILD_DIR/ptau"
 CIRCOMLIB_DIR="$SCRIPT_DIR/node_modules"
 SNARKJS="npx snarkjs"
+# Phase 2 は Nitro Enclave。packages/cauldron をこのリポジトリから呼ぶ。
+source "$(cd "$(dirname "$0")/../../../cauldron/scripts" && pwd)/phase2.sh"
 
 # Poseidon(1) ×2 + 1 assertion ≈ ~500 R1CS constraints.
 # PTAU 2^12 covers this comfortably.
@@ -59,10 +61,7 @@ $SNARKJS groth16 setup \
   "$PTAU" \
   "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey"
 
-$SNARKJS zkey contribute \
-  "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey" \
-  "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
-  --name="lemma transform-exec" -v -e="lemma transform-exec $(date +%s)"
+lemma_phase2 "$BUILD_DIR/$CIRCUIT_NAME" "$PTAU"
 
 echo "→ exporting verification key"
 $SNARKJS zkey export verificationkey \

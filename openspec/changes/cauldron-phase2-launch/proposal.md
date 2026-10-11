@@ -18,6 +18,9 @@ cannot be acted on.
   `sudo env`, and size the in-enclave V8 heap to three quarters of that memory
 - Leave `enclave/expected-pcrs.json` at `measured: false` until a real
   `nitro-cli describe-eif` is recorded
+- Replace `snarkjs zkey contribute` in every circuit `build.sh` with
+  `lemma_phase2` from `packages/cauldron/scripts/phase2.sh`. Phase 1 stays
+  local
 
 ## Capabilities
 
@@ -33,5 +36,6 @@ cannot be acted on.
 ## Impact
 
 - `packages/cauldron` CLI, enclave client/server framing, and README
+- Every Groth16 circuit `build.sh` now requires AWS credentials at phase 2
 - Extra EC2 permissions when a dedicated VPC is created
 - No change to attestation verification or the contribution-entropy rule

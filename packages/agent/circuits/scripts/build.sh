@@ -8,6 +8,8 @@ BUILD_DIR="$SCRIPT_DIR/build"
 PTAU_DIR="$BUILD_DIR/ptau"
 CIRCOMLIB_DIR="$SCRIPT_DIR/node_modules"
 SNARKJS="npx snarkjs"
+# Phase 2 は Nitro Enclave。packages/cauldron をこのリポジトリから呼ぶ。
+source "$(cd "$(dirname "$0")/../../../cauldron/scripts" && pwd)/phase2.sh"
 
 mkdir -p "$BUILD_DIR" "$PTAU_DIR"
 
@@ -39,10 +41,7 @@ $SNARKJS groth16 setup \
   "$PTAU" \
   "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey"
 
-$SNARKJS zkey contribute \
-  "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey" \
-  "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
-  --name="First contribution" -v -e="lemma agent-identity"
+lemma_phase2 "$BUILD_DIR/$CIRCUIT_NAME" "$PTAU"
 
 echo "→ exporting verification key"
 $SNARKJS zkey export verificationkey \

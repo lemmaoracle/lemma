@@ -42,6 +42,15 @@ script turns memory into a heap with `enclaveHeapMb` (three quarters; 8192
 stays 6144) and the client sends that integer as a JSON frame. The enclave
 builds `NODE_OPTIONS` itself. Contribution entropy stays on snarkjs stdin.
 
+### D4: circuit builds source `lemma_phase2`
+
+Each Groth16 `build.sh` sources `packages/cauldron/scripts/phase2.sh` and
+calls `lemma_phase2 <stem> <ptau>` after `groth16 setup`. The helper resolves
+its own directory from `BASH_SOURCE` and runs `node cauldron.mjs phase2`.
+Phase 1, including `powersoftau contribute` fallbacks, stays on the host.
+Roles passes `--ptau` explicitly because one directory holds more than one
+final ptau.
+
 ## Risks / Trade-offs
 
 - A dedicated VPC needs create/delete permissions that the previous flow did
@@ -50,3 +59,5 @@ builds `NODE_OPTIONS` itself. Contribution entropy stays on snarkjs stdin.
   run. 650MB-class zkeys are still unmeasured on real Nitro hardware.
 - Golden PCRs remain a placeholder. `phase2` keeps warning and comparing
   only the host manifest until `measured` is set from a real EIF.
+- Every circuit build now spends phase 2 on AWS. A build without
+  credentials stops at `lemma_phase2`.
