@@ -20,8 +20,8 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
-import type { CollectionEntry } from "astro:content";
 import type { Locale } from "../i18n/translations";
+import { CATEGORY_LABELS, type BriefEntry } from "../data/criticalBriefs";
 import { OG_FONT_DATA, formatDate } from "./ogBase";
 import {
   BRIEF_COVER_HEIGHT,
@@ -30,11 +30,6 @@ import {
   ogThreatFontSize,
   ogThreatLetterSpacing,
 } from "../lib/briefCover";
-import { CATEGORY_LABELS } from "../data/criticalBriefs";
-
-type BriefEntry =
-  | CollectionEntry<"critical-briefs">
-   ;
 
 const SERIES_LABEL = "CRITICAL BRIEF";
 
@@ -55,9 +50,7 @@ const FONTS = [
 ];
 
 const threatLabel = (brief: BriefEntry, locale: Locale): string =>
-  CATEGORY_LABELS[brief.data.primary_category as keyof typeof CATEGORY_LABELS]?.[
-    locale === "ja" ? "ja" : "en"
-  ] ?? "";
+  CATEGORY_LABELS[brief.data.primary_category][locale === "ja" ? "ja" : "en"];
 
 /** 絶対配置のテキスト1つ（satori は position:absolute を解釈する）。 */
 const text = (

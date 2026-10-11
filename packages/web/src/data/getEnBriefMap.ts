@@ -1,4 +1,5 @@
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import type { BriefEntry } from "./criticalBriefs";
 
 /**
  * Build a Brief-ID → EN-entry lookup for fallback resolution on EN routes.
@@ -15,9 +16,10 @@ import { getCollection, type CollectionEntry } from "astro:content";
  *   - /critical/briefs/category/[category].astro
  *   - /critical/briefs/feed.xml.js
  */
-export async function getEnBriefMap(): Promise<
-  Map<string, CollectionEntry<"critical-briefs-en">>
-> {
-  const enBriefs = await getCollection("critical-briefs-en");
+export async function getEnBriefMap(): Promise<Map<string, BriefEntry>> {
+  // `astro:content` types resolve to `any` outside the generated
+  // `.astro/types.d.ts` (not in this package's tsconfig include) — assert
+  // the real entry shape mirrored in `BriefEntry` (content.config.ts schema).
+  const enBriefs = (await getCollection("critical-briefs-en")) as BriefEntry[];
   return new Map(enBriefs.map((b) => [b.id, b]));
 }
