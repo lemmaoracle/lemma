@@ -13,11 +13,8 @@ AWS Nitro Hypervisor 署名の attestation doc で示します。証明システ
    どのリポジトリ・どの回路からも同じコマンドが使える。
 
    ```bash
-   # build.sh（回路ごと）から
-   cauldron phase2 --r1cs "$BUILD_DIR/$CIRCUIT_NAME.r1cs" \
-     --zkey-in "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey" \
-     --zkey-out "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
-     --ptau "$PTAU"
+   # build.sh（回路ごと）から。必須は --circuit だけ
+   cauldron phase2 --circuit "$BUILD_DIR/$CIRCUIT_NAME"
    ```
 
 2. **コピー実行（オフライン・手軽）** — `scripts/cauldron.mjs` はゼロ依存の単一ファイル。
@@ -28,36 +25,27 @@ AWS Nitro Hypervisor 署名の attestation doc で示します。証明システ
 
 ## 使い方
 
+必須の引数は `--circuit` だけです。AWS の認証情報はフラグにせず、`aws` CLI が見る環境変数（`AWS_ACCESS_KEY_ID` と `AWS_SECRET_ACCESS_KEY`、一時クレデンシャルなら `AWS_SESSION_TOKEN`）かプロファイルに任せます。SSH の秘密鍵は渡しません。実行のたびに `lemma-tee-<run-id>` を作り、終了時にそのキーペアを AWS から削除し、手元の pem は上書きして消します。
+
+`--circuit` は `build/<name>.r1cs` と `build/<name>_0000.zkey` を指します。出力は `build/<name>_final.zkey` です。名前だけを渡すと `./build/<name>` を先に見ます。`.r1cs` や `_0000.zkey` のパスでも渡せます。隣の `ptau/` に `*_final.ptau` が一つだけあるときは、それを `snarkjs zkey verify` に使います。
+
 ```bash
-# 一括: provision → enclave 内 contribute → オフライン検証 → teardown
-# （global install 後は cauldron、未導入なら node scripts/cauldron.mjs）
-cauldron phase2 \
-  --r1cs circuit.r1cs --zkey-in circuit_0000.zkey --zkey-out circuit_final.zkey \
-  --ptau pot17_final.ptau          # 付けると snarkjs zkey verify も実行
+# 回路ディレクトリで。リージョン、インスタンス型、enclave の大きさは既定のまま
+cauldron phase2 --circuit seal-identity
+# 同じ意味: cauldron phase2 --circuit build/seal-identity
 
 # 手順の確認だけ（AWS に触れない）
-node cauldron.mjs phase2 --dry-run --r1cs X --zkey-in Y --zkey-out Z
-
-# 既定は m6i.xlarge（4 vCPU / 16 GiB）。バースト型（t3 など）は Nitro Enclaves を起動できないので拒否する。
-# enclave のメモリ・CPU・待ち時間はフラグで渡し、リモートでは sudo env 経由で届く。
-cauldron phase2 \
-  --r1cs circuit.r1cs --zkey-in circuit_0000.zkey --zkey-out circuit_final.zkey \
-  --instance-type m6i.xlarge --enclave-memory-mb 8192 --enclave-cpu 2
+node cauldron.mjs phase2 --dry-run --circuit seal-identity
 
 # 後から誰でも再検証（AWS API 不要）
 # nonce = sha256(zkey_0000) || sha256(zkey_final)。入力だけのハッシュでは通らない。
-# 同じ入出力 zkey を再提示したとき nonce が一致するのは、結び付きとして正しい。
-# attestation の timestamp は検証時刻の ±15 分。過去の証跡は --now <epoch-ms> でその時刻に合わせる。
-node cauldron.mjs verify \
-  --attestation circuit_final.zkey.attestation.cbor \
-  --pcrs circuit_final.zkey.pcrs.json \
-  --zkey-in circuit_0000.zkey \
-  --zkey-out circuit_final.zkey \
-  --golden enclave/expected-pcrs.json   # 計測済みのときだけ。未計測プレースホルダは失敗する
+node cauldron.mjs verify --circuit seal-identity
 
-# 孤児リソースの掃除
+# 失敗して残ったリソースの掃除。通常の終了では不要
 node cauldron.mjs teardown --run-id <id>
 ```
+
+リージョンの既定は `us-east-1`、親インスタンスは `m6i.xlarge`（4 vCPU / 16 GiB）、enclave は 8192 MiB / 2 vCPU です。変えるときだけ `--region`、`--instance-type`、`--enclave-memory-mb`、`--enclave-cpu`、`--ptau` を足します。ファイル名が慣例と違うときだけ `--r1cs`、`--zkey-in`、`--zkey-out` で上書きできます。
 
 成果物: `zkey_final` / `zkey_final.attestation.cbor` / `zkey_final.pcrs.json`。
 attestation doc と PCR manifest は zkey と同じ台帳に置いてください（誰でも再検証できる証跡）。

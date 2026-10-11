@@ -2,6 +2,24 @@
 
 ## ADDED Requirements
 
+### Requirement: Phase 2 takes the circuit and nothing else on the command line
+`cauldron phase2` MUST require `--circuit` and MUST derive `<name>.r1cs`,
+`<name>_0000.zkey`, and `<name>_final.zkey` from it. A bare name MUST
+prefer `./build/<name>`. The command MUST NOT take an SSH private key.
+AWS credentials stay with the AWS CLI. When exactly one `*_final.ptau`
+sits beside the circuit, phase 2 MUST use it for `snarkjs zkey verify`.
+
+#### Scenario: Bare circuit name
+- **WHEN** `phase2` is invoked with `--circuit seal-identity` and
+  `build/seal-identity.r1cs` exists
+- **THEN** the initial zkey is `build/seal-identity_0000.zkey` and the
+  output is `build/seal-identity_final.zkey`
+
+#### Scenario: Missing circuit
+- **WHEN** `phase2` is invoked without `--circuit` and without explicit
+  r1cs and zkey paths
+- **THEN** the command fails before creating EC2 resources
+
 ### Requirement: Phase 2 launches a Nitro-capable parent
 `cauldron phase2` MUST default `--instance-type` to `m6i.xlarge` and MUST
 reject instance families that cannot start Nitro Enclaves, including

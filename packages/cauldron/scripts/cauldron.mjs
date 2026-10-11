@@ -2,9 +2,10 @@
 // @lemmaoracle/cauldron — Groth16 Phase 2 (zkey contribute) を AWS Nitro Enclaves 内で実行する TEE setup フロー
 //
 // ゼロ依存（Node 標準ライブラリのみ）。単一ファイルで完結し、cp して実行できる。
-// 使い方: node cauldron.mjs phase2 --r1cs <r1cs> --zkey-in <zkey_0000> --zkey-out <zkey_final>
-//        node cauldron.mjs verify --attestation <doc.cbor> --pcrs <pcrs.json> --zkey-in <in> --zkey-out <out>
+// 使い方: node cauldron.mjs phase2 --circuit <name|build/name>
+//        node cauldron.mjs verify --circuit <name|build/name>
 //        node cauldron.mjs teardown --run-id <id>
+// SSH 鍵は引数にしない。実行ごとに作り、終了時に AWS からも手元からも消す。
 //
 // trust model の留保: AWS Nitro が信頼の中心点。検証はオフラインで完結し AWS API を呼ばない。
 // nonce は sha256(zkey_0000)||sha256(zkey_final)。入力だけだと親が出力 zkey をすり替えられる。
@@ -208,6 +209,83 @@ export function parseArgs(argv) {
     else opts[key] = true;
   }
   return { command, opts };
+}
+
+function pathsFromStem(stem) {
+  return {
+    r1cs: `${stem}.r1cs`,
+    zkeyIn: `${stem}_0000.zkey`,
+    zkeyOut: `${stem}_final.zkey`,
+  };
+}
+
+function stemFromCircuitFile(file) {
+  if (file.endsWith(".r1cs")) return file.slice(0, -".r1cs".length);
+  if (file.endsWith("_0000.zkey")) return file.slice(0, -"_0000.zkey".length);
+  if (file.endsWith("_final.zkey")) return file.slice(0, -"_final.zkey".length);
+  return null;
+}
+
+/**
+ * --circuit から r1cs / 初期 zkey / 最終 zkey を決める。
+ * 名前だけなら build/<name> を先に見る。ファイル名でも渡せる。
+ */
+export function resolveCircuit(spec, { cwd = process.cwd(), exists = fs.existsSync } = {}) {
+  if (spec == null || spec === "" || spec === true) throw new Error("--circuit が必要（例: --circuit build/seal-identity）");
+  const text = String(spec);
+  const abs = path.resolve(cwd, text);
+  const fileStem = stemFromCircuitFile(abs);
+  if (fileStem) return pathsFromStem(fileStem);
+  const bare = !path.isAbsolute(text) && !text.includes("/") && !text.includes("\\");
+  const stems = bare ? [path.join(cwd, "build", text), path.join(cwd, text)] : [abs];
+  for (const stem of stems) {
+    const paths = pathsFromStem(stem);
+    if (exists(paths.r1cs) || exists(paths.zkeyIn)) return paths;
+  }
+  return pathsFromStem(stems[0]);
+}
+
+/** 回路の隣に *_final.ptau が一つだけあるとき、それを zkey verify に使う。 */
+export function findSoleFinalPtau(circuitDir, { listDir = fs.readdirSync } = {}) {
+  const places = [path.join(circuitDir, "ptau"), circuitDir];
+  for (const dir of places) {
+    let names;
+    try { names = listDir(dir); } catch { continue; }
+    const finals = names.filter((name) => name.endsWith("_final.ptau")).map((name) => path.join(dir, name));
+    if (finals.length === 1) return finals[0];
+    if (finals.length > 1) return null;
+  }
+  return null;
+}
+
+export function resolvePhase2Circuit(opts, deps = {}) {
+  const cwd = deps.cwd ?? process.cwd();
+  const derived = opts.circuit ? resolveCircuit(opts.circuit, { cwd, exists: deps.exists }) : null;
+  const r1cs = opts.r1cs ?? derived?.r1cs;
+  const zkeyIn = opts["zkey-in"] ?? derived?.zkeyIn;
+  const zkeyOut = opts["zkey-out"] ?? derived?.zkeyOut;
+  if (!r1cs || !zkeyIn || !zkeyOut) throw new Error("--circuit が必要（例: --circuit build/seal-identity）");
+  const r1csAbs = path.resolve(cwd, r1cs);
+  const ptau = opts.ptau
+    ? path.resolve(cwd, opts.ptau)
+    : findSoleFinalPtau(path.dirname(r1csAbs), { listDir: deps.listDir });
+  return {
+    r1cs: r1csAbs,
+    zkeyIn: path.resolve(cwd, zkeyIn),
+    zkeyOut: path.resolve(cwd, zkeyOut),
+    ptau: ptau ?? null,
+  };
+}
+
+export function resolveVerifyInputs(opts, deps = {}) {
+  const circuit = opts.circuit ? resolveCircuit(opts.circuit, deps) : null;
+  const zkeyOut = opts["zkey-out"] ?? circuit?.zkeyOut;
+  return {
+    attestationPath: opts.attestation ?? (zkeyOut ? `${zkeyOut}.attestation.cbor` : undefined),
+    pcrsPath: opts.pcrs ?? (zkeyOut ? `${zkeyOut}.pcrs.json` : undefined),
+    zkeyIn: opts["zkey-in"] ?? circuit?.zkeyIn,
+    zkeyOut,
+  };
 }
 
 /* ============================================================
@@ -546,7 +624,7 @@ export async function provision({
   };
   let createdKey = false;
   try {
-    log(`run-id ${id}: keypair 作成`);
+    log(`run-id ${id}: 使い捨て keypair を作成（終了時に AWS からも手元からも消す）`);
     const kp = parseAwsJson(await awsImpl([
       "ec2", "create-key-pair", "--key-name", keyName, "--region", region, "--output", "json",
     ]), "create-key-pair");
@@ -1196,22 +1274,23 @@ export function verifyBundle({
  * phase2 — provision → run → verify → teardown
  * ============================================================ */
 
-export async function phase2(opts) {
+export async function phase2(opts, deps = {}) {
   const region = opts.region ?? "us-east-1";
   const instanceType = assertEnclaveInstanceType(opts["instance-type"] ?? DEFAULT_INSTANCE_TYPE);
   const resources = parseEnclaveResources(opts);
-  const r1cs = opts.r1cs;
-  const zkeyIn = opts["zkey-in"];
-  const zkeyOut = opts["zkey-out"];
-  if (!r1cs || !zkeyIn || !zkeyOut) throw new Error("--r1cs / --zkey-in / --zkey-out が必要");
+  const circuit = resolvePhase2Circuit(opts, deps);
+  const { r1cs, zkeyIn, zkeyOut } = circuit;
   warnIfZkeyTooLarge(zkeyIn, enclaveMemoryLimitBytes(resources.memoryMb));
+  log(`circuit ${zkeyIn} → ${zkeyOut}${circuit.ptau ? `（ptau ${path.basename(circuit.ptau)}）` : ""}`);
 
   if (opts["dry-run"]) {
     const steps = planLifecycle();
     steps.forEach((s, i) => log(`${i + 1}. ${s}`));
     log(`instance-type ${instanceType}, enclave ${resources.memoryMb} MiB / ${resources.cpu} CPU, client timeout ${resources.timeoutMs} ms`);
-    return { dryRun: true, steps, instanceType, resources };
+    return { dryRun: true, steps, instanceType, resources, circuit };
   }
+  if (!fs.existsSync(r1cs)) throw new Error(`r1cs がありません: ${r1cs}`);
+  if (!fs.existsSync(zkeyIn)) throw new Error(`初期 zkey がありません: ${zkeyIn}`);
 
   const ami = opts.ami ?? (await resolveAmi(region));
   let res = null;
@@ -1273,9 +1352,9 @@ export async function phase2(opts) {
       if (!v.ok) throw new Error(`attestation 検証失敗: ${JSON.stringify(v)}`);
       log(`attestation OK: ${v.leafSubject}`);
 
-      if (!opts["skip-zkey-verify"] && opts.ptau) {
+      if (!opts["skip-zkey-verify"] && circuit.ptau) {
         log("verify: snarkjs zkey verify");
-        await exec("npx", ["snarkjs", "zkey", "verify", r1cs, opts.ptau, stagedZkey], { timeout: PHASE2_TIMEOUT_MS });
+        await exec("npx", ["snarkjs", "zkey", "verify", r1cs, circuit.ptau, stagedZkey], { timeout: PHASE2_TIMEOUT_MS });
       }
 
       moveFile(stagedAtt, `${zkeyOut}.attestation.cbor`);
@@ -1300,13 +1379,14 @@ async function main() {
   if (command === "phase2") {
     await phase2(opts);
   } else if (command === "verify") {
-    if (!opts.attestation || !opts.pcrs) throw new Error("--attestation と --pcrs が必要");
+    const inputs = resolveVerifyInputs(opts);
+    if (!inputs.attestationPath || !inputs.pcrsPath) throw new Error("--circuit か、--attestation と --pcrs が必要");
     const v = verifyBundle({
-      attestationPath: opts.attestation,
-      pcrsPath: opts.pcrs,
+      attestationPath: inputs.attestationPath,
+      pcrsPath: inputs.pcrsPath,
       nonceHash: opts["nonce-hash"],
-      zkeyIn: opts["zkey-in"],
-      zkeyOut: opts["zkey-out"],
+      zkeyIn: inputs.zkeyIn,
+      zkeyOut: inputs.zkeyOut,
       goldenPath: opts.golden,
       buildDir: opts["build-dir"],
       skipBuildCheck: Boolean(opts["skip-build-check"]),

@@ -27,8 +27,12 @@ import {
   estimateContributeMemory,
   parseEnclaveResources,
   pickPublicSubnet,
+  findSoleFinalPtau,
   phase2,
   provision,
+  resolveCircuit,
+  resolvePhase2Circuit,
+  resolveVerifyInputs,
   REMOTE_DIR,
   remoteSetupCommand,
   resolveLaunchNetwork,
@@ -695,6 +699,37 @@ describe("phase2 launch", () => {
     Associations: [{ SubnetId: "subnet-aaa1" }],
     Routes: [{ DestinationCidrBlock: "0.0.0.0/0", NatGatewayId: "nat-abc" }],
   };
+
+  it("requires a circuit and derives r1cs, zkeys, and a single ptau", async () => {
+    const dir = fs.mkdtempSync(path.join(tmp, "circuit-"));
+    const build = path.join(dir, "build");
+    fs.mkdirSync(path.join(build, "ptau"), { recursive: true });
+    fs.writeFileSync(path.join(build, "seal-identity.r1cs"), "");
+    fs.writeFileSync(path.join(build, "seal-identity_0000.zkey"), "");
+    fs.writeFileSync(path.join(build, "ptau", "pot17_final.ptau"), "");
+    fs.writeFileSync(path.join(build, "ptau", "pot17_0000.ptau"), "");
+    const paths = resolveCircuit("seal-identity", { cwd: dir });
+    expect(paths).toEqual({
+      r1cs: path.join(build, "seal-identity.r1cs"),
+      zkeyIn: path.join(build, "seal-identity_0000.zkey"),
+      zkeyOut: path.join(build, "seal-identity_final.zkey"),
+    });
+    expect(resolveCircuit(path.join(build, "seal-identity_0000.zkey"), { cwd: dir }).r1cs).toBe(paths.r1cs);
+    expect(findSoleFinalPtau(build)).toBe(path.join(build, "ptau", "pot17_final.ptau"));
+    const resolved = resolvePhase2Circuit({ circuit: "seal-identity" }, { cwd: dir });
+    expect(resolved.ptau).toBe(path.join(build, "ptau", "pot17_final.ptau"));
+    expect(resolved.zkeyOut).toBe(paths.zkeyOut);
+    const verify = resolveVerifyInputs({ circuit: "build/seal-identity" }, { cwd: dir });
+    expect(verify.attestationPath).toBe(`${paths.zkeyOut}.attestation.cbor`);
+    expect(verify.pcrsPath).toBe(`${paths.zkeyOut}.pcrs.json`);
+    expect(verify.zkeyIn).toBe(paths.zkeyIn);
+    fs.writeFileSync(path.join(build, "ptau", "pot18_final.ptau"), "");
+    expect(findSoleFinalPtau(build)).toBeNull();
+    await expect(phase2({ "dry-run": true })).rejects.toThrow(/--circuit/);
+    const dry = await phase2({ "dry-run": true, circuit: "seal-identity" }, { cwd: dir });
+    expect(dry.circuit.zkeyIn).toBe(paths.zkeyIn);
+    expect(dry.circuit.ptau).toBeNull();
+  });
 
   it("dry-run keeps the Nitro instance type and the enclave flags", async () => {
     const out = await phase2({
