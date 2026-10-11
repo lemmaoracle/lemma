@@ -75,6 +75,38 @@ export const CROSSCUTTING_CATEGORIES: ReadonlyArray<CategorySlug> = [
   "identity-auth",
 ];
 
+/**
+ * Structural mirror of the `critical-briefs` / `critical-briefs-en`
+ * frontmatter schema (`content.config.ts` `briefSchema`).
+ *
+ * `astro:content` resolves to an `any`-typed fallback outside Astro's
+ * generated `.astro/types.d.ts` (which this package's tsconfig does not
+ * include), so `CollectionEntry<"critical-briefs">` collapses to `any`
+ * and poisons every build-time consumer with `no-unsafe-*` lint errors.
+ * This type restores the real entry shape for data / OG rendering code.
+ * Keep in sync with `briefSchema` when frontmatter fields change.
+ */
+export interface BriefFrontmatter {
+  readonly brief_no: number;
+  readonly title: string;
+  readonly title_en: string;
+  readonly pillar: PillarSlug;
+  readonly primary_category: CategorySlug;
+  readonly secondary_categories: ReadonlyArray<CategorySlug>;
+  readonly incident_date: Date;
+  readonly published: Date;
+  readonly status: "draft" | "review" | "published";
+  readonly version: string;
+  readonly cover?: string;
+}
+
+/** One content entry from `critical-briefs` / `critical-briefs-en`. */
+export interface BriefEntry {
+  readonly id: string;
+  readonly data: BriefFrontmatter;
+  readonly body?: string;
+}
+
 interface LocalizedCopy {
   readonly ja: string;
   readonly en: string;
