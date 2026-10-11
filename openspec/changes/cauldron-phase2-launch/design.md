@@ -50,6 +50,8 @@ They do not source a relative path into this package. `set -euo pipefail`
 makes a missing `cauldron` exit the build. Phase 1, including
 `powersoftau contribute` fallbacks, stays on the host. Roles passes
 `--ptau` explicitly because one directory holds more than one final ptau.
+x402's `npm test` sets `LEMMA_PHASE2=local` so CI can build a fixture zkey
+without AWS. The default `build.sh` path still calls `cauldron`.
 
 ## Risks / Trade-offs
 

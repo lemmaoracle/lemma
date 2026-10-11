@@ -21,7 +21,7 @@ bash scripts/build.sh
 The build script will:
 1. Compile the circuit to R1CS, WASM, and symbol files
 2. Download the Powers of Tau file (14th power)
-3. Perform Groth16 trusted setup. Phase 2 runs `cauldron phase2` in a Nitro Enclave (`cauldron` must be on `PATH`)
+3. Perform Groth16 trusted setup. Phase 2 runs `cauldron phase2` in a Nitro Enclave (`cauldron` must be on `PATH`). `LEMMA_PHASE2=local` builds a test fixture instead, which is what `npm test` uses
 4. Generate verification key and Solidity verifier contract
 
 ## Testing

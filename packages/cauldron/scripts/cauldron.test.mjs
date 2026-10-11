@@ -734,10 +734,15 @@ describe("phase2 launch", () => {
       expect(text, rel).toMatch(/\bcauldron phase2 --circuit /);
       expect(text, rel).not.toMatch(/phase2\.sh/);
       expect(text, rel).not.toMatch(/lemma_phase2/);
-      expect(text, rel).not.toMatch(/zkey contribute/);
       expect(text, rel).toMatch(/set -euo pipefail/);
+      if (rel === "packages/x402/scripts/build.sh") {
+        expect(text, rel).toMatch(/LEMMA_PHASE2:-/);
+        expect(text, rel).toMatch(/zkey contribute/);
+      } else {
+        expect(text, rel).not.toMatch(/zkey contribute/);
+      }
       execFileSync("bash", ["-n", file]);
-      const calls = [...text.matchAll(/^cauldron phase2 .+$/gm)].map((m) => m[0]);
+      const calls = [...text.matchAll(/^\s*cauldron phase2 .+$/gm)].map((m) => m[0]);
       expect(calls.length, rel).toBeGreaterThan(0);
       for (const call of calls) {
         fs.rmSync(recorded, { force: true });

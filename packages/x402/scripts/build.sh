@@ -41,8 +41,17 @@ npx snarkjs groth16 setup \
   "$PTAU" \
   "$BUILD_DIR/payment_0000.zkey"
 
-echo "4/5  Phase 2 in a Nitro Enclave..."
-cauldron phase2 --circuit "$BUILD_DIR/payment" --ptau "$PTAU"
+if [ "${LEMMA_PHASE2:-}" = "local" ]; then
+  # Test fixture only. Fixed entropy is not a ceremony and must not be used for a published zkey.
+  echo "4/5  Phase 2 local fixture (not a ceremony)..."
+  echo "demo_entropy_x402_lemma_2026" | npx snarkjs zkey contribute \
+    "$BUILD_DIR/payment_0000.zkey" \
+    "$BUILD_DIR/payment_final.zkey" \
+    --name="Demo contribution x402 payment" -v
+else
+  echo "4/5  Phase 2 in a Nitro Enclave..."
+  cauldron phase2 --circuit "$BUILD_DIR/payment" --ptau "$PTAU"
+fi
 
 echo "5/5  Exporting verification key and Solidity verifier..."
 # Export verification key (for off-chain verification)

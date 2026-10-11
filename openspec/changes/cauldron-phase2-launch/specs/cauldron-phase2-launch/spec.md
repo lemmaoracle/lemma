@@ -73,9 +73,10 @@ the snarkjs argument vector.
 Every Groth16 circuit `build.sh` in this repository MUST run phase 2 by
 invoking the global `cauldron` command (`cauldron phase2 --circuit …`).
 The scripts MUST NOT source a path into `packages/cauldron`. Phase 1
-(`groth16 setup` and powers of tau) stays in the build script. Those
-scripts MUST NOT invoke `snarkjs zkey contribute`. When `cauldron` is not
-on `PATH`, the build MUST stop.
+(`groth16 setup` and powers of tau) stays in the build script. The default
+path MUST NOT invoke `snarkjs zkey contribute`. When `cauldron` is not
+on `PATH`, the build MUST stop. The x402 test script MAY set
+`LEMMA_PHASE2=local` so CI can build a fixture zkey without AWS.
 
 #### Scenario: A circuit build calls cauldron
 - **WHEN** a circuit `build.sh` finishes `groth16 setup`
