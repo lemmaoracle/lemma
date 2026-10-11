@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-// @lemmaoracle/cauldron — Groth16 Phase 2 (zkey contribute) を AWS Nitro Enclaves 内で実行する TEE setup フロー
+// @lemmaoracle/cauldron — TEE setup that runs Groth16 phase 2 (zkey contribute) inside AWS Nitro Enclaves.
 //
-// ゼロ依存（Node 標準ライブラリのみ）。単一ファイルで完結し、cp して実行できる。
-// 使い方: node cauldron.mjs phase2 --circuit <name|build/name>
+// Zero dependencies (Node standard library only). One file, so it can be copied and run.
+// Usage: node cauldron.mjs phase2 --circuit <name|build/name>
 //        node cauldron.mjs verify --circuit <name|build/name>
 //        node cauldron.mjs teardown --run-id <id>
-// SSH 鍵は引数にしない。実行ごとに作り、終了時に AWS からも手元からも消す。
+// SSH private keys are not arguments. Each run creates one and deletes it from AWS and from disk.
 //
-// trust model の留保: AWS Nitro が信頼の中心点。検証はオフラインで完結し AWS API を呼ばない。
-// nonce は sha256(zkey_0000)||sha256(zkey_final)。入力だけだと親が出力 zkey をすり替えられる。
+// Trust boundary: AWS Nitro is the root of trust. Verification is offline and does not call the AWS API.
+// The nonce is sha256(zkey_0000)||sha256(zkey_final). A hash of the input alone lets the parent swap the output zkey.
 
 import { execFile } from "node:child_process";
 import { createHash, createVerify, randomBytes, X509Certificate } from "node:crypto";
@@ -29,7 +29,7 @@ const ES384_SIG_BYTES = 96;
 const PHASE2_TIMEOUT_MS = 10 * 60 * 60 * 1000;
 export const ATTESTATION_MAX_SKEW_MS = 15 * 60 * 1000;
 export const ENCLAVE_MEMORY_LIMIT_BYTES = 8192 * 1024 * 1024;
-export const DEFAULT_INSTANCE_TYPE = "m6i.xlarge"; // 4 vCPU / 16 GiB。t3 などのバースト型は Nitro Enclaves 非対応
+export const DEFAULT_INSTANCE_TYPE = "m6i.xlarge"; // 4 vCPU / 16 GiB. Burstable families such as t3 cannot run Nitro Enclaves.
 export const DEFAULT_ENCLAVE_MEMORY_MB = 8192;
 export const DEFAULT_ENCLAVE_CPU = 2;
 export const DEFAULT_CLIENT_TIMEOUT_MS = 28_800_000;
@@ -125,7 +125,7 @@ export function warnIfZkeyTooLarge(zkeyPath, limitBytes = ENCLAVE_MEMORY_LIMIT_B
   const est = estimateContributeMemory(size, limitBytes);
   if (!est.exceeds) return;
   const memoryMb = Math.floor(est.limitBytes / (1024 * 1024));
-  log(`警告: zkey ${size} bytes の見積もり使用メモリ ${est.bytes} bytes が enclave 上限 ${est.limitBytes} bytes（--enclave-memory-mb ${memoryMb}）を超えます。より大きい --enclave-memory-mb と、それを載せられる --instance-type を指定してください（650MB 級は実機未計測）。`);
+  log(`warning: estimated memory for a ${size} byte zkey is ${est.bytes} bytes, above the enclave limit of ${est.limitBytes} bytes (--enclave-memory-mb ${memoryMb}). Raise --enclave-memory-mb and choose an --instance-type that can hold it (650MB-class zkeys are not yet measured on Nitro).`);
 }
 
 export function hashBuildInputs(dir) {
@@ -227,11 +227,11 @@ function stemFromCircuitFile(file) {
 }
 
 /**
- * --circuit から r1cs / 初期 zkey / 最終 zkey を決める。
- * 名前だけなら build/<name> を先に見る。ファイル名でも渡せる。
+ * Derive the r1cs, the initial zkey, and the final zkey from --circuit.
+ * A bare name prefers build/<name>. A filename is accepted too.
  */
 export function resolveCircuit(spec, { cwd = process.cwd(), exists = fs.existsSync } = {}) {
-  if (spec == null || spec === "" || spec === true) throw new Error("--circuit が必要（例: --circuit build/seal-identity）");
+  if (spec == null || spec === "" || spec === true) throw new Error("--circuit is required (example: --circuit build/seal-identity)");
   const text = String(spec);
   const abs = path.resolve(cwd, text);
   const fileStem = stemFromCircuitFile(abs);
@@ -245,7 +245,7 @@ export function resolveCircuit(spec, { cwd = process.cwd(), exists = fs.existsSy
   return pathsFromStem(stems[0]);
 }
 
-/** 回路の隣に *_final.ptau が一つだけあるとき、それを zkey verify に使う。 */
+/** When exactly one *_final.ptau sits beside the circuit, use it for zkey verify. */
 export function findSoleFinalPtau(circuitDir, { listDir = fs.readdirSync } = {}) {
   const places = [path.join(circuitDir, "ptau"), circuitDir];
   for (const dir of places) {
@@ -264,7 +264,7 @@ export function resolvePhase2Circuit(opts, deps = {}) {
   const r1cs = opts.r1cs ?? derived?.r1cs;
   const zkeyIn = opts["zkey-in"] ?? derived?.zkeyIn;
   const zkeyOut = opts["zkey-out"] ?? derived?.zkeyOut;
-  if (!r1cs || !zkeyIn || !zkeyOut) throw new Error("--circuit が必要（例: --circuit build/seal-identity）");
+  if (!r1cs || !zkeyIn || !zkeyOut) throw new Error("--circuit is required (example: --circuit build/seal-identity)");
   const r1csAbs = path.resolve(cwd, r1cs);
   const ptau = opts.ptau
     ? path.resolve(cwd, opts.ptau)
@@ -289,24 +289,24 @@ export function resolveVerifyInputs(opts, deps = {}) {
 }
 
 /* ============================================================
- * ライフサイクル計画（dry-run と本実行で同じ手順を使う）
+ * Lifecycle plan (dry-run and a real run share these steps)
  * ============================================================ */
 
 export function planLifecycle() {
   return [
-    "provision: ami 解決 (SSM パラメータ)",
-    "provision: keypair 作成",
-    "provision: パブリック subnet を解決（default VPC が無ければ専用 VPC / IGW を作る）",
-    "provision: security group をその VPC に作成 + ssh(22) を自 IP のみ許可",
-    `provision: EC2 起動 (既定 ${DEFAULT_INSTANCE_TYPE}, subnet 指定, パブリック IPv4, タグ ${TAG_KEY}=<run-id>)`,
-    "transfer: enclave バンドル + zkey_0000 を scp",
-    "remote: sudo env で ENCLAVE_MEMORY_MB / ENCLAVE_CPU / CLIENT_TIMEOUT_MS を渡して docker ビルド → nitro-cli build-enclave → PCR manifest 保存",
-    "remote: enclave 起動 → vsock 経由で zkey 送信 → contribute (enclave 内 CSPRNG)",
-    "remote: attestation doc (nonce = sha256(zkey_0000)||sha256(zkey_final)) 取得 → zkey_final と一括で返送",
-    "collect: zkey_final + attestation doc + PCR manifest を回収",
-    "verify: COSE_Sign1 署名 → 証明書チェーン → PCR0/1/2 → nonce をオフライン検証",
-    "verify: snarkjs zkey verify（--skip-zkey-verify で省略可）",
-    "teardown: instance 終了 → keypair / security group 削除（専用 VPC を作ったときも。--keep-resources で残す）",
+    "provision: resolve the AMI (SSM parameter)",
+    "provision: create a keypair",
+    "provision: resolve a public subnet (create a dedicated VPC and IGW when the default VPC has none)",
+    "provision: create a security group in that VPC and allow ssh(22) from this IP only",
+    `provision: launch EC2 (default ${DEFAULT_INSTANCE_TYPE}, explicit subnet, public IPv4, tag ${TAG_KEY}=<run-id>)`,
+    "transfer: scp the enclave bundle and zkey_0000",
+    "remote: pass ENCLAVE_MEMORY_MB / ENCLAVE_CPU / CLIENT_TIMEOUT_MS via sudo env, then docker build → nitro-cli build-enclave → save the PCR manifest",
+    "remote: start the enclave → send the zkey over vsock → contribute (CSPRNG inside the enclave)",
+    "remote: fetch the attestation doc (nonce = sha256(zkey_0000)||sha256(zkey_final)) → return it with zkey_final",
+    "collect: retrieve zkey_final, the attestation doc, and the PCR manifest",
+    "verify: offline check of the COSE_Sign1 signature → certificate chain → PCR0/1/2 → nonce",
+    "verify: snarkjs zkey verify (omit with --skip-zkey-verify)",
+    "teardown: terminate the instance → delete the keypair and security group (and the dedicated VPC when this run created one; --keep-resources leaves them)",
   ];
 }
 
@@ -369,12 +369,12 @@ function requirePositiveInt(name, value, fallback, { min = 1, max = Number.MAX_S
   return n;
 }
 
-/** Nitro Enclaves はバースト型・ベアメタル・u-* では起動しない。既定は m6i.xlarge。 */
+/** Nitro Enclaves do not start on burstable, bare-metal, or u-* instances. The default is m6i.xlarge. */
 export function assertEnclaveInstanceType(instanceType) {
   const type = String(instanceType ?? "");
   if (!/^[a-z][a-z0-9-]*\.[a-z0-9-]+$/i.test(type)) throw new Error(`invalid instance type: ${type}`);
   if (UNSUPPORTED_ENCLAVE_INSTANCE.test(type)) {
-    throw new Error(`${type} では Nitro Enclaves を起動できません。既定の ${DEFAULT_INSTANCE_TYPE}（4 vCPU / 16 GiB）など、バースト型・ベアメタル以外を指定してください`);
+    throw new Error(`${type} cannot start Nitro Enclaves. Use the default ${DEFAULT_INSTANCE_TYPE} (4 vCPU / 16 GiB) or another non-burstable, non-bare-metal type`);
   }
   return type;
 }
@@ -386,7 +386,7 @@ export function parseEnclaveResources(opts = {}) {
   return { memoryMb, cpu, timeoutMs };
 }
 
-/** sudo は環境を落とす。値は整数だけをコマンド引数で渡す。 */
+/** sudo drops the environment. Pass only integers as command arguments. */
 export function remoteSetupCommand(remoteDir, resources) {
   if (remoteDir !== REMOTE_DIR) throw new Error("invalid remote dir");
   const { memoryMb, cpu, timeoutMs } = resources ?? {};
@@ -437,7 +437,7 @@ export function routeTableHasIgw(table) {
   return (table?.Routes ?? []).some((r) => r.DestinationCidrBlock === "0.0.0.0/0" && IGW_ID_RE.test(String(r.GatewayId ?? "")));
 }
 
-/** IGW への 0.0.0.0/0 がある subnet だけをパブリックとみなす。 */
+/** A subnet is public only when its route table sends 0.0.0.0/0 to an IGW. */
 export function pickPublicSubnet(subnets, routeTables) {
   const hit = (subnets ?? []).find((s) => SUBNET_ID_RE.test(String(s?.SubnetId ?? ""))
     && s.State !== "pending"
@@ -465,7 +465,7 @@ export function runInstancesArgs({ ami, instanceType, keyName, sgId, subnetId, i
 
 async function createDedicatedNetwork({ region, id, awsImpl, network }) {
   network.created = true;
-  log(`run-id ${id}: default VPC にパブリック subnet が無いので専用 VPC を作ります`);
+  log(`run-id ${id}: no public subnet in the default VPC; creating a dedicated VPC`);
   const vpc = parseAwsJson(await awsImpl([
     "ec2", "create-vpc", "--cidr-block", DEDICATED_VPC_CIDR,
     "--tag-specifications", tagSpec("vpc", id),
@@ -624,7 +624,7 @@ export async function provision({
   };
   let createdKey = false;
   try {
-    log(`run-id ${id}: 使い捨て keypair を作成（終了時に AWS からも手元からも消す）`);
+    log(`run-id ${id}: creating a disposable keypair (deleted from AWS and from disk on exit)`);
     const kp = parseAwsJson(await awsImpl([
       "ec2", "create-key-pair", "--key-name", keyName, "--region", region, "--output", "json",
     ]), "create-key-pair");
@@ -634,10 +634,10 @@ export async function provision({
     state.keyPath = keyPath;
     try { fs.writeFileSync(fd, kp.KeyMaterial); } finally { fs.closeSync(fd); }
 
-    log(`run-id ${id}: パブリック subnet を解決`);
+    log(`run-id ${id}: resolving a public subnet`);
     await resolveLaunchNetwork({ region, id, awsImpl, network });
 
-    log(`run-id ${id}: security group 作成 (${network.vpcId})`);
+    log(`run-id ${id}: creating a security group (${network.vpcId})`);
     const sg = parseAwsJson(await awsImpl([
       "ec2", "create-security-group", "--group-name", groupName,
       "--description", `lemma cauldron ${id}`, "--vpc-id", network.vpcId,
@@ -649,7 +649,7 @@ export async function provision({
     await awsImpl(["ec2", "authorize-security-group-ingress", "--group-id", state.sgId,
       "--protocol", "tcp", "--port", "22", "--cidr", `${myIp}/32`, "--region", region]);
 
-    log(`run-id ${id}: EC2 起動 (${instanceType}, ${ami}, ${network.subnetId})`);
+    log(`run-id ${id}: launching EC2 (${instanceType}, ${ami}, ${network.subnetId})`);
     const run = parseAwsJson(await awsImpl(runInstancesArgs({
       ami, instanceType, keyName, sgId: state.sgId, subnetId: network.subnetId,
       instanceTags: tagSpec("instance", id), region,
@@ -1281,7 +1281,7 @@ export async function phase2(opts, deps = {}) {
   const circuit = resolvePhase2Circuit(opts, deps);
   const { r1cs, zkeyIn, zkeyOut } = circuit;
   warnIfZkeyTooLarge(zkeyIn, enclaveMemoryLimitBytes(resources.memoryMb));
-  log(`circuit ${zkeyIn} → ${zkeyOut}${circuit.ptau ? `（ptau ${path.basename(circuit.ptau)}）` : ""}`);
+  log(`circuit ${zkeyIn} → ${zkeyOut}${circuit.ptau ? ` (ptau ${path.basename(circuit.ptau)})` : ""}`);
 
   if (opts["dry-run"]) {
     const steps = planLifecycle();
@@ -1289,8 +1289,8 @@ export async function phase2(opts, deps = {}) {
     log(`instance-type ${instanceType}, enclave ${resources.memoryMb} MiB / ${resources.cpu} CPU, client timeout ${resources.timeoutMs} ms`);
     return { dryRun: true, steps, instanceType, resources, circuit };
   }
-  if (!fs.existsSync(r1cs)) throw new Error(`r1cs がありません: ${r1cs}`);
-  if (!fs.existsSync(zkeyIn)) throw new Error(`初期 zkey がありません: ${zkeyIn}`);
+  if (!fs.existsSync(r1cs)) throw new Error(`r1cs not found: ${r1cs}`);
+  if (!fs.existsSync(zkeyIn)) throw new Error(`initial zkey not found: ${zkeyIn}`);
 
   const ami = opts.ami ?? (await resolveAmi(region));
   let res = null;
@@ -1380,7 +1380,7 @@ async function main() {
     await phase2(opts);
   } else if (command === "verify") {
     const inputs = resolveVerifyInputs(opts);
-    if (!inputs.attestationPath || !inputs.pcrsPath) throw new Error("--circuit か、--attestation と --pcrs が必要");
+    if (!inputs.attestationPath || !inputs.pcrsPath) throw new Error("--circuit is required, or pass both --attestation and --pcrs");
     const v = verifyBundle({
       attestationPath: inputs.attestationPath,
       pcrsPath: inputs.pcrsPath,

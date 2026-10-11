@@ -64,7 +64,7 @@ const pemToDer = (pem) => Buffer.from(String(pem).replace(/-----[^-]+-----/g, ""
 
 const pcrHex = (byte) => Buffer.alloc(48, byte).toString("hex");
 
-// --- テスト用証明書チェーン（root CA → leaf）を openssl で生成 ---
+// --- Test certificate chain (root CA → leaf), generated with openssl ---
 let rootPem;
 let leafDer;
 let rootDer;
@@ -197,7 +197,7 @@ describe("parseArgs / planLifecycle", () => {
     expect(steps.some((s) => s.includes("sha256(zkey_0000)||sha256(zkey_final)"))).toBe(true);
     expect(steps.some((s) => s.includes(DEFAULT_INSTANCE_TYPE))).toBe(true);
     expect(steps.some((s) => s.includes("sudo env"))).toBe(true);
-    expect(steps.some((s) => s.includes("専用 VPC"))).toBe(true);
+    expect(steps.some((s) => s.includes("dedicated VPC"))).toBe(true);
   });
 });
 
@@ -592,14 +592,14 @@ describe("enclave preflight and teardown", () => {
       process.stderr.write = orig;
     }
     const text = chunks.join("");
-    expect(text).toMatch(/警告/);
+    expect(text).toMatch(/warning/);
     expect(text).toMatch(/--enclave-memory-mb 8192/);
-    expect(text.match(/警告/g)).toHaveLength(1);
+    expect(text.match(/warning/g)).toHaveLength(1);
     const raised = enclaveMemoryLimitBytes(16384);
     expect(estimateContributeMemory(huge, raised).exceeds).toBe(false);
     process.stderr.write = (chunk, ...rest) => { chunks.push(String(chunk)); return orig(chunk, ...rest); };
     try { warnIfZkeyTooLarge(big, raised); } finally { process.stderr.write = orig; }
-    expect(chunks.join("").match(/警告/g)).toHaveLength(1);
+    expect(chunks.join("").match(/warning/g)).toHaveLength(1);
   });
 
   it("retries security group deletion while an ENI or dependency remains", async () => {

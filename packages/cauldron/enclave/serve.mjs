@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// enclave 内で動く処理。stdin の最初のフレームはヒープサイズ、次が zkey_0000。enclave 内 CSPRNG の乱数で
-// snarkjs zkey contribute を実行し、sha256(zkey_0000)||sha256(zkey_final) を nonce に
-// NSM attestation doc を取得して返す。
+// Runs inside the enclave. The first stdin frame is the heap size, then zkey_0000.
+// Contributes with in-enclave CSPRNG entropy via snarkjs zkey contribute, and returns an
+// NSM attestation doc whose nonce is sha256(zkey_0000)||sha256(zkey_final).
 //
-// toxic waste（貢献乱数）は snarkjs の stdin にだけ渡す。-e には載せない。
-// /proc/<pid>/cmdline と失敗ログのどちらにも残さない。
+// Contribution entropy goes only to snarkjs stdin. It is not passed with -e.
+// It must not appear in /proc/<pid>/cmdline or in failure logs.
 
 import { spawn, spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";

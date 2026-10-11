@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."          # remoteDir (= /home/ec2-user/cauldron)
 OUT="$PWD/out"
 mkdir -p "$OUT"
-# m6i.xlarge は 4 vCPU / 16 GiB。親 OS に CPU を残す（4 全部渡すと allocator が失敗する）。
+# m6i.xlarge has 4 vCPU / 16 GiB. Leave CPUs for the parent OS (giving it all 4 makes the allocator fail).
 ENCLAVE_MEMORY_MB="${ENCLAVE_MEMORY_MB:-8192}"
 ENCLAVE_CPU="${ENCLAVE_CPU:-2}"
 # contribute 中は vsock が無通信になる。650MB 級の zkey でも足りる総時間。

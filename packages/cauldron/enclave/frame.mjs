@@ -119,7 +119,7 @@ export function commitmentNonceHex(zkeyIn, zkeyOut) {
   return Buffer.concat([a, b]).toString("hex");
 }
 
-/** enclave メモリの 3/4 を V8 ヒープに使う。8192 MiB のとき既定の 6144 になる。 */
+/** Use three quarters of enclave memory for the V8 heap. 8192 MiB yields the default 6144. */
 export function enclaveHeapMb(memoryMb) {
   const mb = Number(memoryMb);
   if (!Number.isInteger(mb) || mb < 1024 || mb % 2 !== 0) throw new Error("invalid ENCLAVE_MEMORY_MB");
@@ -128,7 +128,7 @@ export function enclaveHeapMb(memoryMb) {
   return heap;
 }
 
-/** ホストが渡せるのは整数だけ。NODE_OPTIONS の文字列は enclave 側で組み立てる。 */
+/** The host may pass an integer only. The enclave builds the NODE_OPTIONS string. */
 export function heapNodeOptions(maxOldSpaceSize) {
   const raw = maxOldSpaceSize == null ? 6144 : maxOldSpaceSize;
   if (typeof raw !== "number" || !Number.isInteger(raw) || raw < 512 || raw > 262144) {
