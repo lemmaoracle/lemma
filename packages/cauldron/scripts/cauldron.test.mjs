@@ -52,7 +52,7 @@ import {
   verifyBuildInputs,
   verifyChain,
   verifyAttestation,
-  verifyBundle,
+  verifyBundle as verifyBundleImpl,
   warnIfZkeyTooLarge,
 } from "./cauldron.mjs";
 import { commitmentNonceHex as serveNonce, contributeJobHeader, enclaveHeapMb, frame, MAX_FRAME, parseContributeJobHeader, readFrame } from "../enclave/frame.mjs";
@@ -69,6 +69,10 @@ let rootPem;
 let leafDer;
 let rootDer;
 let tmp;
+let goldenPath;
+
+const verifyBundle = (opts) => verifyBundleImpl({ goldenPath, ...opts });
+const buildManifest = () => ({ schema: "lemma-cauldron.build.v1", inputs: hashBuildInputs(path.join(__dirname, "..", "enclave")) });
 
 beforeAll(() => {
   tmp = fs.mkdtempSync(path.join(os.tmpdir(), "cauldron-test-"));
@@ -89,6 +93,8 @@ beforeAll(() => {
   rootPem = fs.readFileSync(path.join(tmp, "root.pem"), "utf8");
   rootDer = pemToDer(rootPem);
   leafDer = pemToDer(fs.readFileSync(path.join(tmp, "leaf.pem"), "utf8"));
+  goldenPath = path.join(tmp, "approved-pcrs.json");
+  fs.writeFileSync(goldenPath, JSON.stringify({ measured: true, pcrs: { 0: pcrHex(1), 1: pcrHex(2), 2: pcrHex(3) } }));
 });
 
 const makeAttestation = (overrides = {}, { tamperSig = false, alg = -35, der = false, tag = true } = {}) => {
@@ -117,7 +123,7 @@ const makeAttestation = (overrides = {}, { tamperSig = false, alg = -35, der = f
     dsaEncoding: der ? "der" : "ieee-p1363",
   });
   if (tamperSig) signature[0] ^= 0xff;
-  const body = cborEncode([protectedBstr, new Map([[33, [rootDer]], [34, leafDer]]), payloadBstr, signature]);
+  const body = cborEncode([protectedBstr, new Map(), payloadBstr, signature]);
   return tag ? Buffer.concat([Buffer.from([0xd2]), body]) : body;
 };
 
@@ -217,7 +223,7 @@ describe("run id and public ip", () => {
 
 describe("verifyChain", () => {
   it("accepts leaf signed by the root", () => {
-    expect(verifyChain(leafDer, [], rootPem).ok).toBe(true);
+    expect(verifyChain(leafDer, [rootDer], rootPem).ok).toBe(true);
   });
   it("rejects when the root does not match", () => {
     const otherRoot = fs.readFileSync(path.join(__dirname, "..", "certs", "aws-nitro-root.pem"), "utf8");
@@ -254,10 +260,10 @@ describe("verifyAttestation", () => {
     expect(verifyAttestation(makeAttestation({}, { alg: -7 }), { rootCertPem: rootPem }).reason).toMatch(/ES384/);
     expect(verifyAttestation(makeAttestation({}, { der: true }), { rootCertPem: rootPem }).reason).toMatch(/raw R\|\|S/);
   });
-  it("rejects a payload certificate that is not the signing certificate", () => {
-    const result = verifyAttestation(makeAttestation({ certificate: Buffer.alloc(8, 7) }), { rootCertPem: rootPem });
+  it("rejects substitution of the signing certificate in the payload", () => {
+    const result = verifyAttestation(makeAttestation({ certificate: rootDer }), { rootCertPem: rootPem });
     expect(result.ok).toBe(false);
-    expect(result.reason).toMatch(/payload certificate/);
+    expect(result.reason).toMatch(/signature/);
   });
   it("rejects trailing bytes and a non-COSE tag", () => {
     expect(verifyAttestation(Buffer.concat([makeAttestation(), Buffer.from([0])]), { rootCertPem: rootPem }).ok).toBe(false);
@@ -282,6 +288,7 @@ describe("verifyBundle", () => {
     const pcrsPath = path.join(tmp, "p.json");
     fs.writeFileSync(attPath, makeAttestation());
     fs.writeFileSync(pcrsPath, JSON.stringify({
+      build: buildManifest(),
       0: pcrHex(1),
       1: pcrHex(2),
       2: pcrHex(3),
@@ -306,7 +313,7 @@ describe("verifyBundle", () => {
     const attPath = path.join(tmp, "a2.cbor");
     const pcrsPath = path.join(tmp, "p2.json");
     fs.writeFileSync(attPath, makeAttestation());
-    fs.writeFileSync(pcrsPath, JSON.stringify({ 0: pcrHex(1), 1: pcrHex(2), 2: pcrHex(3) }));
+    fs.writeFileSync(pcrsPath, JSON.stringify({ build: buildManifest(), 0: pcrHex(1), 1: pcrHex(2), 2: pcrHex(3) }));
     const result = verifyBundle({ attestationPath: attPath, pcrsPath, rootCertPem: rootPem });
     expect(result.ok).toBe(false);
     expect(result.reason).toMatch(/nonce binding required/);
@@ -323,7 +330,7 @@ describe("verifyBundle", () => {
     const outPath = path.join(tmp, "out.zkey");
     const swapPath = path.join(tmp, "swap.zkey");
     fs.writeFileSync(attPath, makeAttestation({ nonce }));
-    fs.writeFileSync(pcrsPath, JSON.stringify({ 0: pcrHex(1), 1: pcrHex(2), 2: pcrHex(3) }));
+    fs.writeFileSync(pcrsPath, JSON.stringify({ build: buildManifest(), 0: pcrHex(1), 1: pcrHex(2), 2: pcrHex(3) }));
     fs.writeFileSync(inPath, zIn);
     fs.writeFileSync(outPath, zOut);
     fs.writeFileSync(swapPath, swapped);
@@ -420,8 +427,8 @@ describe("certificate profile", () => {
     openssl(dir, ["x509", "-req", "-in", "leaf.csr", "-CA", "ca.pem", "-CAkey", "ca.key", "-CAcreateserial", "-out", "server.pem", "-days", "30", "-extfile", "server.ext"]);
     openssl(dir, ["x509", "-req", "-in", "leaf.csr", "-CA", "ca.pem", "-CAkey", "ca.key", "-CAcreateserial", "-out", "code.pem", "-days", "30", "-extfile", "code.ext"]);
     const caPem = fs.readFileSync(path.join(dir, "ca.pem"), "utf8");
-    expect(verifyChain(pemToDer(fs.readFileSync(path.join(dir, "server.pem"), "utf8")), [], caPem).reason).toMatch(/serverAuth/);
-    expect(verifyChain(pemToDer(fs.readFileSync(path.join(dir, "code.pem"), "utf8")), [], caPem).ok).toBe(true);
+    expect(verifyChain(pemToDer(fs.readFileSync(path.join(dir, "server.pem"), "utf8")), [pemToDer(caPem)], caPem).reason).toMatch(/serverAuth/);
+    expect(verifyChain(pemToDer(fs.readFileSync(path.join(dir, "code.pem"), "utf8")), [pemToDer(caPem)], caPem).ok).toBe(true);
 
     openssl(dir, ["ecparam", "-name", "secp384r1", "-genkey", "-noout", "-out", "tls-ca.key"]);
     openssl(dir, ["req", "-x509", "-key", "tls-ca.key", "-out", "tls-ca.pem", "-days", "30",
@@ -430,7 +437,8 @@ describe("certificate profile", () => {
       "-addext", "extendedKeyUsage=serverAuth"]);
     fs.writeFileSync(path.join(dir, "plain.ext"), "basicConstraints=critical,CA:FALSE\nkeyUsage=critical,digitalSignature\n");
     openssl(dir, ["x509", "-req", "-in", "leaf.csr", "-CA", "tls-ca.pem", "-CAkey", "tls-ca.key", "-CAcreateserial", "-out", "under-tls-ca.pem", "-days", "30", "-extfile", "plain.ext"]);
-    expect(verifyChain(pemToDer(fs.readFileSync(path.join(dir, "under-tls-ca.pem"), "utf8")), [], fs.readFileSync(path.join(dir, "tls-ca.pem"), "utf8")).reason).toMatch(/CA EKU/);
+    const tlsCaPem = fs.readFileSync(path.join(dir, "tls-ca.pem"), "utf8");
+    expect(verifyChain(pemToDer(fs.readFileSync(path.join(dir, "under-tls-ca.pem"), "utf8")), [pemToDer(tlsCaPem)], tlsCaPem).reason).toMatch(/CA EKU/);
   });
 
   it("enforces directoryName and dNSName constraints when a CA publishes them", () => {
@@ -458,7 +466,7 @@ describe("certificate profile", () => {
     issue("other-dns", "/C=US/O=Allowed/CN=other.test", `${leafExt}subjectAltName=DNS:other.test\n`);
     issue("other-org", "/C=US/O=Other/CN=ok.example.com", `${leafExt}subjectAltName=DNS:ok.example.com\n`);
     const caPem = fs.readFileSync(path.join(dir, "ca.pem"), "utf8");
-    const chain = (name) => verifyChain(pemToDer(fs.readFileSync(path.join(dir, `${name}.pem`), "utf8")), [], caPem);
+    const chain = (name) => verifyChain(pemToDer(fs.readFileSync(path.join(dir, `${name}.pem`), "utf8")), [pemToDer(caPem)], caPem);
     expect(chain("ok").ok).toBe(true);
     expect(chain("evil").reason).toMatch(/excluded/);
     expect(chain("other-dns").reason).toMatch(/permitted/);
@@ -485,7 +493,7 @@ describe("golden PCRs and build inputs", () => {
     const attPath = path.join(tmp, `${name}.cbor`);
     const pcrsPath = path.join(tmp, `${name}.json`);
     fs.writeFileSync(attPath, makeAttestation());
-    fs.writeFileSync(pcrsPath, JSON.stringify(pcrs));
+    fs.writeFileSync(pcrsPath, JSON.stringify({ build: buildManifest(), ...pcrs }));
     return { attPath, pcrsPath };
   };
   const basePcrs = () => ({ 0: pcrHex(1), 1: pcrHex(2), 2: pcrHex(3) });
@@ -515,17 +523,17 @@ describe("golden PCRs and build inputs", () => {
     }).reason).toMatch(/golden PCR/);
   });
 
-  it("checks golden PCRs embedded in the host manifest", () => {
+  it("requires local approval regardless of golden PCRs embedded in the host manifest", () => {
     const good = writeBundle("embedded-good", { ...basePcrs(), golden: { measured: true, pcrs: basePcrs() } });
-    expect(verifyBundle({
+    expect(verifyBundleImpl({
       attestationPath: good.attPath, pcrsPath: good.pcrsPath,
       nonceHash: Buffer.alloc(32, 9).toString("hex"), rootCertPem: rootPem,
-    }).ok).toBe(true);
+    }).ok).toBe(false);
     const bad = writeBundle("embedded-bad", { ...basePcrs(), golden: { measured: true, pcrs: { ...basePcrs(), 2: pcrHex(4) } } });
     expect(verifyBundle({
       attestationPath: bad.attPath, pcrsPath: bad.pcrsPath,
       nonceHash: Buffer.alloc(32, 9).toString("hex"), rootCertPem: rootPem,
-    }).reason).toMatch(/golden PCR/);
+    }).ok).toBe(true);
   });
 
   it("compares recorded build-input hashes with the local enclave sources", () => {
