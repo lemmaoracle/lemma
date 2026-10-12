@@ -542,8 +542,8 @@ describe("golden PCRs and build inputs", () => {
     expect(hashBuildInputs(enclaveDir)).toEqual(enclaveHashBuildInputs(enclaveDir));
     const expected = JSON.parse(fs.readFileSync(path.join(enclaveDir, "expected-pcrs.json"), "utf8"));
     expect(expected.schema).toBe("lemma-cauldron.pcrs.v1");
-    expect(expected.measured).toBe(false);
-    expect(expected.pcrs).toEqual({ 0: null, 1: null, 2: null });
+    expect(expected.measured).toBe(true);
+    for (const key of ["0", "1", "2"]) expect(expected.pcrs[key]).toMatch(/^[0-9a-f]{96}$/);
     expect(verifyBuildInputs(expected.build.inputs, enclaveDir).ok).toBe(true);
 
     const { attPath, pcrsPath } = writeBundle("build", {

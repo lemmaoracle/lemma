@@ -227,7 +227,9 @@ describe("Nitro attestation trust policy", () => {
         timeout: 5000,
         stdio: ["ignore", "pipe", "pipe"],
       });
-    expect(() => run([])).toThrow(/golden PCR verification failed/);
+    // The bundled golden manifest is measured and approved (2026-10-12), so the
+    // default path is not a rejection case. Missing/malformed manifests must still
+    // stop before any AWS command.
     expect(() => run(["--golden", goldenPath])).toThrow(/golden PCR verification failed/);
     for (const doc of [
       { measured: false, pcrs },
