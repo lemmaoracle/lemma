@@ -76,17 +76,26 @@ cleanup() {
 trap cleanup EXIT
 
 echo "→ enclave 起動"
-RUN=$(nitro-cli run-enclave --cpu-count "$ENCLAVE_CPU" --memory "$ENCLAVE_MEMORY_MB" \
+# ENCLAVE_DEBUG_MODE=1 は診断専用: Nitro の debug mode は隔離を弱める（メモリ観察可能）ため
+# 製品の phase2 では使わない。console は debug mode で起動した enclave にしか接続できない（E44）。
+if [ ! -e /dev/nitro_enclaves ]; then
+  echo "/dev/nitro_enclaves が無い: インスタンスが --enclave-options Enabled=true で起動していない可能性が高い" >&2
+  exit 1
+fi
+DEBUG_FLAGS=""
+if [ "${ENCLAVE_DEBUG_MODE:-0}" = "1" ]; then DEBUG_FLAGS="--debug-mode"; fi
+RUN=$(nitro-cli run-enclave $DEBUG_FLAGS --cpu-count "$ENCLAVE_CPU" --memory "$ENCLAVE_MEMORY_MB" \
   --eif-path "$OUT/lemma-tee.eif" --enclave-cid 16)
 META=$(printf '%s' "$RUN" | python3 enclave/parse_run.py run)
 EID=$(printf '%s\n' "$META" | sed -n '1p')
 CID=$(printf '%s\n' "$META" | sed -n '2p')
 case "$CID" in ''|*[!0-9]*) echo "invalid EnclaveCID" >&2; exit 1 ;; esac
 
-echo "→ enclave console 記録開始"
-nitro-cli console --enclave-id "$EID" > "$OUT/console.log" 2>&1 &
-CONSOLE_PID=$!
-
+if [ "${ENCLAVE_DEBUG_MODE:-0}" = "1" ]; then
+  echo "→ enclave console 記録開始（debug mode）"
+  nitro-cli console --enclave-id "$EID" > "$OUT/console.log" 2>&1 &
+  CONSOLE_PID=$!
+fi
 echo "→ vsock プロキシ起動（127.0.0.1:5000 → enclave vsock:${CID}:5001）"
 # nitro-cli に vsock-proxy は無い。親から enclave へは socat で繋ぎ、待受は loopback だけ。
 socat TCP-LISTEN:5000,bind=127.0.0.1,reuseaddr,fork "VSOCK-CONNECT:${CID}:5001" &
