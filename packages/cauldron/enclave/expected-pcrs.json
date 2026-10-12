@@ -1,10 +1,10 @@
 {
   "schema": "lemma-cauldron.pcrs.v1",
-  "measured": false,
+  "measured": true,
   "pcrs": {
-    "0": null,
-    "1": null,
-    "2": null
+    "0": "2158a46fe3121f5c1b890dc6c3d9530bdfa9451bb8fb5109d0ab80a4cde12f89aba212bc0c2e717628ba752798d2d0a6",
+    "1": "4b4d5b3661b3efc12920900c80e126e4ce783c522de6c02a2a5bf7af3a2b9327b86776f188e4be1c1c404a129dbda493",
+    "2": "88643a435c140f0dceed7e4379f446273a2b1a718f9232dae873929a6c81574955e23f6943108cbb10c5ae5167855605"
   },
   "build": {
     "schema": "lemma-cauldron.build.v1",
