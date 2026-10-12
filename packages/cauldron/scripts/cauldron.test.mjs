@@ -671,7 +671,7 @@ print(json.dumps(enclave_ids_from_describe({"EnclaveID": "d"})))
     const argv = contributeArgv();
     expect(argv).not.toContain("-e");
     expect(argv.join(" ")).not.toContain("super-secret-entropy");
-    expect(argv).toEqual(["zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final", "-n", "lemma-cauldron"]);
+    expect(argv).toEqual(["zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final", "-n=lemma-cauldron"]);
   });
 
   it("pins the image digest, apk versions, npm ci and pip hashes", () => {

@@ -20,9 +20,11 @@ const redact = (text, secret) => {
   return s.split(secret).join("[redacted]");
 };
 
-/** snarkjs 0.7 は -e が無いと stdin の 1 行を entropy として読む。引数列には出さない。 */
+/** snarkjs 0.7 は -e が無いと stdin の 1 行を entropy として読む。引数列には出さない。
+ *  snarkjs 0.7.6 の CLI パーサは --opt=value（= 区切り）のみ解釈し、スペース区切りの
+ *  -n value は value を余分な位置引数として Usage 表示して終了するため = 形で渡す。 */
 export function contributeArgv() {
-  return ["zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final", "-n", "lemma-cauldron"];
+  return ["zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final", "-n=lemma-cauldron"];
 }
 
 function contribute(entropy, nodeOptions) {
