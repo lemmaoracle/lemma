@@ -14,6 +14,7 @@ export { canonicalSort, canonicalize } from "./canonical.js";
 export type { CanonicalOutput } from "./canonical.js";
 export type { Json } from "./internal.js";
 export { post } from "./http.js";
+export { raise } from "./fail.js";
 export { prepare, normalize } from "./prepare.js";
 export type { PrepareInput } from "./prepare.js";
 export type { PrepareOutput } from "./commitments.js";

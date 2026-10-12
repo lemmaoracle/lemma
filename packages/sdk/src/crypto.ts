@@ -15,14 +15,7 @@ import { randomBytes, bytesToHex, concatBytes } from "@noble/hashes/utils";
 import * as R from "ramda";
 import type { LemmaClient } from "@lemmaoracle/spec";
 import { hexToBytes as platformHexToBytes, utf8ToBytes, bytesToUtf8 } from "./platform.js";
-
-/** Raise a validation error at the crypto API boundary. */
-// imperative: pre-condition validation — no functional alternative for call-site abort
-/* eslint-disable functional/no-throw-statements */
-const raise = (message: string): never => {
-  throw new Error(message);
-};
-/* eslint-enable functional/no-throw-statements */
+import { raise } from "./fail.js";
 
 /**
  * Derive the compressed secp256k1 public key from a private key.
