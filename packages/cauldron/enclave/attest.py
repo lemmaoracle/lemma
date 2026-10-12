@@ -6,8 +6,9 @@ NSM ioctl は aws-nsm-interface（PyPI、requirements.txt でハッシュ固定�
 """
 import sys
 import binascii
+import io
 
-from aws_nsm_interface import close_nsm_device, get_attestation_doc, open_nsm_device
+from aws_nsm_interface import close_nsm_device, get_attestation_doc
 
 
 def main() -> None:
@@ -20,7 +21,10 @@ def main() -> None:
     # NSM の nonce 上限は 512 byte。空 nonce は zkey との結び付きが無い。
     if not nonce or len(nonce) > 512:
         raise SystemExit("nonce length must be 1..512 bytes")
-    handle = open_nsm_device()
+    # aws_nsm_interface の open_nsm_device() は open("/dev/nsm","r+")（テキスト・バッファ付き）で、
+    # 非 seek のキャラデバイスに対しては Python 3.12 で io.UnsupportedOperation になる。
+    # ioctl は fileno() しか使わないため、生バイナリ（バッファ無し）で開く。
+    handle = io.FileIO("/dev/nsm", "rb+")
     try:
         result = get_attestation_doc(handle, nonce=nonce)
     finally:
