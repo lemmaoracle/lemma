@@ -1,0 +1,106 @@
+#!/usr/bin/env node
+// Runs inside the enclave. The first stdin frame is the heap size, then zkey_0000.
+// Contributes with in-enclave CSPRNG entropy via snarkjs zkey contribute, and returns an
+// NSM attestation doc whose nonce is sha256(zkey_0000)||sha256(zkey_final).
+//
+// Contribution entropy goes only to snarkjs stdin. It is not passed with -e.
+// It must not appear in /proc/<pid>/cmdline or in failure logs.
+
+import { spawn, spawnSync } from "node:child_process";
+import { randomBytes } from "node:crypto";
+import fs from "node:fs";
+import { pathToFileURL } from "node:url";
+import { commitmentNonceHex, parseContributeJobHeader, readFrame, writeFrame } from "./frame.mjs";
+
+export { commitmentNonceHex };
+
+const redact = (text, secret) => {
+  const s = String(text ?? "");
+  if (!secret) return s;
+  return s.split(secret).join("[redacted]");
+};
+
+/** snarkjs 0.7 は -e が無いと stdin の 1 行を entropy として読む。引数列には出さない。
+ *  snarkjs 0.7.6 の CLI パーサは --opt=value（= 区切り）のみ解釈し、スペース区切りの
+ *  -n value は value を余分な位置引数として Usage 表示して終了するため = 形で渡す。 */
+export function contributeArgv() {
+  return ["zkey", "contribute", "/tmp/zkey_0000", "/tmp/zkey_final", "-n=lemma-cauldron"];
+}
+
+function contribute(entropy, nodeOptions) {
+  const argv = contributeArgv();
+  if (argv.includes("-e") || argv.includes(entropy)) {
+    return Promise.reject(new Error("refusing to place contribution entropy on argv"));
+  }
+  if (String(nodeOptions).includes(entropy)) {
+    return Promise.reject(new Error("refusing to place contribution entropy in the environment"));
+  }
+  return new Promise((resolve, reject) => {
+    const child = spawn("snarkjs", argv, {
+      stdio: ["pipe", "pipe", "pipe"],
+      env: { ...process.env, NODE_OPTIONS: nodeOptions },
+    });
+    const out = [];
+    const err = [];
+    child.stdout.on("data", (chunk) => out.push(chunk));
+    child.stderr.on("data", (chunk) => err.push(chunk));
+    child.on("error", (error) => reject(error));
+    child.stdin.on("error", () => {});
+    child.stdin.end(`${entropy}\n`);
+    child.on("close", (status, signal) => {
+      if (status === 0) { resolve(); return; }
+      const stderr = redact(Buffer.concat(err), entropy);
+      const stdout = redact(Buffer.concat(out), entropy);
+      reject(new Error(`zkey contribute failed (status ${status}, signal ${signal}): ${stderr.slice(-1500)} ${stdout.slice(-500)}`));
+    });
+  });
+}
+
+const attest = (nonceHex) => {
+  const child = spawnSync("python3", ["/app/attest.py", nonceHex], { stdio: ["ignore", "pipe", "pipe"] });
+  if (child.error || child.status !== 0) {
+    const stderr = Buffer.from(child.stderr ?? Buffer.alloc(0)).toString("utf8");
+    throw new Error(`attestation failed (status ${child.status}): ${stderr.slice(-1500)}`);
+  }
+  return Buffer.from(child.stdout ?? Buffer.alloc(0));
+};
+
+const rmQuiet = (p) => { try { fs.rmSync(p, { force: true }); } catch { /* enclave 終了時に消える */ } };
+
+const main = async () => {
+  let entropy = "";
+  try {
+    const { nodeOptions } = parseContributeJobHeader(await readFrame(process.stdin));
+    const zkey0 = await readFrame(process.stdin);
+    fs.writeFileSync("/tmp/zkey_0000", zkey0, { mode: 0o600 });
+    entropy = randomBytes(32).toString("hex");
+    await contribute(entropy, nodeOptions);
+    const zkeyFinal = fs.readFileSync("/tmp/zkey_final");
+    const nonce = commitmentNonceHex(zkey0, zkeyFinal);
+    const doc = attest(nonce);
+    process.stderr.write(`[serve] zkey_0000 ${zkey0.length} bytes, zkey_final ${zkeyFinal.length} bytes, attestation ${doc.length} bytes\n`);
+    await writeFrame(process.stdout, zkeyFinal);
+    await writeFrame(process.stdout, doc);
+  } catch (e) {
+    throw new Error(redact(e.message, entropy));
+  } finally {
+    entropy = "";
+    rmQuiet("/tmp/zkey_0000");
+    rmQuiet("/tmp/zkey_final");
+  }
+};
+
+const isMain = (() => {
+  if (!process.argv[1]) return false;
+  try {
+    return import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href;
+  } catch {
+    return import.meta.url === pathToFileURL(process.argv[1]).href;
+  }
+})();
+
+if (isMain) {
+  main()
+    .then(() => process.exit(0))
+    .catch((e) => { process.stderr.write(`${e.message || e}\n`); process.exit(1); });
+}

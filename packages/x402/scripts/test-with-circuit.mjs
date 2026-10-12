@@ -25,14 +25,15 @@ function checkBuildFiles() {
 }
 
 // Helper function to run commands
-function runCommand(command, args = [], cwd = ROOT_DIR) {
+function runCommand(command, args = [], cwd = ROOT_DIR, env = process.env) {
   return new Promise((resolve, reject) => {
     console.log(`\n>>> Running: ${command} ${args.join(' ')}`);
     
     const child = spawn(command, args, {
       cwd,
       stdio: 'inherit',
-      shell: true
+      shell: true,
+      env,
     });
     
     child.on('close', (code) => {
@@ -63,7 +64,7 @@ async function main() {
     
     if (missingFiles.length > 0) {
       console.log('⚠️  Circuit build files missing. Building circuit...');
-      await runCommand('npm', ['run', 'build:circuit']);
+      await runCommand('npm', ['run', 'build:circuit'], ROOT_DIR, { ...process.env, LEMMA_PHASE2: 'local' });
     } else {
       console.log('✅ Circuit build files are present.');
     }
