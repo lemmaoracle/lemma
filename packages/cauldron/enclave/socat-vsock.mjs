@@ -3,7 +3,8 @@ import fs from "node:fs";
 import { pathToFileURL } from "node:url";
 
 export function socatSupportsVsock(helpText) {
-  const text = String(helpText ?? "");
+  // AL2023 の socat 1.7.4.2 は help を小文字(vsock-connect/vsock-listen)で出力するため大文字小文字を無視する
+  const text = String(helpText ?? "").toUpperCase();
   return text.includes("VSOCK-CONNECT") && text.includes("VSOCK-LISTEN");
 }
 

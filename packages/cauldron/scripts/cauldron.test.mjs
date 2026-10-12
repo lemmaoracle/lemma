@@ -573,6 +573,7 @@ describe("golden PCRs and build inputs", () => {
 describe("enclave preflight and teardown", () => {
   it("requires both VSOCK address types from socat", () => {
     expect(socatSupportsVsock("VSOCK-CONNECT and VSOCK-LISTEN")).toBe(true);
+    expect(socatSupportsVsock("vsock-connect:<cid>:<port> / vsock-listen:<port>")).toBe(true);
     expect(socatSupportsVsock("TCP-LISTEN:5000")).toBe(false);
     const script = path.join(__dirname, "..", "enclave", "socat-vsock.mjs");
     expect(() => execFileSync("node", [script], { input: "TCP only", stdio: ["pipe", "pipe", "pipe"] })).toThrow(/VSOCK/);
