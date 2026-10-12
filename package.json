@@ -8,7 +8,7 @@
     "packageManager": {
       "name": "pnpm",
       "version": "12.11.2",
-      "onFail": "download"
+      "onFail": "ignore"
     }
   },
   "scripts": {
