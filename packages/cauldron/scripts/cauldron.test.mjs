@@ -155,8 +155,19 @@ describe("cborEncode/cborDecode", () => {
     expect(decoded.get("b")).toBe("y".repeat(256));
   });
 
-  it("rejects indefinite length, truncation, and huge arrays", () => {
-    expect(() => cborDecode(Buffer.from([0x5f]))).toThrow(/indefinite/);
+  it("decodes indefinite-length items (NSM attestation payload uses them)", () => {
+    // bf 61 61 01 61 62 5f 42 0102 41 03 ff ff = {"a": 1, "b": <01 02 03>}
+    const map = cborDecode(Buffer.from("bf61610161625f4201024103ffff", "hex"))[0];
+    expect(map.get("a")).toBe(1);
+    expect(Buffer.from(map.get("b"))).toEqual(Buffer.from([1, 2, 3]));
+    // 9f 01 02 ff = [1, 2]
+    expect(cborDecode(Buffer.from("9f0102ff", "hex"))[0]).toEqual([1, 2]);
+    // 7f 61 61 61 62 ff = "ab"
+    expect(cborDecode(Buffer.from("7f61616162ff", "hex"))[0]).toBe("ab");
+  });
+
+  it("rejects truncation, unterminated indefinite items, and huge arrays", () => {
+    expect(() => cborDecode(Buffer.from([0x5f]))).toThrow(/truncated/);
     expect(() => cborDecode(Buffer.from([0x45, 0x01]))).toThrow(/truncated/);
     expect(() => cborDecode(Buffer.from([0x9a, 0xff, 0xff, 0xff, 0xff]))).toThrow(/truncated/);
   });

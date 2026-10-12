@@ -805,7 +805,8 @@ export async function teardownByRunId(id, region, deps = {}) {
  * attestation 検証（オフライン・CBOR/COSE_Sign1 の最小型）
  * ============================================================ */
 
-// --- 最小 CBOR デコーダ（必要な型のみ。不定長と tag 18 以外は拒否） ---
+// --- 最小 CBOR デコーダ（必要な型のみ。tag 18 以外の tag は拒否） ---
+// NSM の attestation payload は indefinite-length（bf…ff）で来るため対応する。
 export function cborDecode(buf, offset = 0, depth = 0) {
   if (!Buffer.isBuffer(buf)) buf = Buffer.from(buf);
   if (depth > 32) throw new Error("cbor nesting too deep");
@@ -813,7 +814,46 @@ export function cborDecode(buf, offset = 0, depth = 0) {
   const ib = buf[offset++];
   const major = ib >> 5;
   const ai = ib & 0x1f;
-  if (ai === 31) throw new Error("indefinite length unsupported");
+  if (ai === 31) {
+    const atBreak = () => {
+      if (offset >= buf.length) throw new Error("cbor truncated");
+      return buf[offset] === 0xff;
+    };
+    const takeBreak = () => { offset += 1; };
+    if (major === 2 || major === 3) {
+      const chunks = [];
+      while (!atBreak()) {
+        const [c, o] = cborDecode(buf, offset, depth + 1);
+        if (major === 2 ? !Buffer.isBuffer(c) : typeof c !== "string") throw new Error("indefinite chunk type mismatch");
+        chunks.push(c);
+        offset = o;
+      }
+      takeBreak();
+      return [major === 3 ? chunks.join("") : Buffer.concat(chunks), offset];
+    }
+    if (major === 4) {
+      const arr = [];
+      while (!atBreak()) {
+        const [v, o] = cborDecode(buf, offset, depth + 1);
+        arr.push(v);
+        offset = o;
+      }
+      takeBreak();
+      return [arr, offset];
+    }
+    if (major === 5) {
+      const map = new Map();
+      while (!atBreak()) {
+        const [k, o1] = cborDecode(buf, offset, depth + 1);
+        const [v, o2] = cborDecode(buf, o1, depth + 1);
+        map.set(k, v);
+        offset = o2;
+      }
+      takeBreak();
+      return [map, offset];
+    }
+    throw new Error(`unsupported indefinite major ${major}`);
+  }
   let len = ai;
   const take = (n) => {
     if (offset + n > buf.length) throw new Error("cbor truncated");
