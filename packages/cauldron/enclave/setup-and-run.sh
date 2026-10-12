@@ -63,11 +63,15 @@ fi
 
 EID=""
 PROXY_PID=""
+CONSOLE_PID=""
 cleanup() {
+  if [ -n "${CONSOLE_PID}" ]; then kill "$CONSOLE_PID" 2>/dev/null || true; fi
   if [ -n "${PROXY_PID}" ]; then kill "$PROXY_PID" 2>/dev/null || true; fi
   if [ -n "${EID}" ]; then nitro-cli terminate-enclave --enclave-id "$EID" >/dev/null 2>&1 || true; fi
   # ID 解析に失敗しても、起動済みの enclave を describe して止める。
   nitro-cli describe-enclaves 2>/dev/null | python3 enclave/parse_run.py stop || true
+  # 失敗原因の切り分けに enclave 内部の stderr を必ず持ち帰る。
+  if [ -s "$OUT/console.log" ]; then echo "--- enclave console ---" >&2; cat "$OUT/console.log" >&2 || true; fi
 }
 trap cleanup EXIT
 
@@ -78,6 +82,10 @@ META=$(printf '%s' "$RUN" | python3 enclave/parse_run.py run)
 EID=$(printf '%s\n' "$META" | sed -n '1p')
 CID=$(printf '%s\n' "$META" | sed -n '2p')
 case "$CID" in ''|*[!0-9]*) echo "invalid EnclaveCID" >&2; exit 1 ;; esac
+
+echo "→ enclave console 記録開始"
+nitro-cli console --enclave-id "$EID" > "$OUT/console.log" 2>&1 &
+CONSOLE_PID=$!
 
 echo "→ vsock プロキシ起動（127.0.0.1:5000 → enclave vsock:${CID}:5001）"
 # nitro-cli に vsock-proxy は無い。親から enclave へは socat で繋ぎ、待受は loopback だけ。
