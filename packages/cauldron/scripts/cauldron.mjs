@@ -474,7 +474,9 @@ export function runInstancesArgs({ ami, instanceType, keyName, sgId, subnetId, i
     "--subnet-id", subnetId,
     "--associate-public-ip-address",
     "--enclave-options", "Enabled=true",
-    "--metadata-options", "HttpEndpoint=disabled",
+    // IMDS は cloud-init の鍵注入に必須のため無効化できない。IMDSv2 のみ+ホップリミット1で最小化する。
+    // （実測: HttpEndpoint=disabled では authorized_keys が空のまま SSH が不可能になる）
+    "--metadata-options", "HttpEndpoint=enabled,HttpTokens=required,HttpPutResponseHopLimit=1",
     "--tag-specifications", instanceTags,
     "--region", region,
     "--output", "json",

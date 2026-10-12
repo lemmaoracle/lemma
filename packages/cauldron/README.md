@@ -98,7 +98,7 @@ An absent, unmeasured or malformed manifest stops the run before provisioning.
 `DescribeRouteTables` / `DescribeInternetGateways` / `CreateVpc` / `DeleteVpc` / `CreateSubnet` /
 `DeleteSubnet` / `ModifySubnetAttribute` / `CreateInternetGateway` / `DeleteInternetGateway` /
 `AttachInternetGateway` / `DetachInternetGateway` / `CreateRoute` / `ssm:GetParameter`.
-Accounts whose default VPC already has a public subnet do not use `CreateVpc` or the calls after it. The instance has no IAM role, and IMDS is disabled. KMS is not required (the design holds no key).
+Accounts whose default VPC already has a public subnet do not use `CreateVpc` or the calls after it. The instance has no IAM role. IMDS cannot be disabled entirely because cloud-init injects the per-run SSH key through it; only IMDSv2 is enabled with a hop limit of 1. An attacker who already controls the parent can therefore read instance metadata (it holds no credentials), while the enclave still has no path to it. KMS is not required (the design holds no key).
 `verify` needs no AWS permissions at all.
 
 ## Root certificate used for verification
