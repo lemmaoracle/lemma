@@ -16,10 +16,11 @@ case "$ENCLAVE_MEMORY_MB" in ''|*[!0-9]*) echo "invalid ENCLAVE_MEMORY_MB" >&2; 
 case "$ENCLAVE_CPU" in ''|*[!0-9]*) echo "invalid ENCLAVE_CPU" >&2; exit 1 ;; esac
 case "$CLIENT_TIMEOUT_MS" in ''|*[!0-9]*) echo "invalid CLIENT_TIMEOUT_MS" >&2; exit 1 ;; esac
 
-echo "→ 依存の導入（docker / nitro-cli / socat / python / node）"
+echo "→ 依存の導入（docker / nitro-cli / devel blobs / socat / python / node）"
 # nitro-cli はディストリのパッケージを使う。GitHub latest の生バイナリは取らない。
-dnf install -y docker aws-nitro-enclaves-cli socat python3 nodejs20 \
-  || dnf install -y docker aws-nitro-enclaves-cli socat python3 nodejs
+# aws-nitro-enclaves-cli-devel は build-enclave に要する boot blobs(bzImage/cmdline/init)。
+dnf install -y docker aws-nitro-enclaves-cli aws-nitro-enclaves-cli-devel socat python3 nodejs20 \
+  || dnf install -y docker aws-nitro-enclaves-cli aws-nitro-enclaves-cli-devel socat python3 nodejs
 systemctl enable --now docker
 if ! command -v node >/dev/null 2>&1 && command -v node-20 >/dev/null 2>&1; then
   ln -sfn "$(command -v node-20)" /usr/local/bin/node
@@ -40,8 +41,12 @@ EOF
 systemctl enable --now nitro-enclaves-allocator.service
 systemctl restart nitro-enclaves-allocator.service
 
-echo "→ docker イメージ build"
-docker build -q -t lemma-tee-contribute enclave
+echo "→ docker イメージ build（再現ビルド: buildx + SOURCE_DATE_EPOCH + no-cache）"
+# PCR を golden と一致させるにはビルドの再現性が必須。
+# SOURCE_DATE_EPOCH は buildx 経由でのみレイヤー時刻を正規化する（docker build では無効）。
+# npm のキャッシュ/ログは Dockerfile 側で同一 RUN により削除される。
+export SOURCE_DATE_EPOCH=1700000000
+docker buildx build --no-cache -q -t lemma-tee-contribute enclave
 
 echo "→ EIF build"
 nitro-cli build-enclave --docker-uri lemma-tee-contribute --output-file "$OUT/lemma-tee.eif"
@@ -49,6 +54,12 @@ nitro-cli build-enclave --docker-uri lemma-tee-contribute --output-file "$OUT/le
 echo "→ PCR manifest（期待測定値とビルド入力ハッシュ）を保存"
 nitro-cli describe-eif --eif-path "$OUT/lemma-tee.eif" | python3 enclave/parse_pcrs.py "$OUT/pcrs.json"
 node enclave/hash-build-inputs.mjs enclave "$OUT/pcrs.json"
+
+# BUILD_ONLY=1: golden 計測用。ビルド〜manifest までで止める（enclave 実行は行わない）。
+if [ "${BUILD_ONLY:-0}" = "1" ]; then
+  echo "✓ build-only done: $OUT/pcrs.json"
+  exit 0
+fi
 
 EID=""
 PROXY_PID=""

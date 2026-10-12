@@ -8,15 +8,21 @@ RUN apk add --no-cache \
       socat=1.8.1.3-r0
 
 COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install --no-cache-dir --break-system-packages --require-hashes --only-binary=:all: \
+# --no-compile: pyc はビルド時刻依存のヘッダを持ち再現性を壊すため生成しない
+RUN pip3 install --no-cache-dir --no-compile --break-system-packages --require-hashes --only-binary=:all: \
       -r /tmp/requirements.txt
 
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+# npm のキャッシュ/ログ(/root/.npm)は実行時刻を含むため同一 RUN で削除する（再現ビルド必須）
+RUN npm ci --omit=dev --no-audit --no-fund && rm -rf /root/.npm
 ENV PATH="/app/node_modules/.bin:${PATH}"
 
 COPY serve.mjs attest.py entry.sh frame.mjs /app/
 RUN chmod +x /app/entry.sh
+
+# 再現ビルド: RUN レイヤーのファイル時刻は wall-clock で残るため、
+# 全ファイルを SOURCE_DATE_EPOCH(1700000000) と同一の時刻へ正規化する。
+RUN find / -xdev -exec touch -h -t 202311142213.20 {} + || true
 
 ENTRYPOINT ["/app/entry.sh"]
