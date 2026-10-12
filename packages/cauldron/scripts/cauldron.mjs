@@ -20,6 +20,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ROOT_CERT = path.join(HERE, "..", "certs", "aws-nitro-root.pem");
+const DEFAULT_GOLDEN = path.join(HERE, "..", "enclave", "expected-pcrs.json");
 const TAG_KEY = "lemma-cauldron";
 // AWS Nitro Enclaves Root-G1。certs/aws-nitro-root.pem と README の指紋と同じ。
 export const PINNED_ROOT_FINGERPRINT =
@@ -43,7 +44,7 @@ const IGW_ID_RE = /^igw-[0-9a-f]+$/;
 const UNSUPPORTED_ENCLAVE_INSTANCE = /^(?:t3a|t4g|t3|t2|a1|g5g|im4gn|is4gen)\.|^u-|\.metal/i;
 const MEMORY_ZKEY_FACTOR = 16;
 const MEMORY_HEADROOM_BYTES = 512 * 1024 * 1024;
-export const BUILD_INPUT_FILES = ["Dockerfile", "package.json", "package-lock.json", "requirements.txt"];
+export const BUILD_INPUT_FILES = ["Dockerfile", "package.json", "package-lock.json", "requirements.txt", ".dockerignore", "serve.mjs", "attest.py", "frame.mjs", "entry.sh"];
 const EKU_SERVER_AUTH = "1.3.6.1.5.5.7.3.1";
 const EKU_CLIENT_AUTH = "1.3.6.1.5.5.7.3.2";
 const TLS_EKU = new Set([EKU_SERVER_AUTH, EKU_CLIENT_AUTH]);
@@ -137,22 +138,39 @@ export function hashBuildInputs(dir) {
 }
 
 export function verifyBuildInputs(inputs, dir) {
+  if (!inputs || typeof inputs !== "object" || Array.isArray(inputs)) {
+    return { ok: false, reason: "build input hashes missing" };
+  }
   const diffs = [];
-  for (const [name, expected] of Object.entries(inputs ?? {})) {
+  for (const name of BUILD_INPUT_FILES) {
+    const expected = inputs[name];
     let actual = "(missing)";
     try { actual = sha256Hex(fs.readFileSync(path.join(dir, name))); } catch { /* missing file */ }
-    if (actual !== String(expected).toLowerCase()) diffs.push({ file: name, expected, actual });
+    if (!/^[0-9a-f]{64}$/i.test(String(expected ?? "")) || actual !== String(expected).toLowerCase()) {
+      diffs.push({ file: name, expected: expected ?? "(missing)", actual });
+    }
   }
   return diffs.length === 0 ? { ok: true } : { ok: false, reason: "build input hash mismatch", diffs };
 }
 
 export function goldenPcrsFrom(doc) {
   if (!doc || typeof doc !== "object") return { measured: false, reason: "golden PCR manifest is not an object" };
-  if (doc.measured === false) return { measured: false, reason: "golden PCRs have not been measured" };
+  if (doc.measured !== true) return { measured: false, reason: "golden PCRs have not been measured" };
   const pcrs = doc.pcrs ?? doc;
   const sample = pcrs[0] ?? pcrs["0"];
   if (sample == null || sample === "") return { measured: false, reason: "golden PCRs have not been measured" };
   return { measured: true, pcrs };
+}
+
+function readGolden(goldenPath = DEFAULT_GOLDEN) {
+  let doc;
+  try { doc = JSON.parse(fs.readFileSync(goldenPath, "utf8")); }
+  catch (e) { return { ok: false, reason: `cannot read golden PCRs: ${e.message}` }; }
+  const golden = goldenPcrsFrom(doc);
+  if (!golden.measured) return { ok: false, reason: golden.reason };
+  const valid = pcrsMatch(golden.pcrs, golden.pcrs);
+  if (!valid.ok) return { ok: false, reason: "golden PCRs must contain valid PCR0/1/2", diffs: valid.diffs };
+  return { ok: true, pcrs: golden.pcrs };
 }
 
 const log = (msg) => process.stderr.write(`[cauldron] ${msg}\n`);
@@ -1064,12 +1082,16 @@ function issuedBy(child, parent) {
   }
 }
 
-/** 証明書チェーン（leaf → … → root）の署名・期限・CA ビット・発行関係を確認 */
+/** AWS cabundle は root → … → leaf の発行 CA。leaf → … → root にして検証する。 */
 export function verifyChain(leafDer, bundleDers, rootPem, now = Date.now()) {
   const leaf = new X509Certificate(leafDer);
-  const chain = [leaf, ...bundleDers.map((d) => new X509Certificate(d))];
   const root = new X509Certificate(rootPem);
   if (!root.ca) return { ok: false, reason: "pinned root is not a CA" };
+  const bundle = bundleDers.map((d) => new X509Certificate(d));
+  if (!bundle.length || !bundle[0].raw.equals(root.raw)) {
+    return { ok: false, reason: "cabundle must start with the pinned root" };
+  }
+  const chain = [leaf, ...bundle.slice(1).reverse()];
   const notBefore = (c) => Date.parse(c.validFrom);
   const notAfter = (c) => Date.parse(c.validTo);
   for (const c of [...chain, root]) {
@@ -1130,10 +1152,15 @@ function verifyAttestationInner(coseBuf, { rootCertPem, now = Date.now(), maxSke
   const alg = protectedMap.get(1);
   if (alg !== COSE_ALG_ES384) return { ok: false, reason: `unsupported alg ${alg} (want ES384 / -35)` };
 
-  const leafDer = unprotected.get(34);
-  const bundleDers = unprotected.get(33) ?? [];
+  // Nitro keeps certificate and cabundle in the signed payload; unprotected is empty.
+  const [doc, docEnd] = cborDecode(payloadBstr);
+  if (!(doc instanceof Map) || docEnd !== payloadBstr.length) return { ok: false, reason: "malformed payload" };
+  const leafDer = doc.get("certificate");
+  const bundleDers = doc.get("cabundle");
   if (!Buffer.isBuffer(leafDer)) return { ok: false, reason: "leaf certificate missing" };
-  if (!Array.isArray(bundleDers)) return { ok: false, reason: "cabundle malformed" };
+  if (!Array.isArray(bundleDers) || !bundleDers.length || !bundleDers.every(Buffer.isBuffer)) {
+    return { ok: false, reason: "cabundle malformed" };
+  }
   if (!Buffer.isBuffer(signature) || signature.length !== ES384_SIG_BYTES) {
     return { ok: false, reason: "signature must be 96-byte raw R||S" };
   }
@@ -1157,13 +1184,7 @@ function verifyAttestationInner(coseBuf, { rootCertPem, now = Date.now(), maxSke
   const chain = verifyChain(leafDer, bundleDers, rootPem, now);
   if (!chain.ok) return chain;
 
-  const [doc, docEnd] = cborDecode(payloadBstr);
-  if (!(doc instanceof Map) || docEnd !== payloadBstr.length) return { ok: false, reason: "malformed payload" };
   if (doc.get("digest") !== "SHA384") return { ok: false, reason: "digest is not SHA384" };
-  const payloadCert = doc.get("certificate");
-  if (!Buffer.isBuffer(payloadCert) || !payloadCert.equals(leafDer)) {
-    return { ok: false, reason: "payload certificate does not match signing certificate" };
-  }
   const fresh = checkAttestationTime(doc.get("timestamp"), now, maxSkewMs);
   if (!fresh.ok) return fresh;
 
@@ -1205,20 +1226,14 @@ export function pcrsMatch(expected, actual) {
   return diffs.length === 0 ? { ok: true } : { ok: false, diffs };
 }
 
-/** ローカル検証の一括実行。nonce の結び付きが無い成功は返さない。 */
-function matchGolden(source, actual, label) {
-  const golden = goldenPcrsFrom(source);
-  if (!golden.measured) return { ok: false, reason: golden.reason };
-  const matched = pcrsMatch(golden.pcrs, actual);
-  if (!matched.ok) return { ok: false, reason: label, ...matched };
-  return { ok: true };
-}
-
+/** ローカル検証の一括実行。独立した golden PCR と nonce の束縛を必須にする。 */
 export function verifyBundle({
   attestationPath, pcrsPath, nonceHash, rootCertPem, zkeyIn, zkeyOut,
   goldenPath, buildDir, skipBuildCheck = false, now, maxSkewMs,
 }) {
   if (!attestationPath || !pcrsPath) return { ok: false, reason: "attestation and pcrs paths are required" };
+  const golden = readGolden(goldenPath);
+  if (!golden.ok) return golden;
   let att;
   try {
     att = verifyAttestation(fs.readFileSync(attestationPath), { rootCertPem, now, maxSkewMs });
@@ -1234,20 +1249,11 @@ export function verifyBundle({
   }
   const pcr = pcrsMatch(expected.pcrs ?? expected, att.pcrs);
   if (!pcr.ok) return { ok: false, reason: "PCR mismatch", ...pcr };
-  if (expected.golden) {
-    const embedded = matchGolden(expected.golden, att.pcrs, "golden PCR mismatch");
-    if (!embedded.ok) return embedded;
-  }
-  if (goldenPath) {
-    let goldenDoc;
-    try { goldenDoc = JSON.parse(fs.readFileSync(goldenPath, "utf8")); }
-    catch (e) { return { ok: false, reason: `cannot read golden PCRs: ${e.message}` }; }
-    const golden = matchGolden(goldenDoc, att.pcrs, "golden PCR mismatch");
-    if (!golden.ok) return golden;
-  }
-  if (!skipBuildCheck && expected.build?.inputs) {
+  const approved = pcrsMatch(golden.pcrs, att.pcrs);
+  if (!approved.ok) return { ok: false, reason: "golden PCR mismatch", ...approved };
+  if (!skipBuildCheck) {
     const dir = buildDir ?? path.join(HERE, "..", "enclave");
-    const built = verifyBuildInputs(expected.build.inputs, dir);
+    const built = verifyBuildInputs(expected.build?.inputs, dir);
     if (!built.ok) return built;
   }
 
@@ -1292,6 +1298,10 @@ export async function phase2(opts, deps = {}) {
   if (!fs.existsSync(r1cs)) throw new Error(`r1cs not found: ${r1cs}`);
   if (!fs.existsSync(zkeyIn)) throw new Error(`initial zkey not found: ${zkeyIn}`);
 
+  const goldenPath = opts.golden ?? DEFAULT_GOLDEN;
+  const golden = readGolden(goldenPath);
+  if (!golden.ok) throw new Error(`golden PCR verification failed: ${golden.reason}. Supply independently measured PCR0/1/2 with --golden.`);
+
   const ami = opts.ami ?? (await resolveAmi(region));
   let res = null;
   try {
@@ -1331,14 +1341,6 @@ export async function phase2(opts, deps = {}) {
 
       log("verify: attestation（オフライン）");
       const enclaveDir = path.join(HERE, "..", "enclave");
-      const defaultGolden = opts.golden ?? path.join(enclaveDir, "expected-pcrs.json");
-      let goldenPath;
-      if (opts.golden) goldenPath = opts.golden;
-      else if (fs.existsSync(defaultGolden)) {
-        const preset = JSON.parse(fs.readFileSync(defaultGolden, "utf8"));
-        if (preset.measured === true) goldenPath = defaultGolden;
-        else log("警告: enclave/expected-pcrs.json は未計測です。ホスト manifest だけの PCR 比較は独立した照合になりません。EIF を再ビルドして --golden を計測値で更新してください。");
-      }
       const v = verifyBundle({
         attestationPath: stagedAtt,
         pcrsPath: stagedPcrs,

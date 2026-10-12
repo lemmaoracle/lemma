@@ -4,7 +4,8 @@ TEE setup that runs Groth16 trusted-setup **phase 2 (`snarkjs zkey contribute`) 
 and keeps the attestation document as evidence. Circuit builds (seal, mizudako, and others) share it.
 
 As an alternative to an MPC ceremony, an attestation document signed by the AWS Nitro hypervisor shows that
-the toxic waste (contribution entropy) was generated and discarded inside the enclave. The proof system stays **Groth16**.
+the approved enclave produced the contribution. Trust in secret generation and disposal also requires
+independently approved PCR measurements of the enclave code. The proof system stays **Groth16**.
 
 ## Three ways to install
 
@@ -28,12 +29,21 @@ the toxic waste (contribution entropy) was generated and discarded inside the en
 
 The only required argument is `--circuit`. AWS credentials are not flags. Leave them to the environment the `aws` CLI already reads (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, plus `AWS_SESSION_TOKEN` for temporary credentials) or to a profile. Do not pass an SSH private key. Each run creates `lemma-tee-<run-id>`, deletes that key pair from AWS on exit, and shreds the local pem.
 
+Before a real run, independently build and review the EIF and approve its PCR0/1/2
+using the measurement steps below. The bundled `enclave/expected-pcrs.json` is
+unmeasured, so `phase2` stops before making AWS calls until it is replaced with
+approved measurements or a measured local manifest is supplied with `--golden`.
+Offline `verify` enforces the same requirement. The parent's returned manifest
+cannot provide this approval. `--dry-run` can still print the plan without measurements.
+
 `--circuit` names `build/<name>.r1cs` and `build/<name>_0000.zkey`. The output is `build/<name>_final.zkey`. A bare name looks at `./build/<name>` first. A path ending in `.r1cs` or `_0000.zkey` is accepted too. When the neighboring `ptau/` directory contains exactly one `*_final.ptau`, phase 2 uses it for `snarkjs zkey verify`.
 
 ```bash
 # From the circuit directory. Region, instance type, and enclave size stay at their defaults.
 cauldron phase2 --circuit seal-identity
 # Same thing: cauldron phase2 --circuit build/seal-identity
+# When using an independently approved local manifest:
+cauldron phase2 --circuit seal-identity --golden /path/to/approved-pcrs.json
 
 # Print the steps only. This does not call AWS.
 node cauldron.mjs phase2 --dry-run --circuit seal-identity
@@ -54,6 +64,9 @@ Zkey transfer uses a 4-byte length prefix and rejects a frame over 1 GiB (expect
 
 ## What happens
 
+First, check that the local golden manifest has independently measured PCR0/1/2.
+An absent, unmeasured or malformed manifest stops the run before provisioning.
+
 1. Create a key pair (name `lemma-tee-<run-id>`), a security group, and an EC2 instance **from scratch**. The default instance is **`m6i.xlarge` (4 vCPU / 16 GiB)**. `t2` / `t3` / `t3a` / `t4g` / `a1` / `g5g` / `im4gn` / `is4gen`, bare metal, and `u-*` are rejected before launch. The subnet is an explicit public subnet of the default VPC (one whose route table sends traffic to an IGW), and `--associate-public-ip-address` assigns a public IPv4 address. If no such subnet exists, the run creates a dedicated VPC `10.66.0.0/16` and an IGW, and deletes them on exit. The security group is created in that VPC. The instance and the security group (and the VPC, subnet, and IGW when this run created them) are tagged `lemma-cauldron=<run-id>`.
 2. Build the enclave image → `nitro-cli build-enclave` → **save the expected PCR0/1/2 measurements in the manifest**.
 3. Start the enclave → send `zkey_0000` over vsock.
@@ -72,8 +85,10 @@ Zkey transfer uses a 4-byte length prefix and rejects a frame over 1 GiB (expect
 - Certificates are checked for the CA bit and keyUsage, plus EKU and name constraints. An attestation leaf must not carry TLS serverAuth or clientAuth. Name constraints apply only when the CA includes the extension (the AWS root does not).
 - Required memory is estimated as `zkey × 16 + 512 MiB`. If that exceeds `--enclave-memory-mb` (default 8192), phase 2 warns before it runs. The value reaches the remote `setup-and-run.sh` as `sudo env ENCLAVE_MEMORY_MB=…`. The in-enclave snarkjs heap is three quarters of that (6144 when memory is 8192), and contribution entropy is not placed on argv or in the environment. 650 MB-class zkeys are not yet measured on real Nitro hardware. The warning is an estimate and does not stop the run. When you raise memory, also raise `--instance-type` so the parent OS still has room.
 - EIF metadata is not attested. Side channels are outside the threat model (same as the usual industry model).
-- Defense in depth: after contribute, `snarkjs zkey beacon` (finalize with public randomness) gives an MPC-shaped guarantee that
-  **the setup is safe if either AWS or the beacon is honest** (recommended).
+- A public `snarkjs zkey beacon` contribution is deterministic once the beacon is
+  published. It cannot restore secrecy if AWS or an enclave has retained the prior
+  contribution secret. An AWS-independent secret-disposal guarantee requires an
+  independent secret contribution whose secret is discarded.
 
 ## AWS permissions
 
@@ -97,13 +112,13 @@ SHA-256 fingerprint: `64:1A:03:21:A3:E2:44:EF:E4:56:46:31:95:D6:06:31:7E:D7:CD:C
 
 `enclave/expected-pcrs.json` stays `measured: false` with PCR0/1/2 set to `null` until it is measured. Passing that file as `--golden` fails verification (a placeholder is not accepted as an expected value).
 
-1. Confirm that `enclave/Dockerfile`, `package-lock.json`, and `requirements.txt` match the files you have. `verify` compares the manifest `build.inputs` (SHA-256 of each file) with the local `enclave/` directory. Use `--skip-build-check` only when you mean to skip that.
+1. Review all enclave image inputs: `Dockerfile`, `package.json`, `package-lock.json`, `requirements.txt`, `.dockerignore`, `serve.mjs`, `attest.py`, `frame.mjs`, and `entry.sh`. `verify` requires their SHA-256 hashes in the parent manifest and compares them with the local `enclave/` directory. These host-reported hashes do not replace independently approved PCRs. `--skip-build-check` skips only the hash comparison and still requires golden PCR verification.
 2. Image inputs are pinned. The base is `node:20.20.2-alpine3.22@sha256:8f47899606d000b0704e992f927fe7335adcd0d6c98851600072fb6e14a13e60`. apk pins `python3=3.12.15-r0`, `py3-pip=25.1.1-r0`, and `socat=1.8.1.3-r0`. npm uses the vendored `package-lock.json` via `npm ci`. pip uses `==` and `--require-hashes` from `requirements.txt`.
 3. On a Nitro Enclaves instance, run `docker build` and `nitro-cli build-enclave` in the same order as `enclave/setup-and-run.sh`, and read PCR0/1/2 from `nitro-cli describe-eif`.
-4. Write those 96 hex digits into `pcrs` in `enclave/expected-pcrs.json` and set `measured` to `true`. Leave `build.inputs` as the hashes of the files that build used.
+4. After independently approving the measured EIF, write those 96 hex digits into `pcrs` in a local golden manifest (or `enclave/expected-pcrs.json`) and set `measured` to `true`. Record the hashes of the reviewed build inputs in `build.inputs` with `hash-build-inputs.mjs`. Rebuild and approve new measurements whenever the image inputs change. Do not promote the production parent's returned PCR manifest to golden approval without an independent check.
 5. `cauldron verify --attestation … --pcrs … --zkey-in … --zkey-out … --golden enclave/expected-pcrs.json` checks both the host manifest and the golden file against the attestation PCRs.
 
-Looking only at the manifest the host returned is that parent instance comparing itself with itself. A production run whose golden file is still unmeasured warns and continues with the host manifest alone.
+Looking only at the manifest the host returned is that parent instance comparing itself with itself. Both `phase2` and `verify` reject an absent, malformed or unmeasured local golden manifest. A `golden` field in the parent's manifest is ignored as a source of approval.
 
 ## Tests
 
