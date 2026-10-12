@@ -1,2 +1,19 @@
 packages:
   - "packages/*"
+# publicHoistPattern tslib — @redocly/cli's require chain reaches tslib through
+# styled-components' nested .pnpm dir; hoist it to root so `validate:openapi`
+# works on clean Linux CI installs. (Was .npmrc `public-hoist-pattern[]=tslib`;
+# pnpm 11+ only reads auth/registry from .npmrc.)
+publicHoistPattern:
+  - tslib
+# pmOnFail download — npm rejects "download" in devEngines.onFail (EBADDEVENGINES), so the download policy lives here.
+pmOnFail: download
+allowBuilds:
+  "@tailwindcss/oxide": true
+  core-js: false
+  core-js-pure: false
+  esbuild: true
+  onnxruntime-node: true
+  protobufjs: false
+  sharp: true
+  workerd: true
