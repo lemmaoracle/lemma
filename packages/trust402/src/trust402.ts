@@ -9,7 +9,7 @@
  * content-commitment-v1.2) are exported as convenience utilities.
  */
 import type { LemmaClient } from "@lemmaoracle/spec";
-import { toScalar } from "@lemmaoracle/sdk";
+import { raise, toScalar } from "@lemmaoracle/sdk";
 import { poseidon1, poseidon2, poseidon5 } from "poseidon-lite";
 import { sha256 } from "@noble/hashes/sha2";
 import { randomBytes } from "@noble/hashes/utils";
@@ -395,14 +395,10 @@ export const orgIdentity = (input: OrgIdentityInput): OrgIdentityWitness => {
   const timestamp = BigInt(input.timestamp);
 
   const derivedPk = poseidon1([orgSecret]);
-  // imperative: input-validation guard that throws — no functional alternative
+  // Sync validation guard: raise() is the shared imperative boundary
+  // (sdk's fail.ts) — the guard itself stays expression-only.
   const _derivedPkCheck: undefined = derivedPk !== orgDid
-    ? (() => {
-        // eslint-disable-next-line functional/no-throw-statements
-        throw new Error(
-          "orgIdentity: orgDid does not match Poseidon1(orgSecret)",
-        );
-      })()
+    ? raise("orgIdentity: orgDid does not match Poseidon1(orgSecret)")
     : undefined;
 
   const commitmentHash = poseidon5([
