@@ -483,15 +483,8 @@ export function runInstancesArgs({ ami, instanceType, keyName, sgId, subnetId, i
   ];
 }
 
-async function createDedicatedNetwork({ region, id, awsImpl, network }) {
-  network.created = true;
-  log(`run-id ${id}: no public subnet in the default VPC; creating a dedicated VPC`);
-  const vpc = parseAwsJson(await awsImpl([
-    "ec2", "create-vpc", "--cidr-block", DEDICATED_VPC_CIDR,
-    "--tag-specifications", tagSpec("vpc", id),
-    "--region", region, "--output", "json",
-  ]), "create-vpc");
-  network.vpcId = requireId(vpc?.Vpc?.VpcId, VPC_ID_RE, "vpc");
+/** AZ 指定なしの create-subnet は m6i 非対応の AZ を選ぶことがある。ランダムな再作成で回避する。 */
+async function createDedicatedSubnet({ region, id, awsImpl, network }) {
   const subnet = parseAwsJson(await awsImpl([
     "ec2", "create-subnet", "--vpc-id", network.vpcId, "--cidr-block", DEDICATED_SUBNET_CIDR,
     "--tag-specifications", tagSpec("subnet", id),
@@ -502,6 +495,18 @@ async function createDedicatedNetwork({ region, id, awsImpl, network }) {
     "ec2", "modify-subnet-attribute", "--subnet-id", network.subnetId,
     "--map-public-ip-on-launch", "Value=true", "--region", region,
   ]);
+}
+
+async function createDedicatedNetwork({ region, id, awsImpl, network }) {
+  network.created = true;
+  log(`run-id ${id}: no public subnet in the default VPC; creating a dedicated VPC`);
+  const vpc = parseAwsJson(await awsImpl([
+    "ec2", "create-vpc", "--cidr-block", DEDICATED_VPC_CIDR,
+    "--tag-specifications", tagSpec("vpc", id),
+    "--region", region, "--output", "json",
+  ]), "create-vpc");
+  network.vpcId = requireId(vpc?.Vpc?.VpcId, VPC_ID_RE, "vpc");
+  await createDedicatedSubnet({ region, id, awsImpl, network });
   const igw = parseAwsJson(await awsImpl([
     "ec2", "create-internet-gateway",
     "--tag-specifications", tagSpec("internet-gateway", id),
@@ -670,10 +675,23 @@ export async function provision({
       "--protocol", "tcp", "--port", "22", "--cidr", `${myIp}/32`, "--region", region]);
 
     log(`run-id ${id}: launching EC2 (${instanceType}, ${ami}, ${network.subnetId})`);
-    const run = parseAwsJson(await awsImpl(runInstancesArgs({
-      ami, instanceType, keyName, sgId: state.sgId, subnetId: network.subnetId,
-      instanceTags: tagSpec("instance", id), region,
-    })), "run-instances");
+    let run;
+    for (let attempt = 1; ; attempt++) {
+      try {
+        run = parseAwsJson(await awsImpl(runInstancesArgs({
+          ami, instanceType, keyName, sgId: state.sgId, subnetId: network.subnetId,
+          instanceTags: tagSpec("instance", id), region,
+        })), "run-instances");
+        break;
+      } catch (e) {
+        const msg = String(e.message ?? e);
+        const zonal = /not supported in your requested Availability Zone|InsufficientInstanceCapacity|InsufficientHostCapacity/i.test(msg);
+        if (!zonal || !network.created || attempt >= 5) throw e;
+        log(`run-id ${id}: launch rejected (zonal); re-rolling the dedicated subnet (attempt ${attempt})`);
+        await awsImpl(["ec2", "delete-subnet", "--subnet-id", network.subnetId, "--region", region]);
+        await createDedicatedSubnet({ region, id, awsImpl, network });
+      }
+    }
     state.instanceId = run.Instances[0].InstanceId;
 
     await awsImpl(["ec2", "wait", "instance-running", "--instance-ids", state.instanceId, "--region", region]);
