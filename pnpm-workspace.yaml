@@ -1,2 +1,11 @@
 packages:
   - "packages/*"
+allowBuilds:
+  "@tailwindcss/oxide": true
+  core-js: false
+  core-js-pure: false
+  esbuild: true
+  onnxruntime-node: true
+  protobufjs: false
+  sharp: true
+  workerd: true
