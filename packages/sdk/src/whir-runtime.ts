@@ -133,7 +133,7 @@ const buildImports = (
 
 /** Compile + instantiate a circuit module from raw bytes. */
 const instantiate = async (bytes: Uint8Array): Promise<WasmExports> => {
-  const module = await WebAssembly.compile(bytes as BufferSource);
+  const module = await WebAssembly.compile(bytes);
   const moduleName = WebAssembly.Module.imports(module)[0]?.module ?? "";
   const cell: ExportsCell = { current: null };
   const instance = await WebAssembly.instantiate(
