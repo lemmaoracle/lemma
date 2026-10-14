@@ -209,7 +209,7 @@ const validateHolderKey = (holderKey: string): Uint8Array => {
   // invalid points) as the discarded argument expression.
   return R.tryCatch(
     (_placeholder: undefined): Uint8Array =>
-      R.always(keyBytes)(secp256k1.ProjectivePoint.fromHex(keyBytes)),
+      R.always(keyBytes)(secp256k1.Point.fromHex(keyBytes)),
     (_placeholder: undefined): never => raise("Invalid secp256k1 public key"),
   )(undefined);
 };
@@ -236,7 +236,7 @@ export const encrypt = (_client: LemmaClient, input: EncryptInput): Promise<Encr
   const algorithm = input.algorithm ?? "aes-256-gcm";
 
   // Generate ephemeral key pair
-  const ephemeralPrivKey = secp256k1.utils.randomPrivateKey();
+  const ephemeralPrivKey = secp256k1.utils.randomSecretKey();
   const ephemeralPubKey = secp256k1.getPublicKey(ephemeralPrivKey, true);
 
   // ECDH: derive shared secret using holder's public key and ephemeral's private key
@@ -285,7 +285,7 @@ export const decrypt = (input: DecryptInput): Promise<DecryptOutput> => {
   const ephemeralPubKey = R.tryCatch(
     (doc: Uint8Array): Uint8Array =>
       R.always(doc.slice(0, 33))(
-        secp256k1.ProjectivePoint.fromHex(bytesToHex(doc.slice(0, 33))),
+        secp256k1.Point.fromHex(bytesToHex(doc.slice(0, 33))),
       ),
     (_placeholder: undefined): never =>
       raise("Invalid ephemeral public key in encrypted document"),
