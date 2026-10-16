@@ -125,14 +125,14 @@ const allLocale: ReadonlyArray<AnyBrief> = allJaBriefs.map(
 // Prev / Next by published date (ascending): prev = older, next = newer.
 // Numbers freed by withdrawn Briefs are reused, so a new Brief can carry a low
 // number — ordering by brief_no would wedge it between months-old neighbours.
-const byNo = [...allLocale].sort((a, b) => {
+const byDate = [...allLocale].sort((a, b) => {
   const diff = a.data.published.getTime() - b.data.published.getTime();
   return diff !== 0 ? diff : a.data.brief_no - b.data.brief_no;
 });
-const selfIdx = byNo.findIndex((b) => b.id === brief.id);
-const prevBrief = selfIdx > 0 ? byNo[selfIdx - 1] : null;
+const selfIdx = byDate.findIndex((b) => b.id === brief.id);
+const prevBrief = selfIdx > 0 ? byDate[selfIdx - 1] : null;
 const nextBrief =
-  selfIdx >= 0 && selfIdx < byNo.length - 1 ? byNo[selfIdx + 1] : null;
+  selfIdx >= 0 && selfIdx < byDate.length - 1 ? byDate[selfIdx + 1] : null;
 
 // Related: same primary category → same pillar → latest, excluding self.
 const byNewest = [...allLocale].sort((a, b) => {
