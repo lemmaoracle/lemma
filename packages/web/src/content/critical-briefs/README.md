@@ -5,7 +5,7 @@ English version: [`../critical-briefs-en/README.md`](../critical-briefs-en/READM
 
 Brief は `<NNN>-<slug>.md`（例: `047-openclaw-agent-phishing.md`）としてここに置き、
 **同名ファイルを `../critical-briefs-en/` にも必ず作る**（JA/EN ミラー）。ローダーの
-glob は `[0-9]*.md` なのでこの README は収載されない。番号は欠番になっても再利用しない。
+glob は `[0-9]*.md` なのでこの README は収載されない。番号は詰める: 新しい Brief は**空いている番号のうち最も小さいもの**を使い、空きが無ければ最大＋1 にする（ドラフトに書かれた番号は使わない）。取り下げた Brief の URL は `public/_redirects` で一覧へ 301 する。
 スキーマは [`../../content.config.ts`](../../content.config.ts)。
 
 URL: `/ja/critical/briefs/<NNN>-<slug>/`（JA）／`/critical/briefs/<NNN>-<slug>/`（EN）
@@ -13,7 +13,7 @@ URL: `/ja/critical/briefs/<NNN>-<slug>/`（JA）／`/critical/briefs/<NNN>-<slug
 ## Frontmatter
 
 ```yaml
-brief_no: 47                          # 正の整数・再利用禁止
+brief_no: 47                          # 正の整数・空き番号の小さい順に採番
 title: "<日本語タイトル — サブタイトル（— で区切ると 2 行目がライム縦罫のサブに）>"
 title_en: "<English title — subtitle>"
 pillar: 02-verifiable-ai              # 01 / 02 / 03 / 04
