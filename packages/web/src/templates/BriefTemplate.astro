@@ -427,6 +427,8 @@ const labels = isJa
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
+  {/* report Brief の読了バー。スマホ・タブレット（右レールが消える幅）だけ出す。 */}
+  {isReport && <div class="rx-progress" aria-hidden="true"><i data-rx-bar></i></div>}
   <main class:list={["brief-page", isReport && "is-report"]}>
     <div class="bd-shell">
       <div class="bd-main">
@@ -747,8 +749,8 @@ const labels = isJa
     function compute() {
       var art = document.querySelector(".brief-body");
       if (!art) return;
-      var bar = document.querySelector("[data-rail-bar]");
-      if (!bar) return;
+      var bars = document.querySelectorAll("[data-rail-bar],[data-rx-bar]");
+      if (!bars.length) return;
       var y = window.scrollY || document.documentElement.scrollTop;
       var top = art.getBoundingClientRect().top + y;
       var denom = art.offsetHeight - window.innerHeight;
@@ -757,7 +759,7 @@ const labels = isJa
       var n = Math.round(p * 100);
       var pctEl = document.querySelector("[data-rail-pct]");
       if (pctEl) pctEl.textContent = n;
-      bar.style.width = n + "%";
+      bars.forEach(function (b) { b.style.width = n + "%"; });
     }
     var ticking = false;
     function onScroll() {
@@ -3024,7 +3026,8 @@ const labels = isJa
     color: var(--muted);
   }
 
-  .rx-mtoc {
+  .rx-mtoc,
+  .rx-progress {
     display: none;
   }
   @media (max-width: 1060px) {
@@ -3034,6 +3037,23 @@ const labels = isJa
     }
     .brief-page.is-report .bd-rail {
       display: none;
+    }
+    .rx-progress {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .rx-progress i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: #a8e010;
+      border-radius: 0 2px 2px 0;
     }
     .rx-mtoc {
       display: block;
