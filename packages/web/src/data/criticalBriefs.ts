@@ -98,6 +98,11 @@ export interface BriefFrontmatter {
   readonly status: "draft" | "review" | "published";
   readonly version: string;
   readonly cover?: string;
+  readonly layout?: "report";
+  readonly og_kicker_ja?: string;
+  readonly og_kicker_en?: string;
+  readonly og_headline_ja?: string;
+  readonly og_headline_en?: string;
 }
 
 /** One content entry from `critical-briefs` / `critical-briefs-en`. */

@@ -116,12 +116,20 @@ const briefSchema = z
      * which feeds the HTML/og:title. Keep it concrete and incident-
      * specific (a curiosity hook, not a generic thesis), ≈1–2 short
      * lines. Supports `\n` line breaks and a single `<accent>…</accent>`
-     * span (brown). When absent, the OG generator falls back to the
-     * shortened `og_lead_*` / `title` headline. Locale-suffixed and
-     * duplicated across the JA + EN collections.
+     * span. **現在これを描くのは `layout: "report"` の Brief だけ**
+     * （2026-10-17・アクセントはライム）。それ以外の Brief の OG は脅威タイプ名
+     * が主役のままで、この欄は読まれない。Locale-suffixed and duplicated
+     * across the JA + EN collections.
      */
     og_headline_ja: z.string().optional(),
     og_headline_en: z.string().optional(),
+    /**
+     * report Brief の OG 画像の上段ラベル（例「サイバー攻撃事例 · アカウント
+     * 乗っ取り」/ "CYBERATTACK CASE · ACCOUNT TAKEOVER"）。事例の種類を
+     * 一言で言う。無ければ「CRITICAL BRIEF」＋脅威タイプ名。
+     */
+    og_kicker_ja: z.string().optional(),
+    og_kicker_en: z.string().optional(),
     /**
      * Optional cover image URL for the OG v2 artboard. When unset, the
      * OG generator falls back to the cream-deep + dark-on-light design.

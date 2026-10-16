@@ -169,6 +169,12 @@ controls:
   - { slug: "separate-approval", item: "…" }    # separate-approval / ownership-check / hold-unverified / audit-trail
 ```
 
+**OG 画像（共有カード）**: report Brief の OG は脅威タイプ名ではなく事件そのものが主役
+（表紙と同じ生成グラフィックの地）。`og_kicker_ja/en` に事例の種類（例「サイバー攻撃事例 ·
+アカウント乗っ取り」/ "CYBERATTACK CASE · ACCOUNT TAKEOVER"）、`og_headline_ja/en` に
+何が起きたかを書く（`\n` で改行・被害の大きさを `<accent>…</accent>` でライムの1行に）。
+og:description は `insight.quote` で始まる。
+
 `industries` / `operations` / `controls` は**一覧のファセット用の索引で、記事には描画
 しない**。語彙・ラベル・アイコンは `config/briefFacets.ts`。記事中の「注意したい
 業界・業務」は md 側で説明文つきの表として書く。EN ファイルの `key_figures` /
