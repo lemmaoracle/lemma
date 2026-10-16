@@ -142,6 +142,13 @@ facets and are not rendered in the article**; vocabularies, labels and icons
 live in `config/briefFacets.ts`. Write the "Industries and operations to watch"
 table in markdown/HTML with descriptions.
 
+**OG image (share card)**: a report Brief's OG image leads with the incident
+itself, not the threat-type name, on the same generated cover graphic.
+`og_kicker_ja/en` names the kind of case (e.g. "CYBERATTACK CASE · ACCOUNT
+TAKEOVER"); `og_headline_ja/en` says what happened (`\n` for line breaks, the
+scale of harm as one lime line in `<accent>…</accent>`). og:description opens
+with `insight.quote`.
+
 ### Components derived from plain markdown
 
 Most components come from markdown in a fixed shape; rehype

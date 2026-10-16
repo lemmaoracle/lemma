@@ -246,7 +246,15 @@ const seoTitle = isJa
   : `${mainTitle} | Lemma Critical Brief No.${briefNoPad}`;
 
 // 章数はうたわない（9章→6章の移行中で、どちらの本文も通る）。
-const metaDescription = isJa
+// report Brief は「この事案の核心」の一文で始める（2026-10-17）。共通の
+// 「構造分析…何が証明されている必要があったか」は検証技術の話に寄り、
+// 共有先で何の事件かが伝わらなかった。
+const reportQuote = isReport ? brief.data.insight?.quote : undefined;
+const metaDescription = reportQuote
+  ? isJa
+    ? `${reportQuote}何が起きたか、なぜ普通の操作に見えたか、どう対策するか — Lemma Critical Brief。`
+    : `${reportQuote} What happened, why it looked like a normal action, and how to counter it — Lemma Critical Brief.`
+  : isJa
   // 旧: 「事前に何を証明していれば防げたか」。実在の進行中事案について
   // 立証できない反実仮想を、検索結果と SNS カードの文面に載せていた。EN は
   // 元から "what should have been provable beforehand" で踏み込んでいない

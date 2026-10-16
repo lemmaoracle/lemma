@@ -22,7 +22,7 @@ import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
 import type { Locale } from "../i18n/translations";
 import { CATEGORY_LABELS, type BriefEntry } from "../data/criticalBriefs";
-import { OG_FONT_DATA, formatDate } from "./ogBase";
+import { LIME, OG_FONT_DATA, formatDate } from "./ogBase";
 import {
   BRIEF_COVER_HEIGHT,
   BRIEF_COVER_WIDTH,
@@ -30,6 +30,7 @@ import {
   ogThreatFontSize,
   ogThreatLetterSpacing,
 } from "../lib/briefCover";
+import { briefCoverArt } from "../lib/briefCoverArt";
 
 const SERIES_LABEL = "CRITICAL BRIEF";
 
@@ -47,6 +48,8 @@ const FONTS = [
   },
   { name: "Num", data: interLight, weight: 300 as const, style: "normal" as const },
   { name: "Threat", data: OG_FONT_DATA.jaBold, weight: 700 as const, style: "normal" as const },
+  /* 上段ラベルの和文（Space Mono に無い字の受け皿）。 */
+  { name: "Kicker", data: OG_FONT_DATA.jaMedium, weight: 400 as const, style: "normal" as const },
 ];
 
 const threatLabel = (brief: BriefEntry, locale: Locale): string =>
@@ -65,6 +68,7 @@ export async function renderCriticalBriefOg(
   brief: BriefEntry,
   locale: Locale,
 ): Promise<Buffer> {
+  if (brief.data.layout === "report") return renderReportOg(brief, locale);
   const no = String(brief.data.brief_no).padStart(3, "0");
   const threat = threatLabel(brief, locale);
   const size = ogThreatFontSize(threat);
@@ -134,4 +138,117 @@ export async function renderCriticalBriefOg(
   })
     .render()
     .asPng();
+}
+
+/* ── report Brief の OG（2026-10-17） ─────────────────────────────
+ * 脅威タイプ名（「Attribute Proof Bypass」など）が主役の共通型では、X の
+ * カードを見ても何の事件か分からない。report Brief は本文の表紙と同じ
+ * 生成グラフィックを地にして、事件そのもの（`og_headline_*`）を主役にする。
+ * 上段は事例の種類（`og_kicker_*`）、下段は番号だけ。 */
+
+const REPORT_W = BRIEF_COVER_WIDTH;
+const REPORT_H = BRIEF_COVER_HEIGHT;
+
+/** `\n` で行を分け、`<accent>…</accent>` をライムの1行として取り出す。 */
+const parseHeadline = (raw: string): { lines: string[]; accent: string | null } => {
+  const m = /<accent>([\s\S]*?)<\/accent>/.exec(raw);
+  const accent = m ? m[1].trim() : null;
+  const main = raw.replace(/<accent>[\s\S]*?<\/accent>/, "").trim();
+  return { lines: main.split(/\n/).map((l) => l.trim()).filter(Boolean), accent };
+};
+
+/** 長い見出しは一段小さく。英語は語で折れるので字数の閾値を大きく取る。 */
+const reportHeadlineSize = (text: string, ja: boolean): number => {
+  const n = Array.from(text).length;
+  if (ja) return n > 40 ? 46 : 54;
+  return n > 80 ? 48 : 56;
+};
+
+async function renderReportOg(brief: BriefEntry, locale: Locale): Promise<Buffer> {
+  const ja = locale === "ja";
+  const no = String(brief.data.brief_no).padStart(3, "0");
+  const kicker =
+    (ja ? brief.data.og_kicker_ja : brief.data.og_kicker_en) ??
+    `${SERIES_LABEL} · ${threatLabel(brief, locale)}`;
+  const raw =
+    (ja ? brief.data.og_headline_ja : brief.data.og_headline_en) ??
+    (ja ? brief.data.title : brief.data.title_en).split(/ — |：/)[0];
+  const { lines, accent } = parseHeadline(raw);
+  const size = reportHeadlineSize(lines.join(""), ja);
+
+  const line = (content: string, color: string, extra: Record<string, unknown> = {}) => ({
+    type: "div",
+    props: { style: { display: "flex", color, ...extra }, children: content },
+  });
+
+  const node = {
+    type: "div",
+    props: {
+      style: {
+        position: "relative",
+        display: "flex",
+        width: REPORT_W,
+        height: REPORT_H,
+      },
+      children: [
+        {
+          type: "div",
+          props: {
+            style: {
+              position: "absolute",
+              left: 72,
+              top: 64,
+              right: 330,
+              bottom: 60,
+              display: "flex",
+              flexDirection: "column",
+            },
+            children: [
+              line(kicker, LIME, {
+                fontFamily: "Mono, Kicker",
+                fontSize: 22,
+                letterSpacing: ja ? 2.5 : 4,
+              }),
+              {
+                type: "div",
+                props: {
+                  style: {
+                    display: "flex",
+                    flexDirection: "column",
+                    marginTop: "auto",
+                    fontFamily: "Threat",
+                    fontWeight: 700,
+                    fontSize: size,
+                    lineHeight: 1.28,
+                    letterSpacing: ja ? 0.5 : -0.5,
+                  },
+                  children: [
+                    ...lines.map((l) => line(l, "#F3F6EC")),
+                    ...(accent ? [line(accent, LIME, { marginTop: 18 })] : []),
+                  ],
+                },
+              },
+              line(`LEMMA CRITICAL BRIEF  No.${no}`, "#9AA394", {
+                marginTop: "auto",
+                fontFamily: "Mono",
+                fontSize: 20,
+                letterSpacing: 2.4,
+              }),
+            ],
+          },
+        },
+      ],
+    },
+  };
+
+  const textSvg = await satori(node, { width: REPORT_W, height: REPORT_H, fonts: FONTS });
+  const art = briefCoverArt(brief.data.brief_no);
+  const ground =
+    `<defs><linearGradient id="rog${no}" x1="0.4" y1="0" x2="0.6" y2="1">` +
+    `<stop offset="0" stop-color="#3c443d"/><stop offset=".58" stop-color="#2f372f"/>` +
+    `<stop offset="1" stop-color="#272e28"/></linearGradient></defs>` +
+    `<rect width="${String(REPORT_W)}" height="${String(REPORT_H)}" fill="url(#rog${no})"/>` +
+    `<svg x="0" y="0" width="${String(REPORT_W)}" height="${String(REPORT_H)}" viewBox="${art.viewBox}" preserveAspectRatio="${art.preserveAspectRatio}">${art.inner}</svg>`;
+  const svg = textSvg.replace(/<svg[^>]*>/, (open) => open + ground);
+  return new Resvg(svg, { fitTo: { mode: "width", value: REPORT_W } }).render().asPng();
 }
