@@ -8,7 +8,8 @@
  * 出し分けは **Brief ごとの許可リスト**（BANNER_BY_SLUG）。カテゴリから自動で
  * 決めると事案と商品がずれる（旧 briefAttackCta の Brief→攻撃 LP 導線は
  * 90日でクリック0だった）。§5 の「点検チェックリスト」を受けて、その点検を
- * 組織の業務で行う相談へつなぐ。
+ * 組織の業務で行う相談へつなぐ。中身は「知見の提供と相談／攻撃シミュレーションに
+ * よる点検／レポート」（Lemma の製品統合は別の話として、ここでは出さない）。
  *
  * 計測: 表示（50% 見えたら1回）を `brief_service_banner_view`、クリックを
  * `brief_service_banner_click` で GA4 へ送る。判断は表示あたりのクリック率で
@@ -36,25 +37,25 @@ const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy
     ja: {
       eyebrow: "LEMMA CYBER · 点検",
       head: "この点検を、担当者がついて一緒に進めます。",
-      body: "チェックリストを渡して終わりにしません。組織の業務に合わせて、最初の聞き取りから報告まで同じ担当者が伴走します。",
+      body: "チェックリストを渡して終わりにしません。Brief と AI セキュリティの知見、攻撃シミュレーションを使い、最初の相談から報告まで同じ担当者が伴走します。",
       button: "点検について相談する →",
       prLabel: "PR",
       steps: [
-        { t: "聞き取り", d: "振込先や権限の変更など、後戻りできない操作を一緒に洗い出す" },
-        { t: "点検", d: "それぞれの操作の前に、誰が何を確かめているかを確かめる" },
-        { t: "報告", d: "抜けている確認の一覧と、手当ての選択肢をまとめて渡す" },
+        { t: "知見の提供と相談", d: "Brief と AI セキュリティの知見を、組織の業務に当てはめて一緒に整理する" },
+        { t: "攻撃シミュレーションで点検", d: "実際の手口を模した試験で、どこが止まり、どこを通るかを確かめる" },
+        { t: "レポート", d: "見つかった穴と手当ての選択肢を、優先順位をつけて渡す" },
       ],
     },
     en: {
       eyebrow: "LEMMA CYBER · REVIEW",
       head: "We run this check with you, hands-on.",
-      body: "Not just a checklist. One dedicated person works through it with your team, from the first interview to the final report.",
+      body: "Not just a checklist. Drawing on our Briefs, AI-security expertise and attack simulation, one dedicated person works with your team from first conversation to final report.",
       button: "Talk to us about a review →",
       prLabel: "PR",
       steps: [
-        { t: "Interview", d: "Map the irreversible actions together, such as payout and permission changes" },
-        { t: "Review", d: "For each one, confirm who checks what before it runs" },
-        { t: "Report", d: "Hand over the missing checks and the options to close them" },
+        { t: "Insight & advice", d: "Apply our Brief and AI-security knowledge to your own workflows" },
+        { t: "Attack-simulation check", d: "Test with realistic attack patterns to see what stops and what gets through" },
+        { t: "Report", d: "A prioritised list of the gaps found and the options to close them" },
       ],
     },
   },
