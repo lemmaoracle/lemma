@@ -1,7 +1,7 @@
 ---
 brief_no: 148
-title: "RubyGems・RubyDoc.info：新規に作られた大量のアカウントが500超の悪性パッケージを公開し、ドキュメント生成サーバで任意のコードを実行した(Ruby Central 公表、Nightingale Collective 調査) — 公開者が誰かと、ビルドが持ち込まれたコードに何を許すかが、実行の前に結び付いていない"
-title_en: "RubyGems and RubyDoc.info: masses of newly created accounts published 500+ malicious packages and ran arbitrary code on the documentation build servers (Ruby Central statement, Nightingale Collective research) — who published a package and what the build lets its code do are not bound together before it runs"
+title: "RubyGems・RubyDoc.info：大量の新規アカウントが500超の悪性パッケージを公開し、ドキュメント生成サーバでコードを実行した(Ruby Central・Nightingale Collective) — 公開者が誰かと、ビルドがそのコードに何を許すかが、実行前に結び付いていない"
+title_en: "RubyGems and RubyDoc.info: masses of new accounts published 500+ malicious packages and ran code on the docs build servers (Ruby Central, Nightingale Collective) — who published a package and what the build lets it do are not bound together before it runs"
 pillar: 01-verifiable-origin
 primary_category: code-provenance
 secondary_categories: [identity-auth]
