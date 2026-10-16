@@ -6,8 +6,10 @@ supersedes the old 10-/9-section guidance. Japanese version (primary):
 
 Each Brief lives as `<NNN>-<slug>.md` and **must mirror the file of the same
 name in `../critical-briefs/`** (JA is authored first; EN mirrors it). The
-loader glob is `[0-9]*.md`, so this README is not ingested. Numbers are never
-reused. Schema: [`../../content.config.ts`](../../content.config.ts).
+loader glob is `[0-9]*.md`, so this README is not ingested. Numbers are kept
+contiguous: a new Brief takes the **lowest free number**, or max + 1 if none is
+free (ignore the number in the draft). A withdrawn Brief's URLs are 301'd to the
+index in `public/_redirects`. Schema: [`../../content.config.ts`](../../content.config.ts).
 
 URLs: `/critical/briefs/<NNN>-<slug>/` (EN) / `/ja/critical/briefs/<NNN>-<slug>/` (JA)
 

@@ -108,9 +108,12 @@ const industryThreatKeys = new Set(
     .filter((k): k is string => Boolean(k)),
 );
 
-const briefsDesc = (await getCollection("critical-briefs")).sort(
-  (a, b) => (b.data.brief_no ?? 0) - (a.data.brief_no ?? 0),
-);
+// 新しい順＝公開日の降順（同日は番号の降順）。番号は欠番を再利用するので、
+// 番号の大きさは新しさを表さない。
+const briefsDesc = (await getCollection("critical-briefs")).sort((a, b) => {
+  const diff = b.data.published.getTime() - a.data.published.getTime();
+  return diff !== 0 ? diff : (b.data.brief_no ?? 0) - (a.data.brief_no ?? 0);
+});
 /* 一致は **primary を優先**する。secondary は「その事案にも関係する」程度の
  * 弱い印で、これを primary と同列に扱うと業界と無関係な事案が枠に出る——
  * 実際、BonkDAO のガバナンス事案（primary=ブリッジ信頼設定）が secondary の

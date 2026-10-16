@@ -9,8 +9,8 @@ import { glob } from "astro/loaders";
  * and surface at `/critical/briefs/<NN>-<slug>/` (and the JA mirror).
  *
  * Schema invariants:
- *   - brief_no is a positive integer; archive numbers are never reused
- *     (per Methodology page §05 Citation conventions).
+ *   - brief_no is a positive integer. A withdrawn Brief's number is reused
+ *     by the next new Brief (per Methodology page §05 Citation conventions).
  *   - pillar is one of the 4 Pillars. primary_category must be either a
  *     Pillar-specific category or a crosscutting one. Mismatches surface
  *     at build time via the refinement at the bottom.

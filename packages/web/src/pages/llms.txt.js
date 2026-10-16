@@ -87,7 +87,7 @@ the same path under \`/ja/\` (e.g. \`${SITE_ORIGIN}/ja/critical/briefs/\`).
 A structured reference collection analysing real incidents at the boundary of AI
 and trust. Each Brief states what happened, why strengthening detection does not
 close the gap, and what would have had to be provable beforehand. Briefs are
-numbered; numbers are never reused. Each carries a publication date, an incident
+numbered; a withdrawn Brief's number may be reused, so cite by URL. Each carries a publication date, an incident
 date, sources, and a revision history once revised.
 
 - [Brief index](${SITE_ORIGIN}/critical/briefs/) — all Briefs, by category and pillar.

@@ -122,8 +122,13 @@ const allLocale: ReadonlyArray<AnyBrief> = allJaBriefs.map(
   (ja) => enById?.get(ja.id) ?? ja,
 );
 
-// Prev / Next by brief_no (ascending): prev = lower number, next = higher.
-const byNo = [...allLocale].sort((a, b) => a.data.brief_no - b.data.brief_no);
+// Prev / Next by published date (ascending): prev = older, next = newer.
+// Numbers freed by withdrawn Briefs are reused, so a new Brief can carry a low
+// number — ordering by brief_no would wedge it between months-old neighbours.
+const byNo = [...allLocale].sort((a, b) => {
+  const diff = a.data.published.getTime() - b.data.published.getTime();
+  return diff !== 0 ? diff : a.data.brief_no - b.data.brief_no;
+});
 const selfIdx = byNo.findIndex((b) => b.id === brief.id);
 const prevBrief = selfIdx > 0 ? byNo[selfIdx - 1] : null;
 const nextBrief =

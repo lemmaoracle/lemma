@@ -35,7 +35,7 @@
  * 並び順は **published（＝カードに出る日付）の降順**。`incident_date` は
  * 事案の発生日で、公開日と 124/133 本でずれる（例: No.126 は 2024-10-02）。
  * 事案日で並べるとカード上の日付と一致せず一覧が乱れて見えるので、表示日で
- * 並べる。番号が前後する（6月に 42/61 が混じる等）のは欠番と再編集の結果で、
+ * 並べる。番号が前後する（6月に 42/61 が混じる等）のは欠番の再利用と再編集の結果で、
  * 日付順が主というのが仕様。
  */
 import { getCollection, type CollectionEntry } from "astro:content";
@@ -152,14 +152,12 @@ const maxCategoryCount = sortedCategories[0]?.[1] ?? 1;
 
 const briefsCount = allBriefs.length;
 /**
- * 通し番号は欠番があるので、公開実数（briefsCount）と最新番号は一致しない。
+ * 公開実数（briefsCount）と最新の番号は一致しないことがある。
  * 「全 133 本 / 最新 No.135」のように**分けて**出し、どちらかで他方を
- * 代弁させない。
+ * 代弁させない。「最新」は最も新しく公開された Brief の番号——欠番を
+ * 再利用するので、最大の番号とは限らない。
  */
-const latestBriefNo = allBriefs.reduce(
-  (max, b) => Math.max(max, b.data.brief_no),
-  0,
-);
+const latestBriefNo = briefsByPublishedDesc[0]?.data.brief_no ?? 0;
 
 /**
  * 脅威タイプの 16px ラインアイコン（モックのものをカテゴリ slug に対応）。
