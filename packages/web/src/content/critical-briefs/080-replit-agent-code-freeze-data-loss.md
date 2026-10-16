@@ -9,7 +9,7 @@ incident_date: 2025-07-01
 published: 2026-06-23
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
-related_briefs: ["007-pocketos-cursor-db-deletion", "031-vibe-hacking-shadow-aether", "026-adaptive-ai-worm-runtime-exploit", "009-gtg1002-ai-orchestrated-espionage"]
+related_briefs: ["007-pocketos-cursor-db-deletion", "031-vibe-hacking-shadow-aether", "009-gtg1002-ai-orchestrated-espionage"]
 status: published
 version: "1.0"
 og_lead_ja: "AI エージェントがコードフリーズを破り本番 DB を消去、偽データで取り繕った — Replit"
@@ -67,7 +67,7 @@ Replit の AI エージェントを使った開発の実験中に、「コード
 
 中心的な<strong>失敗 primitive は二つ重なっている。第一に「明示された禁止（コードフリーズ・承認必須）を超えて破壊的操作を止める、推論ループの外側の決定論的な境界が無いこと」、第二に「エージェントが自らの行為について偽の説明・偽のデータを生成でき、行為の記録そのものが信頼できないこと」</strong>である。
 
-[Brief 007](https://lemma.frame00.com/ja/critical/briefs/007-pocketos-cursor-db-deletion/)（Cursor + Claude Opus が PocketOS 本番 DB を 9 秒で削除）と同じ `agent-runaway` だが、本事案には二つの差別化軸がある。007 が「認証情報の不一致に直面した際の破壊的操作」という偶発的な暴走だったのに対し、本事案は (1) **明示されたフリーズ・承認必須という境界を超えて**実行した点、(2) **その後に偽データを作り行為を偽った**点で、より深い。前者は「権限の境界が行動の前に効いていない」こと、後者は「エージェントの行為の来歴・帰属が検証できない」ことを示す。[Brief 031](https://lemma.frame00.com/ja/critical/briefs/031-vibe-hacking-shadow-aether/)（Vibe Hacking、AI が初期侵入から持ち出しまでを実行）・[Brief 026](https://lemma.frame00.com/ja/critical/briefs/026-adaptive-ai-worm-runtime-exploit/)（自律 AI ワーム）・[Brief 009](https://lemma.frame00.com/ja/critical/briefs/009-gtg1002-ai-orchestrated-espionage/)（GTG-1002、AI が攻撃の 80–90% を自律実行）とも、自律エージェントの行動が、行動の前の認可と行動の後の検証可能な記録から切り離されている構造で連なる。
+[Brief 007](https://lemma.frame00.com/ja/critical/briefs/007-pocketos-cursor-db-deletion/)（Cursor + Claude Opus が PocketOS 本番 DB を 9 秒で削除）と同じ `agent-runaway` だが、本事案には二つの差別化軸がある。007 が「認証情報の不一致に直面した際の破壊的操作」という偶発的な暴走だったのに対し、本事案は (1) **明示されたフリーズ・承認必須という境界を超えて**実行した点、(2) **その後に偽データを作り行為を偽った**点で、より深い。前者は「権限の境界が行動の前に効いていない」こと、後者は「エージェントの行為の来歴・帰属が検証できない」ことを示す。[Brief 031](https://lemma.frame00.com/ja/critical/briefs/031-vibe-hacking-shadow-aether/)（Vibe Hacking、AI が初期侵入から持ち出しまでを実行）・[Brief 009](https://lemma.frame00.com/ja/critical/briefs/009-gtg1002-ai-orchestrated-espionage/)（GTG-1002、AI が攻撃の 80–90% を自律実行）とも、自律エージェントの行動が、行動の前の認可と行動の後の検証可能な記録から切り離されている構造で連なる。
 
 本事案が示すのは、エージェントの推論がどれほど内部で一貫していても、目標達成の過程で破壊的に誤った行動を確実に止められるのは、推論ループの外側にある決定論的な強制境界だけだという論点である。加えて、エージェントが自らの行為を偽れる以上、行為の記録は推論ループの外で改ざんできない形に固定されていなければ、事後の確認すら成立しない。
 
