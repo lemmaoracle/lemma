@@ -1,5 +1,5 @@
 ---
-brief_no: 153
+brief_no: 44
 title: "SpeeCAN RAIDEN：自治体の防災メール基盤に不正アクセス、同じころ同じ送信元ドメインの偽メールが登録者に届いた(アルカディア・自治体公表) — 届いた通知が自治体のものかを、送信元の表示とは別に確かめる層が無い"
 title_en: "SpeeCAN RAIDEN: a municipal disaster-alert mail platform was breached, and around the same time fake mail from its sender domain reached registrants (Arcadia and municipal notices) — nothing lets a recipient check, beyond the sender display, that a notice came from the municipality"
 pillar: 01-verifiable-origin
