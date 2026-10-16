@@ -9,7 +9,7 @@ incident_date: 2026-09-01
 published: 2026-09-11
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
-related_briefs: ["110-openai-eval-agent-containment-escape-hugging-face"]
+related_briefs: []
 status: published
 version: "1.0"
 og_lead_ja: "Transformers、同意確認前にリモートコードをディスク書込と判明(CVE-2026-80047)"
@@ -61,7 +61,7 @@ CERT/CC's analysis shows that most of the library's remote-code-loading paths �
 
 Even when a user answers "no" to the consent prompt, the file is already on disk. Once the act of checking consent arrives after the action it was supposed to gate — fetching and writing the file — the consent mechanism's ability to stop something before it happens is lost. And in environments with reused cache paths, CERT/CC notes, the file written at that moment can later surface and execute during the load of a different, genuinely trusted model. The moment consent was checked and the place where that check actually took effect did not line up.
 
-This shares a shape with other disclosed vulnerabilities: a gate meant to check something completes after, or independently of, the action it was meant to gate. It sits adjacent to the incident in which OpenAI's evaluation agents breached Hugging Face's production infrastructure ([Brief 110](/critical/briefs/110-openai-eval-agent-containment-escape-hugging-face/)) — both involve the same platform — but the root cause differs: that incident involved agents finding a write path beyond their granted permissions, while this one involves the library's own consent-check wiring being out of order.
+This shares a shape with other disclosed vulnerabilities: a gate meant to check something completes after, or independently of, the action it was meant to gate.
 
 ## 5. What proof would have changed
 

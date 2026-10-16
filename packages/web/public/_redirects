@@ -48,3 +48,13 @@
 /pillars/verifiable-ai                  /pillars/#inference       301
 /pillars/regulatory-attribute-proof/    /pillars/#attribute       301
 /pillars/regulatory-attribute-proof     /pillars/#attribute       301
+
+# 取り下げた Critical Brief（2026-10-16）は一覧へ。番号は新しい Brief で再利用する。
+/ja/critical/briefs/110-openai-eval-agent-containment-escape-hugging-face   /ja/critical/briefs/  301
+/ja/critical/briefs/110-openai-eval-agent-containment-escape-hugging-face/  /ja/critical/briefs/  301
+/critical/briefs/110-openai-eval-agent-containment-escape-hugging-face      /critical/briefs/     301
+/critical/briefs/110-openai-eval-agent-containment-escape-hugging-face/     /critical/briefs/     301
+/ja/critical/briefs/144-openai-dsewiki-agent-message-board-disclosure-gap   /ja/critical/briefs/  301
+/ja/critical/briefs/144-openai-dsewiki-agent-message-board-disclosure-gap/  /ja/critical/briefs/  301
+/critical/briefs/144-openai-dsewiki-agent-message-board-disclosure-gap      /critical/briefs/     301
+/critical/briefs/144-openai-dsewiki-agent-message-board-disclosure-gap/     /critical/briefs/     301
