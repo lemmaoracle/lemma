@@ -538,30 +538,42 @@ const labels = isJa
         {/* 対応サービスのバナー（広告枠・許可リストの Brief だけ）。本文の外、
             引用パネルの前。絵は抽象の地だけ。config/briefServiceBanner.ts */}
         {serviceBanner && (
-          <a
-            class="bd-svc"
-            href={serviceBanner.href}
-            target="_blank"
-            rel="noopener"
-            data-svc-banner={serviceBanner.key}
-            data-brief-cta-ev="brief_service_banner_click"
-            data-cta={`service_banner_${serviceBanner.key}`}
-          >
+          <aside class="bd-svc" aria-label={serviceBanner.eyebrow} data-svc-banner={serviceBanner.key}>
             <span class="bd-svc-pr">{serviceBanner.prLabel}</span>
             <span class="bd-svc-k">{serviceBanner.eyebrow}</span>
             <span class="bd-svc-h">{serviceBanner.head}</span>
             <span class="bd-svc-b">{serviceBanner.body}</span>
-            <span class="bd-svc-steps">
-              {serviceBanner.steps.map((st, i) => (
-                <span class="bd-svc-step">
-                  <span class="n">0{i + 1}</span>
-                  <span class="t">{st.t}</span>
-                  <span class="d">{st.d}</span>
-                </span>
-              ))}
-            </span>
-            <span class="bd-svc-btn">{serviceBanner.button}</span>
-          </a>
+            <a
+              class="bd-svc-btn"
+              href={serviceBanner.href}
+              target="_blank"
+              rel="noopener"
+              data-brief-cta-ev="brief_service_banner_click"
+              data-cta={`service_banner_${serviceBanner.key}_early`}
+            >{serviceBanner.button}</a>
+            {serviceBanner.review && serviceBanner.reviewHref && (
+              <div class="bd-svc-review">
+                <p class="bd-svc-rt">{serviceBanner.review.title}</p>
+                <ol class="bd-svc-steps">
+                  {serviceBanner.review.steps.map((st, i) => (
+                    <li class="bd-svc-step">
+                      <span class="n">0{i + 1}</span>
+                      <span class="t">{st.t}</span>
+                      <span class="d">{st.d}</span>
+                    </li>
+                  ))}
+                </ol>
+                <a
+                  class="bd-svc-link"
+                  href={serviceBanner.reviewHref}
+                  target="_blank"
+                  rel="noopener"
+                  data-brief-cta-ev="brief_service_banner_click"
+                  data-cta={`service_banner_${serviceBanner.key}_review`}
+                >{serviceBanner.review.link}</a>
+              </div>
+            )}
+          </aside>
         )}
 
         {/* 引用パネル — Plain text / BibTeX / APA のタブ＋モノスペース本文。 */}
@@ -1582,7 +1594,7 @@ const labels = isJa
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: "k btn" "h btn" "b btn" "steps steps";
+    grid-template-areas: "k btn" "h btn" "b btn" "rv rv";
     align-items: center;
     gap: 6px 32px;
     overflow: hidden;
@@ -1659,15 +1671,41 @@ const labels = isJa
     color: #bcc3b6;
     max-width: 46ch;
   }
+  .bd-svc-review {
+    grid-area: rv;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(235, 239, 230, 0.14);
+  }
+  .bd-svc-rt {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #dfe5d6;
+  }
   .bd-svc-steps {
-    grid-area: steps;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
-    margin-top: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bd-svc-link {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ok);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(168, 224, 16, 0.4);
+  }
+  .bd-svc-link:hover {
+    border-bottom-color: var(--ok);
   }
   .bd-svc-step {
     display: block;
+    margin: 0;
     padding: 12px 14px 13px;
     border: 1px solid rgba(235, 239, 230, 0.14);
     border-radius: 8px;
@@ -1708,13 +1746,13 @@ const labels = isJa
     box-shadow: 0 4px 14px rgba(168, 224, 16, 0.3);
     transition: filter 0.18s;
   }
-  .bd-svc:hover .bd-svc-btn {
+  .bd-svc-btn:hover {
     filter: brightness(1.06);
   }
   @media (max-width: 720px) {
     .bd-svc {
       grid-template-columns: 1fr;
-      grid-template-areas: "k" "h" "b" "steps" "btn";
+      grid-template-areas: "k" "h" "b" "btn" "rv";
       padding: 26px 20px 24px;
     }
     .bd-svc-steps {

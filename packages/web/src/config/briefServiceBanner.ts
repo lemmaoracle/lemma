@@ -7,20 +7,28 @@
  *
  * 出し分けは **Brief ごとの許可リスト**（BANNER_BY_SLUG）。カテゴリから自動で
  * 決めると事案と商品がずれる（旧 briefAttackCta の Brief→攻撃 LP 導線は
- * 90日でクリック0だった）。§5 の「点検チェックリスト」を受けて、その点検を
- * 組織の業務で行う相談へつなぐ。中身は「知見の提供と相談／攻撃シミュレーションに
- * よる点検／レポート」（Lemma の製品統合は別の話として、ここでは出さない）。
+ * 90日でクリック0だった）。
  *
+ * 主役は Lemma Cyber の早期アクセス（JA/EN 共通）。JA だけ、国内企業向けの
+ * 「導入前の点検」（知見の提供と相談／攻撃シミュレーションによる点検／報告）を
+ * 補足として添える。伴走の点検は国内のみ提供のため EN には出さない。
+ *
+ * 受け皿はどちらも Discovery フォーム（`plan` 隠しフィールド＝`cyber`）。
+ * `ref` で「どの Brief のバナーの、どちらのボタンか」を分ける:
+ *   brief_banner_<NNN>_early（早期アクセス）／brief_banner_<NNN>_review（点検）。
  * 計測: 表示（50% 見えたら1回）を `brief_service_banner_view`、クリックを
- * `brief_service_banner_click` で GA4 へ送る。判断は表示あたりのクリック率で
- * 行う（Brief への流入は Direct が多く、セッションを分母にすると誤る）。
- * 問い合わせは Discovery フォームの `plan` 隠しフィールドに `cyber` を渡し、
- * `ref` でどの Brief のバナーから来たかを分ける。
+ * `brief_service_banner_click`（cta_label で early/review）で GA4 へ。
  */
 import type { Locale } from "../i18n/translations";
 import { DISCOVERY_CALL_URL } from "./cta";
 
-export type ServiceBannerKey = "cyber-review";
+export type ServiceBannerKey = "cyber-early-access";
+
+interface ReviewCopy {
+  readonly title: string;
+  readonly steps: readonly { readonly t: string; readonly d: string }[];
+  readonly link: string;
+}
 
 interface BannerCopy {
   readonly eyebrow: string;
@@ -28,52 +36,59 @@ interface BannerCopy {
   readonly body: string;
   readonly button: string;
   readonly prLabel: string;
-  /** 何をしてもらえるか。担当者と進める3段。 */
-  readonly steps: readonly { readonly t: string; readonly d: string }[];
+  /** 導入前の点検（JA のみ）。無ければ出さない。 */
+  readonly review?: ReviewCopy;
 }
 
 const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy>>>> = {
-  "cyber-review": {
+  "cyber-early-access": {
     ja: {
-      eyebrow: "LEMMA CYBER · 点検",
-      head: "この点検を、担当者がついて一緒に進めます。",
-      body: "チェックリストを渡して終わりにしません。Brief と AI セキュリティの知見、攻撃シミュレーションを使い、最初の相談から報告まで同じ担当者が伴走します。",
-      button: "点検について相談する →",
+      eyebrow: "LEMMA CYBER · 早期アクセス",
+      head: "後戻りできない操作を、確定の前に確かめる。",
+      body: "振込先や権限の変更など、後戻りできない操作の前に、その依頼が本物で、許された範囲のものかを確かめる仕組みを準備しています。早期アクセスの登録を受け付けています。",
+      button: "早期アクセスに登録する →",
       prLabel: "PR",
-      steps: [
-        { t: "事案から、自社の論点へ", d: "Brief と AI セキュリティの知見をもとに、組織の業務で起こりうることを一緒に洗い出します" },
-        { t: "攻撃シミュレーションで点検", d: "実際の手口を模した試験で、止まる箇所と通ってしまう箇所を確かめます" },
-        { t: "報告と改善の提案", d: "見つかった穴と手当ての選択肢を、優先順位をつけてお渡しします" },
-      ],
+      review: {
+        title: "導入前の点検も、担当者がついてご相談いただけます（国内企業向け）",
+        steps: [
+          { t: "事案から、自社の論点へ", d: "Brief と AI セキュリティの知見をもとに、組織の業務で起こりうることを一緒に洗い出します" },
+          { t: "攻撃シミュレーションで点検", d: "実際の手口を模した試験で、止まる箇所と通ってしまう箇所を確かめます" },
+          { t: "報告と改善の提案", d: "見つかった穴と手当ての選択肢を、優先順位をつけてお渡しします" },
+        ],
+        link: "点検について相談する →",
+      },
     },
     en: {
-      eyebrow: "LEMMA CYBER · REVIEW",
-      head: "We run this check with you, hands-on.",
-      body: "Not just a checklist. Drawing on our Briefs, AI-security expertise and attack simulation, one dedicated person works with your team from first conversation to final report.",
-      button: "Talk to us about a review →",
+      eyebrow: "LEMMA CYBER · EARLY ACCESS",
+      head: "Check irreversible actions before they go through.",
+      body: "We are building a way to confirm, before a payout or permission change takes effect, that the request is genuine and within what was allowed. Early access is open.",
+      button: "Join early access →",
       prLabel: "PR",
-      steps: [
-        { t: "Insight & advice", d: "Apply our Brief and AI-security knowledge to your own workflows" },
-        { t: "Attack-simulation check", d: "Test with realistic attack patterns to see what stops and what gets through" },
-        { t: "Report", d: "A prioritised list of the gaps found and the options to close them" },
-      ],
     },
   },
 };
 
-/** バナーごとに出す言語。点検（伴走）は国内向けなので JA のみ。 */
-const SHOWN_LOCALES: Readonly<Record<ServiceBannerKey, readonly Locale[]>> = {
-  "cyber-review": ["ja"],
-};
-
 /** 許可リスト。slug → バナー。ここに無い Brief には出さない。 */
 const BANNER_BY_SLUG: Readonly<Record<string, ServiceBannerKey>> = {
-  "032-booking-payout-account-tampering": "cyber-review",
+  "032-booking-payout-account-tampering": "cyber-early-access",
 };
 
 export interface ServiceBanner extends BannerCopy {
   readonly key: ServiceBannerKey;
   readonly href: string;
+  readonly reviewHref?: string;
+}
+
+function inquiryUrl(locale: Locale, briefNoPad: string, intent: "early" | "review"): string {
+  const params = new URLSearchParams({
+    plan: "cyber",
+    ref: `brief_banner_${briefNoPad}_${intent}`,
+    utm_source: "brief_banner",
+    utm_medium: "cta",
+    utm_campaign: intent === "early" ? "brief_to_cyber_early_access" : "brief_to_cyber_review",
+    utm_content: briefNoPad,
+  });
+  return `${DISCOVERY_CALL_URL[locale]}?${params}`;
 }
 
 export function serviceBannerFor(
@@ -83,15 +98,11 @@ export function serviceBannerFor(
 ): ServiceBanner | null {
   const key = BANNER_BY_SLUG[slug];
   if (!key) return null;
-  // 伴走型の点検は国内の企業向け。英語版の行き先は別に決めるまで出さない。
-  if (!SHOWN_LOCALES[key].includes(locale)) return null;
-  const params = new URLSearchParams({
-    plan: "cyber",
-    ref: `brief_banner_${briefNoPad}`,
-    utm_source: "brief_banner",
-    utm_medium: "cta",
-    utm_campaign: "brief_to_cyber_review",
-    utm_content: briefNoPad,
-  });
-  return { key, ...COPY[key][locale], href: `${DISCOVERY_CALL_URL[locale]}?${params}` };
+  const copy = COPY[key][locale];
+  return {
+    key,
+    ...copy,
+    href: inquiryUrl(locale, briefNoPad, "early"),
+    reviewHref: copy.review ? inquiryUrl(locale, briefNoPad, "review") : undefined,
+  };
 }
