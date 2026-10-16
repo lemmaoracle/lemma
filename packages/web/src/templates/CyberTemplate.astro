@@ -1,0 +1,892 @@
+---
+/**
+ * Cyber — `/cyber/`（EN）と `/ja/cyber/`（JA）。
+ *
+ * 公開ブランド面（Hermes 方向: クリーム地 + ブラウン、ライムは最小のアクセント）。
+ * ローカルのページコピーのみで完結する。共通ナビ・フッター・翻訳ファイル・
+ * 生成インターフェースは変更しない（スコープロック）。
+ *
+ * 事実の扱い（この面の規律）:
+ *   - 効果の絶対保証・ローンチ予定・検証不能な統計は書かない。
+ *   - 守備範囲を明確に分ける。ToolGuard は pre_tool_call で tool_call の
+ *     実行前。Cyber Proof Cards は計算・ワークフロー操作の実行直前で、API
+ *     Gateway / middleware / onBeforeVerify に組み込む。両者は証明基盤を
+ *     共有するが守る対象が別。Proof Cards が pre_tool_call で動くとは書かない。
+ *   - 非組み込み経路は既存の計算を止めない。遮断・執行は実行前の関所が要る。
+ *   - 例・デモは「例」と明示する。未実装の Cyber 専用コンソールがあるかの
+ *     ようには書かない。検証リンクは実在の /verify/（汎用の検証センター）に
+ *     向け、その旨をラベルする。
+ *   - 数値はステップ番号のみ。
+ *   - 製品能力が未確定な箇所は「組み込み提案／例」として書き、TODO(判断) を残す。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
+import { localePath } from "../lib/urls";
+
+export interface CyberTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as CyberTemplateProps;
+const isJa = locale === "ja";
+const L = (path: string) => localePath(base, path);
+
+const discoveryHref = DISCOVERY_CALL_URL[locale];
+const verifyHref = L("/verify/");
+
+const C = isJa
+  ? {
+      title: "Cyber — 敵性から業務と信頼を守る｜Lemma",
+      description:
+        "Lemma の Cyber は、敵性の指示や不正なワークフロー変更を実行前の地点で確かめ、組み込まれた関所で止めます。守備範囲・組み込み方・「例」であることの区別を正直に示します。",
+      hero: {
+        eyebrow: "Cyber",
+        h1Head: "敵性から業務と信頼を守る",
+        h1Accent: "確かめ＋止める",
+        lede: "敵性の指示、正規の通知を装った差し替え、不正なワークフロー変更は、AI を介した業務の途中から入り込みます。Lemma は、実行前の地点で「確かめる」ことと、組み込まれた関所で「止める」ことを分けて考えます。",
+      },
+      cta: {
+        primary: "Discovery Call を予約 →",
+        secondary: "検証センターを見る →",
+      },
+      scope: {
+        eyebrow: "守備範囲",
+        h2Head: "2つのガードは、",
+        h2Accent: "別の対象を守る。",
+        lede: "ToolGuard と Cyber Proof Cards は証明基盤を共有しますが、守る対象は別です。重なりません。",
+        pointLabel: "監視地点",
+        integrationLabel: "組み込み地点",
+        subjectLabel: "対象",
+        guards: [
+          {
+            tag: "ToolGuard",
+            point: "pre_tool_call（AI エージェントの tool_call が実行される前）",
+            integration: "エージェント実行環境（pre_tool_call フック）",
+            subject: "AI エージェントのツール呼び出し",
+          },
+          {
+            tag: "Cyber Proof Cards",
+            point: "計算・ワークフロー操作の実行直前",
+            integration: "API Gateway · middleware · onBeforeVerify",
+            subject: "計算・ワークフロー操作",
+          },
+        ],
+        note: "Cyber Proof Cards は pre_tool_call では動きません。エージェントのツールと、計算の操作は、別の対象です。",
+        exampleLabel: "例（防御）",
+        exampleText:
+          "承認済みのはずのワークフロー手順が、正規の通知を装った指示や、信頼できる差出人を騙る虚偽の謝罪によって差し替えられる、という形の侵入を想定します。",
+      },
+      integration: {
+        eyebrow: "組み込み方",
+        h2Head: "非組み込みなら、既存フローは変えない。",
+        h2Accent: "止めるには、実行前の関所に組み込む。",
+        lede: "確かめるだけでよいか、止める必要があるかで、既存システムに加える変更の範囲が変わります。",
+        exampleBadge: "例",
+        embeddedBadge: "例 / 組み込み提案",
+        nonEmbedded: {
+          title: "非組み込み（non-embedded）",
+          desc: "既存のフローを変えずに、S1 のポリシー／証明カードのテンプレートを作り、検証ビューを表示・共有できます。",
+          note: "この経路は、既存の計算を止めません。",
+        },
+        embedded: {
+          title: "組み込み（embedded）",
+          desc: "遮断・執行には、実行前の組み込み地点に置く関所が必要です。",
+          note: "組み込み地点: API Gateway · middleware · onBeforeVerify",
+        },
+        disclaimer:
+          "本節の内容は組み込み方の例であり、製品としての提供状況を保証するものではありません。",
+      },
+      flow: {
+        eyebrow: "流れ",
+        h2Head: "順番に、",
+        h2Accent: "4つのステップ。",
+        lede: "S1 テンプレートの作成から、ポリシー設定、判定の確認、組み込みの相談までを順に進めます。",
+        steps: [
+          {
+            no: "01",
+            title: "S1 テンプレートを作成",
+            desc: "確認したい操作について、S1 のポリシー／証明カードのテンプレートを定義します。",
+          },
+          {
+            no: "02",
+            title: "管理者がポリシー／設定を決める",
+            desc: "何を許可し、何に印を付けるかを、管理者がポリシーと設定として決めます。",
+          },
+          {
+            no: "03",
+            title: "判定と理由を検証ビューで見る",
+            desc: "検証ビューに、その操作に対する判定と、その理由が表示されます。",
+          },
+          {
+            no: "04",
+            title: "組み込みは相談から",
+            desc: "関所の組み込みは、Discovery Call で対象と方法を設計します。",
+          },
+        ],
+        verifyNote:
+          "上の検証センターのリンクは、実在の /verify/（汎用の検証センター）を開きます。S1 のライブデモではありません。",
+        cta: "Discovery Call を予約 →",
+      },
+      applications: {
+        eyebrow: "想定される攻撃",
+        h2Head: "守る対象は、",
+        h2Accent: "指示と操作。",
+        lede: "一般名詞で示します。攻撃手順の詳細や、特定のキャンペーン名は扱いません。",
+        items: [
+          "敵性の指示（hostile instructions）",
+          "偽装された通知・虚偽の謝罪",
+          "不正なワークフロー変更",
+        ],
+      },
+      close: {
+        eyebrow: "次の一手",
+        h2Head: "まず確かめ、",
+        h2Accent: "止めるなら組み込む。",
+        lede: "「確かめる」と「止める」を分けて設計します。まずは Discovery Call で、対象と組み込み方を確認します。",
+        ctaPrimary: "Discovery Call を予約 →",
+        ctaSecondary: "検証センターを見る →",
+      },
+      footNote:
+        "本ページの例は組み込みの例示であり、製品としての提供状況を保証するものではありません。",
+    }
+  : {
+      title:
+        "Cyber — Protect operations and trust from hostile activity | Lemma",
+      description:
+        "Lemma's Cyber approach verifies hostile instructions and unauthorized workflow changes at the pre-execution point, and stops them at an embedded gate. Scope, integration, and the honest line between what is an example and what is available.",
+      hero: {
+        eyebrow: "Cyber",
+        h1Head: "Protect operations and trust from hostile activity",
+        h1Accent: "Verify + stop",
+        lede: "Hostile instructions, swaps disguised as legitimate notices, and unauthorized workflow changes enter partway through AI-assisted work. Lemma separates verifying at the pre-execution point from stopping at an embedded gate.",
+      },
+      cta: {
+        primary: "Book a Discovery Call →",
+        secondary: "Open the Verification Center →",
+      },
+      scope: {
+        eyebrow: "Scope",
+        h2Head: "Two guards,",
+        h2Accent: "different subjects.",
+        lede: "ToolGuard and Cyber Proof Cards share proof infrastructure, but they guard different subjects. They do not overlap.",
+        pointLabel: "Guard point",
+        integrationLabel: "Integration point",
+        subjectLabel: "Subject",
+        guards: [
+          {
+            tag: "ToolGuard",
+            point: "pre_tool_call (before an AI agent's tool_call executes)",
+            integration: "Agent runtime (pre_tool_call hook)",
+            subject: "AI agent tool calls",
+          },
+          {
+            tag: "Cyber Proof Cards",
+            point: "The immediate pre-execution point of computing / workflow operations",
+            integration: "API Gateway · middleware · onBeforeVerify",
+            subject: "Computing and workflow operations",
+          },
+        ],
+        note: "Cyber Proof Cards do not operate at pre_tool_call. Agent tools and computing operations are different subjects.",
+        exampleLabel: "Example (defensive)",
+        exampleText:
+          "A workflow step that is expected to be approved gets swapped by an instruction disguised as a legitimate notice, or by a false apology that impersonates a trusted sender.",
+      },
+      integration: {
+        eyebrow: "Integration",
+        h2Head: "Non-embedded: the flow stays as it is.",
+        h2Accent: "To stop, embed a gate before execution.",
+        lede: "Whether you only need to verify, or you need to block, changes how much of the existing system you touch.",
+        exampleBadge: "Example",
+        embeddedBadge: "Example / integration proposal",
+        nonEmbedded: {
+          title: "Non-embedded",
+          desc: "Without changing the existing flow, you can make an S1 policy / proof-card template and show or share a verification view.",
+          note: "This route does not block existing computation.",
+        },
+        embedded: {
+          title: "Embedded",
+          desc: "Blocking and enforcement require the gate placed at the pre-execution integration point.",
+          note: "Integration point: API Gateway · middleware · onBeforeVerify",
+        },
+        disclaimer:
+          "This section describes examples of integration; it does not promise product availability.",
+      },
+      flow: {
+        eyebrow: "Flow",
+        h2Head: "In order:",
+        h2Accent: "four steps.",
+        lede: "From creating an S1 template to setting policy, reading the decision, and scoping the integration.",
+        steps: [
+          {
+            no: "01",
+            title: "Create an S1 template",
+            desc: "Define the S1 policy / proof-card template for the operation you want to check.",
+          },
+          {
+            no: "02",
+            title: "An admin sets policy / config",
+            desc: "The administrator decides what is allowed and what should be flagged, as policy and configuration.",
+          },
+          {
+            no: "03",
+            title: "See the decision and the reason",
+            desc: "A verification view shows the decision for that operation and the reason behind it.",
+          },
+          {
+            no: "04",
+            title: "Start integration with a conversation",
+            desc: "Embedding the gate is scoped in a Discovery Call.",
+          },
+        ],
+        verifyNote:
+          "The Verification Center link opens the real /verify/ — a generic verification center, not a live S1 demo.",
+        cta: "Book a Discovery Call →",
+      },
+      applications: {
+        eyebrow: "Applications",
+        h2Head: "What it guards:",
+        h2Accent: "instructions and operations.",
+        lede: "General categories only — no exploit detail and no named campaign.",
+        items: [
+          "Hostile instructions",
+          "Impersonated notices and false apologies",
+          "Unauthorized workflow changes",
+        ],
+      },
+      close: {
+        eyebrow: "Next step",
+        h2Head: "Verify first.",
+        h2Accent: "Embed to stop.",
+        lede: "Verifying and stopping are designed separately. Start with a Discovery Call to confirm the subject and the integration.",
+        ctaPrimary: "Book a Discovery Call →",
+        ctaSecondary: "Open the Verification Center →",
+      },
+      footNote:
+        "The examples on this page illustrate integration; they do not promise product availability.",
+    };
+---
+
+<Layout
+  locale={locale}
+  title={C.title}
+  description={C.description}
+  metaType="page"
+  pagePath="/cyber/"
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <main class="cy-page">
+    <div class="cy-container">
+      <section class="cy-hero">
+        <p class="cy-eyebrow">{C.hero.eyebrow}</p>
+        <h1 class="cy-h1">
+          {C.hero.h1Head}
+          <span class="cy-h1-accent">{C.hero.h1Accent}</span>
+        </h1>
+        <p class="cy-lede">{C.hero.lede}</p>
+        <div class="cy-actions">
+          <a
+            class="cy-btn cy-btn--primary"
+            href={discoveryHref}
+            target="_blank"
+            rel="noopener">{C.cta.primary}</a
+          >
+          <a class="cy-btn cy-btn--ghost" href={verifyHref}>{C.cta.secondary}</a>
+        </div>
+      </section>
+
+      <!-- §1 守備範囲: ToolGuard と Cyber Proof Cards の対象を分ける -->
+      <section class="cy-section" aria-labelledby="cy-scope-h">
+        <p class="cy-eyebrow">{C.scope.eyebrow}</p>
+        <h2 id="cy-scope-h" class="cy-h2">
+          {C.scope.h2Head}<span class="cy-h2-accent">{C.scope.h2Accent}</span>
+        </h2>
+        <p class="cy-sub">{C.scope.lede}</p>
+
+        <div class="cy-grid2">
+          {
+            C.scope.guards.map((g) => (
+              <article class="cy-card">
+                <h3 class="cy-card-tag">{g.tag}</h3>
+                <dl class="cy-dl">
+                  <div class="cy-dl-row">
+                    <dt>{C.scope.pointLabel}</dt>
+                    <dd>{g.point}</dd>
+                  </div>
+                  <div class="cy-dl-row">
+                    <dt>{C.scope.integrationLabel}</dt>
+                    <dd>{g.integration}</dd>
+                  </div>
+                  <div class="cy-dl-row">
+                    <dt>{C.scope.subjectLabel}</dt>
+                    <dd>{g.subject}</dd>
+                  </div>
+                </dl>
+              </article>
+            ))
+          }
+        </div>
+
+        <p class="cy-callout">{C.scope.note}</p>
+
+        <article class="cy-example">
+          <p class="cy-example-label">{C.scope.exampleLabel}</p>
+          <p class="cy-example-text">{C.scope.exampleText}</p>
+        </article>
+      </section>
+
+      <!-- §2 非組み込み / 組み込み -->
+      <section
+        class="cy-section cy-section--deep"
+        aria-labelledby="cy-integration-h"
+      >
+        <p class="cy-eyebrow">{C.integration.eyebrow}</p>
+        <h2 id="cy-integration-h" class="cy-h2">
+          {C.integration.h2Head}<span class="cy-h2-accent"
+            >{C.integration.h2Accent}</span
+          >
+        </h2>
+        <p class="cy-sub">{C.integration.lede}</p>
+
+        {/*
+          TODO(判断): 非組み込みで「検証ビューを共有できる」範囲（共有単位・
+          閲覧権限）は製品仕様として未確定。実装時に確定する。
+        */}
+        <div class="cy-grid2">
+          <article class="cy-card">
+            <span class="cy-badge">{C.integration.exampleBadge}</span>
+            <h3 class="cy-card-tag">{C.integration.nonEmbedded.title}</h3>
+            <p class="cy-card-desc">{C.integration.nonEmbedded.desc}</p>
+            <p class="cy-card-note">{C.integration.nonEmbedded.note}</p>
+          </article>
+          <article class="cy-card">
+            <span class="cy-badge">{C.integration.embeddedBadge}</span>
+            <h3 class="cy-card-tag">{C.integration.embedded.title}</h3>
+            <p class="cy-card-desc">{C.integration.embedded.desc}</p>
+            <p class="cy-card-note">{C.integration.embedded.note}</p>
+          </article>
+        </div>
+
+        <p class="cy-note">{C.integration.disclaimer}</p>
+      </section>
+
+      <!-- §3 流れ（順番） -->
+      <section class="cy-section" aria-labelledby="cy-flow-h">
+        <p class="cy-eyebrow">{C.flow.eyebrow}</p>
+        <h2 id="cy-flow-h" class="cy-h2">
+          {C.flow.h2Head}<span class="cy-h2-accent">{C.flow.h2Accent}</span>
+        </h2>
+        <p class="cy-sub">{C.flow.lede}</p>
+
+        {/*
+          TODO(判断): 検証ビューに出す項目（判定・理由の粒度）は未確定。
+          実装時に確定する。
+        */}
+        <ol class="cy-steps">
+          {
+            C.flow.steps.map((s) => (
+              <li class="cy-step">
+                <span class="cy-step-no">{s.no}</span>
+                <div class="cy-step-body">
+                  <h3 class="cy-step-title">{s.title}</h3>
+                  <p class="cy-step-desc">{s.desc}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+
+        <p class="cy-verify-note">
+          {C.flow.verifyNote}
+          <a href={verifyHref}>{C.cta.secondary}</a>
+        </p>
+
+        <div class="cy-actions">
+          <a
+            class="cy-btn cy-btn--primary"
+            href={discoveryHref}
+            target="_blank"
+            rel="noopener">{C.flow.cta}</a
+          >
+        </div>
+      </section>
+
+      <!-- §4 想定される攻撃（安全な一般名詞のみ） -->
+      <section class="cy-section" aria-labelledby="cy-apps-h">
+        <p class="cy-eyebrow">{C.applications.eyebrow}</p>
+        <h2 id="cy-apps-h" class="cy-h2">
+          {C.applications.h2Head}<span class="cy-h2-accent"
+            >{C.applications.h2Accent}</span
+          >
+        </h2>
+        <p class="cy-sub">{C.applications.lede}</p>
+        <ul class="cy-tags">
+          {
+            C.applications.items.map((item) => (
+              <li class="cy-tag">{item}</li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- 末尾 CTA -->
+      <section class="cy-close" aria-labelledby="cy-close-h">
+        <p class="cy-eyebrow">{C.close.eyebrow}</p>
+        <h2 id="cy-close-h" class="cy-h2">
+          {C.close.h2Head}<span class="cy-h2-accent">{C.close.h2Accent}</span>
+        </h2>
+        <p class="cy-sub">{C.close.lede}</p>
+        <div class="cy-actions">
+          <a
+            class="cy-btn cy-btn--primary"
+            href={discoveryHref}
+            target="_blank"
+            rel="noopener">{C.close.ctaPrimary}</a
+          >
+          <a class="cy-btn cy-btn--ghost" href={verifyHref}
+            >{C.close.ctaSecondary}</a
+          >
+        </div>
+        <p class="cy-footnote">{C.footNote}</p>
+      </section>
+    </div>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .cy-page {
+    --cy-text-1: #171512;
+    --cy-text-2: #3a352f;
+    --cy-text-3: #6b6259;
+    --cy-line: #e5ddcd;
+    --cy-line-strong: #d8cdb8;
+    --cy-card: #ffffff;
+    --cy-lime: #a8e010;
+
+    background: var(--lemma-cream);
+    color: var(--cy-text-2);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.85;
+    padding: 0 0 72px;
+  }
+
+  .cy-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ─── 共通パーツ ─── */
+  .cy-eyebrow {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--cy-text-3);
+    margin: 0 0 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cy-eyebrow::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--cy-lime);
+    flex: none;
+  }
+
+  .cy-h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(24px, 3.4vw, 36px);
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    margin: 0 0 16px;
+    max-width: 820px;
+  }
+  :root[lang="ja"] .cy-h2 {
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+  .cy-h2-accent {
+    color: var(--accent);
+  }
+
+  .cy-sub {
+    font-size: 15.5px;
+    line-height: 1.9;
+    color: var(--cy-text-2);
+    margin: 0 0 32px;
+    max-width: 720px;
+  }
+
+  /* ─── Hero ─── */
+  .cy-hero {
+    padding: 72px 0 8px;
+    max-width: 860px;
+  }
+  .cy-h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(32px, 5.4vw, 56px);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    margin: 0 0 24px;
+  }
+  :root[lang="ja"] .cy-h1 {
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+  .cy-h1-accent {
+    display: block;
+    width: fit-content;
+    color: var(--accent);
+    border-bottom: 3px solid var(--cy-lime);
+    padding-bottom: 6px;
+  }
+  .cy-lede {
+    font-size: 16px;
+    line-height: 1.95;
+    color: var(--cy-text-2);
+    margin: 0 0 30px;
+    max-width: 760px;
+  }
+
+  /* ─── ボタン ─── */
+  .cy-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+  }
+  .cy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 14px 24px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition:
+      background 0.18s ease,
+      border-color 0.18s ease,
+      color 0.18s ease;
+  }
+  .cy-btn--primary {
+    background: var(--accent);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(139, 69, 19, 0.22);
+  }
+  .cy-btn--primary:hover {
+    background: var(--accent-lt);
+  }
+  .cy-btn--ghost {
+    background: transparent;
+    color: var(--accent);
+    border-color: var(--cy-line-strong);
+  }
+  .cy-btn--ghost:hover {
+    border-color: var(--accent);
+    background: rgba(139, 69, 19, 0.05);
+  }
+  .cy-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* ─── セクション ─── */
+  .cy-section {
+    margin-top: 88px;
+  }
+  .cy-section--deep {
+    background: var(--lemma-cream-deep);
+    border: 1px solid var(--cy-line);
+    border-radius: 18px;
+    padding: 48px 44px 44px;
+  }
+
+  .cy-grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .cy-card {
+    background: var(--cy-card);
+    border: 1px solid var(--cy-line);
+    border-radius: 14px;
+    padding: 26px 26px 24px;
+  }
+  .cy-card-tag {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    margin: 0 0 16px;
+    line-height: 1.35;
+  }
+  .cy-dl {
+    margin: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .cy-dl-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+  .cy-dl-row dt {
+    font-family: var(--font-display);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cy-text-3);
+    padding-top: 3px;
+  }
+  .cy-dl-row dd {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--cy-text-1);
+    overflow-wrap: break-word;
+  }
+
+  .cy-callout {
+    margin: 22px 0 0;
+    padding: 16px 20px;
+    background: var(--cy-card);
+    border: 1px solid var(--cy-line-strong);
+    border-left: 3px solid var(--cy-lime);
+    border-radius: 10px;
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--cy-text-1);
+  }
+
+  .cy-example {
+    margin-top: 18px;
+    padding: 20px 22px;
+    background: var(--lemma-brown-light);
+    border: 1px dashed var(--cy-line-strong);
+    border-radius: 12px;
+  }
+  .cy-example-label {
+    font-family: var(--font-display);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  .cy-example-text {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--cy-text-1);
+  }
+
+  .cy-badge {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--cy-card);
+    border: 1px solid var(--cy-line-strong);
+    border-radius: 999px;
+    padding: 4px 11px;
+    margin-bottom: 14px;
+  }
+  .cy-card-desc {
+    margin: 0 0 12px;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--cy-text-1);
+  }
+  .cy-card-note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--cy-text-3);
+  }
+  .cy-note {
+    margin: 20px 0 0;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--cy-text-3);
+  }
+
+  /* ─── 流れ ─── */
+  .cy-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .cy-step {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 18px;
+    align-items: start;
+    background: var(--cy-card);
+    border: 1px solid var(--cy-line);
+    border-radius: 14px;
+    padding: 22px 24px;
+  }
+  .cy-step-no {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--lemma-cream-deep);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .cy-step-title {
+    font-family: var(--font-display);
+    font-size: 16.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    margin: 4px 0 6px;
+    line-height: 1.4;
+  }
+  .cy-step-desc {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--cy-text-2);
+  }
+  .cy-verify-note {
+    margin: 20px 0 24px;
+    font-size: 13.5px;
+    line-height: 1.85;
+    color: var(--cy-text-3);
+    max-width: 720px;
+  }
+  .cy-verify-note a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .cy-verify-note a:hover {
+    color: var(--accent-lt);
+  }
+  .cy-verify-note a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  /* ─── 想定される攻撃 ─── */
+  .cy-tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .cy-tag {
+    font-size: 14.5px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--cy-text-1);
+    background: var(--cy-card);
+    border: 1px solid var(--cy-line);
+    border-radius: 999px;
+    padding: 10px 18px;
+    overflow-wrap: anywhere;
+  }
+
+  /* ─── 末尾 CTA ─── */
+  .cy-close {
+    margin-top: 88px;
+    background: var(--lemma-cream-deep);
+    border: 1px solid var(--cy-line);
+    border-radius: 18px;
+    padding: 48px 44px 40px;
+  }
+  .cy-footnote {
+    margin: 26px 0 0;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--cy-text-3);
+    max-width: 720px;
+  }
+
+  /* ─── レスポンシブ（375 / 390 / 430 を想定） ─── */
+  @media (max-width: 720px) {
+    .cy-container {
+      padding: 0 22px;
+    }
+    .cy-hero {
+      padding: 48px 0 4px;
+    }
+    .cy-section,
+    .cy-close {
+      margin-top: 64px;
+    }
+    .cy-section--deep,
+    .cy-close {
+      padding: 32px 22px;
+      border-radius: 14px;
+    }
+    .cy-grid2 {
+      grid-template-columns: 1fr;
+    }
+    .cy-dl-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .cy-dl-row dt {
+      padding-top: 0;
+    }
+    .cy-step {
+      grid-template-columns: 32px 1fr;
+      gap: 14px;
+      padding: 18px;
+    }
+  }
+
+  @media (max-width: 430px) {
+    .cy-h1 {
+      font-size: clamp(26px, 8vw, 34px);
+    }
+    .cy-btn {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cy-btn {
+      transition: none;
+    }
+  }
+</style>
