@@ -27,23 +27,35 @@ interface BannerCopy {
   readonly body: string;
   readonly button: string;
   readonly prLabel: string;
+  /** 何をしてもらえるか。担当者と進める3段。 */
+  readonly steps: readonly { readonly t: string; readonly d: string }[];
 }
 
 const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy>>>> = {
   "cyber-review": {
     ja: {
       eyebrow: "LEMMA CYBER · 点検",
-      head: "この点検を、組織で一度やってみませんか。",
-      body: "振込先や権限の変更など、後戻りできない操作の前に、誰が何を確かめているか。業務を棚卸しして、確かめる層が抜けている箇所を洗い出します。",
+      head: "この点検を、担当者がついて一緒に進めます。",
+      body: "チェックリストを渡して終わりにしません。組織の業務に合わせて、最初の聞き取りから報告まで同じ担当者が伴走します。",
       button: "点検について相談する →",
       prLabel: "PR",
+      steps: [
+        { t: "聞き取り", d: "振込先や権限の変更など、後戻りできない操作を一緒に洗い出す" },
+        { t: "点検", d: "それぞれの操作の前に、誰が何を確かめているかを確かめる" },
+        { t: "報告", d: "抜けている確認の一覧と、手当ての選択肢をまとめて渡す" },
+      ],
     },
     en: {
       eyebrow: "LEMMA CYBER · REVIEW",
-      head: "Run this check across your own operations.",
-      body: "Before irreversible actions such as payout or permission changes, who checks what? We map your workflows and find where that check is missing.",
+      head: "We run this check with you, hands-on.",
+      body: "Not just a checklist. One dedicated person works through it with your team, from the first interview to the final report.",
       button: "Talk to us about a review →",
       prLabel: "PR",
+      steps: [
+        { t: "Interview", d: "Map the irreversible actions together, such as payout and permission changes" },
+        { t: "Review", d: "For each one, confirm who checks what before it runs" },
+        { t: "Report", d: "Hand over the missing checks and the options to close them" },
+      ],
     },
   },
 };

@@ -551,6 +551,15 @@ const labels = isJa
             <span class="bd-svc-k">{serviceBanner.eyebrow}</span>
             <span class="bd-svc-h">{serviceBanner.head}</span>
             <span class="bd-svc-b">{serviceBanner.body}</span>
+            <span class="bd-svc-steps">
+              {serviceBanner.steps.map((st, i) => (
+                <span class="bd-svc-step">
+                  <span class="n">0{i + 1}</span>
+                  <span class="t">{st.t}</span>
+                  <span class="d">{st.d}</span>
+                </span>
+              ))}
+            </span>
             <span class="bd-svc-btn">{serviceBanner.button}</span>
           </a>
         )}
@@ -1573,7 +1582,7 @@ const labels = isJa
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: "k btn" "h btn" "b btn";
+    grid-template-areas: "k btn" "h btn" "b btn" "steps steps";
     align-items: center;
     gap: 6px 32px;
     overflow: hidden;
@@ -1650,6 +1659,40 @@ const labels = isJa
     color: #bcc3b6;
     max-width: 46ch;
   }
+  .bd-svc-steps {
+    grid-area: steps;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .bd-svc-step {
+    display: block;
+    padding: 12px 14px 13px;
+    border: 1px solid rgba(235, 239, 230, 0.14);
+    border-radius: 8px;
+    background: rgba(15, 20, 18, 0.28);
+  }
+  .bd-svc-step .n {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--ok);
+  }
+  .bd-svc-step .t {
+    display: block;
+    margin: 3px 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #f3f6ec;
+  }
+  .bd-svc-step .d {
+    display: block;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #bcc3b6;
+  }
   .bd-svc-btn {
     grid-area: btn;
     align-self: center;
@@ -1671,8 +1714,11 @@ const labels = isJa
   @media (max-width: 720px) {
     .bd-svc {
       grid-template-columns: 1fr;
-      grid-template-areas: "k" "h" "b" "btn";
+      grid-template-areas: "k" "h" "b" "steps" "btn";
       padding: 26px 20px 24px;
+    }
+    .bd-svc-steps {
+      grid-template-columns: 1fr;
     }
     .bd-svc-btn {
       justify-self: start;
