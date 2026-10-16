@@ -23,27 +23,56 @@ export type ServiceBannerKey = "cyber-payment-change";
 
 interface BannerCopy {
   readonly eyebrow: string;
-  readonly head: string;
+  /** 見出し。要素ごとに改行して描く。 */
+  readonly head: readonly string[];
   readonly body: string;
   readonly button: string;
   readonly prLabel: string;
+  /** 右の図（届いた依頼のカード＋判定スタンプ＋求めた証明）の文字。 */
+  readonly art: {
+    readonly noticeTitle: string;
+    readonly fieldLabel: string;
+    readonly fieldValue: string;
+    readonly sender: string;
+    readonly stamp: string;
+    readonly stampSub: string;
+    readonly cardRows: readonly [string, string];
+  };
 }
 
 const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy>>>> = {
   "cyber-payment-change": {
     ja: {
-      eyebrow: "Lemma Cyber",
-      head: "その振込先の変更、本物ですか。",
-      body: "取引先や管理者を装った口座変更・支払い指示を、実行の前に確かめる仕組みを準備しています。早期導入のご相談を受け付けています。",
-      button: "Cyber について相談する →",
+      eyebrow: "LEMMA CYBER",
+      head: ["その振込先の変更、", "本物ですか。"],
+      body: "取引先や管理者を装った口座変更・支払い指示を、実行の前に確かめる仕組みを準備しています。",
+      button: "早期導入を相談する →",
       prLabel: "PR",
+      art: {
+        noticeTitle: "振込先変更のお知らせ",
+        fieldLabel: "新しい振込先",
+        fieldValue: "口座 ●●●● 7713",
+        sender: "差出人: 経理部 ✓ ログイン済み",
+        stamp: "BLOCK",
+        stampSub: "実行の前に停止",
+        cardRows: ["発行者　—", "変更権限　—"],
+      },
     },
     en: {
-      eyebrow: "Lemma Cyber",
-      head: "Is that payout-account change genuine?",
-      body: "We are building a way to check bank-account changes and payment instructions before they execute, even when they come from a trusted-looking account. Early-access conversations are open.",
-      button: "Talk to us about Cyber →",
+      eyebrow: "LEMMA CYBER",
+      head: ["Is that payout-account change", "genuine?"],
+      body: "We are building a way to check bank-account changes and payment instructions before they execute, even from a trusted-looking account.",
+      button: "Talk to us about early access →",
       prLabel: "PR",
+      art: {
+        noticeTitle: "Payout account change",
+        fieldLabel: "New payout account",
+        fieldValue: "Acct ●●●● 7713",
+        sender: "From: Finance ✓ signed in",
+        stamp: "BLOCK",
+        stampSub: "Stopped before execution",
+        cardRows: ["Issuer  —", "Authority  —"],
+      },
     },
   },
 };

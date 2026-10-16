@@ -467,22 +467,56 @@ const labels = isJa
         {/* 対応サービスのバナー（広告枠・許可リストの Brief だけ）。本文の外、
             引用パネルの前。config/briefServiceBanner.ts */}
         {serviceBanner && (
-          <aside class="bd-svc" aria-label={serviceBanner.eyebrow} data-svc-banner={serviceBanner.key}>
+          <a
+            class="bd-svc"
+            href={serviceBanner.href}
+            target="_blank"
+            rel="noopener"
+            data-svc-banner={serviceBanner.key}
+            data-brief-cta-ev="brief_service_banner_click"
+            data-cta={`service_banner_${serviceBanner.key}`}
+          >
             <span class="bd-svc-pr">{serviceBanner.prLabel}</span>
-            <div class="bd-svc-txt">
-              <div class="bd-svc-k">{serviceBanner.eyebrow}</div>
-              <p class="bd-svc-h">{serviceBanner.head}</p>
-              <p class="bd-svc-b">{serviceBanner.body}</p>
-            </div>
-            <a
-              class="bd-svc-btn"
-              href={serviceBanner.href}
-              target="_blank"
-              rel="noopener"
-              data-brief-cta-ev="brief_service_banner_click"
-              data-cta={`service_banner_${serviceBanner.key}`}
-            >{serviceBanner.button}</a>
-          </aside>
+            <span class="bd-svc-txt">
+              <span class="bd-svc-k">{serviceBanner.eyebrow}</span>
+              <span class="bd-svc-h">
+                {serviceBanner.head.map((line, i) => (
+                  <>{i > 0 && <br />}{line}</>
+                ))}
+              </span>
+              <span class="bd-svc-line" aria-hidden="true"></span>
+              <span class="bd-svc-b">{serviceBanner.body}</span>
+              <span class="bd-svc-btn">{serviceBanner.button}</span>
+            </span>
+            <svg class="bd-svc-art" viewBox="0 0 300 215" aria-hidden="true">
+              <g transform="rotate(-5 120 110)">
+                <rect x="22" y="34" width="196" height="150" rx="10" fill="#f3f6ec" />
+                <rect x="22" y="34" width="196" height="30" rx="10" fill="#dfe5d3" />
+                <rect x="22" y="54" width="196" height="10" fill="#dfe5d3" />
+                <text x="36" y="54" class="a-jp a-b" font-size="11" fill="#2e362f">{serviceBanner.art.noticeTitle}</text>
+                <text x="36" y="86" class="a-jp" font-size="9" fill="#6b7365">{serviceBanner.art.fieldLabel}</text>
+                <rect x="36" y="92" width="150" height="18" rx="4" fill="#fff" stroke="#c9cfbd" />
+                <text x="44" y="105" class="a-mono" font-size="9.5" fill="#2e362f">{serviceBanner.art.fieldValue}</text>
+                <rect x="36" y="122" width="132" height="6" rx="3" fill="#d6dccb" />
+                <rect x="36" y="134" width="110" height="6" rx="3" fill="#d6dccb" />
+                <rect x="36" y="146" width="120" height="6" rx="3" fill="#d6dccb" />
+                <text x="36" y="172" class="a-jp" font-size="8.5" fill="#8a9083">{serviceBanner.art.sender}</text>
+              </g>
+              <g transform="rotate(-10 206 176)">
+                <rect x="150" y="154" width="112" height="44" rx="6" fill="#272e28" fill-opacity=".55" stroke="#c25438" stroke-width="3" />
+                <text x="206" y="178" text-anchor="middle" class="a-disp" font-size="20" letter-spacing="4" fill="#e0715a">{serviceBanner.art.stamp}</text>
+                <text x="206" y="192" text-anchor="middle" class="a-jp a-b" font-size="8.5" fill="#e0715a">{serviceBanner.art.stampSub}</text>
+              </g>
+              <g>
+                <rect x="196" y="22" width="92" height="56" rx="8" fill="#232a24" stroke="#a8e010" stroke-width="1.4" />
+                <text x="206" y="38" class="a-mono" font-size="7.5" letter-spacing="1" fill="#a8e010">PROOF CARD</text>
+                <text x="206" y="52" class="a-jp" font-size="8" fill="#bcc3b6">{serviceBanner.art.cardRows[0]}</text>
+                <text x="206" y="64" class="a-jp" font-size="8" fill="#bcc3b6">{serviceBanner.art.cardRows[1]}</text>
+                <circle cx="274" cy="36" r="6" fill="none" stroke="#c25438" stroke-width="1.6" />
+                <path d="M271 33 L277 39 M277 33 L271 39" stroke="#c25438" stroke-width="1.6" />
+              </g>
+            </svg>
+          </a>
         )}
 
         {/* 引用パネル — Plain text / BibTeX / APA のタブ＋モノスペース本文。 */}
@@ -1489,79 +1523,134 @@ const labels = isJa
   }
 
   /* ─── 末尾CTA（スレート・証明の訴求） ─── */
-  /* 対応サービスのバナー（広告枠）。本文と別の面に見せ、隅に小さく PR。 */
+  /* 対応サービスのバナー（広告枠）。地はトップ v47 ヒーローと同じスレート
+     ＋ドット格子＋右上のライム環境光。隅に小さく PR。右は事案を図にした絵
+     （届いた依頼カード・BLOCK の判定・求めた証明 Proof Card）。 */
   .bd-svc {
     position: relative;
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
     align-items: center;
-    gap: 20px 28px;
+    gap: 8px 24px;
+    overflow: hidden;
     margin: 36px 0 0;
-    padding: 24px 28px;
-    background: #f3f6ec;
-    border: 1px solid #d9dfcd;
-    border-left: 4px solid var(--ok);
-    border-radius: 10px;
+    padding: 30px 30px 30px 34px;
+    border-radius: 14px;
+    text-decoration: none;
+    color: #ebefe6;
+    background: linear-gradient(168deg, #3c443d 0%, #2f372f 58%, #272e28 100%);
+  }
+  .bd-svc::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(235, 239, 230, 0.07) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
+  .bd-svc::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(90% 90% at 88% -10%, rgba(168, 224, 16, 0.22), rgba(168, 224, 16, 0) 60%);
+  }
+  .bd-svc > * {
+    position: relative;
+    z-index: 1;
   }
   .bd-svc-pr {
     position: absolute;
-    top: 8px;
-    right: 10px;
+    top: 10px;
+    right: 12px;
+    z-index: 2;
     font-family: var(--font-mono);
     font-size: 9.5px;
     letter-spacing: 0.12em;
-    color: #8a9083;
-    border: 1px solid #c9cfbd;
+    color: #9ba296;
+    border: 1px solid #59645a;
     border-radius: 3px;
     padding: 1px 5px;
   }
-  .bd-svc-txt {
-    flex: 1 1 auto;
-    min-width: 0;
+  .bd-svc-txt,
+  .bd-svc-k,
+  .bd-svc-h,
+  .bd-svc-b,
+  .bd-svc-line {
+    display: block;
   }
   .bd-svc-k {
     font-family: var(--font-mono);
     font-size: 10.5px;
-    letter-spacing: 0.18em;
-    color: #5d6658;
+    letter-spacing: 0.22em;
+    color: var(--ok);
   }
   .bd-svc-h {
-    margin: 6px 0 6px;
+    margin: 10px 0 0;
     font-family: var(--font-serif-jp);
     font-weight: 600;
-    font-size: 18px;
-    line-height: 1.5;
-    color: #1f2620;
+    font-size: clamp(22px, 2.6vw, 28px);
+    line-height: 1.45;
+    letter-spacing: 0.02em;
+    color: #f3f6ec;
+  }
+  .bd-svc-line {
+    width: 72px;
+    height: 2px;
+    margin: 14px 0;
+    border-radius: 2px;
+    background: var(--ok);
   }
   .bd-svc-b {
-    margin: 0;
+    margin: 0 0 20px;
     font-size: 13px;
-    line-height: 1.8;
-    color: #4a5246;
+    line-height: 1.85;
+    color: #bcc3b6;
+    max-width: 34ch;
   }
   .bd-svc-btn {
-    flex: 0 0 auto;
+    display: inline-block;
     font-family: var(--font-body);
     font-size: 12.5px;
     font-weight: 600;
     letter-spacing: 0.04em;
-    padding: 12px 20px;
+    padding: 11px 20px;
     border-radius: 6px;
-    background: #2e362f;
-    color: #ebefe6;
-    text-decoration: none;
-    white-space: nowrap;
+    background: var(--ok);
+    color: #0f1412;
+    box-shadow: 0 4px 14px rgba(168, 224, 16, 0.3);
+    transition: filter 0.18s;
   }
-  .bd-svc-btn:hover {
-    background: #1f2620;
+  .bd-svc:hover .bd-svc-btn {
+    filter: brightness(1.06);
+  }
+  .bd-svc-art {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .bd-svc-art .a-jp {
+    font-family: var(--font-body);
+  }
+  .bd-svc-art .a-b {
+    font-weight: 600;
+  }
+  .bd-svc-art .a-mono {
+    font-family: var(--font-mono);
+  }
+  .bd-svc-art .a-disp {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
   }
   @media (max-width: 720px) {
     .bd-svc {
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 22px 18px 20px;
+      grid-template-columns: 1fr;
+      padding: 26px 20px;
     }
-    .bd-svc-btn {
-      white-space: normal;
+    .bd-svc-art {
+      order: -1;
+      max-width: 300px;
+      margin: 6px auto 0;
     }
   }
   .bd-cta {
