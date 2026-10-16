@@ -157,13 +157,26 @@ const parseHeadline = (raw: string): { lines: string[]; accent: string | null } 
   return { lines: main.split(/\n/).map((l) => l.trim()).filter(Boolean), accent };
 };
 
-/** 長い見出しは一段小さく。英語は語で折れるので字数の閾値を大きく取る。 */
+/** 長い見出しは一段小さく。英語は語で折れるので字数の閾値を大きく取る。
+ *  スマホのカード（幅 ~360px＝0.3倍）でも読める大きさを下限にする。 */
 const reportHeadlineSize = (text: string, ja: boolean): number => {
   const n = Array.from(text).length;
-  if (ja) return n > 40 ? 46 : 54;
-  return n > 80 ? 48 : 56;
+  if (ja) return n > 40 ? 58 : 66;
+  return n > 80 ? 60 : 70;
 };
 
+/** 上段の札（Space Mono 700）。和文は Noto Sans JP Bold に落とす。 */
+const spaceMonoBold = readFileSync(
+  resolve(process.cwd(), "node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff"),
+);
+const REPORT_FONTS = [
+  ...FONTS,
+  { name: "Tag", data: spaceMonoBold, weight: 700 as const, style: "normal" as const },
+  { name: "TagJa", data: OG_FONT_DATA.jaBold, weight: 700 as const, style: "normal" as const },
+];
+
+/* スマホで縮むと上下の小さな文字はつぶれ、X はカード左下にドメインを重ねる。
+ * なので下段は持たず、種類の札と番号を上の1行にまとめ、見出しを大きく取る。 */
 async function renderReportOg(brief: BriefEntry, locale: Locale): Promise<Buffer> {
   const ja = locale === "ja";
   const no = String(brief.data.brief_no).padStart(3, "0");
@@ -184,56 +197,58 @@ async function renderReportOg(brief: BriefEntry, locale: Locale): Promise<Buffer
   const node = {
     type: "div",
     props: {
-      style: {
-        position: "relative",
-        display: "flex",
-        width: REPORT_W,
-        height: REPORT_H,
-      },
+      style: { position: "relative", display: "flex", width: REPORT_W, height: REPORT_H },
       children: [
         {
           type: "div",
           props: {
             style: {
               position: "absolute",
-              left: 72,
-              top: 64,
-              right: 330,
-              bottom: 60,
+              left: 64,
+              right: 64,
+              top: 52,
               display: "flex",
-              flexDirection: "column",
+              justifyContent: "space-between",
+              alignItems: "center",
             },
             children: [
-              line(kicker, LIME, {
-                fontFamily: "Mono, Kicker",
-                fontSize: 22,
-                letterSpacing: ja ? 2.5 : 4,
+              line(kicker, "#14190F", {
+                fontFamily: "Tag, TagJa",
+                fontWeight: 700,
+                fontSize: 30,
+                letterSpacing: ja ? 1.5 : 1.8,
+                background: LIME,
+                borderRadius: 8,
+                padding: "6px 18px",
               }),
-              {
-                type: "div",
-                props: {
-                  style: {
-                    display: "flex",
-                    flexDirection: "column",
-                    marginTop: "auto",
-                    fontFamily: "Threat",
-                    fontWeight: 700,
-                    fontSize: size,
-                    lineHeight: 1.28,
-                    letterSpacing: ja ? 0.5 : -0.5,
-                  },
-                  children: [
-                    ...lines.map((l) => line(l, "#F3F6EC")),
-                    ...(accent ? [line(accent, LIME, { marginTop: 18 })] : []),
-                  ],
-                },
-              },
-              line(`LEMMA CRITICAL BRIEF  No.${no}`, "#9AA394", {
-                marginTop: "auto",
-                fontFamily: "Mono",
-                fontSize: 20,
-                letterSpacing: 2.4,
+              line(`No.${no}`, "#CFD8C4", {
+                fontFamily: "Tag",
+                fontWeight: 700,
+                fontSize: 30,
+                letterSpacing: 1.2,
               }),
+            ],
+          },
+        },
+        {
+          type: "div",
+          props: {
+            style: {
+              position: "absolute",
+              left: 64,
+              right: ja ? 260 : 150,
+              top: 150,
+              display: "flex",
+              flexDirection: "column",
+              fontFamily: "Threat",
+              fontWeight: 700,
+              fontSize: size,
+              lineHeight: 1.22,
+              letterSpacing: ja ? 0.7 : -0.7,
+            },
+            children: [
+              ...lines.map((l) => line(l, "#F6F8F1")),
+              ...(accent ? [line(accent, LIME, { marginTop: 20 })] : []),
             ],
           },
         },
@@ -241,14 +256,14 @@ async function renderReportOg(brief: BriefEntry, locale: Locale): Promise<Buffer
     },
   };
 
-  const textSvg = await satori(node, { width: REPORT_W, height: REPORT_H, fonts: FONTS });
+  const textSvg = await satori(node, { width: REPORT_W, height: REPORT_H, fonts: REPORT_FONTS });
   const art = briefCoverArt(brief.data.brief_no);
   const ground =
     `<defs><linearGradient id="rog${no}" x1="0.4" y1="0" x2="0.6" y2="1">` +
     `<stop offset="0" stop-color="#3c443d"/><stop offset=".58" stop-color="#2f372f"/>` +
     `<stop offset="1" stop-color="#272e28"/></linearGradient></defs>` +
     `<rect width="${String(REPORT_W)}" height="${String(REPORT_H)}" fill="url(#rog${no})"/>` +
-    `<svg x="0" y="0" width="${String(REPORT_W)}" height="${String(REPORT_H)}" viewBox="${art.viewBox}" preserveAspectRatio="${art.preserveAspectRatio}">${art.inner}</svg>`;
+    `<svg x="0" y="0" width="${String(REPORT_W)}" height="${String(REPORT_H)}" viewBox="${art.viewBox}" preserveAspectRatio="${art.preserveAspectRatio}" opacity=".8">${art.inner}</svg>`;
   const svg = textSvg.replace(/<svg[^>]*>/, (open) => open + ground);
   return new Resvg(svg, { fitTo: { mode: "width", value: REPORT_W } }).render().asPng();
 }

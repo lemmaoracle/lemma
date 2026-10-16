@@ -171,7 +171,7 @@ controls:
 
 **OG 画像（共有カード）**: report Brief の OG は脅威タイプ名ではなく事件そのものが主役
 （表紙と同じ生成グラフィックの地）。`og_kicker_ja/en` に事例の種類（例「サイバー攻撃事例 ·
-アカウント乗っ取り」/ "CYBERATTACK CASE · ACCOUNT TAKEOVER"）、`og_headline_ja/en` に
+アカウント乗っ取り」/ "CYBERATTACK · ACCOUNT TAKEOVER"。ライムの札になるので短い1行）、`og_headline_ja/en` に
 何が起きたかを書く（`\n` で改行・被害の大きさを `<accent>…</accent>` でライムの1行に）。
 og:description は `insight.quote` で始まる。
 

@@ -16,9 +16,9 @@ og_lead_ja: "Booking.com でホテルの受取口座が書き換えられ約900�
 og_lead_en: "Booking.com payout account switched, ¥9M lost — Polaris Holdings"
 layout: "report"
 og_kicker_ja: "サイバー攻撃事例 · アカウント乗っ取り"
-og_kicker_en: "CYBERATTACK CASE · ACCOUNT TAKEOVER"
+og_kicker_en: "CYBERATTACK · ACCOUNT TAKEOVER"
 og_headline_ja: "正規の管理画面で、\nホテルの受取口座が\n書き換えられた。\n<accent>約 900 万円の損失</accent>"
-og_headline_en: "A hotel's payout account was switched inside the real admin screen.\n<accent>About ¥9M lost.</accent>"
+og_headline_en: "A hotel's payout account was switched in the real admin screen.\n<accent>About ¥9M lost.</accent>"
 key_figures:
   - value: "約 900"
     unit: "万円"
