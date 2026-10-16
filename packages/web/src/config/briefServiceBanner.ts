@@ -41,9 +41,9 @@ const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy
       button: "点検について相談する →",
       prLabel: "PR",
       steps: [
-        { t: "知見の提供と相談", d: "Brief と AI セキュリティの知見を、組織の業務に当てはめて一緒に整理する" },
-        { t: "攻撃シミュレーションで点検", d: "実際の手口を模した試験で、どこが止まり、どこを通るかを確かめる" },
-        { t: "レポート", d: "見つかった穴と手当ての選択肢を、優先順位をつけて渡す" },
+        { t: "事案から、自社の論点へ", d: "Brief と AI セキュリティの知見をもとに、組織の業務で起こりうることを一緒に洗い出します" },
+        { t: "攻撃シミュレーションで点検", d: "実際の手口を模した試験で、止まる箇所と通ってしまう箇所を確かめます" },
+        { t: "報告と改善の提案", d: "見つかった穴と手当ての選択肢を、優先順位をつけてお渡しします" },
       ],
     },
     en: {
@@ -59,6 +59,11 @@ const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy
       ],
     },
   },
+};
+
+/** バナーごとに出す言語。点検（伴走）は国内向けなので JA のみ。 */
+const SHOWN_LOCALES: Readonly<Record<ServiceBannerKey, readonly Locale[]>> = {
+  "cyber-review": ["ja"],
 };
 
 /** 許可リスト。slug → バナー。ここに無い Brief には出さない。 */
@@ -78,6 +83,8 @@ export function serviceBannerFor(
 ): ServiceBanner | null {
   const key = BANNER_BY_SLUG[slug];
   if (!key) return null;
+  // 伴走型の点検は国内の企業向け。英語版の行き先は別に決めるまで出さない。
+  if (!SHOWN_LOCALES[key].includes(locale)) return null;
   const params = new URLSearchParams({
     plan: "cyber",
     ref: `brief_banner_${briefNoPad}`,
