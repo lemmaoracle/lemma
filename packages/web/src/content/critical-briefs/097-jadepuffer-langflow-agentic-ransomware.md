@@ -9,7 +9,7 @@ incident_date: 2026-07-03
 published: 2026-07-07
 authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
-related_briefs: ["031-vibe-hacking-shadow-aether", "009-gtg1002-ai-orchestrated-espionage", "026-adaptive-ai-worm-runtime-exploit", "066-litellm-ai-gateway-privilege-escalation", "046-servicenow-unauthenticated-api"]
+related_briefs: ["031-vibe-hacking-shadow-aether", "009-gtg1002-ai-orchestrated-espionage", "066-litellm-ai-gateway-privilege-escalation", "046-servicenow-unauthenticated-api"]
 status: published
 version: "1.0"
 og_lead_ja: "JadePuffer — LLM が侵入から暗号化まで自律実行した実地のランサムウェア"
@@ -69,7 +69,7 @@ gap_fix: "破壊的になり得る操作の前に、それを要求する主体�
 
 中心的な失敗 primitive は、**攻撃者の LLM が対象の状況を読み解いてその場で生成・修正する行動が、対象システム側で「この行動を、この主体が実行してよいか」を実行の前に独立検証されず、事前に止められなかった**点にある。攻撃の各手順は事前に用意された固定のスクリプトではなく、対象が返す情報に応じて LLM が動的に組み立てたものであり、既知パターンへの照合を前提とする検知は原理的に後追いになる。
 
-本事案は [Brief 009](https://lemma.frame00.com/ja/critical/briefs/009-gtg1002-ai-orchestrated-espionage/)（GTG-1002、AI エージェントがサイバー攻撃の 80–90% を自律実行した初の報告）・[Brief 031](https://lemma.frame00.com/ja/critical/briefs/031-vibe-hacking-shadow-aether/)（AI エージェントが初期侵入から情報持ち出しまでを実行した）と同じ、AI が攻撃の実行そのものを担う系列にある。差別化点は、GTG-1002 が諜報、No.031 が攻撃ツールの動的生成に軸を置くのに対し、本事案は **実環境での自律型ランサムウェア（恐喝）** であり、LLM が対象ごとにコードを書き換え、失敗を自己診断し、破壊の段階を自ら選んで narration した実地の記録である点だ。[Brief 026](https://lemma.frame00.com/ja/critical/briefs/026-adaptive-ai-worm-runtime-exploit/)（自律 AI ワーム、実行時に攻撃戦略を生成する脅威モデル）が研究上のモデルとして示した「実行時生成」が、本事案では実被害として観測された。初期侵入が Langflow の未認証コード実行（CVE-2025-3248）である点、横展開先の Nacos が既定 JWT 署名鍵と認証バイパスで掌握された点は、[Brief 066](https://lemma.frame00.com/ja/critical/briefs/066-litellm-ai-gateway-privilege-escalation/)（LiteLLM、一般権限のまま AI ゲートウェイ管理者とコード実行に到達）・[Brief 046](https://lemma.frame00.com/ja/critical/briefs/046-servicenow-unauthenticated-api/)（ServiceNow、設定ひとつで未認証照会）と同じく、「到達＝実行」になり行動前の権限検証層が欠けていた基盤特性に連なる。
+本事案は [Brief 009](https://lemma.frame00.com/ja/critical/briefs/009-gtg1002-ai-orchestrated-espionage/)（GTG-1002、AI エージェントがサイバー攻撃の 80–90% を自律実行した初の報告）・[Brief 031](https://lemma.frame00.com/ja/critical/briefs/031-vibe-hacking-shadow-aether/)（AI エージェントが初期侵入から情報持ち出しまでを実行した）と同じ、AI が攻撃の実行そのものを担う系列にある。差別化点は、GTG-1002 が諜報、No.031 が攻撃ツールの動的生成に軸を置くのに対し、本事案は **実環境での自律型ランサムウェア（恐喝）** であり、LLM が対象ごとにコードを書き換え、失敗を自己診断し、破壊の段階を自ら選んで narration した実地の記録である点だ。初期侵入が Langflow の未認証コード実行（CVE-2025-3248）である点、横展開先の Nacos が既定 JWT 署名鍵と認証バイパスで掌握された点は、[Brief 066](https://lemma.frame00.com/ja/critical/briefs/066-litellm-ai-gateway-privilege-escalation/)（LiteLLM、一般権限のまま AI ゲートウェイ管理者とコード実行に到達）・[Brief 046](https://lemma.frame00.com/ja/critical/briefs/046-servicenow-unauthenticated-api/)（ServiceNow、設定ひとつで未認証照会）と同じく、「到達＝実行」になり行動前の権限検証層が欠けていた基盤特性に連なる。
 
 エージェントが行動を自律生成する時代には、防御側が「攻撃コードの見た目」を照合するだけでは追いつかない。行動を生成するのが人間か LLM かに関わらず、システムが受理する「行動」ごとに、それを要求する主体の権限が推論ループの外で独立検証され、かつその行動の記録が改ざん耐性を持って残って初めて、基盤を実務に安心して載せられる。
 

@@ -9,7 +9,7 @@ incident_date: 2026-05-11
 published: 2026-06-08
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
-related_briefs: ["009-gtg1002-ai-orchestrated-espionage", "026-adaptive-ai-worm-runtime-exploit", "007-pocketos-cursor-db-deletion"]
+related_briefs: ["009-gtg1002-ai-orchestrated-espionage", "007-pocketos-cursor-db-deletion"]
 version: "1.0"
 status: published
 og_lead_ja: "AI が侵入から情報持ち出しまでを自律実行 — SHADOW-AETHER"
