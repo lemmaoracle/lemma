@@ -50,7 +50,7 @@ controls:
     item: "Check delivery instructions against what was authorised, and keep a record"
 ---
 
-> **Revision (v2.0 / 2026-10-17)**: Restructured into the report layout, and §5 recast as "How to counter this". The facts are unchanged from v1.0.
+> **Revision (v2.0 / 2026-10-17)**: Restructured into the report layout, and §5 recast as "How to counter this". Arcadia's reports up to no. 11 were re-checked, and what has been disclosed about the entry route was added.
 
 ## 1. TL;DR
 
@@ -67,7 +67,7 @@ Detection worked: Arcadia spotted the behaviour and closed the entry route with 
 - **Maximum estimates**: SpeeCAN RAIDEN about 3.136 million email addresses, 105,000 phone numbers and 15,000 fax numbers; NET119 about 13,000 records; 119RAIDEN about 97,000 email addresses and more. Arcadia calls these "estimates only".
 - **Municipalities**: Shizuoka City said it had established that the email addresses of 34,336 residents and the names, staff numbers and departments of 6,915 city staff had leaked (Arcadia describes the leak as possible). Saitama City cited 34,783 records and Yokosuka City about 59,000 people across four disaster and crime-prevention services as possibly exposed. Okayama City said about 4,500 disaster-mail subscribers, about 5,000 staff mobilisation contacts and about 350 dam-release contacts were registered.
 - **Fake mail**: according to Shizuoka City, the subject was "<Important> Please confirm your usage", the sender name was a real credit-card company and the sender address was "…@raiden.ktaiwork.jp". The city says that domain is part of the genuine address its disaster mail uses, and that the message misused it to impersonate; it describes the mail as possibly related to the incident. Matsumoto and Yokosuka received similar reports from registrants, though Matsumoto says any link to the breach is unknown for now.
-- **Method of intrusion**: not disclosed. Arcadia says it identified and closed the entry route and blocked the source IP.
+- **Entry route**: in its second report Arcadia said it had identified an unauthorised entry route from outside, and it shut down the two services that had served as the route: SpeeCAN RAIDEN on raiden3.ktaiwork.jp and the school-oriented Raiden School on s2.ktaiwork.jp. It set the source IP address to be refused. Its ninth report says no malicious program was found in the system and that it is also working on vulnerabilities. The method itself, such as which vulnerability was used or whether login credentials were stolen, has not been disclosed.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain of events, as far as disclosed</span></div>
@@ -86,11 +86,12 @@ Detection worked: Arcadia spotted the behaviour and closed the entry route with 
 - **2026-10-12**: At about 03:00, it closed the entry route as an emergency measure and began investigating the scope.
 - **2026-10-13**: At about 10:30, Arcadia announced the access and possible leakage (per Saitama City). Part of SpeeCAN RAIDEN was suspended from 11:00.
 - **2026-10-13**: At 12:50, a resident told Saitama City they had received suspicious mail with the system's name in the sender address. The city checked with Arcadia at 12:52 and learned of the access. Yokosuka City also learned of it after registrants asked about suspicious mail.
-- **2026-10-13**: In the evening, Arcadia's second report said the entry route had been identified and the source IP blocked.
+- **2026-10-13**: In the evening, Arcadia's second report said the entry route had been identified, the two services that served as the route had been shut down, and the source IP blocked.
 - **2026-10-14**: Arcadia gave municipalities template wording to warn registrants. At 15:00 it announced traces on NET119 and 119RAIDEN. Shizuoka City published an example of the spoofed mail, and its mayor held an emergency press conference.
 - **2026-10-15**: Arcadia said it had reported to the Personal Information Protection Commission and consulted police and regional government offices. The suspended servers came back around 15:00, and users were asked to change login passwords. The scope of the leak is still under investigation.
+- **2026-10-16**: Arcadia's eleventh report said the entry route remains closed and the service is available as normal. It is preparing to report to the Personal Information Protection Commission on its customers' behalf (tenth report).
 
-> Facts here rest on Arcadia's reports 1–9 and on notices from Saitama, Shizuoka, Yokosuka, Okayama and Matsumoto cities and Mori town. The method of intrusion and the data actually taken had not been disclosed at the time of writing. Counts are maximum estimates. How the fake mail was sent, whether through the platform itself or from outside with a forged sender, has not been disclosed either. All primary sources are self-disclosures by the operator and the municipalities that use it; no independent investigation had been published. Arcadia's notices do not give the total number of affected municipalities (Kyodo reports Arcadia as saying about 800 municipalities use the service).
+> Facts here rest on Arcadia's reports 1–11 and on notices from Saitama, Shizuoka, Yokosuka, Okayama and Matsumoto cities and Mori town. The method of intrusion and the data actually taken had not been disclosed at the time of writing. Counts are maximum estimates. How the fake mail was sent, whether through the platform itself or from outside with a forged sender, has not been disclosed either. All primary sources are self-disclosures by the operator and the municipalities that use it; no independent investigation had been published. Arcadia's notices do not give the total number of affected municipalities (Kyodo reports Arcadia as saying about 800 municipalities use the service).
 
 ### After disclosure
 
@@ -150,7 +151,7 @@ Note: the proof shows only that a notice came from a registered issuer; it does 
 
 ## 6. Sources
 
-- **Arcadia (primary, operator)**: “Response to unauthorized access to SpeeCAN RAIDEN” (Japanese) (2026-10-13–15, reports 1–9) — <https://raiden.site.ktaiwork.jp/archives/4597>
+- **Arcadia (primary, operator)**: “Response to unauthorized access to SpeeCAN RAIDEN” (Japanese) (2026-10-13–16, reports 1–11) — <https://raiden.site.ktaiwork.jp/archives/4597>
 - **Shizuoka City (primary, municipal notice)**: notice on the leak and the suspicious mail confirmed (Japanese) — <https://www.city.shizuoka.lg.jp/s4268/s000286.html>
 - **Saitama City (primary, municipal notice)**: possible personal-data leak from unauthorized access to the disaster-information delivery system, first report (Japanese) (2026-10-13) — <https://www.city.saitama.lg.jp/006/014/008/003/015/007/p134471.html>
 - **Yokosuka City (primary, municipal notice)**: possible leak from the disaster and crime-prevention mail services (Japanese) (2026-10-13) — <https://www.city.yokosuka.kanagawa.jp/0525/nagekomi/20261013_roueinoosore.html>
