@@ -1030,6 +1030,285 @@ const labels = isJa
     color: var(--ok-ink);
   }
 
+  /* ─── §5「対策するには」のレポート部品（md 側で class を付けた HTML） ───
+     判定（bx-verdict）・対策の効き方（bx-controls）・必要になるもの（bx-needs）・
+     点検チェックリスト（bx-checklist）・持ち主の図（bx-owners）・章の写真
+     （bx-photo）。どれも md に書いた Brief にだけ効く。 */
+  .brief-body :global(.bx-photo) {
+    margin: 8px 0 30px;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 16 / 6;
+    background: #2f372f;
+  }
+  .brief-body :global(.bx-photo img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.55) contrast(0.96);
+    opacity: 0.92;
+  }
+  .brief-body :global(.bx-k) {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .brief-body :global(.bx-ico) {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(168, 224, 16, 0.14);
+    color: var(--ok-light);
+  }
+  .brief-body :global(.bx-ico svg) {
+    width: 22px;
+    height: 22px;
+  }
+  .brief-body :global(.bx-verdict) {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    margin: 0 0 34px;
+    padding: 22px 24px;
+    border-radius: 12px;
+    background: #2f372f;
+    color: #ebefe6;
+  }
+  .brief-body :global(.bx-verdict .bx-ico) {
+    background: rgba(168, 224, 16, 0.16);
+    color: var(--ok);
+  }
+  .brief-body :global(.bx-verdict .bx-k) {
+    color: #9ba296;
+  }
+  .brief-body :global(.bx-verdict-h) {
+    margin: 4px 0 6px;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #f3f6ec;
+  }
+  .brief-body :global(.bx-verdict p) {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.85;
+    color: #c8cec2;
+  }
+  .brief-body :global(.bx-meter) {
+    display: flex;
+    gap: 4px;
+    margin: 10px 0 12px;
+  }
+  .brief-body :global(.bx-meter i) {
+    width: 34px;
+    height: 6px;
+    border-radius: 3px;
+    background: #4a544b;
+  }
+  .brief-body :global(.bx-meter i.on) {
+    background: var(--ok);
+  }
+  .brief-body :global(.bx-meter span) {
+    margin-left: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: #9ba296;
+    line-height: 6px;
+  }
+  .brief-body :global(.bx-owners) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 6px 0 12px;
+  }
+  .brief-body :global(.bx-owner) {
+    padding: 14px 14px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+  }
+  .brief-body :global(.bx-owner b) {
+    display: block;
+    font-size: 14px;
+    color: var(--tx);
+  }
+  .brief-body :global(.bx-owner span) {
+    display: block;
+    margin-top: 4px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .brief-body :global(.bx-gap) {
+    margin: 0 0 26px;
+    padding: 10px 14px;
+    border: 1px dashed #c25438;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #9a3f28;
+    background: rgba(194, 84, 56, 0.05);
+    text-align: center;
+  }
+  .brief-body :global(.bx-controls) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 6px 0 30px;
+  }
+  .brief-body :global(.bx-ctl) {
+    padding: 16px 16px 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+  }
+  .brief-body :global(.bx-ctl-top) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .brief-body :global(.bx-ctl b) {
+    font-size: 14.5px;
+    color: var(--tx);
+  }
+  .brief-body :global(.bx-ctl p) {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--tx-soft);
+  }
+  .brief-body :global(.bx-st) {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .brief-body :global(.bx-st::before) {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .brief-body :global(.bx-st.no) {
+    color: #a8452d;
+    background: rgba(194, 84, 56, 0.09);
+  }
+  .brief-body :global(.bx-st.part) {
+    color: #8a6a00;
+    background: rgba(214, 170, 30, 0.13);
+  }
+  .brief-body :global(.bx-st.na) {
+    color: var(--muted);
+    background: #eef0ea;
+  }
+  .brief-body :global(ol.bx-needs) {
+    counter-reset: none;
+    display: grid;
+    gap: 12px;
+    margin: 6px 0 30px;
+  }
+  .brief-body :global(ol.bx-needs li) {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin: 0;
+    padding: 18px 18px 16px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ok);
+    border-radius: 10px;
+    background: var(--card);
+  }
+  .brief-body :global(ol.bx-needs li::before) {
+    content: none;
+  }
+  .brief-body :global(ol.bx-needs b) {
+    display: block;
+    font-size: 15px;
+    color: var(--tx);
+    margin-bottom: 4px;
+  }
+  .brief-body :global(ol.bx-needs p) {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.85;
+    color: var(--tx-soft);
+  }
+  .brief-body :global(.bx-checklist) {
+    margin: 6px 0 26px;
+    border: 1px solid #cfd5c4;
+    border-radius: 12px;
+    background: #f6f8f1;
+    overflow: hidden;
+  }
+  .brief-body :global(.bx-checklist-h) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #dfe4d5;
+    background: #eef2e6;
+  }
+  .brief-body :global(.bx-checklist-h .bx-ico) {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+  .brief-body :global(.bx-checklist-h .bx-ico svg) {
+    width: 18px;
+    height: 18px;
+  }
+  .brief-body :global(.bx-checklist-h b) {
+    font-size: 14.5px;
+    color: var(--tx);
+  }
+  .brief-body :global(.bx-checklist ul) {
+    margin: 0;
+    padding: 14px 20px 16px;
+  }
+  .brief-body :global(.bx-checklist li) {
+    padding-left: 32px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.85;
+  }
+  .brief-body :global(.bx-checklist li::before) {
+    left: 2px;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border: 1.5px solid #8f9a83;
+    border-radius: 4px;
+  }
+  @media (max-width: 620px) {
+    .brief-body :global(.bx-owners),
+    .brief-body :global(.bx-controls) {
+      grid-template-columns: 1fr;
+    }
+    .brief-body :global(.bx-verdict) {
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+
   /* ─── LISTS ─── */
   .brief-body :global(ul),
   .brief-body :global(ol) {
