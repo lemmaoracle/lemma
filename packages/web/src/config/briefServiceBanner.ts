@@ -33,7 +33,7 @@ const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy
   "cyber-review": {
     ja: {
       eyebrow: "LEMMA CYBER · 点検",
-      head: "この点検を、組織の業務で一度やってみませんか。",
+      head: "この点検を、組織で一度やってみませんか。",
       body: "振込先や権限の変更など、後戻りできない操作の前に、誰が何を確かめているか。業務を棚卸しして、確かめる層が抜けている箇所を洗い出します。",
       button: "点検について相談する →",
       prLabel: "PR",
