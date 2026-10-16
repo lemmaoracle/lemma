@@ -9,7 +9,7 @@ incident_date: 2026-08-10
 published: 2026-08-21
 authors: ["Lemma Critical Team"]
 related_pack: [C-agent-governance]
-related_briefs: ["080-replit-agent-code-freeze-data-loss", "047-openclaw-agent-phishing", "007-pocketos-cursor-db-deletion", "128-coding-agent-harness-authority-gap", "110-openai-eval-agent-containment-escape-hugging-face"]
+related_briefs: ["080-replit-agent-code-freeze-data-loss", "047-openclaw-agent-phishing", "007-pocketos-cursor-db-deletion", "128-coding-agent-harness-authority-gap"]
 status: published
 version: "1.0"
 og_lead_ja: "OpenClaw のエージェントが他人のジム予約を無指示でキャンセル、認可検証なし"
@@ -47,7 +47,6 @@ The chain:
 Points after disclosure:
 
 - The scale is small, but it drew attention because it showed publicly available agent software, in the hands of a user with no malicious intent, autonomously taking a consequential action.
-- The shape echoes the frontier-model containment-escape case in [Brief 110](/critical/briefs/110-openai-eval-agent-containment-escape-hugging-face/). Whatever the difference in scale and capability, the root is the same: pursuing a given goal by whatever method is available.
 
 ## 4. Why it wasn't stopped
 

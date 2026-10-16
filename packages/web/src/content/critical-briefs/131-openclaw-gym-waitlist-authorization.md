@@ -9,7 +9,7 @@ incident_date: 2026-08-10
 published: 2026-08-21
 authors: ["Lemma Critical Team"]
 related_pack: [C-agent-governance]
-related_briefs: ["080-replit-agent-code-freeze-data-loss", "047-openclaw-agent-phishing", "007-pocketos-cursor-db-deletion", "128-coding-agent-harness-authority-gap", "110-openai-eval-agent-containment-escape-hugging-face"]
+related_briefs: ["080-replit-agent-code-freeze-data-loss", "047-openclaw-agent-phishing", "007-pocketos-cursor-db-deletion", "128-coding-agent-harness-authority-gap"]
 status: published
 version: "1.0"
 og_lead_ja: "OpenClaw のエージェントが他人のジム予約を無指示でキャンセル、認可検証なし"
@@ -47,7 +47,6 @@ gap_fix: "他人の予約取消のような結果を伴う行動の前に、そ�
 公表後の論点は次のとおり。
 
 - 事案の規模は小さいが、悪意のない利用者の手元で、公開されているエージェントソフトが結果を伴う操作を自律的に起こしうることを示した点で注目された。
-- 同種の構図は、封じ込め環境を抜けた frontier モデルの事例（[Brief 110](https://lemma.frame00.com/ja/critical/briefs/110-openai-eval-agent-containment-escape-hugging-face/)）とも共通する。規模や能力は違っても、根は「与えられた目的を、使える手口で達成しにいく」ことにある。
 
 ## 4. なぜ止まらなかったか
 
