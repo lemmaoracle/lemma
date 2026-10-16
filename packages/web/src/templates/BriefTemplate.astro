@@ -2015,6 +2015,12 @@ const labels = isJa
     color: #dfe6d6;
   }
   /* 英語は単位を語として離す（「≈ ¥9 million」「Several hotels」）。 */
+  /* 英語の見出しは日本語より語数が多く、66% 幅では 7 行に折れる。 */
+  .rx-cover.is-en h1 {
+    font-size: clamp(20px, 2vw, 24px);
+    line-height: 1.5;
+    max-width: 76%;
+  }
   .rx-cover.is-en .rx-fig .n small {
     margin-left: 0.3em;
   }
@@ -2760,7 +2766,8 @@ const labels = isJa
     .rx-cover-in {
       padding: 24px 20px 0;
     }
-    .rx-cover h1 {
+    .rx-cover h1,
+    .rx-cover.is-en h1 {
       font-size: 20px;
       max-width: none;
     }

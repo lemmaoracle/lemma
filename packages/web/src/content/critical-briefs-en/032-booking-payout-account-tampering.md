@@ -139,12 +139,12 @@ The same shape appears in [Revolut](/critical/briefs/149-revolut-italy-governmen
 The same hole exists in many organisations, not just hotels: finance changing a supplier's bank details, adding a payee in online banking, setting the receiving account on an e-commerce or payment service. In each, anyone who can log in can change it on the spot, and the result does not show until the next payment. And in many organisations, nobody owns this operation.
 
 <div class="rx-facts"><dl>
-<dt>Finance</dt><dd>Handles accounts and payments. Tends to see the change as "a systems issue".</dd>
-<dt>IT</dt><dd>Manages accounts. Tends to see the change as "a business issue".</dd>
+<dt>Finance</dt><dd>Handles accounts and payments. Tends to see the change as “a systems issue”.</dd>
+<dt>IT</dt><dd>Manages accounts. Tends to see the change as “a business issue”.</dd>
 <dt>Business units</dt><dd>Sign up for and use booking sites and payment services day to day.</dd>
 </dl></div>
 
-<strong>Between the three, no one has the job of asking "is this payout change really right?"</strong> Here, a single rewrite moved about ¥9 million.
+<strong>Between the three, no one has the job of asking “is this payout change really right?”</strong> Here, a single rewrite moved about ¥9 million.
 
 ### Do today's controls close it?
 
@@ -174,11 +174,11 @@ The same hole exists in many organisations, not just hotels: finance changing a 
 ## 6. Sources
 
 <ol class="rx-srcs">
-<li><span class="ty">Company disclosure</span><span class="bs"><b>Polaris Holdings</b> "Notice of unauthorised access (Booking.com account)" (Japanese)<span class="meta">2026-05-28 · the document has since been taken down from the company's site</span></span></li>
-<li><span class="ty">Press</span><span class="bs"><b>Security NEXT</b> "Payout account details at lodging booking service tampered, fraudulent transfer — Polaris HD" (Japanese)<span class="meta">2026-06-03 · <a href="https://www.security-next.com/185176">security-next.com/185176</a></span></span></li>
-<li><span class="ty">Press</span><span class="bs"><b>TRAICY</b> "Polaris HD suffers fraudulent transfer after unauthorised access to Booking.com; phishing messages to guests also confirmed" (Japanese)<span class="meta">2026-05-28 · <a href="https://www.traicy.com/posts/20260528371641/">traicy.com/posts/20260528371641</a></span></span></li>
-<li><span class="ty">Press</span><span class="bs"><b>ScanNetSecurity</b> "Unauthorised access to Booking.com, sales payout account tampered; about ¥9 million lost" (Japanese)<span class="meta">2026-06-02 · <a href="https://scan.netsecurity.ne.jp/article/2026/06/02/55403.html">scan.netsecurity.ne.jp/article/2026/06/02/55403</a></span></span></li>
-<li><span class="ty">Industry research</span><span class="bs"><b>Sekoia</b> "Phishing campaigns 'I Paid Twice' targeting Booking.com hotels and customers"<span class="meta">2025-11-06 · <a href="https://www.sekoia.com/blog/phishing-campaigns-i-paid-twice-targeting-booking-com-hotels-and-customers">sekoia.com/blog/…</a></span></span></li>
+<li><span class="ty">Company disclosure</span><span class="bs"><b>Polaris Holdings</b> “Notice of unauthorised access (Booking.com account)” (Japanese)<span class="meta">2026-05-28 · the document has since been taken down from the company's site</span></span></li>
+<li><span class="ty">Press</span><span class="bs"><b>Security NEXT</b> “Payout account details at lodging booking service tampered, fraudulent transfer — Polaris HD” (Japanese)<span class="meta">2026-06-03 · <a href="https://www.security-next.com/185176">security-next.com/185176</a></span></span></li>
+<li><span class="ty">Press</span><span class="bs"><b>TRAICY</b> “Polaris HD suffers fraudulent transfer after unauthorised access to Booking.com; phishing messages to guests also confirmed” (Japanese)<span class="meta">2026-05-28 · <a href="https://www.traicy.com/posts/20260528371641/">traicy.com/posts/20260528371641</a></span></span></li>
+<li><span class="ty">Press</span><span class="bs"><b>ScanNetSecurity</b> “Unauthorised access to Booking.com, sales payout account tampered; about ¥9 million lost” (Japanese)<span class="meta">2026-06-02 · <a href="https://scan.netsecurity.ne.jp/article/2026/06/02/55403.html">scan.netsecurity.ne.jp/article/2026/06/02/55403</a></span></span></li>
+<li><span class="ty">Industry research</span><span class="bs"><b>Sekoia</b> “Phishing campaigns ‘I Paid Twice’ targeting Booking.com hotels and customers”<span class="meta">2025-11-06 · <a href="https://www.sekoia.com/blog/phishing-campaigns-i-paid-twice-targeting-booking-com-hotels-and-customers">sekoia.com/blog/…</a></span></span></li>
 </ol>
 
 References: Why after-the-fact detection is not proof — ["The last layer left for cyber defense in the age of AI"](/blog/detection-is-not-proof/).
