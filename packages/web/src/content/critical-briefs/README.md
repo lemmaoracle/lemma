@@ -174,48 +174,110 @@ controls:
 業界・業務」は md 側で説明文つきの表として書く。EN ファイルの `key_figures` /
 `glossary` / `insight` は英語で書く。
 
-### 著者が書く部品
+### 普通の markdown から組み立てる部品
 
-HTML ブロックの中に**空行を入れない**（空行で markdown に戻る）。
+部品の多くは、決まった形の markdown を書けば rehype（`lib/rehype-brief-section-number.mjs`）
+が 032 と同じ HTML に組み替える。`layout: "report"` の Brief だけで働き、手書きの
+HTML ブロックはそのまま通る（二重には組み替わらない）。
+
+| 章 | 書くもの | なるもの |
+|---|---|---|
+| §1 | 段落を3つ（`summary_labels` と同じ数） | 要旨の表（`rx-exsum`）。最後の行が強調 |
+| §2 | `- **ラベル**: 本文` の箇条 | 事実の表（`rx-facts`） |
+| §3 | 小見出しより前の `- **日付**: 本文` の箇条 | 時系列の表（`rx-tl`）。日付で始まらないラベルは薄い字（`time.nd`） |
+| §3 | 引用 `> …` | 注（`rx-aside`） |
+| §5 | 冒頭の段落 | リード（`rx-lead`） |
+| §5 | 2列目が 効かない／一部／関係しない／効く の表 | 状態のチップ（`bx-st no/part/na/ok`） |
+| §5 | `### 必要になるもの` ＋番号つきリスト | 対策のパネル（`rx-box`・`ol.num`） |
+| §5 | `### 点検チェックリスト` ＋（段落）＋箇条 | 点検のパネル（`bx-checklist`）。直後の段落は説明文 |
+| §5 | `- **業界 · 名前**: 説明` の箇条 | 業界・業務の表（`rx-scope`）。` · ` の前が小見出し |
+| §5 | `- **ラベル**: 本文` の箇条 | 定義表（`rx-facts`。持ち主の表など） |
+| §3〜§5 | 「注：」で始まる段落 | 小さな注（`rx-aside`） |
+| §6 | `- **媒体（種別）**: 題（日付） — 付記` | 出典の表（`rx-srcs`） |
+
+```markdown
+## 1. TL;DR
+
+（何が起きたか）…。
+
+（なぜ見分けられないか）…。
+
+（欠けていた層）検出は効いていた。効かなかったのは、…する層である。
+
+## 2. 何が起きたか
+
+- **当事者**: …。
+- **被害**: …。
+
+## 3. 時系列 — 公表と対応
+
+- **2026-05-23**: …。
+- **調査で判明**: …。
+
+> 本件の事実は、…に拠る。
+
+### 公表後の対応
+
+- **ポラリス**: …。（ここは普通の箇条のまま）
+
+## 5. 対策するには
+
+**結論の一文。** 続きの本文…。
+
+### 注意したい業界・業務
+
+- **業界 · サービス・小売**: …。
+- **業務 · 振込先・口座の変更**: …。
+
+| 対策 | 今回 | 理由 |
+| --- | --- | --- |
+| 多要素認証（MFA） | 一部 | … |
+
+### 必要になるもの
+
+1. **変更した本人以外が確かめる。** …。
+
+### 点検チェックリスト
+
+振込先の変更について、組織で確かめる 3 項目
+
+- …か。
+
+注：…。
+
+## 6. Sources
+
+- **Security NEXT（報道）**: 「記事名」（2026-06-03） — <https://www.security-next.com/185176>
+- **当事者名（当事者・開示）**: 「資料名」（2026-05-28） — 同社サイトの資料は現在取り下げられている
+```
+
+- **§1 の行ラベル**は frontmatter `summary_labels: ["…", "…", "…"]` で変えられる。
+  省略時は「何が起きたか／なぜ見分けられないか／欠けていた層」。段落の数と
+  ラベルの数が違うと組み替えず、段落のまま出る。
+- **太字の後の空白**: 日本語で `**…。**本文` と続けると強調が閉じない（下の
+  「Markdown の落とし穴」）。`**…。** 本文` と空白を1つ挟んで書けば、全角の
+  句読点・括弧で終わる強調の直後の空白は描画で落ちる。
+- **出典**: 種別は太字の末尾の（）。題の末尾の（日付）は付記の頭に「日付 · 」で出る。
+  区切りは最後の ` — `。`<https://…>` の自動リンクは `https://`・`www.`・末尾の `/`・
+  `.html` を落として表示し、長い URL は `host/最初の段/…` に縮める。表示を決めたい
+  ときは `[表示](URL)` で書く。英語の題（引用符で始まる題）の前には空白が入る。
+- **引用符**: markdown の `"` `'` は描画で “ ” ’ になる（サイト全体の smartypants）。
+
+### まだ手で書く部品
+
+HTML ブロックの中に**空行を入れない**（空行で markdown に戻る）。図表番号も手で書く。
 
 ```html
-<!-- §1 要旨（3行。最後の行に class="key"） -->
-<div class="rx-exsum"><ol>
-<li><div class="lab">01<b>何が起きたか</b></div><p>…</p></li>
-<li class="key"><div class="lab">03<b>欠けていた層</b></div><p>…</p></li>
-</ol></div>
-
-<!-- 定義表（事実・持ち主など）。業界・業務の表は rx-scope ＋ kk の小見出し -->
-<div class="rx-facts"><dl><dt>当事者</dt><dd>…</dd></dl></div>
-<div class="rx-facts rx-scope"><dl><dt><span class="kk">業界</span>サービス・小売</dt><dd>…</dd></dl></div>
-
-<!-- 図表: 連鎖（rx-step に crit / good）と落差（rx-gap） -->
+<!-- 図表 1: 連鎖（rx-step に crit / good） -->
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">…</span></div>
 <p class="rx-ex-cap">…</p>
 <div class="rx-chain"><div class="rx-step crit"><div class="who">第三者</div><div class="no">2</div><b>…</b><p>…</p></div></div>
 </figure>
-
-<!-- §3 時系列（日付が無い行は time.nd） -->
-<ul class="rx-tl"><li><time>2026-05-23</time><span>…</span></li></ul>
-
-<!-- 注・資料の但し書き -->
-<p class="rx-aside">注：…</p>
-
-<!-- §5 必要になるもの／点検チェックリスト -->
-<section class="rx-box"><div class="rx-ex-h"><span class="rx-ex-no">対策</span><span class="rx-ex-t">必要になるもの</span></div>
-<ol class="num"><li><b>…。</b>…</li></ol>
-</section>
-<div class="bx-checklist"><div class="rx-ex-h"><span class="rx-ex-no">点検</span><span class="rx-ex-t">点検チェックリスト</span></div><p class="rx-box-cap">…</p><ul><li>…</li></ul></div>
-
-<!-- §6 出典 -->
-<ol class="rx-srcs"><li><span class="ty">報道</span><span class="bs"><b>媒体名</b>「記事名」<span class="meta">2026-06-03 · <a href="…">…</a></span></span></li></ol>
 ```
 
-対策の表は普通の markdown の表で書き、状態だけ
-`<span class="bx-st no">効かない</span>`（`part` 一部 / `na` 関係しない）でチップにする。
-§5 の冒頭段落は `<p class="rx-lead"><strong>結論。</strong>…</p>`。
-図表 2 の `rx-gap` の型は 032 を写す。
+図表 2 の落差（`rx-gap`）の型は 032 を写す。上の表の部品も、形に収まらないときは
+これまでどおり HTML で書いてよい（書いた HTML はそのまま通る）。
 
 ### 書かないもの
 

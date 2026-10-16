@@ -142,40 +142,47 @@ facets and are not rendered in the article**; vocabularies, labels and icons
 live in `config/briefFacets.ts`. Write the "Industries and operations to watch"
 table in markdown/HTML with descriptions.
 
-### Components an author writes
+### Components derived from plain markdown
 
-No blank lines inside an HTML block (a blank line drops back into markdown).
+Most components come from markdown in a fixed shape; rehype
+(`lib/rehype-brief-section-number.mjs`) turns it into the same HTML as 032. It
+runs only for `layout: "report"`; hand-written HTML blocks pass through untouched.
 
-```html
-<div class="rx-exsum"><ol>
-<li><div class="lab">01<b>What happened</b></div><p>…</p></li>
-<li class="key"><div class="lab">03<b>The missing layer</b></div><p>…</p></li>
-</ol></div>
+| Chapter | Write | Becomes |
+|---|---|---|
+| §1 | Three paragraphs (as many as `summary_labels`) | Executive summary (`rx-exsum`); last row emphasised |
+| §2 | `- **Label**: text` bullets | Facts table (`rx-facts`) |
+| §3 | `- **Date**: text` bullets before any subheading | Timeline (`rx-tl`); labels not starting with a year get `time.nd` |
+| §3 | Blockquote `> …` | Note (`rx-aside`) |
+| §5 | First paragraph | Lead (`rx-lead`) |
+| §5 | Table whose 2nd column is Ineffective / Partial / Not relevant / Effective | Status chips (`bx-st no/part/na/ok`) |
+| §5 | `### What is needed` (or `What it takes`) + ordered list | Controls panel (`rx-box`, `ol.num`) |
+| §5 | `### Checklist` + (paragraph) + bullets | Check panel (`bx-checklist`); the paragraph is the caption |
+| §5 | `- **Industry · Name**: text` bullets | Scope table (`rx-scope`); text before ` · ` is the kicker |
+| §5 | `- **Label**: text` bullets | Definition table (`rx-facts`) |
+| §3–§5 | Paragraph starting `Note:` | Small note (`rx-aside`) |
+| §6 | `- **Outlet (Type)**: Title (date) — remark` | Sources list (`rx-srcs`) |
 
-<div class="rx-facts"><dl><dt>Who</dt><dd>…</dd></dl></div>
-<div class="rx-facts rx-scope"><dl><dt><span class="kk">Industry</span>Services &amp; retail</dt><dd>…</dd></dl></div>
+```markdown
+## 6. Sources
 
-<figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">…</span></div>
-<p class="rx-ex-cap">…</p>
-<div class="rx-chain"><div class="rx-step crit"><div class="who">Third party</div><div class="no">2</div><b>…</b><p>…</p></div></div>
-</figure>
-
-<ul class="rx-tl"><li><time>2026-05-23</time><span>…</span></li></ul>
-<p class="rx-aside">Note: …</p>
-
-<section class="rx-box"><div class="rx-ex-h"><span class="rx-ex-no">Controls</span><span class="rx-ex-t">What is needed</span></div>
-<ol class="num"><li><b>….</b> …</li></ol>
-</section>
-<div class="bx-checklist"><div class="rx-ex-h"><span class="rx-ex-no">Check</span><span class="rx-ex-t">Checklist</span></div><p class="rx-box-cap">…</p><ul><li>…</li></ul></div>
-
-<ol class="rx-srcs"><li><span class="ty">Press</span><span class="bs"><b>Outlet</b> "Title"<span class="meta">2026-06-03 · <a href="…">…</a></span></span></li></ol>
+- **Security NEXT (Press)**: “Title” (Japanese) (2026-06-03) — <https://www.security-next.com/185176>
 ```
 
-The controls table is a plain markdown table; mark the status with
-`<span class="bx-st no">Ineffective</span>` (`part` Partial / `na` Not relevant).
-Open §5 with `<p class="rx-lead"><strong>Conclusion.</strong> …</p>`. Copy the
-`rx-gap` exhibit structure from 032.
+- `summary_labels: ["…", "…", "…"]` sets the §1 row labels (default "What
+  happened / Why it was hard to see / The missing layer"). If the paragraph
+  count differs, §1 stays as paragraphs.
+- Sources: the type is the trailing (…) of the bold label; the trailing (date) of
+  the title moves to the meta line; the split is the last ` — `. Autolinks
+  `<https://…>` are shown without scheme, `www.`, trailing `/` and `.html`, long
+  ones shortened to `host/first-segment/…`; write `[text](url)` to choose the text.
+- See the JA README for the full example.
+
+### Still hand-written
+
+The two exhibits (`rx-chain` in Exhibit 1, `rx-gap` in Exhibit 2; copy 032),
+including their numbers. No blank lines inside an HTML block. Any component above
+may still be written as HTML; it passes through unchanged.
 
 ### What not to write
 

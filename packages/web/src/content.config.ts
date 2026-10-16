@@ -181,6 +181,12 @@ const briefSchema = z
       )
       .max(3)
       .optional(),
+    /**
+     * report レイアウト §1 の要旨の表の行ラベル（§1 の段落と同じ数）。
+     * 省略時は JA「何が起きたか／なぜ見分けられないか／欠けていた層」、
+     * EN "What happened / Why it was hard to see / The missing layer"。
+     */
+    summary_labels: z.array(z.string().min(1)).optional(),
     /** report レイアウト §2 の「用語メモ」。事実の表の直後に小さく出る。 */
     glossary: z
       .array(z.object({ term: z.string().min(1), desc: z.string().min(1) }))
