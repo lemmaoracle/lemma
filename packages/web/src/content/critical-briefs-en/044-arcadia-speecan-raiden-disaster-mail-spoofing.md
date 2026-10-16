@@ -9,18 +9,56 @@ incident_date: 2026-10-11
 published: 2026-10-16
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
-related_briefs: ["091-photo-zip-authentication-laundering", "149-revolut-italy-government-mailbox-disclosure-requests"]
+related_briefs: ["032-booking-payout-account-tampering", "149-revolut-italy-government-mailbox-disclosure-requests", "091-photo-zip-authentication-laundering"]
 status: published
-version: "1.0"
+version: "2.0"
 og_lead_ja: "SpeeCAN RAIDEN 不正アクセス、防災メールと同じドメインから偽メール"
 og_lead_en: "SpeeCAN RAIDEN breach: fake mail sent from the disaster-alert domain"
+layout: "report"
+og_kicker_ja: "サイバー攻撃事例 · なりすましメール"
+og_kicker_en: "CYBERATTACK · EMAIL SPOOFING"
+og_headline_ja: "防災メールと同じ\n送信元ドメインで、\n偽メールが届いた。\n<accent>36 自治体が配信を停止</accent>"
+og_headline_en: "Fake mail came from the disaster alerts' own sender domain.\n<accent>36 municipalities halted alerts.</accent>"
+summary_labels: ["What happened", "Why it was hard to tell", "The missing layer"]
+key_figures:
+  - value: "≈ 3.136"
+    unit: "million"
+    label: "Email addresses possibly exposed (maximum estimate)"
+    tone: "alert"
+  - value: "36"
+    unit: "municipalities"
+    label: "Suspended the service (reported to MIC as of 21:00 on 13 October, per Kyodo)"
+  - value: "10-11 → 10-13"
+    label: "Two days from spotting the behaviour to the announcement"
+glossary:
+  - term: "Sender domain"
+    desc: "The part of an email address after the “@”. The fake mail used raiden.ktaiwork.jp, the same as the disaster alerts."
+  - term: "Email authentication"
+    desc: "SPF, DKIM, DMARC and the like. They check that a message came through the domain's legitimate sending route, not who wrote it."
+insight:
+  slug: "sender-display-as-origin"
+  label: "Notices taken as genuine by their sender display"
+  quote: "A disaster alert's claim to be genuine rested on one display: the sender domain."
+industries: ["public-sector", "finance"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Attach proof that the municipality issued the notice"
+  - slug: "hold-unverified"
+    item: "Do not act on notices that cannot be verified"
+  - slug: "audit-trail"
+    item: "Check delivery instructions against what was authorised, and keep a record"
 ---
+
+> **Revision (v2.0 / 2026-10-17)**: Restructured into the report layout, and §5 recast as "How to counter this". The facts are unchanged from v1.0.
 
 ## 1. TL;DR
 
-SpeeCAN RAIDEN, the platform many Japanese municipalities use to send disaster-alert email and phone or fax notices, was accessed by a third party on 11 October 2026. Its operator, Arcadia, said up to about 3.136 million email addresses and other data may have leaked. Around the time of the announcement, registrants began receiving mail posing as a credit-card company, with a sender address on `@raiden.ktaiwork.jp`, the same domain the disaster alerts use. Its link to the breach has not been established. Shizuoka City warned that blocking that sender would also block genuine disaster alerts.
+SpeeCAN RAIDEN, the platform many Japanese municipalities use to send disaster-alert email and phone or fax notices, suffered unauthorised access by a third party on 11 October 2026. Its operator, Arcadia, said up to about 3.136 million email addresses and other data may have leaked. Around the time of the announcement, mail posing as a credit-card company reached registrants, with a sender address on `@raiden.ktaiwork.jp`, the same domain the disaster alerts use. Its link to the breach has not been established.
 
-Detection worked: Arcadia spotted the behaviour and closed the entry route with an emergency measure within hours. <strong>What did not work was a layer that lets a recipient check, apart from the sender display, that a notice came from the municipality.</strong>
+Recipients had only the sender name and address to go on, and the address was on the same domain as the genuine alerts. Shizuoka City warned that blocking that sender would also block genuine disaster alerts.
+
+Detection worked: Arcadia spotted the behaviour and closed the entry route with an emergency measure early the next morning. What did not work was a layer that lets a recipient check, apart from the sender display, that a notice came from the municipality.
 
 ## 2. What happened
 
@@ -31,26 +69,30 @@ Detection worked: Arcadia spotted the behaviour and closed the entry route with 
 - **Fake mail**: according to Shizuoka City, the subject was "<Important> Please confirm your usage", the sender name was a real credit-card company and the sender address was "…@raiden.ktaiwork.jp". The city says that domain is part of the genuine address its disaster mail uses, and that the message misused it to impersonate; it describes the mail as possibly related to the incident. Matsumoto and Yokosuka received similar reports from registrants, though Matsumoto says any link to the breach is unknown for now.
 - **Method of intrusion**: not disclosed. Arcadia says it identified and closed the entry route and blocked the source IP.
 
-As far as the published record goes, the sequence runs as follows.
-
-1. Municipalities held registrants' contact details on a contractor's notification platform.
-2. A third party accessed that platform, and the contact details may have left it.
-3. Around the time of the announcement, mail with the disaster-alert domain in its sender address reached registrants' inboxes (its link to the breach is not established).
-4. Recipients had only the sender name and address to go on, and the address was on the same domain as the genuine alerts.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain of events, as far as disclosed</span></div>
+<p class="rx-ex-cap">What was missing was at ④: a way to check that a notice came from the municipality. How ③ was sent (through the platform itself, or from outside with a forged sender) has not been disclosed.</p>
+<div class="rx-chain">
+<div class="rx-step"><div class="who">Municipalities</div><div class="no">1</div><b>Hold registrants' contact details on a contractor's platform</b><p>Used for disaster-alert email, phone and fax.</p></div>
+<div class="rx-step"><div class="who">Third party</div><div class="no">2</div><b>Accesses the platform without authorisation</b><p>The contact details may have left it.</p></div>
+<div class="rx-step"><div class="who">Sender unknown</div><div class="no">3</div><b>Fake mail with the same domain in its sender address arrives</b><p>Arrived around the time of the announcement. Its link to the breach is not established.</p></div>
+<div class="rx-step crit"><div class="who">Registrants</div><div class="no">4</div><b>Can only judge by appearance</b><p>The sender address is on the same domain as the genuine alerts.</p></div>
+</div>
+</figure>
 
 ## 3. Timeline — disclosure and response
 
-- **11 October (Sun), 16:30**: Arcadia noticed behaviour suggesting unauthorized access.
-- **12 October (Mon, holiday), about 03:00**: it closed the entry route as an emergency measure and began investigating the scope.
-- **13 October (Tue), about 10:30**: Arcadia announced the access and possible leakage (per Saitama City). Part of SpeeCAN RAIDEN was suspended from 11:00.
-- **13 October, 12:50**: a resident told Saitama City they had received suspicious mail with the system's name in the sender address. The city checked with Arcadia at 12:52 and learned of the access. Yokosuka City also learned of it after registrants asked about suspicious mail.
-- **13 October, evening**: Arcadia's second report said the entry route had been identified and the source IP blocked.
-- **14 October**: Arcadia gave municipalities template wording to warn registrants. At 15:00 it announced traces on NET119 and 119RAIDEN. Shizuoka City published an example of the spoofed mail, and its mayor held an emergency press conference.
-- **15 October**: Arcadia said it had reported to the Personal Information Protection Commission and consulted police and regional government offices. The suspended servers came back around 15:00, and users were asked to change login passwords. The scope of the leak is still under investigation.
+- **2026-10-11**: At 16:30, Arcadia noticed behaviour suggesting unauthorized access.
+- **2026-10-12**: At about 03:00, it closed the entry route as an emergency measure and began investigating the scope.
+- **2026-10-13**: At about 10:30, Arcadia announced the access and possible leakage (per Saitama City). Part of SpeeCAN RAIDEN was suspended from 11:00.
+- **2026-10-13**: At 12:50, a resident told Saitama City they had received suspicious mail with the system's name in the sender address. The city checked with Arcadia at 12:52 and learned of the access. Yokosuka City also learned of it after registrants asked about suspicious mail.
+- **2026-10-13**: In the evening, Arcadia's second report said the entry route had been identified and the source IP blocked.
+- **2026-10-14**: Arcadia gave municipalities template wording to warn registrants. At 15:00 it announced traces on NET119 and 119RAIDEN. Shizuoka City published an example of the spoofed mail, and its mayor held an emergency press conference.
+- **2026-10-15**: Arcadia said it had reported to the Personal Information Protection Commission and consulted police and regional government offices. The suspended servers came back around 15:00, and users were asked to change login passwords. The scope of the leak is still under investigation.
 
-> Facts here rest on Arcadia's reports 1–9 and on notices from Saitama, Shizuoka, Yokosuka, Okayama and Matsumoto cities and Mori town. The method of intrusion and the data actually taken had not been disclosed at the time of writing. Counts are maximum estimates. How the fake mail was sent, whether through the platform itself or from outside with a forged sender, has not been disclosed either.
+> Facts here rest on Arcadia's reports 1–9 and on notices from Saitama, Shizuoka, Yokosuka, Okayama and Matsumoto cities and Mori town. The method of intrusion and the data actually taken had not been disclosed at the time of writing. Counts are maximum estimates. How the fake mail was sent, whether through the platform itself or from outside with a forged sender, has not been disclosed either. All primary sources are self-disclosures by the operator and the municipalities that use it; no independent investigation had been published. Arcadia's notices do not give the total number of affected municipalities (Kyodo reports Arcadia as saying about 800 municipalities use the service).
 
-Response after disclosure:
+### After disclosure
 
 - **Suspended delivery**: according to Kyodo News, the Ministry of Internal Affairs and Communications said 36 municipalities had suspended the service as of 21:00 on 13 October. Yokosuka stopped four services and moved alerts to its social accounts and outdoor loudspeakers. Okayama said that while the service was down it could not send weather or evacuation notices to subscribers, or group messages to staff.
 - **Warnings to registrants**: municipalities told registrants not to open links or attachments in suspicious mail. Shizuoka said the only thing it sends from `@raiden.ktaiwork.jp` is disaster information, and warned that blocking the suspicious sender or marking it as spam would also stop the city's disaster alerts.
@@ -69,31 +111,52 @@ Disaster alerts assume the recipient will act quickly. Evacuation notices, staff
 
 The same structure appears in earlier Briefs. In [Photo ZIP](/critical/briefs/091-photo-zip-authentication-laundering/), mail routed through a legitimate delivery platform passed SPF, DKIM and DMARC; email authentication checks the route, not the author. In [Revolut](/critical/briefs/149-revolut-italy-government-mailbox-disclosure-requests/), disclosure requests arriving over a state-certified mail network were honoured because the route was genuine. In both, a genuine route stood in for a genuine author. The route of this round of fake mail has not been disclosed, but recipients were likewise left to take the sender display as genuine.
 
-## 5. What proof would have changed
+## 5. How to counter this
 
-There is no need to stop entrusting delivery to a single platform. The step proof would add is not another sender display. It is a check, independent of the delivery route, that lets the recipient confirm a notice came from this municipality.
+**With the right mechanism on both the sending and receiving side, this attack could be told apart.** If each notice carried proof that the municipality issued it, and recipients could check that proof, a fake would show up as fake even with a genuine-looking sender. That mechanism is needed both at the municipality that contracts out delivery and in the recipient's hands. What can be added today is a single place to check genuine notices, announced to registrants in advance. When fakes circulate, people can be pointed there instead of being told to block the sender.
 
-The design Lemma offers against this gap is as follows.
+### Industries and operations to watch
 
-- **Bind the issuer to the notice itself**: the municipality attaches proof of issuer to each notice, made with its own key. The key is held by the municipality and never by the platform, so access to the platform's domain or addresses is not enough to produce it. The proof also covers the issue time and the recipient, so a genuine notice lifted from delivery history cannot be resent later and pass.
-- **Let recipients check before acting**: an official municipal app or verification page checks the proof on a notice. A notice that fails is shown as not from the municipality, even if its sender display matches the genuine one. For recipients who check, avoiding fakes no longer means blocking the whole domain, real alerts included.
-- **Check delivery instructions against the municipality's authorisation**: in case fake mail goes out through the platform itself, check before delivery that an instruction reaching the platform lies within what the municipality allowed (target registrants, type, volume), and do not send anything outside it. The check must be verifiable outside the platform, so that a compromised platform cannot skip it.
+- **Industry · Government & public sector**: Municipalities that send disaster information, evacuation calls and staff mobilisation through a contracted mass-notification service. Recipients are expected to act at once.
+- **Industry · Finance & FinTech**: Businesses that send transaction notices or identity checks by email or SMS through an outside delivery service. A fake notice from the same domain cannot be told apart by appearance.
+- **Operation · Sending & delivery**: Contracting out mass delivery to registrants or customers. The platform's domain and addresses become the whole basis of looking genuine.
 
-This differs from after-the-fact detection. Detection works from odd behaviour or residents' reports; by then the fake mail is already in inboxes. Proof asks about the issuer of each message as it arrives. The detection layer and this layer are complementary, not substitutes.
+The same hole exists well beyond disaster alerts, in many organisations that send notices in their own name through an outside service. If the domain and address look genuine, recipients cannot tell the difference.
+
+### Do today's controls close it?
+
+| Control | Here | Why |
+| --- | --- | --- |
+| Email authentication (SPF, DKIM, DMARC) | Partial | For fake mail sent from outside with a forged sender, the receiving side may quarantine or reject it, depending on the domain's policy. Mail sent through the platform itself passes as a legitimate route. How this mail was sent has not been disclosed. |
+| Blocking the sender / spam filtering | Ineffective | Stops the genuine disaster alerts along with the fakes, as Shizuoka City warned. |
+| Telling people not to open links or attachments in suspicious mail | Partial | May help when, as here, the content plainly isn't a disaster alert (this round posed as a card company). A fake evacuation notice from the municipality cannot be told apart by appearance. |
+| Suspending the delivery service | Partial | Stops anything going out through the platform, but also stops genuine alerts. Does nothing against fake mail sent from outside with a forged sender. |
+
+### What is needed
+
+1. **Attach proof that the municipality issued the notice.** The municipality attaches proof of issuer to each notice, made with its own key. The key is never given to the platform, so access to the platform's domain or addresses is not enough to produce it. The proof also covers the issue time and the recipient, so a genuine notice resent later does not pass.
+2. **Give recipients a place to check before they act.** An official app or verification page checks the proof on a notice. A notice that fails is shown as not from the municipality, even if its sender display matches. Avoiding fakes no longer means blocking the sender.
+3. **Require the contractor to check delivery instructions against what was authorised, and to record what was checked.** Before sending, confirm that an instruction reaching the platform lies within the authorised registrants, type and volume, and send nothing outside it. Keep the result in a form that can be checked outside the platform, so a compromised platform cannot rewrite it.
+
+### Checklist
+
+Three things to check for an organisation that sends notices in its own name through an outside service
+
+- Which outside services send notices in your name, and on which domains? If one of them is compromised, how would a recipient tell real from fake?
+- Who can instruct the delivery service, and for what scope? Can a mass delivery outside that scope be stopped before it goes out?
+- When fake notices circulate, can you point registrants to a way of checking the genuine ones, instead of telling them to block the sender?
 
 Note: the proof shows only that a notice came from a registered issuer; it does not prevent intrusion or the loss of contact details. And a recipient with no way to check it will still judge notices by appearance, as now.
 
 ## 6. Sources
 
-- **Arcadia (primary, operator)**: "Response to unauthorized access to SpeeCAN RAIDEN" (reports 1–9, 13–15 October 2026; Japanese) — <https://raiden.site.ktaiwork.jp/archives/4597>
+- **Arcadia (primary, operator)**: “Response to unauthorized access to SpeeCAN RAIDEN” (Japanese) (2026-10-13–15, reports 1–9) — <https://raiden.site.ktaiwork.jp/archives/4597>
 - **Shizuoka City (primary, municipal notice)**: notice on the leak and the suspicious mail confirmed (Japanese) — <https://www.city.shizuoka.lg.jp/s4268/s000286.html>
-- **Saitama City (primary, municipal notice)**: possible personal-data leak from unauthorized access to the disaster-information delivery system, first report (13 October 2026; Japanese) — <https://www.city.saitama.lg.jp/006/014/008/003/015/007/p134471.html>
-- **Yokosuka City (primary, municipal notice)**: possible leak from the disaster and crime-prevention mail services (13 October 2026; Japanese) — <https://www.city.yokosuka.kanagawa.jp/0525/nagekomi/20261013_roueinoosore.html>
-- **Okayama City (primary, municipal notice)**: possible leak at the operator of the disaster mass-notification service (13 October 2026; Japanese) — <https://www.city.okayama.jp/kurashi/cmsfiles/contents/0000086/86126/kouhourennraku.pdf>
-- **Matsumoto City (primary, municipal notice)**: warning on unauthorized access to the Matsumoto Anshin Net mail system (14 October 2026; Japanese) — <https://www.city.matsumoto.nagano.jp/soshiki/7/216138.html>
-- **Mori Town Fire Department (primary, municipal notice)**: possible leak from the NET119 emergency-call service (15 October 2026; Japanese) — <https://www.town.hokkaido-mori.lg.jp/soshiki/morimachishobohonbu/4690.html>
-- **Kyodo News (report)**: "36 municipalities suspend service after unauthorized access to disaster-information provider" (14 October 2026; Japanese) — <https://news.yahoo.co.jp/articles/effc2b930a84b5d738c637fda00800fac42d7d38>
+- **Saitama City (primary, municipal notice)**: possible personal-data leak from unauthorized access to the disaster-information delivery system, first report (Japanese) (2026-10-13) — <https://www.city.saitama.lg.jp/006/014/008/003/015/007/p134471.html>
+- **Yokosuka City (primary, municipal notice)**: possible leak from the disaster and crime-prevention mail services (Japanese) (2026-10-13) — <https://www.city.yokosuka.kanagawa.jp/0525/nagekomi/20261013_roueinoosore.html>
+- **Okayama City (primary, municipal notice)**: possible leak at the operator of the disaster mass-notification service (Japanese) (2026-10-13) — <https://www.city.okayama.jp/kurashi/cmsfiles/contents/0000086/86126/kouhourennraku.pdf>
+- **Matsumoto City (primary, municipal notice)**: warning on unauthorized access to the Matsumoto Anshin Net mail system (Japanese) (2026-10-14) — <https://www.city.matsumoto.nagano.jp/soshiki/7/216138.html>
+- **Mori Town Fire Department (primary, municipal notice)**: possible leak from the NET119 emergency-call service (Japanese) (2026-10-15) — <https://www.town.hokkaido-mori.lg.jp/soshiki/morimachishobohonbu/4690.html>
+- **Kyodo News (report)**: “36 municipalities suspend service after unauthorized access to disaster-information provider” (Japanese) (2026-10-14) — <https://news.yahoo.co.jp/articles/effc2b930a84b5d738c637fda00800fac42d7d38>
 
-References: On why after-the-fact detection is not proof, see ["The last layer left in AI-era cyber defense"](/blog/detection-is-not-proof/). On proving where a message came from, see [Pillar 01 — Verifiable Origin](/pillars/#provenance).
-
-All primary sources are self-disclosures by the operator and the municipalities that use it; no independent investigation had been published at the time of writing. Arcadia's notices do not give the total number of affected municipalities (Kyodo reports Arcadia as saying about 800 municipalities use the service).
+References: Why after-the-fact detection is not proof — ["The last layer left for cyber defense in the age of AI"](/blog/detection-is-not-proof/).

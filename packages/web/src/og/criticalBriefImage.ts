@@ -165,6 +165,12 @@ const reportHeadlineSize = (text: string, ja: boolean): number => {
   return n > 80 ? 60 : 70;
 };
 
+/** 強調の1行は折り返させない。長ければ見出しより一段小さくする。 */
+const accentSize = (accent: string, size: number, ja: boolean): number => {
+  const n = Array.from(accent).length;
+  return n > (ja ? 13 : 26) ? Math.round(size * 0.8) : size;
+};
+
 /** 上段の札（Space Mono 700）。和文は Noto Sans JP Bold に落とす。 */
 const spaceMonoBold = readFileSync(
   resolve(process.cwd(), "node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff"),
@@ -248,7 +254,9 @@ async function renderReportOg(brief: BriefEntry, locale: Locale): Promise<Buffer
             },
             children: [
               ...lines.map((l) => line(l, "#F6F8F1")),
-              ...(accent ? [line(accent, LIME, { marginTop: 20 })] : []),
+              ...(accent
+                ? [line(accent, LIME, { marginTop: 20, fontSize: accentSize(accent, size, ja) })]
+                : []),
             ],
           },
         },
