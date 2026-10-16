@@ -70,7 +70,7 @@ const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy
         fieldValue: "Acct ●●●● 7713",
         sender: "From: Finance ✓ signed in",
         stamp: "BLOCK",
-        stampSub: "Stopped before execution",
+        stampSub: "Not executed",
         cardRows: ["Issuer  —", "Authority  —"],
       },
     },

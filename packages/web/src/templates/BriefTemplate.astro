@@ -1555,11 +1555,11 @@ const labels = isJa
     pointer-events: none;
     background: radial-gradient(90% 90% at 88% -10%, rgba(168, 224, 16, 0.22), rgba(168, 224, 16, 0) 60%);
   }
-  .bd-svc > * {
+  .bd-svc > :not(.bd-svc-pr) {
     position: relative;
     z-index: 1;
   }
-  .bd-svc-pr {
+  .bd-svc > .bd-svc-pr {
     position: absolute;
     top: 10px;
     right: 12px;
