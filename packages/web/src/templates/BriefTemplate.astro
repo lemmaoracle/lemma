@@ -452,16 +452,8 @@ const labels = isJa
                   <div class="rx-figs">
                     {keyFigures.map((f) => (
                       <div class:list={["rx-fig", f.tone === "alert" && "alert"]}>
-                        <div class="n">
-                          {f.from}
-                          {f.to !== undefined && (
-                            <>
-                              <span class="arw">→</span>
-                              {f.to}
-                            </>
-                          )}
-                          {f.unit && <small>{f.unit}</small>}
-                        </div>
+                        {/* 数値・矢印・単位の間に空白を入れない（JSX の改行が空白になる）。 */}
+                        <div class="n">{f.from}{f.to !== undefined && <><span class="arw">→</span>{f.to}</>}{f.unit && <small>{f.unit}</small>}</div>
                         <div class="l">{f.label}</div>
                       </div>
                     ))}
@@ -1926,6 +1918,10 @@ const labels = isJa
   }
 
   /* ─── 表紙 ─── */
+  .rx-cover,
+  .rx-meta {
+    font-feature-settings: "palt" 1;
+  }
   .rx-cover {
     position: relative;
     margin-top: 18px;
@@ -2140,11 +2136,11 @@ const labels = isJa
   .brief-body.is-report :global(h2 + h3) {
     margin-top: 24px;
   }
-  .brief-body.is-report :global(ul:not([class]) > li) {
+  .brief-body.is-report :global(> ul:not([class]) > li) {
     padding-left: 22px;
     margin-bottom: 10px;
   }
-  .brief-body.is-report :global(ul:not([class]) > li::before) {
+  .brief-body.is-report :global(> ul:not([class]) > li::before) {
     left: 2px;
     top: 14px;
   }
