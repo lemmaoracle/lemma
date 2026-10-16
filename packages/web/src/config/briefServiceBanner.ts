@@ -44,7 +44,7 @@ const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy
   "cyber-early-access": {
     ja: {
       eyebrow: "LEMMA CYBER · 早期アクセス",
-      head: "後戻りできない操作を、確定の前に確かめる。",
+      head: "後戻りできない操作を、\n確定の前に確かめる。",
       body: "振込先や権限の変更など、後戻りできない操作の前に、その依頼が本物で、許された範囲のものかを確かめる仕組みを準備しています。早期アクセスの登録を受け付けています。",
       button: "早期アクセスに登録する →",
       prLabel: "PR",
@@ -60,7 +60,7 @@ const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy
     },
     en: {
       eyebrow: "LEMMA CYBER · EARLY ACCESS",
-      head: "Check irreversible actions before they go through.",
+      head: "Check irreversible actions\nbefore they go through.",
       body: "We are building a way to confirm, before a payout or permission change takes effect, that the request is genuine and within what was allowed. Early access is open.",
       button: "Join early access →",
       prLabel: "PR",
