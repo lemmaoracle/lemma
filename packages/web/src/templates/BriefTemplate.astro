@@ -40,6 +40,7 @@ import { getEnBriefMap } from "../data/getEnBriefMap";
 import { threatBannerCopy } from "../config/briefThreatBanner";
 import { briefsCategoryHref } from "../data/briefIndex";
 import { BRIEF_RAIL_CTA_URL, DISCOVERY_CALL_URL } from "../config/cta";
+import { serviceBannerFor } from "../config/briefServiceBanner";
 import { localePath } from "../lib/urls";
 import { briefCoverArt } from "../lib/briefCoverArt";
 import {
@@ -65,6 +66,7 @@ type AnyBrief =
   | CollectionEntry<"critical-briefs-en">;
 
 const briefNoPad = String(brief.data.brief_no).padStart(3, "0");
+const serviceBanner = serviceBannerFor(brief.id, briefNoPad, locale);
 const localizedTitle = isJa ? brief.data.title : brief.data.title_en;
 
 const titleParts = localizedTitle.split(" — ");
@@ -533,6 +535,26 @@ const labels = isJa
           </p>
         )}
 
+        {/* 対応サービスのバナー（広告枠・許可リストの Brief だけ）。本文の外、
+            引用パネルの前。絵は抽象の地だけ。config/briefServiceBanner.ts */}
+        {serviceBanner && (
+          <a
+            class="bd-svc"
+            href={serviceBanner.href}
+            target="_blank"
+            rel="noopener"
+            data-svc-banner={serviceBanner.key}
+            data-brief-cta-ev="brief_service_banner_click"
+            data-cta={`service_banner_${serviceBanner.key}`}
+          >
+            <span class="bd-svc-pr">{serviceBanner.prLabel}</span>
+            <span class="bd-svc-k">{serviceBanner.eyebrow}</span>
+            <span class="bd-svc-h">{serviceBanner.head}</span>
+            <span class="bd-svc-b">{serviceBanner.body}</span>
+            <span class="bd-svc-btn">{serviceBanner.button}</span>
+          </a>
+        )}
+
         {/* 引用パネル — Plain text / BibTeX / APA のタブ＋モノスペース本文。 */}
         <CiteBriefBox
           locale={locale}
@@ -704,6 +726,33 @@ const labels = isJa
     window.addEventListener("resize", onScroll, { passive: true });
     document.addEventListener("astro:after-swap", compute);
     compute();
+  })();
+</script>
+
+<!-- 対応サービスのバナー: 50% 見えたら1回だけ表示イベントを送る。 -->
+<script is:inline>
+  (function () {
+    function watch() {
+      var el = document.querySelector("[data-svc-banner]");
+      if (!el || !("IntersectionObserver" in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          if (typeof window.gtag !== "function") return;
+          window.gtag("event", "brief_service_banner_view", {
+            surface: "brief_detail",
+            cta_label: "service_banner_" + el.getAttribute("data-svc-banner"),
+          });
+        });
+      }, { threshold: 0.5 });
+      io.observe(el);
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", watch);
+    } else {
+      watch();
+    }
   })();
 </script>
 
@@ -1517,6 +1566,120 @@ const labels = isJa
   }
 
   /* ─── 末尾CTA（スレート・証明の訴求） ─── */
+  /* 対応サービスのバナー（広告枠）。地はスレート＋ドット格子＋右上の
+     ライムの光と、右下へ流れる細い線（抽象）。事案の絵は描かない。
+     本文の部品と見分けるため、横長の1枚・ボタン・隅の PR で組む。 */
+  .bd-svc {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "k btn" "h btn" "b btn";
+    align-items: center;
+    gap: 6px 32px;
+    overflow: hidden;
+    margin: 40px 0 0;
+    padding: 30px 34px 30px;
+    border-radius: 14px;
+    text-decoration: none;
+    color: #ebefe6;
+    background:
+      radial-gradient(80% 140% at 100% 0%, rgba(168, 224, 16, 0.24), rgba(168, 224, 16, 0) 58%),
+      linear-gradient(168deg, #3c443d 0%, #2f372f 58%, #272e28 100%);
+  }
+  .bd-svc::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(235, 239, 230, 0.08) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
+  .bd-svc::after {
+    content: "";
+    position: absolute;
+    right: -40px;
+    bottom: -60px;
+    width: 340px;
+    height: 220px;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      -28deg,
+      rgba(168, 224, 16, 0) 0 14px,
+      rgba(168, 224, 16, 0.16) 14px 15px
+    );
+    mask-image: radial-gradient(closest-side, #000, transparent);
+    -webkit-mask-image: radial-gradient(closest-side, #000, transparent);
+  }
+  .bd-svc > :not(.bd-svc-pr) {
+    position: relative;
+    z-index: 1;
+  }
+  .bd-svc > .bd-svc-pr {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    z-index: 2;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    color: #9ba296;
+    border: 1px solid #59645a;
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+  .bd-svc-k {
+    grid-area: k;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    color: var(--ok);
+  }
+  .bd-svc-h {
+    grid-area: h;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(19px, 2.3vw, 24px);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    color: #f3f6ec;
+  }
+  .bd-svc-b {
+    grid-area: b;
+    font-size: 13px;
+    line-height: 1.85;
+    color: #bcc3b6;
+    max-width: 46ch;
+  }
+  .bd-svc-btn {
+    grid-area: btn;
+    align-self: center;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 12px 20px;
+    border-radius: 6px;
+    background: var(--ok);
+    color: #0f1412;
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(168, 224, 16, 0.3);
+    transition: filter 0.18s;
+  }
+  .bd-svc:hover .bd-svc-btn {
+    filter: brightness(1.06);
+  }
+  @media (max-width: 720px) {
+    .bd-svc {
+      grid-template-columns: 1fr;
+      grid-template-areas: "k" "h" "b" "btn";
+      padding: 26px 20px 24px;
+    }
+    .bd-svc-btn {
+      justify-self: start;
+      margin-top: 10px;
+      white-space: normal;
+    }
+  }
   .bd-cta {
     position: relative;
     overflow: hidden;
