@@ -28,6 +28,15 @@ const MD_BOLD = /\*\*([^*]+)\*\*/g;
 const MD_ITALIC = /\*([^*]+)\*/g;
 const MD_CODE = /`([^`]+)`/g;
 const WHITESPACE = /\s+/g;
+/**
+ * report レイアウト（2026-10）の TL;DR は HTML ブロック（要旨の表）で書く。
+ * 行頭の小見出し（`<div class="lab">01<b>何が起きたか</b></div>`）は要約の
+ * 文ではないので落とし、残りのタグを剥がして本文の段落だけを残す。
+ */
+const HTML_LABEL = /<div class="lab">[\s\S]*?<\/div>/g;
+const HTML_BLOCK_END = /<\/(?:p|li|div|dd|dt|ol|ul)>/g;
+// 既知のタグ名だけ剥がす（091 の本文にある `<random>` のような地の文を消さない）。
+const HTML_TAG = /<\/?(?:div|ol|ul|li|p|b|strong|em|span|br|a|dl|dt|dd)(?:\s[^>]*)?\/?>/g;
 
 export function extractTldr(
   body: string | undefined,
@@ -38,6 +47,9 @@ export function extractTldr(
   if (!match) return "";
   const stripped = match[1]
     .trim()
+    .replace(HTML_LABEL, " ")
+    .replace(HTML_BLOCK_END, " ")
+    .replace(HTML_TAG, "")
     .replace(MD_LINK, "$1")
     .replace(MD_BOLD, "$1")
     .replace(MD_ITALIC, "$1")

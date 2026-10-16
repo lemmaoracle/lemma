@@ -78,7 +78,7 @@ Pillar とカテゴリの不整合はビルドが拒否する。カテゴリは 
 | §2 | `## 2. 何が起きたか` | `## 2. What happened` | 概要 bullet＋攻撃の連鎖（番号付き） |
 | §3 | `## 3. 時系列 — 公表と対応` | `## 3. Timeline — disclosure and response` | 開示・パッチ・業界反応 |
 | §4 | `## 4. なぜ止まらなかったか` | `## 4. Why it wasn't stopped` | 構造的論点。✓検出は効いた／✕証明が無かった を本文で |
-| §5 | `## 5. 証明があれば、何が変わるか` | `## 5. What proof would have changed` | 処方 |
+| §5 | `## 5. 証明があれば、何が変わるか` | `## 5. What proof would have changed` | 処方（report レイアウトでは `## 5. 対策するには` / `## 5. How to counter this`） |
 | §6 | `## 6. Sources` | `## 6. Sources` | 一次ソース |
 
 **「検出と証明の落差」は独立章にしない。** §4 と §5 の骨格そのものにする
@@ -131,6 +131,97 @@ Pillar とカテゴリの不整合はビルドが拒否する。カテゴリは 
 - **一次ソース優先**。GitHub リポジトリ／README／公式 statement は直読
   （`gh api` 等）してから書く。二次報道はリスト・CVE 帰属・件数・削除状態を
   誤ることがある。URL は 200 を確認。各行に（一次）（独立解析）等の位置づけを添える。
+
+## report レイアウト（opt-in・2026-10）
+
+frontmatter に `layout: "report"` を書いた Brief だけが、レポート型の面で描画される
+（見本: 032）。書かない Brief はこれまでどおりの面のまま。6章構成と上の各章の規則は
+そのまま守る。
+
+**オンになるもの**: スレートの表紙（`brief_no` を種にした生成グラフィック＋
+`key_figures`）、表紙下のメタ行（事案日／公開／改訂／発行）、「01 見出し」形式の
+章見出し、目次だけの右レール（脅威バナー・ブランド面は出ない）、下の部品 CSS。
+冒頭の改訂注記 blockquote は描画されず、版と日付はメタ行に出る（md には残す——
+dateModified がここから読む）。「参照: 」はカードにならず1行のまま。
+
+**§3 は接続文（「公表後の対応と業界の動きは次のとおり。」）の代わりに
+`### 公表後の対応` の小見出しを置いてよい。**
+
+**§5 の見出しは `## 5. 対策するには`**（EN: `## 5. How to counter this`）。読者が自社で
+何をすればよいかを書く章で、製品の処方ではない。
+
+### 追加の frontmatter
+
+```yaml
+layout: "report"
+key_figures:            # 表紙の主要数値・最大3。value に → を含めると矢印をライムで描く
+  - { value: "約 900", unit: "万円", label: "…", tone: "alert" }   # alert は1つだけ
+  - { value: "05-23 → 05-28", label: "…" }
+glossary:               # §2 の最初のブロックの直後に「用語メモ」として出る
+  - { term: "エクストラネット", desc: "…" }
+insight:                # quote は §4 の最初の段落の直後に「この事案の核心」の帯で出る
+  slug: "confirmed-by-login-alone"   # slug / label は一覧用。記事には出ない
+  label: "ログインだけで確定する操作"
+  quote: "…"
+industries: ["retail", "finance"]               # config/industriesV1.ts の slug
+operations: ["payment-change", "account-admin"] # config/briefFacets.ts
+controls:
+  - { slug: "separate-approval", item: "…" }    # separate-approval / ownership-check / hold-unverified / audit-trail
+```
+
+`industries` / `operations` / `controls` は**一覧のファセット用の索引で、記事には描画
+しない**。語彙・ラベル・アイコンは `config/briefFacets.ts`。記事中の「注意したい
+業界・業務」は md 側で説明文つきの表として書く。EN ファイルの `key_figures` /
+`glossary` / `insight` は英語で書く。
+
+### 著者が書く部品
+
+HTML ブロックの中に**空行を入れない**（空行で markdown に戻る）。
+
+```html
+<!-- §1 要旨（3行。最後の行に class="key"） -->
+<div class="rx-exsum"><ol>
+<li><div class="lab">01<b>何が起きたか</b></div><p>…</p></li>
+<li class="key"><div class="lab">03<b>欠けていた層</b></div><p>…</p></li>
+</ol></div>
+
+<!-- 定義表（事実・持ち主など）。業界・業務の表は rx-scope ＋ kk の小見出し -->
+<div class="rx-facts"><dl><dt>当事者</dt><dd>…</dd></dl></div>
+<div class="rx-facts rx-scope"><dl><dt><span class="kk">業界</span>サービス・小売</dt><dd>…</dd></dl></div>
+
+<!-- 図表: 連鎖（rx-step に crit / good）と落差（rx-gap） -->
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">…</span></div>
+<p class="rx-ex-cap">…</p>
+<div class="rx-chain"><div class="rx-step crit"><div class="who">第三者</div><div class="no">2</div><b>…</b><p>…</p></div></div>
+</figure>
+
+<!-- §3 時系列（日付が無い行は time.nd） -->
+<ul class="rx-tl"><li><time>2026-05-23</time><span>…</span></li></ul>
+
+<!-- 注・資料の但し書き -->
+<p class="rx-aside">注：…</p>
+
+<!-- §5 必要になるもの／点検チェックリスト -->
+<section class="rx-box"><div class="rx-ex-h"><span class="rx-ex-no">対策</span><span class="rx-ex-t">必要になるもの</span></div>
+<ol class="num"><li><b>…。</b>…</li></ol>
+</section>
+<div class="bx-checklist"><div class="rx-ex-h"><span class="rx-ex-no">点検</span><span class="rx-ex-t">点検チェックリスト</span></div><p class="rx-box-cap">…</p><ul><li>…</li></ul></div>
+
+<!-- §6 出典 -->
+<ol class="rx-srcs"><li><span class="ty">報道</span><span class="bs"><b>媒体名</b>「記事名」<span class="meta">2026-06-03 · <a href="…">…</a></span></span></li></ol>
+```
+
+対策の表は普通の markdown の表で書き、状態だけ
+`<span class="bx-st no">効かない</span>`（`part` 一部 / `na` 関係しない）でチップにする。
+§5 の冒頭段落は `<p class="rx-lead"><strong>結論。</strong>…</p>`。
+図表 2 の `rx-gap` の型は 032 を写す。
+
+### 書かないもの
+
+- **分析の本文に製品名・CTA を書かない。** 末尾 CTA はテンプレートが出す。
+- **ファセットのチップは一覧のためのもので、記事には置かない**（「この対策で探す」の
+  行なども書かない）。
 
 ## 記事末尾の定型
 

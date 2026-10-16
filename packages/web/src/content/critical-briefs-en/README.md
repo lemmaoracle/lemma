@@ -49,7 +49,7 @@ Headings are **numbered**; the table of contents (§1–§6) aligns with them.
 | 2 | `## 2. What happened` | Overview bullets + the attack chain (numbered list) |
 | 3 | `## 3. Timeline — disclosure and response` | Disclosure, patches, industry reaction |
 | 4 | `## 4. Why it wasn't stopped` | The structural argument. "Detection worked / no proof existed" in prose |
-| 5 | `## 5. What proof would have changed` | The prescription |
+| 5 | `## 5. What proof would have changed` | The prescription (report layout: `## 5. How to counter this`) |
 | 6 | `## 6. Sources` | Primary sources |
 
 **The detection–proof gap is not a standalone chapter.** It is the skeleton of
@@ -109,6 +109,79 @@ vocabulary in the body text.
   (`gh api`) before citing; secondary reporting gets lists, CVE attribution,
   counts, and takedown states wrong. Verify URLs return 200. Annotate each
   entry ((primary), (independent analysis), …).
+
+## Report layout (opt-in, 2026-10)
+
+Only Briefs with `layout: "report"` in the frontmatter render in the report
+layout (sample: 032). Briefs without it keep the default page. The six
+chapters and the chapter rules above still apply.
+
+**What it turns on**: a slate cover (generative art seeded by `brief_no`, plus
+`key_figures`), a meta row under it (incident date / published / revised /
+authors), chapter heads in the form "01 Heading", a right rail with the table of
+contents only (no threat banner or brand box), and the component CSS below. The
+leading revision blockquote is not rendered; version and date move into the meta
+row (keep it in the markdown — dateModified is read from it). The
+`References: ` line stays a single line instead of becoming cards.
+
+**§3 may use a `### After disclosure` subheading instead of the connector
+sentence** ("The response and industry movement after disclosure:").
+
+**§5 is `## 5. How to counter this`** (JA: `## 5. 対策するには`). It tells
+readers what to do in their own organisation; it is not a product prescription.
+
+### Extra frontmatter
+
+Same fields as the JA README's example. `key_figures` (max 3; a `→` in `value`
+draws a lime arrow; `tone: "alert"` on one figure at most), `glossary`
+(rendered as a small glossary note right after §2's first block), `insight`
+(`quote` is rendered as the "The core of this case" block after §4's first
+paragraph; `slug` / `label` are for the index only). Write these three in
+English in the EN file. `industries` / `operations` / `controls` are **index
+facets and are not rendered in the article**; vocabularies, labels and icons
+live in `config/briefFacets.ts`. Write the "Industries and operations to watch"
+table in markdown/HTML with descriptions.
+
+### Components an author writes
+
+No blank lines inside an HTML block (a blank line drops back into markdown).
+
+```html
+<div class="rx-exsum"><ol>
+<li><div class="lab">01<b>What happened</b></div><p>…</p></li>
+<li class="key"><div class="lab">03<b>The missing layer</b></div><p>…</p></li>
+</ol></div>
+
+<div class="rx-facts"><dl><dt>Who</dt><dd>…</dd></dl></div>
+<div class="rx-facts rx-scope"><dl><dt><span class="kk">Industry</span>Services &amp; retail</dt><dd>…</dd></dl></div>
+
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">…</span></div>
+<p class="rx-ex-cap">…</p>
+<div class="rx-chain"><div class="rx-step crit"><div class="who">Third party</div><div class="no">2</div><b>…</b><p>…</p></div></div>
+</figure>
+
+<ul class="rx-tl"><li><time>2026-05-23</time><span>…</span></li></ul>
+<p class="rx-aside">Note: …</p>
+
+<section class="rx-box"><div class="rx-ex-h"><span class="rx-ex-no">Controls</span><span class="rx-ex-t">What is needed</span></div>
+<ol class="num"><li><b>….</b> …</li></ol>
+</section>
+<div class="bx-checklist"><div class="rx-ex-h"><span class="rx-ex-no">Check</span><span class="rx-ex-t">Checklist</span></div><p class="rx-box-cap">…</p><ul><li>…</li></ul></div>
+
+<ol class="rx-srcs"><li><span class="ty">Press</span><span class="bs"><b>Outlet</b> "Title"<span class="meta">2026-06-03 · <a href="…">…</a></span></span></li></ol>
+```
+
+The controls table is a plain markdown table; mark the status with
+`<span class="bx-st no">Ineffective</span>` (`part` Partial / `na` Not relevant).
+Open §5 with `<p class="rx-lead"><strong>Conclusion.</strong> …</p>`. Copy the
+`rx-gap` exhibit structure from 032.
+
+### What not to write
+
+- **No product names or CTAs in the analysis.** The template renders the tail CTA.
+- **Facet chips are for the index, not the article** (no "find by this
+  control" rows).
 
 ## Article tail conventions
 

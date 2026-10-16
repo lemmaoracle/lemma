@@ -1,5 +1,10 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
+import {
+  BRIEF_CONTROL_SLUGS,
+  BRIEF_INDUSTRY_SLUGS,
+  BRIEF_OPERATION_SLUGS,
+} from "./config/briefFacets";
 
 /**
  * Lemma Critical Brief content collection.
@@ -153,6 +158,60 @@ const briefSchema = z
      */
     analysis_lead_ja: z.string().optional(),
     analysis_lead_en: z.string().optional(),
+    /**
+     * レイアウトの選択（2026-10・opt-in）。`"report"` を書いた Brief だけが
+     * 表紙（スレート＋生成グラフィック＋主要数値）・章番号つき見出し・
+     * 目次だけの右レール・図表部品の CSS で描画される。未指定の Brief は
+     * これまでどおりの面のまま（BriefTemplate はここでしか分岐しない）。
+     */
+    layout: z.enum(["report"]).optional(),
+    /**
+     * report レイアウトの表紙に並べる主要数値（最大3つ）。`value` に `→` を
+     * 含めると矢印をライムで描く（例: `05-23 → 05-28`）。`tone: "alert"` は
+     * 損失額など、読者に赤で立たせたい1つだけに使う。
+     */
+    key_figures: z
+      .array(
+        z.object({
+          value: z.string().min(1),
+          unit: z.string().optional(),
+          label: z.string().min(1),
+          tone: z.enum(["alert"]).optional(),
+        }),
+      )
+      .max(3)
+      .optional(),
+    /** report レイアウト §2 の「用語メモ」。事実の表の直後に小さく出る。 */
+    glossary: z
+      .array(z.object({ term: z.string().min(1), desc: z.string().min(1) }))
+      .optional(),
+    /**
+     * この事案の論点。`quote` は §4 の最初の段落の後に「この事案の核心」の
+     * スレート帯として描画する。`slug` / `label` は一覧の「論点で探す」用で、
+     * 記事には出さない（語彙は config/briefFacets.ts の BRIEF_INSIGHTS）。
+     */
+    insight: z
+      .object({
+        slug: z.string().regex(/^[a-z0-9-]+$/),
+        label: z.string().min(1),
+        quote: z.string().min(1),
+      })
+      .optional(),
+    /**
+     * 一覧のファセット用の索引（**記事には描画しない**）。語彙・ラベル・
+     * アイコンは config/briefFacets.ts。記事中の「注意したい業界・業務」は
+     * md 側で説明文つきで書く。
+     */
+    industries: z.array(z.enum(BRIEF_INDUSTRY_SLUGS)).optional(),
+    operations: z.array(z.enum(BRIEF_OPERATION_SLUGS)).optional(),
+    controls: z
+      .array(
+        z.object({
+          slug: z.enum(BRIEF_CONTROL_SLUGS),
+          item: z.string().min(1),
+        }),
+      )
+      .optional(),
   })
   .refine(
     (data) => {
