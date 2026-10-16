@@ -15,6 +15,7 @@ status: published
 og_lead_ja: "Booking.com でホテルの受取口座が書き換えられ約900万円の損失 — ポラリスHD"
 og_lead_en: "Booking.com payout account switched, ¥9M lost — Polaris Holdings"
 layout: "report"
+summary_labels: ["What happened", "Why it looked normal", "The missing layer"]
 key_figures:
   - value: "≈ ¥9"
     unit: "million"
@@ -51,22 +52,20 @@ controls:
 
 ## 1. TL;DR
 
-<div class="rx-exsum"><ol>
-<li><div class="lab">01<b>What happened</b></div><p>An outsider got into the Booking.com account used by hotel operator Polaris Holdings and, at several hotels, switched the bank account that receives sales to their own. At one hotel part of its receivables (money it was owed) was paid into that account, a loss of about ¥9 million. At the other hotels, fraudulent payouts were prevented through what the company calls an early response.</p></li>
-<li><div class="lab">02<b>Why it looked normal</b></div><p>The change was made in the legitimate admin screen, as a logged-in action. To the system it was indistinguishable from a routine settings update.</p></li>
-<li class="key"><div class="lab">03<b>The missing layer</b></div><p>Detection worked: detection and an early response kept the loss to one hotel. What failed was the layer in which someone other than the person making a payout-account change confirms it before money moves.</p></li>
-</ol></div>
+An outsider got into the Booking.com account used by hotel operator Polaris Holdings and, at several hotels, switched the bank account that receives sales to their own. At one hotel part of its receivables (money it was owed) was paid into that account, a loss of about ¥9 million. At the other hotels, fraudulent payouts were prevented through what the company calls an early response.
+
+The change was made in the legitimate admin screen, as a logged-in action. To the system it was indistinguishable from a routine settings update.
+
+Detection worked: detection and an early response kept the loss to one hotel. What failed was the layer in which someone other than the person making a payout-account change confirms it before money moves.
 
 ## 2. What happened
 
-<div class="rx-facts"><dl>
-<dt>Who</dt><dd>Polaris Holdings, a hotel operator. Its hotels were managed on the booking site Booking.com through a group-level account.</dd>
-<dt>What was changed</dt><dd>The bank account Booking.com pays hotel sales into. Hotels register it in the admin screen; it was switched to a third party's account.</dd>
-<dt>Loss</dt><dd>At one hotel, part of its receivables (money it was owed) was paid into the fraudulent account: a loss of about ¥9 million (as of disclosure). Accounts were also changed at several other hotels, but an early response prevented fraudulent payouts there.</dd>
-<dt>Impact on guests</dt><dd>Some guests received phishing messages. The company is examining two possibilities: booking data taken from the admin screen, or a leak from an external booking-management system.</dd>
-<dt>How they got in</dt><dd>Under investigation and not disclosed. This Brief does not speculate.</dd>
-<dt>Industry context</dt><dd>Booking.com's hotel admin site (the extranet) has long been a target. In November 2025 the security firm Sekoia documented emails posing as Booking.com that trick hotel staff into running malware and steal their admin logins. Guests were then contacted by email from the hijacked account or over WhatsApp, with real booking details attached, and led to a page posing as a re-check of their payment details.</dd>
-</dl></div>
+- **Who**: Polaris Holdings, a hotel operator. Its hotels were managed on the booking site Booking.com through a group-level account.
+- **What was changed**: The bank account Booking.com pays hotel sales into. Hotels register it in the admin screen; it was switched to a third party's account.
+- **Loss**: At one hotel, part of its receivables (money it was owed) was paid into the fraudulent account: a loss of about ¥9 million (as of disclosure). Accounts were also changed at several other hotels, but an early response prevented fraudulent payouts there.
+- **Impact on guests**: Some guests received phishing messages. The company is examining two possibilities: booking data taken from the admin screen, or a leak from an external booking-management system.
+- **How they got in**: Under investigation and not disclosed. This Brief does not speculate.
+- **Industry context**: Booking.com's hotel admin site (the extranet) has long been a target. In November 2025 the security firm Sekoia documented emails posing as Booking.com that trick hotel staff into running malware and steal their admin logins. Guests were then contacted by email from the hijacked account or over WhatsApp, with real booking details attached, and led to a page posing as a re-check of their payment details.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain of events, as far as disclosed</span></div>
@@ -79,18 +78,16 @@ controls:
 </div>
 </figure>
 
-The payment at step 3 was a normal payment to the registered account. <strong>The problem is that the change at step 2 was accepted as a legitimate one.</strong>
+The payment at step 3 was a normal payment to the registered account. **The problem is that the change at step 2 was accepted as a legitimate one.**
 
 ## 3. Timeline — disclosure and response
 
-<ul class="rx-tl">
-<li><time>2026-05-23</time><span>Polaris spots an anomaly in its group Booking.com account and starts investigating.</span></li>
-<li><time class="nd">Investigation</time><span>Payout accounts at several hotels had been rewritten. At one hotel part of the receivables was paid into the fraudulent account, a loss of about ¥9 million; at the others an early response prevented fraudulent payouts.</span></li>
-<li><time>2026-05-28</time><span>Polaris discloses the unauthorised access. The travel-industry outlet TRAICY reports it the same day.</span></li>
-<li><time>2026-06-02–03</time><span>Security outlets ScanNetSecurity and Security NEXT report it.</span></li>
-</ul>
+- **2026-05-23**: Polaris spots an anomaly in its group Booking.com account and starts investigating.
+- **Investigation**: Payout accounts at several hotels had been rewritten. At one hotel part of the receivables was paid into the fraudulent account, a loss of about ¥9 million; at the others an early response prevented fraudulent payouts.
+- **2026-05-28**: Polaris discloses the unauthorised access. The travel-industry outlet TRAICY reports it the same day.
+- **2026-06-02–03**: Security outlets ScanNetSecurity and Security NEXT report it.
 
-<p class="rx-aside">The facts here rest on Polaris Holdings' disclosure of 28 May and the reporting on it. How the attacker got in, and whether guests' personal data leaked, were still under investigation at disclosure. The disclosure document has since been taken down from the company's site, so this Brief cites the press coverage.</p>
+> The facts here rest on Polaris Holdings' disclosure of 28 May and the reporting on it. How the attacker got in, and whether guests' personal data leaked, were still under investigation at disclosure. The disclosure document has since been taken down from the company's site, so this Brief cites the press coverage.
 
 ### After disclosure
 
@@ -119,66 +116,60 @@ Detection worked. Polaris detected the anomaly, and fraudulent payouts at the ot
 </div>
 </figure>
 
-The distance between noticing an anomaly and confirming a change is right is what this Brief calls <strong>the detection–proof gap</strong>, and it is a structural one.
+The distance between noticing an anomaly and confirming a change is right is what this Brief calls **the detection–proof gap**, and it is a structural one.
 
 The same shape appears in [Revolut](/critical/briefs/149-revolut-italy-government-mailbox-disclosure-requests/), which answered disclosure requests arriving through a national certified-mail network, and in [SpeeCAN RAIDEN](/critical/briefs/044-arcadia-speecan-raiden-disaster-mail-spoofing/), whose genuine sending domain delivered fake mail. In each, "it came through the legitimate channel" stood in for "it is a legitimate request".
 
 ## 5. How to counter this
 
-<p class="rx-lead"><strong>With the right mechanism, this attack could have been partly prevented.</strong> If a payout-account change does not take effect until another person confirms it through another channel, the rewrite stops there. But the change happened inside Booking.com's admin screen, so that mechanism has to be built into the booking platform. What users can add on their own side is a way to stop payment after a change and before the first payout: have someone other than the changer receive change notifications, and if a change is not recognised, ask the platform to stop payment.</p>
+**With the right mechanism, this attack could have been partly prevented.** If a payout-account change does not take effect until another person confirms it through another channel, the rewrite stops there. But the change happened inside Booking.com's admin screen, so that mechanism has to be built into the booking platform. What users can add on their own side is a way to stop payment after a change and before the first payout: have someone other than the changer receive change notifications, and if a change is not recognised, ask the platform to stop payment.
 
 ### Industries and operations to watch
 
-<div class="rx-facts rx-scope"><dl>
-<dt><span class="kk">Industry</span>Services &amp; retail</dt><dd>Lodging, restaurant and retail businesses that receive sales through booking sites, e-commerce platforms or payment processors. The payout account lives in an external service's admin screen.</dd>
-<dt><span class="kk">Industry</span>Finance &amp; FinTech</dt><dd>Banks and payment providers that accept payee registrations and changes. A payee rewritten on the customer's side still arrives as a valid instruction.</dd>
-<dt><span class="kk">Operation</span>Payee &amp; bank-account changes</dt><dd>Registering or changing a supplier's or your own receiving account. The result does not show until the next payment.</dd>
-<dt><span class="kk">Operation</span>Accounts &amp; permissions</dt><dd>Managing external-service accounts and who can change what. This rewrite came from a hijacked account.</dd>
-</dl></div>
+- **Industry · Services & retail**: Lodging, restaurant and retail businesses that receive sales through booking sites, e-commerce platforms or payment processors. The payout account lives in an external service's admin screen.
+- **Industry · Finance & FinTech**: Banks and payment providers that accept payee registrations and changes. A payee rewritten on the customer's side still arrives as a valid instruction.
+- **Operation · Payee & bank-account changes**: Registering or changing a supplier's or your own receiving account. The result does not show until the next payment.
+- **Operation · Accounts & permissions**: Managing external-service accounts and who can change what. This rewrite came from a hijacked account.
 
 The same hole exists in many organisations, not just hotels: finance changing a supplier's bank details, adding a payee in online banking, setting the receiving account on an e-commerce or payment service. In each, anyone who can log in can change it on the spot, and the result does not show until the next payment. And often no one has been made its owner.
 
-<div class="rx-facts"><dl>
-<dt>Finance</dt><dd>Handles accounts and payments. Tends to see the change as “a systems issue”.</dd>
-<dt>IT</dt><dd>Manages accounts. Tends to see the change as “a business issue”.</dd>
-<dt>Business units</dt><dd>Sign up for and use booking sites and payment services day to day.</dd>
-</dl></div>
+- **Finance**: Handles accounts and payments. Tends to see the change as “a systems issue”.
+- **IT**: Manages accounts. Tends to see the change as “a business issue”.
+- **Business units**: Sign up for and use booking sites and payment services day to day.
 
-<strong>Between the three, no one has the job of asking “is this payout change really right?”</strong> Here, one hotel alone lost about ¥9 million.
+**Between the three, no one has the job of asking “is this payout change really right?”** Here, one hotel alone lost about ¥9 million.
 
 ### Do today's controls close it?
 
 | Control | Here | Why |
 | --- | --- | --- |
-| Multi-factor authentication (MFA) | <span class="bx-st part">Partial</span> | Works at the door. The route in has not been disclosed, so whether it would have helped here is unknown. It is bypassed when the device or the logged-in session itself is hijacked, and it does not look at what is done after login. |
-| Endpoint monitoring (EDR) | <span class="bx-st part">Partial</span> | May detect an endpoint infection like the one Sekoia describes, but cannot see settings changed inside a booking site or other external service. |
-| Call-back verification | <span class="bx-st no">Ineffective</span> | Works when a supplier asks to change its account. When your own settings are rewritten, as here, nobody gets a call. |
-| Email authentication (DMARC etc.) | <span class="bx-st na">Not relevant</span> | Reduces email spoofing, but has nothing to do with this rewrite. |
+| Multi-factor authentication (MFA) | Partial | Works at the door. The route in has not been disclosed, so whether it would have helped here is unknown. It is bypassed when the device or the logged-in session itself is hijacked, and it does not look at what is done after login. |
+| Endpoint monitoring (EDR) | Partial | May detect an endpoint infection like the one Sekoia describes, but cannot see settings changed inside a booking site or other external service. |
+| Call-back verification | Ineffective | Works when a supplier asks to change its account. When your own settings are rewritten, as here, nobody gets a call. |
+| Email authentication (DMARC etc.) | Not relevant | Reduces email spoofing, but has nothing to do with this rewrite. |
 
-<section class="rx-box"><div class="rx-ex-h"><span class="rx-ex-no">Controls</span><span class="rx-ex-t">What is needed</span></div>
-<ol class="num">
-<li><b>Someone other than the changer confirms it.</b> A payout change does not take effect from a logged-in action alone. Before it does, confirm that a designated second approver has approved it through a channel separate from the login. If approval can come through the same channel as the hijacked account, it is worthless.</li>
-<li><b>Confirm the new account really is yours.</b> Back up the account holder's name with the bank's own check. This works even if the approver is fooled.</li>
-<li><b>Hold what cannot be confirmed, and record what was.</b> Changes that cannot be confirmed stay on hold, and payments to that account stop. Keep when, on whose approval, and to which account a change was let through, in a form you can later show a third party — that is, as proof.</li>
-</ol>
-</section>
+### What is needed
 
-<div class="bx-checklist"><div class="rx-ex-h"><span class="rx-ex-no">Check</span><span class="rx-ex-t">Checklist</span></div><p class="rx-box-cap">Three things to confirm in your organisation about payout changes</p><ul>
-<li>Which accounts can change the receiving or payee account? When one is changed, who other than the person who changed it is notified?</li>
-<li>Can you hold the first payment in or out until someone other than the changer confirms the change by a different means than the one used to register it?</li>
-<li>Who reconciles the first receipt or payment after a change, and within how many days? If it does not match, can you stop the next transfer?</li>
-</ul></div>
+1. **Someone other than the changer confirms it.** A payout change does not take effect from a logged-in action alone. Before it does, confirm that a designated second approver has approved it through a channel separate from the login. If approval can come through the same channel as the hijacked account, it is worthless.
+2. **Confirm the new account really is yours.** Back up the account holder's name with the bank's own check. This works even if the approver is fooled.
+3. **Hold what cannot be confirmed, and record what was.** Changes that cannot be confirmed stay on hold, and payments to that account stop. Keep when, on whose approval, and to which account a change was let through, in a form you can later show a third party — that is, as proof.
 
-<p class="rx-aside">Note: this still fails if the approver is tricked into approving, or if the approval channel is also hijacked. Holding changes until confirmed also delays legitimate ones.</p>
+### Checklist
+
+Three things to confirm in your organisation about payout changes
+
+- Which accounts can change the receiving or payee account? When one is changed, who other than the person who changed it is notified?
+- Can you hold the first payment in or out until someone other than the changer confirms the change by a different means than the one used to register it?
+- Who reconciles the first receipt or payment after a change, and within how many days? If it does not match, can you stop the next transfer?
+
+Note: this still fails if the approver is tricked into approving, or if the approval channel is also hijacked. Holding changes until confirmed also delays legitimate ones.
 
 ## 6. Sources
 
-<ol class="rx-srcs">
-<li><span class="ty">Company disclosure</span><span class="bs"><b>Polaris Holdings</b> “Notice of unauthorised access (Booking.com account)” (Japanese)<span class="meta">2026-05-28 · the document has since been taken down from the company's site</span></span></li>
-<li><span class="ty">Press</span><span class="bs"><b>Security NEXT</b> “Payout account details at lodging booking service tampered, fraudulent transfer — Polaris HD” (Japanese)<span class="meta">2026-06-03 · <a href="https://www.security-next.com/185176">security-next.com/185176</a></span></span></li>
-<li><span class="ty">Press</span><span class="bs"><b>TRAICY</b> “Polaris HD suffers fraudulent transfer after unauthorised access to Booking.com; phishing messages to guests also confirmed” (Japanese)<span class="meta">2026-05-28 · <a href="https://www.traicy.com/posts/20260528371641/">traicy.com/posts/20260528371641</a></span></span></li>
-<li><span class="ty">Press</span><span class="bs"><b>ScanNetSecurity</b> “Unauthorised access to Booking.com, sales payout account tampered; about ¥9 million lost” (Japanese)<span class="meta">2026-06-02 · <a href="https://scan.netsecurity.ne.jp/article/2026/06/02/55403.html">scan.netsecurity.ne.jp/article/2026/06/02/55403</a></span></span></li>
-<li><span class="ty">Industry research</span><span class="bs"><b>Sekoia</b> “Phishing campaigns ‘I Paid Twice’ targeting Booking.com hotels and customers”<span class="meta">2025-11-06 · <a href="https://www.sekoia.com/blog/phishing-campaigns-i-paid-twice-targeting-booking-com-hotels-and-customers">sekoia.com/blog/…</a></span></span></li>
-</ol>
+- **Polaris Holdings (Company disclosure)**: “Notice of unauthorised access (Booking.com account)” (Japanese) (2026-05-28) — the document has since been taken down from the company's site
+- **Security NEXT (Press)**: “Payout account details at lodging booking service tampered, fraudulent transfer — Polaris HD” (Japanese) (2026-06-03) — <https://www.security-next.com/185176>
+- **TRAICY (Press)**: “Polaris HD suffers fraudulent transfer after unauthorised access to Booking.com; phishing messages to guests also confirmed” (Japanese) (2026-05-28) — <https://www.traicy.com/posts/20260528371641/>
+- **ScanNetSecurity (Press)**: “Unauthorised access to Booking.com, sales payout account tampered; about ¥9 million lost” (Japanese) (2026-06-02) — <https://scan.netsecurity.ne.jp/article/2026/06/02/55403.html>
+- **Sekoia (Industry research)**: “Phishing campaigns ‘I Paid Twice’ targeting Booking.com hotels and customers” (2025-11-06) — <https://www.sekoia.com/blog/phishing-campaigns-i-paid-twice-targeting-booking-com-hotels-and-customers>
 
 References: Why after-the-fact detection is not proof — ["The last layer left for cyber defense in the age of AI"](/blog/detection-is-not-proof/).
