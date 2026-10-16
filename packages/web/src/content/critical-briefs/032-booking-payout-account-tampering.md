@@ -1,7 +1,7 @@
 ---
 brief_no: 32
-title: "ポラリスHD・Booking.com：ホテルの売上金を受け取る口座が、正規の管理画面で第三者の口座に書き換えられ、約 900 万円が送金された（同社開示） — 振込先の変更を、お金が動く前に別の人が確かめる仕組みが無い"
-title_en: "Polaris Holdings / Booking.com: the bank account that receives a hotel's sales was switched to a third party's inside the legitimate admin screen, and about ¥9 million was paid out (company disclosure) — nothing has someone else confirm a payout-account change before money moves"
+title: "ポラリスHD・Booking.com：ホテルの売上金を受け取る口座が、正規の管理画面で第三者の口座に書き換えられ、1 ホテルで約 900 万円の損失が出た（同社開示） — 振込先の変更を、お金が動く前に別の人が確かめる仕組みが無い"
+title_en: "Polaris Holdings / Booking.com: the bank account that receives a hotel's sales was switched to a third party's inside the legitimate admin screen, and one hotel lost about ¥9 million (company disclosure) — nothing has someone else confirm a payout-account change before money moves"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
 secondary_categories: ["data-provenance", "identity-auth"]
@@ -12,17 +12,17 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["149-revolut-italy-government-mailbox-disclosure-requests", "044-arcadia-speecan-raiden-disaster-mail-spoofing", "006-google-api-key-revocation-lag"]
 version: "2.0"
 status: published
-og_lead_ja: "Booking.com でホテルの受取口座が書き換えられ約900万円 — ポラリスHD"
+og_lead_ja: "Booking.com でホテルの受取口座が書き換えられ約900万円の損失 — ポラリスHD"
 og_lead_en: "Booking.com payout account switched, ¥9M lost — Polaris Holdings"
 layout: "report"
 key_figures:
   - value: "約 900"
     unit: "万円"
-    label: "1 ホテルで不正な口座へ送金された売上金（開示時点）"
+    label: "1 ホテルで出た損失（開示時点）"
     tone: "alert"
   - value: "複数"
     unit: "ホテル"
-    label: "受取口座が書き換えられた。1 ホテル以外は送金前に停止"
+    label: "受取口座が書き換えられた。1 ホテル以外は不正送金を未然に防いだ"
   - value: "05-23 → 05-28"
     label: "異常の検知から開示まで 5 日"
 glossary:
@@ -33,7 +33,7 @@ glossary:
 insight:
   slug: "confirmed-by-login-alone"
   label: "ログインだけで確定する操作"
-  quote: "お金の行き先を変える操作が、ログインできている人なら誰でも、その場で確定できた。"
+  quote: "お金の行き先を変える操作が、ログインした状態のまま、確定まで通った。"
 industries: ["retail", "finance"]
 operations: ["payment-change", "account-admin"]
 controls:
@@ -52,9 +52,9 @@ controls:
 ## 1. TL;DR
 
 <div class="rx-exsum"><ol>
-<li><div class="lab">01<b>何が起きたか</b></div><p>ホテルを運営するポラリス・ホールディングスが使う Booking.com のアカウントに第三者が入り込み、複数のホテルで、売上金を受け取る口座が第三者の口座に書き換えられた。1 ホテルでは売上金の一部がその口座に振り込まれ、約 900 万円の損失が出た。ほかのホテルは、異常に気づいた後の早い対応で送金を止めている。</p></li>
+<li><div class="lab">01<b>何が起きたか</b></div><p>ホテルを運営するポラリス・ホールディングスが使う Booking.com のアカウントに第三者が入り込み、複数のホテルで、売上金を受け取る口座が第三者の口座に書き換えられた。1 ホテルでは売掛金（受け取るはずの代金）の一部がその口座に振り込まれ、約 900 万円の損失が出た。ほかのホテルは、同社の言う早期対応で、不正送金を未然に防いだ。</p></li>
 <li><div class="lab">02<b>なぜ見分けられないか</b></div><p>書き換えは、正規の管理画面から、ログイン済みの操作として行われた。システムから見れば、いつもの設定変更と区別がつかない。</p></li>
-<li class="key"><div class="lab">03<b>欠けていた層</b></div><p>検出は効いていた。異常に気づいたことで、被害は 1 ホテルに収まった。効かなかったのは、振込先の変更を、お金が動く前に、変更した本人とは別の人が確かめる層である。</p></li>
+<li class="key"><div class="lab">03<b>欠けていた層</b></div><p>検出は効いていた。検知と早期対応で、被害は 1 ホテルに収まった。効かなかったのは、振込先の変更を、お金が動く前に、変更した本人とは別の人が確かめる層である。</p></li>
 </ol></div>
 
 ## 2. 何が起きたか
@@ -62,30 +62,30 @@ controls:
 <div class="rx-facts"><dl>
 <dt>当事者</dt><dd>ポラリス・ホールディングス（ホテル運営）。グループのホテルは、予約サイト Booking.com をグループ単位のアカウントで管理していた。</dd>
 <dt>書き換えられたもの</dt><dd>Booking.com からホテルへ売上金を払い込む先の口座。ホテル側が管理画面で登録しておく設定で、これが第三者の口座に変えられた。</dd>
-<dt>被害</dt><dd>1 ホテルで、本来受け取るはずの売上金の一部が不正な口座に振り込まれ、約 900 万円の損失（開示時点）。ほかの複数のホテルでも書き換えがあったが、送金前に止めた。</dd>
+<dt>被害</dt><dd>1 ホテルで、売掛金（受け取るはずの代金）の一部が不正な口座に振り込まれ、約 900 万円の損失（開示時点）。ほかの複数のホテルでも書き換えがあったが、早期対応で不正送金を未然に防いだ。</dd>
 <dt>宿泊客への波及</dt><dd>一部のホテルの予約客に、フィッシングのメッセージが届いた。管理画面から取られた予約情報が使われた可能性と、外部の予約管理システムから漏れた可能性の両方を、同社が調べている。</dd>
 <dt>侵入の経路</dt><dd>開示時点では調査中で、公表されていない。本 Brief も断定しない。</dd>
-<dt>業界の背景</dt><dd>Booking.com に掲載するホテルの管理画面（エクストラネット）は、以前から狙われている。セキュリティ企業 Sekoia の 2025 年 11 月の調査では、Booking.com を装ったメールでホテルの職員に不正なプログラムを実行させ、管理画面のログイン情報を盗む手口が確認されている。盗んだアカウントからは、本物の予約情報を使って宿泊客に偽の支払い依頼を送っていた。</dd>
+<dt>業界の背景</dt><dd>Booking.com に掲載するホテルの管理画面（エクストラネット）は、以前から狙われている。セキュリティ企業 Sekoia の 2025 年 11 月の調査では、Booking.com を装ったメールでホテルの職員に不正なプログラムを実行させ、管理画面のログイン情報を盗む手口が確認されている。宿泊客は、乗っ取ったアカウントのメールや WhatsApp で、本物の予約情報を添えて、支払い情報の再確認を装うページへ誘われていた。</dd>
 </dl></div>
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">公表された範囲で見た、経過の連鎖</span></div>
-<p class="rx-ex-cap">止めるべきだったのは ② の確定時点。③ で Booking.com の側に誤りは無い。</p>
+<p class="rx-ex-cap">止めるべきだったのは ② の確定時点。③ の払い込み自体は、登録どおりの動き。④ と ③ の前後は、開示からは分からない。</p>
 <div class="rx-chain">
 <div class="rx-step"><div class="who">第三者</div><div class="no">1</div><b>グループの Booking.com アカウントに入り込む</b><p>経路は調査中。</p></div>
 <div class="rx-step crit"><div class="who">第三者</div><div class="no">2</div><b>正規の管理画面で、受取口座を書き換える</b><p>複数のホテルの口座を、第三者の口座に。</p></div>
 <div class="rx-step"><div class="who">Booking.com</div><div class="no">3</div><b>登録口座へ、いつもどおり払い込む</b><p>1 ホテル分が不正な口座に入る。</p></div>
-<div class="rx-step good"><div class="who">ポラリス</div><div class="no">4</div><b>アカウントの異常に気づき、送金を止める</b><p>ほかのホテルの送金は止まった。</p></div>
+<div class="rx-step good"><div class="who">ポラリス</div><div class="no">4</div><b>アカウントの異常を検知し、ほかのホテルの不正送金を防ぐ</b><p>同社の言う早期対応による。</p></div>
 </div>
 </figure>
 
-3 の時点で、Booking.com の側に誤りは無い。登録された口座に払ったからである。<strong>問題は 2 の変更が、正しい変更として受け入れられたことにある。</strong>
+3 の払い込みは、登録された口座への通常の動きである。<strong>問題は 2 の変更が、正しい変更として受け入れられたことにある。</strong>
 
 ## 3. 時系列 — 公表と対応
 
 <ul class="rx-tl">
 <li><time>2026-05-23</time><span>ポラリスが、Booking.com のグループアカウントの異常に気づき、調査を始める。</span></li>
-<li><time class="nd">調査で判明</time><span>複数のホテルで受取口座が書き換えられていた。1 ホテルで約 900 万円が不正な口座へ送金。ほかは送金前に止めた。</span></li>
+<li><time class="nd">調査で判明</time><span>複数のホテルで受取口座が書き換えられていた。1 ホテルで売掛金の一部が不正な口座へ振り込まれ、約 900 万円の損失。ほかは早期対応で不正送金を未然に防いだ。</span></li>
 <li><time>2026-05-28</time><span>ポラリスが不正アクセスを開示する。同日、旅行業界メディアの TRAICY が報じる。</span></li>
 <li><time>2026-06-02〜03</time><span>セキュリティ専門媒体の ScanNetSecurity、Security NEXT が報じる。</span></li>
 </ul>
@@ -99,11 +99,11 @@ controls:
 
 ## 4. なぜ止まらなかったか
 
-この事案の失敗は、パスワードが盗まれたことだけではない。
+この事案の失敗は、アカウントに入り込まれたことだけではない。振込先の変更を、確定の前に別の人が確かめる層が無かったことにある。
 
 ログインは「入ってきたのが登録された人か」を確かめる仕組みで、入った後に何をするかは確かめない。セキュリティの言葉では、ログインが済んだ状態を「認証済みセッション」と呼ぶ。この状態で行われた操作は、システムには正規の操作として見える。振込先の変更も、連絡先の変更も、同じ一つの操作として扱われる。
 
-検出は効いていた。ポラリスはアカウントの異常に気づき、ほかのホテルの送金を止めている。ただ、検出は異常が表に出てから働く。1 ホテル分の送金は止められなかった。止めるべきだったのは、その手前、振込先の変更が確定する時点である。
+検出は効いていた。ポラリスはアカウントの異常を検知し、ほかのホテルでは不正送金を未然に防いだ。ただ、検出は異常が表に出てから働く。それでも 1 ホテル分は送金された。その送金が検知の前か後かは、開示からは分からない。止めるべきだったのは、その手前、振込先の変更が確定する時点である。
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 2</span><span class="rx-ex-t">検出と証明の落差</span></div>
@@ -125,7 +125,7 @@ controls:
 
 ## 5. 対策するには
 
-<p class="rx-lead"><strong>今回の手口は、仕組みがあれば一部まで防げた。</strong>振込先の変更を、別の人が別の経路で確かめるまで確定させない仕組みがあれば、書き換えは止まる。ただし変更は Booking.com の管理画面の中で起きたので、その仕組みは予約サイトの側に組み込まれている必要がある。利用者の側だけで足せるのは、変更の後、最初の入金の前に止める手立てである。</p>
+<p class="rx-lead"><strong>今回の手口は、仕組みがあれば一部まで防げた。</strong>振込先の変更を、別の人が別の経路で確かめるまで確定させない仕組みがあれば、書き換えは止まる。ただし変更は Booking.com の管理画面の中で起きたので、その仕組みは予約サイトの側に組み込まれている必要がある。利用者の側で足せるのは、変更の後、最初の入金の前に止める手立てである。変更の通知を本人以外も受け取り、身に覚えのない変更ならプラットフォームに支払いの停止を求める。</p>
 
 ### 注意したい業界・業務
 
@@ -136,7 +136,7 @@ controls:
 <dt><span class="kk">業務</span>アカウント・権限の管理</dt><dd>外部サービスのアカウントと、誰が何を変えられるかの管理。今回の書き換えは、乗っ取られたアカウントから行われた。</dd>
 </dl></div>
 
-同じ穴は、ホテルに限らず多くの組織にある。取引先の振込先を変える経理の操作、ネットバンキングの振込先の登録、EC や決済代行サービスの受取口座の設定。どれも、ログインできる人がその場で変えられ、変えた結果は次の支払いまで表に出ない。そして多くの組織で、この操作には持ち主がいない。
+同じ穴は、ホテルに限らず多くの組織にある。取引先の振込先を変える経理の操作、ネットバンキングの振込先の登録、EC や決済代行サービスの受取口座の設定。どれも、ログインできる人がその場で変えられ、変えた結果は次の支払いまで表に出ない。そして、この操作の持ち主は決まっていないことが多い。
 
 <div class="rx-facts"><dl>
 <dt>経理</dt><dd>口座と支払いを扱う。変更は「システムの話」と見がち。</dd>
@@ -144,15 +144,15 @@ controls:
 <dt>事業部門</dt><dd>予約サイトや決済サービスを契約し、日々使う。</dd>
 </dl></div>
 
-<strong>三者の間に、「その振込先の変更は本当に正しいか」を確かめる役が無い。</strong>今回は 1 回の書き換えで約 900 万円が動いた。
+<strong>三者の間に、「その振込先の変更は本当に正しいか」を確かめる役が無い。</strong>今回は 1 ホテルだけで約 900 万円の損失が出た。
 
 ### いまの対策で埋まるか
 
 | 対策 | 今回 | 理由 |
 | --- | --- | --- |
-| 多要素認証（MFA） | <span class="bx-st no">効かない</span> | 入ってくる人を確かめる仕組みで、入った後の操作の中身は見ない。盗まれたログインがそのまま使われた場合や、端末が乗っ取られた場合は通る。 |
-| 端末の監視（EDR） | <span class="bx-st no">効かない</span> | 組織の端末で起きることを見る仕組みで、予約サイトや外部サービスの中で起きた設定変更は見えない。 |
-| 折り返しの電話確認 | <span class="bx-st part">一部</span> | 取引先から「口座を変えたい」と依頼が来たときには効く。今回のように自分たちの設定そのものが書き換えられると、誰にも電話がかからない。 |
+| 多要素認証（MFA） | <span class="bx-st part">一部</span> | 入口では効く。経路が未公表のため、今回効いたかは分からない。端末やログイン状態ごと乗っ取られると通り、入った後の操作の中身は見ない。 |
+| 端末の監視（EDR） | <span class="bx-st part">一部</span> | Sekoia の例のような端末への感染なら検知できる可能性がある。ただ、予約サイトや外部サービスの中で起きた設定変更は見えない。 |
+| 折り返しの電話確認 | <span class="bx-st no">効かない</span> | 取引先から「口座を変えたい」と依頼が来たときには効く。今回のように自分たちの設定そのものが書き換えられると、誰にも電話がかからない。 |
 | 送信ドメイン認証（DMARC など） | <span class="bx-st na">関係しない</span> | メールのなりすましを減らすが、今回の書き換えには関係しない。 |
 
 <section class="rx-box"><div class="rx-ex-h"><span class="rx-ex-no">対策</span><span class="rx-ex-t">必要になるもの</span></div>

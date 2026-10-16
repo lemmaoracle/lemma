@@ -124,6 +124,9 @@ leading revision blockquote is not rendered; version and date move into the meta
 row (keep it in the markdown — dateModified is read from it). The
 `References: ` line stays a single line instead of becoming cards.
 
+**§3 may use a `### After disclosure` subheading instead of the connector
+sentence** ("The response and industry movement after disclosure:").
+
 **§5 is `## 5. How to counter this`** (JA: `## 5. 対策するには`). It tells
 readers what to do in their own organisation; it is not a product prescription.
 

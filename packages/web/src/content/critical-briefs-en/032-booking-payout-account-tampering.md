@@ -1,7 +1,7 @@
 ---
 brief_no: 32
-title: "ポラリスHD・Booking.com：ホテルの売上金を受け取る口座が、正規の管理画面で第三者の口座に書き換えられ、約 900 万円が送金された（同社開示） — 振込先の変更を、お金が動く前に別の人が確かめる仕組みが無い"
-title_en: "Polaris Holdings / Booking.com: the bank account that receives a hotel's sales was switched to a third party's inside the legitimate admin screen, and about ¥9 million was paid out (company disclosure) — nothing has someone else confirm a payout-account change before money moves"
+title: "ポラリスHD・Booking.com：ホテルの売上金を受け取る口座が、正規の管理画面で第三者の口座に書き換えられ、1 ホテルで約 900 万円の損失が出た（同社開示） — 振込先の変更を、お金が動く前に別の人が確かめる仕組みが無い"
+title_en: "Polaris Holdings / Booking.com: the bank account that receives a hotel's sales was switched to a third party's inside the legitimate admin screen, and one hotel lost about ¥9 million (company disclosure) — nothing has someone else confirm a payout-account change before money moves"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
 secondary_categories: ["data-provenance", "identity-auth"]
@@ -12,17 +12,17 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["149-revolut-italy-government-mailbox-disclosure-requests", "044-arcadia-speecan-raiden-disaster-mail-spoofing", "006-google-api-key-revocation-lag"]
 version: "2.0"
 status: published
-og_lead_ja: "Booking.com でホテルの受取口座が書き換えられ約900万円 — ポラリスHD"
+og_lead_ja: "Booking.com でホテルの受取口座が書き換えられ約900万円の損失 — ポラリスHD"
 og_lead_en: "Booking.com payout account switched, ¥9M lost — Polaris Holdings"
 layout: "report"
 key_figures:
   - value: "≈ ¥9"
     unit: "million"
-    label: "Sales paid into the fraudulent account at one hotel (as of disclosure)"
+    label: "Loss at one hotel (as of disclosure)"
     tone: "alert"
   - value: "Several"
     unit: "hotels"
-    label: "Had their payout account rewritten. All but one were stopped before payout"
+    label: "Had their payout account rewritten. At all but one, the fraudulent payout was prevented"
   - value: "05-23 → 05-28"
     label: "Five days from spotting the anomaly to disclosure"
 glossary:
@@ -33,7 +33,7 @@ glossary:
 insight:
   slug: "confirmed-by-login-alone"
   label: "Operations confirmed by login alone"
-  quote: "Anyone who could log in could change where the money went, and the change took effect on the spot."
+  quote: "A change to where the money goes went all the way through on a logged-in session alone."
 industries: ["retail", "finance"]
 operations: ["payment-change", "account-admin"]
 controls:
@@ -52,9 +52,9 @@ controls:
 ## 1. TL;DR
 
 <div class="rx-exsum"><ol>
-<li><div class="lab">01<b>What happened</b></div><p>An outsider got into the Booking.com account used by hotel operator Polaris Holdings and, at several hotels, switched the bank account that receives sales to their own. At one hotel part of the sales was paid into that account, a loss of about ¥9 million. The other hotels stopped the payouts after the anomaly was spotted.</p></li>
+<li><div class="lab">01<b>What happened</b></div><p>An outsider got into the Booking.com account used by hotel operator Polaris Holdings and, at several hotels, switched the bank account that receives sales to their own. At one hotel part of its receivables (money it was owed) was paid into that account, a loss of about ¥9 million. At the other hotels, fraudulent payouts were prevented through what the company calls an early response.</p></li>
 <li><div class="lab">02<b>Why it looked normal</b></div><p>The change was made in the legitimate admin screen, as a logged-in action. To the system it was indistinguishable from a routine settings update.</p></li>
-<li class="key"><div class="lab">03<b>The missing layer</b></div><p>Detection worked: spotting the anomaly kept the loss to one hotel. What failed was the layer in which someone other than the person making a payout-account change confirms it before money moves.</p></li>
+<li class="key"><div class="lab">03<b>The missing layer</b></div><p>Detection worked: detection and an early response kept the loss to one hotel. What failed was the layer in which someone other than the person making a payout-account change confirms it before money moves.</p></li>
 </ol></div>
 
 ## 2. What happened
@@ -62,30 +62,30 @@ controls:
 <div class="rx-facts"><dl>
 <dt>Who</dt><dd>Polaris Holdings, a hotel operator. Its hotels were managed on the booking site Booking.com through a group-level account.</dd>
 <dt>What was changed</dt><dd>The bank account Booking.com pays hotel sales into. Hotels register it in the admin screen; it was switched to a third party's account.</dd>
-<dt>Loss</dt><dd>At one hotel, part of the sales it should have received went to the fraudulent account: about ¥9 million (as of disclosure). Accounts were also changed at several other hotels, but the payouts were stopped in time.</dd>
+<dt>Loss</dt><dd>At one hotel, part of its receivables (money it was owed) was paid into the fraudulent account: a loss of about ¥9 million (as of disclosure). Accounts were also changed at several other hotels, but an early response prevented fraudulent payouts there.</dd>
 <dt>Impact on guests</dt><dd>Some guests received phishing messages. The company is examining two possibilities: booking data taken from the admin screen, or a leak from an external booking-management system.</dd>
 <dt>How they got in</dt><dd>Under investigation and not disclosed. This Brief does not speculate.</dd>
-<dt>Industry context</dt><dd>Booking.com's hotel admin site (the extranet) has long been a target. In November 2025 the security firm Sekoia documented emails posing as Booking.com that trick hotel staff into running malware and steal their admin logins. The stolen accounts were then used to send guests fake payment requests built on real booking data.</dd>
+<dt>Industry context</dt><dd>Booking.com's hotel admin site (the extranet) has long been a target. In November 2025 the security firm Sekoia documented emails posing as Booking.com that trick hotel staff into running malware and steal their admin logins. Guests were then contacted by email from the hijacked account or over WhatsApp, with real booking details attached, and led to a page posing as a re-check of their payment details.</dd>
 </dl></div>
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain of events, as far as disclosed</span></div>
-<p class="rx-ex-cap">The point to stop it was ②, when the change took effect. At ③ Booking.com did nothing wrong.</p>
+<p class="rx-ex-cap">The point to stop it was ②, when the change took effect. The payment at ③ itself followed the registered details. The disclosure does not say whether ④ came before or after ③.</p>
 <div class="rx-chain">
 <div class="rx-step"><div class="who">Third party</div><div class="no">1</div><b>Gets into the group Booking.com account</b><p>Route under investigation.</p></div>
 <div class="rx-step crit"><div class="who">Third party</div><div class="no">2</div><b>Rewrites the payout account in the real admin screen</b><p>Several hotels' accounts, switched to a third party's.</p></div>
 <div class="rx-step"><div class="who">Booking.com</div><div class="no">3</div><b>Pays into the registered account as usual</b><p>One hotel's payout lands in the fraudulent account.</p></div>
-<div class="rx-step good"><div class="who">Polaris</div><div class="no">4</div><b>Spots the anomaly and stops payouts</b><p>The other hotels' payouts are stopped.</p></div>
+<div class="rx-step good"><div class="who">Polaris</div><div class="no">4</div><b>Detects the anomaly and prevents payouts at the other hotels</b><p>Through what the company calls an early response.</p></div>
 </div>
 </figure>
 
-At step 3 Booking.com made no mistake: it paid the account on file. <strong>The problem is that the change at step 2 was accepted as a legitimate one.</strong>
+The payment at step 3 was a normal payment to the registered account. <strong>The problem is that the change at step 2 was accepted as a legitimate one.</strong>
 
 ## 3. Timeline — disclosure and response
 
 <ul class="rx-tl">
 <li><time>2026-05-23</time><span>Polaris spots an anomaly in its group Booking.com account and starts investigating.</span></li>
-<li><time class="nd">Investigation</time><span>Payout accounts at several hotels had been rewritten. About ¥9 million went to the fraudulent account at one hotel; the rest were stopped before payout.</span></li>
+<li><time class="nd">Investigation</time><span>Payout accounts at several hotels had been rewritten. At one hotel part of the receivables was paid into the fraudulent account, a loss of about ¥9 million; at the others an early response prevented fraudulent payouts.</span></li>
 <li><time>2026-05-28</time><span>Polaris discloses the unauthorised access. The travel-industry outlet TRAICY reports it the same day.</span></li>
 <li><time>2026-06-02–03</time><span>Security outlets ScanNetSecurity and Security NEXT report it.</span></li>
 </ul>
@@ -99,11 +99,11 @@ At step 3 Booking.com made no mistake: it paid the account on file. <strong>The 
 
 ## 4. Why it wasn't stopped
 
-The failure here is not just that a password was stolen.
+The failure here is not just that someone got into the account. It is that no layer had another person confirm a payout change before it took effect.
 
 Login checks "is the person coming in the registered user?" It does not check what they do once inside. In security terms, the logged-in state is an "authenticated session", and anything done in it looks legitimate to the system. Changing a payout account is handled exactly like changing a contact address.
 
-Detection worked. Polaris spotted the anomaly and stopped the other hotels' payouts. But detection works only once an anomaly surfaces, and one hotel's payout could not be stopped. The point to stop it was earlier: when the payout-account change took effect.
+Detection worked. Polaris detected the anomaly, and fraudulent payouts at the other hotels were prevented. But detection works only once an anomaly surfaces. Even so, one hotel's payout went through; the disclosure does not say whether before or after detection. The point to stop it was earlier: when the payout-account change took effect.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The detection–proof gap</span></div>
@@ -125,7 +125,7 @@ The same shape appears in [Revolut](/critical/briefs/149-revolut-italy-governmen
 
 ## 5. How to counter this
 
-<p class="rx-lead"><strong>With the right mechanism, this attack could have been partly prevented.</strong> If a payout-account change does not take effect until another person confirms it through another channel, the rewrite stops there. But the change happened inside Booking.com's admin screen, so that mechanism has to be built into the booking platform. What users can add on their own side is a way to stop payment after a change and before the first payout.</p>
+<p class="rx-lead"><strong>With the right mechanism, this attack could have been partly prevented.</strong> If a payout-account change does not take effect until another person confirms it through another channel, the rewrite stops there. But the change happened inside Booking.com's admin screen, so that mechanism has to be built into the booking platform. What users can add on their own side is a way to stop payment after a change and before the first payout: have someone other than the changer receive change notifications, and if a change is not recognised, ask the platform to stop payment.</p>
 
 ### Industries and operations to watch
 
@@ -136,7 +136,7 @@ The same shape appears in [Revolut](/critical/briefs/149-revolut-italy-governmen
 <dt><span class="kk">Operation</span>Accounts &amp; permissions</dt><dd>Managing external-service accounts and who can change what. This rewrite came from a hijacked account.</dd>
 </dl></div>
 
-The same hole exists in many organisations, not just hotels: finance changing a supplier's bank details, adding a payee in online banking, setting the receiving account on an e-commerce or payment service. In each, anyone who can log in can change it on the spot, and the result does not show until the next payment. And in many organisations, nobody owns this operation.
+The same hole exists in many organisations, not just hotels: finance changing a supplier's bank details, adding a payee in online banking, setting the receiving account on an e-commerce or payment service. In each, anyone who can log in can change it on the spot, and the result does not show until the next payment. And often no one has been made its owner.
 
 <div class="rx-facts"><dl>
 <dt>Finance</dt><dd>Handles accounts and payments. Tends to see the change as “a systems issue”.</dd>
@@ -144,15 +144,15 @@ The same hole exists in many organisations, not just hotels: finance changing a 
 <dt>Business units</dt><dd>Sign up for and use booking sites and payment services day to day.</dd>
 </dl></div>
 
-<strong>Between the three, no one has the job of asking “is this payout change really right?”</strong> Here, a single rewrite moved about ¥9 million.
+<strong>Between the three, no one has the job of asking “is this payout change really right?”</strong> Here, one hotel alone lost about ¥9 million.
 
 ### Do today's controls close it?
 
 | Control | Here | Why |
 | --- | --- | --- |
-| Multi-factor authentication (MFA) | <span class="bx-st no">Ineffective</span> | Checks who comes in, not what they do after. Passes when a stolen login is reused or the device is hijacked. |
-| Endpoint monitoring (EDR) | <span class="bx-st no">Ineffective</span> | Watches the organisation's own devices; cannot see settings changed inside a booking site or other external service. |
-| Call-back verification | <span class="bx-st part">Partial</span> | Works when a supplier asks to change its account. When your own settings are rewritten, as here, nobody gets a call. |
+| Multi-factor authentication (MFA) | <span class="bx-st part">Partial</span> | Works at the door. The route in has not been disclosed, so whether it would have helped here is unknown. It is bypassed when the device or the logged-in session itself is hijacked, and it does not look at what is done after login. |
+| Endpoint monitoring (EDR) | <span class="bx-st part">Partial</span> | May detect an endpoint infection like the one Sekoia describes, but cannot see settings changed inside a booking site or other external service. |
+| Call-back verification | <span class="bx-st no">Ineffective</span> | Works when a supplier asks to change its account. When your own settings are rewritten, as here, nobody gets a call. |
 | Email authentication (DMARC etc.) | <span class="bx-st na">Not relevant</span> | Reduces email spoofing, but has nothing to do with this rewrite. |
 
 <section class="rx-box"><div class="rx-ex-h"><span class="rx-ex-no">Controls</span><span class="rx-ex-t">What is needed</span></div>
