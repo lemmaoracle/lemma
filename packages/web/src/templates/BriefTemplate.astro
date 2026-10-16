@@ -41,6 +41,7 @@ import { threatBannerCopy } from "../config/briefThreatBanner";
 import { briefsCategoryHref } from "../data/briefIndex";
 import { BRIEF_RAIL_CTA_URL, DISCOVERY_CALL_URL } from "../config/cta";
 import { localePath } from "../lib/urls";
+import { briefCoverArt } from "../lib/briefCoverArt";
 import {
   categoryLabel,
   type CategorySlug,
@@ -84,6 +85,23 @@ const analysisLead = isJa
 
 const showRevisionHistory = brief.data.version !== "1.0";
 
+/**
+ * report レイアウト（2026-10・opt-in）。frontmatter に `layout: "report"` を
+ * 書いた Brief だけが、表紙（スレート＋生成グラフィック＋主要数値）・
+ * 章番号つき見出し・目次だけの右レール・図表部品の CSS で描画される。
+ * 未指定の Brief は以下の `isReport` 分岐の偽側＝これまでの面をそのまま通る。
+ * 本文側の組み替え（改訂注記を外す・用語メモ・核心の帯・参照の1行）は
+ * rehype-brief-section-number が frontmatter を見て行う。
+ */
+const isReport = brief.data.layout === "report";
+const coverArt = isReport ? briefCoverArt(brief.data.brief_no) : null;
+const keyFigures = (isReport ? (brief.data.key_figures ?? []) : []).map(
+  (f) => {
+    const [from, to] = f.value.split(/\s*→\s*/);
+    return { ...f, from, to };
+  },
+);
+
 const PILLAR_LABELS: Record<PillarSlug, { ja: string; en: string }> = {
   "01-verifiable-origin": {
     ja: "Pillar 01 · 来歴証明",
@@ -113,6 +131,8 @@ const PILLAR_PAGE_ANCHOR: Record<PillarSlug, string> = {
 const pillar = brief.data.pillar as PillarSlug;
 const pillarLabel = PILLAR_LABELS[pillar][isJa ? "ja" : "en"];
 const pillarHref = `${base}/pillars/${PILLAR_PAGE_ANCHOR[pillar]}`;
+// report の表紙の見出し行は「Pillar 04 · 」を落とした短い名前だけ。
+const pillarShort = pillarLabel.split(" · ").slice(1).join(" · ") || pillarLabel;
 
 // Locale-resolved full collection (EN preferred, JA fallback) for prev/next
 // and auto-derived related.
@@ -320,6 +340,8 @@ const labels = isJa
   ? {
       incidentDate: "事案日",
       published: "公開日",
+      publishedShort: "公開",
+      revised: "改訂",
       authors: "発行",
       pack: "関連 Pack",
       tocLabel: "Contents",
@@ -351,6 +373,8 @@ const labels = isJa
   : {
       incidentDate: "Incident date",
       published: "Published",
+      publishedShort: "Published",
+      revised: "Revised",
       authors: "Authors",
       pack: "Related Pack",
       tocLabel: "Contents",
@@ -393,7 +417,7 @@ const labels = isJa
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
-  <main class="brief-page">
+  <main class:list={["brief-page", isReport && "is-report"]}>
     <div class="bd-shell">
       <div class="bd-main">
         <div class="brief-breadcrumb">
@@ -404,6 +428,60 @@ const labels = isJa
           <span>{labels.briefNoPrefix} {briefNoPad}</span>
         </div>
 
+        {isReport && coverArt ? (
+          <>
+            {/* report の表紙。frontmatter（brief_no / pillar / title / key_figures）
+                だけで描く。グラフィックは brief_no を種にビルド時生成。 */}
+            <header class="rx-cover">
+              <svg
+                class="rx-cover-art"
+                aria-hidden="true"
+                viewBox={coverArt.viewBox}
+                preserveAspectRatio={coverArt.preserveAspectRatio}
+                set:html={coverArt.inner}
+              />
+              <div class="rx-cover-in">
+                <div class="rx-overline">
+                  <span class="no">No. {briefNoPad}</span>
+                  <span>Critical Brief</span>
+                  <a href={pillarHref}>· {pillarShort}</a>
+                </div>
+                <h1>{mainTitle}</h1>
+                {subtitle && <p class="rx-deck">{subtitle}</p>}
+                {keyFigures.length > 0 && (
+                  <div class="rx-figs">
+                    {keyFigures.map((f) => (
+                      <div class:list={["rx-fig", f.tone === "alert" && "alert"]}>
+                        <div class="n">
+                          {f.from}
+                          {f.to !== undefined && (
+                            <>
+                              <span class="arw">→</span>
+                              {f.to}
+                            </>
+                          )}
+                          {f.unit && <small>{f.unit}</small>}
+                        </div>
+                        <div class="l">{f.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </header>
+            <div class="rx-meta">
+              <div><span class="k">{labels.incidentDate}</span>{incidentDateStr}</div>
+              <div><span class="k">{labels.publishedShort}</span>{publishedStr}</div>
+              {showRevisionHistory && (
+                <div>
+                  <span class="k">{labels.revised}</span>
+                  v{brief.data.version}{revisionDate ? ` · ${revisionDate}` : ""}
+                </div>
+              )}
+              <div><span class="k">{labels.authors}</span>{brief.data.authors.join(", ")}</div>
+            </div>
+          </>
+        ) : (
         <header class="bd-head">
           <div class="bd-meta">
             <span class="bd-no">No. {briefNoPad}</span>
@@ -445,8 +523,9 @@ const labels = isJa
             </aside>
           )}
         </header>
+        )}
 
-        <article class="brief-body">
+        <article class:list={["brief-body", isReport && "is-report"]}>
           <Content />
         </article>
 
@@ -546,17 +625,19 @@ const labels = isJa
       <aside class="bd-rail" aria-label={labels.tocLabel}>
         {/* 1段目: 白カード — 読了プログレス＋Contents。 */}
         <div class="bd-railbox">
+          {!isReport && (
           <div class="bd-prog">
             <span>{labels.progress}</span>
             <span class="bar"><i data-rail-bar></i></span>
             <span><span data-rail-pct>0</span>%</span>
           </div>
+          )}
           <div class="bd-railh">{labels.tocLabel}</div>
           <ul class="bd-toc">
             {tocSections.map((s) => (
               <li>
                 <a href={`#${s.slug}`} data-toc-link>
-                  <i>§{s.num}</i><span>{s.text}</span>
+                  <i>{isReport ? String(s.num).padStart(2, "0") : `§${s.num}`}</i><span>{s.text}</span>
                 </a>
               </li>
             ))}
@@ -565,6 +646,8 @@ const labels = isJa
 
         {/* 2段目: 脅威タイプ別バナー（白＋ライム縁）。読んでいる事案に紐づく
             「自社はどうか」の問いかけ。CTA は相談で、デモ直行にはしない。 */}
+        {/* report レイアウトのレールは目次だけ（バナー・ブランド面を出さない）。 */}
+        {!isReport && (
         <div class="bd-railad" data-catkey={primarySlug}>
           <div class="ra-k">{labels.bannerLabel}</div>
           <div class="ra-t">{banner.head}</div>
@@ -578,17 +661,20 @@ const labels = isJa
             data-cta="rail_weekly"
           >{labels.bannerBtn}</a>
         </div>
+        )}
 
         {/* 3段目: Lemma のコンセプト。Brief 個別の要約でも転換 CTA でもなく、
             「Lemma というものがある」を持ち帰ってもらうためのブランド面
             （2026-08-21）。マスターコピーはトップ h1・フッター・OG と同一の
             文言を使う。ボタンは置かない——転換は末尾 CTA が受ける。 */}
+        {!isReport && (
         <div class="bd-railbrand">
           <div class="rb-k">Lemma</div>
           <div class="rb-t">{labels.brandLine1}<br />{labels.brandLine2}</div>
           <p>{labels.brandSub}</p>
           <a class="rb-more" href={localePath(base)}>{labels.brandMore}</a>
         </div>
+        )}
       </aside>
     </div>
 
@@ -1028,286 +1114,6 @@ const labels = isJa
   }
   .brief-body :global(h2 .brief-anchor:hover) {
     color: var(--ok-ink);
-  }
-
-  /* ─── §5「対策するには」のレポート部品（md 側で class を付けた HTML） ───
-     判定（bx-verdict）・対策の効き方（bx-controls）・必要になるもの（bx-needs）・
-     点検チェックリスト（bx-checklist）・持ち主の図（bx-owners）・章の写真
-     （bx-photo）。どれも md に書いた Brief にだけ効く。 */
-  .brief-body :global(.bx-photo) {
-    margin: 8px 0 30px;
-    border-radius: 12px;
-    overflow: hidden;
-    aspect-ratio: 16 / 6;
-    background: #2f372f;
-  }
-  .brief-body :global(.bx-photo img) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: saturate(0.55) contrast(0.96);
-    opacity: 0.92;
-  }
-  .brief-body :global(.bx-k) {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-  .brief-body :global(.bx-ico) {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: rgba(168, 224, 16, 0.14);
-    color: var(--ok-light);
-  }
-  .brief-body :global(.bx-ico svg) {
-    width: 22px;
-    height: 22px;
-  }
-  .brief-body :global(.bx-verdict) {
-    display: flex;
-    gap: 18px;
-    align-items: flex-start;
-    margin: 0 0 34px;
-    padding: 22px 24px;
-    border-radius: 12px;
-    background: #2f372f;
-    color: #ebefe6;
-  }
-  .brief-body :global(.bx-verdict .bx-ico) {
-    background: rgba(168, 224, 16, 0.16);
-    color: var(--ok);
-  }
-  .brief-body :global(.bx-verdict .bx-k) {
-    color: #9ba296;
-  }
-  .brief-body :global(.bx-verdict p.bx-verdict-h) {
-    margin: 6px 0 4px;
-    font-family: var(--font-serif-jp);
-    font-weight: 600;
-    font-size: 22px;
-    line-height: 1.5;
-    letter-spacing: 0.02em;
-    color: #f3f6ec;
-  }
-  .brief-body :global(.bx-verdict p) {
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.85;
-    color: #c8cec2;
-  }
-  .brief-body :global(.bx-meter) {
-    display: flex;
-    gap: 4px;
-    margin: 10px 0 12px;
-  }
-  .brief-body :global(.bx-meter i) {
-    width: 34px;
-    height: 6px;
-    border-radius: 3px;
-    background: #4a544b;
-  }
-  .brief-body :global(.bx-meter i.on) {
-    background: var(--ok);
-  }
-  .brief-body :global(.bx-meter span) {
-    margin-left: 8px;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    color: #9ba296;
-    line-height: 6px;
-  }
-  .brief-body :global(.bx-owners) {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin: 6px 0 12px;
-  }
-  .brief-body :global(.bx-owner) {
-    padding: 14px 14px 12px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--card);
-  }
-  .brief-body :global(.bx-owner b) {
-    display: block;
-    font-size: 14px;
-    color: var(--tx);
-  }
-  .brief-body :global(.bx-owner span) {
-    display: block;
-    margin-top: 4px;
-    font-size: 12.5px;
-    line-height: 1.7;
-    color: var(--muted);
-  }
-  .brief-body :global(.bx-gap) {
-    margin: 0 0 26px;
-    padding: 10px 14px;
-    border: 1px dashed #c25438;
-    border-radius: 8px;
-    font-size: 13.5px;
-    line-height: 1.8;
-    color: #9a3f28;
-    background: rgba(194, 84, 56, 0.05);
-    text-align: center;
-  }
-  .brief-body :global(.bx-controls) {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin: 6px 0 30px;
-  }
-  .brief-body :global(.bx-ctl) {
-    padding: 16px 16px 14px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--card);
-  }
-  .brief-body :global(.bx-ctl-top) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .brief-body :global(.bx-ctl b) {
-    font-size: 14.5px;
-    color: var(--tx);
-  }
-  .brief-body :global(.bx-ctl p) {
-    margin: 0;
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--tx-soft);
-  }
-  .brief-body :global(.bx-st) {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.06em;
-    padding: 3px 9px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-  .brief-body :global(.bx-st::before) {
-    content: "";
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: currentColor;
-  }
-  .brief-body :global(.bx-st.no) {
-    color: #a8452d;
-    background: rgba(194, 84, 56, 0.09);
-  }
-  .brief-body :global(.bx-st.part) {
-    color: #8a6a00;
-    background: rgba(214, 170, 30, 0.13);
-  }
-  .brief-body :global(.bx-st.na) {
-    color: var(--muted);
-    background: #eef0ea;
-  }
-  .brief-body :global(ol.bx-needs) {
-    counter-reset: none;
-    display: grid;
-    gap: 12px;
-    margin: 6px 0 30px;
-  }
-  .brief-body :global(ol.bx-needs li) {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    margin: 0;
-    padding: 18px 18px 16px;
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--ok);
-    border-radius: 10px;
-    background: var(--card);
-  }
-  .brief-body :global(ol.bx-needs li::before) {
-    content: none;
-  }
-  .brief-body :global(ol.bx-needs b) {
-    display: block;
-    font-size: 15px;
-    color: var(--tx);
-    margin-bottom: 4px;
-  }
-  .brief-body :global(ol.bx-needs p) {
-    margin: 0;
-    font-size: 13.5px;
-    line-height: 1.85;
-    color: var(--tx-soft);
-  }
-  .brief-body :global(.bx-checklist) {
-    margin: 6px 0 26px;
-    border: 1px solid #cfd5c4;
-    border-radius: 12px;
-    background: #f6f8f1;
-    overflow: hidden;
-  }
-  .brief-body :global(.bx-checklist-h) {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 20px;
-    border-bottom: 1px solid #dfe4d5;
-    background: #eef2e6;
-  }
-  .brief-body :global(.bx-checklist-h .bx-ico) {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-  }
-  .brief-body :global(.bx-checklist-h .bx-ico svg) {
-    width: 18px;
-    height: 18px;
-  }
-  .brief-body :global(.bx-checklist-h b) {
-    font-size: 14.5px;
-    color: var(--tx);
-  }
-  .brief-body :global(.bx-checklist ul) {
-    margin: 0;
-    padding: 14px 20px 16px;
-  }
-  .brief-body :global(.bx-checklist li) {
-    padding-left: 32px;
-    margin-bottom: 12px;
-    font-size: 14px;
-    line-height: 1.85;
-  }
-  .brief-body :global(.bx-checklist li::before) {
-    left: 2px;
-    top: 5px;
-    width: 16px;
-    height: 16px;
-    background: #fff;
-    border: 1.5px solid #8f9a83;
-    border-radius: 4px;
-  }
-  @media (max-width: 620px) {
-    .brief-body :global(.bx-owners),
-    .brief-body :global(.bx-controls) {
-      grid-template-columns: 1fr;
-    }
-    .brief-body :global(.bx-verdict) {
-      flex-direction: column;
-      gap: 12px;
-    }
   }
 
   /* ─── LISTS ─── */
@@ -2098,6 +1904,1033 @@ const labels = isJa
     .bd-pn,
     .bd-prog .bar i {
       transition: none;
+    }
+  }
+  /* ═══════════════════════════════════════════════════════════════════
+     report レイアウト（frontmatter `layout: "report"`・2026-10 opt-in）
+     承認済みモック 032_v8 の面。すべて `.is-report` の下に閉じているので、
+     レイアウト未指定の Brief には一切効かない。本文部品は md 側で class を
+     付けた HTML ブロック（要旨・事実の表・図表・時系列・パネル・出典）。
+     ═══════════════════════════════════════════════════════════════════ */
+  .brief-page.is-report {
+    --line-2: #cfd3c8;
+    --slate: #2f372f;
+    --red: #c25438;
+    --red-ink: #9a3f28;
+    --amber: #8a6a00;
+  }
+  .brief-page.is-report .bd-shell {
+    grid-template-columns: minmax(0, 800px) 200px;
+    gap: 64px;
+    justify-content: center;
+  }
+
+  /* ─── 表紙 ─── */
+  .rx-cover {
+    position: relative;
+    margin-top: 18px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
+    color: #e9eee3;
+    isolation: isolate;
+  }
+  .rx-cover-art {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+  }
+  .rx-cover-in {
+    padding: 32px 40px 0;
+  }
+  .rx-overline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.6;
+    letter-spacing: 0.16em;
+    color: #a9b2a2;
+    text-transform: uppercase;
+  }
+  .rx-overline .no {
+    color: var(--tx);
+    background: var(--ok);
+    border-radius: 4px;
+    padding: 3px 9px;
+    letter-spacing: 0.1em;
+  }
+  .rx-overline a {
+    color: inherit;
+    text-decoration: none;
+    border: 0;
+  }
+  .rx-overline a:hover {
+    color: var(--ok);
+  }
+  .rx-cover h1 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(22px, 2.3vw, 27px);
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+    color: #f4f7ee;
+    margin: 18px 0 12px;
+    max-width: 66%;
+  }
+  .rx-deck {
+    margin: 0 0 28px;
+    max-width: 34em;
+    font-size: 15px;
+    line-height: 1.85;
+    color: #cdd4c6;
+    padding-left: 16px;
+    border-left: 2px solid var(--ok);
+  }
+  .rx-figs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    margin: 0 -40px;
+    background: rgba(20, 25, 21, 0.35);
+  }
+  .rx-fig {
+    padding: 18px 24px 20px 40px;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .rx-fig:last-child {
+    border-right: 0;
+  }
+  .rx-fig .n {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.2;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .rx-fig .n small {
+    font-size: 14px;
+    margin-left: 2px;
+    color: #dfe6d6;
+  }
+  .rx-fig .n .arw {
+    color: var(--ok);
+    font-size: 18px;
+    margin: 0 5px;
+  }
+  .rx-fig .l {
+    margin-top: 6px;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #b9c1b2;
+  }
+  .rx-fig.alert .n {
+    color: #ffb39e;
+  }
+  .rx-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 28px;
+    padding: 12px 2px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--tx);
+  }
+  .rx-meta div {
+    display: flex;
+    gap: 9px;
+    align-items: baseline;
+  }
+  .rx-meta .k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ─── 右レール: 目次だけ（モックの細い縦罫） ─── */
+  .brief-page.is-report .bd-rail {
+    margin-top: 72px;
+  }
+  .brief-page.is-report .bd-railbox {
+    background: none;
+    border: 0;
+    border-left: 1px solid var(--line-2);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 4px 0 4px 18px;
+  }
+  .brief-page.is-report .bd-railh {
+    border-bottom: 0;
+    padding-bottom: 0;
+    margin-bottom: 8px;
+  }
+  .brief-page.is-report .bd-toc a {
+    grid-template-columns: 26px 1fr;
+    gap: 0;
+    padding: 5px 0;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .brief-page.is-report .bd-toc a i {
+    padding-top: 2px;
+  }
+  .brief-page.is-report .bd-toc a.is-active {
+    font-weight: 700;
+  }
+
+  /* ─── 本文の組み ─── */
+  .brief-body.is-report {
+    padding-top: 0;
+    line-height: 1.95;
+    counter-reset: rxsec;
+  }
+  .brief-body.is-report :global(p) {
+    margin: 0 0 18px;
+  }
+  .brief-body.is-report :global(h2[id]),
+  .brief-body.is-report :global(h3[id]) {
+    scroll-margin-top: 88px;
+  }
+  /* 章見出し: 「01 見出し」＋墨の上罫。番号は CSS カウンタ（md の番号は
+     rehype が剥がして data-section-num に移している）。 */
+  .brief-body.is-report :global(h2) {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-top: 1.5px solid var(--tx);
+    padding-top: 14px;
+    margin: 60px 0 20px;
+    font-size: clamp(20px, 2vw, 23px);
+    line-height: 1.5;
+    counter-increment: rxsec;
+  }
+  .brief-body.is-report :global(> h2:first-child) {
+    margin-top: 40px;
+  }
+  .brief-body.is-report :global(h2::before) {
+    content: counter(rxsec, decimal-leading-zero);
+    display: inline;
+    width: auto;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    background: none;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 1;
+    color: var(--ok-ink);
+  }
+  .brief-body.is-report :global(h3) {
+    font-size: 16.5px;
+    margin: 36px 0 10px;
+    padding-left: 0;
+  }
+  .brief-body.is-report :global(h3::before) {
+    content: none;
+  }
+  .brief-body.is-report :global(h2 + h3) {
+    margin-top: 24px;
+  }
+  .brief-body.is-report :global(ul:not([class]) > li) {
+    padding-left: 22px;
+    margin-bottom: 10px;
+  }
+  .brief-body.is-report :global(ul:not([class]) > li::before) {
+    left: 2px;
+    top: 14px;
+  }
+
+  /* 要旨（§1） */
+  .brief-body.is-report :global(.rx-exsum) {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .brief-body.is-report :global(.rx-exsum ol) {
+    margin: 0;
+    padding: 2px 24px;
+  }
+  .brief-body.is-report :global(.rx-exsum li) {
+    display: grid;
+    grid-template-columns: 118px minmax(0, 1fr);
+    gap: 18px;
+    padding: 15px 0;
+    margin: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .brief-body.is-report :global(.rx-exsum li::before) {
+    content: none;
+  }
+  .brief-body.is-report :global(.rx-exsum li:last-child) {
+    border-bottom: 0;
+  }
+  .brief-body.is-report :global(.rx-exsum .lab) {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    padding-top: 4px;
+  }
+  .brief-body.is-report :global(.rx-exsum .lab b) {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    color: var(--tx);
+    font-weight: 700;
+  }
+  .brief-body.is-report :global(.rx-exsum p) {
+    margin: 0;
+    font-size: 15.5px;
+    line-height: 1.9;
+  }
+  .brief-body.is-report :global(.rx-exsum li.key) {
+    background: linear-gradient(90deg, rgba(168, 224, 16, 0.1), rgba(168, 224, 16, 0));
+    margin: 0 -24px;
+    padding: 15px 24px;
+    border-left: 3px solid var(--ok);
+  }
+  .brief-body.is-report :global(.rx-exsum li.key p) {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    color: var(--tx);
+    font-size: 16px;
+  }
+
+  /* 定義表（事実・注意したい業界と業務・持ち主） */
+  .brief-body.is-report :global(.rx-facts) {
+    border-top: 1px solid var(--tx);
+    margin: 0 0 18px;
+  }
+  .brief-body.is-report :global(.rx-facts dl) {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+  .brief-body.is-report :global(.rx-facts dt),
+  .brief-body.is-report :global(.rx-facts dd) {
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line);
+    margin: 0;
+  }
+  .brief-body.is-report :global(.rx-facts dt) {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--tx);
+    padding-right: 16px;
+    line-height: 1.8;
+  }
+  .brief-body.is-report :global(.rx-facts dd) {
+    font-size: 15px;
+    line-height: 1.85;
+  }
+  .brief-body.is-report :global(.rx-scope dt .kk) {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    font-weight: 400;
+    margin-bottom: 2px;
+  }
+
+  /* 用語メモ（frontmatter glossary → rehype が差す） */
+  .brief-body.is-report :global(.rx-note) {
+    margin: 18px 0 0;
+    padding: 10px 14px;
+    border-left: 2px solid var(--line-2);
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+  .brief-body.is-report :global(.rx-note b) {
+    color: var(--tx-soft);
+    font-weight: 700;
+  }
+  .brief-body.is-report :global(.rx-note .k) {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    margin-right: 10px;
+  }
+
+  /* 図表パネル・必要になるもの・点検チェックリスト（同じパネル） */
+  .brief-body.is-report :global(.rx-ex),
+  .brief-body.is-report :global(.rx-box),
+  .brief-body.is-report :global(.bx-checklist) {
+    background: #eef1e8;
+    border: 1px solid #dde3d2;
+    border-radius: 10px;
+    padding: 16px 20px 20px;
+  }
+  .brief-body.is-report :global(.rx-ex) {
+    margin: 32px 0 26px;
+  }
+  .brief-body.is-report :global(.rx-box),
+  .brief-body.is-report :global(.bx-checklist) {
+    margin: 28px 0 22px;
+  }
+  .brief-body.is-report :global(.rx-ex-h) {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .brief-body.is-report :global(.rx-ex-no) {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--ok-light);
+    white-space: nowrap;
+  }
+  .brief-body.is-report :global(.rx-ex-t) {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--tx);
+  }
+  .brief-body.is-report :global(.rx-ex-cap) {
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+  .brief-body.is-report :global(.rx-box-cap) {
+    margin: 6px 0 12px;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  /* 図表: 連鎖（rx-chain） */
+  .brief-body.is-report :global(.rx-chain) {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .brief-body.is-report :global(.rx-step) {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 14px 16px 16px;
+    margin-right: 18px;
+    border-radius: 8px;
+  }
+  .brief-body.is-report :global(.rx-step:last-child) {
+    margin-right: 0;
+  }
+  .brief-body.is-report :global(.rx-step:not(:last-child)::after) {
+    content: "";
+    position: absolute;
+    right: -15px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid #9aa292;
+    border-right: 2px solid #9aa292;
+    transform: translateY(-50%) rotate(45deg);
+  }
+  .brief-body.is-report :global(.rx-step .who) {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    line-height: 1.6;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .brief-body.is-report :global(.rx-step .no) {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--tx);
+    margin: 6px 0;
+  }
+  .brief-body.is-report :global(.rx-step b) {
+    display: block;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--tx);
+    margin-bottom: 4px;
+  }
+  .brief-body.is-report :global(.rx-step p) {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+  .brief-body.is-report :global(.rx-step.crit) {
+    border: 1.5px solid var(--red);
+    background: #fffaf8;
+  }
+  .brief-body.is-report :global(.rx-step.crit .no) {
+    color: var(--red);
+  }
+  .brief-body.is-report :global(.rx-step.good) {
+    border-color: #c9da9a;
+  }
+  .brief-body.is-report :global(.rx-step.good .no) {
+    color: var(--ok-ink);
+  }
+
+  /* 図表: 検出と証明の落差（rx-gap） */
+  .brief-body.is-report :global(.rx-gap) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.25fr 1fr 1fr;
+    column-gap: 10px;
+    row-gap: 8px;
+  }
+  .brief-body.is-report :global(.rx-zone) {
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  .brief-body.is-report :global(.rx-zone b) {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .brief-body.is-report :global(.rx-zone.proof) {
+    grid-column: 1 / 3;
+    border: 1.5px dashed var(--red);
+    color: var(--red-ink);
+    background: rgba(194, 84, 56, 0.05);
+  }
+  .brief-body.is-report :global(.rx-zone.gapz) {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    background: var(--slate);
+    color: #e4e9de;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  .brief-body.is-report :global(.rx-zone.gapz b) {
+    color: var(--ok);
+    font-size: 10px;
+  }
+  .brief-body.is-report :global(.rx-zone.gapz span) {
+    font-size: 12.5px;
+    line-height: 1.6;
+    margin-top: 4px;
+  }
+  .brief-body.is-report :global(.rx-zone.det) {
+    grid-column: 4 / 6;
+    border: 1.5px solid #b8cf7a;
+    color: var(--ok-light);
+    background: rgba(168, 224, 16, 0.09);
+  }
+  .brief-body.is-report :global(.rx-g) {
+    grid-row: 2;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px 12px;
+  }
+  .brief-body.is-report :global(.rx-g .t) {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    line-height: 1.6;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .brief-body.is-report :global(.rx-g b) {
+    display: block;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--tx);
+    margin-top: 2px;
+  }
+  .brief-body.is-report :global(.rx-g.g1) {
+    grid-column: 1;
+  }
+  .brief-body.is-report :global(.rx-g.g2) {
+    grid-column: 2;
+    border-color: var(--red);
+  }
+  .brief-body.is-report :global(.rx-g.g3) {
+    grid-column: 4;
+  }
+  .brief-body.is-report :global(.rx-g.g4) {
+    grid-column: 5;
+  }
+
+  /* 時系列（§3）— 既定の縦線タイムラインを打ち消して表組みにする */
+  .brief-body.is-report :global(.rx-tl) {
+    margin: 0 0 20px;
+    padding: 0;
+    border-top: 1px solid var(--tx);
+  }
+  .brief-body.is-report :global(.rx-tl::before) {
+    content: none;
+  }
+  .brief-body.is-report :global(.rx-tl > li) {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 16px;
+    padding: 11px 0;
+    margin: 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .brief-body.is-report :global(.rx-tl > li::before) {
+    content: none;
+  }
+  .brief-body.is-report :global(.rx-tl time) {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--tx);
+    padding-top: 2px;
+    white-space: nowrap;
+  }
+  .brief-body.is-report :global(.rx-tl time.nd) {
+    color: var(--muted);
+  }
+
+  /* 注・資料の但し書き */
+  .brief-body.is-report :global(.rx-aside) {
+    margin: 0 0 22px;
+    padding: 2px 0 2px 14px;
+    border-left: 2px solid var(--line-2);
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  /* この事案の核心（frontmatter insight.quote → rehype が §4 に差す） */
+  .brief-body.is-report :global(.rx-key) {
+    margin: 26px 0 30px;
+    padding: 30px 34px 32px;
+    border-radius: 12px;
+    color: #ebefe6;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 120% at 100% 0%, rgba(168, 224, 16, 0.18), rgba(168, 224, 16, 0) 60%),
+      linear-gradient(168deg, #3c443d 0%, #2f372f 58%, #272e28 100%);
+  }
+  .brief-body.is-report :global(.rx-key::before) {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(235, 239, 230, 0.06) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+    pointer-events: none;
+  }
+  .brief-body.is-report :global(.rx-key > *) {
+    position: relative;
+  }
+  .brief-body.is-report :global(.rx-key figcaption) {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.6;
+    letter-spacing: 0.22em;
+    color: var(--ok);
+    margin-bottom: 12px;
+  }
+  .brief-body.is-report :global(.rx-key blockquote) {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(21px, 2.6vw, 27px);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    color: #f3f6ec;
+  }
+  .brief-body.is-report :global(.rx-key blockquote::after) {
+    content: "";
+    display: block;
+    width: 72px;
+    height: 2px;
+    background: var(--ok);
+    margin-top: 18px;
+    border-radius: 2px;
+  }
+
+  /* §5 リード */
+  .brief-body.is-report :global(.rx-lead strong) {
+    font-size: 17px;
+  }
+
+  /* 対策の表（md の表。状態語は span.bx-st のチップ） */
+  .brief-body.is-report :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 22px;
+    font-size: 13.5px;
+    line-height: 1.75;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+  .brief-body.is-report :global(th) {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    font-weight: 400;
+    background: none;
+    padding: 8px 12px 8px 0;
+    border-top: 1px solid var(--tx);
+    border-bottom: 1px solid var(--line-2);
+  }
+  .brief-body.is-report :global(td) {
+    padding: 11px 12px 11px 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+    line-height: 1.75;
+  }
+  .brief-body.is-report :global(tbody tr:last-child td) {
+    border-bottom: 1px solid var(--line);
+  }
+  .brief-body.is-report :global(td:first-child) {
+    font-weight: 700;
+    color: var(--tx);
+    width: 30%;
+  }
+  .brief-body.is-report :global(table:has(.bx-st) td:nth-child(2)) {
+    width: 110px;
+  }
+  .brief-body.is-report :global(.bx-st) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.6;
+    padding: 2px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+    font-weight: 400;
+  }
+  .brief-body.is-report :global(.bx-st::before) {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .brief-body.is-report :global(.bx-st.no) {
+    color: #a8452d;
+    background: rgba(194, 84, 56, 0.09);
+  }
+  .brief-body.is-report :global(.bx-st.part) {
+    color: var(--amber);
+    background: rgba(214, 170, 30, 0.13);
+  }
+  .brief-body.is-report :global(.bx-st.na) {
+    color: var(--muted);
+    background: #eef0ea;
+  }
+
+  /* 必要になるもの（番号つき） */
+  .brief-body.is-report :global(ol.num) {
+    margin: 12px 0 4px;
+    padding: 0;
+  }
+  .brief-body.is-report :global(ol.num > li) {
+    padding-left: 34px;
+    margin-bottom: 14px;
+  }
+  .brief-body.is-report :global(ol.num > li:last-child) {
+    margin-bottom: 0;
+  }
+  .brief-body.is-report :global(ol.num > li::before) {
+    left: 0;
+    top: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--slate);
+    color: var(--ok);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 22px;
+    text-align: center;
+  }
+  .brief-body.is-report :global(ol.num b) {
+    color: var(--tx);
+  }
+
+  /* 点検チェックリスト */
+  .brief-body.is-report :global(.bx-checklist ul) {
+    margin: 0;
+    padding: 14px 16px;
+    background: #fff;
+    border: 1px solid #dde3d2;
+    border-radius: 8px;
+  }
+  .brief-body.is-report :global(.bx-checklist li) {
+    padding-left: 30px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 1.85;
+  }
+  .brief-body.is-report :global(.bx-checklist li:last-child) {
+    margin-bottom: 0;
+  }
+  .brief-body.is-report :global(.bx-checklist li::before) {
+    left: 2px;
+    top: 5px;
+    width: 15px;
+    height: 15px;
+    background: #fff;
+    border: 1.5px solid #8f9a83;
+    border-radius: 4px;
+  }
+
+  /* 出典 */
+  .brief-body.is-report :global(.rx-srcs) {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--tx);
+    counter-reset: rxsrc;
+  }
+  .brief-body.is-report :global(.rx-srcs > li) {
+    display: grid;
+    grid-template-columns: 30px 88px minmax(0, 1fr);
+    gap: 12px;
+    padding: 11px 0;
+    margin: 0;
+    border-bottom: 1px solid var(--line);
+    counter-increment: rxsrc;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .brief-body.is-report :global(.rx-srcs > li::before) {
+    content: counter(rxsrc, decimal-leading-zero);
+    position: static;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    padding-top: 2px;
+  }
+  .brief-body.is-report :global(.rx-srcs .ty) {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--muted);
+    padding-top: 3px;
+  }
+  .brief-body.is-report :global(.rx-srcs b) {
+    color: var(--tx);
+    font-weight: 600;
+  }
+  .brief-body.is-report :global(.rx-srcs .meta) {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .brief-body.is-report :global(.rx-also) {
+    margin: 16px 0 0;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 1060px) {
+    .brief-page.is-report .bd-shell {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+    .brief-page.is-report .bd-rail {
+      display: none;
+    }
+  }
+  @media (max-width: 760px) {
+    .brief-page.is-report .bd-shell {
+      padding: 0 16px;
+    }
+    .rx-cover-in {
+      padding: 24px 20px 0;
+    }
+    .rx-cover h1 {
+      font-size: 20px;
+      max-width: none;
+    }
+    .rx-cover-art {
+      opacity: 0.55;
+    }
+    .rx-deck {
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+    .rx-figs {
+      grid-template-columns: 1fr;
+      margin: 0 -20px;
+    }
+    .rx-fig {
+      display: grid;
+      grid-template-columns: minmax(118px, auto) 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-right: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .rx-fig:last-child {
+      border-bottom: 0;
+    }
+    .rx-fig .n {
+      font-size: 21px;
+    }
+    .rx-fig:last-child .n {
+      font-size: 17px;
+    }
+    .rx-fig .n .arw {
+      font-size: 14px;
+      margin: 0 3px;
+    }
+    .rx-fig .l {
+      margin: 0;
+    }
+    .brief-body.is-report :global(h2) {
+      margin-top: 48px;
+    }
+    .brief-body.is-report :global(.rx-exsum ol) {
+      padding: 2px 18px;
+    }
+    .brief-body.is-report :global(.rx-exsum li) {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .brief-body.is-report :global(.rx-exsum li.key) {
+      margin: 0 -18px;
+      padding: 14px 18px;
+    }
+    .brief-body.is-report :global(.rx-facts dl) {
+      grid-template-columns: 1fr;
+    }
+    .brief-body.is-report :global(.rx-facts dt) {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+    .brief-body.is-report :global(.rx-facts dd) {
+      padding-top: 2px;
+    }
+    .brief-body.is-report :global(.rx-ex),
+    .brief-body.is-report :global(.rx-box),
+    .brief-body.is-report :global(.bx-checklist) {
+      padding: 14px 14px 16px;
+    }
+    .brief-body.is-report :global(.rx-chain) {
+      grid-template-columns: 1fr;
+    }
+    .brief-body.is-report :global(.rx-step) {
+      margin: 0 0 20px;
+    }
+    .brief-body.is-report :global(.rx-step:last-child) {
+      margin-bottom: 0;
+    }
+    .brief-body.is-report :global(.rx-step:not(:last-child)::after) {
+      right: auto;
+      left: 50%;
+      top: auto;
+      bottom: -16px;
+      transform: translateX(-50%) rotate(135deg);
+    }
+    .brief-body.is-report :global(.rx-gap) {
+      grid-template-columns: 104px minmax(0, 1fr);
+      row-gap: 8px;
+    }
+    .brief-body.is-report :global(.rx-zone) {
+      padding: 8px 9px;
+      font-size: 11.5px;
+    }
+    .brief-body.is-report :global(.rx-zone b) {
+      letter-spacing: 0.04em;
+    }
+    .brief-body.is-report :global(.rx-zone.proof) {
+      grid-column: 1;
+      grid-row: 1 / 3;
+    }
+    .brief-body.is-report :global(.rx-zone.gapz) {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      text-align: left;
+      flex-direction: row;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .brief-body.is-report :global(.rx-zone.gapz span) {
+      margin: 0;
+    }
+    .brief-body.is-report :global(.rx-zone.det) {
+      grid-column: 1;
+      grid-row: 4 / 6;
+    }
+    .brief-body.is-report :global(.rx-g) {
+      grid-column: 2 !important;
+    }
+    .brief-body.is-report :global(.rx-g.g1) {
+      grid-row: 1;
+    }
+    .brief-body.is-report :global(.rx-g.g2) {
+      grid-row: 2;
+    }
+    .brief-body.is-report :global(.rx-g.g3) {
+      grid-row: 4;
+    }
+    .brief-body.is-report :global(.rx-g.g4) {
+      grid-row: 5;
+    }
+    .brief-body.is-report :global(.rx-tl > li) {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .brief-body.is-report :global(.rx-key) {
+      padding: 22px 18px 24px;
+    }
+    .brief-body.is-report :global(table),
+    .brief-body.is-report :global(tbody) {
+      display: block;
+      overflow: visible;
+    }
+    .brief-body.is-report :global(thead) {
+      display: none;
+    }
+    .brief-body.is-report :global(tr) {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .brief-body.is-report :global(td),
+    .brief-body.is-report :global(tbody tr:last-child td) {
+      padding: 0;
+      border: 0;
+      width: auto !important;
+    }
+    .brief-body.is-report :global(td:nth-child(3)) {
+      grid-column: 1 / -1;
+    }
+    .brief-body.is-report :global(tbody tr:first-child) {
+      border-top: 1px solid var(--tx);
+    }
+    .brief-body.is-report :global(.rx-srcs > li) {
+      grid-template-columns: 26px minmax(0, 1fr);
+      gap: 2px 10px;
+    }
+    .brief-body.is-report :global(.rx-srcs .ty),
+    .brief-body.is-report :global(.rx-srcs .bs) {
+      grid-column: 2;
     }
   }
 </style>
