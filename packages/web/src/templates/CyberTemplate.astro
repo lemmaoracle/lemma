@@ -14,8 +14,9 @@
  *     共有するが守る対象が別。Proof Cards が pre_tool_call で動くとは書かない。
  *   - 非組み込み経路は既存の計算を止めない。遮断・執行は実行前の関所が要る。
  *   - 例・デモは「例」と明示する。未実装の Cyber 専用コンソールがあるかの
- *     ようには書かない。検証リンクは実在の /verify/（汎用の検証センター）に
- *     向け、その旨をラベルする。
+ *     ようには書かない。検証リンクはカード別サンプル面 /cyber/verify/
+ *     （?card=transfer|decrypt|api）に向け、「例」であることを明示する。
+ *     ライブ検証・実データを装う表示は置かない。
  *   - 数値はステップ番号のみ。
  *   - 製品能力が未確定な箇所は「組み込み提案／例」として書き、TODO(判断) を残す。
  */
@@ -38,7 +39,6 @@ const isJa = locale === "ja";
 const L = (path: string) => localePath(base, path);
 
 const discoveryHref = DISCOVERY_CALL_URL[locale];
-const verifyHref = L("/verify/");
 
 const C = isJa
   ? {
@@ -53,7 +53,14 @@ const C = isJa
       },
       cta: {
         primary: "Discovery Call を予約 →",
-        secondary: "検証センターを見る →",
+      },
+      verify: {
+        navLabel: "サンプルカード",
+        cardLinks: [
+          { key: "transfer", label: "サンプル: 転送カード →" },
+          { key: "decrypt", label: "サンプル: 復号カード →" },
+          { key: "api", label: "サンプル: API カード →" },
+        ],
       },
       scope: {
         eyebrow: "守備範囲",
@@ -130,7 +137,7 @@ const C = isJa
           },
         ],
         verifyNote:
-          "上の検証センターのリンクは、実在の /verify/（汎用の検証センター）を開きます。S1 のライブデモではありません。",
+          "サンプルカード面は、転送・復号・API の例を1つずつ表示します。ここに載るハッシュは短いプレースホルダで、ライブ検証でも実データでもありません。",
         cta: "Discovery Call を予約 →",
       },
       applications: {
@@ -150,7 +157,6 @@ const C = isJa
         h2Accent: "止めるなら組み込む。",
         lede: "「確かめる」と「止める」を分けて設計します。まずは Discovery Call で、対象と組み込み方を確認します。",
         ctaPrimary: "Discovery Call を予約 →",
-        ctaSecondary: "検証センターを見る →",
       },
       footNote:
         "本ページの例は組み込みの例示であり、製品としての提供状況を保証するものではありません。",
@@ -168,7 +174,14 @@ const C = isJa
       },
       cta: {
         primary: "Book a Discovery Call →",
-        secondary: "Open the Verification Center →",
+      },
+      verify: {
+        navLabel: "Sample cards",
+        cardLinks: [
+          { key: "transfer", label: "Sample: Transfer card →" },
+          { key: "decrypt", label: "Sample: Decryption card →" },
+          { key: "api", label: "Sample: API card →" },
+        ],
       },
       scope: {
         eyebrow: "Scope",
@@ -245,7 +258,7 @@ const C = isJa
           },
         ],
         verifyNote:
-          "The Verification Center link opens the real /verify/ — a generic verification center, not a live S1 demo.",
+          "The sample card faces show one example each — transfer, decryption, or API. The hashes are short placeholders; they are not a live check and not real data.",
         cta: "Book a Discovery Call →",
       },
       applications: {
@@ -265,11 +278,15 @@ const C = isJa
         h2Accent: "Embed to stop.",
         lede: "Verifying and stopping are designed separately. Start with a Discovery Call to confirm the subject and the integration.",
         ctaPrimary: "Book a Discovery Call →",
-        ctaSecondary: "Open the Verification Center →",
       },
       footNote:
         "The examples on this page illustrate integration; they do not promise product availability.",
     };
+
+const verifyLinks = C.verify.cardLinks.map((link) => ({
+  label: link.label,
+  href: L(`/cyber/verify/?card=${link.key}`),
+}));
 ---
 
 <Layout
@@ -298,8 +315,22 @@ const C = isJa
             target="_blank"
             rel="noopener">{C.cta.primary}</a
           >
-          <a class="cy-btn cy-btn--ghost" href={verifyHref}>{C.cta.secondary}</a>
         </div>
+
+        <nav class="cy-verify-nav" aria-label={C.verify.navLabel}>
+          <span class="cy-verify-nav-label">{C.verify.navLabel}</span>
+          <ul class="cy-verify-nav-list">
+            {
+              verifyLinks.map((link) => (
+                <li>
+                  <a class="cy-verify-nav-link" href={link.href}>
+                    {link.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
       </section>
 
       <!-- §1 守備範囲: ToolGuard と Cyber Proof Cards の対象を分ける -->
@@ -403,10 +434,22 @@ const C = isJa
           }
         </ol>
 
-        <p class="cy-verify-note">
-          {C.flow.verifyNote}
-          <a href={verifyHref}>{C.cta.secondary}</a>
-        </p>
+        <p class="cy-verify-note">{C.flow.verifyNote}</p>
+
+        <nav class="cy-verify-nav" aria-label={C.verify.navLabel}>
+          <span class="cy-verify-nav-label">{C.verify.navLabel}</span>
+          <ul class="cy-verify-nav-list">
+            {
+              verifyLinks.map((link) => (
+                <li>
+                  <a class="cy-verify-nav-link" href={link.href}>
+                    {link.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
 
         <div class="cy-actions">
           <a
@@ -450,10 +493,22 @@ const C = isJa
             target="_blank"
             rel="noopener">{C.close.ctaPrimary}</a
           >
-          <a class="cy-btn cy-btn--ghost" href={verifyHref}
-            >{C.close.ctaSecondary}</a
-          >
         </div>
+
+        <nav class="cy-verify-nav" aria-label={C.verify.navLabel}>
+          <span class="cy-verify-nav-label">{C.verify.navLabel}</span>
+          <ul class="cy-verify-nav-list">
+            {
+              verifyLinks.map((link) => (
+                <li>
+                  <a class="cy-verify-nav-link" href={link.href}>
+                    {link.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
         <p class="cy-footnote">{C.footNote}</p>
       </section>
     </div>
@@ -799,6 +854,46 @@ const C = isJa
     color: var(--accent-lt);
   }
   .cy-verify-note a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  /* ─── カード別サンプル面への導線 ─── */
+  .cy-verify-nav {
+    margin: 18px 0 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 12px 18px;
+  }
+  .cy-verify-nav-label {
+    font-family: var(--font-display);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cy-text-3);
+  }
+  .cy-verify-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+  }
+  .cy-verify-nav-link {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+  }
+  .cy-verify-nav-link:hover {
+    color: var(--accent-lt);
+  }
+  .cy-verify-nav-link:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
     border-radius: 3px;
