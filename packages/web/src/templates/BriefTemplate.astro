@@ -40,6 +40,7 @@ import { getEnBriefMap } from "../data/getEnBriefMap";
 import { threatBannerCopy } from "../config/briefThreatBanner";
 import { briefsCategoryHref } from "../data/briefIndex";
 import { BRIEF_RAIL_CTA_URL, DISCOVERY_CALL_URL } from "../config/cta";
+import { serviceBannerFor } from "../config/briefServiceBanner";
 import { localePath } from "../lib/urls";
 import {
   categoryLabel,
@@ -64,6 +65,7 @@ type AnyBrief =
   | CollectionEntry<"critical-briefs-en">;
 
 const briefNoPad = String(brief.data.brief_no).padStart(3, "0");
+const serviceBanner = serviceBannerFor(brief.id, briefNoPad, locale);
 const localizedTitle = isJa ? brief.data.title : brief.data.title_en;
 
 const titleParts = localizedTitle.split(" — ");
@@ -462,6 +464,27 @@ const labels = isJa
           </p>
         )}
 
+        {/* 対応サービスのバナー（広告枠・許可リストの Brief だけ）。本文の外、
+            引用パネルの前。config/briefServiceBanner.ts */}
+        {serviceBanner && (
+          <aside class="bd-svc" aria-label={serviceBanner.eyebrow} data-svc-banner={serviceBanner.key}>
+            <span class="bd-svc-pr">{serviceBanner.prLabel}</span>
+            <div class="bd-svc-txt">
+              <div class="bd-svc-k">{serviceBanner.eyebrow}</div>
+              <p class="bd-svc-h">{serviceBanner.head}</p>
+              <p class="bd-svc-b">{serviceBanner.body}</p>
+            </div>
+            <a
+              class="bd-svc-btn"
+              href={serviceBanner.href}
+              target="_blank"
+              rel="noopener"
+              data-brief-cta-ev="brief_service_banner_click"
+              data-cta={`service_banner_${serviceBanner.key}`}
+            >{serviceBanner.button}</a>
+          </aside>
+        )}
+
         {/* 引用パネル — Plain text / BibTeX / APA のタブ＋モノスペース本文。 */}
         <CiteBriefBox
           locale={locale}
@@ -626,6 +649,33 @@ const labels = isJa
     window.addEventListener("resize", onScroll, { passive: true });
     document.addEventListener("astro:after-swap", compute);
     compute();
+  })();
+</script>
+
+<!-- 対応サービスのバナー: 50% 見えたら1回だけ表示イベントを送る。 -->
+<script is:inline>
+  (function () {
+    function watch() {
+      var el = document.querySelector("[data-svc-banner]");
+      if (!el || !("IntersectionObserver" in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          if (typeof window.gtag !== "function") return;
+          window.gtag("event", "brief_service_banner_view", {
+            surface: "brief_detail",
+            cta_label: "service_banner_" + el.getAttribute("data-svc-banner"),
+          });
+        });
+      }, { threshold: 0.5 });
+      io.observe(el);
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", watch);
+    } else {
+      watch();
+    }
   })();
 </script>
 
@@ -1439,6 +1489,81 @@ const labels = isJa
   }
 
   /* ─── 末尾CTA（スレート・証明の訴求） ─── */
+  /* 対応サービスのバナー（広告枠）。本文と別の面に見せ、隅に小さく PR。 */
+  .bd-svc {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px 28px;
+    margin: 36px 0 0;
+    padding: 24px 28px;
+    background: #f3f6ec;
+    border: 1px solid #d9dfcd;
+    border-left: 4px solid var(--ok);
+    border-radius: 10px;
+  }
+  .bd-svc-pr {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    color: #8a9083;
+    border: 1px solid #c9cfbd;
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+  .bd-svc-txt {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .bd-svc-k {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    color: #5d6658;
+  }
+  .bd-svc-h {
+    margin: 6px 0 6px;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #1f2620;
+  }
+  .bd-svc-b {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #4a5246;
+  }
+  .bd-svc-btn {
+    flex: 0 0 auto;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 12px 20px;
+    border-radius: 6px;
+    background: #2e362f;
+    color: #ebefe6;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .bd-svc-btn:hover {
+    background: #1f2620;
+  }
+  @media (max-width: 720px) {
+    .bd-svc {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 22px 18px 20px;
+    }
+    .bd-svc-btn {
+      white-space: normal;
+    }
+  }
   .bd-cta {
     position: relative;
     overflow: hidden;
