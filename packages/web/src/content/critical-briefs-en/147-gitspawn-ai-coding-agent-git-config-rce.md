@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "GitSpawn：AIコーディングエージェント7種、git設定でコード実行"
 og_lead_en: "GitSpawn: seven AI coding agents run code via git config"
+industries: ["developers"]
+attack_method: "ai-misuse"
+impact: "Code ran in 7 AI coding agents"
 ---
 
 ## 1. TL;DR

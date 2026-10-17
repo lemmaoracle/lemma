@@ -50,6 +50,9 @@ controls:
     item: "Hold changes that cannot be confirmed"
   - slug: "audit-trail"
     item: "Record what was confirmed before it was let through"
+attack_method: "account-takeover"
+impact: "About \u00a59M lost at one hotel"
+takeaway: "Nothing had someone else confirm a payout-account change before money moved."
 ---
 
 > **Revision (v2.0 / 2026-10-16)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Press coverage and industry research were re-checked.

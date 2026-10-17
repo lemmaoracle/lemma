@@ -14,6 +14,12 @@ status: published
 version: "1.0"
 og_lead_ja: "北朝鮮IT労働者が国内支援者の身分証で業務を受注、国内初のラップトップ・ファーム解体"
 og_lead_en: "North Korean IT workers won contracts in Japan with ID images supplied by local enablers"
+industries: ["developers"]
+controls:
+  - slug: "ownership-check"
+    item: "\u8eab\u5206\u8a3c\u306e\u6301\u3061\u4e3b\u3068\u3001\u5b9f\u969b\u306b\u50cd\u304f\u4eba\u7269\u304c\u540c\u3058\u304b\u78ba\u8a8d\u3059\u308b"
+attack_method: "impersonation"
+takeaway: "\u8eab\u5206\u8a3c\u306f\u672c\u7269\u3067\u3082\u3001\u305d\u306e\u6301\u3061\u4e3b\u3068\u753b\u9762\u306e\u5411\u3053\u3046\u3067\u50cd\u304f\u4eba\u7269\u3092\u3001\u696d\u52d9\u3092\u6e21\u3059\u524d\u306b\u7d50\u3073\u3064\u3051\u308b\u624b\u9806\u304c\u7121\u304b\u3063\u305f\u3002"
 ---
 
 ## 1. TL;DR

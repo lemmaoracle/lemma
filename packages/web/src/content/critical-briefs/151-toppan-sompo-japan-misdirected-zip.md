@@ -14,6 +14,16 @@ status: published
 version: "1.0"
 og_lead_ja: "TOPPAN、損保ジャパン契約者 17.7 万名分のリストを別の保険会社へ誤送付"
 og_lead_en: "TOPPAN sent 177,426 Sompo Japan policyholder records to another insurer"
+industries: ["finance"]
+operations: ["delivery"]
+controls:
+  - slug: "separate-approval"
+    item: "\u9001\u308b\u524d\u306b\u3001\u4f5c\u696d\u3057\u305f\u4eba\u3068\u306f\u5225\u306e\u4eba\u304c\u4e2d\u8eab\u3092\u78ba\u8a8d\u3059\u308b"
+  - slug: "hold-unverified"
+    item: "\u5b9b\u5148\u3068\u4e2d\u8eab\u306e\u5bfe\u5fdc\u304c\u78ba\u8a8d\u3067\u304d\u308b\u307e\u3067\u9001\u3089\u306a\u3044"
+attack_method: "human-error"
+impact: "\u5951\u7d04\u8005 17.7 \u4e07\u540d\u5206\u3092\u5225\u306e\u4fdd\u967a\u4f1a\u793e\u3078\u8aa4\u9001\u4ed8"
+takeaway: "\u5b9b\u5148\u3068\u4e2d\u8eab\u306e\u5bfe\u5fdc\u3092\u3001\u9001\u308b\u524d\u306b\u78ba\u304b\u3081\u308b\u624b\u9806\u304c\u7121\u304b\u3063\u305f\u3002"
 ---
 
 ## 1. TL;DR

@@ -14,6 +14,16 @@ status: published
 version: "1.0"
 og_lead_ja: "Revolut：伊政府の認証メール網からの開示要求に数か月応じ続けた"
 og_lead_en: "Revolut answered data requests from Italy's certified state email"
+industries: ["finance"]
+operations: ["disclosure"]
+controls:
+  - slug: "ownership-check"
+    item: "Before disclosing, confirm the requester still holds that authority"
+  - slug: "hold-unverified"
+    item: "Do not disclose until confirmed"
+attack_method: "impersonation"
+impact: "Customer data handed over for months"
+takeaway: "The state certified delivery, but nothing checked the requester's authority before disclosure."
 ---
 
 ## 1. TL;DR

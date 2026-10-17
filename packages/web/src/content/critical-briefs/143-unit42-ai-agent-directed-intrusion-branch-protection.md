@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "Unit 42、AIエージェント主導の侵入が10時間未満で完了と報告"
 og_lead_en: "Unit 42: AI-agent-run intrusion completed in under 10 hours"
+industries: ["ai"]
+attack_method: "ai-misuse"
+impact: "\u4fb5\u5165\u306e\u5b8c\u4e86\u307e\u3067 10 \u6642\u9593\u672a\u6e80"
 ---
 
 ## 1. TL;DR

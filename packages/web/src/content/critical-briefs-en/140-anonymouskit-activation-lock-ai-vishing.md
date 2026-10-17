@@ -14,6 +14,7 @@ status: published
 version: "1.0"
 og_lead_ja: "AnonyMousKIT、AI 音声で盗難 iPhone 所有者から解除コード聴取"
 og_lead_en: "AnonyMousKIT: AI voice calls harvest stolen-iPhone passcodes"
+attack_method: "impersonation"
 ---
 
 ## 1. TL;DR

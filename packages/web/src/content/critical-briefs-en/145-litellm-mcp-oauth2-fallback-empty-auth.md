@@ -14,6 +14,8 @@ status: published
 version: "1.0"
 og_lead_ja: "LiteLLMのMCP認証、失敗時フォールバックが無検証許可に(CVE-2026-59822)"
 og_lead_en: "LiteLLM's MCP auth fallback silently granted unchecked access (CVE-2026-59822)"
+industries: ["ai"]
+impact: "Exploitation in the wild confirmed by CISA"
 ---
 
 ## 1. TL;DR
