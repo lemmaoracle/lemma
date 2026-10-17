@@ -10,7 +10,7 @@ published: 2026-05-30
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory", "C-agent-governance"]
 related_briefs: ["005-noroboto-lying-fonts", "006-google-api-key-revocation-lag"]
-version: "1.0"
+version: "1.1"
 status: published
 og_lead_ja: "公開 API 経由で 20.5 億メッセージが AI 学習データに再配布 — Discord スクレイピング"
 og_lead_en: "2.05 billion public messages redistributed as AI training data — Discord scraping"
@@ -25,6 +25,8 @@ controls:
 impact: "2.05 billion messages scraped and published"
 ---
 
+> **Revision (v1.1 / 2026-10-17)**: Corrected the exact message count in §2 to 2,052,206,308, as given in the research team's paper (arXiv 2502.00627).
+
 ## 1. TL;DR
 
 A research team used Discord's public API to scrape 2.05 billion messages from 3,167 servers and published them as an arXiv paper and a JSON dataset anyone can download. Discord's terms explicitly ban using API-obtained messages for AI training and ban bulk scraping and redistribution. Technical access through a public API and the use-scope the terms permit are different things — yet nothing verified, before distribution, whether the dataset was collected within a lawful scope, so forbidden-use data can flow downstream into AI training.
@@ -33,7 +35,7 @@ A research team used Discord's public API to scrape 2.05 billion messages from 3
 
 ## 2. What happened
 
-- **Scale**: 2.05 billion messages (2,052,020,630), 3,167 servers, 4,735,057 people, covering 2015–2024
+- **Scale**: 2.05 billion messages (2,052,206,308), 3,167 servers, 4,735,057 people, covering 2015–2024
 - **Discovery scope**: 10% of 31,673 public servers discovered via Discord's "Discovery" feature, selected at random (as of 2024-11-17)
 - **Scraping party**: A 15-researcher team at the Federal University of Minas Gerais in Brazil
 - **Distribution format**: arXiv paper (2502.00627) and a JSON dataset published online

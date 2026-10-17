@@ -1,6 +1,6 @@
 ---
 brief_no: 84
-title: "香港 Deepfake ビデオ会議詐欺：CFO・同僚全員をリアルタイム deepfake で偽装し、約 2,600 万ドルの送金を実行させた — 顔と声の確認が「本人が今ここにいる」ことの証明にならなくなった構造（香港警察 / Arup）"
+title: "香港 Deepfake ビデオ会議詐欺：CFO・同僚全員をリアルタイム deepfake で偽装し、約 2,560 万ドルの送金を実行させた — 顔と声の確認が「本人が今ここにいる」ことの証明にならなくなった構造（香港警察 / Arup）"
 title_en: "Hong Kong deepfake video-call fraud: a real-time deepfake of the CFO and every colleague drove a ~$25.6M transfer — seeing a face and hearing a voice no longer proves the person is actually present (Hong Kong Police / Arup)"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
@@ -11,8 +11,8 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["034-ekyc-liveness-bypass", "050-grok-deepfake-consent-provenance", "053-youtube-deepfake-likeness-provenance"]
 status: published
-version: "1.0"
-og_lead_ja: "香港 Deepfake ビデオ会議詐欺、CFO・同僚全員を偽装し約 2,600 万ドル送金"
+version: "1.1"
+og_lead_ja: "香港 Deepfake ビデオ会議詐欺、CFO・同僚全員を偽装し約 2,560 万ドル送金"
 og_lead_en: "Hong Kong deepfake video-call fraud: faked CFO drove a ~$25.6M transfer"
 gap_detected: "送金後の確認照合で詐欺が発覚し、香港警察の捜査・公表と Arup の対策強化が作動した。"
 gap_missing: "ビデオ会議の向こうにいるのが本物の CFO であることを映像・音声とは独立に証明する手段が無く、deepfake が「承認者の identity」の証明として通用した。"
@@ -24,9 +24,11 @@ attack_method: "impersonation"
 impact: "約 HK$2 億を 5 口座へ送金"
 ---
 
+> **改訂（v1.1 / 2026-10-17）**: 被害額の米ドル換算を、§2 と報道（HK$2 億 ≒ 2,560 万米ドル）に合わせて「約 2,600 万ドル」から「約 2,560 万ドル」に統一した。
+
 ## 1. TL;DR
 
-2024 年 1 月、香港のある多国籍企業の財務担当者が、ビデオ会議で CFO・財務チーム・外部顧問を含む複数の人物と「直接会話」した後、約 2,600 万ドル（HK$2 億）を 5 つの口座に振り込んだ。会議に参加していた全員がリアルタイム deepfake だった。担当者は事前にフィッシングメールへの疑念を持っていたが、「知っている顔と声のビデオ通話」によって確信に変えられた。香港警察が 2024 年 2 月 4 日に公表。後に Arup（英国の大手エンジニアリング会社）が被害企業として確認した。「顔を見た・声を聞いた・複数人と話した」という視覚・聴覚確認が、現代の AI 生成技術によって信頼の根拠として機能しなくなったことを、単一事案として最も明確に示した事例である。
+2024 年 1 月、香港のある多国籍企業の財務担当者が、ビデオ会議で CFO・財務チーム・外部顧問を含む複数の人物と「直接会話」した後、約 2,560 万ドル（HK$2 億）を 5 つの口座に振り込んだ。会議に参加していた全員がリアルタイム deepfake だった。担当者は事前にフィッシングメールへの疑念を持っていたが、「知っている顔と声のビデオ通話」によって確信に変えられた。香港警察が 2024 年 2 月 4 日に公表。後に Arup（英国の大手エンジニアリング会社）が被害企業として確認した。「顔を見た・声を聞いた・複数人と話した」という視覚・聴覚確認が、現代の AI 生成技術によって信頼の根拠として機能しなくなったことを、単一事案として最も明確に示した事例である。
 
 ---
 
