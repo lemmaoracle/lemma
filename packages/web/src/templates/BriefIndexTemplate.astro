@@ -1042,6 +1042,22 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     color: var(--tx);
     padding: 0 14px;
   }
+  /* 選択の矢印は既定だと枠の右端に貼り付くので、自前の小さな山形を
+     文字のすぐ右に置く（幅は中身に合わせる）。 */
+  .ix-filter select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: auto;
+    /* 幅は選んでいる文字に合わせる（対応ブラウザ）。未対応では一番長い
+       選択肢の幅になるので、上限で抑える。 */
+    field-sizing: content;
+    max-width: 9.5em;
+    padding: 0 30px 0 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none' stroke='%235c6156' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+    cursor: pointer;
+  }
   .ix-filter .ix-q {
     flex: 1 1 200px;
   }
@@ -1181,9 +1197,12 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     .ix-filter .ix-h {
       grid-column: 1 / -1;
     }
+    .ix-filter label:not(.ix-q) {
+      justify-self: start;
+    }
     .ix-filter select {
-      width: 100%;
-      padding: 0 8px;
+      padding: 0 26px 0 12px;
+      background-position: right 11px center;
     }
     .ix-filter .ix-q {
       grid-column: 1 / 3;
