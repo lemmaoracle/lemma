@@ -17,6 +17,13 @@ og_lead_en: "AFX Trade — compromised signatures met the 2/3 quorum, $24.15M go
 gap_detected: "Blockaid detected the exploit at 2026-07-22 21:30 UTC, and Offchain Labs quickly established that the Arbitrum native bridge was intact and the event originated from a third-party bridge."
 gap_missing: "It was verified that the required number of valid signatures was present, but not whether the keys producing those signatures were legitimate and uncompromised; signatures from compromised hot keys 'validly' met the ~2/3 quorum and the payout was finalized."
 gap_fix: "Before a payout is finalized, require the legitimacy of the signer and key — decoupled from the validity of the signature and the satisfaction of the quorum — as an independently verifiable proof, and deny up front any payout not accompanied by that proof."
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "Check not just the signature count but that the signing keys are uncompromised"
+attack_method: "account-takeover"
+impact: "Roughly $24.15 million (USDC) drained"
 ---
 
 ## 1. TL;DR

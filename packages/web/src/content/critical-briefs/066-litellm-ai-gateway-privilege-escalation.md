@@ -17,6 +17,9 @@ og_lead_en: "Low-priv user to admin and RCE — the LiteLLM gateway chain"
 gap_detected: "責任ある開示・段階的なパッチ・どのエンドポイントが叩かれたかの事後ログは記録・周知できた。"
 gap_missing: "「この呼び出しは、その主体に許された操作か」を操作の前に確かめる層が無く、各段が前段を信頼して認可検証は素通りした。"
 gap_fix: "特権操作の前に「この操作は、この主体に、付与された認可の範囲で許されている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
+operations: ["account-admin"]
+attack_method: "privilege-abuse"
 ---
 
 ## 1. TL;DR

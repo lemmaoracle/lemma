@@ -17,6 +17,7 @@ og_lead_en: "One Pyodide sandbox escape reproduced across seven products; isolat
 gap_detected: "Detection can work. Dangerous module calls and anomalous process creation can be surfaced as a monitoring layer."
 gap_missing: "The premise — 'it's isolated by the sandbox' — was never independently verified before execution."
 gap_fix: "Before code runs with host privileges, independently verify that the isolation boundary actually holds."
+industries: ["developers", "ai"]
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,10 @@ og_lead_en: "Trusted Stripe API repurposed as a card-skimming channel"
 gap_detected: "EC セキュリティ事業者によるスキマー解析・IOC 提供・被害ストアへの通知という封じ込めは機能した。"
 gap_missing: "「このチェックアウトで動くコードは、ストアが正規に配置したものか」を実行の前に確かめる層が無く、ドメインの身元への信頼が中身の来歴の代わりに使われた。"
 gap_fix: "チェックアウトでコードが動く前に「このスクリプトは、ストアの正規配置という来歴を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["retail", "finance"]
+controls:
+  - slug: "ownership-check"
+    item: "チェックアウトで動くコードが、ストアが正規に置いたものか確かめる"
 ---
 
 ## 1. TL;DR

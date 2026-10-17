@@ -17,6 +17,12 @@ og_lead_en: "AI-generated IDs bypassed exchange KYC — image review isn't issue
 gap_detected: "deepfake 検知・画像フォレンジック・injection 検知は、不正試行の多くを実際に止められた。"
 gap_missing: "「この身分証は発行元が実際に発行した本物か」を口座開設の前に暗号的に確かめる層が無く、本物らしく見える画像は素通りした。"
 gap_fix: "口座開設の前に「この本人確認属性が、発行者の署名付きクレデンシャルとして正当に発行されている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["account-admin"]
+controls:
+  - slug: "ownership-check"
+    item: "身分証が、発行元が実際に発行したものか確かめる"
+attack_method: "impersonation"
 ---
 
 ## 1. TL;DR

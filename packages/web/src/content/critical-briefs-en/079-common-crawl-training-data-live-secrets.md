@@ -17,6 +17,8 @@ og_lead_en: "Common Crawl: ~12,000 live credentials embedded in an LLM training 
 gap_detected: "Truffle Security's scan detected about 12,000 live credentials, and outreach to affected vendors plus the revocation/rotation of thousands of keys were carried out."
 gap_missing: "There was no layer to prove, before ingestion, what a corpus contains and under what provenance and consent it sits, and after-the-fact scanning and revocation could not undo the propagation into trained models."
 gap_fix: "Rather than asking whether it is public, independently verify with Lemma the provenance and composition of a corpus (origin, consent, absence of known dangerous material) before ingestion, and prevent it up front."
+industries: ["ai"]
+impact: "~12,000 live credentials found in a training corpus"
 ---
 
 ## 1. TL;DR

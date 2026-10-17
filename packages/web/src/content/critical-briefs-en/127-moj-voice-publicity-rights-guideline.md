@@ -18,6 +18,7 @@ gap_detected: "The interpretation moved forward. A Ministry of Justice study gro
 gap_missing: "Every remedy it sets out — damages, takedown — presumes the generated work already exists. No step checks consent before anything is generated."
 gap_fix: "Make it checkable, before a work is published, which consent the use of that voice was authorized against, and let a release that carries no such proof be held."
 analysis_lead_en: "What has been settled is who can sue whom, and on what basis. Not whether a use was authorized against consent before it was generated."
+industries: ["ai", "media"]
 ---
 
 ## 1. TL;DR

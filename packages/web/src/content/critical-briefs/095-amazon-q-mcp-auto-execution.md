@@ -17,6 +17,11 @@ og_lead_en: "Amazon Q — a bundled .amazonq/mcp.json auto-ran and leaked AWS cr
 gap_detected: "研究側の開示・CVE 採番と CVSS 評価・ベンダー修正（言語サーバー 1.65.0）と AWS 速報／GitHub Advisory 登録という検出の系列が機能し、手口と影響が外部から可視化された。"
 gap_missing: "同梱設定（MCP サーバー定義）が正規の作者に由来し認可された範囲かを、拡張がそれをロード・起動する時点で独立検証する層がない。"
 gap_fix: "MCP サーバーを起動する前に、設定の来歴と起動の認可スコープを「フォルダを開いた」操作から切り離して検証し、渡す環境を最小限に絞り、証明が伴わなければ起動を止めることを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers", "ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "リポジトリ同梱のMCP設定は、作者と範囲を確かめるまで起動しない"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,11 @@ og_lead_en: "Hong Kong deepfake video-call fraud: faked CFO drove a ~$25.6M tran
 gap_detected: "送金後の確認照合で詐欺が発覚し、香港警察の捜査・公表と Arup の対策強化が作動した。"
 gap_missing: "ビデオ会議の向こうにいるのが本物の CFO であることを映像・音声とは独立に証明する手段が無く、deepfake が「承認者の identity」の証明として通用した。"
 gap_fix: "高額承認の実行前に、承認者の identity 来歴を映像・音声とは独立した暗号証明として Lemma で検証し、事前に防ぐ。"
+controls:
+  - slug: "separate-approval"
+    item: "送金の指示は、会議とは別の経路で本人に確かめる"
+attack_method: "impersonation"
+impact: "約 HK$2 億を 5 口座へ送金"
 ---
 
 ## 1. TL;DR

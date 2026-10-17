@@ -17,6 +17,12 @@ og_lead_en: "Gitea — a default reverse-proxy config lets one HTTP header imper
 gap_detected: "CVE-2026-20896 の早期開示・CVSS 9.8 評価・修正版（1.26.3／1.26.4）の提供・Sysdig による探索観測という検出の系列が機能し、影響範囲と緊急度が外部から可視化された。"
 gap_missing: "`X-WEBAUTH-USER` ヘッダーを持つ要求が本当に信頼された逆プロキシを経由したのか、その主体が管理者権限を持つのかを、認証層の形式的判定とは別に独立検証する層がない。"
 gap_fix: "特権操作の前に、要求元の経路の真正性と主体の権限を、ヘッダーやパスの形式的判定から切り離して検証し、証明が伴わなければ実行を止めることを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers"]
+operations: ["account-admin"]
+controls:
+  - slug: "ownership-check"
+    item: "管理者を名乗るヘッダーが、本当に信頼した逆プロキシから来たか確かめる"
+attack_method: "impersonation"
 ---
 
 ## 1. TL;DR

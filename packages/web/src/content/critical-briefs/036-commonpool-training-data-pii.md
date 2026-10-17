@@ -17,6 +17,11 @@ og_lead_en: "12.8B training images contained passports, résumés, faces — Com
 gap_detected: "独立研究者の監査によって混入が可視化され、顔の自動ぼかしや PII 検出フィルタの改善も進められている。"
 gap_missing: "「この素材は、学習に使ってよい来歴・同意を持つか」を収集の時点で確かめる層が無く、事後の機械的フィルタでは網羅できず（0.1% の標本だけで 800 超の顔が漏れた）。"
 gap_fix: "公開されているかではなく「各素材が学習利用に供してよい来歴・同意を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+controls:
+  - slug: "ownership-check"
+    item: "素材に、学習に使ってよい来歴と同意があるか確かめる"
+impact: "0.1% の標本だけで 800 超の顔がぼかしを逃れた"
 ---
 
 ## 1. TL;DR

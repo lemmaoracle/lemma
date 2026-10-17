@@ -17,6 +17,14 @@ og_lead_en: "An AI agent forwarded credentials before verifying the sender — O
 gap_detected: "Suspicious URLs and a malicious OAuth consent screen could be blocked."
 gap_missing: "There was no layer to confirm before acting who the sender was, so a social request passed straight through."
 gap_fix: "Before a high-risk action, independently verify with Lemma that the request is authorized for this subject at this scope, and prevent it up front."
+industries: ["ai"]
+operations: ["disclosure"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm through a separate channel that the requester is who they claim to be"
+  - slug: "hold-unverified"
+    item: "Send nothing outside until the sender is verified"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,11 @@ og_lead_en: "Agentjacking — one fake error report trusted as \"resolution step
 gap_detected: "Tenet Threat Labs による研究開示、露出組織数・成功率の定量化、複数媒体・研究ノートによる手口の可視化、Sentry への責任ある開示という検出の系列が機能し、リスクが外部から可視化された。"
 gap_missing: "エージェントが外部データ由来の指示を行動に移す前に、その指示（エラー報告）が正規のシステムに由来するか、その実行が認可されているかを、内容の見た目とは切り離して独立検証する層がない。"
 gap_fix: "エラー triage の解決手順のような外部データ由来の指示を実行する前に、その指示の来歴とその実行の認可を、内容の見た目から切り離して検証し、証明が伴わなければ実行を止めることを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers", "ai"]
+controls:
+  - slug: "ownership-check"
+    item: "エラー報告に書かれた手順が、本当に Sentry のものか確かめる"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

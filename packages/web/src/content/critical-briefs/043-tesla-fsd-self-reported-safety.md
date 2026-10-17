@@ -17,6 +17,10 @@ og_lead_en: "Tesla FSD crash data and safety stats, self-reported and unverified
 gap_detected: "規制当局の段階的な調査と調査報道、社内関係者の証言により、走行判断の失敗・事故の過少報告・統計の水増しは外部から可視化できた。"
 gap_missing: "車が走行を続ける時点・データを当局に出す時点で「判断の前提（カメラは見えているか）や申告した事故データ・統計が実態を反映しているか」を確かめる層が無く、すべてが事業者の自己申告のまま受理された。"
 gap_fix: "走行を続ける判断や安全性データを当局・市場に出す前に「判断の前提は満たされ、申告は網羅的で、統計は定義どおりである」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+operations: ["disclosure"]
+attack_method: "ai-misuse"
+impact: "視界低下に関わる事故 9 件（死亡 1・負傷 1）"
 ---
 
 ## 1. TL;DR

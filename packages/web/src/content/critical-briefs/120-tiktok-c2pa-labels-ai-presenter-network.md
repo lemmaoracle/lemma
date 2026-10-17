@@ -17,6 +17,13 @@ og_lead_en: "TikTok's 3 billion AI labels coexisted with a 550-video AI-presente
 gap_detected: "報道機関の痕跡分析が偽装を特定し、共有された2アカウントはプラットフォームによって速やかに停止された。"
 gap_missing: "動画の発信者が主張どおりの実在の作り手かを、視聴の時点で視聴者が独立に確かめる層。"
 gap_fix: "発信者と成果物の来歴を独立検証可能な証明として要求し、証明を欠く発信を視聴の前に分別できるようにする。"
+industries: ["media"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "動画の発信者が実在の作り手か、視聴の時点で確かめられるようにする"
+attack_method: "ai-misuse"
+impact: "偽情報動画 550 本超が計 300 万回超再生された"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,12 @@ og_lead_en: "Trust signals and GitHub Releases weaponized as a delivery channel 
 gap_detected: "流出元はミスを認めて該当版を撤回し、解析企業と配布プラットフォームが偽物を検出して削除に動けた。"
 gap_missing: "ダウンロードする側が、入手の時点で「これは本当に正規の配布元が作ったものか」を確かめる層を持たず、有名ブランド名と配布サイトの信頼だけで受け入れた。"
 gap_fix: "実行やインストールの前に「この成果物は正規の配布元によって作られたものか」を Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "入手したファイルが、正規の配布元のものか確かめる"
+attack_method: "impersonation"
 ---
 
 ## 1. TL;DR

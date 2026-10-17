@@ -17,6 +17,12 @@ og_lead_en: "RCE in AWS Kiro: the agent rewrites its own MCP config"
 gap_detected: "プロンプトインジェクションの検知と承認ダイアログは設計上存在し、脆弱性は責任ある開示を経て修正された。"
 gap_missing: "エージェントが自らの認可設定を書き換える行動を、実行の前に来歴と権限で独立に確かめる層。"
 gap_fix: "設定＝認可の書き込みと、それに基づく実行を、実行前に来歴と権限で独立検証し、自己改変された設定に基づく実行を認可の欠如として排除する。"
+industries: ["developers", "ai"]
+operations: ["account-admin"]
+controls:
+  - slug: "hold-unverified"
+    item: "エージェントが MCP 設定を書き換えたら、人が確かめるまで反映しない"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

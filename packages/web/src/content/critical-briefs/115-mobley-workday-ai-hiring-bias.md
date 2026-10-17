@@ -17,6 +17,12 @@ og_lead_en: "Workday AI hiring-bias suit: no record the decision was verified be
 gap_detected: "差別の疑いは応募者の経験と統計から浮上し、2026 年に集団訴訟として係争が進んだ。"
 gap_missing: "自動不採用という不利益処分の前に、その判定が独立に検証・認可されたかを確かめ、証跡として残す層。"
 gap_fix: "不利益処分の前に、どの判定が・どの根拠と信頼性条件で・どの独立検証／認可の下で使われたかを改ざんできない証跡として固定する。"
+industries: ["ai"]
+operations: ["approval"]
+controls:
+  - slug: "audit-trail"
+    item: "自動不採用の判定を、誰がどう確かめたかを記録に残す"
+impact: "筆頭原告が 100 件超の求人で落選（原告主張）"
 ---
 
 ## 1. TL;DR

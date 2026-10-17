@@ -17,6 +17,12 @@ og_lead_en: "AI coding agents auto-execute project-local config — SymJack / Mi
 gap_detected: "不正なコミットは検出でき、GitHub は Microsoft 系 4 組織の 73 リポジトリを一斉に無効化できた。"
 gap_missing: "エージェントが同梱設定を実行する前に、「この設定は正規の作者に由来し、認可された範囲か」を確かめる層が無く、「開いた／信頼した」操作がそのまま実行の根拠になった。"
 gap_fix: "エージェントが同梱設定を実行する前に「この操作は、この主体に、このスコープで認可され、正規の来歴を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers", "ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "同梱の設定は、作者と中身を確かめるまで実行しない"
+attack_method: "ai-misuse"
+impact: "Microsoft 系 4 組織の 73 リポジトリが無効化"
 ---
 
 ## 1. TL;DR

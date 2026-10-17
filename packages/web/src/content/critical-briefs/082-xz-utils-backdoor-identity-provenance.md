@@ -17,6 +17,12 @@ og_lead_en: "A two-year \"trusted developer\" impersonation — xz utils backdoo
 gap_detected: "Andres Freund が SSH ログインのわずかな遅延という極めて偶発的な異常に気づき、安定版到達手前で liblzma のバックドアを発見した。"
 gap_missing: "リリースは「Jia Tan」の PGP 鍵で正しく署名されていたが、その鍵保有者のアイデンティティが真正な開発者かを独立検証する層が無く、2 年かけて偽装されたアイデンティティが正規扱いで通った。"
 gap_fix: "コントリビューター・メンテナー権限を付与する前に「この開発者のアイデンティティが実在の人物に対応するか」という来歴を Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "リリースに署名した開発者が、実在の本人か確かめる"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

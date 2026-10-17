@@ -17,6 +17,11 @@ og_lead_en: "A flipped auth flag let an unauthenticated API query customer insta
 gap_detected: "ServiceNow detected the suspicious access as anomalous activity and could trace the query trail from the logs."
 gap_missing: "There was no layer to confirm before responding whether the requester was permitted to query this customer data, so with a single auth flag flipped off the request passed straight through."
 gap_fix: "Before returning data, independently verify with Lemma that the request is authorized for this subject within this scope, and prevent it up front."
+operations: ["data-access"]
+controls:
+  - slug: "hold-unverified"
+    item: "Return no data until the requester is authenticated"
+impact: "Unauthenticated table queries succeeded for some customers"
 ---
 
 ## 1. TL;DR

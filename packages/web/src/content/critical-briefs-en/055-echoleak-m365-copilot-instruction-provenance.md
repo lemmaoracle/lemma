@@ -17,6 +17,11 @@ og_lead_en: "AI exfiltrated data without verifying the instruction's origin — 
 gap_detected: "External research discovery and disclosure, together with deterrent layers such as the XPIA classifier, worked, so the vulnerability was surfaced and fixed before exploitation."
 gap_missing: "There was no layer to independently verify before action whether an instruction the AI ingested was granted under legitimate authority, so directives embedded in data were executed as if they were legitimate commands."
 gap_fix: "Before a high-risk action, independently verify with Lemma that this action stays within the bounds of legitimately granted commands and authority, and prevent it up front."
+industries: ["ai"]
+controls:
+  - slug: "ownership-check"
+    item: "Check that instructions the AI follows actually come from the user"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

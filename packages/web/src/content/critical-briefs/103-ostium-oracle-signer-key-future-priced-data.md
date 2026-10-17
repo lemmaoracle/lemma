@@ -17,6 +17,12 @@ og_lead_en: "Ostium — one compromised oracle signer key let \"future prices\" 
 gap_detected: "Blockaid が攻撃を進行中に検出し、Ostium が数分で把握して1時間以内に取引を停止、法執行機関・SEAL 911・第三者専門家と連携するという検出・対応の系列が機能し、被害の拡大が抑えられた。オンチェーンの異常監視も損失を約5分間に封じ込める上で役割を果たした。"
 gap_missing: "価格レポートが支払いに反映される時点で、その署名者がいま正当・無侵害か、そのデータが真正で妥当（未来日付でない・市場と整合する）かを、署名の有効性とは切り離して独立に立証する層がない。有効な署名を伴う偽レポートは署名検証を正しく通過してしまう。"
 gap_fix: "価格レポートを payout に反映する前に、署名者がいま正当・無侵害でこのスコープで認可されていること、およびデータが真正で妥当性境界（タイムスタンプ整合・価格の許容範囲）を満たすことを、署名の有効性とは切り離して Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+controls:
+  - slug: "hold-unverified"
+    item: "署名者と価格データが正当か確かめるまで、支払いを確定しない"
+attack_method: "account-takeover"
+impact: "最大約 1,800 万ドル（USDC）が流出"
 ---
 
 ## 1. TL;DR

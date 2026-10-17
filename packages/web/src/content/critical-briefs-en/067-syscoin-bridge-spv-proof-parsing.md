@@ -17,6 +17,11 @@ og_lead_en: "An invalid SPV proof minted 5B SYS with no burn — Syscoin bridge"
 gap_detected: "After discovery, the bridge was halted, assets were frozen and traced, Halborn's post-incident analysis was carried out, and the anomaly was detected after the fact."
 gap_missing: "There was no layer to check before minting whether the burn this proof referenced actually existed on the counterpart chain, so a forged proof that passed formally went straight through."
 gap_fix: "Before minting, independently verify with Lemma that the burn this proof references actually occurred on the counterpart chain, and prevent it up front."
+industries: ["finance"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not mint until the burn is confirmed to exist on the counterpart chain"
+impact: "~5 billion SYS minted with no burn behind it"
 ---
 
 ## 1. TL;DR

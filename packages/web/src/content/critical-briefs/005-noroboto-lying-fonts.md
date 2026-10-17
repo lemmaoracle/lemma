@@ -17,6 +17,11 @@ og_lead_en: "Embedded font forgery silently rewrote what the AI read — Norobot
 gap_detected: "出力側の AI 安全対策（ハルシネーション検出など）は、判断の品質を事後に点検する層として引き続き使える。"
 gap_missing: "AI は与えられた文字列を正常に処理してしまうため、判断の前に「AI が読んだ内容は人間が見た内容と同じか」を確かめる層が無かった。"
 gap_fix: "AI が判断を下す前に「AI が読んだ入力は、人間が画面で見ている内容と一致している」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+controls:
+  - slug: "ownership-check"
+    item: "AI が読んだ文字列が、人が画面で見た文章と同じか確かめる"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

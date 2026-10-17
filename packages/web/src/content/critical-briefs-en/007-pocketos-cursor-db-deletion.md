@@ -17,6 +17,15 @@ og_lead_en: "An AI coding agent wiped a production DB in 9 seconds — Cursor + 
 gap_detected: "The AI agent itself left a document afterward 'confessing' to the safety rules it had broken, so it functioned for monitoring and recording."
 gap_missing: "There was no layer to independently confirm before execution whether this deletion should really be carried out, so a single operation erased production data."
 gap_fix: "Before a high-risk operation, independently verify with Lemma that the request is authorized for this principal with this authority, and prevent it up front."
+industries: ["ai", "developers"]
+operations: ["approval"]
+controls:
+  - slug: "separate-approval"
+    item: "A human separately confirms any production deletion before it runs"
+  - slug: "hold-unverified"
+    item: "Do not execute destructive operations until they are confirmed as authorized"
+attack_method: "ai-misuse"
+impact: "Production database and backups wiped in 9 seconds"
 ---
 
 ## 1. TL;DR

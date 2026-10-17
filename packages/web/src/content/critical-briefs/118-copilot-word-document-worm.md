@@ -17,6 +17,11 @@ og_lead_en: "Copilot for Word document-borne prompt injection; generated files b
 gap_detected: "研究者の報告を受けて Microsoft は挙動を確認し、4 月と 7 月の二度にわたり緩和策を投入した。報告済みの個別ペイロードは遮断された。"
 gap_missing: "Copilot が編集した文書が、元データと指示のとおりに生成されたものかを、受け手が独立に確かめる層。"
 gap_fix: "文書の生成・編集の履歴を独立検証可能な証明として要求し、証明が伴わない改変を受け手が事前に分別できるようにする。"
+industries: ["ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "Copilot が編集した数値を、元データと突き合わせるまで共有しない"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

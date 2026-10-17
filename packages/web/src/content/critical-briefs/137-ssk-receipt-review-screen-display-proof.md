@@ -14,6 +14,12 @@ status: published
 version: "1.0"
 og_lead_ja: "支払基金の「1 秒以上の目視」目標、達成率は実態より大きく報告"
 og_lead_en: "Staff met Japan's claims-Fund one-second target with a tool"
+industries: ["healthcare", "public-sector"]
+operations: ["approval"]
+controls:
+  - slug: "audit-trail"
+    item: "「画面を表示した」ではなく、人が内容を確認したことを記録する"
+impact: "職員 290 人が自動で Enter を押すツールを使った"
 ---
 
 ## 1. TL;DR

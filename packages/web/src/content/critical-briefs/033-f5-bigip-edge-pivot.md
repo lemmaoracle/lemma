@@ -17,6 +17,9 @@ og_lead_en: "One edge-appliance compromise cascaded to full domain takeover — 
 gap_detected: "脅威リサーチによる攻撃チェーンの可視化や、危険な機器の露出観測・パッチ対象の特定はできた。"
 gap_missing: "横展開の各段階で「この認証情報の持ち主は、この行動をこの範囲で行う認可を持つか」を行動の前に確かめる層が無く、盗まれた認証情報の保有がそのまま権限として通用した。"
 gap_fix: "鍵や認証情報の保有ではなく「この行動が、スコープされた認可と来歴を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+operations: ["account-admin"]
+attack_method: "account-takeover"
+impact: "1 台の侵害からドメイン全体が乗っ取られた"
 ---
 
 ## 1. TL;DR

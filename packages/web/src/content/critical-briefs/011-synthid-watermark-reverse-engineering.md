@@ -17,6 +17,7 @@ og_lead_en: "SynthID Watermark, Statistically Stripped — a provenance mark tha
 gap_detected: "透かしと検出 API は、コンテンツを大規模に「AI 生成らしいか」とラベル付けする初期選別としては機能する。"
 gap_missing: "来歴の印を成果物そのものに埋め込むため、十分な量を観測すれば統計的に印を剥がすことも、偽って付けることもできてしまう。"
 gap_fix: "コンテンツの真偽を判断する前に「この成果物は正規の生成主体によって作られたものか」を、成果物の外側に置いた証明として Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "media"]
 ---
 
 ## 1. TL;DR

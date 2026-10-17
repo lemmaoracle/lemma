@@ -17,6 +17,13 @@ og_lead_en: "RPC manipulation on the DVN observation layer unlocked the bridge �
 gap_detected: "事象後の監視で被害の輪郭を絞り込み、影響範囲の同定に貢献できた。"
 gap_missing: "署名の鍵も手続きも正規だったため「署名対象のデータが本物か」を承認の前に確かめる層が無く、改ざんされた入力に正規の承認が下りた。"
 gap_fix: "資産を動かす前に「このメッセージは正規の出所から来ている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "署名する前に、メッセージが正規の出所から来たか確かめる"
+attack_method: "supply-chain"
+impact: "116,500 rsETH（約 460 億円相当）が不正アンロック"
 ---
 
 ## 1. TL;DR

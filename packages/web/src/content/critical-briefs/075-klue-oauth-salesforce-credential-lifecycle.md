@@ -17,6 +17,10 @@ og_lead_en: "Klue's un-revoked test credential led to mass Salesforce extraction
 gap_detected: "発覚後の連携停止と異常検知は機能し、Salesforce は Klue 連携アプリを無効化し追加抽出を止められた。"
 gap_missing: "「この認証情報・トークンは、今この操作を行う正当な認可に裏づけられているか」を行動の前に検証する層が無く、失効されない古い認証情報と長命の OAuth トークンがそのまま強い権限の bearer になった。"
 gap_fix: "認証情報・トークンが顧客データに触れる前に「この操作は正当な認可の範囲内で、いまも有効な認証情報に基づく」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["supply-chain"]
+operations: ["account-admin", "data-access"]
+attack_method: "supply-chain"
+impact: "約 24 時間にわたり CRM レコードを大量抽出"
 ---
 
 ## 1. TL;DR

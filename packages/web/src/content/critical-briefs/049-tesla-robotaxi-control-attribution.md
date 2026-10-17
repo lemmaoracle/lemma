@@ -17,6 +17,12 @@ og_lead_en: "Crash control attribution left self-reported — Tesla Robotaxi"
 gap_detected: "事故は規制当局へ報告され、車両側のログと提出記録は残されていた。"
 gap_missing: "「そのとき何が運転していたか」「記録は事実をそのまま反映しているか」を外部から独立に確かめる術が無く、帰属も開示範囲も運行主体の自己申告・自己黒塗りに委ねられていた。"
 gap_fix: "事故記録を後から信じるのではなく、制御の引き継ぎと走行判断が「いつ、何が、どの認可で制御していたか」を行為の時点で固定したことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+operations: ["disclosure"]
+controls:
+  - slug: "audit-trail"
+    item: "事故のとき誰が運転を制御していたかを記録し、外から確かめられるようにする"
+impact: "17 件の事故のうち 2 件は遠隔運転手が起こした"
 ---
 
 ## 1. TL;DR

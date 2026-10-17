@@ -14,6 +14,7 @@ status: published
 version: "1.1"
 og_lead_ja: "ServiceNow CVE-2026-6875 — 未認証の1リクエストが sandbox を抜け RCE"
 og_lead_en: "ServiceNow CVE-2026-6875 — one unauthenticated request escapes the sandbox to RCE"
+industries: ["ai"]
 ---
 
 > **改訂（v1.1 / 2026-09-01）**: 初版は Defused の初報に基づき、観測された悪用が「公開 PoC とは別経路で同じコード実行に到達した」と記述していた。Defused はその後この記述を訂正し、捕捉したペイロードは Searchlight Cyber の公開 PoC と一致すると述べている。本版では該当箇所を訂正し、§4 の論旨を「別経路の存在」ではなく「経路が公になった時点で到達可能性がそのまま実行可能性になる」構造の分析へ置き換えた。

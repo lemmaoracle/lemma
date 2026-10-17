@@ -17,6 +17,13 @@ og_lead_en: "Ariana Grande suit: collaborator credentials unverified before the 
 gap_detected: "漏洩と転売は事後に把握され、2026 年 7 月に法的手続きへ持ち込まれた。"
 gap_missing: "協力者のアカウントへのアクセスと素材の受け渡しが、行動ごとに正規かを独立に確かめる層。"
 gap_fix: "アクセスと受け渡しの前に、認証情報の来歴と認可を独立検証し、なりすましを実行前に排除する。"
+industries: ["media"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "素材を送る前に、依頼主が本当にそのフォトグラファーか確かめる"
+attack_method: "impersonation"
+impact: "2023 年だけで未発表曲 45 曲が流出"
 ---
 
 ## 1. TL;DR

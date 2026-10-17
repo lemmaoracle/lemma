@@ -17,6 +17,10 @@ og_lead_en: "ShadowMQ: one unauthenticated ZMQ + pickle implementation, copied a
 gap_detected: "Oligo's and Orca's research disclosures, each vendor's CVE assignment and patches, and the known danger of pickle all worked — the after-the-fact detect/report/patch chain ran."
 gap_missing: "There was only a layer that restored pickle arriving on an unauthenticated ZMQ socket without checking whether the sender or contents were legitimate, so arbitrary code ran the instant it was received — and the same implementation was copied across frameworks, spreading the flaw."
 gap_fix: "Before deserializing, independently verify with Lemma that the input was legitimately brought across the trust boundary, and prevent it up front."
+industries: ["ai", "developers"]
+controls:
+  - slug: "ownership-check"
+    item: "Before deserializing, confirm the data came from a legitimate sender"
 ---
 
 ## 1. TL;DR

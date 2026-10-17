@@ -17,6 +17,9 @@ og_lead_en: "AI agent ran 80–90% of an attack autonomously — GTG-1002"
 gap_detected: "提供事業者側の異常検知が働き、約 10 日で範囲を特定してアカウントを停止できた。"
 gap_missing: "侵入先のシステムが、AI からの各操作を実行の前に「これは正規の委任の下か」と確かめる層を持たず、「正規のセキュリティ企業の従業員だ」という偽りの名乗りが素通りした。"
 gap_fix: "外部システムへ作用する前に「この操作は、この主体に、この権限で認可されているか」を Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+attack_method: "ai-misuse"
+impact: "約 30 の標的を攻撃、少数で侵入成功"
 ---
 
 ## 1. TL;DR

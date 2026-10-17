@@ -17,6 +17,11 @@ og_lead_en: "In Semantic Kernel, prompt injection led directly to host-level RCE
 gap_detected: "脆弱性スキャン・CVE 開示・パッチ適用により、既知の悪用経路の特定と遮断はできた。"
 gap_missing: "LLM が呼べる関数とパラメータが、実行の前に「この呼び出しは認可・スコープされているか」を独立検証されないまま、注入され得るモデル出力から直接駆動された。"
 gap_fix: "関数を実行に移す前に「この呼び出しは、許可された権限の範囲内にある」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
+controls:
+  - slug: "hold-unverified"
+    item: "AI が呼ぶ関数と引数が許された範囲か、確かめてから実行する"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

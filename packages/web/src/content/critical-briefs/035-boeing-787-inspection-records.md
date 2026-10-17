@@ -17,6 +17,12 @@ og_lead_en: "Inspections recorded as complete but never performed — Boeing 787
 gap_detected: "記録上は検査が完了しており、書類監査やシステム上のチェックは通過できていた。"
 gap_missing: "「この検査記録は、実際の検査行為に裏づけられているか」を出荷の前に確かめる層が無く、実施を伴わない記録が「検査済み」として通用した。"
 gap_fix: "下流に進む前に「検査済みという属性が、誰がいつ実際に検査したかの来歴に裏づけられている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["manufacturing"]
+operations: ["approval"]
+controls:
+  - slug: "audit-trail"
+    item: "検査記録に、実際に検査した人・時刻・測定結果を残す"
+impact: "約 450 機が対象（関係筋）"
 ---
 
 ## 1. TL;DR

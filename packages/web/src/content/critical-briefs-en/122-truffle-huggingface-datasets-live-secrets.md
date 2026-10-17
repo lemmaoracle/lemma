@@ -17,6 +17,12 @@ og_lead_en: "Truffle Security scanned 7.6PB of Hugging Face datasets, found 221,
 gap_detected: "Hugging Face already scans public pushes with TruffleHog and emails the author when a verified secret appears — with automatic revocation for Enterprise organizations."
 gap_missing: "Notification arrives but revocation does not, so the keys stay live. Once a secret enters training data it is copied into countless derivatives, and revoking the original leaves every copy intact."
 gap_fix: "Require the origin and terms of use of data as independently verifiable proof, and block ingestion or republication of data that carries none."
+industries: ["ai", "developers"]
+operations: ["account-admin"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not ingest a dataset for training until its provenance is verified"
+impact: "221,303 still-valid credentials in public datasets"
 ---
 
 ## 1. TL;DR

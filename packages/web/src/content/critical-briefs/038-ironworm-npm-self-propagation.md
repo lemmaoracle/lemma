@@ -17,6 +17,13 @@ og_lead_en: "A self-propagating npm worm republishes itself with stolen credenti
 gap_detected: "セキュリティ企業 JFrog 等の解析とレジストリの対応で、感染パッケージは特定・無効化できた。"
 gap_missing: "公開・コミットの時点で「公開しようとしている者は、その成果物の正規の作者か」を確かめる層が無く、有効な認証情報の提示だけが公開の根拠になった。"
 gap_fix: "公開・コミットの前に「この成果物は正規の作者によって認可され、正規の来歴を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "公開しようとしている人が本当の作者か確かめる"
+attack_method: "supply-chain"
+impact: "約 37 パッケージに感染"
 ---
 
 ## 1. TL;DR

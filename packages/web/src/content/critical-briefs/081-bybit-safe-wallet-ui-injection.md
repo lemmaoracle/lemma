@@ -17,6 +17,13 @@ og_lead_en: "JS injected into the signing UI drained ~$1.5B — Bybit"
 gap_detected: "発覚後の声明・Mandiant の事後フォレンジクス・資金追跡・取引所横断のブラックリスト化と OFAC 制裁は実施でき、侵害経路も事後に特定できた。"
 gap_missing: "署名の前に「画面に表示された内容と、実際に署名するバイト列の来歴が一致するか」を UI と独立に確かめる層が無く、表示と署名対象を差し替えた注入は素通りした。"
 gap_fix: "署名の実行前に「署名対象のトランザクションが意図した承認フローの来歴を持つか」を Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "separate-approval"
+    item: "署名する中身が画面の表示と同じか、UI とは別の方法で確かめる"
+attack_method: "supply-chain"
+impact: "約 401,347 ETH（約 15 億ドル相当）が流出"
 ---
 
 ## 1. TL;DR

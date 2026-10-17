@@ -17,6 +17,12 @@ og_lead_en: "Keys stolen from one device clear the multisig threshold — Humani
 gap_detected: "オンチェーン解析・調査者による帰属の精査・取引所やセキュリティ企業の対応により、資金の動きと侵害の構造は外部から可視化できた。"
 gap_missing: "承認が実行される時点で「閾値を満たした署名群が、別個の正規主体による意図的な承認か」を確かめる層が無く、閾値を形式的に満たしたことだけが実行の根拠になった。"
 gap_fix: "資金移動やコントラクト変更を実行する前に「この承認は、別個の正規主体によって、このスコープで認可されている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "separate-approval"
+    item: "閾値の署名が、別々の人が別々の端末でしたものか確かめる"
+impact: "3,200 万ドル超が流出"
 ---
 
 ## 1. TL;DR

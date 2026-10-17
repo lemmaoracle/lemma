@@ -17,6 +17,11 @@ og_lead_en: "Consent and age unverified at generation — Grok deepfakes"
 gap_detected: "通報・検出技術・各国当局の調査により、拡散した生成物の削除と是正は作動した。"
 gap_missing: "生成の時点で「被写体は同意しているか」「未成年でないか」を確かめる層が無く、生成物にも検証できる来歴標識が付かないため、有害な生成は拡散が始まるまで区別できなかった。"
 gap_fix: "画像を生成する前に「被写体の同意・年齢が確かめられ、認可されている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "media"]
+controls:
+  - slug: "hold-unverified"
+    item: "被写体の同意と年齢を確かめるまで、画像を生成しない"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,7 @@ og_lead_en: "User-supplied MCP server URLs became an exfiltration channel for se
 gap_detected: "脆弱性の公開と即日の修正版提供という、正常な開示・是正の流れは機能した。"
 gap_missing: "「この接続先設定は誰が登録し、社内の機微情報にアクセスしてよいか」を実行の前に確かめる層が無く、設定が特権の文脈で解釈された。"
 gap_fix: "接続先の登録という権限行為について「登録者は、この範囲の情報にアクセスする認可を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
 ---
 
 ## 1. TL;DR

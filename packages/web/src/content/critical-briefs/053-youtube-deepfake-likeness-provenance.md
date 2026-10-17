@@ -17,6 +17,13 @@ og_lead_en: "200M views of fake celebrities, likeness provenance gap — YouTube
 gap_detected: "登録済みの顔に一致する合成動画は走査・削除でき、報道・調査が被害規模を可視化できた。"
 gap_missing: "「この肖像・音声は本人の同意ある正規の来歴を持つか」を生成・公開の前に確かめる層が無く、来歴を欠く合成物が拡散の前に区別されなかった。"
 gap_fix: "高リスク行動の前に「この肖像・音声は、本人の同意のもとに、検証可能な来歴を伴って生成されている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["media", "ai"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "動画の顔や声が、本人の同意を得て使われたものか確かめる"
+attack_method: "impersonation"
+impact: "なりすまし詐欺広告が約 2 億回再生された"
 ---
 
 ## 1. TL;DR

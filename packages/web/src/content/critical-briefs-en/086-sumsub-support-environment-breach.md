@@ -17,6 +17,9 @@ og_lead_en: "Sumsub: an 18-month undetected breach of a KYC vendor's support env
 gap_detected: "An internal security review in January 2026 surfaced the breach retroactively, leading to notification of the affected customers."
 gap_missing: "For roughly 18 months from intrusion to discovery, no one could continuously prove that an attacker was present in the support environment, and the identifying data retained for identity verification was exposed for a long period before any detection."
 gap_fix: "Perform identity verification as an attribute proof with minimal disclosure, so that identifying data such as names and contact details is not concentrated and retained by an intermediary. Data that is not retained cannot leak."
+industries: ["finance"]
+operations: ["data-access"]
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

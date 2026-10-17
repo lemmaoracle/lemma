@@ -17,6 +17,15 @@ og_lead_en: "Deployer key rewrote LayerZero v2 trust config to mint tokens — S
 gap_detected: "セキュリティ企業 Blockaid が攻撃を分単位でリアルタイム検知し、迅速な封じ込めにつながった。"
 gap_missing: "「どこからの依頼を信頼するか」の設定そのものが攻撃者の鍵で書き換えられており、偽の依頼を受け入れる前に出所を確かめる層が無かった。"
 gap_fix: "資産を発行する前に「このメッセージは正規の出所から来ている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["account-admin"]
+controls:
+  - slug: "separate-approval"
+    item: "信頼設定の変更は、鍵を持つ人以外も確かめる"
+  - slug: "ownership-check"
+    item: "受け入れる前に、メッセージが正規のコントラクトから来たか確かめる"
+attack_method: "account-takeover"
+impact: "5.4 兆 vsdCRV が不正ミントされた"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,9 @@ og_lead_en: "Wanchain — ambiguous signing encoding let one signature move 65,0
 gap_detected: "BlockSec の予備解析が非単射な署名符号化を原因として特定し、オンチェーン調査で 4 回の払い出しを追跡、Wanchain がブリッジを停止、Midnight Foundation が影響範囲を切り分けた。"
 gap_missing: "署名検証は「このバイト列に対する正しい署名か」を確かめるだけで、符号化が非単射なため「その署名が指す払い出しが唯一これであること」は払い出しの時点で検証されていなかった。"
 gap_fix: "払い出しを実行する前に、署名対象が区切り・長さ識別子を備えた正準形式で符号化され、この 1 つの払い出しだけに不可分に束ねられていることを独立検証可能な証明として要求し、証明が伴わない払い出しを事前に拒否する。"
+industries: ["finance"]
+operations: ["approval"]
+impact: "約 5 億 1,520 万 NIGHT（約 1,000 万ドル）が流出"
 ---
 
 ## 1. TL;DR

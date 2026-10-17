@@ -17,6 +17,10 @@ og_lead_en: "One shared key let a single takeover collapse the whole fleet — U
 gap_detected: "研究者による責任ある開示、ファームウェア更新や鍵管理の見直し、ネットワーク分離は周知・実施できた。"
 gap_missing: "「いま接続してきた相手は、この機体ごとに固有の本人性に照らして正当か」を動作の前に確かめる層が無く、全機共通の合言葉は素通りした。"
 gap_fix: "操作の前に「この機体は固有に正当な相手と向き合っており、この操作は認可の範囲内である」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["manufacturing"]
+controls:
+  - slug: "ownership-check"
+    item: "機体ごとの固有の鍵で、接続相手を確かめる"
 ---
 
 ## 1. TL;DR

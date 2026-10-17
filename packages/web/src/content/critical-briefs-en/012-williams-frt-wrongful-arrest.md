@@ -17,6 +17,14 @@ og_lead_en: "AI face-match drove enforcement with no independent verification â€
 gap_detected: "Evaluations measuring facial-recognition accuracy and bias (such as NIST) functioned as a basis for technology selection and operational limits."
 gap_missing: "For each individual match there was no layer to confirm whether independent corroboration and authorization existed before the act of arrest, so a probabilistic candidate was treated as a positive identification."
 gap_fix: "Before using an AI judgment in a decision such as a coercive enforcement action, independently verify with Lemma under what reliability conditions and with what independent corroboration and authorization the output is being used, and prevent it up front."
+industries: ["public-sector", "ai"]
+controls:
+  - slug: "separate-approval"
+    item: "Corroborate a face-recognition match with separate evidence before an arrest"
+  - slug: "hold-unverified"
+    item: "Do not proceed to arrest until the match is corroborated"
+attack_method: "ai-misuse"
+impact: "One man wrongfully arrested and held about 30 hours"
 ---
 
 ## 1. TL;DR

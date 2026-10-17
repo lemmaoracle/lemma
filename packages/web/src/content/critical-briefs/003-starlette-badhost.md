@@ -17,6 +17,7 @@ og_lead_en: "Host header manipulation bypassed MCP server auth — Starlette CVE
 gap_detected: "影響を受けるサーバーを脆弱なバージョンから特定するオンライン点検ツールが、発見者から公開された。"
 gap_missing: "通信の宛先情報を 1 文字だけ細工すると、本来そこで止めるはずの認証の関門を、行動の前に「誰の正規の要求か」を確かめないまま素通りできた。"
 gap_fix: "外部リソースへアクセスする前に「この要求は、誰が、どの権限で、どこまで出したものか」を Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
 ---
 
 ## 1. TL;DR

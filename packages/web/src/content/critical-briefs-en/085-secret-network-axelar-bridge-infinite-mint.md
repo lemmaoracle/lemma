@@ -17,6 +17,11 @@ og_lead_en: "Secret Network: forged-channel deposits went unverified, minting un
 gap_detected: "A routine transfer failed for insufficient escrow balance, surfacing the anomaly, and the Axelar emergency committee disabled both the Secret and Secret-SNIP connections to stop further outflow."
 gap_missing: "There was no layer that independently verified, before minting, that the message came from a legitimate channel and that a corresponding burn had occurred on the source chain, and because balances are encrypted, even the shortfall in backing went unobserved for about seven days."
 gap_fix: "Make provenance proof a precondition for minting, so that any message not accompanied by cryptographic proof of its source channel and burn event never reaches issuance (mint/release)."
+industries: ["finance"]
+controls:
+  - slug: "ownership-check"
+    item: "Before minting, confirm a deposit came from the legitimate source channel"
+impact: "~$4.67M in assets withdrawn"
 ---
 
 ## 1. TL;DR

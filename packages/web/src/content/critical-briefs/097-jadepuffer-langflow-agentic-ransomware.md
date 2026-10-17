@@ -17,6 +17,9 @@ og_lead_en: "JadePuffer — an LLM ran a real-world ransomware attack from breac
 gap_detected: "CVE-2025-3248 の 2025 年の開示と KEV 追加、露出インスタンスの把握、Sysdig による挙動分析と公表という検出の系列が機能し、手口と影響が外部から可視化された。"
 gap_missing: "システムが受理する行動（コード実行・設定変更・DB 操作）ごとに、それを要求する主体の権限を、生成された攻撃コードの見た目とは別に、実行の前に独立検証する層がない。"
 gap_fix: "破壊的になり得る操作の前に、それを要求する主体の権限を推論ループやコードの見た目から切り離して検証し、証明が伴わなければ実行を止めることを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+attack_method: "ai-misuse"
+impact: "設定 1,342 件が暗号化され復旧不能に"
 ---
 
 ## 1. TL;DR

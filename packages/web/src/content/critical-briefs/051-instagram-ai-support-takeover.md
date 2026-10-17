@@ -17,6 +17,15 @@ og_lead_en: "Asking the AI support bot hijacked 20k accounts — Meta HTS"
 gap_detected: "Meta は脆弱性と悪用を検知し、影響アカウントを特定して利用者へ通知できた。"
 gap_missing: "AI サポートがメール変更やリセットを実行する前に「この依頼者は、このアカウントの正当な持ち主か」を確かめる層が無く、依頼が来たことがそのまま操作の根拠になった。"
 gap_fix: "影響の大きい復旧操作の前に「この要求者は、このアカウントの正当な持ち主である」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["media", "ai"]
+operations: ["account-admin"]
+controls:
+  - slug: "ownership-check"
+    item: "依頼者が本当にアカウントの持ち主か確かめる"
+  - slug: "hold-unverified"
+    item: "持ち主と確かめられるまで、メール変更を実行しない"
+attack_method: "account-takeover"
+impact: "20,225 アカウントが乗っ取られた"
 ---
 
 ## 1. TL;DR

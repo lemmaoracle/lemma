@@ -14,6 +14,7 @@ status: published
 version: "1.1"
 og_lead_ja: "ServiceNow CVE-2026-6875 — 未認証の1リクエストが sandbox を抜け RCE"
 og_lead_en: "ServiceNow CVE-2026-6875 — one unauthenticated request escapes the sandbox to RCE"
+industries: ["ai"]
 ---
 
 > **Revision (v1.1 / 2026-09-01)**: The first version, following Defused's initial report, stated that the observed exploitation "reached the same code execution by a path different from the public PoC." Defused subsequently corrected that account, saying the captured payload in fact matches Searchlight Cyber's published PoC. This version corrects those passages and re-bases the argument in §4 from "a different path existed" to the structure in which reachability becomes executability the moment a path becomes public.

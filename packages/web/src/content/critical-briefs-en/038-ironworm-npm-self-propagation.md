@@ -17,6 +17,13 @@ og_lead_en: "A self-propagating npm worm republishes itself with stolen credenti
 gap_detected: "Analysis by security firms such as JFrog and registry response identified and disabled the infected packages."
 gap_missing: "At publish and commit time there was no layer to confirm whether the party attempting to publish was the legitimate author of the artifact, so presenting valid credentials alone became the basis for publishing."
 gap_fix: "Before publishing or committing, independently verify with Lemma that the artifact is authorized by a legitimate author and carries legitimate provenance, and prevent it up front."
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Check that the publisher is truly the package's legitimate author"
+attack_method: "supply-chain"
+impact: "Roughly 37 packages infected"
 ---
 
 ## 1. TL;DR

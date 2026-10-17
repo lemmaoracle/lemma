@@ -17,6 +17,7 @@ og_lead_en: "Ruflo MCP Bridge unauthenticated RCE: memory poisoning survives the
 gap_detected: "脆弱性は責任開示で発見され、メンテナが 24 時間以内にパッチと勧告を公開した。"
 gap_missing: "ツール呼び出しごとの認可と、エージェントの記憶（学習ストア）の来歴・完全性を、実行の前に独立に確かめる層。"
 gap_fix: "実行前にツール呼び出しを認可で証明し、エージェント記憶の来歴・完全性を独立検証して、無認証実行と汚染の永続化を排除する。"
+industries: ["ai", "developers"]
 ---
 
 ## 1. TL;DR

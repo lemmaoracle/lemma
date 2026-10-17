@@ -17,6 +17,9 @@ og_lead_en: "Japanese police identified 123 sexual-deepfake cases in H1 2026, pa
 gap_detected: "Statistics collection, case identification, and investigation made the harm visible and brought charges — including against the person who commissioned the images."
 gap_missing: "A layer that lets a recipient independently verify, at generation and at publication, whether use of a real person's likeness was authorized by that person."
 gap_fix: "Require the subject's authorization as independently verifiable proof before likeness-based generation, and refuse generation and publication that carry no proof."
+industries: ["ai"]
+attack_method: "ai-misuse"
+impact: "123 sexual deepfake cases of minors in six months"
 ---
 
 ## 1. TL;DR

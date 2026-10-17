@@ -16,6 +16,11 @@ og_lead_en: "Agent infrastructure trust boundaries, unverified at the reference 
 gap_detected: "Investigations by security firms and CVE reporters could identify the scope of impact and make the problem visible."
 gap_missing: "There was no layer to confirm before execution whether the received configuration constituted an execution backed by legitimate authority, so the configuration led directly to execution as-is."
 gap_fix: "Before moving from configuration to execution, independently verify with Lemma that the configuration falls within the range of permitted authority, and prevent it up front."
+industries: ["ai", "developers"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not run commands from a configuration until its authority is verified"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

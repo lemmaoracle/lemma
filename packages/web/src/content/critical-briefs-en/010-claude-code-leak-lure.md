@@ -17,6 +17,12 @@ og_lead_en: "Trust signals and GitHub Releases weaponized as a delivery channel 
 gap_detected: "The leak source admitted the mistake and pulled the version, and analysis firms and the distribution platform were able to detect and remove the fakes."
 gap_missing: "Those downloading had no layer to confirm at the point of acquisition whether the artifact was really built by a legitimate distributor, accepting it on the trust of a well-known brand name and the hosting site alone."
 gap_fix: "Before running or installing, independently verify with Lemma that the artifact was built by a legitimate distributor, and prevent it up front."
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm a downloaded file actually comes from the legitimate publisher"
+attack_method: "impersonation"
 ---
 
 ## 1. TL;DR

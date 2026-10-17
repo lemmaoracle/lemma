@@ -17,6 +17,13 @@ og_lead_en: "Change Healthcare: a breach of one Citrix account without MFA halte
 gap_detected: "ランサムウェア展開段階で攻撃を検知し主要システムを停止、議会証言で侵入経路を特定・開示し、医療機関支援と復旧にも動けた。"
 gap_missing: "MFA がないため Citrix への最初の不正ログインは正規アクセスと外形上区別できず、「このログインが正規の権限者によるものか」をログイン時点で独立に証明する層がなかった。"
 gap_fix: "アクセス要求の時点で要求者の権限属性を Lemma で独立検証し、認証情報の一致だけをゲートとする設計を置き換えて事前に防ぐ。"
+industries: ["healthcare"]
+operations: ["account-admin"]
+controls:
+  - slug: "ownership-check"
+    item: "ログインしているのが本人か、パスワード以外の方法でも確かめる"
+attack_method: "account-takeover"
+impact: "約 1 億人以上の医療記録が影響"
 ---
 
 ## 1. TL;DR

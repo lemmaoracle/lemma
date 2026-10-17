@@ -17,6 +17,12 @@ og_lead_en: "One-click GitHub OAuth token theft via github.dev"
 gap_detected: "The preventive response — advance notification by the researcher and a same-day interim fix from the provider — worked."
 gap_missing: "There was no layer to confirm before execution under whose authorization the extension install would run or what scope the token was delegated, so excessive privileges were exercised as-is."
 gap_fix: "Before a privileged act such as installing an extension, independently verify with Lemma that the act falls within the range of delegated authority, and prevent it up front."
+industries: ["developers"]
+operations: ["account-admin"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not install an extension until the action is confirmed to come from the real user"
+attack_method: "account-takeover"
 ---
 
 ## 1. TL;DR

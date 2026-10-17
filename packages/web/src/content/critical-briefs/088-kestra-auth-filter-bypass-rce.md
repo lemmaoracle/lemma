@@ -17,6 +17,8 @@ og_lead_en: "Kestra: a /configs path suffix bypasses auth — unauthenticated ro
 gap_detected: "CVE-2026-53576 として早期に開示され、CVSS 10.0 の深刻度評価・修正版（1.0.45 / 1.3.21）の提供・CISA ADP の補強が作動した。"
 gap_missing: "リクエストの認可が「パス末尾が /configs か」という表層シグナルで判定され、その要求が本当に公開対象か（呼び出し側の権限）を実行の前に独立検証する層が無かった。"
 gap_fix: "flow の作成・実行のような特権操作の前に、要求主体の権限を URL パスの形式判定とは切り離して Lemma で独立検証し、証明が伴わなければ実行を事前に block する。"
+industries: ["developers"]
+operations: ["account-admin"]
 ---
 
 ## 1. TL;DR

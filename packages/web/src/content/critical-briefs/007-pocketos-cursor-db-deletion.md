@@ -17,6 +17,15 @@ og_lead_en: "An AI coding agent wiped a production DB in 9 seconds — Cursor + 
 gap_detected: "AI エージェント自身が、自分が破った安全ルールを事後に「告白」する文書を残せた。監視・記録としては機能した。"
 gap_missing: "「この削除を本当に実行してよいのか」を実行の前に独立して確かめる層が無く、たった一回の操作で本番データが消えた。"
 gap_fix: "高リスクな操作の前に「この依頼は、この主体に、この権限で認可されているか」を Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
+operations: ["approval"]
+controls:
+  - slug: "separate-approval"
+    item: "本番データの削除は、実行前に人が別に確かめる"
+  - slug: "hold-unverified"
+    item: "正規の依頼と確かめられるまで、破壊的な操作は実行しない"
+attack_method: "ai-misuse"
+impact: "本番 DB とバックアップを 9 秒で全削除"
 ---
 
 ## 1. TL;DR

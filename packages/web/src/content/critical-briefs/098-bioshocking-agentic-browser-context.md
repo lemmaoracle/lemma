@@ -17,6 +17,11 @@ og_lead_en: "BioShocking — six AI browsers, convinced \"it's a game,\" leaked 
 gap_detected: "モデル側の安全ガード、有害プロンプトのフィルタリング、研究者（LayerX）による協調的開示とベンダー修正という検出の系列が機能し、手法とリスクが外部から可視化された。"
 gap_missing: "エージェントが consequential な行動を取る前に、依拠する文脈・指示が正当な出所を持つか、その行動を取る権限があるかを、モデル自身の推論とは別に独立検証する層がない。"
 gap_fix: "認証情報の送出やフォーム送信のような行動の前に、依拠する文脈・指示の来歴とその行動の認可を、モデルの内部判断から切り離して検証し、証明が伴わなければ実行を止めることを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "ページが与えた指示が正当と確かめるまで、認証情報を渡さない"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

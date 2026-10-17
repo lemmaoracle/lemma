@@ -17,6 +17,8 @@ og_lead_en: "Figma — AI training defaulted on for individuals/small teams, off
 gap_detected: "The detection chain worked — Figma's explicit statement of the settings in public documentation, its explanation of de-identification and shielding of sensitive information, the administrator toggle, and the published list of third-party vendors — helping users grasp their situation and respond; visibility through litigation and reporting also prompts a reexamination of practice."
 gap_missing: "There is no layer that independently establishes, at the moment content is ingested into training, whether consent was obtained for that use; content entrusted while the default was on is indistinguishable as training data from content entrusted after an admin explicitly switched it on, and turning it off later does not reach earlier ingestions."
 gap_fix: "Before content is ingested into training, verify — decoupled from the default value or the administrator's configuration action, and independently through Lemma — that the use is authorized by the rights holder and that each ingested datum carries a proof of consent, and prevent it up front."
+industries: ["ai"]
+operations: ["disclosure"]
 ---
 
 ## 1. TL;DR

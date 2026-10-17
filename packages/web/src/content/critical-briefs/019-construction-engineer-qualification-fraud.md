@@ -17,6 +17,9 @@ og_lead_en: "Engineers placed under national-license claims they didn't meet —
 gap_detected: "内部調査・第三者委員会・行政監査が不正取得の範囲と配置実績をあとから可視化できた。"
 gap_missing: "「この技術者は要件を満たす有資格者か」を配置の前に確かめる層が無く、自己申告された実務経験は素通りした。"
 gap_fix: "配置の前に「この技術者は、必要な国家資格を、要件を満たして有効に保有している」ことを Lemma で独立検証して、事前に防ぐ。"
+controls:
+  - slug: "ownership-check"
+    item: "配置の前に、申告された実務経験が本当にあるか確かめる"
 ---
 
 ## 1. TL;DR

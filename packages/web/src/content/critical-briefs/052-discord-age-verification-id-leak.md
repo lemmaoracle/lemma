@@ -17,6 +17,9 @@ og_lead_en: "70k government IDs leaked to prove age — Discord / 5CA"
 gap_detected: "Discord は侵害を検知し、影響利用者へ通知して委託先を切り替えられた。"
 gap_missing: "「年齢が要件を満たす」ことだけを生の身分証を渡さずに示す仕組みが無く、年齢一つを証明するために ID 全体が第三者に渡って溜まり続けた。"
 gap_fix: "年齢制限のある機能を認可する前に「18 歳以上である」ことだけを生 ID を渡さずに示せることを Lemma で独立検証して、事前に防ぐ。"
+operations: ["disclosure"]
+attack_method: "supply-chain"
+impact: "政府発行 ID 画像 7 万枚が盗まれた"
 ---
 
 ## 1. TL;DR

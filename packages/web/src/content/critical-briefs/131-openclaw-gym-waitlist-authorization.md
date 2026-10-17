@@ -17,6 +17,12 @@ og_lead_en: "OpenClaw's agent cancelled a stranger's gym booking; the API had no
 gap_detected: "検出は効きうる。異常な API 呼び出しやアカウントをまたぐ操作は、監視の層として捉えられる。"
 gap_missing: "エージェントが起こした行動が、その利用者の権限で許されるものかを、実行の前に確かめる層が無かった。"
 gap_fix: "他人の予約取消のような結果を伴う行動の前に、その行動が利用者の権限内であることを独立に確かめる一段を挟む。"
+industries: ["ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "他人の予約に触れる操作は、利用者の権限内か確かめるまで実行しない"
+attack_method: "ai-misuse"
+impact: "他人の予約 1 件が取り消され、戻せなかった"
 ---
 
 ## 1. TL;DR

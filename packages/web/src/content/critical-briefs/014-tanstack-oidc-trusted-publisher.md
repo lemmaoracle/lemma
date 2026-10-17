@@ -17,6 +17,13 @@ og_lead_en: "Malicious npm packages signed under a legitimate OIDC trusted publi
 gap_detected: "外部の研究者が公開から 20〜26 分という短時間で悪性公開を見つけ、影響範囲の特定と注意喚起につなげられた。"
 gap_missing: "「正規の発行元が署名した＝信頼できる成果物」という前提で受け取っていたため、署名は本物でも中身が差し替えられた成果物を、署名検証では止められなかった。"
 gap_fix: "高リスクな成果物の取り込み前に「この成果物が、意図されたソースとビルド経路から生成されている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "署名だけでなく、中身が意図したビルド出力か確かめる"
+attack_method: "supply-chain"
+impact: "42 パッケージに悪性 84 バージョンが公開"
 ---
 
 ## 1. TL;DR

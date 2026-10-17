@@ -17,6 +17,7 @@ og_lead_en: "One Pyodide sandbox escape reproduced across seven products; isolat
 gap_detected: "検出は効きうる。危険なモジュール呼び出しや異常なプロセス生成は、監視の層として捉えられる。"
 gap_missing: "「サンドボックスで隔離されている」という前提が、実行の前に独立に検証されていなかった。"
 gap_fix: "コードをホスト権限で実行へ移す前に、その隔離境界が実際に成り立っていることを独立に検証する。"
+industries: ["developers", "ai"]
 ---
 
 ## 1. TL;DR

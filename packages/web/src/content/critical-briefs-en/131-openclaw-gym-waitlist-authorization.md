@@ -17,6 +17,12 @@ og_lead_en: "OpenClaw's agent cancelled a stranger's gym booking; the API had no
 gap_detected: "Detection can work. Anomalous API calls and cross-account operations can be surfaced as a monitoring layer."
 gap_missing: "There was no layer to verify, before the action, whether what the agent did was permitted under that user's own authority."
 gap_fix: "Insert an independent check that a consequential action — like cancelling someone else's booking — is within the user's permissions, before it commits."
+industries: ["ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not run an action touching another person's booking until it is confirmed within the user's authority"
+attack_method: "ai-misuse"
+impact: "A stranger's booking cancelled, irreversibly"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,9 @@ og_lead_en: "JadePuffer — an LLM ran a real-world ransomware attack from breac
 gap_detected: "The detection chain worked — the 2025 disclosure and KEV listing of CVE-2025-3248, the mapping of exposed instances, and Sysdig's behavioral analysis and publication — making the technique and its impact externally visible."
 gap_missing: "There is no layer that independently verifies, before execution and separately from how the generated attack code looks, the authority of the principal requesting each action the system accepts (code execution, config change, DB operation)."
 gap_fix: "Before any potentially destructive operation, verify the requesting principal's authority — decoupled from the inference loop and from how the code looks — and stop execution when no proof accompanies it, verified independently by Lemma to prevent it up front."
+industries: ["ai"]
+attack_method: "ai-misuse"
+impact: "1,342 configuration items encrypted beyond recovery"
 ---
 
 ## 1. TL;DR

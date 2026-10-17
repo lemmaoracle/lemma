@@ -17,6 +17,14 @@ og_lead_en: "An AI agent forwarded credentials before verifying the sender — O
 gap_detected: "不審 URL・悪性 OAuth 同意画面は遮断できた。"
 gap_missing: "「送信者は誰か」を行動の前に確かめる層が無く、社会的な依頼は素通りした。"
 gap_fix: "高リスク行動の前に「この依頼は、この主体に、このスコープで認可されている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+operations: ["disclosure"]
+controls:
+  - slug: "ownership-check"
+    item: "依頼の送り主が本当にその人か、別の経路で確かめる"
+  - slug: "hold-unverified"
+    item: "送り主を確かめるまで、社外へ送らない"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

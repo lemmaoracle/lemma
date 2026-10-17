@@ -17,6 +17,12 @@ og_lead_en: "Guardian keys intact — but the provenance of the events they sign
 gap_detected: "Blockaid のリアルタイム検知と SEAL 911 の調査支援が、被害把握・ブリッジ停止・無担保トークンの焼却（約 96.4%）・資金追跡を可能にした。"
 gap_missing: "「署名対象のイベントが、正規のコントラクトから正規の経路で発されたものか」を署名の前に確かめる層が無く、攻撃者が偽造したイベントは素通りした。"
 gap_fix: "ブリッジが署名・払出を行う前に「このイベントは、登録された正規の発生源から、改ざんなく発されている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "署名する前に、イベントが正規のコントラクトから出たか確かめる"
+impact: "ブリッジから約 81.5 万ドルが流出"
 ---
 
 ## 1. TL;DR

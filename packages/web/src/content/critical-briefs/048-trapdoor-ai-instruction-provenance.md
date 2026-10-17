@@ -17,6 +17,12 @@ og_lead_en: "Hidden directives planted in AI instruction files — TrapDoor"
 gap_detected: "セキュリティ企業や GitHub は、悪性パッケージと隠し文字を含む PR を検出して除去・却下でき、手口を公表できた。"
 gap_missing: "AI が指示ファイルを読んで作業に移る前に、「その指示は正規の作者が正規の認可で置いたものか」を確かめる層が無く、隠された命令はそのまま実行された。"
 gap_fix: "AI が指示に従って動く前に「この指示は、この発行元から、この認可で来ている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers", "ai"]
+controls:
+  - slug: "ownership-check"
+    item: "AI が読む指示ファイルが、正規の作者によるものか確かめる"
+attack_method: "supply-chain"
+impact: "34 超のパッケージと 384 超の版に混入"
 ---
 
 ## 1. TL;DR

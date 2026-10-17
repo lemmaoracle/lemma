@@ -17,6 +17,11 @@ og_lead_en: "Fake OpenAI model tops Hugging Face trending; publisher provenance 
 gap_detected: "Scanning and trending monitoring caught the malicious repository, leading to disclosure and removal."
 gap_missing: "A layer that independently verifies, before execution, that the model artifact and its publisher are legitimate."
 gap_fix: "Verify the model's publisher provenance before execution, separating the typosquat from the legitimate publisher by provenance."
+industries: ["ai", "developers"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the model's publisher really is OpenAI before running anything from it"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

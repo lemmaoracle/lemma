@@ -16,6 +16,11 @@ og_lead_en: "What humans read and what models read cannot be guaranteed identica
 gap_detected: "不可視文字の除去・デコード挙動のフラグ付け・スキル監査といった検出策が、既知の手口を止められた。"
 gap_missing: "「人がレビューした入力と、モデルが実際に解釈した入力が同一か」をモデルに渡す前に確かめる層が無く、目視で見えない不可視文字は素通りした。"
 gap_fix: "モデルに渡す前に「この入力が、正規の配布元から、人がレビューした版と同一のまま改ざんなく渡っている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+controls:
+  - slug: "ownership-check"
+    item: "人が確認した入力とモデルが読む入力が同じか確かめる"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

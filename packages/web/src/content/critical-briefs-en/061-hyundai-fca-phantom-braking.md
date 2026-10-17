@@ -17,6 +17,9 @@ og_lead_en: "Driver-assist AI braked with no real threat, causing rear-end crash
 gap_detected: "Owner reports and NHTSA complaints were aggregated to grasp how many malfunctions occurred, leading to a recall."
 gap_missing: "There was no layer to independently check before braking whether the automatic braking was truly a necessary decision, so an erroneous judgment was executed directly as a hard stop."
 gap_fix: "Before an AI decision that overrides human operation, independently verify with Lemma that this action is warranted right now, and prevent it up front."
+industries: ["manufacturing"]
+attack_method: "ai-misuse"
+impact: "4 rear-end crashes and 4 injuries alleged"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,11 @@ og_lead_en: "One GitHub issue hijacks the repo via the agent — Claude Code Git
 gap_detected: "脆弱性は責任ある開示で報告され、迅速にパッチが提供でき、CI のログには実行が記録されていた。"
 gap_missing: "「いまエージェントを起動した相手は正当な権限を持つか」「読み込んだ内容は信頼できる出所か」を行動の前に確かめる層が無く、`[bot]` を名乗る起動と、依頼文を装った悪意ある指示が素通りした。"
 gap_fix: "エージェントが特権的に動く前に「この起動者は正当な権限を持ち、この入力は信頼できる出所に由来する」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
+controls:
+  - slug: "ownership-check"
+    item: "起動した相手が、本当に権限を持つ bot か確かめる"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,12 @@ og_lead_en: "Crash control attribution left self-reported — Tesla Robotaxi"
 gap_detected: "The crash was reported to regulators, and the vehicle-side logs and submitted records were retained."
 gap_missing: "There was no way to independently confirm from outside what was driving at the time or whether the records faithfully reflected the facts, so both attribution and disclosure scope were left to the operator's self-declaration and self-redaction."
 gap_fix: "Rather than trusting the crash records after the fact, independently verify with Lemma that the control handoffs and driving decisions fixed at the moment of action who was in control, when, and under what authorization, and prevent it up front."
+industries: ["ai"]
+operations: ["disclosure"]
+controls:
+  - slug: "audit-trail"
+    item: "Record who was in control at the time of each crash so it can be verified externally"
+impact: "2 of 17 crashes were caused by remote teleoperators"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,13 @@ og_lead_en: "BonkDAO governance attack drained about $20M; the smart contracts r
 gap_detected: "Proposal, vote and execution were all verifiable on-chain, and every contract-level check passed."
 gap_missing: "Nothing established whether the decision authority behind that vote was legitimately held or simply bought for the occasion."
 gap_fix: "Require that authority over a treasury-moving decision was legitimately established, as independently verifiable proof, and block execution that carries none."
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "hold-unverified"
+    item: "Hold treasury transfers until it is confirmed the voting power behind them was legitimately held"
+attack_method: "privilege-abuse"
+impact: "About $20 million in BONK moved from the treasury"
 ---
 
 ## 1. TL;DR

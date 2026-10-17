@@ -17,6 +17,12 @@ og_lead_en: "A leaked prover signing key let forged withdrawals pass as valid �
 gap_detected: "After discovery, halting block production, halting bridge withdrawals, asking exchanges to pause TAIKO deposits, and publishing the attacker addresses all worked, and Blockaid detected the anomaly in real time."
 gap_missing: "There was no layer to independently verify, before the withdrawal executed, whether the prover that signed this proof was a legitimately authorized party — whether its signing key had leaked — so a forged proof that was formally valid went straight through."
 gap_fix: "Before the withdrawal executes, independently verify with Lemma that the prover that signed this proof is an authorized party and that its signing key has not been compromised, and prevent it up front."
+industries: ["finance"]
+controls:
+  - slug: "ownership-check"
+    item: "Before a withdrawal, confirm the prover that signed the proof is a legitimately authorized one"
+attack_method: "impersonation"
+impact: "~$1.7M withdrawn from the bridge vault"
 ---
 
 ## 1. TL;DR

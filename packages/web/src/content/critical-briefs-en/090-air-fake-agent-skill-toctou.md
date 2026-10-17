@@ -19,6 +19,11 @@ og_headline_en: "A skill cleared every scanner.\n<accent>It was fake.</accent>"
 gap_detected: "The scanners (Cisco, Nvidia, skills.sh) analyzed the submitted package itself and correctly judged that, as submitted, it contained no malicious code."
 gap_missing: "The external link the skill follows at runtime could be swapped after submission, and there was no layer that, at the moment of execution, independently verified whether the artifact now running was identical to the one that was scanned."
 gap_fix: "Independently verify with Lemma that the skill and the resource it points to still match the scanned known-good at the moment of execution, and prevent it up front."
+industries: ["ai", "developers"]
+controls:
+  - slug: "hold-unverified"
+    item: "Don't run a skill until the external page it points to is confirmed unchanged since the scan"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

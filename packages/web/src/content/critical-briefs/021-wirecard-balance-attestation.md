@@ -17,6 +17,13 @@ og_lead_en: "Forged bank balance confirmations went unverified, reaching disclos
 gap_detected: "調査報道による疑義提起と、別途依頼された特別監査（KPMG）が、残高の主張と実態の乖離をあとから外部に可視化できた。"
 gap_missing: "「この残高確認書は発行元の銀行が出した本物か」を開示・監査の前に確かめる層が無く、第三者を経由して転送された確認書面は素通りした。"
 gap_fix: "開示・確認の前に「この資産が、発行元の金融機関の証明として、基準額以上に実在する」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["disclosure"]
+controls:
+  - slug: "ownership-check"
+    item: "残高確認書を、発行元の銀行に直接確かめる"
+attack_method: "impersonation"
+impact: "実在しない 19 億ユーロが残高として計上"
 ---
 
 ## 1. TL;DR

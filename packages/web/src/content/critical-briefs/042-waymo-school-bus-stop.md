@@ -17,6 +17,9 @@ og_lead_en: "A robotaxi drove past a stopped school bus — Waymo"
 gap_detected: "映像・学区の通報・NHTSA への事故報告により、事案は事後に可視化でき、調査とリコールにつながった。"
 gap_missing: "車が通過するという行動を起こす前に「いま目の前のバスは停止中で、停止義務を満たしているか」を独立に確かめる層が無く、規則の充足はシステム内部の判断に委ねられた。"
 gap_fix: "停止義務のような安全に関わる行動を起こす前に「この走行判断は安全規則を満たす」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+attack_method: "ai-misuse"
+impact: "Austin 学区で今年度 19 件の通過を記録"
 ---
 
 ## 1. TL;DR

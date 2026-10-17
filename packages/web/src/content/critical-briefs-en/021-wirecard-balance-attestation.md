@@ -17,6 +17,13 @@ og_lead_en: "Forged bank balance confirmations went unverified, reaching disclos
 gap_detected: "Questions raised by investigative journalism and a separately commissioned special audit (KPMG) could make the gap between the claimed balances and reality visible to outsiders after the fact."
 gap_missing: "There was no layer to confirm before disclosure and audit whether each balance confirmation was genuine and issued by the originating bank, so confirmation documents forwarded via a third party passed straight through."
 gap_fix: "Before disclosure and confirmation, independently verify with Lemma that the assets genuinely exist above the threshold amount as attested by the originating financial institution, and prevent it up front."
+industries: ["finance"]
+operations: ["disclosure"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm balance letters directly with the issuing bank"
+attack_method: "impersonation"
+impact: "EUR 1.9 billion in cash that did not exist"
 ---
 
 ## 1. TL;DR

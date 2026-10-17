@@ -17,6 +17,11 @@ og_lead_en: "Carbon credits from forests with no real conservation — Operation
 gap_detected: "調査報道と独立の衛星画像分析、連邦警察の捜査により、申告と実態の乖離は外部から可視化できた。"
 gap_missing: "クレジットを発行する時点で「申告された保全面積・伐採量が原データの真の状態を反映しているか」を確かめる層が無く、事業者の自己申告がそのまま受理された。"
 gap_fix: "クレジットを発行・取引する前に「この区域は方法論の要件を満たして実際に保全されている」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "申告された保全面積・伐採量を、衛星データなど原データと照らして確かめる"
 ---
 
 ## 1. TL;DR

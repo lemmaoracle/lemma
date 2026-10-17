@@ -17,6 +17,11 @@ og_lead_en: "Rewriting CLAUDE.md to hijack the defending AI — hackerbot-claw, 
 gap_detected: "今回は防御側の AI が改ざんされた指示を不審な誘導と見抜き「マージ不可」としてレビューを開始でき、研究者による脅威公表と各標的の迅速な修正も働いた。"
 gap_missing: "AI エージェントがリポジトリ側から渡された指示ファイルを、その出所や改ざんの有無を確かめずに行動指針として取り込む構造は残ったままで、見抜けるかどうかはモデルの当たり外れに委ねられた。"
 gap_fix: "AI エージェントが指示を取り込む前に「この指示が正規の認可された出所から来た改ざんのないものである」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
+controls:
+  - slug: "ownership-check"
+    item: "取り込む指示ファイルの出所と、改ざんの有無を確かめる"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

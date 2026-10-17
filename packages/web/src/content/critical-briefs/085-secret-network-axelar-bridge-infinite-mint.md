@@ -17,6 +17,11 @@ og_lead_en: "Secret Network: forged-channel deposits went unverified, minting un
 gap_detected: "routine な送金が escrow 残高不足で失敗して異常が発覚し、Axelar emergency committee が Secret / Secret-SNIP 両接続を無効化して追加流出を止めた。"
 gap_missing: "mint の前に「このメッセージが正規チャネル由来で、ソースチェーンで対応する burn が起きた」ことを独立検証する層が無く、残高暗号化により担保不足すら約 7 日間観測できなかった。"
 gap_fix: "来歴証明を mint の前提条件にし、送信元チャネルと burn イベントの暗号的証明が伴わないメッセージは発行（mint/release）に到達させない。"
+industries: ["finance"]
+controls:
+  - slug: "ownership-check"
+    item: "入金が正規の発信元チャネルから来たか、発行の前に確かめる"
+impact: "約 467 万ドル相当が引き出された"
 ---
 
 ## 1. TL;DR

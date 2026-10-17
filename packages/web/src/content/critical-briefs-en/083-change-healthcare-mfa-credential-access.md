@@ -17,6 +17,13 @@ og_lead_en: "Change Healthcare: a breach of one Citrix account without MFA halte
 gap_detected: "At the ransomware-deployment stage the attack was detected and core systems were shut down; the intrusion path was identified and disclosed in congressional testimony, and the company moved on provider support and recovery."
 gap_missing: "Because there was no MFA, the first malicious login to Citrix was outwardly indistinguishable from legitimate access, and there was no layer to independently prove at login time whether the login came from a legitimate authorized party."
 gap_fix: "Independently verify the requester's authorization attributes with Lemma at the moment of the access request, replacing a design that gates on credential match alone, and prevent it up front."
+industries: ["healthcare"]
+operations: ["account-admin"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the person logging in is the account holder by more than a password"
+attack_method: "account-takeover"
+impact: "Medical records of 100M+ Americans affected"
 ---
 
 ## 1. TL;DR

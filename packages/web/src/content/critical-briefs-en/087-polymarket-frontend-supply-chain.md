@@ -17,6 +17,13 @@ og_lead_en: "Polymarket: JS injected via a third-party dependency drove fake app
 gap_detected: "Polymarket's rapid disclosure, removal of the affected dependency, user notification and full reimbursement, and the fund tracing by PeckShield and Bubblemaps all operated."
 gap_missing: "There was no layer that independently verified, before execution, whether the front-end code running in the user's browser carried the legitimate provenance distributed by Polymarket, so the approval target was swapped from inside the legitimate domain."
 gap_fix: "Independently verify the provenance of the front-end code and the transaction being approved with Lemma before execution and approval, and do not start an approval session unless legitimate provenance is confirmed."
+industries: ["finance", "supply-chain"]
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the code running in the browser is really what Polymarket shipped"
+attack_method: "supply-chain"
+impact: "About $3 million worth of assets stolen"
 ---
 
 ## 1. TL;DR

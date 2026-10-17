@@ -17,6 +17,14 @@ og_lead_en: "AOG Technics circulated 60,000+ aircraft engine parts with forged a
 gap_detected: "Authenticity inquiries, Safran's report to authorities, CAA/FAA/EASA safety warnings, fleet groundings, and the SFO investigation made the scope of the fraud visible after the fact and contained it."
 gap_missing: "There was no layer to independently verify before receipt whether 'this certificate was genuinely issued by the legitimate issuer for this part,' so the airworthiness attribute was accepted on the mere existence of a certificate."
 gap_fix: "Before receipt, independently verify the certificate's provenance (issuer, subject, authenticity) with Lemma, and block acceptance if provenance cannot be confirmed — preventing it up front."
+industries: ["manufacturing", "supply-chain"]
+controls:
+  - slug: "ownership-check"
+    item: "Check with the issuer that a part's certificate was genuinely issued by it"
+  - slug: "hold-unverified"
+    item: "Do not install parts whose certificates cannot be verified"
+attack_method: "supply-chain"
+impact: "Over 60,000 parts circulated with forged certificates"
 ---
 
 ## 1. TL;DR

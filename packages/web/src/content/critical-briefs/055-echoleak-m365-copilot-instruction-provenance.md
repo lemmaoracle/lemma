@@ -17,6 +17,11 @@ og_lead_en: "AI exfiltrated data without verifying the instruction's origin — 
 gap_detected: "外部研究による発見と報告、XPIA 分類器などの抑止層が働き、脆弱性は悪用の前に可視化・修正された。"
 gap_missing: "「AI が取り込んだこの命令は、正当な権限の下で与えられたものか」を行動の前に独立検証する層が無く、データに埋め込まれた指示が正規の命令として実行された。"
 gap_fix: "高リスク行動の前に「この行動は、正当に与えられた命令と権限の範囲内である」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+controls:
+  - slug: "ownership-check"
+    item: "AI が従う命令が、利用者本人から来たものか確かめる"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

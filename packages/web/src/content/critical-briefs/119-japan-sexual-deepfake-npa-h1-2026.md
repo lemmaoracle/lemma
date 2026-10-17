@@ -17,6 +17,9 @@ og_lead_en: "Sexual-deepfake reports in Japan hit 123 in H1 2026, passing all of
 gap_detected: "警察庁の統計整備と事案の把握、および捜査によって被害の可視化と立件が進み、依頼者を含む加害の全体像が示された。"
 gap_missing: "実在の人物を素材とする生成物について、その利用が本人に認可されたかを、生成と公開の時点で受け手が独立に確かめる層。"
 gap_fix: "肖像を素材とする生成の前に本人の認可を独立検証可能な証明として要求し、証明が伴わない生成と公開を事前に拒否する。"
+industries: ["ai"]
+attack_method: "ai-misuse"
+impact: "未成年の性的ディープフェイク 123 件を半年で把握"
 ---
 
 ## 1. TL;DR

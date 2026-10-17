@@ -17,6 +17,11 @@ og_lead_en: "Fake OpenAI model tops Hugging Face trending; publisher provenance 
 gap_detected: "スキャンとトレンド監視により悪性リポジトリは把握され、公表と削除に至った。"
 gap_missing: "モデル成果物と発行者の来歴が、実行の前に正規かを独立に確かめる層。"
 gap_fix: "モデルの発行者来歴を実行前に独立検証し、typosquat を正規発行者から来歴で分別する。"
+industries: ["ai", "developers"]
+controls:
+  - slug: "ownership-check"
+    item: "モデルの発行者が本当に OpenAI か、実行の前に確かめる"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

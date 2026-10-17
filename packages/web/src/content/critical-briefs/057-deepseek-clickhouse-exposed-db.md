@@ -17,6 +17,9 @@ og_lead_en: "No auth on the AI backend — reachable meant readable — DeepSeek
 gap_detected: "外部からの継続的なアタックサーフェス監視と責任ある開示が働き、露出は悪用の証拠が広がる前に是正された。"
 gap_missing: "「このアクセスは正当な権限に基づくか」をアクセスの前に確かめる層が無く、認証のない基盤では到達した主体が正当か否かを区別する手段がそもそも存在しなかった。"
 gap_fix: "高リスク行動の前に「この主体は、このスコープのデータへの権限を正当に持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+operations: ["data-access"]
+impact: "100 万行超のログと平文のチャット履歴が露出"
 ---
 
 ## 1. TL;DR

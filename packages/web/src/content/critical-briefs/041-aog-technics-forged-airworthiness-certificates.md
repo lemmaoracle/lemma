@@ -17,6 +17,14 @@ og_lead_en: "AOG Technics circulated 60,000+ aircraft engine parts with forged a
 gap_detected: "真贋照会・Safran の通報・CAA／FAA／EASA の安全警告・運航停止・SFO の捜査が、不正の範囲を事後に可視化し封じ込めた。"
 gap_missing: "「この証書は、正規の発行機関が、この部品に対して発行した真正なものか」を受領の前に独立検証する層が無く、証書の存在だけで耐空属性が受理された。"
 gap_fix: "受領の前に、証書の来歴（発行機関・対象・真正性）を Lemma で独立検証し、来歴が確認できなければ受理を block して事前に防ぐ。"
+industries: ["manufacturing", "supply-chain"]
+controls:
+  - slug: "ownership-check"
+    item: "部品の証書が正規の発行元によるものか、発行元に照会して確かめる"
+  - slug: "hold-unverified"
+    item: "証書を確かめられない部品は機体に組み込まない"
+attack_method: "supply-chain"
+impact: "偽造証書付きの部品 6 万点超が出回った"
 ---
 
 ## 1. TL;DR

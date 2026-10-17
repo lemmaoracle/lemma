@@ -17,6 +17,7 @@ og_lead_en: "Ruflo MCP Bridge unauthenticated RCE: memory poisoning survives the
 gap_detected: "The flaw was found through responsible disclosure and the maintainer shipped a patch and advisory within 24 hours."
 gap_missing: "A layer that independently verifies, before execution, per-call tool-call authorization and the provenance and integrity of the agent's memory (learning store)."
 gap_fix: "Prove tool-call authorization before execution and independently verify agent-memory provenance and integrity, excluding unauthenticated execution and the persistence of poisoning."
+industries: ["ai", "developers"]
 ---
 
 ## 1. TL;DR

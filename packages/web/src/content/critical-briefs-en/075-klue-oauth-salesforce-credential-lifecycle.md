@@ -17,6 +17,10 @@ og_lead_en: "Klue's un-revoked test credential led to mass Salesforce extraction
 gap_detected: "After discovery, integration shutdown and anomaly detection worked: Salesforce disabled the Klue integration app and stopped further extraction."
 gap_missing: "There was no layer to verify before the action whether this credential or token rested on legitimate authorization for the operation at hand, so an un-revoked old credential and a long-lived OAuth token simply functioned as the bearer of strong authority."
 gap_fix: "Before a credential or token touches customer data, independently verify with Lemma that this operation stays within legitimate authorization and rests on a still-valid credential, and prevent it up front."
+industries: ["supply-chain"]
+operations: ["account-admin", "data-access"]
+attack_method: "supply-chain"
+impact: "CRM records mass-extracted over ~24 hours"
 ---
 
 ## 1. TL;DR

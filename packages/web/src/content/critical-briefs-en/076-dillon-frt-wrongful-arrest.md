@@ -17,6 +17,12 @@ og_lead_en: "A 93% FRT 'match' drove arrest with no independent corroboration â€
 gap_detected: "FRT accuracy and bias evaluation, and after-the-fact error correction (the innocence coming to light, the lawsuit), functioned as a basis for technology selection, operational restrictions, and remedy for harm."
 gap_missing: "For each individual '93% match' there was no layer to confirm whether independent corroboration (residence, distance, and the like) and authorization existed before the act of arrest, so a probabilistic candidate was treated as a positive identification."
 gap_fix: "Before using an AI output in a coercive enforcement action such as arrest, independently verify with Lemma under what reliability conditions and with what independent corroboration and authorization the output is being used, and leave it as a tamper-evident record."
+industries: ["public-sector"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not arrest on a face match alone; hold until it is independently corroborated"
+attack_method: "ai-misuse"
+impact: "One man wrongfully arrested as someone else"
 ---
 
 ## 1. TL;DR

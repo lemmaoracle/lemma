@@ -17,6 +17,12 @@ og_lead_en: "Both sides filed AI-hallucinated cases, both sanctioned — N.D. Mi
 gap_detected: "判事と相手方は、提出後に幻覚的な引用を見抜き、Rule 11 で制裁できた。"
 gap_missing: "「この判例は本当に実在し、引用は正しい出所に由来するか」を提出という行動の前に独立に確かめる層が無く、本物らしい体裁の引用は素通りした。"
 gap_fix: "提出の前に「この主張の根拠は実在し、その来歴は正しい出所に由来する」ことを Lemma で独立検証して、事前に防ぐ。"
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "引用した判例が実在するか、提出の前に原典で確かめる"
+attack_method: "ai-misuse"
+impact: "弁護士 4 名が制裁を受け、公判が取り消し"
 ---
 
 ## 1. TL;DR

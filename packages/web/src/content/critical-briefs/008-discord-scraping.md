@@ -17,6 +17,12 @@ og_lead_en: "2.05 billion public messages redistributed as AI training data — 
 gap_detected: "技術メディアが、収集と公開が起きた後にその存在を検出し、業界に問題提起できた。"
 gap_missing: "配布の前に「このデータは規約に沿った範囲で集められたものか」を確かめる層が無く、規約で禁じられた用途のデータがそのまま公開された。"
 gap_fix: "配布や AI 学習への取り込みの前に「このデータは、どこから、どの利用条件で集められたか」を Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+operations: ["disclosure"]
+controls:
+  - slug: "hold-unverified"
+    item: "規約の範囲で集めたと確かめられるまで、データを公開しない"
+impact: "20.52 億メッセージが収集・公開された"
 ---
 
 ## 1. TL;DR

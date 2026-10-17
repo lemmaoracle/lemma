@@ -17,6 +17,10 @@ og_lead_en: "Stolen integration OAuth tokens hit 700+ Salesforce tenants — Sal
 gap_detected: "侵害の調査でどのデータが照会されたかを事後に把握でき、Salesloft はトークンを失効させ連携を撤去できた。"
 gap_missing: "「いまこの連携が行っている照会は、本来の許可の範囲内で、今も有効な権限か」を行動の前に確かめる層が無く、盗まれた連携トークンによる正規を装った照会は素通りした。"
 gap_fix: "連携が顧客データに触れる前に「この操作は許可の範囲内で、いまも有効な認可に基づく」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["supply-chain"]
+operations: ["data-access"]
+attack_method: "supply-chain"
+impact: "700 社超の Salesforce 環境を横断照会"
 ---
 
 ## 1. TL;DR

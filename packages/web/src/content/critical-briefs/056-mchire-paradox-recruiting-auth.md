@@ -17,6 +17,8 @@ og_lead_en: "Hiring AI: 64M records within reach, no authorization check — McH
 gap_detected: "外部の研究者調査と責任ある開示で脆弱性が可視化され、Paradox.ai が即日修正・バグバウンティを開始できた。"
 gap_missing: "「このアクセス主体が、このレコードに対して正当な権限を持つか」をアクセスの前に確かめる層が無く、推測可能な資格情報と連番の参照 ID だけで記録に到達できた。"
 gap_fix: "高リスク行動の前に「この要求主体は、このスコープのデータへの権限を正当に持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+operations: ["account-admin", "data-access"]
 ---
 
 ## 1. TL;DR

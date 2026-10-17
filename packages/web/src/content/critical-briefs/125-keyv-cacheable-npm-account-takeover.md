@@ -18,6 +18,13 @@ gap_detected: "署名と provenance の検証は設計どおり働いた。パ�
 gap_missing: "その来歴が、鍵の前にいるのが正規のメンテナ本人かまでは示さない。取り込みの前に発行者の正体を確かめる形が無かった。"
 gap_fix: "リリースがどの発行者 ID の・どのソース状態から出たかを取り込みの前に確かめられる形にし、それを伴わないリリースの依存解決を差し止め可能にする。"
 analysis_lead_ja: "確かめられないのは、ビルドが正規の workflow から出たかどうかではない。その workflow を起動したのが、正規のメンテナ本人だったかどうかである。"
+industries: ["developers", "supply-chain"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "リリースを起動したのが正規のメンテナ本人か、取り込む前に確かめる"
+attack_method: "account-takeover"
+impact: "約 38 分で汚染された版 9 本が公開された"
 ---
 
 ## 1. TL;DR
