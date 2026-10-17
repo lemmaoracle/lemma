@@ -315,6 +315,8 @@ const labels = isJa
       fIndustry: "業界",
       fOperation: "業務",
       fAttack: "手口",
+      fControl: "対策",
+      detailCats: "詳細分類（脅威タイプ）",
       fAny: "すべて",
       fKeyword: "キーワード",
       fGo: "絞り込む",
@@ -362,6 +364,8 @@ const labels = isJa
       fIndustry: "Industry",
       fOperation: "Operation",
       fAttack: "Attack method",
+      fControl: "Control",
+      detailCats: "Detailed classification (threat type)",
       fAny: "All",
       fKeyword: "Keyword",
       fGo: "Filter",
@@ -438,54 +442,6 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
           トップ = 2列・件数の横バー（アーカイブへのリンク）。
           アーカイブ = 横並びの小さいチップ（絞り込みボタン）。同じ面が2枚続くと
           「遷移した感じ」が出ないので、アーカイブ側は畳んで一覧を上に出す。 */}
-      {isArchive && (
-      <section aria-label={labels.threatTypes} class="cb-threats--chips">
-        {!isArchive && (
-          <div class="cb-label">
-            <b>{labels.threatTypes}</b><span>{labels.threatTypesEn}</span>
-          </div>
-        )}
-        {isArchive ? (
-          <button type="button" class="cb-allpill is-active" data-cat="all">
-            {labels.allChip} <i>{briefsCount}</i>
-          </button>
-        ) : (
-          <a class="cb-allpill" href={archiveHref}>
-            {labels.allChip} <i>{briefsCount}</i>
-          </a>
-        )}
-        <div class="cb-distwrap">
-          {sortedCategories.map(([cat, count]) => {
-            const Tag = isArchive ? "button" : "a";
-            const tagProps = isArchive
-              ? { type: "button" as const }
-              : { href: briefsCategoryHref(base, cat) };
-            return (
-            <Tag class="cb-dist" data-cat={cat} {...tagProps}>
-              <span class="di">
-                <svg
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                  set:html={CATEGORY_ICONS[cat] ?? DEFAULT_ICON}
-                />
-              </span>
-              <span class="dn">{categoryLabel(cat, locale)}</span>
-              <span class="db">
-                <i style={`width:${Math.round((count / maxCategoryCount) * 100)}%`}></i>
-              </span>
-              <span class="dc">{count}</span>
-            </Tag>
-            );
-          })}
-        </div>
-      </section>
-      )}
-
       {!isArchive && pickBriefs.length > 0 && (
         <section class="ix-picks" aria-label={labels.picks}>
           <h2 class="ix-h">{labels.picks}</h2>
@@ -594,33 +550,84 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       {/* すべての Brief（アーカイブのみ・見出し行の右端に虫眼鏡の検索） */}
       {isArchive && (
       <section aria-label={labels.allBriefs}>
-        <div class="cb-listhead">
-          <b>{labels.allBriefs}</b>
-          <span class="lh-en">All — {briefsCount}</span>
-          <span class="lh-rule"></span>
-          <label class="cb-search">
-            <span class="mg">
-              <svg
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-                aria-hidden="true"
-              >
-                <circle cx="7" cy="7" r="4.6"></circle>
-                <path d="m10.4 10.4 3.2 3.2"></path>
-              </svg>
-            </span>
+        <div class="cb-listhead ix-filter ix-filter--arc">
+          <h2 class="ix-h">{labels.allBriefs} <span class="ix-h-n">{briefsCount}</span></h2>
+          <label><span class="sr">{labels.fIndustry}</span>
+            <select data-facet="industry">
+              <option value="">{labels.fIndustry}</option>
+              {usedIndustries.map((f) => <option value={f.slug}>{f[loc]}</option>)}
+            </select>
+          </label>
+          <label><span class="sr">{labels.fOperation}</span>
+            <select data-facet="operation">
+              <option value="">{labels.fOperation}</option>
+              {usedOperations.map((f) => <option value={f.slug}>{f[loc]}</option>)}
+            </select>
+          </label>
+          <label><span class="sr">{labels.fAttack}</span>
+            <select data-facet="attack">
+              <option value="">{labels.fAttack}</option>
+              {usedAttacks.map((f) => <option value={f.slug}>{f[loc]}</option>)}
+            </select>
+          </label>
+          <label><span class="sr">{labels.fControl}</span>
+            <select data-facet="control">
+              <option value="">{labels.fControl}</option>
+              {controlTiles.map((c) => <option value={c.slug}>{c.label}</option>)}
+            </select>
+          </label>
+          <label class="cb-search ix-q"><span class="sr">{labels.searchAria}</span>
             <input
-              type="text"
+              type="search"
               name="q"
-              placeholder={labels.searchPlaceholder}
-              aria-label={labels.searchAria}
+              placeholder={labels.fKeyword}
               autocomplete="off"
             />
           </label>
         </div>
+        <details class="ix-detail">
+          <summary>{labels.detailCats}</summary>
+          <div class="cb-threats--chips">
+        {isArchive ? (
+          <button type="button" class="cb-allpill is-active" data-cat="all">
+            {labels.allChip} <i>{briefsCount}</i>
+          </button>
+        ) : (
+          <a class="cb-allpill" href={archiveHref}>
+            {labels.allChip} <i>{briefsCount}</i>
+          </a>
+        )}
+        <div class="cb-distwrap">
+          {sortedCategories.map(([cat, count]) => {
+            const Tag = isArchive ? "button" : "a";
+            const tagProps = isArchive
+              ? { type: "button" as const }
+              : { href: briefsCategoryHref(base, cat) };
+            return (
+            <Tag class="cb-dist" data-cat={cat} {...tagProps}>
+              <span class="di">
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  set:html={CATEGORY_ICONS[cat] ?? DEFAULT_ICON}
+                />
+              </span>
+              <span class="dn">{categoryLabel(cat, locale)}</span>
+              <span class="db">
+                <i style={`width:${Math.round((count / maxCategoryCount) * 100)}%`}></i>
+              </span>
+              <span class="dc">{count}</span>
+            </Tag>
+            );
+          })}
+        </div>
+          </div>
+        </details>
 
         {/* フィルタ中の件数と解除（月見出しの一覧はフィルタで隠れる）。 */}
         <div class="cb-fctx" data-filter-context hidden>
@@ -634,13 +641,15 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
               <b>{g.label}</b>
               <span data-month-count>{labels.countUnit(g.briefs.length)}</span>
             </div>
-            <div class="cb-bcdgrid">
+            <div class="ix-list">
               {g.briefs.map((b) => {
                 const c = briefCardData(b);
+                const meta = [c.publishedStr, industryLabel(b), attackLabel(b)].filter(Boolean).join(" · ");
                 return (
                   <a
                     href={c.href}
-                    class="cb-bcd"
+                    class="ix-row"
+                    data-card
                     data-pillar={c.pillarParam}
                     data-cats={c.cats}
                     data-search={c.searchBlob}
@@ -649,14 +658,12 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
                     data-attack={c.facetAttack}
                     data-control={c.facetCtl}
                   >
-                    <div class="cb-bcd-no">{c.briefNo}</div>
-                    <div>
-                      <div class="cb-bcd-t">{c.mainTitle}</div>
-                      <div class="cb-bcd-foot">
-                        <span class="cb-bcd-tag">{c.primaryCatLabel}</span>
-                        <span class="cb-bcd-d">{c.dateShort}</span>
-                      </div>
-                    </div>
+                    <span class="ix-row-body">
+                      <span class="ix-row-m">{meta}<span class="ix-row-no"> · No.{c.briefNoPad}</span></span>
+                      <span class="ix-row-t">{shortTitle(b)}</span>
+                      {b.data.impact && <span class="ix-row-i">{b.data.impact}</span>}
+                    </span>
+                    <span class="ix-arrow" aria-hidden="true">→</span>
                   </a>
                 );
               })}
@@ -1213,6 +1220,78 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     .cb-page:not([data-variant="archive"]) {
       padding-top: 8px;
     }
+  }
+
+
+  /* ─── 余白・見出し（2026-10-17・本人指示：上を詰め、題を大きく） ─── */
+  .cb-page {
+    padding-top: 20px;
+  }
+  .cb-hero {
+    padding-top: 20px;
+  }
+  .cb-hero h1 {
+    font-size: clamp(30px, 3.8vw, 46px);
+    line-height: 1.4;
+    margin: 10px 0 12px;
+  }
+  .cb-page .cb-hero--archive h1 {
+    font-size: clamp(28px, 3.2vw, 40px);
+  }
+  .ix-more {
+    margin-top: auto;
+    padding-top: 4px;
+  }
+
+  /* ─── アーカイブ（2026-10-17）: 一覧の「そのほかの新着」と同じ行。
+     絞り込みは 1 行、脅威タイプは「詳細分類」にたたむ。 ─── */
+  .ix-filter--arc {
+    margin: 28px 0 0;
+  }
+  .ix-h-n {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .ix-filter--arc .cb-search {
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    width: auto;
+  }
+  .ix-filter--arc .cb-search input {
+    height: 36px;
+    width: 240px;
+    border: 1px solid #cfd3c8;
+    border-radius: 999px;
+    background: #fff;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+  .ix-detail {
+    margin: 10px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .ix-detail summary {
+    cursor: pointer;
+    padding: 4px 0;
+    width: max-content;
+  }
+  .ix-detail .cb-threats--chips {
+    margin-top: 10px;
+  }
+  .ix-row-no {
+    color: #a7ada1;
+  }
+  .ix-row[hidden] {
+    display: none;
+  }
+  .cb-month .ix-list {
+    border-top: 0;
   }
 
   /* ─── SECTION LABEL ───
@@ -1892,7 +1971,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       return;
     }
 
-    const cards = Array.from(root.querySelectorAll<HTMLElement>(".cb-bcd"));
+    const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-card]"));
     const months = Array.from(root.querySelectorAll<HTMLElement>("[data-month]"));
     const allPill = root.querySelector<HTMLElement>(".cb-allpill");
     const dists = Array.from(root.querySelectorAll<HTMLElement>(".cb-dist"));
@@ -1962,7 +2041,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       // でも同じ見出し・同じ件数で続く）。月の表示はこのページに1件でも
       // あるかどうか。
       months.forEach((m) => {
-        const inMonth = Array.from(m.querySelectorAll<HTMLElement>(".cb-bcd"));
+        const inMonth = Array.from(m.querySelectorAll<HTMLElement>("[data-card]"));
         const matched = inMonth.filter(cardMatches).length;
         const visible = inMonth.filter((c) => !c.hidden).length;
         m.hidden = visible === 0;
@@ -2059,9 +2138,27 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       activePillar = "";
       query = "";
       FACET_KEYS.forEach((k) => delete facets[k]);
+      syncSelects();
       if (searchInput) searchInput.value = "";
       update();
     }
+
+    const facetSelects = Array.from(
+      root.querySelectorAll<HTMLSelectElement>("select[data-facet]"),
+    );
+    function syncSelects() {
+      facetSelects.forEach((sel) => {
+        sel.value = facets[sel.dataset.facet || ""] || "";
+      });
+    }
+    facetSelects.forEach((sel) => {
+      sel.addEventListener("change", () => {
+        const k = sel.dataset.facet || "";
+        if (sel.value) facets[k] = sel.value;
+        else delete facets[k];
+        update();
+      });
+    });
 
     if (allPill) allPill.addEventListener("click", reset);
     if (fctxClear) fctxClear.addEventListener("click", reset);
@@ -2136,6 +2233,12 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       mode = "search";
       query = urlQ.trim().toLowerCase();
       if (searchInput) searchInput.value = urlQ;
+    }
+    syncSelects();
+    // URL で脅威タイプが選ばれて来たら、詳細分類を開いて見せる。
+    if (mode === "category") {
+      const det = root.querySelector<HTMLDetailsElement>(".ix-detail");
+      if (det) det.open = true;
     }
     update(false);
   })();
