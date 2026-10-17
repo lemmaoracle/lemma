@@ -49,7 +49,20 @@ import {
   type CategorySlug,
 } from "../data/criticalBriefs";
 import { getEnBriefMap } from "../data/getEnBriefMap";
-import { POPULAR_BRIEF_SLUGS } from "../data/popularBriefs";
+import { BRIEF_PICKS } from "../config/briefPicks";
+import {
+  BRIEF_ATTACKS,
+  BRIEF_CONTROLS,
+  BRIEF_CONTROL_SLUGS,
+  BRIEF_INDUSTRIES,
+  BRIEF_OPERATIONS,
+  FACET_ICON_ATTRS,
+  FACET_ICON_VIEWBOX,
+  type BriefAttackSlug,
+  type BriefIndustrySlug,
+  type BriefOperationSlug,
+} from "../config/briefFacets";
+import { indexBannerFor } from "../config/briefServiceBanner";
 import {
   LATEST_COUNT,
   briefsArchiveHref,
@@ -128,12 +141,64 @@ for (const b of briefsByPublishedDesc) {
 // `briefIndex.ts` の LATEST_COUNT 1箇所で調整する。
 const latestBriefs = briefsByPublishedDesc.slice(0, LATEST_COUNT);
 
-// Manually-curated "most-read" ranking (src/data/popularBriefs.ts), resolved to
-// Brief entries in listed order; unknown slugs are dropped.
 const briefById = new Map(allBriefs.map((b) => [b.id, b]));
-const popularBriefs = POPULAR_BRIEF_SLUGS.map((s) => briefById.get(s)).filter(
+
+/* ── 一覧トップ（2026-10-17・承認済みモック v6）────────────────────────
+ * いま読む 3 本（config/briefPicks.ts）→ 対策から読む（4 タイル）＋点検の帯
+ * → そのほかの新着（2 列・影響を言葉で）。脅威タイプ（13）と「よく見られて
+ * いる」はトップから外した（脅威タイプ別ページは 90 日で計 2 PV）。脅威タイプ
+ * の絞り込みはアーカイブ側に残す。 */
+const loc = isJa ? "ja" : "en";
+const attackLabel = (b: AnyBrief): string | null => {
+  const a = b.data.attack_method as BriefAttackSlug | undefined;
+  return a ? BRIEF_ATTACKS[a][loc] : null;
+};
+const industryLabel = (b: AnyBrief): string | null => {
+  const i = (b.data.industries as BriefIndustrySlug[] | undefined)?.[0];
+  return i ? BRIEF_INDUSTRIES[i][loc] : null;
+};
+const shortTitle = (b: AnyBrief): string => {
+  const lead = isJa ? b.data.og_lead_ja : b.data.og_lead_en;
+  return lead ?? (isJa ? b.data.title : b.data.title_en).split(" — ")[0];
+};
+const takeawayOf = (b: AnyBrief): string => {
+  if (b.data.takeaway) return b.data.takeaway as string;
+  const tail = (isJa ? b.data.title : b.data.title_en).split(" — ")[1];
+  return tail ?? "";
+};
+const pickBriefs = BRIEF_PICKS.map((id) => briefById.get(id)).filter(
   (b): b is AnyBrief => Boolean(b),
 );
+const pickIds = new Set(pickBriefs.map((b) => b.id));
+const restLatest = briefsByPublishedDesc
+  .filter((b) => !pickIds.has(b.id))
+  .slice(0, LATEST_COUNT);
+const controlTiles = BRIEF_CONTROL_SLUGS.map((slug) => ({
+  slug,
+  label: BRIEF_CONTROLS[slug][loc],
+  icon: BRIEF_CONTROLS[slug].icon,
+  count: allBriefs.filter((b) =>
+    ((b.data.controls as { slug: string }[] | undefined) ?? []).some((c) => c.slug === slug),
+  ).length,
+  href: `${archiveHref}?control=${slug}`,
+}));
+const indexBanner = indexBannerFor(locale);
+/* 一覧の絞り込み（業界・業務・手口）で出す候補。タグの付いた Brief がある値だけ。 */
+const usedIndustries = Object.values(BRIEF_INDUSTRIES).filter((f) =>
+  allBriefs.some((b) => (b.data.industries as string[] | undefined)?.includes(f.slug)),
+);
+const usedOperations = Object.values(BRIEF_OPERATIONS).filter((f) =>
+  allBriefs.some((b) => (b.data.operations as string[] | undefined)?.includes(f.slug)),
+);
+const usedAttacks = Object.values(BRIEF_ATTACKS).filter((f) =>
+  allBriefs.some((b) => b.data.attack_method === f.slug),
+);
+/* アーカイブの絞り込み表示用のラベル（?industry= 等の値 → 表示名）。 */
+const facetLabels: Record<string, string> = {};
+for (const f of Object.values(BRIEF_INDUSTRIES)) facetLabels[`industry:${f.slug}`] = f[loc];
+for (const f of Object.values(BRIEF_OPERATIONS)) facetLabels[`operation:${f.slug}`] = f[loc];
+for (const f of Object.values(BRIEF_ATTACKS)) facetLabels[`attack:${f.slug}`] = f[loc];
+for (const slug of BRIEF_CONTROL_SLUGS) facetLabels[`control:${slug}`] = BRIEF_CONTROLS[slug][loc];
 
 // Category usage: count primary + secondary occurrences across all Briefs.
 const categoryUsage = new Map<CategorySlug, number>();
@@ -227,12 +292,32 @@ function briefCardData(b: AnyBrief) {
     primaryCatLabel,
     cats,
     searchBlob,
+    facetInd: ((b.data.industries as string[] | undefined) ?? []).join(","),
+    facetOps: ((b.data.operations as string[] | undefined) ?? []).join(","),
+    facetAttack: (b.data.attack_method as string | undefined) ?? "",
+    facetCtl: ((b.data.controls as { slug: string }[] | undefined) ?? [])
+      .map((c) => c.slug)
+      .join(","),
   };
 }
 
 const labels = isJa
   ? {
       eyebrow: "Lemma Critical Brief",
+      heroH1: "攻撃と事故の構造を読む",
+      heroDesc:
+        "実際に起きたサイバー攻撃と事故を公表資料から読み解き、何が欠けていたか、どう防ぐかまでを整理する解説レポートです。",
+      picks: "いま読む 3 本",
+      controlsH: "対策から読む",
+      controlCount: (n: number) => `解説 ${n} 本`,
+      restH: "そのほかの新着",
+      readMore: "読む",
+      fIndustry: "業界",
+      fOperation: "業務",
+      fAttack: "手口",
+      fAny: "すべて",
+      fKeyword: "キーワード",
+      fGo: "絞り込む",
       h1Lead: "脅威インテリジェンス ×",
       h1Accent: "信頼インフラ。",
       descLead:
@@ -258,15 +343,28 @@ const labels = isJa
       backToLatest: "最新の Brief へ戻る",
       archiveH1: "Brief アーカイブ",
       archiveMeta: `全 ${briefsCount} 本 · 最新は No.${latestBriefNo} · 公開月順`,
-      pageTitle:
-        "Lemma Critical Brief — 脅威インテリジェンス × 信頼インフラ",
+      pageTitle: "Lemma Critical Brief — 攻撃と事故の構造を読む",
       description:
-        "AI・暗号インフラ・サプライチェーン・規制属性領域の重大事案を Lemma が構造的に解析するリファレンス集。各 Brief は「検出と証明の落差」を明示し、リスク評価・規制対応・信頼インフラ設計に活用できる。",
+        "実際に起きたサイバー攻撃と事故を公表資料から読み解き、何が欠けていたか、どう防ぐかまでを整理する解説レポート。業界・手口・対策から探せる。",
       archivePageTitle: `Brief アーカイブ（全 ${briefsCount} 本）— Lemma Critical Brief`,
       archiveDescription: `Lemma Critical Brief の全 ${briefsCount} 本を公開月ごとに一覧。AI・暗号インフラ・サプライチェーン・規制属性領域の重大事案を、脅威タイプとキーワードで絞り込める。`,
     }
   : {
       eyebrow: "Lemma Critical Brief",
+      heroH1: "How attacks and accidents get through",
+      heroDesc:
+        "Real cyber attacks and incidents, read from public disclosures: what was missing, and how to counter it.",
+      picks: "Read now",
+      controlsH: "Browse by control",
+      controlCount: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
+      restH: "More recent briefs",
+      readMore: "Read",
+      fIndustry: "Industry",
+      fOperation: "Operation",
+      fAttack: "Attack method",
+      fAny: "All",
+      fKeyword: "Keyword",
+      fGo: "Filter",
       h1Lead: "threat intelligence ×",
       h1Accent: "trust infrastructure.",
       descLead:
@@ -293,10 +391,9 @@ const labels = isJa
       backToLatest: "Back to the latest Briefs",
       archiveH1: "Brief archive",
       archiveMeta: `${briefsCount} Briefs · latest No.${latestBriefNo} · by month of publication`,
-      pageTitle:
-        "Lemma Critical Brief — threat intelligence × trust infrastructure",
+      pageTitle: "Lemma Critical Brief — how attacks and accidents get through",
       description:
-        "A structured-incident-analysis reference from Lemma. Major incidents across AI, cryptographic infrastructure, supply chains, and regulated attributes — each Brief makes the gap between detection and proof explicit for risk assessment, regulatory response, and trust-infrastructure design.",
+        "Real cyber attacks and incidents, read from public disclosures: what was missing, and how to counter it. Browse by industry, attack method or control.",
       archivePageTitle: `Brief archive (all ${briefsCount}) — Lemma Critical Brief`,
       archiveDescription: `All ${briefsCount} Lemma Critical Briefs, grouped by month of publication. Major incidents across AI, cryptographic infrastructure, supply chains, and regulated attributes — filter by threat type or search by keyword.`,
     };
@@ -314,7 +411,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
-  <main class="cb-page" data-variant={variant} data-archive-href={archiveHref}>
+  <main class="cb-page" data-variant={variant} data-archive-href={archiveHref} data-facet-labels={JSON.stringify(facetLabels)}>
     <div class="cb-wrap">
       {/* Hero — アーカイブ側は戻り導線つきの簡素版 */}
       {isArchive ? (
@@ -328,10 +425,8 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       ) : (
         <section class="cb-hero">
           <div class="cb-kicker">{labels.eyebrow}</div>
-          <h1>{labels.h1Lead}<br />{labels.h1Accent}</h1>
-          <p>
-            {labels.descLead}<strong>{labels.descStrong}</strong>{labels.descEnd}
-          </p>
+          <h1>{labels.heroH1}</h1>
+          <p>{labels.heroDesc}</p>
           <div class="cb-acts">
             <a href={rssHref}>{labels.rssLabel}</a>
             <a href={methodologyHref}>{labels.methodologyLabel}</a>
@@ -343,7 +438,8 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
           トップ = 2列・件数の横バー（アーカイブへのリンク）。
           アーカイブ = 横並びの小さいチップ（絞り込みボタン）。同じ面が2枚続くと
           「遷移した感じ」が出ないので、アーカイブ側は畳んで一覧を上に出す。 */}
-      <section aria-label={labels.threatTypes} class={isArchive ? "cb-threats--chips" : undefined}>
+      {isArchive && (
+      <section aria-label={labels.threatTypes} class="cb-threats--chips">
         {!isArchive && (
           <div class="cb-label">
             <b>{labels.threatTypes}</b><span>{labels.threatTypesEn}</span>
@@ -388,21 +484,27 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
           })}
         </div>
       </section>
+      )}
 
-      {/* よく見られている（トップのみ）: GA4 実測ベースのランキング。
-          並びは popularBriefs.ts 1ファイル、更新は scripts/refresh-popular-briefs.py。 */}
-      {!isArchive && popularBriefs.length > 0 && (
-        <section aria-label={labels.popular}>
-          <div class="cb-label">
-            <b>{labels.popular}</b><span>{labels.popularEn}</span>
-          </div>
-          <div class="cb-popwrap">
-            {popularBriefs.map((b, i) => {
+      {!isArchive && pickBriefs.length > 0 && (
+        <section class="ix-picks" aria-label={labels.picks}>
+          <h2 class="ix-h">{labels.picks}</h2>
+          <div class="ix-picks-grid">
+            {pickBriefs.map((b, i) => {
               const c = briefCardData(b);
+              const ind = industryLabel(b);
+              const atk = attackLabel(b);
               return (
-                <a class="cb-poprow" href={c.href}>
-                  <span class="rk">{i + 1}</span>
-                  <span class="pt">{c.mainTitle}</span>
+                <a class="ix-pick" href={c.href}>
+                  <div class={`ix-cover ix-cover--${i % 3}`}>
+                    <span class="ix-cover-meta">
+                      {ind && <b>{ind}</b>}{ind && atk && " · "}{atk}
+                    </span>
+                    {b.data.impact && <span class="ix-cover-impact">{b.data.impact}</span>}
+                  </div>
+                  <span class="ix-pick-t">{shortTitle(b)}</span>
+                  <span class="ix-pick-w">{takeawayOf(b)}</span>
+                  <span class="ix-more">{labels.readMore}<span aria-hidden="true"> →</span></span>
                 </a>
               );
             })}
@@ -410,25 +512,74 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         </section>
       )}
 
-      {/* 最新（トップのみ）— 月見出しなしのフラットな新着順・カードは拡大版。 */}
       {!isArchive && (
-        <section aria-label={labels.latest}>
-          <div class="cb-label">
-            <b>{labels.latest}</b><span>{labels.latestEn}</span>
+        <section class="ix-controls" aria-label={labels.controlsH}>
+          <h2 class="ix-h">{labels.controlsH}</h2>
+          <div class="ix-ctl-grid">
+            {controlTiles.map((c) => (
+              <a class="ix-ctl" href={c.href} data-index-ev="brief_index_control_click" data-cta={c.slug}>
+                <span class="ix-ctl-ic">
+                  <svg viewBox={FACET_ICON_VIEWBOX} {...FACET_ICON_ATTRS} aria-hidden="true" set:html={c.icon} />
+                </span>
+                <span class="ix-ctl-tx">
+                  <b>{c.label}</b>
+                  <span>{labels.controlCount(c.count)}</span>
+                </span>
+                <span class="ix-arrow" aria-hidden="true">→</span>
+              </a>
+            ))}
           </div>
-          <div class="cb-bcdgrid cb-bcdgrid--lg">
-            {latestBriefs.map((b) => {
+          <aside class="ix-banner" aria-label={indexBanner.label} data-index-banner>
+            <span class="ix-banner-pr">PR</span>
+            <span class="ix-banner-tx">
+              <span class="ix-banner-k">{indexBanner.label}</span>
+              <b>{indexBanner.head}</b>
+              <span class="ix-banner-b">{indexBanner.body}</span>
+            </span>
+            <a class="ix-banner-btn" href={indexBanner.href} target="_blank" rel="noopener" data-index-ev="brief_index_banner_click" data-cta="index_banner">{indexBanner.button}</a>
+          </aside>
+        </section>
+      )}
+
+      {!isArchive && (
+        <section class="ix-rest" aria-label={labels.restH}>
+          <form class="ix-filter" action={archiveHref} method="get">
+            <h2 class="ix-h">{labels.restH}</h2>
+            <label><span class="sr">{labels.fIndustry}</span>
+              <select name="industry">
+                <option value="">{labels.fIndustry}</option>
+                {usedIndustries.map((f) => <option value={f.slug}>{f[loc]}</option>)}
+              </select>
+            </label>
+            <label><span class="sr">{labels.fOperation}</span>
+              <select name="operation">
+                <option value="">{labels.fOperation}</option>
+                {usedOperations.map((f) => <option value={f.slug}>{f[loc]}</option>)}
+              </select>
+            </label>
+            <label><span class="sr">{labels.fAttack}</span>
+              <select name="attack">
+                <option value="">{labels.fAttack}</option>
+                {usedAttacks.map((f) => <option value={f.slug}>{f[loc]}</option>)}
+              </select>
+            </label>
+            <label class="ix-q"><span class="sr">{labels.fKeyword}</span>
+              <input type="search" name="q" placeholder={labels.fKeyword} />
+            </label>
+            <button type="submit">{labels.fGo}</button>
+          </form>
+          <div class="ix-list">
+            {restLatest.map((b) => {
               const c = briefCardData(b);
+              const meta = [c.publishedStr, industryLabel(b), attackLabel(b)].filter(Boolean).join(" · ");
               return (
-                <a href={c.href} class="cb-bcd cb-bcd--lg">
-                  <div class="cb-bcd-no">{c.briefNo}</div>
-                  <div>
-                    <div class="cb-bcd-t">{c.mainTitle}</div>
-                    <div class="cb-bcd-foot">
-                      <span class="cb-bcd-tag">{c.primaryCatLabel}</span>
-                      <span class="cb-bcd-d">{c.dateShort}</span>
-                    </div>
-                  </div>
+                <a class="ix-row" href={c.href}>
+                  <span class="ix-row-body">
+                    <span class="ix-row-m">{meta}</span>
+                    <span class="ix-row-t">{shortTitle(b)}</span>
+                    {b.data.impact && <span class="ix-row-i">{b.data.impact}</span>}
+                  </span>
+                  <span class="ix-arrow" aria-hidden="true">→</span>
                 </a>
               );
             })}
@@ -493,6 +644,10 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
                     data-pillar={c.pillarParam}
                     data-cats={c.cats}
                     data-search={c.searchBlob}
+                    data-industry={c.facetInd}
+                    data-operation={c.facetOps}
+                    data-attack={c.facetAttack}
+                    data-control={c.facetCtl}
                   >
                     <div class="cb-bcd-no">{c.briefNo}</div>
                     <div>
@@ -615,6 +770,449 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   }
   .cb-acts a:hover {
     border-color: var(--ok-light);
+  }
+
+
+  /* ─── 一覧トップ（2026-10-17） ───────────────────────────────────
+     承認済みモック v6。ライムは淡い下地と帯のボタンだけ、暗い面は
+     いま読むの表紙と点検の帯だけ。数字は赤くしない（影響は言葉で）。 */
+  .ix-h {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--tx);
+  }
+  .ix-picks {
+    margin-top: 36px;
+    padding: 26px 0 30px;
+    border-top: 1px solid var(--tx);
+    border-bottom: 1px solid #cfd3c8;
+  }
+  .ix-picks-grid {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+  }
+  .ix-pick {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .ix-pick:hover .ix-pick-t,
+  .ix-pick:focus-visible .ix-pick-t {
+    color: var(--ok-light);
+  }
+  .ix-pick:hover .ix-cover {
+    filter: brightness(1.12);
+  }
+  .ix-cover {
+    transition: filter 0.15s;
+  }
+  .ix-more {
+    margin-top: 2px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ok-light);
+  }
+  .ix-pick:hover .ix-more {
+    text-decoration: underline;
+  }
+  /* クリックできるところの目印（2026-10-17）: 行・タイルの右端の矢印。
+     触れると矢印がライムの濃色に変わって少し動く。 */
+  .ix-arrow {
+    flex: none;
+    margin-left: auto;
+    font-size: 16px;
+    color: #9aa394;
+    transition: transform 0.15s, color 0.15s;
+  }
+  .ix-cover {
+    height: 104px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #f3f6ec;
+    background-color: #2f372f;
+    background-image:
+      radial-gradient(rgba(207, 216, 196, 0.28) 1px, transparent 1.3px),
+      radial-gradient(60% 80% at 85% 10%, rgba(168, 224, 16, 0.28), rgba(168, 224, 16, 0)),
+      linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
+    background-size: 18px 18px, 100% 100%, 100% 100%;
+  }
+  .ix-cover--1 {
+    background-image:
+      radial-gradient(rgba(207, 216, 196, 0.28) 1px, transparent 1.3px),
+      radial-gradient(60% 80% at 15% 90%, rgba(168, 224, 16, 0.24), rgba(168, 224, 16, 0)),
+      linear-gradient(200deg, #3c443d, #2f372f 58%, #272e28);
+    background-size: 22px 22px, 100% 100%, 100% 100%;
+  }
+  .ix-cover--2 {
+    background-image:
+      radial-gradient(rgba(207, 216, 196, 0.28) 1px, transparent 1.3px),
+      radial-gradient(60% 80% at 60% 0%, rgba(168, 224, 16, 0.26), rgba(168, 224, 16, 0)),
+      linear-gradient(140deg, #3c443d, #2f372f 58%, #272e28);
+    background-size: 15px 15px, 100% 100%, 100% 100%;
+  }
+  .ix-cover-meta {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #cfd8c4;
+  }
+  .ix-cover-meta b {
+    font-weight: 600;
+    color: #c9ef5a;
+  }
+  .ix-cover-impact {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .ix-pick-t {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--tx);
+  }
+  .ix-pick-w {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .ix-controls {
+    padding-top: 26px;
+  }
+  .ix-ctl-grid {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .ix-ctl {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    text-decoration: none;
+    color: var(--tx);
+    transition: border-color 0.15s;
+  }
+  .ix-ctl:hover,
+  .ix-ctl:focus-visible {
+    border-color: #b8cf7a;
+    box-shadow: var(--sh-s);
+  }
+  .ix-ctl:hover .ix-arrow,
+  .ix-row:hover .ix-arrow,
+  .ix-ctl:focus-visible .ix-arrow,
+  .ix-row:focus-visible .ix-arrow {
+    color: var(--ok-light);
+    transform: translateX(3px);
+  }
+  .ix-ctl-ic {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #eef7d2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2f372f;
+  }
+  .ix-ctl-ic svg {
+    width: 28px;
+    height: 28px;
+  }
+  .ix-ctl-tx {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .ix-ctl-tx b {
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .ix-ctl-tx span {
+    font-size: 12px;
+    color: #8a9083;
+  }
+  .ix-banner {
+    position: relative;
+    overflow: hidden;
+    margin-top: 20px;
+    border-radius: 14px;
+    padding: 26px 30px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px 32px;
+    color: #ebefe6;
+    background-color: #2f372f;
+    background-image:
+      radial-gradient(rgba(235, 239, 230, 0.07) 1px, transparent 1.2px),
+      radial-gradient(70% 120% at 92% -20%, rgba(168, 224, 16, 0.24), rgba(168, 224, 16, 0) 60%),
+      linear-gradient(168deg, #3c443d 0%, #2f372f 58%, #272e28 100%);
+    background-size: 22px 22px, 100% 100%, 100% 100%;
+  }
+  .ix-banner-pr {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #9ba296;
+    border: 1px solid #59645a;
+    border-radius: 3px;
+    padding: 1px 5px;
+    line-height: 1.4;
+  }
+  .ix-banner-tx {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1 1 420px;
+  }
+  .ix-banner-k {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--ok);
+  }
+  .ix-banner-tx b {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.5;
+    color: #f3f6ec;
+  }
+  .ix-banner-b {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #bcc3b6;
+  }
+  .ix-banner-btn {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 8px;
+    background: var(--ok);
+    color: #0f1412;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .ix-rest {
+    padding-top: 34px;
+  }
+  .ix-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--tx);
+  }
+  .ix-filter .ix-h {
+    margin-right: 12px;
+  }
+  .ix-filter select,
+  .ix-filter input,
+  .ix-filter button {
+    font: inherit;
+    font-size: 13px;
+    height: 36px;
+    border: 1px solid #cfd3c8;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--tx);
+    padding: 0 14px;
+  }
+  /* 選択の矢印は既定だと枠の右端に貼り付くので、自前の小さな山形を
+     文字のすぐ右に置く（幅は中身に合わせる）。 */
+  .ix-filter select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: auto;
+    /* 幅は選んでいる文字に合わせる（対応ブラウザ）。未対応では一番長い
+       選択肢の幅になるので、上限で抑える。 */
+    field-sizing: content;
+    max-width: 9.5em;
+    padding: 0 30px 0 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none' stroke='%235c6156' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+    cursor: pointer;
+  }
+  .ix-filter .ix-q {
+    flex: 1 1 200px;
+  }
+  .ix-filter input {
+    width: 100%;
+    max-width: 280px;
+    box-sizing: border-box;
+  }
+  .ix-filter button {
+    cursor: pointer;
+    border-color: var(--tx);
+  }
+  .ix-filter .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .ix-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 48px;
+  }
+  .ix-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 10px;
+    margin: 0 -10px;
+    border-radius: 8px;
+    transition: background 0.15s;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+  }
+  .ix-row:hover {
+    background: var(--lite-2);
+  }
+  .ix-row:hover .ix-row-t {
+    color: var(--ok-light);
+  }
+  .ix-row-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .ix-row-m {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #8a9083;
+  }
+  .ix-row-t {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--tx);
+  }
+  .ix-row-i {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--tx-soft);
+  }
+  @media (max-width: 900px) {
+    .ix-picks-grid {
+      display: flex;
+      overflow-x: auto;
+      gap: 14px;
+      margin-right: -6vw;
+      padding-right: 6vw;
+      scroll-snap-type: x mandatory;
+    }
+    .ix-pick {
+      flex: 0 0 280px;
+      scroll-snap-align: start;
+    }
+    .ix-ctl-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .ix-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 620px) {
+    .ix-ctl {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 12px;
+    }
+    .ix-ctl-ic {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+    }
+    .ix-ctl-ic svg {
+      width: 24px;
+      height: 24px;
+    }
+    .ix-ctl-tx b {
+      font-size: 14px;
+    }
+    /* スマホでは帯を細く（画面の 3 割を暗い面が占めていた）。 */
+    .ix-banner {
+      padding: 12px 14px;
+      gap: 12px;
+      flex-wrap: nowrap;
+      border-radius: 10px;
+    }
+    .ix-banner-pr,
+    .ix-banner-b {
+      display: none;
+    }
+    .ix-banner-k {
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 0;
+      color: #9ba296;
+    }
+    .ix-banner-k::before {
+      content: "PR · ";
+    }
+    .ix-banner-tx b {
+      font-family: var(--font-body);
+      font-size: 14px;
+    }
+    .ix-banner-btn {
+      font-size: 13px;
+      padding: 9px 12px;
+    }
+    .ix-filter {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .ix-filter .ix-h {
+      grid-column: 1 / -1;
+    }
+    .ix-filter label:not(.ix-q) {
+      justify-self: start;
+    }
+    .ix-filter select {
+      padding: 0 26px 0 12px;
+      background-position: right 11px center;
+    }
+    .ix-filter .ix-q {
+      grid-column: 1 / 3;
+    }
+    .ix-filter input {
+      max-width: none;
+    }
+    .cb-page:not([data-variant="archive"]) {
+      padding-top: 8px;
+    }
   }
 
   /* ─── SECTION LABEL ───
@@ -1287,7 +1885,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       const archive = root.dataset.archiveHref;
       if (
         archive &&
-        (legacy.has("category") || legacy.has("pillar") || legacy.has("q"))
+        (["category", "pillar", "q", "industry", "operation", "attack", "control"].some((k) => legacy.has(k)))
       ) {
         location.replace(archive + "?" + legacy.toString());
       }
@@ -1310,6 +1908,25 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         ? `${n} 件`
         : `${n} brief${n === 1 ? "" : "s"}`;
 
+    // 業界・業務・手口・対策の絞り込み（2026-10-17）。一覧トップのフォームと
+    // 対策タイルから ?industry= / ?operation= / ?attack= / ?control= で来る。
+    // 脅威タイプ・柱・検索と AND で効く。
+    const FACET_KEYS = ["industry", "operation", "attack", "control"] as const;
+    const facetLabels: Record<string, string> = JSON.parse(root.dataset.facetLabels || "{}");
+    const facets: Record<string, string> = {};
+    function facetMatches(card: HTMLElement): boolean {
+      return FACET_KEYS.every((k) => {
+        const v = facets[k];
+        if (!v) return true;
+        return (card.dataset[k] || "").split(",").includes(v);
+      });
+    }
+    function facetText(): string {
+      return FACET_KEYS.filter((k) => facets[k])
+        .map((k) => facetLabels[`${k}:${facets[k]}`] || facets[k])
+        .join(" × ");
+    }
+
     // mode: "all" | "category" | "pillar" | "search"
     let mode = "all";
     let activeCat = "all";
@@ -1319,6 +1936,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     const PAGE_SIZE = 20;
 
     function cardMatches(card: HTMLElement): boolean {
+      if (!facetMatches(card)) return false;
       if (mode === "category")
         return (card.dataset.cats || "").split(",").includes(activeCat);
       if (mode === "pillar") return card.dataset.pillar === activePillar;
@@ -1362,7 +1980,11 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
           fctxLabel.textContent = `${name} — ${countUnit(matching.length)}`;
           fctx.hidden = false;
         } else if (mode === "pillar" || (mode === "search" && query)) {
-          fctxLabel.textContent = countUnit(matching.length);
+          const ft = facetText();
+          fctxLabel.textContent = (ft ? ft + " — " : "") + countUnit(matching.length);
+          fctx.hidden = false;
+        } else if (facetText()) {
+          fctxLabel.textContent = `${facetText()} — ${countUnit(matching.length)}`;
           fctx.hidden = false;
         } else {
           fctx.hidden = true;
@@ -1403,7 +2025,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
 
     function syncPills() {
       if (allPill)
-        allPill.classList.toggle("is-active", mode === "all");
+        allPill.classList.toggle("is-active", mode === "all" && !facetText());
       dists.forEach((d) =>
         d.classList.toggle(
           "is-active",
@@ -1414,6 +2036,9 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
 
     function setURL() {
       const params = new URLSearchParams();
+      FACET_KEYS.forEach((k) => {
+        if (facets[k]) params.set(k, facets[k]);
+      });
       if (mode === "category") params.set("category", activeCat);
       else if (mode === "pillar") params.set("pillar", activePillar);
       else if (mode === "search" && query) params.set("q", query);
@@ -1433,6 +2058,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       activeCat = "all";
       activePillar = "";
       query = "";
+      FACET_KEYS.forEach((k) => delete facets[k]);
       if (searchInput) searchInput.value = "";
       update();
     }
@@ -1496,6 +2122,10 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     const urlCat = params.get("category");
     const urlPillar = params.get("pillar");
     const urlQ = params.get("q");
+    FACET_KEYS.forEach((k) => {
+      const v = params.get(k);
+      if (v && /^[a-z0-9-]+$/.test(v)) facets[k] = v;
+    });
     if (urlCat && dists.some((d) => d.dataset.cat === urlCat)) {
       mode = "category";
       activeCat = urlCat;
@@ -1511,4 +2141,25 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   })();
 </script>
 
-
+<script is:inline>
+  // 一覧トップの計測（2026-10-17）: 点検の帯と対策タイルのクリック。
+  (function () {
+    function wire() {
+      document.querySelectorAll("[data-index-ev]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          if (typeof window.gtag !== "function") return;
+          window.gtag("event", el.getAttribute("data-index-ev"), {
+            surface: "brief_index",
+            cta_label: el.getAttribute("data-cta"),
+            destination: el.getAttribute("href"),
+          });
+        });
+      });
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", wire);
+    } else {
+      wire();
+    }
+  })();
+</script>

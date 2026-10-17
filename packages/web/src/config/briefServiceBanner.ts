@@ -106,3 +106,42 @@ export function serviceBannerFor(
     reviewHref: copy.review ? inquiryUrl(locale, briefNoPad, "review") : undefined,
   };
 }
+
+/**
+ * Brief 一覧の「点検」帯（2026-10-17）。JA は点検の相談、EN は Cyber の早期
+ * アクセス（伴走の点検は国内のみのため）。`ref` は brief_index_<intent>。
+ */
+export interface IndexBanner {
+  readonly label: string;
+  readonly head: string;
+  readonly body: string;
+  readonly button: string;
+  readonly href: string;
+}
+
+export function indexBannerFor(locale: Locale): IndexBanner {
+  const intent = locale === "ja" ? "review" : "early";
+  const params = new URLSearchParams({
+    plan: "cyber",
+    ref: `brief_index_${intent}`,
+    utm_source: "brief_index",
+    utm_medium: "cta",
+    utm_campaign: intent === "early" ? "brief_to_cyber_early_access" : "brief_to_cyber_review",
+  });
+  const href = `${DISCOVERY_CALL_URL[locale]}?${params}`;
+  return locale === "ja"
+    ? {
+        label: "Lemma の点検サービス",
+        head: "この手口が自社に通るか、点検で確かめる",
+        body: "事案から論点を洗い出し、攻撃シミュレーションで確かめ、報告にまとめます。",
+        button: "点検を相談する →",
+        href,
+      }
+    : {
+        label: "Lemma Cyber · early access",
+        head: "Check irreversible actions before they go through",
+        body: "We are building a way to confirm, before a payout or permission change takes effect, that the request is genuine and within what was allowed.",
+        button: "Join early access →",
+        href,
+      };
+}
