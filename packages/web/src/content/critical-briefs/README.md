@@ -175,6 +175,25 @@ controls:
 何が起きたかを書く（`\n` で改行・被害の大きさを `<accent>…</accent>` でライムの1行に）。
 og:description は `insight.quote` で始まる。
 
+### 一覧の索引（2026-10・レイアウトを問わず書ける）
+
+一覧（`/critical/briefs/`）は「いま読む 3 本 → 対策から読む → そのほかの新着」で組む。
+各 Brief の frontmatter に次を書くと一覧に出る（記事には描画しない）。
+
+```yaml
+industries: ["public-sector"]          # 業界（config/briefFacets.ts）
+operations: ["delivery"]               # 業務
+controls:                              # 対策（4 つ・増やすのは 4 つに当てはまらない Brief が 3 本たまったとき）
+  - { slug: "ownership-check", item: "…" }
+attack_method: "impersonation"         # 手口：account-takeover / impersonation / privilege-abuse / supply-chain / human-error / ai-misuse
+impact: "36 自治体が配信を停止"          # 影響。数字だけにせず何の数かを書く。公表が無ければ書かない
+takeaway: "届いた通知が自治体のものかを、送信元の表示とは別に確かめる手順が無かった。"  # いま読むに選んだときの一文
+```
+
+EN ファイルの `impact` / `takeaway` / `controls[].item` は英語で書く。「いま読む 3 本」は
+`config/briefPicks.ts` で週に一度選ぶ（業界と手口が 3 本で重ならないように）。脅威タイプ
+（`primary_category`）は内部分類として残し、一覧の入口には使わない。
+
 `industries` / `operations` / `controls` は**一覧のファセット用の索引で、記事には描画
 しない**。語彙・ラベル・アイコンは `config/briefFacets.ts`。記事中の「注意したい
 業界・業務」は md 側で説明文つきの表として書く。EN ファイルの `key_figures` /

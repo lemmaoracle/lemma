@@ -167,28 +167,52 @@ export type BriefControlSlug = (typeof BRIEF_CONTROL_SLUGS)[number];
 export const BRIEF_CONTROLS: Record<BriefControlSlug, FacetEntry> = {
   "separate-approval": {
     slug: "separate-approval",
-    ja: "別の人・別の経路で承認",
-    en: "Approval by another person, another channel",
+    ja: "変更は、別の人が別の方法で確認する",
+    en: "Changes confirmed by someone else, another way",
     icon: '<circle cx="7" cy="8" r="2.6"/><circle cx="15" cy="8" r="2.6"/><path d="M2.8 17c0-2.6 1.9-4.3 4.2-4.3S11 14.4 11 17M11 17c0-2.6 1.8-4.3 4-4.3s4.2 1.7 4.2 4.3"/>',
   },
   "ownership-check": {
     slug: "ownership-check",
-    ja: "名義・発行元の確認",
-    en: "Ownership & issuer check",
+    ja: "送り主や口座が本物か確認する",
+    en: "Check the sender or account is genuine",
     icon: '<rect x="3" y="5" width="16" height="12" rx="1.5"/><circle cx="8" cy="10" r="2"/><path d="M5.2 14.4c.5-1.3 1.6-2 2.8-2s2.3.7 2.8 2M13 9h3.5M13 12h2.5"/>',
   },
   "hold-unverified": {
     slug: "hold-unverified",
-    ja: "確かめられないものは止める",
-    en: "Hold what can't be verified",
+    ja: "確認できるまで、送金や配信を止める",
+    en: "Hold payments or sends until confirmed",
     icon: '<circle cx="11" cy="11" r="7.8"/><path d="M9 8v6M13 8v6"/>',
   },
   "audit-trail": {
     slug: "audit-trail",
-    ja: "何を確かめて通したかを残す",
-    en: "Record what was verified",
+    ja: "誰が何を確認したかを記録する",
+    en: "Record who confirmed what",
     icon: '<path d="M5.5 3.8h11v14.4h-11z"/><path d="M8 7.5h6M8 10.5h6M8 13.5h3.5"/><path d="M13 15.5l1.2 1.2 2.3-2.4"/>',
   },
+};
+
+/**
+ * 手口（2026-10-17）。一覧の「手口」絞り込みと行のメタ。OGP の札・X 投稿の
+ * 書き出しと同じ言葉にそろえる。13 の脅威タイプ（primary_category）は製品・
+ * Pillar との対応づけ用の内部分類で、読者向けの入口には使わない。
+ */
+export const BRIEF_ATTACK_SLUGS = [
+  "account-takeover",
+  "impersonation",
+  "privilege-abuse",
+  "supply-chain",
+  "human-error",
+  "ai-misuse",
+] as const;
+export type BriefAttackSlug = (typeof BRIEF_ATTACK_SLUGS)[number];
+
+export const BRIEF_ATTACKS: Record<BriefAttackSlug, { slug: string; ja: string; en: string }> = {
+  "account-takeover": { slug: "account-takeover", ja: "アカウント乗っ取り", en: "Account takeover" },
+  impersonation: { slug: "impersonation", ja: "なりすまし", en: "Impersonation" },
+  "privilege-abuse": { slug: "privilege-abuse", ja: "権限の悪用", en: "Privilege abuse" },
+  "supply-chain": { slug: "supply-chain", ja: "サプライチェーン", en: "Supply chain" },
+  "human-error": { slug: "human-error", ja: "人の操作ミス", en: "Human error" },
+  "ai-misuse": { slug: "ai-misuse", ja: "AI の誤作動・悪用", en: "AI failure or misuse" },
 };
 
 /**

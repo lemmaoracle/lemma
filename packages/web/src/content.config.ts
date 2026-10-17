@@ -1,6 +1,7 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 import {
+  BRIEF_ATTACK_SLUGS,
   BRIEF_CONTROL_SLUGS,
   BRIEF_INDUSTRY_SLUGS,
   BRIEF_OPERATION_SLUGS,
@@ -226,6 +227,18 @@ const briefSchema = z
         }),
       )
       .optional(),
+    /**
+     * 一覧の索引（2026-10-17・**記事には描画しない**）。
+     * - `attack_method`: 手口。語彙は config/briefFacets.ts の BRIEF_ATTACKS。
+     * - `impact`: 一覧の行に出す影響の短い言い方（この md の言語で）。数字だけ
+     *   にせず「約 880 万人分が流出」のように何の数かを書く。公表が無ければ
+     *   書かない（一覧は行を省く）。
+     * - `takeaway`: 「いま読む」に選んだときに出す、なぜ止まらなかったかの
+     *   一文（「〜を確かめる手順が無かった。」）。無ければ題の後半を使う。
+     */
+    attack_method: z.enum(BRIEF_ATTACK_SLUGS).optional(),
+    impact: z.string().min(1).optional(),
+    takeaway: z.string().min(1).optional(),
   })
   .refine(
     (data) => {

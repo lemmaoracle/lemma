@@ -149,6 +149,18 @@ keep it to one short line — it is drawn as a lime tag); `og_headline_ja/en` sa
 scale of harm as one lime line in `<accent>…</accent>`). og:description opens
 with `insight.quote`.
 
+### Index fields (2026-10, any layout)
+
+The index (`/critical/briefs/`) is built as "Read now (3) → Browse by control → More recent briefs".
+These frontmatter fields feed it and are not rendered in the article: `industries`, `operations`,
+`controls` (four controls; add one only when three briefs don't fit any), `attack_method`
+(`account-takeover` / `impersonation` / `privilege-abuse` / `supply-chain` / `human-error` /
+`ai-misuse`), `impact` (a short phrase that says what the number counts; omit if nothing was
+disclosed) and `takeaway` (one sentence shown when the brief is picked). Write `impact`,
+`takeaway` and `controls[].item` in English in the EN file. The three picks live in
+`config/briefPicks.ts` and change weekly (no two share an industry or attack method). The threat
+type (`primary_category`) stays as an internal classification and is not an index entry point.
+
 ### Components derived from plain markdown
 
 Most components come from markdown in a fixed shape; rehype
