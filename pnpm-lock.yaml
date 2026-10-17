@@ -265,7 +265,7 @@ importers:
         version: 2.1.9(@types/node@22.20.5)(lightningcss@1.30.1)(supports-color@10.2.2)
       wrangler:
         specifier: ^4.0.0
-        version: 4.151.0(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5)
+        version: 4.151.1(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5)
 
   packages/attestation:
     dependencies:
@@ -497,7 +497,7 @@ importers:
         version: 2.1.9(@types/node@22.20.5)(lightningcss@1.30.1)(supports-color@10.2.2)
       wrangler:
         specifier: ^4.0.0
-        version: 4.151.0(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5)
+        version: 4.151.1(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5)
 
   packages/mcp:
     dependencies:
@@ -512,7 +512,7 @@ importers:
         version: 1.29.0(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@3.25.76)
       agents:
         specifier: ^0.11.4
-        version: 0.11.9(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.10)(@cloudflare/workers-types@4.20260702.1)(@x402/core@2.28.0)(@x402/evm@2.28.0(typescript@5.8.3))(ai@6.0.307(zod@3.25.76))(react@19.3.1)(rolldown@1.2.14)(supports-color@10.2.2)(zod@3.25.76)
+        version: 0.11.9(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.10)(@cloudflare/workers-types@4.20260702.1)(@x402/core@2.28.0)(@x402/evm@2.28.0(typescript@5.8.3))(ai@6.0.308(zod@3.25.76))(react@19.3.1)(rolldown@1.2.14)(supports-color@10.2.2)(zod@3.25.76)
       ramda:
         specifier: ^0.30.1
         version: 0.30.1
@@ -549,7 +549,7 @@ importers:
         version: 2.1.9(@types/node@22.20.5)(lightningcss@1.30.1)(supports-color@10.2.2)
       wrangler:
         specifier: ^4.14.0
-        version: 4.151.0(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5)
+        version: 4.151.1(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5)
 
   packages/parser:
     dependencies:
@@ -1068,20 +1068,20 @@ packages:
   '@adraffy/ens-normalize@1.11.1':
     resolution: {integrity: sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ==}
 
-  '@ai-sdk/gateway@3.0.215':
-    resolution: {integrity: sha512-QOw3arKUe+bu2InKAD/GwG+QYjvdKFO0CtF0ai5op5naFmIE/eaMwmevwpjPuHZNjuk1G3o7ozjihRZs8KsdCg==}
+  '@ai-sdk/gateway@3.0.216':
+    resolution: {integrity: sha512-KAAXPNf7Qg5h3FQjVFqXnf/ra8C2CzS1SkGIT6vbPefgAiZEIggbwjuGaO5Bha+C330jahd1UFoVKdAgu9GfVQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider-utils@4.0.59':
-    resolution: {integrity: sha512-HR51CwEHIaGKUTUCLpfVDvajk1C8CGd34ezi34vOeUyxbchBDIKGVNJZRNvILuvHDS8nOvxYUJ9NZvzp0UufUg==}
+  '@ai-sdk/provider-utils@4.0.60':
+    resolution: {integrity: sha512-Gcz4TiHMtSn2fQtAMFKtIXb9WCeqXV3j7MhHvb4qG5yjWPB6w60WF0db6U9hMCGE3RoUb4w7sLVGMpOloDj+Rg==}
     engines: {node: '>=18.17'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider@3.0.18':
-    resolution: {integrity: sha512-IpefF5ssZVOZCD4Wu7zxt6PwZoGT2HLVjxpJ10Bjx6EAmRfLYJPjyrfxb0RYDlwvXnDb9nkQ7Do/oJVDuRFzew==}
+  '@ai-sdk/provider@3.0.19':
+    resolution: {integrity: sha512-5lWq7zSfRaU5ylDESn3sDQjgGl2AI1vjZKO/6JY3aFW70ct4zcP1kN+ZUYOuTXr28fVsYbyu2YFhddLdIgQFZQ==}
     engines: {node: '>=18'}
 
   '@astrojs/compiler@2.13.1':
@@ -3749,8 +3749,8 @@ packages:
       vite:
         optional: true
 
-  ai@6.0.307:
-    resolution: {integrity: sha512-jVheHvKkeldXBjFtbnM/n9gL8fcZlhQH9OiV9oT+Wj98tIRjskl33sG3d5K2Q/WJX6jlvlOjIH2+wEKetgpd6w==}
+  ai@6.0.308:
+    resolution: {integrity: sha512-5NlA6nz5t4lWeKDO6En32aqovQwrjOEC2U3gf10NE7juhuR+yPCZXhzK8xmKP/P+bLTlo1OSJ8gCl1GC3l3Svg==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3878,8 +3878,8 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  baseline-browser-mapping@2.11.28:
-    resolution: {integrity: sha512-br0LOmjJqr6Rt4AEkadbcNf67Zpo7EPwKsWbjnRrJIa1QYFHQBqM4C7F2WTbV8ahTEcg1Eo+Y0aWjjORInYFyA==}
+  baseline-browser-mapping@2.11.29:
+    resolution: {integrity: sha512-YeesxhUmR4h5y5V8KF8iBCqJb8YFrBJ++XBTeGcWIaQOYXGN19JM0FoiOjAhwuDoln8owMgXcWBmgHtYSkky2w==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -4302,8 +4302,8 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  electron-to-chromium@1.5.456:
-    resolution: {integrity: sha512-8hboqI6xesozteFb8aa7OGknvxUtTeRJLz0FoePysUEh/oWbddykIGdgpEJRbPRg/nIMfBf2DFos+H2MtvJl2A==}
+  electron-to-chromium@1.5.458:
+    resolution: {integrity: sha512-/hIH2gRSmxrf4/X4Nw/t/Wc8PVS22l8/3HnWjWTWsTOM5dsnMUPZF/+u+yr3LqweNuTBJE1rq6qAQzKkZVwMfA==}
 
   emoji-regex-xs@1.0.0:
     resolution: {integrity: sha512-LRlerrMYoIDrT6jgpeZ2YYl/L8EulRTt5hQcYjy5AInh7HWXKimpqx68aknBFpGL2+/IcogTcaydJEgaTmOpDg==}
@@ -5427,8 +5427,8 @@ packages:
     engines: {node: '>=16.13'}
     hasBin: true
 
-  miniflare@5.20261012.0-beta:
-    resolution: {integrity: sha512-Cjrs+vHHQ7krLO4HYELYpYBJBuMhcnNZD/Z5z/UcQSnFqWSQY3DhtTCFalXgI1/yO1iK+YrRKK8EYkumrEopxg==}
+  miniflare@5.20261012.1-beta:
+    resolution: {integrity: sha512-8Canhy6g9+vAhqMc0o80YphqYIwpiA3aAp8aX+uDXU7J/qbUeoZzcII9c2V1P4uT/eHD4SB93qet1o1bRY3BuQ==}
     engines: {node: '>=22.0.0'}
 
   minimatch@10.2.6:
@@ -7003,8 +7003,8 @@ packages:
       '@cloudflare/workers-types':
         optional: true
 
-  wrangler@4.151.0:
-    resolution: {integrity: sha512-ra8MpzSR+ClkbGofu9S+AmAKjytS60MqSuayXKpa1CAYIzP+NIc8q6EiF55Gz5PS3lxT4qcvMuPHihCNhTPpDg==}
+  wrangler@4.151.1:
+    resolution: {integrity: sha512-OAsa9UAHZshM6mq2PXcVoyxXgWThAanZMBc/IirtqEWd/BauRtmUKzAniOu/pU0pd3pxKuMZ2vsbF4eo6RiNDA==}
     engines: {node: '>=22.0.0'}
     hasBin: true
     peerDependencies:
@@ -7160,22 +7160,22 @@ snapshots:
 
   '@adraffy/ens-normalize@1.11.1': {}
 
-  '@ai-sdk/gateway@3.0.215(zod@3.25.76)':
+  '@ai-sdk/gateway@3.0.216(zod@3.25.76)':
     dependencies:
-      '@ai-sdk/provider': 3.0.18
-      '@ai-sdk/provider-utils': 4.0.59(zod@3.25.76)
+      '@ai-sdk/provider': 3.0.19
+      '@ai-sdk/provider-utils': 4.0.60(zod@3.25.76)
       '@vercel/oidc': 3.2.0
       zod: 3.25.76
 
-  '@ai-sdk/provider-utils@4.0.59(zod@3.25.76)':
+  '@ai-sdk/provider-utils@4.0.60(zod@3.25.76)':
     dependencies:
-      '@ai-sdk/provider': 3.0.18
+      '@ai-sdk/provider': 3.0.19
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.1.1
       undici: 6.29.1
       zod: 3.25.76
 
-  '@ai-sdk/provider@3.0.18':
+  '@ai-sdk/provider@3.0.19':
     dependencies:
       json-schema: 0.4.0
 
@@ -9377,13 +9377,13 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  agents@0.11.9(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.10)(@cloudflare/workers-types@4.20260702.1)(@x402/core@2.28.0)(@x402/evm@2.28.0(typescript@5.8.3))(ai@6.0.307(zod@3.25.76))(react@19.3.1)(rolldown@1.2.14)(supports-color@10.2.2)(zod@3.25.76):
+  agents@0.11.9(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.10)(@cloudflare/workers-types@4.20260702.1)(@x402/core@2.28.0)(@x402/evm@2.28.0(typescript@5.8.3))(ai@6.0.308(zod@3.25.76))(react@19.3.1)(rolldown@1.2.14)(supports-color@10.2.2)(zod@3.25.76):
     dependencies:
       '@babel/plugin-proposal-decorators': 7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)
       '@cfworker/json-schema': 4.1.1
       '@modelcontextprotocol/sdk': 1.29.0(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@3.25.76)
       '@rolldown/plugin-babel': 0.2.4(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.10)(rolldown@1.2.14)
-      ai: 6.0.307(zod@3.25.76)
+      ai: 6.0.308(zod@3.25.76)
       cron-schedule: 6.0.0
       mimetext: 3.0.28
       nanoid: 5.1.16
@@ -9403,11 +9403,11 @@ snapshots:
       - rolldown
       - supports-color
 
-  ai@6.0.307(zod@3.25.76):
+  ai@6.0.308(zod@3.25.76):
     dependencies:
-      '@ai-sdk/gateway': 3.0.215(zod@3.25.76)
-      '@ai-sdk/provider': 3.0.18
-      '@ai-sdk/provider-utils': 4.0.59(zod@3.25.76)
+      '@ai-sdk/gateway': 3.0.216(zod@3.25.76)
+      '@ai-sdk/provider': 3.0.19
+      '@ai-sdk/provider-utils': 4.0.60(zod@3.25.76)
       '@opentelemetry/api': 1.9.1
       zod: 3.25.76
 
@@ -9714,7 +9714,7 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  baseline-browser-mapping@2.11.28: {}
+  baseline-browser-mapping@2.11.29: {}
 
   better-ajv-errors@1.2.0(ajv@8.20.0):
     dependencies:
@@ -9785,9 +9785,9 @@ snapshots:
 
   browserslist@4.29.3:
     dependencies:
-      baseline-browser-mapping: 2.11.28
+      baseline-browser-mapping: 2.11.29
       caniuse-lite: 1.0.30001816
-      electron-to-chromium: 1.5.456
+      electron-to-chromium: 1.5.458
       node-releases: 2.0.59
       update-browserslist-db: 1.3.4(browserslist@4.29.3)
 
@@ -10097,7 +10097,7 @@ snapshots:
     dependencies:
       jake: 10.9.4
 
-  electron-to-chromium@1.5.456: {}
+  electron-to-chromium@1.5.458: {}
 
   emoji-regex-xs@1.0.0: {}
 
@@ -11568,7 +11568,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  miniflare@5.20261012.0-beta(@types/node@22.20.5):
+  miniflare@5.20261012.1-beta(@types/node@22.20.5):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       sharp: 0.35.5(@types/node@22.20.5)
@@ -13479,13 +13479,13 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  wrangler@4.151.0(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5):
+  wrangler@4.151.1(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.5.0
       '@cloudflare/unenv-preset': 2.16.2(unenv@2.0.0-rc.24)(workerd@1.20261012.1)
       blake3-wasm: 2.1.5
       esbuild: 0.28.2
-      miniflare: 5.20261012.0-beta(@types/node@22.20.5)
+      miniflare: 5.20261012.1-beta(@types/node@22.20.5)
       path-to-regexp: 6.3.0
       unenv: 2.0.0-rc.24
       workerd: 1.20261012.1
