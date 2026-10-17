@@ -10,7 +10,7 @@ published: 2026-05-30
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory", "C-agent-governance"]
 related_briefs: ["005-noroboto-lying-fonts", "006-google-api-key-revocation-lag"]
-version: "1.0"
+version: "1.1"
 status: published
 og_lead_ja: "公開 API 経由で 20.5 億メッセージが AI 学習データに再配布 — Discord スクレイピング"
 og_lead_en: "2.05 billion public messages redistributed as AI training data — Discord scraping"
@@ -25,6 +25,8 @@ controls:
 impact: "20.52 億メッセージが収集・公開された"
 ---
 
+> **改訂（v1.1 / 2026-10-17）**: §2 の総メッセージ数の桁を、研究チームの論文（arXiv 2502.00627）の値 2,052,206,308 に合わせて訂正した。
+
 ## 1. TL;DR
 
 ある研究チームが Discord の公開 API で 20.52 億メッセージ（3,167 サーバー）を一括収集し、arXiv 論文と JSON dataset として誰でも入手できる形で公開した。だが Discord の規約は、API 取得メッセージの AI 学習利用も一括 scraping・再配布も明確に禁じている。技術的なアクセス可否と規約が許す範囲は別物だが、配布前に「適法 scope で収集されたか」を独立検証する層が無く、禁じられた用途のデータが下流の AI 学習へ流れ得た。
@@ -33,7 +35,7 @@ impact: "20.52 億メッセージが収集・公開された"
 
 ## 2. 何が起きたか
 
-- **規模**: 20.52 億メッセージ(20,520,206,308)、3,167 サーバー、473 万 5,057 人、2015-2024 年分
+- **規模**: 20.52 億メッセージ(2,052,206,308)、3,167 サーバー、473 万 5,057 人、2015-2024 年分
 - **発見スコープ**: Discord 「発見」機能による 31,673 公開サーバーの 10% を無作為選択(2024-11-17 時点)
 - **scraping 主体**: ブラジル ミナス・ジェライス連邦大学の 15 名の研究者チーム
 - **配布形式**: arXiv 論文(2502.00627)+ JSON dataset としてオンライン公開

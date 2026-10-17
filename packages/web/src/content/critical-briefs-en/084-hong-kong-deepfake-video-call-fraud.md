@@ -1,6 +1,6 @@
 ---
 brief_no: 84
-title: "香港 Deepfake ビデオ会議詐欺：CFO・同僚全員をリアルタイム deepfake で偽装し、約 2,600 万ドルの送金を実行させた — 顔と声の確認が「本人が今ここにいる」ことの証明にならなくなった構造（香港警察 / Arup）"
+title: "香港 Deepfake ビデオ会議詐欺：CFO・同僚全員をリアルタイム deepfake で偽装し、約 2,560 万ドルの送金を実行させた — 顔と声の確認が「本人が今ここにいる」ことの証明にならなくなった構造（香港警察 / Arup）"
 title_en: "Hong Kong deepfake video-call fraud: a real-time deepfake of the CFO and every colleague drove a ~$25.6M transfer — seeing a face and hearing a voice no longer proves the person is actually present (Hong Kong Police / Arup)"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
@@ -11,8 +11,8 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["034-ekyc-liveness-bypass", "050-grok-deepfake-consent-provenance", "053-youtube-deepfake-likeness-provenance"]
 status: published
-version: "1.0"
-og_lead_ja: "香港 Deepfake ビデオ会議詐欺、CFO・同僚全員を偽装し約 2,600 万ドル送金"
+version: "1.1"
+og_lead_ja: "香港 Deepfake ビデオ会議詐欺、CFO・同僚全員を偽装し約 2,560 万ドル送金"
 og_lead_en: "Hong Kong deepfake video-call fraud: faked CFO drove a ~$25.6M transfer"
 gap_detected: "Post-transfer reconciliation surfaced the fraud, and the Hong Kong Police investigation and disclosure and Arup's hardened controls all operated."
 gap_missing: "There was no means to prove, independently of the video and audio, that the person on the far side of the video call was the real CFO, so the deepfake passed as proof of the approver's identity."
@@ -23,6 +23,8 @@ controls:
 attack_method: "impersonation"
 impact: "HK$200 million wired to five accounts"
 ---
+
+> **Revision (v1.1 / 2026-10-17)**: The Japanese title and summary now give the US-dollar figure as about $25.6M, matching §2 and press reports (HK$200 million ≈ US$25.6 million).
 
 ## 1. TL;DR
 
