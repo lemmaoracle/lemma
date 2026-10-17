@@ -14,6 +14,12 @@ status: published
 version: "1.0"
 og_lead_ja: "北朝鮮IT労働者が国内支援者の身分証で業務を受注、国内初のラップトップ・ファーム解体"
 og_lead_en: "North Korean IT workers won contracts in Japan with ID images supplied by local enablers"
+industries: ["developers"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the ID holder is the person actually doing the work"
+attack_method: "impersonation"
+takeaway: "The ID was genuine, but nothing tied its holder to the person on the other side of the screen before work was handed over."
 ---
 
 ## 1. TL;DR

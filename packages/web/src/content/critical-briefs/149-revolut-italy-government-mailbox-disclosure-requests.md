@@ -14,6 +14,16 @@ status: published
 version: "1.0"
 og_lead_ja: "Revolut：伊政府の認証メール網からの開示要求に数か月応じ続けた"
 og_lead_en: "Revolut answered data requests from Italy's certified state email"
+industries: ["finance"]
+operations: ["disclosure"]
+controls:
+  - slug: "ownership-check"
+    item: "\u8981\u6c42\u8005\u304c\u4eca\u3082\u305d\u306e\u6a29\u9650\u3092\u6301\u3064\u304b\u3092\u3001\u958b\u793a\u306e\u524d\u306b\u78ba\u8a8d\u3059\u308b"
+  - slug: "hold-unverified"
+    item: "\u78ba\u8a8d\u3067\u304d\u308b\u307e\u3067\u958b\u793a\u3057\u306a\u3044"
+attack_method: "impersonation"
+impact: "\u6570\u304b\u6708\u306b\u308f\u305f\u308a\u9867\u5ba2\u30c7\u30fc\u30bf\u3092\u63d0\u4f9b"
+takeaway: "\u56fd\u304c\u914d\u9054\u3092\u8a3c\u660e\u3057\u3066\u3082\u3001\u8981\u6c42\u8005\u306e\u6a29\u9650\u3092\u958b\u793a\u306e\u524d\u306b\u78ba\u304b\u3081\u308b\u624b\u9806\u304c\u7121\u304b\u3063\u305f\u3002"
 ---
 
 ## 1. TL;DR

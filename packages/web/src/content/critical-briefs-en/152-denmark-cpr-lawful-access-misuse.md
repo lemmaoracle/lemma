@@ -14,6 +14,16 @@ status: published
 version: "1.0"
 og_lead_ja: "デンマーク CPR、民間企業の正規権限の悪用で約 880 万人分の氏名・住所・番号が流出"
 og_lead_en: "Denmark CPR: a company's lawful access was abused to pull data on 8.8 million people"
+industries: ["public-sector"]
+operations: ["data-access"]
+controls:
+  - slug: "hold-unverified"
+    item: "Stop lookups that go beyond the permitted scope"
+  - slug: "audit-trail"
+    item: "Record whose lookup retrieved what"
+attack_method: "privilege-abuse"
+impact: "Names, addresses and CPR numbers of about 8.8 million people retrieved"
+takeaway: "Access was granted, but nothing checked each lookup against the permitted scope."
 ---
 
 ## 1. TL;DR

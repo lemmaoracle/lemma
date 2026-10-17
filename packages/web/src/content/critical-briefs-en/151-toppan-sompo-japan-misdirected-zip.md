@@ -14,6 +14,16 @@ status: published
 version: "1.0"
 og_lead_ja: "TOPPAN、損保ジャパン契約者 17.7 万名分のリストを別の保険会社へ誤送付"
 og_lead_en: "TOPPAN sent 177,426 Sompo Japan policyholder records to another insurer"
+industries: ["finance"]
+operations: ["delivery"]
+controls:
+  - slug: "separate-approval"
+    item: "Before sending, someone other than the operator checks the contents"
+  - slug: "hold-unverified"
+    item: "Do not send until recipient and contents are confirmed to match"
+attack_method: "human-error"
+impact: "177,426 policyholders' records sent to another insurer"
+takeaway: "Nothing checked, before sending, that the contents matched the recipient."
 ---
 
 ## 1. TL;DR

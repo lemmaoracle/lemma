@@ -14,6 +14,9 @@ status: published
 version: "2.0"
 og_lead_ja: "RubyDoc.info のドキュメント生成で任意コード実行、RubyGems に悪性パッケージ500超"
 og_lead_en: "RubyDoc.info doc builds ran arbitrary code from 500+ RubyGems spam packages"
+industries: ["developers"]
+attack_method: "supply-chain"
+impact: "500+ malicious packages removed"
 ---
 
 > **Revision (v2.0 / 2026-10-16)**: The subject has been reframed around mass registration and publishing on RubyGems from new accounts, and arbitrary code execution on RubyDoc.info's documentation build servers. Primary sources were re-checked; this version adds the report and fix dates for the CDN caching bug, RubyDoc.info's network-isolation change, and Ruby Central's assessment of the API-key theft attempts. Attribution of the actor and the characterization of the incident have moved to the note in §3.

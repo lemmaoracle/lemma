@@ -14,6 +14,8 @@ status: published
 version: "1.0"
 og_lead_ja: "阿波銀行、テスト環境への不正アクセスで2.7万件漏えい"
 og_lead_en: "Awa Bank: test-environment breach leaks 27,745 records"
+industries: ["finance"]
+impact: "\u9867\u5ba2\u30fb\u682a\u4e3b\u60c5\u5831\u306e\u3079 2 \u4e07 7,745 \u4ef6\u304c\u6f0f\u3048\u3044"
 ---
 
 ## 1. TL;DR

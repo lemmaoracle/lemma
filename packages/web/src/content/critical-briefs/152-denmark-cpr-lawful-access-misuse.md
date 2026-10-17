@@ -14,6 +14,16 @@ status: published
 version: "1.0"
 og_lead_ja: "デンマーク CPR、民間企業の正規権限の悪用で約 880 万人分の氏名・住所・番号が流出"
 og_lead_en: "Denmark CPR: a company's lawful access was abused to pull data on 8.8 million people"
+industries: ["public-sector"]
+operations: ["data-access"]
+controls:
+  - slug: "hold-unverified"
+    item: "\u8a31\u3055\u308c\u305f\u7bc4\u56f2\u3092\u8d85\u3048\u308b\u7167\u4f1a\u306f\u6b62\u3081\u308b"
+  - slug: "audit-trail"
+    item: "\u8ab0\u306e\u7167\u4f1a\u3067\u4f55\u3092\u5f15\u304d\u51fa\u3057\u305f\u304b\u3092\u8a18\u9332\u3059\u308b"
+attack_method: "privilege-abuse"
+impact: "\u7d04 880 \u4e07\u4eba\u5206\u306e\u6c0f\u540d\u30fb\u4f4f\u6240\u30fb\u756a\u53f7\u304c\u5f15\u304d\u51fa\u3055\u308c\u305f"
+takeaway: "\u7167\u4f1a\u306e\u6a29\u9650\u306f\u3042\u3063\u3066\u3082\u3001\u7167\u4f1a\u306e\u305f\u3073\u306b\u5bfe\u8c61\u304c\u8a31\u3055\u308c\u305f\u7bc4\u56f2\u304b\u3092\u78ba\u304b\u3081\u308b\u624b\u9806\u304c\u7121\u304b\u3063\u305f\u3002"
 ---
 
 ## 1. TL;DR
