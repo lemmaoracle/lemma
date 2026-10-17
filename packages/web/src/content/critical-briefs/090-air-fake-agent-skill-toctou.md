@@ -19,6 +19,11 @@ og_headline_en: "A skill cleared every scanner.\n<accent>It was fake.</accent>"
 gap_detected: "スキャナー（Cisco・Nvidia・skills.sh）は提出されたパッケージ自体を解析し、submit 時点で悪性コードを含まないことを正しく判定した。"
 gap_missing: "スキルが実行時に参照する外部リンク先は提出後に差し替え可能で、「いま実行している成果物が検査されたものと同一か」を実行の時点で独立検証する層が無かった。"
 gap_fix: "スキルとその参照先が検査された known-good と実行の時点でも一致していることを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
+controls:
+  - slug: "hold-unverified"
+    item: "スキルが参照する外部ページが検査時と同じか確かめるまで実行しない"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

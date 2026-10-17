@@ -17,6 +17,10 @@ og_lead_en: "Regulation-mandated raw PII storage became the breach surface via i
 gap_detected: "社内不正を認識した後は、開示・懸賞金設定・サポート体制の見直しと、被害顧客への返金まで動けた。"
 gap_missing: "規制対応で集めて保管している生の個人情報そのものが、正規の業務アクセス権を持つ内部者にとって常に手の届く場所にあり、買収されればそのまま社外へ持ち出せた。"
 gap_fix: "規制が求める本人確認を、生の個人情報を抱え込まず「この利用者は確認済みである」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["data-access"]
+attack_method: "privilege-abuse"
+impact: "少なくとも 69,461 名分の KYC データが流出"
 ---
 
 ## 1. TL;DR

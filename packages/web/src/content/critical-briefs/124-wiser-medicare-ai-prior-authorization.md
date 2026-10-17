@@ -18,6 +18,12 @@ gap_detected: "判断の層は制度としては在った。最終的な非該�
 gap_missing: "その判断がどの患者の・どの記録に対して下されたかの証跡は、公表されている運用ガイドの範囲では確認できない。"
 gap_fix: "照合の相手と発行者を処分の前に固定し、それを伴わない不承認を差し止め可能にする。"
 analysis_lead_ja: "確かめられないのは、記録に照らしたかどうかではない。その照合が、どの患者の・どの記録に対して行われたのかである。"
+industries: ["healthcare", "public-sector"]
+operations: ["approval"]
+controls:
+  - slug: "audit-trail"
+    item: "不承認がどの患者記録に照らした判定かを、処分の前に記録する"
+impact: "1 医療システムで硬膜外注射の待機が約 100 人"
 ---
 
 ## 1. TL;DR

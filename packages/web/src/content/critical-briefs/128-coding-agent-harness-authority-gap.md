@@ -19,6 +19,11 @@ gap_missing: "安全と印付けたその値を、実際に行動へ移す一段
 gap_fix: "行動の直前に、その値がどこから来て何を許されているかを独立に検証する一段を挟む。"
 analysis_lead_ja: "確かめられないのは、値が安全かどうかではない。安全と印付けたその値を、行動の一段手前で改めて確かめる層が在るか、である。"
 analysis_lead_en: "The question isn't whether a value was marked safe. It's whether anything re-checks that value, independently, at the step where it becomes an action."
+industries: ["developers", "ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "「安全」と印付けた値を強い権限で実行する前に、出所と認可を確かめる"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,12 @@ og_lead_en: "Truffle Security scanned 7.6PB of Hugging Face datasets, found 221,
 gap_detected: "Hugging Face は公開プッシュを TruffleHog で走査し、検出時に作成者へ通知する（Enterprise 組織では自動失効も）。"
 gap_missing: "通知は届いても失効されず、鍵は生きたまま残る。学習データに入った時点で無数の派生へ複製され、元を取り消しても複製が残る。"
 gap_fix: "データの出所と利用条件を独立検証可能な証明として要求し、証明を欠くデータの取り込みと再公開を事前に遮断する。"
+industries: ["ai", "developers"]
+operations: ["account-admin"]
+controls:
+  - slug: "hold-unverified"
+    item: "データの来歴を確かめるまで、学習に取り込まない"
+impact: "有効な認証情報 221,303 件が公開データに残っていた"
 ---
 
 ## 1. TL;DR

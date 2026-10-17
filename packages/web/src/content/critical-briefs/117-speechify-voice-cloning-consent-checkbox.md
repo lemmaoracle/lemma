@@ -17,6 +17,10 @@ og_lead_en: "Speechify's voice-cloning consent is one self-certification checkbo
 gap_detected: "消費者団体と法科大学院の独立テストにより、同意確認と読み上げ検査が実際には機能しないことが具体的に実証され、規制当局に申し立てられた。"
 gap_missing: "クローンの対象となった本人が利用を認可したという事実を、音声が生成される時点で独立に確かめる層。"
 gap_fix: "音声クローンの生成前に、本人の認可を独立検証可能な証明として要求し、証明が伴わない生成を事前に拒否する。"
+industries: ["ai"]
+controls:
+  - slug: "ownership-check"
+    item: "声の持ち主本人が利用を認めたか、生成の前に確かめる"
 ---
 
 ## 1. TL;DR

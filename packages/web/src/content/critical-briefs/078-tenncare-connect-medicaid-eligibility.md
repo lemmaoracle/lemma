@@ -17,6 +17,11 @@ og_lead_en: "TennCare Connect's automated eligibility system illegally cut thous
 gap_detected: "不服申立て・行政監査・集団訴訟と司法判断は、誤った打ち切りの是正に不可欠であり、本件でも違法性の認定と是正に機能した。"
 gap_missing: "判定が「不利益処分の前に正しいデータ・正しい世帯構成・正しい認可の下で行われたか」を独立検証する層が無く、誤った入力のまま自動判定が「不適格」を出力し打ち切りに直結した。"
 gap_fix: "給付の打ち切りという不利益処分の前に、自動適格判定の入力・世帯構成の前提・認可を Lemma で独立検証し、後から改ざんできない証跡として固定する。"
+industries: ["public-sector", "healthcare"]
+controls:
+  - slug: "hold-unverified"
+    item: "判定が正しいデータと世帯に基づくと確かめるまで打ち切らない"
+impact: "数千人の給付が違法に打ち切り"
 ---
 
 ## 1. TL;DR

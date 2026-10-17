@@ -17,6 +17,13 @@ og_lead_en: "Polymarket: JS injected via a third-party dependency drove fake app
 gap_detected: "Polymarket の迅速な公表・影響依存の除去・利用者への連絡と全額補償、PeckShield・Bubblemaps の資金追跡が作動した。"
 gap_missing: "利用者のブラウザで実行されるフロントエンドコードが「Polymarket の配信した正規の来歴を持つか」を実行の前に独立検証する層が無く、正規ドメインの内側から承認対象が差し替えられた。"
 gap_fix: "フロントエンドコードと承認対象トランザクションの来歴を実行・承認の前に Lemma で独立検証し、正規の来歴が確認できなければ承認セッションを開始しない。"
+industries: ["finance", "supply-chain"]
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "ブラウザで動くコードが、本当にPolymarketが配信したものか確かめる"
+attack_method: "supply-chain"
+impact: "約 300 万ドル相当の資産が盗まれた"
 ---
 
 ## 1. TL;DR

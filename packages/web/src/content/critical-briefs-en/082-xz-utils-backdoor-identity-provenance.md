@@ -17,6 +17,12 @@ og_lead_en: "A two-year \"trusted developer\" impersonation — xz utils backdoo
 gap_detected: "Andres Freund noticed an extraordinarily incidental anomaly — a slight delay in SSH logins — and discovered the liblzma backdoor just before it reached stable releases."
 gap_missing: "The release was correctly signed with \"Jia Tan\"'s PGP key, but there was no layer to independently verify whether the key-holder's identity was a real, project-trusted developer, so an identity fabricated over two years passed as legitimate."
 gap_fix: "Before granting contributor or maintainer authority, independently verify with Lemma the provenance of \"whether this developer's identity corresponds to a real person,\" and prevent it up front."
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the developer who signed a release is a real, verified person"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

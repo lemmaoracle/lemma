@@ -17,6 +17,12 @@ og_lead_en: "Live biometric verification defeated by an injected video feed — 
 gap_detected: "合成映像（deepfake）を見破る検出モデルや、liveness の多層化・不正パターンの監視は継続的に強化できている。"
 gap_missing: "「この映像は実在のカメラからその場で取得され、すり替えられていないか」という撮影の出所を確かめる層が無く、注入された映像が正規のカメラ映像と同じ経路で素通りした。"
 gap_fix: "映像が本物らしいかではなく「この映像は実在のセンサーからライブ取得された来歴を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["account-admin"]
+controls:
+  - slug: "ownership-check"
+    item: "映像が実在のカメラでその場で撮られたものか確かめる"
+attack_method: "impersonation"
 ---
 
 ## 1. TL;DR

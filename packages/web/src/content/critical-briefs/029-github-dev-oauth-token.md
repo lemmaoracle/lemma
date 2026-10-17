@@ -17,6 +17,12 @@ og_lead_en: "One-click GitHub OAuth token theft via github.dev"
 gap_detected: "研究者の事前通知と提供元による翌日の暫定修正という、予防的な対応は機能した。"
 gap_missing: "「この拡張インストールは誰の認可で実行されるか」「このトークンはどの範囲に委任されているか」を実行の前に確かめる層が無く、過剰な権限がそのまま行使された。"
 gap_fix: "拡張インストールのような特権行為の前に「この行為は、委任された権限の範囲内にある」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers"]
+operations: ["account-admin"]
+controls:
+  - slug: "hold-unverified"
+    item: "拡張のインストールは、本人の操作だと確かめられるまで実行しない"
+attack_method: "account-takeover"
 ---
 
 ## 1. TL;DR

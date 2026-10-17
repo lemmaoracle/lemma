@@ -17,6 +17,11 @@ og_lead_en: "An invalid SPV proof minted 5B SYS with no burn — Syscoin bridge"
 gap_detected: "発覚後のブリッジ停止・資産の凍結と追跡・Halborn の事後解析は実施でき、異常も事後に検知できた。"
 gap_missing: "「この証明が指す消却は相手チェーンで実在するか」を発行の前に確かめる層が無く、形式上通る偽の証明は素通りした。"
 gap_fix: "発行の前に「この証明が指す消却は相手チェーンで実際に行われた」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+controls:
+  - slug: "hold-unverified"
+    item: "相手チェーンで burn が実在すると確かめるまで発行しない"
+impact: "裏づけのない約 50 億 SYS が発行"
 ---
 
 ## 1. TL;DR

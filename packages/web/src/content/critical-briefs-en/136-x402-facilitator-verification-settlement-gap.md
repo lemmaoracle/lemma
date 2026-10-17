@@ -14,6 +14,10 @@ status: published
 version: "1.0"
 og_lead_ja: "x402 のファシリテーター 15 社すべてで違反、検証と決済確定が未結合"
 og_lead_en: "All 15 x402 facilitators in violation; verification isn't bound to settlement"
+industries: ["finance", "ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not deliver the service until settlement is confirmed"
 ---
 
 ## 1. TL;DR

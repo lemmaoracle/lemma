@@ -19,6 +19,12 @@ gap_missing: "エージェントが従った指示が、認証済み利用者の
 gap_fix: "外部送信のような行動の前に、その指示の出所が利用者の意図であることを独立に検証する一段を挟む。"
 analysis_lead_ja: "確かめられないのは、指示が正しく実行されたかではない。その指示が、利用者の意図から来たのか、攻撃者の仕込みから来たのか、である。"
 analysis_lead_en: "The question isn't whether the instruction was executed correctly. It's whether it came from the user's intent, or from attacker-planted content."
+industries: ["ai"]
+operations: ["data-access"]
+controls:
+  - slug: "hold-unverified"
+    item: "外部への送信は、指示の出所を確かめるまで止める"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,12 @@ og_lead_en: "Tampered certification test data reached type designation and shipm
 gap_detected: "内部調査・第三者委員会・規制当局の立入検査が不正の範囲と対象車種をあとから可視化できた。"
 gap_missing: "「提出された試験データが規定の条件で正当に取得されたか」を型式指定の前に確かめる層が無く、自社で実施・提出した試験データは素通りした。"
 gap_fix: "型式指定の前に「この製品は、規定の試験条件で、基準に適合している」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["manufacturing"]
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "提出された試験データが、規定の条件で取られたか確かめる"
+impact: "3 車種の型式指定が取り消された"
 ---
 
 ## 1. TL;DR

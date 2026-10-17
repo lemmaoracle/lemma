@@ -17,6 +17,11 @@ og_lead_en: "TennCare Connect's automated eligibility system illegally cut thous
 gap_detected: "Appeals, administrative audits, and the class action with its judicial ruling are essential to remedying wrongful terminations, and in this case they functioned to establish illegality and drive correction."
 gap_missing: "There was no layer to independently verify whether each decision was made under correct data, correct household composition, and correct authorization before the adverse action, so an automated system output 'ineligible' on faulty inputs and that flowed directly into termination."
 gap_fix: "Before the adverse action of cutting off benefits, independently verify with Lemma the automated eligibility decision's inputs, household-composition assumptions, and authorization, and fix them as a tamper-evident record."
+industries: ["public-sector", "healthcare"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not cut off benefits until the decision is confirmed to rest on correct data and household"
+impact: "Thousands illegally cut off from benefits"
 ---
 
 ## 1. TL;DR

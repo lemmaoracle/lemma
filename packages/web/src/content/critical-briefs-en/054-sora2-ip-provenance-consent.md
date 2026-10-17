@@ -17,6 +17,10 @@ og_lead_en: "Copyrighted characters generated until opt-out — Sora 2"
 gap_detected: "Per-output content-violation judgments and rights holders' after-the-fact objections could stop generations resembling protected works."
 gap_missing: "There was no layer to confirm before generation whether this generation had the rights, consent, and provenance for the material it used, so permission checking was left to after-the-fact refusal (opt-out)."
 gap_fix: "Before a high-risk action, independently verify with Lemma that this material has a licensed provenance for this use, and prevent it up front."
+industries: ["media", "ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not generate copyrighted characters until the rightsholder's permission is confirmed"
 ---
 
 ## 1. TL;DR

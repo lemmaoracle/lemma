@@ -17,6 +17,11 @@ og_lead_en: "Cursor's DuneSlide — one injected prompt escapes the sandbox to R
 gap_detected: "The detection chain worked — researcher disclosure, CVE assignment and CVSS scoring, the vendor fix (Cursor 3.0) and advisory / NVD entries — making the technique and its blast radius externally visible."
 gap_missing: "There is no layer that independently verifies, at the moment the agent acts, where a read-in instruction came from and whether the write it induces is within an authorized scope."
 gap_fix: "Before an agent runs a terminal command or a write, verify the instruction's provenance and the write target's authorization scope — decoupled from the working_directory value or the symlink resolution result — and stop execution when no proof accompanies it, verified independently by Lemma to prevent it up front."
+industries: ["developers", "ai"]
+controls:
+  - slug: "ownership-check"
+    item: "Check where an instruction the agent read came from before it acts on it"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

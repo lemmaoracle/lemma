@@ -19,6 +19,12 @@ og_headline_en: "An email passed every check.\n<accent>An attacker wrote it.</ac
 gap_detected: "All three email authentication checks — SPF, DKIM, and DMARC — fired and completed, genuinely verifying that the email was sent from legitimate infrastructure (Calendly)."
 gap_missing: "Authentication confirmed only the legitimacy of the sending path; there was no layer that, before execution, proved whether a legitimate counterparty had actually authored the booking/complaint message (its authorship)."
 gap_fix: "Attach a cryptographic provenance proof of authorship to legitimate booking and guest communications, and independently verify with Lemma any message that lacks it, to prevent it up front."
+industries: ["retail"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Even when a mail passes authentication, confirm it really came from the booking party"
+attack_method: "impersonation"
 ---
 
 ## 1. TL;DR

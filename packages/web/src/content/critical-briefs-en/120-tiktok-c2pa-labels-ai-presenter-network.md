@@ -17,6 +17,13 @@ og_lead_en: "TikTok's 3 billion AI labels coexisted with a 550-video AI-presente
 gap_detected: "A newsroom's artifact analysis identified the fabrication, and the two accounts it shared were terminated promptly by the platform."
 gap_missing: "A layer that lets a viewer independently verify, at the moment of viewing, that a video's publisher is the real creator it claims to be."
 gap_fix: "Require publisher and artifact provenance as independently verifiable proof, so viewers can separate out publications carrying no proof before they watch."
+industries: ["media"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Let viewers check whether a video's publisher is the real creator it claims to be"
+attack_method: "ai-misuse"
+impact: "550+ misleading videos drew over 3 million views"
 ---
 
 ## 1. TL;DR

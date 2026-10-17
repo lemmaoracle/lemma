@@ -17,6 +17,12 @@ og_lead_en: "Valid Merkle proof but no verification of source-vs-payout amount �
 gap_detected: "事後の技術解析と攻撃者との交渉により、流出額の約 75%（約 4,052 ETH）を取り戻せた。"
 gap_missing: "送金データの暗号的な証明はすべて有効だったため検証を通過した一方、「入金額と払出額が一致するか」を払出前に確かめる検証が抜けており、$0.01 の入金で $11.58M を引き出せた。"
 gap_fix: "高額な払出の前に「払出額が、相手チェーンで実際に拠出された価値と一致している」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "hold-unverified"
+    item: "入金額と払出額が一致すると確かめるまで払い出さない"
+impact: "ブリッジから約 1,158 万ドルが流出"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,12 @@ og_lead_en: "Hidden directives planted in AI instruction files — TrapDoor"
 gap_detected: "Security firms and GitHub could detect and remove or reject the malicious packages and PRs containing hidden characters, and could publicize the technique."
 gap_missing: "Before the AI read an instruction file and acted on it, there was no layer to confirm whether the instruction was placed by a legitimate author under legitimate authorization, so hidden commands were executed as is."
 gap_fix: "Before the AI acts on an instruction, independently verify with Lemma that the instruction comes from this issuer under this authorization, and prevent it up front."
+industries: ["developers", "ai"]
+controls:
+  - slug: "ownership-check"
+    item: "Check that instruction files the AI reads come from a legitimate author"
+attack_method: "supply-chain"
+impact: "Over 34 packages and 384+ versions/artifacts"
 ---
 
 ## 1. TL;DR

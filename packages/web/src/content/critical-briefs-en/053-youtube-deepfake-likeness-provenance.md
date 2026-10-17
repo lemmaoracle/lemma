@@ -17,6 +17,13 @@ og_lead_en: "200M views of fake celebrities, likeness provenance gap — YouTube
 gap_detected: "Synthetic videos matching enrolled faces could be scanned and removed, and reporting and investigations made the scale of harm visible."
 gap_missing: "There was no layer to confirm before generation or publication whether this likeness or voice had legitimate provenance with the person's consent, so synthetics lacking provenance went undistinguished before spreading."
 gap_fix: "Before a high-risk action, independently verify with Lemma that this likeness or voice was generated with the person's consent and a verifiable provenance, and prevent it up front."
+industries: ["media", "ai"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Check that a video's face and voice are used with the person's consent"
+attack_method: "impersonation"
+impact: "Celebrity-impersonation scam ads viewed about 200 million times"
 ---
 
 ## 1. TL;DR

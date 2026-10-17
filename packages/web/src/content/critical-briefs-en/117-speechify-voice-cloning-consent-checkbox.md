@@ -17,6 +17,10 @@ og_lead_en: "Speechify's voice-cloning consent is one self-certification checkbo
 gap_detected: "Independent testing by a consumer group and a law school demonstrated concretely that the consent check and the script-reading safeguard do not work, and brought it to regulators."
 gap_missing: "A layer that independently verifies, at the moment the audio is generated, that the voice's owner authorized the use."
 gap_fix: "Require the owner's authorization as an independently verifiable proof before a voice clone is generated, and refuse generation that carries no proof."
+industries: ["ai"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the voice's owner authorized the use before generating audio"
 ---
 
 ## 1. TL;DR

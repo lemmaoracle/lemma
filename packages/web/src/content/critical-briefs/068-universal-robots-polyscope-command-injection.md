@@ -17,6 +17,10 @@ og_lead_en: "Unauthenticated network access yields RCE on cobots — UR PolyScop
 gap_detected: "CISA・メーカーの勧告、パッチの提供、ネットワーク分離による露出の遮断は周知・実施できた。"
 gap_missing: "「この命令の送り手は、このロボットを操作する正当な権限を持つか」を物理動作の前に確かめる層が無く、ネットワークから届いた命令は素通りした。"
 gap_fix: "物理動作の前に「この命令は、正当な権限を持つ送り手の指示か」を Lemma で独立検証して、事前に防ぐ。"
+industries: ["manufacturing"]
+controls:
+  - slug: "ownership-check"
+    item: "命令の送り手が、ロボットを操作してよい相手か確かめる"
 ---
 
 ## 1. TL;DR

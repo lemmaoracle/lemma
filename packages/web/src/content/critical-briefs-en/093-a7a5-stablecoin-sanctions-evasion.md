@@ -17,6 +17,8 @@ og_lead_en: "A7A5 moved $110B under sanctions — traceable, yet no attribute st
 gap_detected: "Transactions were fully visible on the public chain; analytics firms and authorities could trace the flows and identify the entities involved after the fact."
 gap_missing: "No attribute travels with the transaction to verify — and block — at execution time whether the sender is sanctioned or the source of funds is lawful."
 gap_fix: "Attach verifiable regulatory attributes to the sender and the source of funds so the counterparty and settlement infrastructure can verify a sanctions status and block out-of-scope transfers before execution, and prevent it up front."
+industries: ["finance"]
+impact: "Over $110 billion moved on-chain under sanctions"
 ---
 
 ## 1. TL;DR

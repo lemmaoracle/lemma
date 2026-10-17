@@ -17,6 +17,11 @@ og_lead_en: "Cursor's DuneSlide — one injected prompt escapes the sandbox to R
 gap_detected: "研究側の開示・CVE 採番と CVSS 評価・ベンダー修正（Cursor 3.0）とアドバイザリ／NVD 登録という検出の系列が機能し、手口と影響範囲が外部から可視化された。"
 gap_missing: "エージェントが読んだ指示の出どころと、その指示が誘導する書き込みが認可された範囲かを、行動の時点で独立検証する層がない。"
 gap_fix: "エージェントが端末コマンドや書き込みを行う前に、指示の来歴と書き込み対象の認可スコープを、working_directory の値や symlink の解決結果から切り離して検証し、証明が伴わなければ実行を止めることを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers", "ai"]
+controls:
+  - slug: "ownership-check"
+    item: "エージェントが読んだ指示の出どころを、実行の前に確かめる"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

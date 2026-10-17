@@ -17,6 +17,11 @@ og_lead_en: "Agentjacking — one fake error report trusted as \"resolution step
 gap_detected: "The detection chain worked — Tenet Threat Labs' research disclosure, the quantification of exposed organizations and success rate, the visibility of the technique across multiple outlets and research notes, and responsible disclosure to Sentry — making the risk externally visible."
 gap_missing: "There is no layer that independently verifies — decoupled from how the content looks — before an agent turns an instruction derived from external data into action, whether that instruction (the error report) originates from the legitimate system and whether its execution is authorized."
 gap_fix: "Before executing an instruction derived from external data, such as the resolution steps in error triage, verify the provenance of that instruction and the authorization of its execution — decoupled from how the content looks — and stop execution when no proof accompanies it, verified independently by Lemma, and prevent it up front."
+industries: ["developers", "ai"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the steps in an error report really come from Sentry"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

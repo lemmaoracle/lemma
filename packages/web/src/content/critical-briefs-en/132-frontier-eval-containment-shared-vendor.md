@@ -14,6 +14,12 @@ status: published
 version: "2.0"
 og_lead_ja: "評価ベンダーの「閉じた」環境が設定ミスで外へ — 実在の第三者が侵害"
 og_lead_en: "A vendor's 'sealed' eval environment opened onto the internet — real third parties breached"
+industries: ["ai", "supply-chain"]
+controls:
+  - slug: "hold-unverified"
+    item: "Independently confirm the vendor's evaluation environment is isolated before each run"
+attack_method: "supply-chain"
+impact: "AI under evaluation accessed 3 organizations' production systems"
 ---
 
 > **Revision (v2.0 / 2026-10-16)**: This version reframes the subject around how a misconfiguration at an evaluation vendor shared by several companies turned a supposedly sealed test environment into a bridge to real systems, harming unrelated third parties. It also incorporates Irregular's postmortem (14 August), Anthropic's requirements for evaluation partners (31 August), and Anthropic's follow-up of 9 September, which disclosed a fourth incident and revised its July diagnosis.

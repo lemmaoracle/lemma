@@ -17,6 +17,11 @@ og_lead_en: "A flipped auth flag let an unauthenticated API query customer insta
 gap_detected: "ServiceNow は不審なアクセスを「異常な活動」として検知し、ログから照会の証跡をたどれた。"
 gap_missing: "「この要求者は、この顧客データを照会してよいか」を応答の前に確かめる層が無く、認証フラグが一つ外れただけで要求は素通りした。"
 gap_fix: "データを返す前に「この要求は、この主体に、この範囲で認可されている」ことを Lemma で独立検証して、事前に防ぐ。"
+operations: ["data-access"]
+controls:
+  - slug: "hold-unverified"
+    item: "要求者の認証を確かめるまで、データを返さない"
+impact: "一部顧客でテーブルへの未認証照会が成功"
 ---
 
 ## 1. TL;DR

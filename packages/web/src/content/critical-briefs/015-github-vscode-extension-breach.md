@@ -17,6 +17,13 @@ og_lead_en: "A poisoned VS Code extension lived 18 minutes on the marketplace �
 gap_detected: "GitHub は翌日に不正アクセスを検知し、即日で重要な認証情報を切り替えて影響範囲（社内リポジトリのみ・顧客非影響）を特定・公表できた。"
 gap_missing: "正規マーケットに正規拡張として並んでいた毒入り版を、署名や掲載という信頼の印だけでインストール前に見分ける手立てが無く、抜き取られた認証情報も静的で別環境からそのまま使い回せた。"
 gap_fix: "開発ツールの取り込み前に「この拡張が正規のビルド経路から生成された改ざんのない成果物である」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "入れる前に、拡張が正規の発行元の正規ビルドか確かめる"
+attack_method: "supply-chain"
+impact: "内部リポジトリ約 3,800 件が複製・窃取された"
 ---
 
 ## 1. TL;DR

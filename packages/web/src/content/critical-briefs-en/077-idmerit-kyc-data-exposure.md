@@ -17,6 +17,7 @@ og_lead_en: "IDMerit's disputed billion-record exposure — custody no one can p
 gap_detected: "Cybernews found the unauthenticated MongoDB and reported it; the database was closed the next day."
 gap_missing: "No party — the companies, the researchers, or regulators — can verifiably prove whose custody the exposed data was under, or on what contract and legal basis it was held."
 gap_fix: "Attach verifiable provenance to every KYC record — custodian, legal basis, contract layer — so that when an exposure surfaces, attribution and legality are settled by evidence, immediately."
+industries: ["finance"]
 ---
 
 > **Revision (v2.0 / 2026-07-03)**: The original version presented this as a confirmed exposure, following the Cybernews report. This version adds IDMerit's formal denial, presents both accounts, and reframes the analysis around the structural point: no one can verifiably prove custody of the exposed data. Figures that have not been independently verified are flagged.

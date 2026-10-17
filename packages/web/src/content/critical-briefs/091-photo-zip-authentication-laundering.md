@@ -19,6 +19,12 @@ og_headline_en: "An email passed every check.\n<accent>An attacker wrote it.</ac
 gap_detected: "メール認証 SPF・DKIM・DMARC は 3 つとも作動して完走し、メールが正規の送信基盤（Calendly）から送られたことは確かに検証された。"
 gap_missing: "認証が確かめたのは送信経路の正当性だけで、「その予約・苦情連絡を書いたのが正規の取引相手か（authorship）」を実行の前に証明する層が無かった。"
 gap_fix: "正規の予約・ゲスト連絡に作成主体の暗号的な来歴証明を付与し、それを欠くメッセージを Lemma で独立検証して、事前に防ぐ。"
+industries: ["retail"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "認証を通ったメールでも、本当に予約サイトからの連絡か確かめる"
+attack_method: "impersonation"
 ---
 
 ## 1. TL;DR

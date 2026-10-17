@@ -17,6 +17,13 @@ og_lead_en: "Ariana Grande suit: collaborator credentials unverified before the 
 gap_detected: "The leaks and resale were caught after the fact and brought to court in July 2026."
 gap_missing: "A layer that independently verifies, per action, that access to and hand-off from collaborator accounts is legitimate."
 gap_fix: "Verify credential provenance and authorization before access and hand-off, excluding impersonation before execution."
+industries: ["media"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Before sending material, confirm the requester really is that photographer"
+attack_method: "impersonation"
+impact: "45 unreleased songs leaked in 2023 alone"
 ---
 
 ## 1. TL;DR

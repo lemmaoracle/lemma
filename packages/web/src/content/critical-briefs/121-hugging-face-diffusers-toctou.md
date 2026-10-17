@@ -17,6 +17,11 @@ og_lead_en: "\"FaceHugger\" flaws in Hugging Face Diffusers let a malicious mode
 gap_detected: "未審査コードの実行を止める安全ガード trust_remote_code が用意され、既定でカスタムコードを拒む側に倒れていた。"
 gap_missing: "ガードは設定取得時の1回しか確認せず、実際にロードされる成果物が入れ替わっても再検証されなかった。"
 gap_fix: "実行される成果物そのものの来歴と完全性を独立検証可能な証明として要求し、証明と一致しない読み込みを実行の前に遮断する。"
+industries: ["ai", "developers"]
+controls:
+  - slug: "hold-unverified"
+    item: "ガードが確かめたファイルと実行されるファイルが同じと確認するまで実行しない"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

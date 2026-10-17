@@ -17,6 +17,11 @@ og_lead_en: "Amazon Q — a bundled .amazonq/mcp.json auto-ran and leaked AWS cr
 gap_detected: "The detection chain worked — researcher disclosure, CVE assignment and CVSS scoring, the vendor fix (language server 1.65.0) and the AWS bulletin / GitHub Advisory entries — making the technique and its impact externally visible."
 gap_missing: "There is no layer that independently verifies, at the moment the extension loads and starts a bundled config (an MCP server definition), whether it originates from a legitimate author and is within an authorized scope."
 gap_fix: "Before starting an MCP server, verify the config's provenance and the launch's authorization scope — decoupled from the act of opening a folder — pass the minimum environment to the process, and stop the launch when no proof accompanies it, verified independently by Lemma to prevent it up front."
+industries: ["developers", "ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "Don't start a repo-bundled MCP config until its author and scope are confirmed"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

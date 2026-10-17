@@ -17,6 +17,12 @@ og_lead_en: "Drives assumed shredded resurfaced online — 180,000+ patients (NH
 gap_detected: "落札者の通報・回収・刑事告発と、紙の廃棄証明書の記録は残せた。"
 gap_missing: "「この媒体は確かに破壊されたか」を廃棄の時点で確かめる層が無く、破壊の前提は委託先の自己申告のまま素通りした。"
 gap_fix: "高リスクな廃棄の前に「この機微媒体は確かに破壊された」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["healthcare"]
+controls:
+  - slug: "audit-trail"
+    item: "HDD を 1 台ずつ、破砕した記録を残して委託元が確かめる"
+attack_method: "human-error"
+impact: "患者・職員 約 18 万 6,900 人分の HDD が流出"
 ---
 
 ## 1. TL;DR

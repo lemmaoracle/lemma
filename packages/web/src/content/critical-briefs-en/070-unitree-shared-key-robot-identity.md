@@ -17,6 +17,10 @@ og_lead_en: "One shared key let a single takeover collapse the whole fleet — U
 gap_detected: "Responsible disclosure by researchers, firmware updates and a review of key management, and network segmentation were all communicated and put in place."
 gap_missing: "There was no layer to check before operation whether the connecting party was legitimate against each device's own unique identity, so a passphrase shared across the whole fleet passed straight through."
 gap_fix: "Before operation, independently verify with Lemma that this device faces a uniquely legitimate party and this operation stays within the bounds of its authorization, and prevent it up front."
+industries: ["manufacturing"]
+controls:
+  - slug: "ownership-check"
+    item: "Authenticate each connection with a key unique to that unit"
 ---
 
 ## 1. TL;DR

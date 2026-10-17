@@ -17,6 +17,11 @@ og_lead_en: "Friendly Fire — a defensive AI coding agent ran the very binary i
 gap_detected: "The detection chain worked — AI Now Institute's research disclosure, the demonstration of transferability, the proposed mitigations, and outreach to both vendors — making the risk externally visible; monitoring for known injection patterns and suspicious documents also helps the response."
 gap_missing: "There is no layer that independently verifies — decoupled from how the content looks or how the model reasons — before an agent moves an unverified binary or script into execution, whether it belongs to the reviewed library's legitimate provenance or was injected from the outside."
 gap_fix: "Before executing a command or binary, verify — decoupled from appearance or model judgment, and independently through Lemma — that the code originates from a legitimate provenance (a known upstream, a signed distributor) and is not an externally injected artifact, and that this execution is authorized for this scope, and stop execution up front when no proof accompanies it."
+industries: ["developers", "ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "Don't let the agent run a binary under review until its origin is established"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

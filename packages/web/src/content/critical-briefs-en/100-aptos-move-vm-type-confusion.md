@@ -17,6 +17,7 @@ og_lead_en: "Aptos — a ~$3,000 rig reproduced a Move VM type confusion, a risk
 gap_detected: "The detection chain worked — Hexens's discovery and responsible disclosure, Aptos's fix pushed to mainnet within hours, a traceable response in public repositories, and zero fund outflow — closing a critical flaw before real-world harm."
 gap_missing: "There is no layer that independently verifies — at the moment downstream bridges, stablecoins, and exchanges accept Aptos-side state — whether that state was correctly produced under sound type resolution."
 gap_fix: "Before an action such as a bridge withdrawal or a stablecoin issuance, verify the integrity and provenance of the upstream state relied on and the authorization to accept it — decoupled from the chain's own fix — and stop acceptance when no proof accompanies it, verified independently by Lemma, and prevent it up front."
+industries: ["finance"]
 ---
 
 ## 1. TL;DR

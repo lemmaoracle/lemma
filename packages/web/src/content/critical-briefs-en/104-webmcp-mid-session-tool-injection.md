@@ -17,6 +17,11 @@ og_lead_en: "WebMCP — swapping the tools mid-session led agents to call the at
 gap_detected: "The detection chain worked — the researchers' disclosure of the attack taxonomy, the quantitative evaluation across three models and four scenarios, the field-level contribution analysis, the identification of injection timing, and the proposed design principles — making the risk externally visible; existing defense research that inspects tool behavior or observes runtime traffic also helps grasp the damage."
 gap_missing: "There is no layer that, at the moment the agent makes a call, independently establishes — decoupled from the public name and the metadata's self-declaration (such as readOnlyHint=true) — whether the tool is the same legitimate one observed at planning time or a different one swapped in mid-session; the malicious tool carries the same name and is presented with legitimate fields."
 gap_fix: "Before the agent calls a tool and hands over data, verify — decoupled from the public name and metadata self-declaration, and independently through Lemma — that the tool carries the same immutable identifier and origin as at planning time and is authorized for this scope, and prevent it up front."
+industries: ["ai"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the tool being called was really registered by that site"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

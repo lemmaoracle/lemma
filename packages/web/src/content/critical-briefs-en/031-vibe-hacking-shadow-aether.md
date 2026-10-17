@@ -17,6 +17,9 @@ og_lead_en: "AI agents ran intrusions end to end — SHADOW-AETHER"
 gap_detected: "Threat-research firm Trend Micro could identify and publish the techniques and indicators (IOCs) of both campaigns and share them with defenders."
 gap_missing: "Because the AI builds new attack tools per target, detection that matches against known-bad becomes reactive, and there was no layer to confirm before the action what was permitted to run internally."
 gap_fix: "Even for an unknown tool, independently verify with Lemma that the operation carries legitimately authorized provenance, and prevent it up front."
+industries: ["public-sector", "finance"]
+attack_method: "ai-misuse"
+impact: "Six Mexican government agencies compromised"
 ---
 
 ## 1. TL;DR

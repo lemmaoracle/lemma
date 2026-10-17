@@ -17,6 +17,14 @@ og_lead_en: "AI face-match drove enforcement with no independent verification �
 gap_detected: "顔認識の精度・バイアスを測る評価（NIST 等）は、技術選定や運用制限の根拠としては機能した。"
 gap_missing: "個々の照合結果について「逮捕という行動の前に独立した裏付けと認可があったか」を確かめる層が無く、確率的な候補がそのまま同定として扱われた。"
 gap_fix: "AI の判定を強制処分などの意思決定に使う前に「この出力が、どの信頼性条件で、どの独立裏付け・認可の下で使われるのか」を Lemma で独立検証して、事前に防ぐ。"
+industries: ["public-sector", "ai"]
+controls:
+  - slug: "separate-approval"
+    item: "顔認識の一致は、逮捕の前に別の証拠で裏づける"
+  - slug: "hold-unverified"
+    item: "裏づけが取れるまで、逮捕に進まない"
+attack_method: "ai-misuse"
+impact: "1 人を誤認逮捕し約 30 時間拘束"
 ---
 
 ## 1. TL;DR

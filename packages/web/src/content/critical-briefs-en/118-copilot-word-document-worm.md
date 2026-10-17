@@ -17,6 +17,11 @@ og_lead_en: "Copilot for Word document-borne prompt injection; generated files b
 gap_detected: "Microsoft confirmed the behavior after the researcher's report and shipped two mitigations, in April and July. The reported payloads were blocked."
 gap_missing: "A layer that lets a recipient independently verify that a Copilot-edited document was generated from the source data and the user's instructions."
 gap_fix: "Require a document's generation history as independently verifiable proof, so recipients can separate out alterations that carry no proof."
+industries: ["ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not share Copilot-edited figures until they are checked against the source data"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

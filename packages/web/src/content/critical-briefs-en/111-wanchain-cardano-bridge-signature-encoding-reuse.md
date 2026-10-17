@@ -17,6 +17,9 @@ og_lead_en: "Wanchain — ambiguous signing encoding let one signature move 65,0
 gap_detected: "BlockSec's preliminary analysis identified the non-injective signed-message encoding as the cause, on-chain investigators traced the four withdrawals, Wanchain halted the bridge, and the Midnight Foundation delimited the scope of impact."
 gap_missing: "Signature verification only confirms 'is this a valid signature over these bytes,' and because the encoding was non-injective, 'that the withdrawal this signature points to is uniquely this one' was never verified at the moment of the withdrawal."
 gap_fix: "Before a withdrawal executes, require an independently verifiable proof that the signed message is encoded in a canonical form with separators and length markers and is inseparably bound to this one withdrawal alone, and deny up front any withdrawal not accompanied by that proof."
+industries: ["finance"]
+operations: ["approval"]
+impact: "About 515.2 million NIGHT (roughly $10 million) drained"
 ---
 
 ## 1. TL;DR

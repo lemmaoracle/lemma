@@ -17,6 +17,9 @@ og_lead_en: "Sumsub: an 18-month undetected breach of a KYC vendor's support env
 gap_detected: "2026年1月の社内セキュリティレビューで侵害が遡及的に発見され、影響顧客への通知に至った。"
 gap_missing: "侵入から発見まで約18か月、サポート環境に攻撃者が滞在していることを誰も継続的に証明できず、本人確認のために保持した識別情報が検知の前に長期間露出していた。"
 gap_fix: "本人確認を属性証明（attribute proof）として最小開示で行い、氏名・連絡先などの識別情報を中間者に集中保持させない。保持しないデータは漏れない。"
+industries: ["finance"]
+operations: ["data-access"]
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

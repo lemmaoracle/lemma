@@ -17,6 +17,13 @@ og_lead_en: "BonkDAO governance attack drained about $20M; the smart contracts r
 gap_detected: "提案・投票・執行はオンチェーンで検証可能で、コントラクトのチェックはすべて通過した。"
 gap_missing: "その決定権限が正統に保持されたものか、一時的に資本で買われたものかを確かめる層が無かった。"
 gap_fix: "財庫を動かす決定の権限が正統に成立したことを独立検証可能な証明として要求し、証明を伴わない執行を事前に遮断する。"
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "hold-unverified"
+    item: "財庫の移転は、議決権が正統に保持されたか確かめるまで執行しない"
+attack_method: "privilege-abuse"
+impact: "財庫から約 2,000 万ドル相当の BONK が移された"
 ---
 
 ## 1. TL;DR

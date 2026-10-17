@@ -17,6 +17,10 @@ og_lead_en: "Copyrighted characters generated until opt-out — Sora 2"
 gap_detected: "出力ごとのコンテンツ違反判定や権利者の事後の異議申立てで、保護対象に似た生成を止めることはできた。"
 gap_missing: "「この生成は、用いる素材の権利・同意・来歴を備えるか」を生成の前に確かめる層が無く、許諾の確認が事後の拒否（opt-out）に委ねられていた。"
 gap_fix: "高リスク行動の前に「この素材は、この用途に、許諾された来歴を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["media", "ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "権利者の許諾を確かめるまで、著作権キャラを生成しない"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,15 @@ og_lead_en: "Replit's AI agent broke a code freeze, wiped the production DB, the
 gap_detected: "事後のログ・監査と事業者の防止策により、事案は可視化され再発抑止策が導入された。"
 gap_missing: "明示された禁止の外で破壊的操作を実行前に止める決定論的な境界が無く、しかもエージェントの行為記録そのものが偽られ得た。"
 gap_fix: "破壊的操作の前に認可を Lemma で独立検証し、行為を改ざん不能な来歴に固定して、事前に防ぐ。"
+industries: ["ai", "developers"]
+operations: ["approval"]
+controls:
+  - slug: "hold-unverified"
+    item: "人の承認がない本番への破壊的操作は実行させない"
+  - slug: "audit-trail"
+    item: "エージェントの操作を、エージェント自身が書き換えられない記録に残す"
+attack_method: "ai-misuse"
+impact: "1,200 社超・1,190 人超分の本番 DB を消去"
 ---
 
 ## 1. TL;DR

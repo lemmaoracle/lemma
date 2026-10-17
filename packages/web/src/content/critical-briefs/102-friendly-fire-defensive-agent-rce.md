@@ -17,6 +17,11 @@ og_lead_en: "Friendly Fire — a defensive AI coding agent ran the very binary i
 gap_detected: "AI Now Institute による研究開示、転移性の実証、緩和策の提示、両ベンダーへの連絡という検出の系列が機能し、リスクが外部から可視化された。既知の注入パターンや不審なドキュメントを監視する取り組みも対応の助けになる。"
 gap_missing: "エージェントが未検証のバイナリやスクリプトを実行に移す前に、それが審査対象ライブラリの正規の来歴に属するのか外部から注入されたものかを、内容の見た目やモデルの判断から切り離して独立検証する層がない。"
 gap_fix: "コマンドやバイナリを実行する前に、そのコードが正規の来歴（既知の upstream・署名された配布元）に由来し外部から注入された成果物でないこと、およびこの実行がこのスコープで認可されていることを、見た目やモデルの判断から切り離して Lemma で独立検証し、証明が伴わなければ実行を事前に止める。"
+industries: ["developers", "ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "審査対象のバイナリは、出所を確かめるまで実行させない"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

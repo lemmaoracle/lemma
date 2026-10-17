@@ -18,6 +18,13 @@ gap_detected: "Signature and provenance checks worked as designed. These package
 gap_missing: "That provenance does not say who was at the keyboard. Nothing established the publisher's identity before the release was installed."
 gap_fix: "Make which publisher identity, and which source state, a release came from checkable before it is installed, and let a release that carries no such proof be held."
 analysis_lead_en: "What cannot be checked is not whether the build came from the right workflow. It is whether the person who triggered that workflow was the maintainer."
+industries: ["developers", "supply-chain"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the release was triggered by the real maintainer before installing it"
+attack_method: "account-takeover"
+impact: "Nine compromised versions published in about 38 minutes"
 ---
 
 ## 1. TL;DR

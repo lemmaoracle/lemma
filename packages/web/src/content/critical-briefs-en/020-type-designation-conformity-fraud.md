@@ -17,6 +17,12 @@ og_lead_en: "Tampered certification test data reached type designation and shipm
 gap_detected: "Internal investigations, a third-party committee, and on-site inspections by the regulator could make the scope of the fraud and the affected vehicle models visible after the fact."
 gap_missing: "There was no layer to confirm before type designation whether the submitted test data had been legitimately obtained under the prescribed conditions, so test data the company ran and submitted itself passed straight through."
 gap_fix: "Before type designation, independently verify with Lemma that the product conforms to the standards under the prescribed test conditions, and prevent it up front."
+industries: ["manufacturing"]
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm submitted test data was obtained under the prescribed conditions"
+impact: "Type designation of three models revoked"
 ---
 
 ## 1. TL;DR

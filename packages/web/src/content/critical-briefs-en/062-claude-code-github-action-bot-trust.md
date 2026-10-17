@@ -17,6 +17,11 @@ og_lead_en: "One GitHub issue hijacks the repo via the agent — Claude Code Git
 gap_detected: "The vulnerability was reported through responsible disclosure, a patch was shipped quickly, and CI logs recorded the execution."
 gap_missing: "There was no layer to check before action whether the party that triggered the agent held legitimate authority or whether the loaded content came from a trusted source, so a trigger claiming to be a `[bot]` and malicious instructions disguised as a request passed straight through."
 gap_fix: "Before an agent acts with privilege, independently verify with Lemma that this trigger comes from a party with legitimate authority and this input originates from a trusted source, and prevent it up front."
+industries: ["ai", "developers"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the triggering actor is really an authorized bot, not just named '[bot]'"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,11 @@ og_lead_en: "Consent and age unverified at generation — Grok deepfakes"
 gap_detected: "Reports, detection technology, and investigations by national authorities operated to remove and remediate the spread outputs."
 gap_missing: "At generation time there was no layer to confirm whether the subject consented or was not a minor, and the outputs carried no verifiable provenance marker, so harmful generations could not be distinguished until the spread had begun."
 gap_fix: "Before generating an image, independently verify with Lemma that the subject's consent and age are confirmed and authorized, and prevent it up front."
+industries: ["ai", "media"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not generate an image until the subject's consent and age are verified"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

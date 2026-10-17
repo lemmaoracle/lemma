@@ -17,6 +17,15 @@ og_lead_en: "Asking the AI support bot hijacked 20k accounts — Meta HTS"
 gap_detected: "Meta detected the vulnerability and its exploitation, identified the affected accounts, and could notify users."
 gap_missing: "Before the AI support executed an email change or reset, there was no layer to confirm whether the requester was the legitimate owner of this account, so the mere arrival of a request became the basis for the operation."
 gap_fix: "Before a high-impact recovery operation, independently verify with Lemma that the requester is the legitimate owner of this account, and prevent it up front."
+industries: ["media", "ai"]
+operations: ["account-admin"]
+controls:
+  - slug: "ownership-check"
+    item: "Check that the requester is truly the account's owner"
+  - slug: "hold-unverified"
+    item: "Do not change the account email until ownership is confirmed"
+attack_method: "account-takeover"
+impact: "20,225 Instagram accounts taken over"
 ---
 
 ## 1. TL;DR

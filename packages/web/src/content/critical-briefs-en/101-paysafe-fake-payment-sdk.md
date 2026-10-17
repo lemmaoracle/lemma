@@ -17,6 +17,12 @@ og_lead_en: "Paysafe fake SDKs — 17 packages posing as payment SDKs stole deve
 gap_detected: "The detection chain worked — supply-chain security firm Socket's AI scanner caught all 17 packages, flagged the npm ones as malware about six minutes after publication, and published the technique, the targeted secrets, and the C2 obfuscation along with dependency-audit guidance."
 gap_missing: "There is no layer that independently verifies — at the moment a developer pulls in a payment SDK as a dependency — whether it originates from a legitimate publisher as an authorized distribution, and whether attribute privileges such as payment API keys and KYC credentials are used only through authorized paths."
 gap_fix: "Before pulling in a dependency, verify the distribution's provenance and keep attribute privileges such as payment API keys and KYC credentials separated between storage and use, so that installation or execution is stopped when no proof accompanies it — verified independently by Lemma, and prevent it up front."
+industries: ["finance", "developers"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm a payment SDK package is really Paysafe's official one before installing"
+attack_method: "supply-chain"
+impact: "17 malicious packages posing as payment SDKs"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,11 @@ og_lead_en: "One authenticated client reached 7,000 robot vacuums' cameras — D
 gap_detected: "研究者の責任ある開示、メディア経由の通報、DJI の迅速な修正と報奨金、どの接続が何を購読したかの事後ログは実施・記録できた。"
 gap_missing: "「いま購読しようとする主体は、この機体に対する権限を持つか」をアクセスの前に確かめる層が無く、認証を通った 1 接続が全機に素通りした。"
 gap_fix: "アクセスの前に「この主体は、この機体に対する正当な権限を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["manufacturing"]
+operations: ["data-access"]
+controls:
+  - slug: "ownership-check"
+    item: "映像を見ようとする人が、その機体の持ち主か確かめる"
 ---
 
 ## 1. TL;DR

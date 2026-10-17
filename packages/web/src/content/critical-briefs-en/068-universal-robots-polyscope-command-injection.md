@@ -17,6 +17,10 @@ og_lead_en: "Unauthenticated network access yields RCE on cobots — UR PolyScop
 gap_detected: "CISA and vendor advisories, the availability of a patch, and exposure cutoff through network segmentation were all communicated and put in place."
 gap_missing: "There was no layer to check before physical motion whether the sender of a command held legitimate authority to operate the robot, so commands arriving over the network passed straight through."
 gap_fix: "Before physical motion, independently verify with Lemma that this command comes from a sender with legitimate authority, and prevent it up front."
+industries: ["manufacturing"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm the sender of a command is authorized to operate the robot"
 ---
 
 ## 1. TL;DR

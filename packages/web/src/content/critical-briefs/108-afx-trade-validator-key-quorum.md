@@ -17,6 +17,13 @@ og_lead_en: "AFX Trade — compromised signatures met the 2/3 quorum, $24.15M go
 gap_detected: "Blockaid が 2026-07-22 21:30 UTC に exploit を検出し、Offchain Labs が Arbitrum ネイティブブリッジは無傷・事象は第三者ブリッジ起点と迅速に切り分けた。"
 gap_missing: "規定数の有効な署名が揃ったことは検証されたが、その署名を生む鍵が正当・無侵害かは検証されず、侵害された hot 鍵による署名が約 2/3 のクォーラムを「有効に」満たして払い出しが確定した。"
 gap_fix: "払い出しを確定させる前に、署名者・鍵の正当性を、署名の有効性・クォーラムの充足とは切り離して独立検証可能な証明として要求し、証明が伴わない払い出しを事前に拒否する。"
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "署名の数だけでなく、署名した鍵が侵害されていないか確かめる"
+attack_method: "account-takeover"
+impact: "約 2,415 万ドル（USDC）が流出"
 ---
 
 ## 1. TL;DR

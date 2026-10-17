@@ -17,6 +17,12 @@ og_lead_en: "Paysafe fake SDKs — 17 packages posing as payment SDKs stole deve
 gap_detected: "サプライチェーンセキュリティ企業 Socket の AI スキャナーが 17 パッケージを検出し、npm 側は公開から約 6 分でマルウェア判定、手口・窃取対象・C2 難読化の公開と依存点検の推奨まで機能した。"
 gap_missing: "開発者が決済 SDK を依存として取り込む時点で、それが正規の発行元に由来し認可された配布物か、また決済 API 鍵や KYC 資格情報という属性権限が認可された経路で用いられるかを、独立検証する層がない。"
 gap_fix: "依存を取り込む前に配布物の来歴を検証し、決済 API 鍵や KYC 資格情報のような属性権限を保管と使用に分離して、証明が伴わなければインストール・実行を止めることを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance", "developers"]
+controls:
+  - slug: "ownership-check"
+    item: "決済SDKのパッケージが、本当に Paysafe の公式版か確かめてから入れる"
+attack_method: "supply-chain"
+impact: "決済 SDK を装う悪性パッケージ 17 件"
 ---
 
 ## 1. TL;DR

@@ -18,6 +18,12 @@ gap_detected: "The screening ran. Customers were matched every day, and the mach
 gap_missing: "Whether that matching covered the whole sanctions list went unchecked, from 2017 until the bank noticed in January 2023, before any account was opened."
 gap_fix: "Make which list a customer was matched against — and the result — checkable before an account is opened, and let an opening that carries no such proof be held."
 analysis_lead_en: "What went unchecked is not whether the matching ran. It is whether that matching covered the whole of the sanctions list."
+industries: ["finance"]
+operations: ["data-access"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not open accounts until screening is confirmed to cover the full sanctions list"
+impact: "Over 54,000 accounts opened for 49,000 high-risk customers"
 ---
 
 ## 1. TL;DR

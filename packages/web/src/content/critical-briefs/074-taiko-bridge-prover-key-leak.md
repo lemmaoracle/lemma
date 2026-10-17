@@ -17,6 +17,12 @@ og_lead_en: "A leaked prover signing key let forged withdrawals pass as valid �
 gap_detected: "発覚後のブロック生成停止・ブリッジ出金停止・取引所への入金停止要請・攻撃者アドレスの公開は機能し、Blockaid が異常を実時間で検知できた。"
 gap_missing: "「この proof に署名した prover は正規の認可された主体か——署名鍵は漏洩していないか」を出金実行の前に独立検証する層が無く、形式上有効な偽 proof は素通りした。"
 gap_fix: "出金実行の前に「この proof に署名した prover は認可された主体であり、署名鍵は侵害されていない」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+controls:
+  - slug: "ownership-check"
+    item: "proof に署名した prover が正規に認可されたものか、出金の前に確かめる"
+attack_method: "impersonation"
+impact: "約 170 万ドル相当がブリッジから流出"
 ---
 
 ## 1. TL;DR

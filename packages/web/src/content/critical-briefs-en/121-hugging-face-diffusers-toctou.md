@@ -17,6 +17,11 @@ og_lead_en: "\"FaceHugger\" flaws in Hugging Face Diffusers let a malicious mode
 gap_detected: "A safeguard existed and was on by default: trust_remote_code, built to stop unreviewed custom code from running."
 gap_missing: "The guard checked only the first fetch — the config — and never re-verified the artifact that was actually loaded and executed."
 gap_fix: "Require the provenance and integrity of the artifact that actually executes as independently verifiable proof, and block loads that do not match it before execution."
+industries: ["ai", "developers"]
+controls:
+  - slug: "hold-unverified"
+    item: "Do not execute until the files the guard checked are confirmed to be the files being run"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

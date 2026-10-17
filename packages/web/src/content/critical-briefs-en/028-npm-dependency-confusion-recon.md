@@ -17,6 +17,13 @@ og_lead_en: "33 packages impersonating internal scopes exploited the build envir
 gap_detected: "Investigations by security vendors made containment work — quarantine, blocking communication, and removal from the registry."
 gap_missing: "There was no layer to confirm before ingestion whether each package was actually issued by the internal publisher it claimed, so the internal-looking quality of the name and metadata was used in place of provenance."
 gap_fix: "Before the build ingests a dependency, independently verify with Lemma that the artifact carries provenance showing it was issued by a legitimate publisher, and prevent it up front."
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Before ingesting, confirm the package was issued by the internal publisher it claims"
+attack_method: "supply-chain"
+impact: "33+ malicious packages published to npm"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,12 @@ og_lead_en: "Ostium — one compromised oracle signer key let \"future prices\" 
 gap_detected: "The detection chain worked — Blockaid detected the attack in progress, Ostium grasped it within minutes and halted trading within an hour, and it is coordinating with law enforcement, SEAL 911, and third-party experts — containing the spread of harm; on-chain anomaly monitoring also helped confine the loss to about five minutes."
 gap_missing: "There is no layer that, at the moment a price report is reflected in a payout, independently establishes — decoupled from the validity of the signature — whether that signer is legitimate and uncompromised right now and whether the data is authentic and plausible (not future-dated, consistent with the market); a fake report carrying a valid signature passes signature verification correctly."
 gap_fix: "Before a price report is reflected in a payout, verify — decoupled from the validity of the signature, and independently through Lemma — that the signer is legitimate, uncompromised, and authorized for this scope, and that the data is authentic and satisfies its plausibility bounds (timestamp consistency, acceptable price range), and prevent it up front."
+industries: ["finance"]
+controls:
+  - slug: "hold-unverified"
+    item: "Don't finalize payouts until the signer and the price data are confirmed legitimate"
+attack_method: "account-takeover"
+impact: "Up to roughly $18 million (USDC) drained"
 ---
 
 ## 1. TL;DR

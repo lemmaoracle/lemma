@@ -17,6 +17,13 @@ og_lead_en: "JS injected into the signing UI drained ~$1.5B — Bybit"
 gap_detected: "After discovery, the statement, Mandiant's post-incident forensics, fund tracing, cross-exchange blacklisting, and OFAC sanctions were all carried out, and the breach path was identified after the fact."
 gap_missing: "There was no layer to check, independently of the UI, whether \"what the screen displayed matched the provenance of the bytes actually being signed\" before signing, so the injection that swapped the display for the signed target went straight through."
 gap_fix: "Before signing executes, independently verify with Lemma that \"the transaction being signed carries the provenance of the intended approval flow,\" and prevent it up front."
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "separate-approval"
+    item: "Verify, by a means separate from the UI, that the bytes being signed match what the screen shows"
+attack_method: "supply-chain"
+impact: "~401,347 ETH (~$1.5B) drained"
 ---
 
 ## 1. TL;DR

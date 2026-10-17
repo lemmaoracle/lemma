@@ -17,6 +17,8 @@ og_lead_en: "Common Crawl: ~12,000 live credentials embedded in an LLM training 
 gap_detected: "Truffle Security の走査で約 1.2 万件の生きた認証情報が検出され、影響ベンダーへの連絡と数千件の鍵の失効・ローテーションが進められた。"
 gap_missing: "「このコーパスは何を含み、どの来歴・同意の下にあるか」を取り込みの前に証明する層が無く、事後のスキャン・失効では学習物への波及を取り消せなかった。"
 gap_fix: "公開されているかではなく、コーパスの来歴・構成（出所・同意・既知の危険物の不在）を取り込みの前に Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+impact: "生きた認証情報 約 1.2 万件が学習コーパスに混入"
 ---
 
 ## 1. TL;DR

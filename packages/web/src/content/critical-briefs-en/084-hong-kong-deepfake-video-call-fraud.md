@@ -17,6 +17,11 @@ og_lead_en: "Hong Kong deepfake video-call fraud: faked CFO drove a ~$25.6M tran
 gap_detected: "Post-transfer reconciliation surfaced the fraud, and the Hong Kong Police investigation and disclosure and Arup's hardened controls all operated."
 gap_missing: "There was no means to prove, independently of the video and audio, that the person on the far side of the video call was the real CFO, so the deepfake passed as proof of the approver's identity."
 gap_fix: "Before executing a high-value approval, independently verify the approver's identity provenance with Lemma as cryptographic proof separate from video and audio, and prevent it up front."
+controls:
+  - slug: "separate-approval"
+    item: "Confirm a transfer instruction with the real person through a channel other than the call"
+attack_method: "impersonation"
+impact: "HK$200 million wired to five accounts"
 ---
 
 ## 1. TL;DR

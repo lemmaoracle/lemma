@@ -19,6 +19,11 @@ gap_missing: "Nothing re-checked the provenance and authorization of that safe-m
 gap_fix: "Insert one step, just before the action, that independently verifies where the value came from and what it is allowed to do."
 analysis_lead_ja: "確かめられないのは、値が安全かどうかではない。安全と印付けたその値を、行動の一段手前で改めて確かめる層が在るか、である。"
 analysis_lead_en: "The question isn't whether a value was marked safe. It's whether anything re-checks that value, independently, at the step where it becomes an action."
+industries: ["developers", "ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "Verify the origin and authorization of a value marked 'safe' before running it with stronger privileges"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

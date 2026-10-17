@@ -16,6 +16,11 @@ og_lead_en: "Agent infrastructure trust boundaries, unverified at the reference 
 gap_detected: "セキュリティ企業や CVE 報告者の調査により、影響範囲の特定と問題の可視化はできた。"
 gap_missing: "受け取った設定を「正当な権限に基づく実行か」を実行の前に確かめる層が無く、設定がそのまま実行に直結した。"
 gap_fix: "設定から実行に移る前に「この構成は、許可された権限の範囲内にある」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
+controls:
+  - slug: "hold-unverified"
+    item: "権限が確かめられるまで、設定からコマンドを実行しない"
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

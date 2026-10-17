@@ -18,6 +18,12 @@ gap_detected: "The decision layer existed on paper. CMS requires that a final no
 gap_missing: "No layer establishes, before a denial is issued, which patient file each determination was checked against — not in the published operational guide."
 gap_fix: "Fix, before the action, which file a determination was checked against and who issued that check — and let a denial that carries no such proof be held."
 analysis_lead_en: "What cannot be checked is not whether the file was consulted. It is which patient's file, and which entry in it, the determination was checked against."
+industries: ["healthcare", "public-sector"]
+operations: ["approval"]
+controls:
+  - slug: "audit-trail"
+    item: "Record which patient file each denial was checked against before it is issued"
+impact: "Nearly 100 patients awaiting epidurals at one health system"
 ---
 
 ## 1. TL;DR

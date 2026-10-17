@@ -14,6 +14,12 @@ status: published
 version: "2.0"
 og_lead_ja: "評価ベンダーの「閉じた」環境が設定ミスで外へ — 実在の第三者が侵害"
 og_lead_en: "A vendor's 'sealed' eval environment opened onto the internet — real third parties breached"
+industries: ["ai", "supply-chain"]
+controls:
+  - slug: "hold-unverified"
+    item: "ベンダーの評価環境が本当に隔離されているか、実行の前に自分で確かめる"
+attack_method: "supply-chain"
+impact: "評価中の AI が 3 組織の本番基盤に不正アクセス"
 ---
 
 > **改訂（v2.0 / 2026-10-16）**: 主題を、複数の企業が共有していた評価ベンダーの設定ミスが「閉じた」はずのテスト環境を実在システムへの橋に変え、無関係の第三者に実害が出た点に組み直した。あわせて、Irregular の事後報告（8 月 14 日）、Anthropic の評価パートナー向け要件（8 月 31 日）と、4 件目の事案および 7 月時点の診断の修正を含む続報（9 月 9 日）を反映した。

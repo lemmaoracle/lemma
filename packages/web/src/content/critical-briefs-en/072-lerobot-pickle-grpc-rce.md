@@ -17,6 +17,10 @@ og_lead_en: "Pickle over an unauthenticated gRPC channel = instant RCE — LeRob
 gap_detected: "The CVE-2026-25874 assignment and disclosure, verification of the affected range (v0.4.3–0.5.1), the known danger of pickle deserialization, and the planned 0.6.0 fix all worked."
 gap_missing: "Nothing checked the origin or authorization of data arriving over an unauthenticated, non-TLS gRPC channel before deserializing it (pickle), so an unauthenticated reach became an RCE wired straight into the robot's joint control."
 gap_fix: "Before deserializing, independently verify with Lemma that the input was legitimately brought across the trust boundary, and prevent it up front."
+industries: ["ai", "developers"]
+controls:
+  - slug: "ownership-check"
+    item: "Before deserializing, confirm the data came from a legitimate sender"
 ---
 
 ## 1. TL;DR

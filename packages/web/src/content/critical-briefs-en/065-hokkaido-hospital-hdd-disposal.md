@@ -17,6 +17,12 @@ og_lead_en: "Drives assumed shredded resurfaced online — 180,000+ patients (NH
 gap_detected: "The winning bidder's report, recovery of the drives, a criminal complaint, and the paper certificate-of-destruction records were all preserved."
 gap_missing: "There was no layer at disposal time to check whether the media had actually been destroyed, so the destruction premise rested on the contractor's self-declaration and passed straight through."
 gap_fix: "Before a high-risk disposal, independently verify with Lemma that this sensitive media has actually been destroyed, and prevent it up front."
+industries: ["healthcare"]
+controls:
+  - slug: "audit-trail"
+    item: "Record, drive by drive, that each HDD was shredded, and have the hospital check it"
+attack_method: "human-error"
+impact: "Drives with data on ~186,900 patients and staff leaked"
 ---
 
 ## 1. TL;DR

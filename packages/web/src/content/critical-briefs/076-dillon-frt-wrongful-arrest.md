@@ -17,6 +17,12 @@ og_lead_en: "A 93% FRT 'match' drove arrest with no independent corroboration �
 gap_detected: "FRT の精度・バイアス評価と、事後の誤り是正（無実の判明・提訴）は、技術選定や運用制限・被害救済の根拠として機能した。"
 gap_missing: "個々の「93% 一致」について、逮捕という行動の前に独立した裏付け（居住地・距離など）と認可があったかを確かめる層が無く、確率的な候補がそのまま同定として扱われた。"
 gap_fix: "AI 出力を逮捕などの強制処分に使う前に「この出力が、どの信頼性条件で、どの独立裏付け・認可の下で使われるのか」を Lemma で独立検証し、改ざんできない証跡として残す。"
+industries: ["public-sector"]
+controls:
+  - slug: "hold-unverified"
+    item: "顔認証の一致だけで逮捕せず、裏付けがとれるまで止める"
+attack_method: "ai-misuse"
+impact: "1 人が別人として誤認逮捕"
 ---
 
 ## 1. TL;DR

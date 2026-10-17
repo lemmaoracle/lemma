@@ -19,6 +19,12 @@ gap_missing: "Nothing verified, before the action, whether the instruction the a
 gap_fix: "Before an action like outbound transfer, insert a step that independently verifies the instruction's origin is the user's intent."
 analysis_lead_ja: "確かめられないのは、指示が正しく実行されたかではない。その指示が、利用者の意図から来たのか、攻撃者の仕込みから来たのか、である。"
 analysis_lead_en: "The question isn't whether the instruction was executed correctly. It's whether it came from the user's intent, or from attacker-planted content."
+industries: ["ai"]
+operations: ["data-access"]
+controls:
+  - slug: "hold-unverified"
+    item: "Hold any outbound send until the instruction's origin is confirmed"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,13 @@ og_lead_en: "Malicious npm packages signed under a legitimate OIDC trusted publi
 gap_detected: "External researchers found the malicious publication within just 20 to 26 minutes of release, leading to scope identification and alerts."
 gap_missing: "Because the artifact was accepted on the premise that 'signed by a legitimate publisher means a trustworthy artifact,' signature verification could not stop an artifact whose contents had been swapped even though the signature was genuine."
 gap_fix: "Before pulling in a high-risk artifact, independently verify with Lemma that it was produced from the intended source and build path, and prevent it up front."
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "Beyond the signature, confirm the contents are the intended build output"
+attack_method: "supply-chain"
+impact: "84 malicious versions published across 42 packages"
 ---
 
 ## 1. TL;DR

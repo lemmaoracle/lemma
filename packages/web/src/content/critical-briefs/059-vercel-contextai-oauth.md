@@ -17,6 +17,9 @@ og_lead_en: "\"Allow all\" OAuth to an AI tool became the breach path — Vercel
 gap_detected: "侵害された認証情報は、公開開示の 1 か月以上前に脅威インテリジェンスのフィードで特定できており、監視・ログも記録できていた。"
 gap_missing: "「いまこのアクセスは本来の許可の範囲内か」を行動の前に確かめる層が無く、一度「すべて許可」した同意の内側で動くアクセスは素通りした。"
 gap_fix: "高リスク行動の前に「この操作は、この主体に、この範囲で認可されており、現に有効である」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
+operations: ["account-admin"]
+attack_method: "supply-chain"
 ---
 
 ## 1. TL;DR

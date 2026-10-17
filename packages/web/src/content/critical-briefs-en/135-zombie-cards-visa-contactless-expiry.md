@@ -17,6 +17,10 @@ og_lead_en: "Expired Visa EMV contactless cards can pass; the terminal's expiry 
 gap_detected: "Detection can work. Anomalous transactions and use of expired cards can be surfaced as an after-the-fact monitoring layer."
 gap_missing: "The expiry the terminal used to decide was never collated against the issuer's signed record."
 gap_fix: "Before a transaction settles, collate the attribute the terminal decides on against the issuer's signed original, cryptographically bound."
+industries: ["finance", "retail"]
+controls:
+  - slug: "ownership-check"
+    item: "Check the expiry date the terminal read against the issuer's signed record"
 ---
 
 ## 1. TL;DR

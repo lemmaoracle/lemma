@@ -17,6 +17,7 @@ og_lead_en: "SynthID Watermark, Statistically Stripped — a provenance mark tha
 gap_detected: "The watermark and detection API still function as an initial filter that labels content at scale as 'likely AI-generated.'"
 gap_missing: "Because the provenance mark is embedded in the artifact itself, observing enough of it lets an attacker statistically strip the mark or forge it onto something else."
 gap_fix: "Before judging whether content is authentic, independently verify with Lemma, as a proof held outside the artifact, that it was created by a legitimate generating party, and prevent it up front."
+industries: ["ai", "media"]
 ---
 
 ## 1. TL;DR

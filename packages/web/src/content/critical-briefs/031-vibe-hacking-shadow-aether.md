@@ -17,6 +17,9 @@ og_lead_en: "AI agents ran intrusions end to end — SHADOW-AETHER"
 gap_detected: "脅威リサーチ企業 Trend Micro が、両キャンペーンの手口・痕跡（IOC）を特定して公表し、防御側に共有できた。"
 gap_missing: "AI が標的ごとに新しい攻撃ツールを作るため「既知の悪いもの」を照合する検出は後追いになり、社内で何を実行してよいかを行動の前に確かめる層が無かった。"
 gap_fix: "未知のツールであっても「この操作は、正規に認可された来歴を持つか」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["public-sector", "finance"]
+attack_method: "ai-misuse"
+impact: "メキシコの 6 政府機関が侵害された"
 ---
 
 ## 1. TL;DR

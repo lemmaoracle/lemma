@@ -17,6 +17,10 @@ og_lead_en: "Expired Visa EMV contactless cards can pass; the terminal's expiry 
 gap_detected: "検出は効きうる。異常な取引や失効カードの利用は、事後の監視の層として捉えられる。"
 gap_missing: "端末が判定に使った有効期限が、発行者の署名済み記録と照合されていなかった。"
 gap_fix: "取引が確定する前に、端末が判定に使う属性を、発行者の署名済み原本と暗号的に結び付けて照合する。"
+industries: ["finance", "retail"]
+controls:
+  - slug: "ownership-check"
+    item: "端末が読んだ有効期限を、発行者の署名済み記録と照合する"
 ---
 
 ## 1. TL;DR

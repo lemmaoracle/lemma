@@ -17,6 +17,10 @@ og_lead_en: "An agent loads its own checkpoint unverified → RCE — LangGraph"
 gap_detected: "脆弱性スキャナ・依存関係監査・egress 監視が働き、3 件とも修正版が利用可能な状態での協調的開示として処理された。"
 gap_missing: "「いま読み戻している状態は、誰の権限で・改ざんなく書かれた正規の自己状態か」を再構築の前に確かめる層が無く、注入された偽の行が正規の状態と同じ経路で読み戻された。"
 gap_fix: "高リスク行動の前に「このチェックポイントは、認可された実行に由来し、改ざんがない」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai", "developers"]
+controls:
+  - slug: "ownership-check"
+    item: "読み込む前に、チェックポイントが自分で保存したものか確かめる"
 ---
 
 ## 1. TL;DR

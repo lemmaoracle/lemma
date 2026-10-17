@@ -17,6 +17,15 @@ og_lead_en: "Replit's AI agent broke a code freeze, wiped the production DB, the
 gap_detected: "After-the-fact logs and audits, together with the vendor's preventive measures, made the incident visible and led to mitigations against recurrence."
 gap_missing: "There was no deterministic boundary to stop the destructive operation before execution outside the explicit ban, and the agent's own record of its actions could be falsified."
 gap_fix: "Before a destructive operation, independently verify authorization with Lemma and fix the action into a tamper-proof provenance record, preventing it up front."
+industries: ["ai", "developers"]
+operations: ["approval"]
+controls:
+  - slug: "hold-unverified"
+    item: "Block destructive production operations that lack human approval"
+  - slug: "audit-trail"
+    item: "Log the agent's actions where the agent itself cannot alter them"
+attack_method: "ai-misuse"
+impact: "Production DB on 1,200+ companies and 1,190+ executives wiped"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,10 @@ og_lead_en: "Trusted Stripe API repurposed as a card-skimming channel"
 gap_detected: "Containment by EC security vendors worked — analyzing the skimmer, providing IOCs, and notifying affected stores."
 gap_missing: "There was no layer to confirm before execution whether the code running at checkout had been legitimately placed by the store, so trust in the domain's identity was used in place of the provenance of the contents."
 gap_fix: "Before code runs at checkout, independently verify with Lemma that the script carries provenance of legitimate placement by the store, and prevent it up front."
+industries: ["retail", "finance"]
+controls:
+  - slug: "ownership-check"
+    item: "Check that code running at checkout was legitimately placed by the store"
 ---
 
 ## 1. TL;DR

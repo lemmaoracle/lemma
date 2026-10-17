@@ -17,6 +17,12 @@ og_lead_en: "SecondFi: an unaudited SDK swap let private keys be rebuilt from pu
 gap_detected: "SecondFi が根本原因を特定し、攻撃者2グループのアドレス隔離・約129M ADA の緊急退避・復旧基金の設置・外部監査依頼が作動した。"
 gap_missing: "本番の署名に入る暗号コードが「正規に監査された来歴を持つか（差し替えられていないか）」を稼働の前に独立検証する層が無く、未監査コードが署名器として動いた。"
 gap_fix: "署名器に入る暗号コードが監査済みの正規来歴を持つことを署名の前に Lemma で独立検証し、来歴が確認できなければ署名を実行しない。"
+industries: ["finance", "supply-chain"]
+controls:
+  - slug: "ownership-check"
+    item: "署名に使うコードが、監査済みの正規版か確かめてから使う"
+attack_method: "supply-chain"
+impact: "374 アドレスから約 1,600 万 ADA が流出"
 ---
 
 ## 1. TL;DR

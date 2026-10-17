@@ -17,6 +17,11 @@ og_lead_en: "The layer governing the AI's behavior had no integrity or provenanc
 gap_detected: "開示を受けた後、McKinsey は認証未実装のエンドポイント修正・開発環境のオフライン化などを数時間以内に実施できた。"
 gap_missing: "AI の挙動を決める指示が書き換えられても出力は表面上は正常に見えるため、利用者が「この回答は正規の改ざんされていない指示に基づくものか」を確かめる層が無く、自動スキャナも今回の侵入経路を検知できなかった。"
 gap_fix: "AI の出力前に「この回答が、正規の認可された改ざんのない指示の下で生成された」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["ai"]
+controls:
+  - slug: "ownership-check"
+    item: "AI に渡す指示が、正規のまま改ざんされていないか確かめる"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

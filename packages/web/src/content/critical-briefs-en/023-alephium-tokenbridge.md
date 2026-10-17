@@ -17,6 +17,12 @@ og_lead_en: "Guardian keys intact — but the provenance of the events they sign
 gap_detected: "Blockaid's real-time detection and SEAL 911's investigative support enabled grasping the damage, halting the bridge, burning the uncollateralized tokens (about 96.4%), and tracing the funds."
 gap_missing: "There was no layer to confirm before signing whether the event being signed had been emitted from a legitimate contract via a legitimate path, so events forged by the attacker passed straight through."
 gap_fix: "Before the bridge signs and disburses, independently verify with Lemma that the event was emitted from a registered, legitimate source without tampering, and prevent it up front."
+industries: ["finance"]
+operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "Before signing, confirm the event came from the legitimate contract"
+impact: "About $815K drained from the bridge"
 ---
 
 ## 1. TL;DR

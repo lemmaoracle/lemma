@@ -17,6 +17,11 @@ og_lead_en: "In Semantic Kernel, prompt injection led directly to host-level RCE
 gap_detected: "Vulnerability scanning, CVE disclosure, and patching could identify and close the known exploitation paths."
 gap_missing: "The functions and parameters an LLM can call were driven directly by (injectable) model output, without independently verifying before execution whether 'this call is authorized and scoped.'"
 gap_fix: "Before moving a function to execution, independently verify with Lemma that the call falls within the range of permitted authority, and prevent it up front."
+industries: ["ai", "developers"]
+controls:
+  - slug: "hold-unverified"
+    item: "Execute an AI-invoked function only after confirming the call and its parameters are within authorized scope"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

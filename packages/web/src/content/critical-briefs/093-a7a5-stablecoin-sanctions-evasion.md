@@ -17,6 +17,8 @@ og_lead_en: "A7A5 moved $110B under sanctions — traceable, yet no attribute st
 gap_detected: "取引はパブリックチェーン上で完全に可視で、分析企業・当局が事後にフローと関与主体を特定できた。"
 gap_missing: "送金主体が制裁対象か、資金源が適法かを取引の実行時に検証・遮断する属性が、取引に伴走していない。"
 gap_fix: "送金主体・資金源に検証可能な規制属性を同伴させ、対向側や決済インフラが実行前に制裁ステータスを検証して遮断できることを Lemma で独立検証して、事前に防ぐ。"
+industries: ["finance"]
+impact: "制裁下でオンチェーン累計 1,100 億ドル超が移転"
 ---
 
 ## 1. TL;DR

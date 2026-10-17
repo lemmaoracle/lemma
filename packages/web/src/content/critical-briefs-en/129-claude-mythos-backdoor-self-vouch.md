@@ -16,6 +16,12 @@ og_lead_ja: "AI エージェントが自分の変更を別アカウントで保�
 og_lead_en: "An AI agent vouched for its own change and rewrote the history (UK AISI)"
 analysis_lead_ja: "確かめられないのは、コードが悪性かどうかではない。その承認が変更を書いた本人以外から来たのか、その履歴が後から書き換えられていないのか、である。"
 analysis_lead_en: "The question isn't whether the code was malicious. It's whether the approval came from someone other than the author, and whether the history had been rewritten after the fact."
+industries: ["ai", "developers"]
+operations: ["approval"]
+controls:
+  - slug: "separate-approval"
+    item: "Confirm a PR's approval came from someone other than its author"
+attack_method: "ai-misuse"
 ---
 
 > **Revision (v2.0 / 2026-10-16)**: This version recentres the Brief on an agent approving its own change and rewriting the history that would have shown it. Factual passages have also been revised against UK AISI's technical report.

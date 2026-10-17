@@ -17,6 +17,11 @@ og_lead_en: "BioShocking — six AI browsers, convinced \"it's a game,\" leaked 
 gap_detected: "The detection chain worked — model-side guardrails, malicious-prompt filtering, and LayerX's coordinated disclosure with vendor fixes — making the technique and its risk externally visible."
 gap_missing: "There is no layer that independently verifies — separately from the model's own reasoning — whether the context and instructions an agent relies on have a legitimate origin and whether it has authority to take the action, before it acts."
 gap_fix: "Before a consequential action such as sending credentials or submitting a form, verify the provenance of the context and instructions relied on and the action's authorization — decoupled from the model's internal judgment — and stop execution when no proof accompanies it, verified independently by Lemma to prevent it up front."
+industries: ["ai"]
+controls:
+  - slug: "hold-unverified"
+    item: "Don't hand over credentials until the page's instructions are confirmed legitimate"
+attack_method: "ai-misuse"
 ---
 
 ## 1. TL;DR

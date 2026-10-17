@@ -17,6 +17,12 @@ og_lead_en: "SecondFi: an unaudited SDK swap let private keys be rebuilt from pu
 gap_detected: "SecondFi identified the root cause, and the isolation of the two attacker groups' addresses, the emergency evacuation of ~129M ADA, the establishment of a recovery fund, and the request for an external audit all operated."
 gap_missing: "There was no layer that, before execution, independently verified whether the cryptographic code entering production signing carried a legitimately audited provenance (i.e., had not been swapped), so unaudited code ran as the signer."
 gap_fix: "Before signing, independently verify with Lemma that the cryptographic code entering the signer carries a legitimately audited provenance, and do not execute the signature if that provenance cannot be confirmed."
+industries: ["finance", "supply-chain"]
+controls:
+  - slug: "ownership-check"
+    item: "Verify the signing code is the audited original before putting it into use"
+attack_method: "supply-chain"
+impact: "About 16M ADA drained from 374 addresses"
 ---
 
 ## 1. TL;DR

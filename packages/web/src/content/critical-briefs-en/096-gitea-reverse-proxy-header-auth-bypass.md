@@ -17,6 +17,12 @@ og_lead_en: "Gitea — a default reverse-proxy config lets one HTTP header imper
 gap_detected: "The detection chain worked — early CVE disclosure, the CVSS 9.8 rating, the fixed releases (1.26.3 / 1.26.4), and Sysdig's probing observation — making the impact and urgency externally visible."
 gap_missing: "There is no layer that independently verifies — separately from the auth layer's formal check — whether a request bearing an `X-WEBAUTH-USER` header actually passed through a trusted reverse proxy, and whether its principal holds admin authority."
 gap_fix: "Before a privileged action, verify the authenticity of the request's path and the principal's authority — decoupled from the formal check on headers or paths — and stop execution when no proof accompanies it, verified independently by Lemma to prevent it up front."
+industries: ["developers"]
+operations: ["account-admin"]
+controls:
+  - slug: "ownership-check"
+    item: "Confirm an admin-claiming header really came from the trusted reverse proxy"
+attack_method: "impersonation"
 ---
 
 ## 1. TL;DR

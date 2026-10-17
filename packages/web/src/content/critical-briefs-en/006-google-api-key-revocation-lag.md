@@ -17,6 +17,8 @@ og_lead_en: "Deleted API keys stayed usable for 23 minutes — Google revocation
 gap_detected: "Security firm Aikido measured the revocation lag (up to about 23 minutes) over 10 runs across two days, making it visible to the whole industry."
 gap_missing: "As long as the 'deleted' label was trusted, there was no layer to confirm before using a credential whether it had truly been revoked across all servers, leaving up to 23 minutes of room for abuse."
 gap_fix: "Before using a credential, independently verify with Lemma that the key has truly been revoked, and prevent it up front."
+industries: ["developers"]
+operations: ["account-admin"]
 ---
 
 ## 1. TL;DR

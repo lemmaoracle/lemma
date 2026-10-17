@@ -17,6 +17,7 @@ og_lead_en: "IDMerit's disputed billion-record exposure — custody no one can p
 gap_detected: "Cybernews が認証なしで公開されていた MongoDB を発見・通報し、翌日に該当データベースは閉鎖された。"
 gap_missing: "露出したデータが誰の管理下にあり、どの契約・取得根拠に基づくものか（custody）を、当事者・研究者・規制当局の誰も検証可能な形で証明できない。"
 gap_fix: "KYC データの各レコードに管理主体・取得根拠・契約層への検証可能な来歴を同伴させ、露出時に帰属と適法性を証拠ベースで即座に確定できるようにする。"
+industries: ["finance"]
 ---
 
 > **改訂（v2.0 / 2026-07-03）**: 初版は Cybernews の報道に基づき、確定した露出として記述していた。IDMerit による公式な否認と係争の状況を踏まえ、本版では両論を併記し、「露出の帰属（custody）を誰も検証可能な形で証明できない」という構造の分析へ再構成した。独立に検証されていない数値には注記を付す。

@@ -17,6 +17,12 @@ og_lead_en: "Inspections recorded as complete but never performed — Boeing 787
 gap_detected: "On the records the inspections were complete, so document audits and system-level checks were passed."
 gap_missing: "There was no layer to confirm before shipment whether the inspection record was actually backed by a real inspection, so records with no underlying work passed as inspected."
 gap_fix: "Before moving downstream, independently verify with Lemma that the inspected attribute is backed by a provenance of who actually inspected it and when, and prevent it up front."
+industries: ["manufacturing"]
+operations: ["approval"]
+controls:
+  - slug: "audit-trail"
+    item: "Record who actually performed the inspection, when, and what was measured"
+impact: "Roughly 450 aircraft affected (per sources)"
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,8 @@ og_lead_en: "Deleted API keys stayed usable for 23 minutes — Google revocation
 gap_detected: "セキュリティ企業 Aikido が失効の遅れ（最長約 23 分）を 10 回 × 2 日かけて計測し、業界全体に可視化できた。"
 gap_missing: "「削除済み」という表示を信じる限り、認証情報を使う前にそれが本当に全サーバーで失効したかを確かめる層が無く、最長 23 分の悪用の余地が残った。"
 gap_fix: "認証情報を使う前に「この鍵は本当に失効済みである」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers"]
+operations: ["account-admin"]
 ---
 
 ## 1. TL;DR

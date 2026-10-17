@@ -17,6 +17,12 @@ og_lead_en: "Workday AI hiring-bias suit: no record the decision was verified be
 gap_detected: "The suspected discrimination surfaced from applicants' experience and statistics and advanced as a class action in 2026."
 gap_missing: "A layer that verifies, before the adverse action of an automated rejection, that the decision was independently verified and authorized, and retains it as a record."
 gap_fix: "Before the adverse action, fix as a tamper-evident record which decision was used, on what grounds and reliability conditions, and under what independent verification and authorization."
+industries: ["ai"]
+operations: ["approval"]
+controls:
+  - slug: "audit-trail"
+    item: "Record who verified each automated rejection, and how, before it is sent"
+impact: "Lead plaintiff rejected for 100+ openings (alleged)"
 ---
 
 ## 1. TL;DR

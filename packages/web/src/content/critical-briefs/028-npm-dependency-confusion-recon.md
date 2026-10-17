@@ -17,6 +17,13 @@ og_lead_en: "33 packages impersonating internal scopes exploited the build envir
 gap_detected: "セキュリティ事業者の調査により、検疫・通信遮断・レジストリからの削除という封じ込めは機能した。"
 gap_missing: "「このパッケージは、名乗っている社内発行元から実際に発行されたものか」を取り込みの前に確かめる層が無く、名前とメタデータの「社内らしさ」が来歴の代わりに使われた。"
 gap_fix: "ビルドが依存部品を取り込む前に「この成果物は、正規の発行元から発行された来歴を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers"]
+operations: ["delivery"]
+controls:
+  - slug: "ownership-check"
+    item: "取り込む前に、パッケージが名乗る社内の発行元から出たか確かめる"
+attack_method: "supply-chain"
+impact: "悪性パッケージ 33 以上を npm に公開"
 ---
 
 ## 1. TL;DR

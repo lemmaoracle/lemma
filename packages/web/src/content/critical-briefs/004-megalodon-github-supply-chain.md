@@ -17,6 +17,12 @@ og_lead_en: "5,561 repos poisoned in 6 hours via CI/CD credential theft — Mega
 gap_detected: "セキュリティ企業 3 社が独立に解析し、感染の起点と影響範囲（5,561 リポジトリ）を 5 日以内に特定できた。"
 gap_missing: "盗まれた正規の認証情報で投入されたため、コードを取り込む前に「本当に正規の開発者が出したものか」を確かめる層が無く、偽装コミットが正規扱いで通った。"
 gap_fix: "コードを取り込み・公開する前に「この変更は正規の開発者が正規の権限で出したものである」ことを Lemma で独立検証して、事前に防ぐ。"
+industries: ["developers"]
+controls:
+  - slug: "ownership-check"
+    item: "取り込む前に、コミットが本当に正規の開発者のものか確かめる"
+attack_method: "supply-chain"
+impact: "6 時間で 5,561 リポジトリに偽装コミット"
 ---
 
 ## 1. TL;DR

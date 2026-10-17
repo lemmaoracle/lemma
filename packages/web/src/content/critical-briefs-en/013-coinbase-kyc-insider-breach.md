@@ -17,6 +17,10 @@ og_lead_en: "Regulation-mandated raw PII storage became the breach surface via i
 gap_detected: "After recognizing the insider misconduct, the company moved on disclosure, setting a bounty, reviewing support operations, and reimbursing affected customers."
 gap_missing: "The raw personal data collected and stored for regulatory compliance was always within reach of insiders holding legitimate business access, so once they were bribed they could carry it straight out of the company."
 gap_fix: "When performing the identity verification regulators require, independently verify with Lemma that the user is verified without hoarding raw personal data, and prevent it up front."
+industries: ["finance"]
+operations: ["data-access"]
+attack_method: "privilege-abuse"
+impact: "KYC data of at least 69,461 customers exfiltrated"
 ---
 
 ## 1. TL;DR

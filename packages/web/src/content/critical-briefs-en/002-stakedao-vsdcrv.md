@@ -17,6 +17,15 @@ og_lead_en: "Deployer key rewrote LayerZero v2 trust config to mint tokens — S
 gap_detected: "Security firm Blockaid detected the attack in real time, within minutes, which led to rapid containment."
 gap_missing: "The configuration of which senders to trust was itself rewritten with the attacker's key, so there was no layer to confirm the origin before accepting the forged request."
 gap_fix: "Before minting assets, independently verify with Lemma that the message comes from a legitimate origin, and prevent it up front."
+industries: ["finance"]
+operations: ["account-admin"]
+controls:
+  - slug: "separate-approval"
+    item: "Changes to the trust configuration are confirmed by someone other than the key holder"
+  - slug: "ownership-check"
+    item: "Before accepting, confirm the message came from the legitimate contract"
+attack_method: "account-takeover"
+impact: "5.4 trillion vsdCRV minted from a forged message"
 ---
 
 ## 1. TL;DR
