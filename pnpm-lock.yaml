@@ -876,6 +876,9 @@ importers:
       '@lemmaoracle/spec':
         specifier: workspace:^
         version: link:../spec
+      poseidon-lite:
+        specifier: ^0.3.0
+        version: 0.3.0
       ramda:
         specifier: ^0.30.1
         version: 0.30.1
