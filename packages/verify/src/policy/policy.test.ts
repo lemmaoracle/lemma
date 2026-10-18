@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { decode } from "./policy.js";
+import { decode } from "./index.js";
 
 const fixture = JSON.parse(
   readFileSync(new URL("../../../../fixtures/policy-sharing/v1.json", import.meta.url), "utf8"),
@@ -32,7 +32,7 @@ describe("strict snapshot decode", () => {
     null,
     fixture.constants.field,
   ])("rejects noncanonical or out-of-field decimal %s on every axis and epoch", (bad) => {
-    expect(decode({ ...snapshot, epoch: bad }).ok).toBe(false);
+    expect(decode({ ...snapshot, epoch: bad })).toEqual({ ok: false, reason: "Invalid policy epoch" });
     for (const name of ["member", "grant"])
       expect(decode({ ...snapshot, [name]: { ...snapshot[name], root: bad } }).ok).toBe(false);
   });
@@ -44,18 +44,18 @@ describe("strict snapshot decode", () => {
         grant: { ...snapshot.grant, root: (BigInt(fixture.constants.field) - 1n).toString() },
       }).ok,
     ).toBe(true);
-    expect(decode({ ...snapshot, epoch: "0" }).ok).toBe(false);
+    expect(decode({ ...snapshot, epoch: "0" })).toEqual({ ok: false, reason: "Invalid policy epoch" });
   });
   it.each(["member", "grant", "epoch", "publishedAt", "version", "scheme", "scope"])(
     "rejects missing %s",
     (key) => {
       const partial = { ...snapshot };
       delete partial[key];
-      expect(decode(partial).ok).toBe(false);
+      expect(decode(partial)).toEqual({ ok: false, reason: "Invalid policy shape" });
     },
   );
   it.each([0, 2, "1", null])("rejects unsupported version %s", (version) => {
-    expect(decode({ ...snapshot, version }).ok).toBe(false);
+    expect(decode({ ...snapshot, version })).toEqual({ ok: false, reason: "Invalid policy version" });
   });
   it.each([
     "2026-02-30T00:00:00.000Z",
@@ -65,7 +65,7 @@ describe("strict snapshot decode", () => {
     "invalid",
     null,
   ])("rejects invalid/noncanonical timestamp %s", (publishedAt) => {
-    expect(decode({ ...snapshot, publishedAt }).ok).toBe(false);
+    expect(decode({ ...snapshot, publishedAt })).toEqual({ ok: false, reason: "Invalid policy publishedAt" });
   });
   it.each([-1, 1.5, 2 ** 20 + 1, "3", null])("rejects invalid counts %s", (bad) => {
     for (const axis of ["member", "grant"]) {
@@ -94,4 +94,18 @@ describe("strict snapshot decode", () => {
     ])
       expect(decode(input).ok).toBe(false);
   });
+});
+
+it.each([
+  [{ ...snapshot, extra: true }, "shape"],
+  [{ ...snapshot, scheme: "other" }, "scheme"],
+  [{ ...snapshot, scope: "" }, "scope"],
+  ...["member", "grant"].flatMap((name) => [
+    [{ ...snapshot, [name]: { ...snapshot[name], root: fixture.constants.field } }, "axis"],
+    [{ ...snapshot, [name]: { ...snapshot[name], revokedCount: snapshot[name].leafCount + 1 } }, "axis"],
+    [{ ...snapshot, [name]: { ...snapshot[name], extra: true } }, "axis"],
+    [{ ...snapshot, [name]: { root: "0", leafCount: 0 } }, "axis"],
+  ]),
+])("returns a stable reason for invalid input %j", (input, reason) => {
+  expect(decode(input)).toEqual({ ok: false, reason: `Invalid policy ${reason}` });
 });

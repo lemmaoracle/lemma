@@ -89,3 +89,17 @@ Implementation SHALL use a single versioned fixture consumed by TypeScript and c
 #### Scenario: Root replacement
 - **WHEN** an old proof is tested with a newly published root using the same circuit key
 - **THEN** cryptographic verification rejects the modified statement while a newly generated valid proof can verify
+
+### Requirement: Canonical snapshot wire contract
+
+The use-case layer `verify/policy` SHALL own and ship the snapshot wire contract in Policy and decode JSDoc, and SHALL expose decode only through `/policy`. A snapshot SHALL have exactly seven keys: version, scheme, scope, epoch, publishedAt, member, grant. Version SHALL be numeric 1, scheme SHALL be "member-grant-v1", and scope SHALL be a string with nonempty trimmed content. Epoch and axis roots SHALL be decimal strings matching `^(0|[1-9][0-9]*)$`, at most 77 digits and below the BN254 scalar field modulus 21888242871839275222246405745257275088548364400416034343698204186575808495617; epoch SHALL be at least 1. publishedAt SHALL be UTC millisecond RFC3339 (`YYYY-MM-DDTHH:MM:SS.sssZ`) and identical after a Date ISO round trip. Each axis SHALL have exactly root, leafCount, revokedCount; leafCount SHALL be an integer in 0..2^20 and revokedCount SHALL be an integer in 0..leafCount. Extra and missing keys SHALL be rejected.
+
+Decode SHALL accept parsed JSON and return a readonly structural Result with bigint epoch and roots on success. Invalid JSON values SHALL return `{ok:false, reason}` without throwing. Stable reasons SHALL be "Invalid policy shape", "Invalid policy version", "Invalid policy scheme", "Invalid policy scope", "Invalid policy epoch", "Invalid policy publishedAt", and "Invalid policy axis", in that priority order when multiple errors exist. Shape SHALL cover top-level object/keys; axis SHALL cover either axis's keys, root and counts. This contract SHALL remain independent of the core protocol spec and SHALL NOT establish issuer trust, freshness or authorization.
+
+#### Scenario: Canonical snapshot decoding
+- **WHEN** a caller imports decode from `/policy` and supplies a canonical snapshot
+- **THEN** decode returns ok:true with bigint epoch and roots
+
+#### Scenario: Malformed snapshot decoding
+- **WHEN** a parsed JSON snapshot violates a canonical rule
+- **THEN** decode returns ok:false with the first applicable stable reason without throwing

@@ -1,6 +1,6 @@
 ## Context
 
-The §2 `/policy` public surface has human approval and is implemented. Retrieval, production ABI and wire-contract decisions remain pending; npm publishing remains on hold. Keep the current branch.
+The §2 `/policy` public surface has human approval and is implemented. Retrieval and production ABI decisions remain pending; npm publishing remains on hold. Keep the current branch.
 
 Materials reviewed:
 
@@ -27,13 +27,13 @@ The recommendation is `Policy`. It consists of a scope, scheme, common epoch, me
 
 ### 2. Modules and names
 
-Approved public surface at `@lemmaoracle/verify/policy` (human approval received); `decode` remains internal, and `adapter.ts` must wait for ABI approval:
+Approved public surface at `@lemmaoracle/verify/policy` (human approval received); `decode` is public by human confirmation, and `adapter.ts` must wait for ABI approval:
 
 | Internal file (verify/src/policy/) | Responsibility | Public surface / deferred names |
 | --- | --- | --- |
 | leaves.ts | Fixed leaf vocabulary and Poseidon | member, grant, empty / Member, Grant |
 | merkle.ts | Immutable tree construction, positions and siblings, inclusion checks | tree, holds / Tree, Path |
-| policy.ts | Snapshot type and strict JSON decoding | Policy (decoder initially internal) |
+| policy.ts | Snapshot type and strict JSON decoding | Policy, decode |
 | adapter.ts | Pure conversion for the selected ABI | witness, signals (only after ABI approval) |
 | index.ts | Selective exports of the above | A single `/policy` subpath |
 
@@ -41,6 +41,7 @@ Do not re-export from the root index. Consumers can compose `policy → prove/gu
 
 Approved final public shapes (implemented via the `/policy` subpath only):
 
+- `decode(value: unknown): Result<Policy>` strictly reads parsed JSON using §3 and the shipped JSDoc contract; invalid values return stable reason classes.
 - `member(value: Member): bigint | null`. Member = Readonly<{ idCommitment: bigint; roleId: bigint }>.
 - `grant(value: Grant): bigint | null`. Grant order is roleId, templateId, dbTargetId, actionId, maxAmount, startDay, endDay. All are bigint.
 - `empty: bigint` = Poseidon1(0). Do not remove elements from the array after revocation.
@@ -50,13 +51,13 @@ Approved final public shapes (implemented via the `/policy` subpath only):
 
 `member` and `grant` reject invalid fields with `null` to avoid synchronous throw.
 
-`Result` is the structural `Readonly<{ok:true;value:T}> | Readonly<{ok:false;reason:string}>`. No generic `Result` type is exported; consumers discriminate the structural result using `ok`. There is no reason to freeze synchronous computation into the provisional async shape. Tree is `Readonly<{ root: bigint; path: (index: number) => Result<Path> }>`; these shapes match the implementation. `Policy` is the readonly decoded snapshot described in §3, with bigint epoch and axis roots; it does not establish a public wire contract.
+`Result` is the structural `Readonly<{ok:true;value:T}> | Readonly<{ok:false;reason:string}>`. No generic `Result` type is exported; consumers discriminate the structural result using `ok`. There is no reason to freeze synchronous computation into the provisional async shape. Tree is `Readonly<{ root: bigint; path: (index: number) => Result<Path> }>`; these shapes match the implementation. `Policy` is the readonly decoded snapshot described in §3, with bigint epoch and axis roots; its wire contract and stable decode reasons are published in source JSDoc and the policy-sharing spec delta.
 
 Keep terminology mapping inside the adapter: member ↔ DB subject ↔ ABI subjectRoot, grant ↔ DB permission ↔ ABI permRoot. Reuse the existing memberRoot vocabulary without claiming the same hash as the listing-binding-v2 tree scheme.
 
 ### 3. Retrieval and serialization contract
 
-This contract is owned by `verify/policy` in the use-case layer, not by the protocol spec.
+This contract is owned by `verify/policy` in the use-case layer, not by the protocol spec. Its canonical rules live in the shipped Policy/decode JSDoc and the policy-sharing spec delta so they remain available after this change is archived; this design is not the sole reference.
 
 The recommended initial endpoint is dashboard `GET /api/cyber/policy`. Use the same session scope and JSON envelope as templates.ts, with `content-type: application/json` and `cache-control: private, no-store`. A 200 response is `{ "policy": <snapshot> }`. Retrieve only the single latest **published** epoch in the session scope. Do not override it with a scope specified in the query/body.
 
@@ -153,7 +154,7 @@ Reasons for the decision:
 
 ### 8. The /policy contract is owned by the use-case layer
 
-Human decision: `/policy` belongs to the use-case layer and does not merge into the protocol spec. `verify/policy` owns the wire contract for snapshot serialization and strict decoding. No changes to `packages/spec` or `packages/api/spec` are required, and spec-sync does not apply. Whether the strict `decode` required by the verifier is included in the `/policy` public surface awaits human confirmation during verifier implementation.
+Human decision: `/policy` belongs to the use-case layer and does not merge into the protocol spec. `verify/policy` owns the wire contract for snapshot serialization and strict decoding. No changes to `packages/spec` or `packages/api/spec` are required, and spec-sync does not apply. Resolved by human confirmation: strict `decode` is included in the `/policy` public surface.
 
 ## Risks / Trade-offs
 
@@ -189,4 +190,4 @@ Decisions for human review (with recommendations):
 4. Request normalization, digest splitting, amount units, dates, the trusted source of idCommitment, and selection of grant limits. The adapter must not infer these.
 5. Maximum age, rollback retention, time from retrieval to execution, and suitability of per-epoch nullifiers. Initial recommendation: latest only, with no grace period for past epochs.
 6. Responsibility and authentication for path retention/redistribution for each published epoch. Initial recommendation: issuer snapshot retention at publication.
-7. Wire-contract placement is resolved by human decision: the use-case layer (`verify/policy`) owns it (§8). Only the public witness/signals shapes remain open here and await ABI approval and human confirmation; the §2 surface is approved.
+7. Wire-contract placement and public `decode` are resolved by human decision: the use-case layer (`verify/policy`) owns it (§8). Only the public witness/signals shapes remain open here and await ABI approval and human confirmation; the §2 surface is approved.

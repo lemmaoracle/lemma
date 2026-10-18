@@ -19,7 +19,7 @@
 - [x] 3.1 Add immutable member/grant/empty and fixed-depth tree/holds internally with co-located Vitest interoperability checks. Includes requested strict internal snapshot decoding; no public wire contract or exports are added, wire-contract definition remains pending under 3.4.
 - [x] 3.2 Retired by human decision: define the policy wire contract in the source-of-truth protocol spec and follow spec-sync. `@lemmaoracle/verify/policy` belongs to the use-case layer and need not merge into the protocol; no `packages/spec` synchronization is required. This task was withdrawn, not implemented.
 - [ ] 3.3 Adapt dashboard pure calculations/root bundle types only; retain append/revoke/publish and RETURNING-based success/competition logic there.
-- [ ] 3.4 Define the snapshot serialization wire contract in `verify/policy`, its owner. Not started; awaiting human confirmation during verifier implementation on whether the strict decode required by the verifier belongs on the `/policy` public surface. `witness`/`signals` adapters still await ABI approval.
+- [x] 3.4 Define the snapshot serialization wire contract in `verify/policy`, its owner, in shipped Policy/decode JSDoc and the spec delta. Human confirmation received: decode is public on `/policy`, with stable reason classes and boundary tests. `witness`/`signals` adapters still await ABI approval.
 
 ## 4. Retrieval and path delivery
 
@@ -36,6 +36,6 @@
 
 ## 6. Approved public subpath
 
-- [x] 6.1 Expose the human-approved §2 surface through `@lemmaoracle/verify/policy`: member/grant/tree/holds/empty and Member/Grant/Tree/Path/Policy. Keep root exports unchanged; decode/field/valid/Result remain internal and adapter creation awaits ABI approval.
+- [x] 6.1 Expose the human-approved §2 surface through `@lemmaoracle/verify/policy`: member/grant/tree/holds/empty and Member/Grant/Tree/Path/Policy. Keep root exports unchanged; decode is public under completed 3.4; field/valid/Result remain internal and adapter creation awaits ABI approval.
 - [x] 6.2 Synchronize final signatures and verify public exports, types, negative boundaries and existing tests.
-- [ ] 6.3 npm publish remains on hold; do not change the package version. Task 3.2 was retired by human decision; 3.4 remains not started and awaits human confirmation.
+- [ ] 6.3 npm publish remains on hold; do not change the package version. Task 3.2 was retired by human decision; 3.4 is complete following human confirmation of public decode.

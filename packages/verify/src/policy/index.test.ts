@@ -12,13 +12,13 @@ type Absent<T, K extends PropertyKey> = Extract<K, keyof T> extends never ? true
 import type { Policy as RootPolicy } from "../index.js";
 // @ts-expect-error No generic Result is public.
 import type { Result } from "./index.js";
-// @ts-expect-error The decoder remains internal.
-import type { decode } from "./index.js";
+// @ts-expect-error The decoder is available only from the policy subpath.
+import type { decode as RootDecode } from "../index.js";
 
 describe("policy public boundary", () => {
   it("exports exactly the approved runtime names", () => {
-    expect(Object.keys(policy).sort()).toEqual(["empty", "grant", "holds", "member", "tree"]);
-    expectTypeOf<Absent<typeof policy, "decode" | "field" | "valid" | "witness" | "signals" | "adapter">>().toEqualTypeOf<true>();
+    expect(Object.keys(policy).sort()).toEqual(["decode", "empty", "grant", "holds", "member", "tree"]);
+    expectTypeOf<Absent<typeof policy, "field" | "valid" | "witness" | "signals" | "adapter">>().toEqualTypeOf<true>();
   });
 
   it("exposes the approved function and readonly snapshot types", () => {
@@ -54,8 +54,8 @@ describe("policy public boundary", () => {
   });
 
   it("keeps policy names out of the root exports", () => {
-    expectTypeOf<Absent<typeof root, "member" | "grant" | "tree" | "holds" | "empty" | "Policy">>().toEqualTypeOf<true>();
-    for (const name of ["member", "grant", "tree", "holds", "empty", "Policy"]) {
+    expectTypeOf<Absent<typeof root, "member" | "grant" | "tree" | "holds" | "empty" | "decode" | "Policy">>().toEqualTypeOf<true>();
+    for (const name of ["member", "grant", "tree", "holds", "empty", "decode", "Policy"]) {
       expect(root).not.toHaveProperty(name);
     }
   });
