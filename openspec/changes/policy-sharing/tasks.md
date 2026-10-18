@@ -17,7 +17,7 @@
 ## 3. Shared pure calculations
 
 - [x] 3.1 Add immutable member/grant/empty and fixed-depth tree/holds internally with co-located Vitest interoperability checks. Includes requested strict internal snapshot decoding; no public wire contract or exports are added, so 3.2 remains pending.
-- [ ] 3.2 Define policy wire contract in the appropriate source-of-truth spec and strict internal decoding; follow spec-sync without editing packages/api/spec.
+- [ ] 3.2 Define policy wire contract in the appropriate source-of-truth spec and strict internal decoding; follow spec-sync without editing packages/api/spec. Not started: internal decoding exists, but source-of-truth wire-contract work remains untouched.
 - [ ] 3.3 Adapt dashboard pure calculations/root bundle types only; retain append/revoke/publish and RETURNING-based success/competition logic there.
 
 ## 4. Retrieval and path delivery
@@ -32,3 +32,9 @@
 - [ ] 5.2 Connect verifier-owned expectations and replay/freshness checks to existing guardrail; connect submitter witness to existing prove.
 - [ ] 5.3 Run real proof end-to-end tests, shared vector tests and existing generic API tests; verify no reverse imports.
 - [ ] 5.4 Review final export/package/spec diff with a human before adding public interfaces or publishing npm artifacts.
+
+## 6. Approved public subpath
+
+- [x] 6.1 Expose the human-approved §2 surface through `@lemmaoracle/verify/policy`: member/grant/tree/holds/empty and Member/Grant/Tree/Path/Policy. Keep root exports unchanged; decode/field/valid/Result remain internal and adapter creation awaits ABI approval.
+- [x] 6.2 Synchronize final signatures and verify public exports, types, negative boundaries and existing tests.
+- [ ] 6.3 npm publish remains on hold; do not change the package version. Task 3.2 remains not started.

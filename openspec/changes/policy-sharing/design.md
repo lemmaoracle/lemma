@@ -1,6 +1,6 @@
 ## Context
 
-This is a design proposal awaiting approval, not a published contract. Keep the current branch.
+The §2 `/policy` public surface has human approval and is implemented. Retrieval, production ABI and wire-contract decisions remain pending; npm publishing remains on hold. Keep the current branch.
 
 Materials reviewed:
 
@@ -15,7 +15,7 @@ Refer to existing requirements for listing-binding-v2's registered `(orgDid, mem
 
 **Goals:** Make concrete the minimal shared boundary, serialization, pure conversion and unresolved semantic binding needed for consumption flows across organizations.
 
-**Non-Goals:** Implementation or npm publishing, specializing generic APIs for a scheme, sharing DB operations, an arbitrary axis-extension framework, signature infrastructure, a new distribution service, or standardizing vkey specialization. Only the policy leg of the consumption flow is covered; the card template ↔ circuitId/policy correspondence is outside this change's scope. Variant circuits embedding criteria in artifacts are excluded from the standard flow and are exceptions only for deployments with frozen criteria and registered artifacts.
+**Non-Goals:** Implementation beyond the approved §2 pure-calculation public surface, npm publishing, specializing generic APIs for a scheme, sharing DB operations, an arbitrary axis-extension framework, signature infrastructure, a new distribution service, or standardizing vkey specialization. Only the policy leg of the consumption flow is covered; the card template ↔ circuitId/policy correspondence is outside this change's scope. Variant circuits embedding criteria in artifacts are excluded from the standard flow and are exceptions only for deployments with frozen criteria and registered artifacts.
 
 ## Decisions
 
@@ -27,9 +27,9 @@ The recommendation is `Policy`. It consists of a scope, scheme, common epoch, me
 
 ### 2. Modules and names
 
-Recommended layout for the next stage:
+Approved public surface at `@lemmaoracle/verify/policy` (human approval received); `decode` remains internal, and `adapter.ts` must wait for ABI approval:
 
-| Internal file (verify/src/policy/) | Responsibility | Public candidates |
+| Internal file (verify/src/policy/) | Responsibility | Public surface / deferred names |
 | --- | --- | --- |
 | leaves.ts | Fixed leaf vocabulary and Poseidon | member, grant, empty / Member, Grant |
 | merkle.ts | Immutable tree construction, positions and siblings, inclusion checks | tree, holds / Tree, Path |
@@ -39,16 +39,18 @@ Recommended layout for the next stage:
 
 Do not re-export from the root index. Consumers can compose `policy → prove/guardrail`; generic APIs must not reference policy. Retrieval uses ordinary fetch at the application boundary, with no need to expose a new fetch helper. Share only tree construction, leaves and root-bundle types; keep registry append/revoke/publish, snapshot DB reads, authentication, revision comparisons and RETURNING-based decisions in the dashboard. Use Readonly / ReadonlyArray and discriminated unions for results, without classes, mutable objects or synchronous throw.
 
-Candidate public shapes (not approval to add code):
+Approved final public shapes (implemented via the `/policy` subpath only):
 
-- `member(value: Member): bigint`. Member = Readonly<{ idCommitment: bigint; roleId: bigint }>.
-- `grant(value: Grant): bigint`. Grant order is roleId, templateId, dbTargetId, actionId, maxAmount, startDay, endDay. All are bigint.
+- `member(value: Member): bigint | null`. Member = Readonly<{ idCommitment: bigint; roleId: bigint }>.
+- `grant(value: Grant): bigint | null`. Grant order is roleId, templateId, dbTargetId, actionId, maxAmount, startDay, endDay. All are bigint.
 - `empty: bigint` = Poseidon1(0). Do not remove elements from the array after revocation.
 - `tree(leaves: ReadonlyArray<bigint>): Result<Tree>`. The scheme has fixed depth=20, so do not initially expose an arbitrary depth argument. Tree is an immutable value with a root and `path(index): Result<Path>`. Reject paths for unallocated positions for submitters.
 - `holds(leaf: bigint, path: Path, root: bigint): boolean`. Invalid fields, length≠20 and non-bit directions also return false. This is only an inclusion check, not authorization.
 - Path = Readonly<{ siblings: ReadonlyArray<bigint>; directions: ReadonlyArray<0 | 1> }>. Order is from leaf to root; 0 means the current node is on the left, 1 on the right. Position = Σ directions[i]·2^i. Siblings change with each epoch.
 
-`Result` is the illustrative `Readonly<{ok:true;value:T}> | Readonly<{ok:false;reason:string}>`. No new generic Result export is proposed. There is no reason to freeze synchronous computation into the provisional async shape. Review implementation compatibility before exposing it.
+`member` and `grant` reject invalid fields with `null` to avoid synchronous throw.
+
+`Result` is the structural `Readonly<{ok:true;value:T}> | Readonly<{ok:false;reason:string}>`. No generic `Result` type is exported; consumers discriminate the structural result using `ok`. There is no reason to freeze synchronous computation into the provisional async shape. Tree is `Readonly<{ root: bigint; path: (index: number) => Result<Path> }>`; these shapes match the implementation. `Policy` is the readonly decoded snapshot described in §3, with bigint epoch and axis roots; it does not establish a public wire contract.
 
 Keep terminology mapping inside the adapter: member ↔ DB subject ↔ ABI subjectRoot, grant ↔ DB permission ↔ ABI permRoot. Reuse the existing memberRoot vocabulary without claiming the same hash as the listing-binding-v2 tree scheme.
 
@@ -163,7 +165,7 @@ Reasons for the decision:
 
 ## Migration Plan
 
-Implementation order is in tasks.md. First obtain human approval of the public surface, retrieval authorization and production circuit semantics. Then fix shared vectors and implement pure calculations, JSON reads, ABI conversion and cross-organization integration in that order. Root-only changes can use the same circuit/setup/vkey. Changes to circuit constraints require preparation as a separate artifact/circuitId.
+Implementation order is in tasks.md. Human approval of the §2 public surface is complete. Obtain approval of retrieval authorization and production circuit semantics before those stages. Then fix shared vectors and implement pure calculations, JSON reads, ABI conversion and cross-organization integration in that order. Root-only changes can use the same circuit/setup/vkey. Changes to circuit constraints require preparation as a separate artifact/circuitId.
 
 Retain existing HTML/DB mutations and introduce public API additions in parallel. On failure, disable the new retrieval/scheme path and reject; do not fall back to submitter-specified roots. Removing published names is a breaking change, so do not export before review. Define and generate types/endpoints whose source of truth is packages/spec using spec-sync; do not hand-edit packages/api/spec. If internal library types are separated from generated wire types, keep only bigint⇔string boundary conversion and do not duplicate wire definitions.
 
@@ -175,10 +177,10 @@ Use co-located Vitest tests for leaf order, path directions, strict decoding and
 
 Decisions for human review (with recommendations):
 
-1. Approve Policy as a snapshot and `/policy` with fixed member/grant axes? Recommendation: approve, without adding generic root exports.
+1. Approved: Policy as a snapshot and `/policy` with fixed member/grant axes, without root exports.
 2. Issuer-scope read authorization for external verifiers. Choose public reads or machine authentication. A session-only version does not complete cross-organization delivery.
 3. Production circuit including templateId/amount semantic binding and path bit constraints. Recommendation: modify the circuit and use a separate artifact. Do not use a debug name as a long-term public name.
 4. Request normalization, digest splitting, amount units, dates, the trusted source of idCommitment, and selection of grant limits. The adapter must not infer these.
 5. Maximum age, rollback retention, time from retrieval to execution, and suitability of per-epoch nullifiers. Initial recommendation: latest only, with no grace period for past epochs.
 6. Responsibility and authentication for path retention/redistribution for each published epoch. Initial recommendation: issuer snapshot retention at publication.
-7. Public witness/signals shapes and wire-contract placement after the above decisions. All public additions await human confirmation.
+7. Public witness/signals shapes and wire-contract placement after the above decisions. The §2 surface is approved; witness/signals additions still await human confirmation.
