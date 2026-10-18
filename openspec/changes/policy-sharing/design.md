@@ -15,7 +15,7 @@ Refer to existing requirements for listing-binding-v2's registered `(orgDid, mem
 
 **Goals:** Make concrete the minimal shared boundary, serialization, pure conversion and unresolved semantic binding needed for consumption flows across organizations.
 
-**Non-Goals:** Implementation beyond the approved §2 pure-calculation public surface, npm publishing, specializing generic APIs for a scheme, sharing DB operations, an arbitrary axis-extension framework, signature infrastructure, a new distribution service, or standardizing vkey specialization. Only the policy leg of the consumption flow is covered; the card template ↔ circuitId/policy correspondence is outside this change's scope. Variant circuits embedding criteria in artifacts are excluded from the standard flow and are exceptions only for deployments with frozen criteria and registered artifacts.
+**Non-Goals:** Implementation beyond the approved §2 pure-calculation public surface, npm publishing, specializing generic APIs for a scheme, sharing DB operations, an arbitrary axis-extension framework, signature infrastructure, a new distribution service, standardizing vkey specialization, synchronization or merging into the protocol spec (`packages/spec`), or changes to `packages/api/spec`. Only the policy leg of the consumption flow is covered; the card template ↔ circuitId/policy correspondence is outside this change's scope. Variant circuits embedding criteria in artifacts are excluded from the standard flow and are exceptions only for deployments with frozen criteria and registered artifacts.
 
 ## Decisions
 
@@ -55,6 +55,8 @@ Approved final public shapes (implemented via the `/policy` subpath only):
 Keep terminology mapping inside the adapter: member ↔ DB subject ↔ ABI subjectRoot, grant ↔ DB permission ↔ ABI permRoot. Reuse the existing memberRoot vocabulary without claiming the same hash as the listing-binding-v2 tree scheme.
 
 ### 3. Retrieval and serialization contract
+
+This contract is owned by `verify/policy` in the use-case layer, not by the protocol spec.
 
 The recommended initial endpoint is dashboard `GET /api/cyber/policy`. Use the same session scope and JSON envelope as templates.ts, with `content-type: application/json` and `cache-control: private, no-store`. A 200 response is `{ "policy": <snapshot> }`. Retrieve only the single latest **published** epoch in the session scope. Do not override it with a scope specified in the query/body.
 
@@ -149,6 +151,10 @@ Reasons for the decision:
 - **Transparency:** A locally derived vkey in the current flow has neither a CID nor a URL and is not named in `circuits`' `circuitId → artifact{wasm, zkey, vkey?}` mapping. Third-party verification breaks unless a derivation record including the base vkey CID, folded constants and signature is published. An implementation comment also notes that existing https vkeys are weak because their URLs are mutable; a URL alone does not guarantee immutability. This change does not introduce a derivation-record mechanism.
 - **Portability of (a):** Roots are data consisting of field elements, so the same retrieval/pin → expectations → public signals implementation works for both Groth16 and WHIR, with differences limited to artifact/ABI. This is a design commonality, not a claim that the existing resolver's WHIR support is complete or that both schemes have been measured end to end.
 
+### 8. The /policy contract is owned by the use-case layer
+
+Human decision: `/policy` belongs to the use-case layer and does not merge into the protocol spec. `verify/policy` owns the wire contract for snapshot serialization and strict decoding. No changes to `packages/spec` or `packages/api/spec` are required, and spec-sync does not apply. Whether the strict `decode` required by the verifier is included in the `/policy` public surface awaits human confirmation during verifier implementation.
+
 ## Risks / Trade-offs
 
 - [Overconfidence in the object name] → Limit Policy to a snapshot. Issuer credentials and execution rules remain external requirements.
@@ -167,7 +173,7 @@ Reasons for the decision:
 
 Implementation order is in tasks.md. Human approval of the §2 public surface is complete. Obtain approval of retrieval authorization and production circuit semantics before those stages. Then fix shared vectors and implement pure calculations, JSON reads, ABI conversion and cross-organization integration in that order. Root-only changes can use the same circuit/setup/vkey. Changes to circuit constraints require preparation as a separate artifact/circuitId.
 
-Retain existing HTML/DB mutations and introduce public API additions in parallel. On failure, disable the new retrieval/scheme path and reject; do not fall back to submitter-specified roots. Removing published names is a breaking change, so do not export before review. Define and generate types/endpoints whose source of truth is packages/spec using spec-sync; do not hand-edit packages/api/spec. If internal library types are separated from generated wire types, keep only bigint⇔string boundary conversion and do not duplicate wire definitions.
+Retain existing HTML/DB mutations and introduce public API additions in parallel. On failure, disable the new retrieval/scheme path and reject; do not fall back to submitter-specified roots. Removing published names is a breaking change, so do not export before review. Define the snapshot wire contract in `verify/policy` as its use-case-layer owner (§8); no changes to `packages/spec` or `packages/api/spec`, or spec-sync, are required. If internal library types are separated from generated wire types, keep only bigint⇔string boundary conversion and do not duplicate wire definitions.
 
 Place shared test vectors in a single JSON fixture in the repository in the next stage. Store field/scheme constants; both roots for empty trees, 1 leaf, odd leaf counts and after revocation; fixed positions/siblings; member/grant; publicSignals names and order; **test-only** witnesses including secrets; and expected success/failure. Include pinned Circom/compiler/circomlib/poseidon-lite/snarkjs versions, circuit/wasm/zkey/vkey digests and regeneration instructions. Do not require equality of random proof bytes themselves; check root equality between both implementations and verification of real proofs.
 
@@ -183,4 +189,4 @@ Decisions for human review (with recommendations):
 4. Request normalization, digest splitting, amount units, dates, the trusted source of idCommitment, and selection of grant limits. The adapter must not infer these.
 5. Maximum age, rollback retention, time from retrieval to execution, and suitability of per-epoch nullifiers. Initial recommendation: latest only, with no grace period for past epochs.
 6. Responsibility and authentication for path retention/redistribution for each published epoch. Initial recommendation: issuer snapshot retention at publication.
-7. Public witness/signals shapes and wire-contract placement after the above decisions. The §2 surface is approved; witness/signals additions still await human confirmation.
+7. Wire-contract placement is resolved by human decision: the use-case layer (`verify/policy`) owns it (§8). Only the public witness/signals shapes remain open here and await ABI approval and human confirmation; the §2 surface is approved.

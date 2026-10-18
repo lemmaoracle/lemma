@@ -22,4 +22,4 @@ None. Existing API requirements are neither changed nor duplicated.
 
 ## Impact
 
-The next stage covers a new verify subpath, a dashboard read boundary, and the necessary spec synchronization and shared vectors. Generic guardrail/prove/settlement/resolver semantics remain unchanged. DB mutations and concurrency control remain in the dashboard. The human-approved `@lemmaoracle/verify/policy` subpath has been added; npm publishing remains on hold.
+The next stage covers a new verify subpath, a dashboard read boundary, and shared vectors. No protocol spec synchronization is required: `verify/policy` owns the use-case-layer wire contract, with no changes to `packages/spec` or `packages/api/spec`. Generic guardrail/prove/settlement/resolver semantics remain unchanged. DB mutations and concurrency control remain in the dashboard. The human-approved `@lemmaoracle/verify/policy` subpath has been added; npm publishing remains on hold.
