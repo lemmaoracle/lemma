@@ -1,23 +1,25 @@
 ---
 import type { Locale } from "../i18n/translations";
-import { getTranslations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
-import Navigation from "../components/Navigation.astro";
-import Footer from "../components/Footer.astro";
+import LemmaOracle from "../components/LemmaOracle.astro";
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
-const t = getTranslations(locale);
 const base = locale === "ja" ? "/ja" : "";
 const ja = locale === "ja";
 const title = ja ? "証明を検証する" : "Verify a proof";
 const description = ja ? "docHash から公開記録と証明を取得し、検証します。" : "Look up a public record and verify its proof using a docHash.";
 ---
-<Layout locale={locale} title={title} description={description} metaType="page" pagePath="/cyber/verify-demo/">
-  <Navigation locale={locale} t={t.nav} base={base} />
-  <main data-live-verifier data-ja={String(ja)}>
-    <p class="eyebrow">LEMMA · LIVE VERIFICATION</p>
-    <h1>{title}</h1>
+<Layout locale={locale} title={title} description={description} metaType="page" pagePath="/verify/">
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;600&family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@200;300;400;500&family=Space+Mono&display=swap"
+  />
+  <div class="v9">
+    <header class="v9-hd"><a href={`${base}/`} class="v9-logo" aria-label="Lemma"><LemmaOracle /></a></header>
+  <main class="v9-main" data-live-verifier data-ja={String(ja)}><div class="v9-wrap">
+    <p class="v9-kicker">LEMMA · LIVE VERIFICATION</p>
+    <h1 class="v9-h2">{title}</h1>
     <p>{description} {ja ? "Cyber 以外の回路・スキーマの証明も照会できます。ファイル本文は入力しません。" : "Proofs from any circuit or schema can be looked up, including those outside Cyber. No file contents are entered."}</p>
     <form id="lookup">
       <label for="doc-hash">DOC HASH</label>
@@ -42,11 +44,15 @@ const description = ja ? "docHash から公開記録と証明を取得し、検�
       <p>{ja ? "手元で実行する API スニペットです。暗号検証はリモート API が行います。完全なオフライン検証には、その回路の検証鍵と対応する検証器が必要です。" : "Run this API snippet on your machine. Cryptographic verification runs on the remote API. Fully offline verification requires the circuit’s verification key and compatible verifier."}</p>
       <pre><code id="verify-code"></code></pre>
     </details>
-    <p><a href={`${base}/cyber/`}>{ja ? "Cyber Proof Cards もここで検証できます — docHash を貼り付けてください。Cyber に戻る →" : "Cyber Proof Cards also verify here — paste any docHash. Back to Cyber →"}</a></p>
-  </main>
-  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+    <p><a href={`${base}/cyber/`}>{ja ? "Cyber Proof Cards もここで検証できます" : "Cyber Proof Cards also verify here"}</a></p>
+  </div></main>
+    <footer class="v9-ft"><span>© FRAME00, Inc.</span><a href={`${base}/terms/`}>{ja ? "利用規約" : "Terms"}</a><a href={`${base}/privacy/`}>{ja ? "プライバシー" : "Privacy"}</a></footer>
+  </div>
 </Layout>
 <script>
+  // Preserve the original single-record view and all query parameters on legacy deep links.
+  const legacyUrl = new URL(window.location.href);
+  legacyUrl.searchParams.has("doc") && window.location.replace(`${legacyUrl.pathname.replace(/\/$/, "")}/counters/${legacyUrl.search}${legacyUrl.hash}`);
   const root = document.querySelector<HTMLElement>("[data-live-verifier]")!;
   const ja = root.dataset.ja === "true";
   const text = (jp: string, en: string) => ja ? jp : en;
@@ -120,7 +126,7 @@ console.log(await verification.json());`;
     const invalid = verification?.ok && verification.data.valid === false;
     const missing = docResponse.status === 404 || (docValid && doc.status === "not_found");
     const registered = docValid && ["registered", "anchored"].includes(string(doc.status));
-    const band = offline ? ["neutral", text("照合できませんでした / OFFLINE", "Unable to check / OFFLINE")] : invalid ? ["bad", text("証明の検証失敗", "Proof verification failed")] : missing ? ["bad", text("記録が見つかりません", "Record not found")] : registered ? ["good", text("改ざんなし", "Not tampered")] : ["neutral", text("オンチェーン記録待ち", "On-chain record pending")];
+    const band = offline ? ["neutral", text("照合できませんでした / OFFLINE", "Unable to check / OFFLINE")] : invalid ? ["bad", text("証明の検証失敗", "Proof verification failed")] : missing ? ["bad", text("記録が見つかりません", "Record not found")] : registered && verification?.ok && verification.data.valid === true ? ["good", text("証明の検証成功", "Proof verified")] : registered ? ["neutral", text("登録済み・証明は未確認", "Registered · proof unconfirmed")] : ["neutral", text("オンチェーン記録待ち", "On-chain record pending")];
     const proofState = verification?.ok && verification.data.valid === true ? text("✓ 検証成功", "✓ Verified") : invalid ? text("✗ 検証失敗", "✗ Failed") : text("? 未確認", "? Unconfirmed");
     result.innerHTML = `<section class="result-panel"><div class="band ${band[0]}"><h2>${esc(band[1])}</h2><p>${text("登録状態と証明の検証結果は、以下で個別に表示します。ローカル文書との一致は未確認です。", "Registration and proof verification are reported separately below. A local document has not been compared.")}</p></div>
       <dl>${row(text("発行者（登録上のラベル）", "Issuer (registry label)"), docValid ? mappedIssuer(doc) : "")}${row(text("記録日時", "Recorded at"), docValid ? jst(doc.registeredAt) : "")}${row(text("対象の日付", "Record date"), docValid ? string(doc.date) : "")}${row("DOC HASH", short(hash))}${row("circuitId", linked ? string(proof.circuitId) : "")}${row("verifyId", verification?.ok ? short(string(verification.data.verifyId)) : "")}</dl>
@@ -136,31 +142,133 @@ console.log(await verification.json());`;
   form.addEventListener("submit", event => { event.preventDefault(); void run(); });
   const initial = new URLSearchParams(window.location.search).get("doc");
   initial !== null && (input.value = initial);
-  initial !== null && void run();
+  // Incoming ?doc= links are handled by the legacy redirect above.
 </script>
 <style is:global>
-  [data-live-verifier] { max-width: 860px; margin: 0 auto; padding: 48px 22px 72px; color: var(--black); font-family: var(--font-body); line-height: 1.8; overflow-wrap: anywhere; }
-  [data-live-verifier] h1, [data-live-verifier] h2, [data-live-verifier] h3 { font-family: var(--font-display); line-height: 1.4; }
-  [data-live-verifier] h1 { font-size: clamp(28px, 5vw, 42px); }
-  [data-live-verifier] .eyebrow { color: var(--accent); font-size: 12px; letter-spacing: .12em; }
-  [data-live-verifier] form, [data-live-verifier] details, [data-live-verifier] .result-panel { margin: 24px 0; padding: 24px; border: 1px solid var(--accent); border-radius: 12px; }
-  [data-live-verifier] label { display: block; font-weight: 700; }
-  [data-live-verifier] .input-row { display: flex; flex-wrap: wrap; gap: 12px; }
-  [data-live-verifier] input { flex: 1; min-width: 180px; padding: 12px; border: 1px solid var(--accent); border-radius: 8px; font-family: monospace; }
-  [data-live-verifier] button { padding: 10px 18px; border: 1px solid var(--accent); border-radius: 8px; background: var(--lemma-cream-deep); color: var(--black); cursor: pointer; }
-  [data-live-verifier] button:disabled { opacity: .6; cursor: wait; }
-  [data-live-verifier] #hash-help { font-size: 13px; }
-  [data-live-verifier] .band, [data-live-verifier] aside { padding: 18px; background: var(--lemma-cream-deep); border-radius: 8px; }
-  [data-live-verifier] .band.good { background: #eaf6d5; border-left: 4px solid #55820b; }
-  [data-live-verifier] .band.bad { background: #fff0ef; border-left: 4px solid #a33030; }
-  [data-live-verifier] .band h2 { margin-top: 0; }
-  [data-live-verifier] dl > div { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--lemma-cream-deep); }
-  [data-live-verifier] dd { margin: 0; }
-  [data-live-verifier] .checks { list-style: none; padding: 0; }
-  [data-live-verifier] .checks li { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--lemma-cream-deep); }
-  [data-live-verifier] a { color: var(--accent); text-decoration: underline; }
-  [data-live-verifier] summary { cursor: pointer; font-weight: 700; }
-  [data-live-verifier] pre { background: var(--lemma-cream-deep); padding: 16px; overflow-x: auto; font-size: 12px; }
-  [data-live-verifier] :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-  @media (max-width: 540px) { [data-live-verifier] dl > div { grid-template-columns: 1fr; gap: 0; } }
+  .v9 {
+    --ok: #a8e010;
+    --ok-ink: #6f9c00;
+    --ok-light: #4e7a00;
+    --err: #c25438;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #fff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    --dline: #e7eae5;
+    --font-serif-jp: "Noto Serif JP", Georgia, serif;
+    --font-body: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-num: "Inter", "Noto Sans JP", sans-serif;
+    --font-mono: "Space Mono", monospace;
+    background: var(--lite);
+    color: var(--tx);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .v9 *,
+  .v9 *::before,
+  .v9 *::after {
+    box-sizing: border-box;
+  }
+
+  /* header：ロゴのみ */
+  .v9-hd {
+    padding: 18px 6vw;
+    border-bottom: 1px solid rgba(15, 20, 18, 0.08);
+  }
+  .v9-logo {
+    display: inline-flex;
+    align-items: center;
+    color: var(--tx);
+  }
+  .v9-logo svg {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+
+  .v9-main {
+    flex: 1;
+    padding: 52px 6vw 24px;
+  }
+  .v9-wrap {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+  .v9-kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .v9-h2 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(22px, 2.4vw, 28px);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    color: var(--tx);
+    margin: 0 0 10px;
+  }
+  .v9-lede {
+    font-size: 13.5px;
+    line-height: 2;
+    color: var(--tx-soft);
+    margin: 0 0 30px;
+  }
+
+  .v9-ft {
+    padding: 32px 6vw 44px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .v9-ft a {
+    color: var(--ok-light);
+    text-decoration: none;
+  }
+  .v9-ft a:hover {
+    text-decoration: underline;
+  }
+
+
+  .v9 [data-live-verifier] { line-height: 1.8; overflow-wrap: anywhere; }
+  .v9 h2, .v9 h3 { font-family: var(--font-serif-jp); line-height: 1.5; }
+  .v9 form, .v9 details { margin: 24px 0; padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+  .v9 label { display: block; font-family: var(--font-mono); font-size: 12px; }
+  .v9 .input-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .v9 input { flex: 1; min-width: 0; width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 5px; font-family: var(--font-mono); }
+  .v9 button { padding: 10px 18px; border: 1px solid var(--line); border-radius: 5px; background: var(--lite-2); color: var(--tx); cursor: pointer; }
+  .v9 button:disabled { opacity: .6; cursor: wait; }
+  .v9 #hash-help { font-size: 12px; color: var(--muted); }
+  .v9 .result-panel { margin: 24px 0; padding: 24px; border-radius: 14px; background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%); color: #ebefe6; }
+  .v9 .band { border-top: 2px solid #9ba296; padding-top: 18px; }
+  .v9 .band.good { border-color: var(--ok); }
+  .v9 .band.good h2 { color: var(--ok); }
+  .v9 .band.bad { border-color: var(--err); }
+  .v9 .band.bad h2 { color: #e0906f; }
+  .v9 .band h2 { margin-top: 0; }
+  .v9 dl > div { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid #4a544b; }
+  .v9 dt { color: #9ba296; font-size: 12px; }
+  .v9 dd { margin: 0; font-family: var(--font-mono); font-size: 12px; }
+  .v9 .checks { list-style: none; padding: 0; }
+  .v9 .checks li { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 12px 0; border-bottom: 1px solid #4a544b; }
+  .v9 aside { border-top: 1px solid #4a544b; font-size: 13px; }
+  .v9 a { color: var(--tx-soft); }
+  .v9 .result-panel a { color: #d8ddd1; }
+  .v9 summary { cursor: pointer; font-weight: 500; }
+  .v9 pre { background: var(--lite-2); padding: 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 11px; }
+  .v9 :focus-visible { outline: 2px solid var(--muted); outline-offset: 4px; }
+  @media (max-width: 540px) { .v9 dl > div { grid-template-columns: 1fr; gap: 0; } }
 </style>
