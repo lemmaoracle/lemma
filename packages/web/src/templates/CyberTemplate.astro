@@ -128,17 +128,21 @@ console.log(await verify.json());`;
           <a class="cy-btn cy-primary" href={DISCOVERY_CALL_URL[locale]} target="_blank" rel="noopener">{C.call}</a>
           <a class="cy-btn cy-ghost" href={L("/verify/")}>{C.live}</a>
         </div>
-        <article class="cy-plate" aria-labelledby="cy-card-title">
-          <div class="cy-card-top"><span class="cy-wordmark">LEMMA / CYBER</span><span class="cy-foil"><i aria-hidden="true"></i>{C.example}</span></div>
-          <h2 id="cy-card-title">{C.cardTitle}</h2>
-          <p class="cy-card-note">{C.cardNote}</p>
-          <dl class="cy-layers">
-            {C.layers.map((layer, index) => <div>
-              <dt><span class="cy-index">0{index + 1}</span>{layer.title}</dt>
-              <dd><div class:list={["cy-slot", { "cy-slot-filled": !layer.empty }]}>{layer.value}</div></dd>
-            </div>)}
-          </dl>
-        </article>
+        <div class="cy-plate-stage">
+          <div class="cy-plate-reveal">
+            <article class="cy-plate" aria-labelledby="cy-card-title">
+              <div class="cy-card-top"><span class="cy-wordmark">LEMMA / CYBER</span><span class="cy-foil"><i aria-hidden="true"></i>{C.example}</span></div>
+              <h2 id="cy-card-title">{C.cardTitle}</h2>
+              <p class="cy-card-note">{C.cardNote}</p>
+              <dl class="cy-layers">
+                {C.layers.map((layer, index) => <div>
+                  <dt><span class="cy-index">0{index + 1}</span>{layer.title}</dt>
+                  <dd><div class:list={["cy-slot", { "cy-slot-filled": !layer.empty }]}>{layer.value}</div></dd>
+                </div>)}
+              </dl>
+            </article>
+          </div>
+        </div>
       </section>
       <section class="cy-section" aria-labelledby="cy-key-title">
         <h2 id="cy-key-title">{text.keyTitle}</h2>
@@ -228,7 +232,20 @@ console.log(await verify.json());`;
   .cy-layers dd p { margin: 0 0 8px; color: #475569; }
   .cy-slot { min-width: 0; min-height: 48px; display: flex; align-items: center; padding: 12px; border: 1px dashed rgba(15, 23, 42, .3); border-radius: 9px; background: #f8fafc; color: #64748b; }
   .cy-slot-filled { border-style: solid; color: #020617; }
-  .cy-plate { max-width: 560px; margin: 48px auto 0; text-align: left; }
+  .cy-plate-stage { position: relative; max-width: 576px; margin: 48px auto 0; isolation: isolate; }
+  .cy-plate-stage::before {
+    content: ""; position: absolute; z-index: -1; pointer-events: none;
+    inset: 58% 20% 20%; border-radius: 50%;
+    background: rgba(244, 247, 239, .05); filter: blur(56px);
+  }
+  /* Inset preserves the rounded top and stacked side edges inside the mask. */
+  .cy-plate-reveal {
+    padding: 6px 8px 18px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 44%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 44%, transparent 100%);
+  }
+  /* Extra metal below the content moves the fade past the first two layers. */
+  .cy-plate { max-width: 560px; margin: 0 auto; text-align: left; }
   .cy-section { margin-top: 120px; }
   .cy-key-diagram { margin: 40px 0 0; }
   .cy-key-flow { display: flex; align-items: center; justify-content: center; gap: 32px; }
@@ -281,7 +298,11 @@ console.log(await verify.json());`;
   @media (max-width: 600px) {
     .cy-container { padding-inline: 20px; }
     .cy-hero { padding-top: 56px; }
-    .cy-plate { padding: 22px; }
+    .cy-plate { padding: 22px 22px 180px; }
+    .cy-plate-reveal {
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 100%);
+    }
     .cy-section { margin-top: 88px; }
     .cy-dot-grid { width: 364px; }
     .cy-dot-grid th:first-child { width: 128px; }
