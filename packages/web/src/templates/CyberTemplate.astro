@@ -1,25 +1,5 @@
 ---
-/**
- * Cyber — `/cyber/`（EN）と `/ja/cyber/`（JA）。
- *
- * 公開ブランド面（Hermes 方向: クリーム地 + ブラウン、ライムは最小のアクセント）。
- * ローカルのページコピーのみで完結する。共通ナビ・フッター・翻訳ファイル・
- * 生成インターフェースは変更しない（スコープロック）。
- *
- * 事実の扱い（この面の規律）:
- *   - 効果の絶対保証・ローンチ予定・検証不能な統計は書かない。
- *   - 守備範囲を明確に分ける。ToolGuard は pre_tool_call で tool_call の
- *     実行前。Cyber Proof Cards は計算・ワークフロー操作の実行直前で、API
- *     Gateway / middleware / onBeforeVerify に組み込む。両者は証明基盤を
- *     共有するが守る対象が別。Proof Cards が pre_tool_call で動くとは書かない。
- *   - 非組み込み経路は既存の計算を止めない。遮断・執行は実行前の関所が要る。
- *   - 例・デモは「例」と明示する。未実装の Cyber 専用コンソールがあるかの
- *     ようには書かない。検証リンクはカード別サンプル面 /cyber/verify/
- *     （?card=transfer|decrypt|api）に向け、「例」であることを明示する。
- *     ライブ検証・実データを装う表示は置かない。
- *   - 数値はステップ番号のみ。
- *   - 製品能力が未確定な箇所は「組み込み提案／例」として書き、TODO(判断) を残す。
- */
+/** Cyber public page. Card faces are examples; attack results are demo observations. */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
@@ -33,260 +13,143 @@ export interface CyberTemplateProps {
   t: Translations;
   base: string;
 }
-
 const { locale, t, base } = Astro.props as CyberTemplateProps;
 const isJa = locale === "ja";
 const L = (path: string) => localePath(base, path);
-
 const discoveryHref = DISCOVERY_CALL_URL[locale];
-
 const C = isJa
   ? {
-      title: "Cyber — 敵性から業務と信頼を守る｜Lemma",
+      title: "Cyber — 認可ではなく、暗号的に証明させる｜Lemma",
       description:
-        "Lemma の Cyber は、敵性の指示や不正なワークフロー変更を実行前の地点で確かめ、組み込まれた関所で止めます。守備範囲・組み込み方・「例」であることの区別を正直に示します。",
-      hero: {
-        eyebrow: "Cyber",
-        h1Head: "敵性から業務と信頼を守る",
-        h1Accent: "確かめ＋止める",
-        lede: "敵性の指示、正規の通知を装った差し替え、不正なワークフロー変更は、AI を介した業務の途中から入り込みます。Lemma は、実行前の地点で「確かめる」ことと、組み込まれた関所で「止める」ことを分けて考えます。",
-      },
-      cta: {
-        primary: "Discovery Call を予約 →",
-      },
-      verify: {
-        navLabel: "サンプルカード",
-        cardLinks: [
-          { key: "transfer", label: "サンプル: 転送カード →" },
-          { key: "decrypt", label: "サンプル: 復号カード →" },
-          { key: "api", label: "サンプル: API カード →" },
-        ],
-      },
-      scope: {
-        eyebrow: "守備範囲",
-        h2Head: "2つのガードは、",
-        h2Accent: "別の対象を守る。",
-        lede: "ToolGuard と Cyber Proof Cards は証明基盤を共有しますが、守る対象は別です。重なりません。",
-        pointLabel: "監視地点",
-        integrationLabel: "組み込み地点",
-        subjectLabel: "対象",
-        guards: [
-          {
-            tag: "ToolGuard",
-            point: "pre_tool_call（AI エージェントの tool_call が実行される前）",
-            integration: "エージェント実行環境（pre_tool_call フック）",
-            subject: "AI エージェントのツール呼び出し",
-          },
-          {
-            tag: "Cyber Proof Cards",
-            point: "計算・ワークフロー操作の実行直前",
-            integration: "API Gateway · middleware · onBeforeVerify",
-            subject: "計算・ワークフロー操作",
-          },
-        ],
-        note: "Cyber Proof Cards は pre_tool_call では動きません。エージェントのツールと、計算の操作は、別の対象です。",
-        exampleLabel: "例（防御）",
-        exampleText:
-          "承認済みのはずのワークフロー手順が、正規の通知を装った指示や、信頼できる差出人を騙る虚偽の謝罪によって差し替えられる、という形の侵入を想定します。",
-      },
-      integration: {
-        eyebrow: "組み込み方",
-        h2Head: "非組み込みなら、既存フローは変えない。",
-        h2Accent: "止めるには、実行前の関所に組み込む。",
-        lede: "確かめるだけでよいか、止める必要があるかで、既存システムに加える変更の範囲が変わります。",
-        exampleBadge: "例",
-        embeddedBadge: "例 / 組み込み提案",
-        nonEmbedded: {
-          title: "非組み込み（non-embedded）",
-          desc: "既存のフローを変えずに、S1 のポリシー／証明カードのテンプレートを作り、検証ビューを表示・共有できます。",
-          note: "この経路は、既存の計算を止めません。",
-        },
-        embedded: {
-          title: "組み込み（embedded）",
-          desc: "遮断・執行には、実行前の組み込み地点に置く関所が必要です。",
-          note: "組み込み地点: API Gateway · middleware · onBeforeVerify",
-        },
-        disclaimer:
-          "本節の内容は組み込み方の例であり、製品としての提供状況を保証するものではありません。",
-      },
-      flow: {
-        eyebrow: "流れ",
-        h2Head: "順番に、",
-        h2Accent: "4つのステップ。",
-        lede: "S1 テンプレートの作成から、ポリシー設定、判定の確認、組み込みの相談までを順に進めます。",
-        steps: [
-          {
-            no: "01",
-            title: "S1 テンプレートを作成",
-            desc: "確認したい操作について、S1 のポリシー／証明カードのテンプレートを定義します。",
-          },
-          {
-            no: "02",
-            title: "管理者がポリシー／設定を決める",
-            desc: "何を許可し、何に印を付けるかを、管理者がポリシーと設定として決めます。",
-          },
-          {
-            no: "03",
-            title: "判定と理由を検証ビューで見る",
-            desc: "検証ビューに、その操作に対する判定と、その理由が表示されます。",
-          },
-          {
-            no: "04",
-            title: "組み込みは相談から",
-            desc: "関所の組み込みは、Discovery Call で対象と方法を設計します。",
-          },
-        ],
-        verifyNote:
-          "サンプルカード面は、転送・復号・API の例を1つずつ表示します。ここに載るハッシュは短いプレースホルダで、ライブ検証でも実データでもありません。",
-        cta: "Discovery Call を予約 →",
-      },
-      applications: {
-        eyebrow: "想定される攻撃",
-        h2Head: "守る対象は、",
-        h2Accent: "指示と操作。",
-        lede: "一般名詞で示します。攻撃手順の詳細や、特定のキャンペーン名は扱いません。",
-        items: [
-          "敵性の指示（hostile instructions）",
-          "偽装された通知・虚偽の謝罪",
-          "不正なワークフロー変更",
-        ],
-      },
-      close: {
-        eyebrow: "次の一手",
-        h2Head: "まず確かめ、",
-        h2Accent: "止めるなら組み込む。",
-        lede: "「確かめる」と「止める」を分けて設計します。まずは Discovery Call で、対象と組み込み方を確認します。",
-        ctaPrimary: "Discovery Call を予約 →",
-      },
-      footNote:
-        "本ページの例は組み込みの例示であり、製品としての提供状況を保証するものではありません。",
+        "認可が突破された攻撃シミュレーションで、証明ゲートはどう働いたか。5つの INSECURE / SECURE 比較と、Cyber の証明カード。",
+      headline: "認可ではなく、暗号的に証明させる",
+      sub: "権限を信じるだけでなく、操作の条件を満たす証明を実行前に求める。",
+      call: "Discovery Call を予約 →",
+      verify: "証明を試す →",
+      example: "例 / 証明カード",
+      issuer: "発行者スロット",
+      issuerValue: "任意の個人",
+      message: "メッセージ",
+      messageValue: "承認された条件を満たす操作",
+      layers: ["非公開の入力", "満たすべき条件", "条件を満たすことの証明"],
+      evidenceTitle: "認可が突破された。その先を、証明で止める。",
+      evidenceSub:
+        "攻撃シミュレーションの比較。証明を強制しない INSECURE と、証明ゲートを置いた SECURE。",
+      scenario: "攻撃シナリオ",
+      blocked: "ブロック",
+      outcomes: [
+        "SSN 全文が漏洩",
+        "機密アクセス・監査目的を達成",
+        "到達可能な経路で SSN を復号",
+        "不正転送が成功",
+        "承認フローの迂回を実行",
+      ],
+      names: [
+        "不正なデータ持ち出し",
+        "監査証跡の改ざん",
+        "ゼロデイ RCE",
+        "SIEM 回避",
+        "ソーシャルエンジニアリング",
+      ],
+      matrix:
+        "自律型 LLM 攻撃者 Opus 4.8：INSECURE は 5/5 で攻撃成功。SECURE は攻撃成功 0/5、5/5 をブロック。",
+      caveat:
+        "このデモの観測結果であり、あらゆる環境・攻撃への防御を保証するものではありません。",
+      difference: "権限を確認する。条件を証明させる。",
+      legacy: "これまで：認可チェック",
+      cyber: "Cyber：証明ゲート",
+      legacySteps: ["権限・認証情報", "認可チェック", "権限があれば通る"],
+      proofSteps: ["操作 + 証明", "暗号的な検証", "証明がなければ通らない"],
+      legacyNote: "権限が奪われれば、突破されうる。",
+      proofNote: "権限を奪っても、条件を満たす証明にはならない。",
+      diagramNote:
+        "概念図。証明ゲートは、対象の操作と条件に結び付いた証明を実行前に検証する設計です。",
+      cardTitle: "期待する条件を、一枚に。",
+      cardSub:
+        "発行者スロットとメッセージで期待値を定義し、Witness・Constraints・Proof の3層で示す。",
+      cardNote: "カードは表示例です。実際の証明検証は /verify/ で。",
+      samples: "カード別の表示例",
+      sampleNames: ["転送", "復号", "API"],
+      close: "あなたの業務で、何を証明させるか。",
     }
   : {
       title:
-        "Cyber — Protect operations and trust from hostile activity | Lemma",
+        "Cyber — Require cryptographic proof, beyond authorization | Lemma",
       description:
-        "Lemma's Cyber approach verifies hostile instructions and unauthorized workflow changes at the pre-execution point, and stops them at an embedded gate. Scope, integration, and the honest line between what is an example and what is available.",
-      hero: {
-        eyebrow: "Cyber",
-        h1Head: "Protect operations and trust from hostile activity",
-        h1Accent: "Verify + stop",
-        lede: "Hostile instructions, swaps disguised as legitimate notices, and unauthorized workflow changes enter partway through AI-assisted work. Lemma separates verifying at the pre-execution point from stopping at an embedded gate.",
-      },
-      cta: {
-        primary: "Book a Discovery Call →",
-      },
-      verify: {
-        navLabel: "Sample cards",
-        cardLinks: [
-          { key: "transfer", label: "Sample: Transfer card →" },
-          { key: "decrypt", label: "Sample: Decryption card →" },
-          { key: "api", label: "Sample: API card →" },
-        ],
-      },
-      scope: {
-        eyebrow: "Scope",
-        h2Head: "Two guards,",
-        h2Accent: "different subjects.",
-        lede: "ToolGuard and Cyber Proof Cards share proof infrastructure, but they guard different subjects. They do not overlap.",
-        pointLabel: "Guard point",
-        integrationLabel: "Integration point",
-        subjectLabel: "Subject",
-        guards: [
-          {
-            tag: "ToolGuard",
-            point: "pre_tool_call (before an AI agent's tool_call executes)",
-            integration: "Agent runtime (pre_tool_call hook)",
-            subject: "AI agent tool calls",
-          },
-          {
-            tag: "Cyber Proof Cards",
-            point: "The immediate pre-execution point of computing / workflow operations",
-            integration: "API Gateway · middleware · onBeforeVerify",
-            subject: "Computing and workflow operations",
-          },
-        ],
-        note: "Cyber Proof Cards do not operate at pre_tool_call. Agent tools and computing operations are different subjects.",
-        exampleLabel: "Example (defensive)",
-        exampleText:
-          "A workflow step that is expected to be approved gets swapped by an instruction disguised as a legitimate notice, or by a false apology that impersonates a trusted sender.",
-      },
-      integration: {
-        eyebrow: "Integration",
-        h2Head: "Non-embedded: the flow stays as it is.",
-        h2Accent: "To stop, embed a gate before execution.",
-        lede: "Whether you only need to verify, or you need to block, changes how much of the existing system you touch.",
-        exampleBadge: "Example",
-        embeddedBadge: "Example / integration proposal",
-        nonEmbedded: {
-          title: "Non-embedded",
-          desc: "Without changing the existing flow, you can make an S1 policy / proof-card template and show or share a verification view.",
-          note: "This route does not block existing computation.",
-        },
-        embedded: {
-          title: "Embedded",
-          desc: "Blocking and enforcement require the gate placed at the pre-execution integration point.",
-          note: "Integration point: API Gateway · middleware · onBeforeVerify",
-        },
-        disclaimer:
-          "This section describes examples of integration; it does not promise product availability.",
-      },
-      flow: {
-        eyebrow: "Flow",
-        h2Head: "In order:",
-        h2Accent: "four steps.",
-        lede: "From creating an S1 template to setting policy, reading the decision, and scoping the integration.",
-        steps: [
-          {
-            no: "01",
-            title: "Create an S1 template",
-            desc: "Define the S1 policy / proof-card template for the operation you want to check.",
-          },
-          {
-            no: "02",
-            title: "An admin sets policy / config",
-            desc: "The administrator decides what is allowed and what should be flagged, as policy and configuration.",
-          },
-          {
-            no: "03",
-            title: "See the decision and the reason",
-            desc: "A verification view shows the decision for that operation and the reason behind it.",
-          },
-          {
-            no: "04",
-            title: "Start integration with a conversation",
-            desc: "Embedding the gate is scoped in a Discovery Call.",
-          },
-        ],
-        verifyNote:
-          "The sample card faces show one example each — transfer, decryption, or API. The hashes are short placeholders; they are not a live check and not real data.",
-        cta: "Book a Discovery Call →",
-      },
-      applications: {
-        eyebrow: "Applications",
-        h2Head: "What it guards:",
-        h2Accent: "instructions and operations.",
-        lede: "General categories only — no exploit detail and no named campaign.",
-        items: [
-          "Hostile instructions",
-          "Impersonated notices and false apologies",
-          "Unauthorized workflow changes",
-        ],
-      },
-      close: {
-        eyebrow: "Next step",
-        h2Head: "Verify first.",
-        h2Accent: "Embed to stop.",
-        lede: "Verifying and stopping are designed separately. Start with a Discovery Call to confirm the subject and the integration.",
-        ctaPrimary: "Book a Discovery Call →",
-      },
-      footNote:
-        "The examples on this page illustrate integration; they do not promise product availability.",
+        "See how proof gates performed in five attack simulations: INSECURE versus SECURE, and the Cyber proof card behind the idea.",
+      headline: "Require cryptographic proof, beyond authorization.",
+      sub: "Before an operation runs, require proof that its conditions hold—not just trusted credentials.",
+      call: "Book a Discovery Call →",
+      verify: "Try verification →",
+      example: "Example / Proof card",
+      issuer: "Issuer slot",
+      issuerValue: "Any individual",
+      message: "Message",
+      messageValue: "An operation meeting approved conditions",
+      layers: [
+        "Private inputs",
+        "Conditions to satisfy",
+        "Proof that conditions hold",
+      ],
+      evidenceTitle:
+        "Authorization was breached. Proof stopped the next action.",
+      evidenceSub:
+        "Attack simulations comparing INSECURE without proof enforcement and SECURE with a proof gate.",
+      scenario: "Attack scenario",
+      blocked: "Blocked",
+      outcomes: [
+        "Full SSNs leaked",
+        "Sensitive access / audit objective achieved",
+        "SSNs decrypted via reachable workflow",
+        "Unauthorized transfer succeeded",
+        "Approval-flow bypass executed",
+      ],
+      names: [
+        "Unauthorized data exfiltration",
+        "Audit trail tampering",
+        "Zero-day RCE",
+        "SIEM evasion",
+        "Social engineering",
+      ],
+      matrix:
+        "Autonomous LLM attacker Opus 4.8: 5/5 attacks succeeded in INSECURE. In SECURE, 0/5 succeeded; 5/5 were blocked.",
+      caveat:
+        "Observed demo results, not a guarantee of protection across all environments or attacks.",
+      difference: "Check permission. Require proof of conditions.",
+      legacy: "Before: authorization check",
+      cyber: "Cyber: proof gate",
+      legacySteps: [
+        "Permissions / credentials",
+        "Authorization check",
+        "Permission allows passage",
+      ],
+      proofSteps: [
+        "Operation + proof",
+        "Cryptographic verification",
+        "No proof, no passage",
+      ],
+      legacyNote: "Stolen permissions can allow a breach.",
+      proofNote: "Stealing permission does not prove the conditions hold.",
+      diagramNote:
+        "Conceptual diagram: the gate verifies proof bound to the intended operation and conditions before execution.",
+      cardTitle: "Define expectations in one card.",
+      cardSub:
+        "An issuer slot and message define expectations, expressed through three layers: Witness, Constraints, and Proof.",
+      cardNote:
+        "The cards are display examples. Check actual proofs at /verify/.",
+      samples: "Example card faces",
+      sampleNames: ["Transfer", "Decryption", "API"],
+      close: "What should your operations have to prove?",
     };
-
-const verifyLinks = C.verify.cardLinks.map((link) => ({
-  label: link.label,
-  href: L(`/cyber/verify/?card=${link.key}`),
-}));
+const layerNames = ["Witness", "Constraints", "Proof"] as const;
+const sampleKeys = ["transfer", "decrypt", "api"] as const;
+const scenarioNames = [
+  "Unauthorized data exfiltration",
+  "Audit trail tampering",
+  "Zero-day RCE",
+  "SIEM evasion",
+  "Social engineering",
+] as const;
 ---
 
 <Layout
@@ -298,690 +161,575 @@ const verifyLinks = C.verify.cardLinks.map((link) => ({
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
-
-  <main class="cy-page">
-    <div class="cy-container">
-      <section class="cy-hero">
-        <p class="cy-eyebrow">{C.hero.eyebrow}</p>
-        <h1 class="cy-h1">
-          {C.hero.h1Head}
-          <span class="cy-h1-accent">{C.hero.h1Accent}</span>
-        </h1>
-        <p class="cy-lede">{C.hero.lede}</p>
+  <main class="topx cy-page">
+    <section class="herodark" aria-labelledby="cy-hero-h">
+      <div class="cy-container cy-hero">
+        <p class="cy-eyebrow">LEMMA / CYBER</p>
+        <div class="cy-card-stage">
+          <article class="cy-proof-card" aria-label={C.example}>
+            <header>
+              <span>CYBER / PROOF CARD</span><span>{C.example}</span>
+            </header>
+            <div class="cy-slot">
+              <span>{C.issuer}</span><strong>{C.issuerValue}</strong>
+            </div>
+            <div class="cy-message">
+              <span>{C.message}</span><p>{C.messageValue}</p>
+            </div>
+            <ol class="cy-layers">
+              {
+                layerNames.map((name, i) => (
+                  <li>
+                    <>
+                      <span class="cy-layer-no">0{i + 1}</span>
+                      <strong>{name}</strong>
+                      <span>{C.layers[i]}</span>
+                    </>
+                  </li>
+                ))
+              }
+            </ol>
+            <footer>
+              <span>WITNESS → CONSTRAINTS → PROOF</span><span>◇</span>
+            </footer>
+          </article>
+        </div>
+        <h1 id="cy-hero-h">{C.headline}</h1>
+        <p class="cy-sublead">{C.sub}</p>
         <div class="cy-actions">
           <a
-            class="cy-btn cy-btn--primary"
+            class="btn solid"
             href={discoveryHref}
             target="_blank"
-            rel="noopener">{C.cta.primary}</a
+            rel="noopener">{C.call}</a
+          ><a class="btn ghostd" href={L("/verify/")}>{C.verify}</a>
+        </div>
+      </div>
+    </section>
+    <section class="cy-container cy-section" aria-labelledby="cy-evidence-h">
+      <p class="cy-eyebrow">01 / ATTACK SIMULATIONS</p>
+      <h2 id="cy-evidence-h">{C.evidenceTitle}</h2><p class="cy-sublead">
+        {C.evidenceSub}
+      </p>
+      <div class="cy-table-wrap">
+        <table>
+          <caption>5 scenarios × INSECURE/SECURE</caption>
+          <thead
+            ><tr
+              ><th scope="col">{C.scenario}</th><th scope="col">INSECURE</th><th
+                scope="col">SECURE</th
+              ></tr
+            ></thead
           >
-        </div>
-
-        <nav class="cy-verify-nav" aria-label={C.verify.navLabel}>
-          <span class="cy-verify-nav-label">{C.verify.navLabel}</span>
-          <ul class="cy-verify-nav-list">
-            {
-              verifyLinks.map((link) => (
-                <li>
-                  <a class="cy-verify-nav-link" href={link.href}>
-                    {link.label}
-                  </a>
-                </li>
+          <tbody
+            >{
+              C.names.map((name, i) => (
+                <tr>
+                  <>
+                    <th scope="row">
+                      {name}
+                      {isJa && <small lang="en">{scenarioNames[i]}</small>}
+                    </th>
+                    <td>
+                      <span class="cy-failed">✗</span> {C.outcomes[i]}
+                    </td>
+                    <td class="cy-verified">✓ {C.blocked}</td>
+                  </>
+                </tr>
               ))
-            }
-          </ul>
-        </nav>
-      </section>
-
-      <!-- §1 守備範囲: ToolGuard と Cyber Proof Cards の対象を分ける -->
-      <section class="cy-section" aria-labelledby="cy-scope-h">
-        <p class="cy-eyebrow">{C.scope.eyebrow}</p>
-        <h2 id="cy-scope-h" class="cy-h2">
-          {C.scope.h2Head}{!isJa && " "}<span class="cy-h2-accent">{C.scope.h2Accent}</span>
-        </h2>
-        <p class="cy-sub">{C.scope.lede}</p>
-
-        <div class="cy-grid2">
-          {
-            C.scope.guards.map((g) => (
-              <article class="cy-card">
-                <h3 class="cy-card-tag">{g.tag}</h3>
-                <dl class="cy-dl">
-                  <div class="cy-dl-row">
-                    <dt>{C.scope.pointLabel}</dt>
-                    <dd>{g.point}</dd>
-                  </div>
-                  <div class="cy-dl-row">
-                    <dt>{C.scope.integrationLabel}</dt>
-                    <dd>{g.integration}</dd>
-                  </div>
-                  <div class="cy-dl-row">
-                    <dt>{C.scope.subjectLabel}</dt>
-                    <dd>{g.subject}</dd>
-                  </div>
-                </dl>
-              </article>
-            ))
-          }
-        </div>
-
-        <p class="cy-callout">{C.scope.note}</p>
-
-        <article class="cy-example">
-          <p class="cy-example-label">{C.scope.exampleLabel}</p>
-          <p class="cy-example-text">{C.scope.exampleText}</p>
-        </article>
-      </section>
-
-      <!-- §2 非組み込み / 組み込み -->
-      <section
-        class="cy-section cy-section--deep"
-        aria-labelledby="cy-integration-h"
+            }</tbody
+          >
+        </table>
+      </div>
+      <p class="cy-matrix">{C.matrix}</p>
+      <p class="cy-note">
+        <cite
+          >example-cyber-attack demo (INSECURE vs SECURE), README — Primary
+          end-to-end result: Opus 4.8</cite
+        ><br />{C.caveat}
+      </p>
+    </section>
+    <section class="cy-container cy-section" aria-labelledby="cy-difference-h">
+      <p class="cy-eyebrow">02 / AUTHORIZATION → PROOF</p><h2
+        id="cy-difference-h"
       >
-        <p class="cy-eyebrow">{C.integration.eyebrow}</p>
-        <h2 id="cy-integration-h" class="cy-h2">
-          {C.integration.h2Head}{!isJa && " "}<span class="cy-h2-accent"
-            >{C.integration.h2Accent}</span
-          >
-        </h2>
-        <p class="cy-sub">{C.integration.lede}</p>
-
-        {/*
-          TODO(判断): 非組み込みで「検証ビューを共有できる」範囲（共有単位・
-          閲覧権限）は製品仕様として未確定。実装時に確定する。
-        */}
-        <div class="cy-grid2">
-          <article class="cy-card">
-            <span class="cy-badge">{C.integration.exampleBadge}</span>
-            <h3 class="cy-card-tag">{C.integration.nonEmbedded.title}</h3>
-            <p class="cy-card-desc">{C.integration.nonEmbedded.desc}</p>
-            <p class="cy-card-note">{C.integration.nonEmbedded.note}</p>
-          </article>
-          <article class="cy-card">
-            <span class="cy-badge">{C.integration.embeddedBadge}</span>
-            <h3 class="cy-card-tag">{C.integration.embedded.title}</h3>
-            <p class="cy-card-desc">{C.integration.embedded.desc}</p>
-            <p class="cy-card-note">{C.integration.embedded.note}</p>
-          </article>
+        {C.difference}
+      </h2>
+      <div class="cy-diagrams">
+        {
+          [
+            { title: C.legacy, steps: C.legacySteps, note: C.legacyNote },
+            { title: C.cyber, steps: C.proofSteps, note: C.proofNote },
+          ].map((diagram) => (
+            <article class="cy-diagram">
+              <>
+                <h3>{diagram.title}</h3>
+                <ol>
+                  {diagram.steps.map((step) => (
+                    <li>{step}</li>
+                  ))}
+                </ol>
+                <p>{diagram.note}</p>
+              </>
+            </article>
+          ))
+        }
+      </div>
+      <p class="cy-note">{C.diagramNote}</p>
+    </section>
+    <section
+      class="cy-container cy-section cy-intro"
+      aria-labelledby="cy-card-h"
+    >
+      <div>
+        <p class="cy-eyebrow">03 / THE PROOF CARD</p><h2 id="cy-card-h">
+          {C.cardTitle}
+        </h2><p class="cy-sublead">{C.cardSub}</p><p class="cy-note">
+          {C.cardNote}
+        </p><a class="cy-text-link" href={L("/verify/")}>{C.verify}</a>
+      </div>
+      <div class="cy-mini-card">
+        <p class="cy-eyebrow">{C.example}</p><dl>
+          <div><dt>{C.issuer}</dt><dd>{C.issuerValue}</dd></div><div>
+            <dt>{C.message}</dt><dd>{C.messageValue}</dd>
+          </div>
+        </dl><div class="cy-mini-layers">
+          {layerNames.map((name) => <span>{name}</span>)}
         </div>
-
-        <p class="cy-note">{C.integration.disclaimer}</p>
-      </section>
-
-      <!-- §3 流れ（順番） -->
-      <section class="cy-section" aria-labelledby="cy-flow-h">
-        <p class="cy-eyebrow">{C.flow.eyebrow}</p>
-        <h2 id="cy-flow-h" class="cy-h2">
-          {C.flow.h2Head}{!isJa && " "}<span class="cy-h2-accent">{C.flow.h2Accent}</span>
-        </h2>
-        <p class="cy-sub">{C.flow.lede}</p>
-
-        {/*
-          TODO(判断): 検証ビューに出す項目（判定・理由の粒度）は未確定。
-          実装時に確定する。
-        */}
-        <ol class="cy-steps">
+        <nav aria-label={C.samples}>
           {
-            C.flow.steps.map((s) => (
-              <li class="cy-step">
-                <span class="cy-step-no">{s.no}</span>
-                <div class="cy-step-body">
-                  <h3 class="cy-step-title">{s.title}</h3>
-                  <p class="cy-step-desc">{s.desc}</p>
-                </div>
-              </li>
+            sampleKeys.map((key, i) => (
+              <a href={L(`/cyber/verify/?card=${key}`)}>
+                {isJa ? "例" : "Example"}: {C.sampleNames[i]} ↗
+              </a>
             ))
           }
-        </ol>
-
-        <p class="cy-verify-note">{C.flow.verifyNote}</p>
-
-        <nav class="cy-verify-nav" aria-label={C.verify.navLabel}>
-          <span class="cy-verify-nav-label">{C.verify.navLabel}</span>
-          <ul class="cy-verify-nav-list">
-            {
-              verifyLinks.map((link) => (
-                <li>
-                  <a class="cy-verify-nav-link" href={link.href}>
-                    {link.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
         </nav>
-
-        <div class="cy-actions">
-          <a
-            class="cy-btn cy-btn--primary"
-            href={discoveryHref}
-            target="_blank"
-            rel="noopener">{C.flow.cta}</a
-          >
-        </div>
-      </section>
-
-      <!-- §4 想定される攻撃（安全な一般名詞のみ） -->
-      <section class="cy-section" aria-labelledby="cy-apps-h">
-        <p class="cy-eyebrow">{C.applications.eyebrow}</p>
-        <h2 id="cy-apps-h" class="cy-h2">
-          {C.applications.h2Head}{!isJa && " "}<span class="cy-h2-accent"
-            >{C.applications.h2Accent}</span
-          >
-        </h2>
-        <p class="cy-sub">{C.applications.lede}</p>
-        <ul class="cy-tags">
-          {
-            C.applications.items.map((item) => (
-              <li class="cy-tag">{item}</li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <!-- 末尾 CTA -->
-      <section class="cy-close" aria-labelledby="cy-close-h">
-        <p class="cy-eyebrow">{C.close.eyebrow}</p>
-        <h2 id="cy-close-h" class="cy-h2">
-          {C.close.h2Head}{!isJa && " "}<span class="cy-h2-accent">{C.close.h2Accent}</span>
-        </h2>
-        <p class="cy-sub">{C.close.lede}</p>
-        <div class="cy-actions">
-          <a
-            class="cy-btn cy-btn--primary"
-            href={discoveryHref}
-            target="_blank"
-            rel="noopener">{C.close.ctaPrimary}</a
-          >
-        </div>
-
-        <nav class="cy-verify-nav" aria-label={C.verify.navLabel}>
-          <span class="cy-verify-nav-label">{C.verify.navLabel}</span>
-          <ul class="cy-verify-nav-list">
-            {
-              verifyLinks.map((link) => (
-                <li>
-                  <a class="cy-verify-nav-link" href={link.href}>
-                    {link.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </nav>
-        <p class="cy-footnote">{C.footNote}</p>
-      </section>
-    </div>
+      </div>
+    </section>
+    <section
+      class="cy-container cy-section cy-close"
+      aria-labelledby="cy-close-h"
+    >
+      <p class="cy-eyebrow">CYBER / NEXT</p><h2 id="cy-close-h">
+        {C.close}
+      </h2><div class="cy-actions">
+        <a class="btn solid" href={discoveryHref} target="_blank" rel="noopener"
+          >{C.call}</a
+        ><a class="cy-text-link" href={L("/verify/")}>{C.verify}</a>
+      </div>
+    </section>
   </main>
-
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
-
 <style>
-  .cy-page {
-    --cy-text-1: #171512;
-    --cy-text-2: #3a352f;
-    --cy-text-3: #6b6259;
-    --cy-line: #e5ddcd;
-    --cy-line-strong: #d8cdb8;
-    --cy-card: #ffffff;
-    --cy-lime: #a8e010;
-
-    background: var(--lemma-cream);
-    color: var(--cy-text-2);
-    font-family: var(--font-body);
-    font-weight: 400;
-    line-height: 1.85;
-    padding: 0 0 72px;
-  }
-
-  .cy-container {
-    max-width: 1040px;
-    margin: 0 auto;
-    padding: 0 40px;
-  }
-
-  /* ─── 共通パーツ ─── */
-  .cy-eyebrow {
-    font-family: var(--font-display);
-    font-size: 11px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--cy-text-3);
-    margin: 0 0 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .cy-eyebrow::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-    background: var(--cy-lime);
-    flex: none;
-  }
-
-  .cy-h2 {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: clamp(24px, 3.4vw, 36px);
-    line-height: 1.18;
-    letter-spacing: -0.02em;
-    color: var(--black);
-    margin: 0 0 16px;
-    max-width: 820px;
-  }
-  :root[lang="ja"] .cy-h2 {
-    line-height: 1.4;
-    letter-spacing: 0;
-  }
-  .cy-h2-accent {
-    color: var(--accent);
-  }
-
-  .cy-sub {
-    font-size: 15.5px;
-    line-height: 1.9;
-    color: var(--cy-text-2);
-    margin: 0 0 32px;
-    max-width: 720px;
-  }
-
-  /* ─── Hero ─── */
-  .cy-hero {
-    padding: 72px 0 8px;
-    max-width: 860px;
-  }
-  .cy-h1 {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: clamp(32px, 5.4vw, 56px);
-    line-height: 1.12;
-    letter-spacing: -0.03em;
-    color: var(--black);
-    margin: 0 0 24px;
-  }
-  :root[lang="ja"] .cy-h1 {
-    line-height: 1.3;
-    letter-spacing: 0;
-  }
-  .cy-h1-accent {
-    display: block;
-    width: fit-content;
-    color: var(--accent);
-    border-bottom: 3px solid var(--cy-lime);
-    padding-bottom: 6px;
-  }
-  .cy-lede {
-    font-size: 16px;
-    line-height: 1.95;
-    color: var(--cy-text-2);
-    margin: 0 0 30px;
-    max-width: 760px;
-  }
-
-  /* ─── ボタン ─── */
-  .cy-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    align-items: center;
-  }
-  .cy-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-family: var(--font-body);
-    font-size: 14.5px;
-    font-weight: 600;
-    line-height: 1.2;
-    padding: 14px 24px;
-    border-radius: 8px;
-    border: 1px solid transparent;
-    text-decoration: none;
-    transition:
-      background 0.18s ease,
-      border-color 0.18s ease,
-      color 0.18s ease;
-  }
-  .cy-btn--primary {
-    background: var(--accent);
-    color: #ffffff;
-    box-shadow: 0 6px 18px rgba(139, 69, 19, 0.22);
-  }
-  .cy-btn--primary:hover {
-    background: var(--accent-lt);
-  }
-  .cy-btn--ghost {
-    background: transparent;
-    color: var(--accent);
-    border-color: var(--cy-line-strong);
-  }
-  .cy-btn--ghost:hover {
-    border-color: var(--accent);
-    background: rgba(139, 69, 19, 0.05);
-  }
-  .cy-btn:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-  }
-
-  /* ─── セクション ─── */
-  .cy-section {
-    margin-top: 88px;
-  }
-  .cy-section--deep {
-    background: var(--lemma-cream-deep);
-    border: 1px solid var(--cy-line);
-    border-radius: 18px;
-    padding: 48px 44px 44px;
-  }
-
-  .cy-grid2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
-  .cy-card {
-    background: var(--cy-card);
-    border: 1px solid var(--cy-line);
-    border-radius: 14px;
-    padding: 26px 26px 24px;
-  }
-  .cy-card-tag {
-    font-family: var(--font-display);
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--black);
-    margin: 0 0 16px;
-    line-height: 1.35;
-  }
-  .cy-dl {
-    margin: 0;
-    display: grid;
-    gap: 14px;
-  }
-  .cy-dl-row {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 14px;
-    align-items: start;
-  }
-  .cy-dl-row dt {
-    font-family: var(--font-display);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--cy-text-3);
-    padding-top: 3px;
-  }
-  .cy-dl-row dd {
-    margin: 0;
-    font-size: 14.5px;
-    line-height: 1.75;
-    color: var(--cy-text-1);
-    overflow-wrap: break-word;
-  }
-
-  .cy-callout {
-    margin: 22px 0 0;
-    padding: 16px 20px;
-    background: var(--cy-card);
-    border: 1px solid var(--cy-line-strong);
-    border-left: 3px solid var(--cy-lime);
-    border-radius: 10px;
-    font-size: 14.5px;
-    line-height: 1.8;
-    color: var(--cy-text-1);
-  }
-
-  .cy-example {
-    margin-top: 18px;
-    padding: 20px 22px;
-    background: var(--lemma-brown-light);
-    border: 1px dashed var(--cy-line-strong);
-    border-radius: 12px;
-  }
-  .cy-example-label {
-    font-family: var(--font-display);
-    font-size: 10.5px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 8px;
-  }
-  .cy-example-text {
-    margin: 0;
-    font-size: 14.5px;
-    line-height: 1.85;
-    color: var(--cy-text-1);
-  }
-
-  .cy-badge {
-    display: inline-block;
-    font-family: var(--font-display);
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: var(--cy-card);
-    border: 1px solid var(--cy-line-strong);
-    border-radius: 999px;
-    padding: 4px 11px;
-    margin-bottom: 14px;
-  }
-  .cy-card-desc {
-    margin: 0 0 12px;
-    font-size: 14.5px;
-    line-height: 1.85;
-    color: var(--cy-text-1);
-  }
-  .cy-card-note {
-    margin: 0;
-    font-size: 13px;
+  .topx.cy-page {
+    --cy-bg: #12140e;
+    --cy-text: #f4f7ef;
+    --cy-muted: #b9c4ad;
+    --cy-line: rgba(255, 255, 255, 0.18);
+    --ok: #a8e010;
+    --serif: "Noto Serif JP", serif;
+    --grot: "Space Grotesk", sans-serif;
+    --mono: "Space Mono", monospace;
+    background: var(--cy-bg);
+    color: var(--cy-text);
+    font-family: var(--grot), "Noto Sans JP", sans-serif;
     line-height: 1.7;
-    color: var(--cy-text-3);
+    padding-bottom: 96px;
   }
-  .cy-note {
-    margin: 20px 0 0;
-    font-size: 13px;
-    line-height: 1.75;
-    color: var(--cy-text-3);
+  .cy-page *,
+  .cy-page *::before,
+  .cy-page *::after {
+    box-sizing: border-box;
   }
-
-  /* ─── 流れ ─── */
-  .cy-steps {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 14px;
+  .cy-container {
+    width: min(1160px, 100%);
+    margin-inline: auto;
+    padding-inline: clamp(20px, 4vw, 40px);
   }
-  .cy-step {
-    display: grid;
-    grid-template-columns: 44px 1fr;
-    gap: 18px;
-    align-items: start;
-    background: var(--cy-card);
-    border: 1px solid var(--cy-line);
-    border-radius: 14px;
-    padding: 22px 24px;
+  .herodark {
+    position: relative;
+    overflow: hidden;
+    background: var(--cy-bg);
   }
-  .cy-step-no {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: var(--lemma-cream-deep);
-    color: var(--accent);
-    font-family: var(--font-display);
-    font-size: 13px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
+  .herodark::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      rgba(255, 255, 255, 0.07) 1.2px,
+      transparent 1.2px
+    );
+    background-size: 34px 34px;
+    pointer-events: none;
   }
-  .cy-step-title {
-    font-family: var(--font-display);
-    font-size: 16.5px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--black);
-    margin: 4px 0 6px;
-    line-height: 1.4;
+  .cy-hero {
+    position: relative;
+    text-align: center;
+    padding-top: 54px;
+    padding-bottom: 76px;
   }
-  .cy-step-desc {
-    margin: 0;
-    font-size: 14.5px;
-    line-height: 1.8;
-    color: var(--cy-text-2);
-  }
-  .cy-verify-note {
-    margin: 20px 0 24px;
-    font-size: 13.5px;
-    line-height: 1.85;
-    color: var(--cy-text-3);
-    max-width: 720px;
-  }
-  .cy-verify-note a {
-    color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .cy-verify-note a:hover {
-    color: var(--accent-lt);
-  }
-  .cy-verify-note a:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 3px;
-  }
-
-  /* ─── カード別サンプル面への導線 ─── */
-  .cy-verify-nav {
-    margin: 18px 0 24px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 12px 18px;
-  }
-  .cy-verify-nav-label {
-    font-family: var(--font-display);
-    font-size: 10.5px;
+  .cy-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
     letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--cy-text-3);
+    color: var(--cy-muted);
+    margin: 0 0 20px;
   }
-  .cy-verify-nav-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .cy-card-stage {
+    padding: 28px 12px 40px;
+    perspective: 1400px;
+  }
+  .cy-proof-card {
+    position: relative;
+    text-align: left;
+    width: min(590px, 100%);
+    margin: auto;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 20px;
+    background:
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.02)
+      ),
+      var(--cy-bg);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45);
+    transform: rotateX(5deg) rotateZ(-3deg);
+  }
+  .cy-proof-card header,
+  .cy-proof-card footer {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px 18px;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    color: var(--cy-muted);
   }
-  .cy-verify-nav-link {
-    color: var(--accent);
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    overflow-wrap: anywhere;
-  }
-  .cy-verify-nav-link:hover {
-    color: var(--accent-lt);
-  }
-  .cy-verify-nav-link:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 3px;
-  }
-
-  /* ─── 想定される攻撃 ─── */
-  .cy-tags {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .cy-slot {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+    align-items: center;
+    margin-top: 30px;
   }
-  .cy-tag {
-    font-size: 14.5px;
+  .cy-slot > span,
+  .cy-message > span {
+    font-size: 11px;
+    color: var(--cy-muted);
+  }
+  .cy-slot strong {
+    border: 1px dashed var(--cy-line);
+    border-radius: 6px;
+    padding: 5px 18px;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .cy-message {
+    margin: 22px 0;
+  }
+  .cy-message p {
+    font-family: var(--serif);
+    font-size: clamp(19px, 3vw, 27px);
+    margin: 6px 0;
+  }
+  .cy-layers {
+    padding: 0;
+    margin: 0 0 24px;
+    list-style: none;
+  }
+  .cy-layers li {
+    display: grid;
+    grid-template-columns: 24px 115px 1fr;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid var(--cy-line);
+    padding: 14px 0;
+    font-size: 12px;
+  }
+  .cy-layers strong {
+    font-family: var(--grot);
+    font-weight: 500;
+    font-size: 16px;
+  }
+  .cy-layer-no {
+    font-family: var(--mono);
+    color: var(--cy-muted);
+    font-size: 10px;
+  }
+  .herodark h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(34px, 4.7vw, 58px);
+    line-height: 1.32;
+    color: #f4f7ef;
+    margin: 12px auto 20px;
+    text-wrap: balance;
+  }
+  .cy-sublead {
+    color: var(--cy-muted);
+    font-size: 15.5px;
+    line-height: 1.9;
+    margin: 0 0 28px;
+  }
+  .cy-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+  }
+  .cy-hero .cy-actions {
+    justify-content: center;
+  }
+  .btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .topx .btn.solid {
+    background: #a8e010;
+    color: #1a1f16;
+  }
+  .topx .btn.solid:hover {
+    background: #b7ec2a;
+  }
+  .topx .herodark .btn.ghostd {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f4f7ef;
+  }
+  .topx .herodark .btn.ghostd:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+  a:focus-visible {
+    outline: 2px solid var(--cy-text);
+    outline-offset: 5px;
+  }
+  .cy-section {
+    padding-top: 80px;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(26px, 3.3vw, 40px);
     font-weight: 500;
     line-height: 1.5;
-    color: var(--cy-text-1);
-    background: var(--cy-card);
-    border: 1px solid var(--cy-line);
-    border-radius: 999px;
-    padding: 10px 18px;
-    overflow-wrap: anywhere;
+    margin: 0 0 22px;
+    text-wrap: balance;
   }
-
-  /* ─── 末尾 CTA ─── */
+  .cy-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--cy-line);
+    border-radius: 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+  }
+  caption {
+    text-align: left;
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  th,
+  td {
+    border-top: 1px solid var(--cy-line);
+    padding: 18px 20px;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--cy-muted);
+    letter-spacing: 0.06em;
+  }
+  tbody th {
+    font-weight: 500;
+    width: 36%;
+  }
+  th small {
+    display: block;
+    font-size: 10px;
+    color: var(--cy-muted);
+    font-weight: 400;
+    margin-top: 4px;
+  }
+  .cy-failed {
+    color: #f28b82;
+    font-weight: 700;
+  }
+  .cy-verified {
+    color: var(--ok);
+    white-space: nowrap;
+  }
+  .cy-matrix {
+    font-size: 14px;
+    border-left: 2px solid var(--cy-line);
+    padding-left: 18px;
+    margin-top: 24px;
+  }
+  .cy-note {
+    font-size: 12px;
+    color: var(--cy-muted);
+    line-height: 1.9;
+    margin: 20px 0;
+  }
+  cite {
+    font-style: normal;
+  }
+  .cy-diagrams {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .cy-diagram {
+    border: 1px solid var(--cy-line);
+    border-radius: 12px;
+    padding: 28px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 0 0 24px;
+  }
+  .cy-diagram ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cy-diagram li {
+    position: relative;
+    padding: 16px 12px;
+    text-align: center;
+    border: 1px solid var(--cy-line);
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .cy-diagram li + li {
+    margin-top: 36px;
+  }
+  .cy-diagram li + li::before {
+    content: "↓";
+    position: absolute;
+    top: -33px;
+    left: 0;
+    right: 0;
+    color: var(--cy-muted);
+    font-family: var(--mono);
+  }
+  .cy-diagram p {
+    color: var(--cy-muted);
+    font-size: 13px;
+    margin: 24px 0 0;
+  }
+  .cy-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 48px;
+  }
+  .cy-mini-card {
+    border: 1px solid var(--cy-line);
+    border-radius: 14px;
+    padding: 28px;
+    background: rgba(255, 255, 255, 0.04);
+  }
+  dl {
+    margin: 0;
+  }
+  dl div + div {
+    margin-top: 18px;
+  }
+  dt {
+    color: var(--cy-muted);
+    font-size: 11px;
+  }
+  dd {
+    margin: 6px 0 0;
+    font-size: 16px;
+  }
+  .cy-mini-layers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 24px 0;
+  }
+  .cy-mini-layers span {
+    font-family: var(--mono);
+    font-size: 11px;
+    border: 1px solid var(--cy-line);
+    padding: 6px 10px;
+    border-radius: 4px;
+  }
+  .cy-mini-card nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12px;
+  }
+  .cy-mini-card a,
+  .cy-text-link {
+    color: var(--cy-text);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
   .cy-close {
-    margin-top: 88px;
-    background: var(--lemma-cream-deep);
-    border: 1px solid var(--cy-line);
-    border-radius: 18px;
-    padding: 48px 44px 40px;
+    margin-top: 80px;
+    border-top: 1px solid var(--cy-line);
   }
-  .cy-footnote {
-    margin: 26px 0 0;
-    font-size: 12.5px;
-    line-height: 1.7;
-    color: var(--cy-text-3);
-    max-width: 720px;
-  }
-
-  /* ─── レスポンシブ（375 / 390 / 430 を想定） ─── */
   @media (max-width: 720px) {
-    .cy-container {
-      padding: 0 22px;
+    .cy-diagrams,
+    .cy-intro {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .cy-section {
+      padding-top: 56px;
     }
     .cy-hero {
-      padding: 48px 0 4px;
+      padding-top: 36px;
+      padding-bottom: 40px;
     }
-    .cy-section,
+    .cy-proof-card {
+      padding: 20px;
+      transform: none;
+    }
+    .cy-proof-card header {
+      flex-wrap: wrap;
+    }
+    .cy-layers li {
+      grid-template-columns: 20px 1fr;
+    }
+    .cy-layers li > span:last-child {
+      grid-column: 2;
+    }
+    th,
+    td {
+      padding: 14px 12px;
+      font-size: 12px;
+    }
     .cy-close {
-      margin-top: 64px;
-    }
-    .cy-section--deep,
-    .cy-close {
-      padding: 32px 22px;
-      border-radius: 14px;
-    }
-    .cy-grid2 {
-      grid-template-columns: 1fr;
-    }
-    .cy-dl-row {
-      grid-template-columns: 1fr;
-      gap: 4px;
-    }
-    .cy-dl-row dt {
-      padding-top: 0;
-    }
-    .cy-step {
-      grid-template-columns: 32px 1fr;
-      gap: 14px;
-      padding: 18px;
+      margin-top: 56px;
     }
   }
-
   @media (max-width: 430px) {
-    .cy-h1 {
-      font-size: clamp(26px, 8vw, 34px);
+    .herodark h1 {
+      font-size: 29px;
     }
-    .cy-btn {
+    .cy-hero .btn {
       width: 100%;
     }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .cy-btn {
-      transition: none;
+    .cy-proof-card footer {
+      font-size: 8px;
     }
   }
 </style>
