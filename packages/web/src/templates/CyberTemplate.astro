@@ -66,16 +66,18 @@ const cardKeys = ["transfer", "decrypt", "api"] as const;
 const text = isJa ? {
   keyTitle: "権限の先に、条件の検証を。", key: "鍵", proof: "証明",
   keyCaption: "鍵を拾って、証明をつくる", existing: "既存フロー", secure: "実行前に条件検証",
-  attack: "攻撃成功", blocked: "阻止", scenario: "シナリオ",
-  legend: "例 / Opus 4.8。各行は1シナリオ、各列は結果。点灯 = 該当、暗点 = 非該当。",
+  attack: "攻撃成功", blocked: "阻止", scenario: "シナリオ", result: "結果",
+  scenarios: ["不正なデータ持ち出し", "監査証跡の改ざん", "ゼロデイ RCE", "SIEM 回避", "ソーシャルエンジニアリング"],
+  legend: "例 / Opus 4.8。5シナリオの結果を1行ずつ表示。",
   source: "公開検証の出典 / README ↗", specTitle: "実行前に、条件を検証。",
   spec: ["要求 → 実行前のゲート → システム。", "ゲートは要求から計算した条件を検証。", "証明がなければ、通さない。"],
   request: "要求", system: "システム", question: "あなたのシステムでも、本当に止まりますか？",
 } : {
   keyTitle: "Check conditions beyond permissions.", key: "Key", proof: "Proof",
   keyCaption: "Pick up the key, create the proof.", existing: "Existing flow", secure: "Conditions checked before execution",
-  attack: "Attack succeeded", blocked: "Blocked", scenario: "Scenario",
-  legend: "Example / Opus 4.8. Each row is one scenario; each column is an outcome. Lit = applies; dark = does not apply.",
+  attack: "Attack succeeded", blocked: "Blocked", scenario: "Scenario", result: "Result",
+  scenarios: ["Unauthorized data exfiltration", "Audit trail tampering", "Zero-day RCE", "SIEM evasion", "Social engineering"],
+  legend: "Example / Opus 4.8. One row per scenario, five rows in total.",
   source: "Published validation source / README ↗", specTitle: "Verify conditions before execution.",
   spec: ["Request → gate before execution → system.", "The gate checks conditions computed from the request.", "No proof, no pass."],
   request: "Request", system: "System", question: "Will it really stop on your own system?",
@@ -138,8 +140,8 @@ console.log(await verify.json());`;
         <h2 id={secure ? "cy-secure" : "cy-insecure"}>{secure ? text.secure : text.existing}</h2>
         <p class="cy-mode">{secure ? "SECURE" : "INSECURE"} / {isJa ? "攻撃シミュレーション例" : "Attack simulation example"}</p>
         <table class:list={["cy-dot-grid", { "cy-secure": secure }]}>
-          <thead><tr><th scope="col">{text.scenario}</th><th scope="col">{text.attack}</th><th scope="col">{text.blocked}</th></tr></thead>
-          <tbody>{[1, 2, 3, 4, 5].map((scenario) => <tr><th scope="row"><span class="cy-tick" aria-hidden="true"></span>{scenario.toString().padStart(2, "0")}</th>{[!secure, secure].map((active) => <td><span class:list={["cy-dot", { "cy-lit": active }]} aria-hidden="true"></span><span class="cy-sr-only">{active ? "1" : "0"}</span></td>)}</tr>)}</tbody>
+          <thead><tr><th scope="col">{text.scenario}</th><th scope="col">{text.result}</th></tr></thead>
+          <tbody>{text.scenarios.map((name) => <tr><th scope="row"><span class="cy-tick" aria-hidden="true"></span><span class="cy-rowname">{name}</span></th><td><span class:list={["cy-dot", "cy-lit"]} aria-hidden="true"></span><code>{secure ? "blocked" : "attack_succeeded"}</code></td></tr>)}</tbody>
         </table>
         <p class="cy-legend">{text.legend}</p>
         <a class="cy-source" href="https://github.com/lemmaoracle/example-cyber-attack#primary-end-to-end-result-opus-48" target="_blank" rel="noopener">{text.source}</a>
@@ -215,13 +217,16 @@ console.log(await verify.json());`;
   figcaption, .cy-source, .cy-legend, .cy-mode { color: #bac1af; font-size: 12px; }
   figcaption { margin-top: 24px; }
   .cy-mode { font-family: "Space Mono", "Noto Sans JP", monospace; }
-  .cy-dot-grid { border-collapse: collapse; width: min(100%, 460px); margin: 32px auto; table-layout: fixed; }
+  .cy-dot-grid { border-collapse: collapse; width: min(100%, 560px); margin: 32px auto; table-layout: fixed; }
   .cy-dot-grid th { font-size: 11px; font-weight: 400; color: #bac1af; }
   .cy-dot-grid td, .cy-dot-grid tbody th { height: 46px; }
   .cy-tick { display: inline-block; width: 18px; height: 1px; background: #3e4435; margin-right: 12px; vertical-align: middle; }
   .cy-dot { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: #30372d; }
-  .cy-dot.cy-lit { background: #60c9c4; box-shadow: 0 0 16px #60c9c41a; }
-  .cy-secure .cy-dot.cy-lit { background: #a8e010; box-shadow: 0 0 16px #a8e0101a; }
+  .cy-dot.cy-lit { background: #c25438; box-shadow: 0 0 16px #c2543840; }
+  .cy-secure .cy-dot.cy-lit { background: #a8e010; box-shadow: 0 0 16px #a8e01040; }
+  .cy-rowname { font-size: 13px; color: #f4f7ef; }
+  .cy-dot-grid code { margin-left: 12px; font: 11px "Space Mono", monospace; color: #bac1af; }
+  .cy-secure .cy-dot-grid code { color: #a8e010; }
   .cy-legend { max-width: 480px; margin: 0 auto 12px; }
   .cy-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .cy-gate-diagram { margin: 48px 0 32px; }
