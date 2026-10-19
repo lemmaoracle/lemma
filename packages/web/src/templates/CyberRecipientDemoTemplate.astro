@@ -1,0 +1,83 @@
+---
+import type { Locale } from "../i18n/translations";
+import { getTranslations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = getTranslations(locale);
+const base = locale === "ja" ? "/ja" : "";
+const copy = locale === "ja" ? {
+  title: "口座変更通知を確かめる — 受取人向けサンプル",
+  banner: "サンプル・未接続",
+  note: "これは静的なモックです。実際の書類・署名・口座の検証は一切行っていません。以下はすべて架空の表示例で、検証結果ではありません。",
+  scenario: "○○株式会社（架空）から口座変更通知が届いた。受取人がこのページで、確かめられる範囲と次の行動を確認する例です。",
+  notice: "架空の通知：振込先を「サンプル銀行（架空）／サンプル支店（架空）／口座番号：XXXXXXX」に変更してください。振込には使用できません。",
+  verified: "確認できた情報（表示例・未検証）",
+  verifiedNote: "実際の確認時に表示する項目の例です。このページでは、記載内容の真偽や文書との一致は確認していません。",
+  fields: ["発行者名の記載例：○○株式会社（架空・本人性未確認）", "通知日の記載例：2026年10月1日（架空）", "文書ハッシュの形式例：SHA-256 / <64桁の16進文字列>（プレースホルダー・実ハッシュなし）"],
+  unknown: "確認できない情報",
+  unknownItems: ["送信者の本人性：発行者名と送信者の身元は結び付いていません。", "口座の所有者：変更先口座が発行者の所有であることは証明されていません。", "変更指示の正当性：ハッシュの一致だけでは、口座変更の承認や送金の安全性は判断できません。"],
+  next: "次の行動",
+  actions: ["通知に書かれた番号ではなく、契約書や社内の取引先台帳など、以前から把握している電話番号に連絡し、口座変更を確認する。", "確認が取れるまで、新しい口座へ送金しない。", "送信者に、この通知に対応する Proof Card の提示を依頼する。提示されても、本人性・口座所有の裏付けは別途確認する。"],
+  back: "Cyberに戻る →",
+} : {
+  title: "Check an account-change notice — recipient demo",
+  banner: "Sample · Unconnected",
+  note: "This is a static mock. No document, signature, or account has been verified. Everything below is fictional illustrative content, not a verification result.",
+  scenario: "A recipient receives an account-change notice from Example Company (fictional). This page illustrates what they could check, what remains unknown, and what to do next.",
+  notice: "Fictional notice: Please change the destination to Sample Bank (fictional) / Sample Branch (fictional) / account: XXXXXXX. These details cannot be used for payment.",
+  verified: "Verifiable information (illustration · unverified)",
+  verifiedNote: "Example fields for an actual check. This page has not checked their truth or correspondence with a document.",
+  fields: ["Issuer name shown: Example Company (fictional; identity unverified)", "Notice date shown: October 1, 2026 (fictional)", "Document hash format: SHA-256 / <64 hexadecimal characters> (placeholder; no actual hash)"],
+  unknown: "Information that cannot be verified",
+  unknownItems: ["Sender identity: the issuer name is not bound to the sender's identity.", "Account ownership: ownership of the destination account by the issuer is unproven.", "Authorization: a matching hash alone cannot establish approval of the account change or the safety of a payment."],
+  next: "Next action",
+  actions: ["Call a number you already know from a contract or your vendor records, rather than a number in the notice, to confirm the account change.", "Do not transfer to the new account until you have confirmed the change.", "Ask the sender for a Proof Card corresponding to this notice. Even with a card, separately confirm identity and account ownership."],
+  back: "Back to Cyber →",
+};
+---
+<Layout locale={locale} title={copy.title} description={copy.note} metaType="page" pagePath="/cyber/verify-demo/">
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <main>
+    <aside aria-label={copy.banner} class="sample-banner">
+      <strong>{copy.banner}</strong>
+      <p>{copy.note}</p>
+    </aside>
+    <h1>{copy.title}</h1>
+    <p>{copy.scenario}</p>
+    <blockquote>{copy.notice}</blockquote>
+    <section aria-labelledby="verifiable">
+      <h2 id="verifiable">{copy.verified}</h2>
+      <p>{copy.verifiedNote}</p>
+      <ul>{copy.fields.map((field) => <li>{field}</li>)}</ul>
+    </section>
+    <section aria-labelledby="unknown">
+      <h2 id="unknown">{copy.unknown}</h2>
+      <ul>{copy.unknownItems.map((item) => <li>{item}</li>)}</ul>
+    </section>
+    <section aria-labelledby="next">
+      <h2 id="next">{copy.next}</h2>
+      <ol>{copy.actions.map((action) => <li>{action}</li>)}</ol>
+    </section>
+    <a href={`${base}/cyber/`}>{copy.back}</a>
+  </main>
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+<style>
+  main { max-width: 860px; margin: 0 auto; padding: 40px 22px 72px; color: var(--black); font-family: var(--font-body); line-height: 1.85; overflow-wrap: anywhere; }
+  h1, h2 { font-family: var(--font-display); line-height: 1.4; }
+  h1 { font-size: clamp(26px, 5vw, 40px); margin: 32px 0 20px; }
+  h2 { font-size: clamp(20px, 3vw, 26px); margin: 0 0 16px; }
+  .sample-banner { border: 2px solid var(--accent); background: var(--lemma-cream-deep); padding: 24px; border-radius: 12px; }
+  .sample-banner strong { font-size: 24px; color: var(--accent); }
+  .sample-banner p { margin-bottom: 0; }
+  blockquote { margin: 24px 0; padding: 16px 20px; border-left: 3px solid var(--accent); background: var(--lemma-cream-deep); }
+  section { margin: 24px 0; padding: 24px; border: 1px solid var(--accent); border-radius: 12px; }
+  ul, ol { padding-left: 24px; }
+  li + li { margin-top: 12px; }
+  a { color: var(--accent); text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+</style>
