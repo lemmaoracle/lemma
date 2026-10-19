@@ -9,75 +9,158 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const t = getTranslations(locale);
 const base = locale === "ja" ? "/ja" : "";
-const copy = locale === "ja" ? {
-  title: "口座変更通知を確かめる — 受取人向けサンプル",
-  banner: "サンプル・未接続",
-  note: "これは静的なモックです。実際の書類・署名・口座の検証は一切行っていません。以下はすべて架空の表示例で、検証結果ではありません。",
-  scenario: "○○株式会社（架空）から口座変更通知が届いた。受取人がこのページで、確かめられる範囲と次の行動を確認する例です。",
-  notice: "架空の通知：振込先を「サンプル銀行（架空）／サンプル支店（架空）／口座番号：XXXXXXX」に変更してください。振込には使用できません。",
-  verified: "確認できた情報（表示例・未検証）",
-  verifiedNote: "実際の確認時に表示する項目の例です。このページでは、記載内容の真偽や文書との一致は確認していません。",
-  fields: ["発行者名の記載例：○○株式会社（架空・本人性未確認）", "通知日の記載例：2026年10月1日（架空）", "文書ハッシュの形式例：SHA-256 / <64桁の16進文字列>（プレースホルダー・実ハッシュなし）"],
-  unknown: "確認できない情報",
-  unknownItems: ["送信者の本人性：発行者名と送信者の身元は結び付いていません。", "口座の所有者：変更先口座が発行者の所有であることは証明されていません。", "変更指示の正当性：ハッシュの一致だけでは、口座変更の承認や送金の安全性は判断できません。"],
-  next: "次の行動",
-  actions: ["通知に書かれた番号ではなく、契約書や社内の取引先台帳など、以前から把握している電話番号に連絡し、口座変更を確認する。", "確認が取れるまで、新しい口座へ送金しない。", "送信者に、この通知に対応する Proof Card の提示を依頼する。提示されても、本人性・口座所有の裏付けは別途確認する。"],
-  back: "Cyberに戻る →",
-} : {
-  title: "Check an account-change notice — recipient demo",
-  banner: "Sample · Unconnected",
-  note: "This is a static mock. No document, signature, or account has been verified. Everything below is fictional illustrative content, not a verification result.",
-  scenario: "A recipient receives an account-change notice from Example Company (fictional). This page illustrates what they could check, what remains unknown, and what to do next.",
-  notice: "Fictional notice: Please change the destination to Sample Bank (fictional) / Sample Branch (fictional) / account: XXXXXXX. These details cannot be used for payment.",
-  verified: "Verifiable information (illustration · unverified)",
-  verifiedNote: "Example fields for an actual check. This page has not checked their truth or correspondence with a document.",
-  fields: ["Issuer name shown: Example Company (fictional; identity unverified)", "Notice date shown: October 1, 2026 (fictional)", "Document hash format: SHA-256 / <64 hexadecimal characters> (placeholder; no actual hash)"],
-  unknown: "Information that cannot be verified",
-  unknownItems: ["Sender identity: the issuer name is not bound to the sender's identity.", "Account ownership: ownership of the destination account by the issuer is unproven.", "Authorization: a matching hash alone cannot establish approval of the account change or the safety of a payment."],
-  next: "Next action",
-  actions: ["Call a number you already know from a contract or your vendor records, rather than a number in the notice, to confirm the account change.", "Do not transfer to the new account until you have confirmed the change.", "Ask the sender for a Proof Card corresponding to this notice. Even with a card, separately confirm identity and account ownership."],
-  back: "Back to Cyber →",
-};
+const ja = locale === "ja";
+const title = ja ? "証明を検証する" : "Verify a proof";
+const description = ja ? "docHash から公開記録と証明を取得し、検証します。" : "Look up a public record and verify its proof using a docHash.";
 ---
-<Layout locale={locale} title={copy.title} description={copy.note} metaType="page" pagePath="/cyber/verify-demo/">
+<Layout locale={locale} title={title} description={description} metaType="page" pagePath="/cyber/verify-demo/">
   <Navigation locale={locale} t={t.nav} base={base} />
-  <main>
-    <aside aria-label={copy.banner} class="sample-banner">
-      <strong>{copy.banner}</strong>
-      <p>{copy.note}</p>
-    </aside>
-    <h1>{copy.title}</h1>
-    <p>{copy.scenario}</p>
-    <blockquote>{copy.notice}</blockquote>
-    <section aria-labelledby="verifiable">
-      <h2 id="verifiable">{copy.verified}</h2>
-      <p>{copy.verifiedNote}</p>
-      <ul>{copy.fields.map((field) => <li>{field}</li>)}</ul>
-    </section>
-    <section aria-labelledby="unknown">
-      <h2 id="unknown">{copy.unknown}</h2>
-      <ul>{copy.unknownItems.map((item) => <li>{item}</li>)}</ul>
-    </section>
-    <section aria-labelledby="next">
-      <h2 id="next">{copy.next}</h2>
-      <ol>{copy.actions.map((action) => <li>{action}</li>)}</ol>
-    </section>
-    <a href={`${base}/cyber/`}>{copy.back}</a>
+  <main data-live-verifier data-ja={String(ja)}>
+    <p class="eyebrow">LEMMA · LIVE VERIFICATION</p>
+    <h1>{title}</h1>
+    <p>{description} {ja ? "Cyber 以外の回路・スキーマの証明も照会できます。ファイル本文は入力しません。" : "Proofs from any circuit or schema can be looked up, including those outside Cyber. No file contents are entered."}</p>
+    <form id="lookup">
+      <label for="doc-hash">DOC HASH</label>
+      <div class="input-row"><input id="doc-hash" name="doc" type="text" required pattern="0x[0-9a-fA-F]{64}" placeholder="0x…" autocomplete="off" spellcheck="false" aria-describedby="hash-help" /><button type="submit">{ja ? "検証する" : "Verify"}</button></div>
+      <p id="hash-help">{ja ? "0x に続く64桁の16進文字列。発行元から受け取った docHash を貼り付けてください。" : "Paste the docHash provided by the issuer: 0x followed by 64 hexadecimal characters."}</p>
+    </form>
+    <noscript>{ja ? "検証には JavaScript が必要です。" : "JavaScript is required for live verification."}</noscript>
+    <div id="live-result" aria-live="polite" aria-atomic="true"><p>?</p></div>
+    <details>
+      <summary>この証明の意味 / What this proves</summary>
+      <p>✔ 記録が、発行された時点から改ざんされていないこと。<br />The record is unchanged since it was issued.</p>
+      <p>✗ 書かれた内容の良し悪しや、判断の正しさそのもの。<br />Not the quality of the contents or the correctness of the judgment.</p>
+      <p>{ja ? "上記は記録の完全性についての意味です。回路ごとの証明範囲は異なります。この画面ではローカル文書との一致、送信者の本人性、操作の承認は確認しません。" : "This describes record integrity. Each circuit has its own proof scope. This page does not compare a local document, establish the sender’s identity, or confirm authorization for an action."}</p>
+    </details>
+    <details>
+      <summary>検証した対象・DOC HASH / Scope and hash</summary>
+      <p>{ja ? "入力した docHash の登録状態と、それに紐づく最新の証明を照会します。証明と公開入力の検証は Lemma の公開 API が実行します。対応していない回路や取得できない証明は未確認として表示します。" : "We query the registration status and latest proof linked to the entered docHash. Lemma’s public API verifies the proof against its public inputs. Unsupported circuits and unavailable proofs remain unconfirmed."}</p>
+      <p>{ja ? "docHash は登録を参照するコードです。文書の内容や、回路ごとの公開入力の意味を、このコードだけから推測しません。ローカルファイルとの照合には、その回路に対応したコミットメント計算が別途必要です。" : "A docHash identifies a registration. It does not by itself reveal document contents or the meaning of a circuit’s public inputs. Comparing a local file requires the commitment calculation appropriate to that circuit."}</p>
+    </details>
+    <details>
+      <summary>ローカルで検証するには / Verify locally</summary>
+      <p>{ja ? "手元で実行する API スニペットです。暗号検証はリモート API が行います。完全なオフライン検証には、その回路の検証鍵と対応する検証器が必要です。" : "Run this API snippet on your machine. Cryptographic verification runs on the remote API. Fully offline verification requires the circuit’s verification key and compatible verifier."}</p>
+      <pre><code id="verify-code"></code></pre>
+    </details>
+    <p><a href={`${base}/cyber/`}>{ja ? "Cyber Proof Cards もここで検証できます — docHash を貼り付けてください。Cyber に戻る →" : "Cyber Proof Cards also verify here — paste any docHash. Back to Cyber →"}</a></p>
   </main>
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
-<style>
-  main { max-width: 860px; margin: 0 auto; padding: 40px 22px 72px; color: var(--black); font-family: var(--font-body); line-height: 1.85; overflow-wrap: anywhere; }
-  h1, h2 { font-family: var(--font-display); line-height: 1.4; }
-  h1 { font-size: clamp(26px, 5vw, 40px); margin: 32px 0 20px; }
-  h2 { font-size: clamp(20px, 3vw, 26px); margin: 0 0 16px; }
-  .sample-banner { border: 2px solid var(--accent); background: var(--lemma-cream-deep); padding: 24px; border-radius: 12px; }
-  .sample-banner strong { font-size: 24px; color: var(--accent); }
-  .sample-banner p { margin-bottom: 0; }
-  blockquote { margin: 24px 0; padding: 16px 20px; border-left: 3px solid var(--accent); background: var(--lemma-cream-deep); }
-  section { margin: 24px 0; padding: 24px; border: 1px solid var(--accent); border-radius: 12px; }
-  ul, ol { padding-left: 24px; }
-  li + li { margin-top: 12px; }
-  a { color: var(--accent); text-decoration: underline; }
-  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+<script>
+  const root = document.querySelector<HTMLElement>("[data-live-verifier]")!;
+  const ja = root.dataset.ja === "true";
+  const text = (jp: string, en: string) => ja ? jp : en;
+  const api = "https://workers.lemma.workers.dev/v1";
+  const form = document.querySelector<HTMLFormElement>("#lookup")!;
+  const input = document.querySelector<HTMLInputElement>("#doc-hash")!;
+  const button = form.querySelector("button")!;
+  const result = document.querySelector<HTMLElement>("#live-result")!;
+  const esc = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+  const short = (value: string) => value.length > 24 ? `${value.slice(0, 12)}…${value.slice(-8)}` : value;
+  const string = (value: unknown) => typeof value === "string" ? value : "";
+  const record = (value: unknown): Readonly<Record<string, unknown>> => value !== null && typeof value === "object" && !Array.isArray(value) ? value as Readonly<Record<string, unknown>> : {};
+  const mappedIssuer = (doc: Readonly<Record<string, unknown>>) => {
+    const schema = string(doc.schemaId);
+    const issuer = string(doc.issuerId);
+    const feeds: Readonly<Record<string, string>> = {
+      "forex/composite": text("為替データフィード", "FX data feed"),
+      "forex/er-api": text("為替データフィード", "FX data feed"),
+      "forex/frankfurter": text("為替データフィード", "FX data feed"),
+      "jp-holidays": text("祝日データフィード", "JP holidays feed"),
+      "jp-postal-codes": text("郵便番号データフィード", "JP postal codes feed"),
+    };
+    const feedId = issuer.endsWith("-pipeline") ? issuer.slice(0, -9) : "";
+    return ["clubs.nippo.v1", "clubs.seal-issuance.v1"].includes(schema) ? "CLUBS" : Object.prototype.hasOwnProperty.call(feeds, feedId) ? feeds[feedId] : "";
+  };
+  const jst = (value: unknown) => {
+    const date = new Date(string(value));
+    return Number.isNaN(date.getTime()) ? "" : `${date.toLocaleString(ja ? "ja-JP" : "en-GB", { timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false })} JST`;
+  };
+  const request = async (url: string, init: RequestInit = {}) => fetch(url, { ...init, signal: AbortSignal.timeout(20000), headers: { accept: "application/json", ...init.headers } }).then(async response => ({ status: response.status, ok: response.ok, data: response.ok ? record(await response.json()) : {} })).catch(() => ({ status: 0, ok: false, data: {} as Readonly<Record<string, unknown>> }));
+  const row = (label: string, value: string) => value ? `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>` : "";
+  const check = (label: string, state: string) => `<li><strong>${esc(label)}</strong><span>${esc(state)}</span></li>`;
+  const snippet = (hash: string) => `const api = "${api}";
+const docHash = ${JSON.stringify(hash || "PASTE_DOC_HASH")};
+const response = await fetch(api + "/proofs?docHash=" + encodeURIComponent(docHash));
+if (!response.ok) throw new Error("Proof lookup unavailable");
+const { circuitId, proof, inputs } = await response.json();
+const verification = await fetch(api + "/proofs/verify", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ circuitId, proof, publicSignals: inputs })
+});
+if (!verification.ok) throw new Error("Verification unavailable");
+console.log(await verification.json());`;
+  document.querySelector("#verify-code")!.textContent = snippet("");
+  const run = async () => {
+    const hash = input.value.trim();
+    input.value = hash;
+    return /^0x[0-9a-fA-F]{64}$/.test(hash) ? execute(hash) : form.reportValidity();
+  };
+  const execute = async (hash: string) => {
+    button.disabled = true;
+    input.disabled = true;
+    result.setAttribute("aria-busy", "true");
+    result.innerHTML = `<p>? ${text("照合中…", "Checking…")}</p>`;
+    const url = new URL(window.location.href);
+    url.searchParams.set("doc", hash);
+    window.history.replaceState(null, "", url);
+    document.querySelector("#verify-code")!.textContent = snippet(hash);
+    const docUrl = `${api}/documents/${encodeURIComponent(hash)}`;
+    const proofUrl = `${api}/proofs?docHash=${encodeURIComponent(hash)}`;
+    const docResponse = await request(docUrl);
+    const proofResponse = await request(proofUrl);
+    const doc = docResponse.data;
+    const proof = proofResponse.data;
+    const linked = proofResponse.ok && string(proof.docHash).toLowerCase() === hash.toLowerCase();
+    const usable = linked && !!string(proof.circuitId) && proof.proof != null && Array.isArray(proof.inputs);
+    const verification = usable ? await request(`${api}/proofs/verify`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ circuitId: proof.circuitId, proof: proof.proof, publicSignals: proof.inputs }) }) : null;
+    const docValid = docResponse.ok && string(doc.docHash).toLowerCase() === hash.toLowerCase() && ["registered", "anchored", "pending", "not_found"].includes(string(doc.status));
+    const offline = (!docValid && docResponse.status !== 404) || (!proofResponse.ok && proofResponse.status !== 404) || (proofResponse.ok && !usable) || (verification !== null && (!verification.ok || typeof verification.data.valid !== "boolean"));
+    const invalid = verification?.ok && verification.data.valid === false;
+    const missing = docResponse.status === 404 || (docValid && doc.status === "not_found");
+    const registered = docValid && ["registered", "anchored"].includes(string(doc.status));
+    const band = offline ? ["neutral", text("照合できませんでした / OFFLINE", "Unable to check / OFFLINE")] : invalid ? ["bad", text("証明の検証失敗", "Proof verification failed")] : missing ? ["bad", text("記録が見つかりません", "Record not found")] : registered ? ["good", text("改ざんなし", "Not tampered")] : ["neutral", text("オンチェーン記録待ち", "On-chain record pending")];
+    const proofState = verification?.ok && verification.data.valid === true ? text("✓ 検証成功", "✓ Verified") : invalid ? text("✗ 検証失敗", "✗ Failed") : text("? 未確認", "? Unconfirmed");
+    result.innerHTML = `<section class="result-panel"><div class="band ${band[0]}"><h2>${esc(band[1])}</h2><p>${text("登録状態と証明の検証結果は、以下で個別に表示します。ローカル文書との一致は未確認です。", "Registration and proof verification are reported separately below. A local document has not been compared.")}</p></div>
+      <dl>${row(text("発行者（登録上のラベル）", "Issuer (registry label)"), docValid ? mappedIssuer(doc) : "")}${row(text("記録日時", "Recorded at"), docValid ? jst(doc.registeredAt) : "")}${row(text("対象の日付", "Record date"), docValid ? string(doc.date) : "")}${row("DOC HASH", short(hash))}${row("circuitId", linked ? string(proof.circuitId) : "")}${row("verifyId", verification?.ok ? short(string(verification.data.verifyId)) : "")}</dl>
+      <button id="copy-hash" type="button">${text("docHash をコピー", "Copy docHash")}</button>
+      <h3>${text("確認したこと", "Checks performed")}</h3><ul class="checks">${check(text("文書の登録", "Document registration"), docValid ? string(doc.status) : missing ? "not_found" : "? OFFLINE")}${check(text("紐づく証明", "Linked proof"), linked ? text("✓ 取得済み", "✓ Retrieved") : proofResponse.status === 404 ? text("? 未登録", "? No proof registered") : "? OFFLINE")}${check(text("証明と公開入力", "Proof and public inputs"), proofState)}</ul>
+      <aside><h3>${text("次の行動", "Next action")}</h3><p>${offline ? text("通信状態を確認して再試行し、生レスポンスを確認してください。", "Check your connection, retry, and inspect the raw responses.") : missing || invalid ? text("発行元に docHash と証明の確認を依頼してください。", "Ask the issuer to confirm the docHash and proof.") : text("利用する回路の証明範囲を確認してください。未確認の項目は発行元に確認し、文書本文・本人性・操作の承認は別途照合してください。", "Review the circuit’s proof scope. Ask the issuer about unconfirmed checks, and separately check document contents, identity, and authorization.")}</p></aside>
+      <p><a href="${docUrl}" target="_blank" rel="noopener">${text("登録の生レスポンス", "Raw document response")}</a> · <a href="${proofUrl}" target="_blank" rel="noopener">${text("証明の生レスポンス", "Raw proof response")}</a></p></section>`;
+    result.querySelector("#copy-hash")!.addEventListener("click", event => Promise.resolve().then(() => navigator.clipboard.writeText(hash)).then(() => { (event.target as HTMLElement).textContent = text("コピーしました", "Copied"); }).catch(() => { (event.target as HTMLElement).textContent = text("コピーできませんでした", "Copy unavailable"); }));
+    result.setAttribute("aria-busy", "false");
+    button.disabled = false;
+    input.disabled = false;
+  };
+  form.addEventListener("submit", event => { event.preventDefault(); void run(); });
+  const initial = new URLSearchParams(window.location.search).get("doc");
+  initial !== null && (input.value = initial);
+  initial !== null && void run();
+</script>
+<style is:global>
+  [data-live-verifier] { max-width: 860px; margin: 0 auto; padding: 48px 22px 72px; color: var(--black); font-family: var(--font-body); line-height: 1.8; overflow-wrap: anywhere; }
+  [data-live-verifier] h1, [data-live-verifier] h2, [data-live-verifier] h3 { font-family: var(--font-display); line-height: 1.4; }
+  [data-live-verifier] h1 { font-size: clamp(28px, 5vw, 42px); }
+  [data-live-verifier] .eyebrow { color: var(--accent); font-size: 12px; letter-spacing: .12em; }
+  [data-live-verifier] form, [data-live-verifier] details, [data-live-verifier] .result-panel { margin: 24px 0; padding: 24px; border: 1px solid var(--accent); border-radius: 12px; }
+  [data-live-verifier] label { display: block; font-weight: 700; }
+  [data-live-verifier] .input-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  [data-live-verifier] input { flex: 1; min-width: 180px; padding: 12px; border: 1px solid var(--accent); border-radius: 8px; font-family: monospace; }
+  [data-live-verifier] button { padding: 10px 18px; border: 1px solid var(--accent); border-radius: 8px; background: var(--lemma-cream-deep); color: var(--black); cursor: pointer; }
+  [data-live-verifier] button:disabled { opacity: .6; cursor: wait; }
+  [data-live-verifier] #hash-help { font-size: 13px; }
+  [data-live-verifier] .band, [data-live-verifier] aside { padding: 18px; background: var(--lemma-cream-deep); border-radius: 8px; }
+  [data-live-verifier] .band.good { background: #eaf6d5; border-left: 4px solid #55820b; }
+  [data-live-verifier] .band.bad { background: #fff0ef; border-left: 4px solid #a33030; }
+  [data-live-verifier] .band h2 { margin-top: 0; }
+  [data-live-verifier] dl > div { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--lemma-cream-deep); }
+  [data-live-verifier] dd { margin: 0; }
+  [data-live-verifier] .checks { list-style: none; padding: 0; }
+  [data-live-verifier] .checks li { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--lemma-cream-deep); }
+  [data-live-verifier] a { color: var(--accent); text-decoration: underline; }
+  [data-live-verifier] summary { cursor: pointer; font-weight: 700; }
+  [data-live-verifier] pre { background: var(--lemma-cream-deep); padding: 16px; overflow-x: auto; font-size: 12px; }
+  [data-live-verifier] :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  @media (max-width: 540px) { [data-live-verifier] dl > div { grid-template-columns: 1fr; gap: 0; } }
 </style>
