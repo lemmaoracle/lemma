@@ -151,7 +151,7 @@ const MEGA: ReadonlyArray<{
       { label: "Critical Brief", sub: "AI×信頼の最前線", href: L("/critical/briefs") },
       { label: "ブログ", href: L("/blog") },
       { label: "ドキュメント", href: L("/guides") },
-      { label: "検証センター", sub: "検証・発行の実数", href: VERIFY_PATH },
+      { label: "検証センター", sub: "検証・発行の実数", href: L("/verify/counters/") },
     ],
     foot: { label: "▸ 用語集・FAQ", href: L("/glossary") },
   },
@@ -292,7 +292,7 @@ const MEGA: ReadonlyArray<{
           </div>
           <div class="pfoot">
             この数字も、証明されています。
-            <a href={VERIFY_PATH}>ソース別の内訳を見る →</a>
+            <a href={L("/verify/counters/")}>ソース別の内訳を見る →</a>
           </div>
         </div>
       </div>
