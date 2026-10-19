@@ -22,73 +22,63 @@ const { locale, t, base } = Astro.props as CyberTemplateProps;
 const isJa = locale === "ja";
 const L = (path: string) => localePath(base, path);
 const C = isJa ? {
-  title: "Cyber — 奪われた鍵だけでは、操作を通さない｜Lemma",
-  description: "権限のある指示でも、実行条件を満たさなければ止める。Cyber は操作ごとの条件を計算で検証し、実行前の関所で判定します。",
-  headline: "奪われた鍵だけでは、", headlineEnd: "操作を通さない。",
-  lede: "権限のある指示でも、決められた条件を満たさなければ実行前に止める。それが Cyber の関所です。",
-  call: "Discovery Call を予約 →", live: "ライブ検証を開く →",
-  example: "例 / 検証済みの状態", cardTitle: "送金条件のカード",
-  cardNote: "架空の値による見本 · ライブ検証ではありません",
+  title: "Cyber — 不正な実行を、手前で止める。｜Lemma",
+  description: "権限があっても、条件を満たさない操作は実行前に止める。",
+  headline: "不正な実行を、手前で止める。",
+  lede: "盗難鍵や騙された承認者では、不正も許可済みに。Cyber は条件外の実行を止める。",
+  call: "相談 →", live: "検証する →",
+  example: "例 / 検証済み", cardTitle: "送金条件",
+  cardNote: "架空の値",
   layers: [
-    { title: "欄の定義", detail: "witness 構成 / 送信元・送信先・金額", value: "未入力の欄", empty: true },
-    { title: "値の制約", detail: "この操作が満たすべき条件", value: "例：送信先 = demo:recipient / 金額 ≤ 100", empty: false },
-    { title: "計算された証明", detail: "値が定義した条件を満たすか検証", value: "例：条件との一致を検証済み", empty: false },
+    { title: "定義", value: "送信先 / 金額", empty: true },
+    { title: "条件", value: "例：送信先 = demo:recipient / 金額 ≤ 100", empty: false },
+    { title: "証明", value: "例：条件一致を検証済み", empty: false },
   ],
-  cardFoot: "破線 = 未入力の定義 / 実線 = 値を入れた例",
-  evidenceLabel: "既存の防御を越えた攻撃 / 公開検証例",
-  evidenceTitle: "権限も、検知も。突破された先で何が起きるか。",
-  evidenceIntro: "ACL・JWT・署名は権限や発信元を確かめ、SIEM は異常を探します。それでも、許された経路や承認フローを悪用される場合があります。公開 README の5シナリオでは、Opus 4.8 が INSECURE の全件で攻撃目的を達成しました。",
-  metric: "攻撃成功 5/5 → 0/5", metricNote: "Opus 4.8 · INSECURE → SECURE（Lemma あり）",
-  scenario: "シナリオ", insecure: "既存フロー", secure: "実行前に条件検証",
-  scenarios: ["不正なデータ持ち出し", "監査証跡の改ざん", "ゼロデイ RCE", "SIEM 回避", "ソーシャルエンジニアリング"],
-  evidenceNote: "この検証例の結果です。あらゆる攻撃への効果や、個別の ACL・JWT・署名製品の評価を示すものではありません。",
-  source: "検証条件と結果を README で読む ↗",
-  contrastLabel: "奪われた権限で、何ができるか",
-  contrastTitle: "「許可された」と「条件を満たす」は、別の確認。",
-  beforeTitle: "これまで / 誰が許したか",
-  beforeSteps: ["正規の鍵・アカウントで指示", "権限・署名・承認を確認", "その確認を通れば実行へ"],
-  beforeNote: "鍵が奪われたり承認者が騙されたりすると、不正な指示も許可済みに見える場合があります。",
-  afterTitle: "Cyber / その操作が条件を満たすか",
-  afterSteps: ["権限のある指示が届く", "操作の値と条件の一致を暗号検証", "一致を検証できなければ遮断"],
-  afterNote: "この条件の確認に使うのが「証明」です。実行前の関所は、人を説得したかではなく検証結果で判定します。鍵や肩書きだけでは、この確認を通せません。",
-  boundary: "条件の定義と実行前の関所が前提です。条件そのものや管理設定が不適切な場合まで、安全を保証するものではありません。",
-  samples: "カード面の例", sampleNames: ["転送", "復号", "API"],
-  closeTitle: "守りたい操作から、条件を決める。",
-  closeNote: "何を実行前に止めたいか。Discovery Call で対象と条件を整理します。",
+  diagramTitle: "権限の先に、条件の検証を。",
+  before: "これまで", after: "Cyber",
+  permission: "権限を確認", condition: "条件を検証", pass: "通る", block: "通らない",
+  diagramNote: "例：盗難鍵でも条件外は止まる。",
+  principleTitle: "許可だけに、頼らない。",
+  principle: "ACL・JWT・署名・承認は権限、SIEM は異常を確認。Cyber は実行直前に検証。",
+  workTitle: "業務の実行前に。",
+  uses: [
+    { title: "送金・口座変更", line: "振込先や金額が条件を外れたら、実行前に止まる。" },
+    { title: "復号・データ持ち出し", line: "復号条件を満たさなければ、鍵があっても通らない。" },
+    { title: "API・ワークフロー実行", line: "実行直前の条件検証を通らなければ、処理に入らない。" },
+  ],
+  evidenceTitle: "公開検証の結果。",
+  metricLabels: ["突破", "阻止", "シナリオ", "層"],
+  source: "検証例 / Opus 4.8 · README ↗",
+  closeTitle: "止めたい操作から。",
 } : {
-  title: "Cyber — A stolen key alone cannot clear the gate | Lemma",
-  description: "Even an authorized instruction must meet the operation's conditions. Cyber checks those conditions computationally at a gate before execution.",
-  headline: "A stolen key alone", headlineEnd: "cannot clear the gate.",
-  lede: "Even an authorized instruction is stopped before execution if it fails the defined conditions. That is Cyber's gate.",
-  call: "Book a Discovery Call →", live: "Open live verification →",
-  example: "Example / verified state", cardTitle: "Transfer conditions",
-  cardNote: "Illustrative values · Not a live verification",
+  title: "Cyber — Stop unauthorized actions before execution | Lemma",
+  description: "Cyber stops operations that fail defined conditions, even when they carry valid permissions.",
+  headline: "Stop unauthorized actions before execution.",
+  lede: "A stolen key or deceived approver can make an unauthorized instruction look approved. Cyber stops operations that fail defined conditions before execution.",
+  call: "Talk to us →", live: "Verify live →",
+  example: "Example / verified", cardTitle: "Transfer conditions",
+  cardNote: "Illustrative values",
   layers: [
-    { title: "Field definitions", detail: "Witness structure / sender, recipient, amount", value: "Unfilled field", empty: true },
-    { title: "Value constraints", detail: "Conditions this operation must meet", value: "Example: recipient = demo:recipient / amount ≤ 100", empty: false },
-    { title: "Computed proof", detail: "Check values against the defined conditions", value: "Example: condition match verified", empty: false },
+    { title: "Definition", value: "Recipient / amount", empty: true },
+    { title: "Conditions", value: "Example: recipient = demo:recipient / amount ≤ 100", empty: false },
+    { title: "Proof", value: "Example: condition match verified", empty: false },
   ],
-  cardFoot: "Dashed = unfilled definition / Solid = filled example",
-  evidenceLabel: "Existing defenses breached / published example",
-  evidenceTitle: "After permissions and detection are bypassed, what happens?",
-  evidenceIntro: "ACLs, JWTs and signatures check permissions or origin; SIEM looks for anomalies. Allowed paths and approval flows can still be abused. In the README's five scenarios, Opus 4.8 completed every attack objective in INSECURE mode.",
-  metric: "Attack success 5/5 → 0/5", metricNote: "Opus 4.8 · INSECURE → SECURE (with Lemma)",
-  scenario: "Scenario", insecure: "Existing flow", secure: "Conditions checked before execution",
-  scenarios: ["Unauthorized data exfiltration", "Audit trail tampering", "Zero-day RCE", "SIEM evasion", "Social engineering"],
-  evidenceNote: "Results from this validation example. They do not establish effectiveness against every attack or evaluate individual ACL, JWT or signature products.",
-  source: "Read the setup and results in the README ↗",
-  contrastLabel: "What stolen permissions can do",
-  contrastTitle: "Permission granted and conditions met are different checks.",
-  beforeTitle: "Existing check / Who allowed it?",
-  beforeSteps: ["Instruction uses a legitimate key or account", "Permissions, signature or approval checked", "Passing that check leads to execution"],
-  beforeNote: "A stolen key or a deceived approver can make an unauthorized instruction appear approved.",
-  afterTitle: "Cyber / Does this operation meet the conditions?",
-  afterSteps: ["An authorized instruction arrives", "Cryptographic verification checks values against conditions", "If the match cannot be verified, block"],
-  afterNote: "A proof supplies this condition check. The gate before execution decides from the verification result, rather than whether someone was persuaded. A key or title alone cannot pass this check.",
-  boundary: "Defined conditions and a gate before execution are required. This does not guarantee safety when the conditions themselves or administrative settings are inappropriate.",
-  samples: "Example card faces", sampleNames: ["Transfer", "Decryption", "API"],
-  closeTitle: "Start with the operation you need to protect.",
-  closeNote: "Discuss what should stop before execution. Define the subject and conditions in a Discovery Call.",
+  diagramTitle: "Check conditions beyond permissions.",
+  before: "Existing defenses", after: "Cyber",
+  permission: "Check permissions", condition: "Verify conditions", pass: "Action passes", block: "Action blocked",
+  diagramNote: "Example: a stolen key still fails the conditions.",
+  principleTitle: "Permission alone is insufficient.",
+  principle: "ACLs, JWTs, signatures and approvals check authority; SIEM looks for anomalies. Cyber verifies defined conditions immediately before execution.",
+  workTitle: "Built for your operations.",
+  uses: [
+    { title: "Transfers & account changes", line: "Stop before execution when recipients or amounts fall outside defined conditions." },
+    { title: "Decryption & data export", line: "Reject requests that fail decryption conditions, even with the key." },
+    { title: "APIs & workflows", line: "Keep processing from starting when the final condition check fails." },
+  ],
+  evidenceTitle: "Published validation results.",
+  metricLabels: ["Breaches", "Blocked", "Scenarios", "Layers"],
+  source: "Validation example / Opus 4.8 · README ↗",
+  closeTitle: "Start with the action to protect.",
 };
 const cardKeys = ["transfer", "decrypt", "api"] as const;
 ---
@@ -100,7 +90,7 @@ const cardKeys = ["transfer", "decrypt", "api"] as const;
       <section class="cy-hero" aria-labelledby="cy-title">
         <div class="cy-hero-copy">
           <p class="cy-eyebrow">Lemma / Cyber</p>
-          <h1 id="cy-title">{C.headline}<span>{C.headlineEnd}</span></h1>
+          <h1 id="cy-title">{C.headline}</h1>
           <p class="cy-lede">{C.lede}</p>
           <div class="cy-actions">
             <a class="cy-btn cy-primary" href={DISCOVERY_CALL_URL[locale]} target="_blank" rel="noopener">{C.call}</a>
@@ -114,42 +104,59 @@ const cardKeys = ["transfer", "decrypt", "api"] as const;
           <dl class="cy-layers">
             {C.layers.map((layer, index) => <div>
               <dt><span class="cy-index">0{index + 1}</span>{layer.title}</dt>
-              <dd><p>{layer.detail}</p><div class:list={["cy-slot", { "cy-slot-filled": !layer.empty }]}>{layer.value}</div></dd>
+              <dd><div class:list={["cy-slot", { "cy-slot-filled": !layer.empty }]}>{layer.value}</div></dd>
             </div>)}
           </dl>
-          <p class="cy-card-foot">{C.cardFoot}</p>
         </article>
       </section>
 
+      <section class="cy-section" aria-labelledby="cy-diagram-title">
+        <h2 id="cy-diagram-title">{C.diagramTitle}</h2>
+        <figure class="cy-diagram">
+          <div class="cy-flow">
+            <h3>{C.before}</h3>
+            <div class="cy-node">{C.permission}</div><span aria-hidden="true">→</span>
+            <div class="cy-node">{C.pass}</div>
+          </div>
+          <div class="cy-flow">
+            <h3>{C.after}</h3>
+            <div class="cy-node">{C.permission}</div><span aria-hidden="true">→</span>
+            <div class="cy-node">{C.condition}</div><span aria-hidden="true">→</span>
+            <div class="cy-node cy-blocked">{C.block}</div>
+          </div>
+          <figcaption>{C.diagramNote}</figcaption>
+        </figure>
+      </section>
+
+      <section class="cy-section cy-principle" aria-labelledby="cy-principle-title">
+        <h2 id="cy-principle-title">{C.principleTitle}</h2>
+        <p class="cy-sub">{C.principle}</p>
+      </section>
+
+      <section class="cy-section" aria-labelledby="cy-work-title">
+        <h2 id="cy-work-title">{C.workTitle}</h2>
+        <div class="cy-uses">
+          {C.uses.map((use, index) => <article>
+            <h3>{use.title}</h3>
+            <p>{use.line}</p>
+            <a href={L(`/cyber/verify/?card=${cardKeys[index]}`)}>{isJa ? "例" : "View example"} →</a>
+          </article>)}
+        </div>
+      </section>
+
       <section class="cy-section" aria-labelledby="cy-evidence-title">
-        <p class="cy-eyebrow">{C.evidenceLabel}</p>
         <h2 id="cy-evidence-title">{C.evidenceTitle}</h2>
-        <p class="cy-sub">{C.evidenceIntro}</p>
-        <div class="cy-metric"><strong>{C.metric}</strong><span>{C.metricNote}</span></div>
-        <table>
-          <caption class="cy-sr-only">{C.metricNote}</caption>
-          <thead><tr><th scope="col">{C.scenario}</th><th scope="col">INSECURE<small>{C.insecure}</small></th><th scope="col">SECURE<small>{C.secure}</small></th></tr></thead>
-          <tbody>{C.scenarios.map(scenario => <tr><th scope="row">{scenario}</th><td><code>attack_succeeded</code></td><td class="cy-blocked"><code>blocked</code></td></tr>)}</tbody>
-        </table>
-        <p class="cy-note">{C.evidenceNote}</p>
+        <dl class="cy-metrics">
+          {["5/5", "0/5", "5", "2"].map((value, index) => <div>
+            <dt>{C.metricLabels[index]}<small>{[isJa ? "INSECURE / 攻撃成功" : "INSECURE / attacks succeeded", isJa ? "SECURE / 攻撃成功" : "SECURE / attacks succeeded", "example-cyber-attack", isJa ? "権限確認 + 条件検証" : "Permissions + conditions"][index]}</small></dt>
+            <dd class:list={{ "cy-blocked": index === 1 }}>{value}</dd>
+          </div>)}
+        </dl>
         <a class="cy-source" href="https://github.com/lemmaoracle/example-cyber-attack#primary-end-to-end-result-opus-48" target="_blank" rel="noopener">{C.source}</a>
       </section>
 
-      <section class="cy-section" aria-labelledby="cy-contrast-title">
-        <p class="cy-eyebrow">{C.contrastLabel}</p>
-        <h2 id="cy-contrast-title">{C.contrastTitle}</h2>
-        <div class="cy-comparison">
-          <article><h3>{C.beforeTitle}</h3><ol>{C.beforeSteps.map(step => <li>{step}</li>)}</ol><p>{C.beforeNote}</p></article>
-          <article><h3>{C.afterTitle}</h3><ol>{C.afterSteps.map((step, index) => <li class:list={{ "cy-blocked": index === 2 }}>{step}</li>)}</ol><p>{C.afterNote}</p></article>
-        </div>
-        <p class="cy-note">{C.boundary}</p>
-        <nav class="cy-samples" aria-label={C.samples}><span>{C.samples}</span>{cardKeys.map((key, index) => <a href={L(`/cyber/verify/?card=${key}`)}>{C.sampleNames[index]} →</a>)}</nav>
-      </section>
-
       <section class="cy-section cy-close" aria-labelledby="cy-close-title">
-        <p class="cy-eyebrow">Discovery Call</p>
         <h2 id="cy-close-title">{C.closeTitle}</h2>
-        <p class="cy-sub">{C.closeNote}</p>
         <div class="cy-actions"><a class="cy-btn cy-primary" href={DISCOVERY_CALL_URL[locale]} target="_blank" rel="noopener">{C.call}</a><a class="cy-btn cy-ghost" href={L("/verify/")}>{C.live}</a></div>
       </section>
     </div>
@@ -163,9 +170,8 @@ const cardKeys = ["transfer", "decrypt", "api"] as const;
   .cy-container { max-width: 1200px; margin-inline: auto; padding-inline: 40px; }
   .cy-eyebrow { font-family: "Space Mono", "Noto Sans JP", monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #bac1af; margin: 0 0 22px; }
   .cy-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); align-items: center; gap: 64px; padding: 90px 0 30px; }
-  .cy-hero > *, .cy-comparison > * { min-width: 0; }
-  h1 { font-family: "Space Grotesk", "Noto Serif JP", serif; font-size: clamp(32px, 3.8vw, 52px); font-weight: 500; line-height: 1.35; letter-spacing: -.035em; margin: 0 0 24px; overflow-wrap: anywhere; }
-  h1 span { display: block; }
+  .cy-hero > * { min-width: 0; }
+  h1 { font-family: "Space Grotesk", "Noto Serif JP", serif; font-size: clamp(28px, 3vw, 42px); font-weight: 500; line-height: 1.35; letter-spacing: -.035em; margin: 0 0 24px; overflow-wrap: anywhere; line-break: strict; word-break: auto-phrase; text-wrap: balance; }
   .cy-lede, .cy-sub { color: #c5cbbc; font-size: 15px; max-width: 800px; margin: 0 0 28px; }
   .cy-actions { display: flex; flex-wrap: wrap; gap: 12px; }
   .cy-btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 20px; border-radius: 8px; border: 1px solid #69705c; font-size: 13px; font-weight: 600; line-height: 1.5; text-decoration: none; }
@@ -196,43 +202,44 @@ const cardKeys = ["transfer", "decrypt", "api"] as const;
   .cy-slot { min-width: 0; min-height: 48px; display: flex; align-items: center; padding: 12px; border: 1px dashed rgba(15, 23, 42, .3); border-radius: 9px; background: #f8fafc; color: #64748b; }
   .cy-slot-filled { border-style: solid; color: #020617; }
   .cy-section { margin-top: 100px; }
-  .cy-section h2 { max-width: 850px; font-family: "Space Grotesk", "Noto Serif JP", serif; font-size: clamp(26px, 3vw, 36px); line-height: 1.5; font-weight: 500; margin: 0 0 24px; }
-  .cy-metric { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 24px; margin: 30px 0 20px; }
-  .cy-metric strong { font-family: "Space Grotesk", "Noto Sans JP", sans-serif; font-size: clamp(23px, 3vw, 34px); font-weight: 500; }
-  .cy-metric span, .cy-note, .cy-source { font-size: 12px; color: #bac1af; }
-  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
-  th, td { text-align: left; padding: 18px 12px; border-bottom: 1px solid #3e4435; overflow-wrap: anywhere; }
-  th { font-weight: 500; }
-  th:first-child { width: 40%; }
-  th small { display: block; font-size: 11px; color: #bac1af; font-weight: 400; margin-top: 4px; }
-  code { font-family: "Space Mono", monospace; font-size: 11px; }
+  .cy-section h2 { max-width: 850px; font-family: "Space Grotesk", "Noto Serif JP", serif; font-size: clamp(24px, 2.6vw, 34px); line-height: 1.5; font-weight: 500; margin: 0 0 24px; line-break: strict; word-break: auto-phrase; text-wrap: balance; }
+  .cy-diagram { margin: 36px 0 0; }
+  .cy-flow { display: flex; align-items: center; gap: 16px; padding: 24px 0; border-top: 1px solid #3e4435; }
+  .cy-flow h3 { flex: 0 0 140px; margin: 0; }
+  .cy-node { padding: 18px 24px; border: 1px solid #69705c; border-radius: 10px; text-align: center; font-size: 14px; }
   .cy-blocked { color: #a8e010; }
-  .cy-note { margin: 20px 0 10px; }
-  .cy-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-  .cy-comparison article { padding: 28px; border: 1px solid #3e4435; border-radius: 16px; background: #191c15; }
-  h3 { font-size: 17px; font-weight: 500; margin: 0 0 24px; }
-  .cy-comparison ol { list-style: none; padding: 0; margin: 0; }
-  .cy-comparison li { padding: 14px 0; border-top: 1px solid #3e4435; font-size: 14px; }
-  .cy-comparison li + li::before { content: "↓"; display: block; color: #bac1af; margin-bottom: 10px; }
-  .cy-comparison p { font-size: 13px; color: #c5cbbc; margin: 20px 0 0; }
-  .cy-samples { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 13px; margin-top: 28px; }
-  .cy-samples span { color: #bac1af; }
-  .cy-samples a { color: #f4f7ef; }
+  .cy-node.cy-blocked { border-color: #a8e010; }
+  figcaption, .cy-source { color: #bac1af; font-size: 12px; }
+  figcaption { margin-top: 18px; }
+  h3 { font-family: "Space Grotesk", "Noto Serif JP", serif; font-size: 18px; font-weight: 500; }
+  .cy-principle { max-width: 700px; }
+  .cy-uses { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+  .cy-uses article { min-width: 0; padding-top: 24px; border-top: 1px solid #3e4435; }
+  .cy-uses h3 { margin: 0 0 20px; }
+  .cy-uses p { color: #c5cbbc; font-size: 14px; margin: 0 0 24px; }
+  .cy-uses a { color: #f4f7ef; font-size: 12px; }
+  .cy-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin: 40px 0; }
+  .cy-metrics > div { display: flex; flex-direction: column-reverse; justify-content: flex-end; border-top: 1px solid #3e4435; padding-top: 20px; min-width: 0; }
+  .cy-metrics dt { font-family: "Space Mono", "Noto Sans JP", monospace; font-size: 14px; }
+  .cy-metrics small { display: block; color: #bac1af; font-size: 10px; margin-top: 8px; overflow-wrap: anywhere; }
+  .cy-metrics dd { font-family: "Space Grotesk", sans-serif; font-size: clamp(48px, 7vw, 88px); line-height: 1.2; margin: 0 0 18px; }
   .cy-close { border-top: 1px solid #3e4435; padding-top: 60px; }
-  .cy-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   @media (max-width: 900px) {
     .cy-hero { grid-template-columns: minmax(0, 1fr); gap: 44px; padding-top: 56px; }
     .cy-hero-copy { max-width: 650px; }
-    .cy-comparison { grid-template-columns: minmax(0, 1fr); }
+    .cy-uses { grid-template-columns: minmax(0, 1fr); }
+    .cy-flow { gap: 10px; }
+    .cy-flow h3 { flex-basis: 90px; }
+    .cy-node { padding: 14px; }
   }
-  @media (max-width: 480px) {
+  @media (max-width: 600px) {
     .cy-container { padding-inline: 20px; }
     .cy-plate { padding: 22px; }
     .cy-btn { width: 100%; }
-    .cy-section { margin-top: 64px; }
-    th, td { padding: 14px 5px; font-size: 11px; }
-    th:first-child { width: 34%; }
-    code { font-size: 10px; }
-    .cy-comparison article { padding: 22px; }
+    .cy-section { margin-top: 80px; }
+    .cy-flow { flex-direction: column; align-items: stretch; }
+    .cy-flow h3 { flex-basis: auto; margin-bottom: 12px; }
+    .cy-flow > span { align-self: center; transform: rotate(90deg); }
+    .cy-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 </style>
