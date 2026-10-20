@@ -14,6 +14,31 @@ status: published
 version: "1.0"
 og_lead_ja: "東京都住宅供給公社 誤送付 770 名：発送の前に宛先と一覧の対応を確かめる層が無かった"
 og_lead_en: "Tokyo Metropolitan Housing Supply Corporation, 770 names misdirected: no check that labels matched the list before dispatch"
+layout: "report"
+og_kicker_ja: "人手の事故事例 · 誤送付"
+og_kicker_en: "HUMAN ERROR · MISDIRECTED MAIL"
+og_headline_ja: "宛名ラベルの住棟・号室が、\n一覧の誤った部分から取られた。\n<accent>770 名の氏名が別の住民に</accent>"
+og_headline_en: "Address labels took building and unit numbers from the wrong part of the list.\n<accent>770 names reached other residents.</accent>"
+summary_labels: ["What happened", "Why no one noticed", "The missing layer"]
+key_figures:
+  - value: "770"
+    unit: "names"
+    label: "Residents' association heads whose names reached residents other than the intended recipients"
+    tone: "alert"
+  - value: "846"
+    unit: "notices"
+    label: "Misaddressed, out of 1,997 mailed (76 were returned)"
+  - value: "09-28 → 10-13"
+    label: "15 days from mailing until a recipient's call brought it to light"
+glossary:
+  - term: "Address label"
+    desc: "A label printed with the recipient's address and name, stuck on the envelope. Here it was built from an Excel list."
+  - term: "Policy partner organisation"
+    desc: "A body that carries out Tokyo Metropolitan Government policy in partnership with it. The Corporation is one, and maintains Tokyo's public housing under contract."
+insight:
+  slug: "dispatched-without-list-match"
+  label: "Dispatch never matched to the list"
+  quote: "The address labels went all the way to dispatch without ever being matched to the source list."
 industries: ["public-sector"]
 operations: ["delivery"]
 controls:
@@ -23,13 +48,16 @@ controls:
     item: "Record the match result separately from the operator's actions"
 attack_method: "human-error"
 impact: "Names of 770 association heads reached other residents"
+takeaway: "Nothing checked, apart from the operator and before dispatch, that the labels matched the source list."
 ---
 
 ## 1. TL;DR
 
-On 28 September 2026, the Tokyo Metropolitan Housing Supply Corporation mailed 1,997 copies of a notice about a change in how to apply for drain-pipe cleaning to the residents' association heads of Tokyo public housing complexes. In 846, the address was wrong, and 770 reached residents other than the intended recipients. What arrived was the names of 770 public-housing residents' association heads. The Corporation and the Tokyo Housing Policy Headquarters announced it on 16 October. It was not a cyberattack. When building address labels from an Excel list, staff took the building and unit numbers from the wrong part of the list and attached the labels without noticing.
+On 28 September 2026, the Tokyo Metropolitan Housing Supply Corporation mailed 1,997 copies of a notice about a change in how to apply for drain-pipe cleaning to the residents' association heads of Tokyo public housing complexes. In 846, the address was wrong, and 770 reached residents other than the intended recipients. What arrived was the names of 770 public-housing residents' association heads. The Corporation and the Tokyo Housing Policy Headquarters announced it on 16 October.
 
-It was a resident, not the Corporation, who noticed the error, 15 days after mailing. <strong>What did not work was a layer that checks, apart from the operator and directly before dispatch, that destination and list match.</strong>
+It was not a cyberattack. When building address labels from an Excel list, staff took the building and unit numbers from the wrong part of the list and attached the labels without noticing. Each label still looked like a proper address; only matching it against the source list would show the error. It was a resident, not the Corporation, who noticed, 15 days after mailing.
+
+What did not work was a layer that checks, apart from the operator and directly before dispatch, that destination and list match.
 
 ## 2. What happened
 
@@ -37,26 +65,31 @@ It was a resident, not the Corporation, who noticed the error, 15 days after mai
 - **Content**: the notice "Change to the drain-pipe cleaning application method". Labels were wrong, so notices reached residents of other buildings and units.
 - **Count**: 846 of 1,997 notices were misaddressed; 76 were returned and 770 reached someone other than the intended recipient.
 - **Information involved**: the names of 770 residents' association heads. The release does not say addresses leaked.
+- **The error**: when building address labels from an Excel list, the building and unit numbers were quoted from the wrong part of the list. Which column was mistaken is not disclosed.
 - **Not addressed**: the release does not mention secondary leakage or misuse.
 
-The chain was as follows.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain of the misdirection, as far as disclosed</span></div>
+<p class="rx-ex-cap">The irreversible step was ④, dispatch. The announcement does not say whether any step between ③ and ④ checked the labels against the source list.</p>
+<div class="rx-chain">
+<div class="rx-step"><div class="who">Corporation</div><div class="no">1</div><b>Builds address labels from an Excel list</b><p>The list holds complex, address and name.</p></div>
+<div class="rx-step"><div class="who">Corporation</div><div class="no">2</div><b>Quotes building and unit numbers from the wrong part</b><p>Which column was mistaken is not disclosed.</p></div>
+<div class="rx-step"><div class="who">Corporation</div><div class="no">3</div><b>Attaches the labels without noticing</b><p>Each label looks like a proper address.</p></div>
+<div class="rx-step crit"><div class="who">Corporation</div><div class="no">4</div><b>Mails the notices</b><p>846 misaddressed; 770 reach other residents.</p></div>
+</div>
+</figure>
 
-1. Address labels were made from an Excel list of complex, address and name.
-2. Building and unit numbers were taken from the wrong part of the list.
-3. The error went unnoticed and the labels were attached.
-4. The mailed notices reached residents other than the intended recipients.
-
-The irreversible action was step 4, dispatch. It rested on labels built from the wrong part of the list. The announcement does not say whether any step checked the labels against the source list before dispatch.
+Dispatch rested on labels built from the wrong part of the list. **The problem is that those labels went through to dispatch at step 4 without being matched to the source list.**
 
 ## 3. Timeline — disclosure and response
 
-- **28 September 2026 (Mon)**: notices mailed.
-- **13 October (Tue)**: a resident who received a misdirected notice contacted the Corporation; the error came to light.
-- **16 October**: the Housing Policy Headquarters and the Corporation announced it.
+- **2026-09-28 (Mon)**: notices mailed.
+- **2026-10-13 (Tue)**: a resident who received a misdirected notice contacted the Corporation; the error came to light.
+- **2026-10-16**: the Housing Policy Headquarters and the Corporation announced it.
 
 > Facts here rest on the Tokyo Metropolitan Government press release. The error is described only as quoting the building and unit number "from the wrong part of the list"; which column was mistaken is not given. Figures for mailings, misdirected items and names are the published values and have not been independently verified.
 
-Response:
+### After disclosure
 
 - **Individual contact**: the Corporation is contacting association heads and affected recipients individually to apologise and explain.
 - **Prevention**: stronger checks by multiple staff members.
@@ -75,25 +108,45 @@ The same structure appears in earlier Briefs. In [TOPPAN and Sompo Japan](/criti
 
 > "Checked" and "checkable" are different facts. The first lives in memory; the second is recorded before the action.
 
-## 5. What proof would have changed
+## 5. How to counter this
 
-A single step could sit directly before dispatch: confirming that each label's destination corresponds to the matching row of the source list. The design Lemma offers against this gap is as follows.
+**Operator mistakes cannot be eliminated, but a wrong label can be stopped before dispatch.** Keep a record of which row of the source list each label was built from, and just before dispatch match the labels against the list by a means other than the operator's eyes. Do not send what does not match. When label-making or dispatch is handed to a system or an AI agent, put the same match in front of dispatch.
 
-<ul class="bd-check">
+### Industries and operations to watch
 
-- **Proof that destination matches content**: attach to each label row provenance proof of which row of the source list it was built from, and make the match against the source list checkable directly before dispatch.
-- **Pre-action authorisation**: register in advance the scope of a mailing (type of notice and range of recipients) and make dispatch containing out-of-scope destinations blockable before it runs.
-- **Independent record**: keep the result of the check and which proof the dispatch relied on as a record separate from the operator's actions, so it can be audited later.
+- **Industry · Government & public sector**: Municipalities and affiliated bodies that mail notices to residents or associations in bulk from a roster or list. Notices carry names, roles and other details meant only for the addressee.
+- **Operation · Sending & delivery**: Building addresses from a list, then enclosing, labelling and mailing. An address error does not show until the item has arrived.
 
-</ul>
+The same hole exists wherever mail is produced from a roster: mail-merge addresses, labels built from a spreadsheet, dispatch data prepared by a contractor. In each, shifting one reference in the list shifts every row, and the result still looks plausible to the person who made it.
 
-This differs from after-the-fact contact and stronger staff checking. The detection layer and this layer are complementary, not substitutes: the former notices that an error happened, the latter lets a mailing that could be an error be checked before it runs.
+### Do today's controls close it?
 
-Note: the proof shows only that a label was built from that row of the registered list and that the destination is within the registered scope. It passes when the source list itself is wrong or when the registered scope is wrong. Handling after receipt is outside the proof.
+| Control | Here | Why |
+| --- | --- | --- |
+| Visual checks by multiple staff (the Corporation's prevention plan) | Partial | More chances to notice. But what was compared with what is not recorded, and plausible-looking addresses can still be missed. |
+| Spot checks | Partial | Easy to catch when every row shifted the same way. When only some rows shifted, they pass unless they fall into the sample. |
+| Personal-data handling training | Partial | Raises care. Reference mix-ups happen even when people are careful. |
+| Email misdelivery-prevention tools | Not relevant | They check email recipients and have nothing to do with paper mail. |
+
+### What is needed
+
+1. **Build addresses tied to rows of the source list.** Record, for each label, which row of the list it came from. Reduce manual choice of which column to reference, and make every label traceable back to its row.
+2. **Before dispatch, match every item by a means other than the operator.** Mechanically match each label's destination to its row in the source list, and confirm no destination falls outside the mailing's scope (which notice goes to which recipients). Do not dispatch until the match is done.
+3. **Record the match separately from the operator's actions.** Keep when, against which list, and which labels were matched and let through, in a form you can later show a third party. Hold what does not match, and record why.
+
+### Checklist
+
+Three things to confirm for work that produces mail from a roster or list
+
+- Can each row of the address labels or dispatch data be traced back to the row of the source list it was built from?
+- Before dispatch, does someone or something other than the person who made the labels match every address against the source list? If they do not match, can dispatch be stopped?
+- Is the fact of the match, and what was compared with what, kept as a record rather than in the checker's memory?
+
+Note: this still fails if the source list itself is wrong, or if items are mixed up at the enclosing or labelling stage after the match. Holding dispatch until every item is matched also delays mailings.
 
 ## 6. Sources
 
-- **Tokyo Metropolitan Government, Housing Policy Headquarters (primary, municipal release)**: On the leak of personal information (2026-10-16) — <https://www.metro.tokyo.lg.jp/information/press/2026/10/2026101605>
+- **Tokyo Metropolitan Government, Housing Policy Headquarters (primary, municipal release)**: "On the leak of personal information" (Japanese) (2026-10-16) — <https://www.metro.tokyo.lg.jp/information/press/2026/10/2026101605>
 
 Only the parties' own release serves as primary here; no independent third-party verification or English-language outside reporting has been found, and this is a single source. Japanese media and blogs are not used as sources.
 
