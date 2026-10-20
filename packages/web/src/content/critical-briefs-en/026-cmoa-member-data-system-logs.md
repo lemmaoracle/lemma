@@ -6,7 +6,7 @@ pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [identity-auth]
 incident_date: 2026-10-15
-published: 2026-10-19
+published: 2026-10-20
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["044-arcadia-speecan-raiden-disaster-mail-spoofing", "057-deepseek-clickhouse-exposed-db", "152-denmark-cpr-lawful-access-misuse"]
@@ -28,7 +28,7 @@ key_figures:
   - value: "10-15 → 10-18"
     label: "From service shutdown to the third report, which disclosed the route identified and the logs taken"
   - value: "TBD"
-    label: "Service restart date (as of 19 October)"
+    label: "Service restart date (as of 20 October)"
 glossary:
   - term: "System log"
     desc: "Files that servers and applications write as a record of processing. Depending on what they are designed to write, user identifiers or parts of user input can end up in them."
@@ -83,7 +83,7 @@ The response was quick: the service was down the same day, and the third report,
 - **2026-10-15**: first report. The company judged it highly likely that its servers had been accessed without authorisation from outside, shut the service down at 11:35 and blocked the access.
 - **2026-10-16**: it confirmed unauthorised access to the member-data system and the leak of member data to a third party, and published its second report. It said no new access or further damage had been seen.
 - **2026-10-18**: the third report said the entry route and attack method had been identified and dealt with, and that some system log files had also been read and taken. Citing further safety work and coordination with relevant parties, it gave no restart date.
-- **At writing (10-19)**: no fourth report. The count, the contents of the stolen logs and the entry route remain undisclosed.
+- **At writing (10-20)**: no fourth report. The count, the contents of the stolen logs and the entry route remain undisclosed.
 
 > The facts here come from NTT Solmare's first to third reports. The company says it has identified the entry route and attack method but has not disclosed them. The number of members affected, the scope and contents of the stolen system logs, and the password hashing method have not been disclosed either. The investigation is being carried out with outside specialists; no independent third-party findings have been published.
 
