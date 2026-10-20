@@ -60,14 +60,9 @@ const C = isJa
       cardNote: "架空の機関・本人・操作による構成例。ライブ検証ではありません。",
       cardLink: "カードの例を見る",
       compareTitle: "「許可」の回答から、成立の証明へ。",
-      compareHeaders: ["署名付き認可判断", "Cyber"],
-      comparison: [
-        { label: "受け取るもの", values: ["署名付きの「許可」", "条件成立の証明"] },
-        { label: "実行側の確認", values: ["誰が許可したか", "この操作の条件が成立するか"] },
-        { label: "条件計算", values: ["判断サービスを信頼", "証明で成立を検証"] },
-      ],
-      compareNote:
-        "資格・権限の根拠、回路、検証器が正しいことを前提に、計算担当の回答への信頼を減らす設計です。",
+      compareLabels: ["古典的な認可", "Cyber の証明"],
+      compareSummary: "「許可済み」でも、条件が不成立なら実行させない。",
+      compareNote: "機関・本人・操作を結ぶ証明を、実行の手前で検証する。",
       modes: ["証明ゲートなし", "証明ゲートあり"],
       scenario: "シナリオ",
       scenarios: [
@@ -152,17 +147,9 @@ const C = isJa
       cardNote: "Illustrative institution, person and action. Not a live verification.",
       cardLink: "Explore the sample card",
       compareTitle: "From an answer to evidence.",
-      compareHeaders: ["Signed authorization", "Cyber"],
-      comparison: [
-        { label: "Receive", values: ["Signed permission", "Proof of satisfied conditions"] },
-        { label: "Verify", values: ["Who issued permission", "Conditions for this action hold"] },
-        {
-          label: "Condition evaluation",
-          values: ["Trust the decision service", "Verify the proof"],
-        },
-      ],
-      compareNote:
-        "With correct credential and permission sources, circuits and a verifier, the design reduces trust in the computing party's answer.",
+      compareLabels: ["Classic authorization", "Cyber proof"],
+      compareSummary: "Permission granted. Conditions unmet. Execution stopped.",
+      compareNote: "Verify a proof binding the institution, person and action before execution.",
       modes: ["Without a proof gate", "With a proof gate"],
       scenario: "Scenario",
       scenarios: [
@@ -315,58 +302,39 @@ const attackerModels = [
 
       <section id="cy-difference" class="cy-section" aria-labelledby="cy-difference-title">
         <h2 id="cy-difference-title">{C.compareTitle}</h2>
-        <div class="cy-comparison-wrap">
-          <table class="cy-comparison">
-            <thead
-              ><tr
-                ><td></td>{
-                  C.compareHeaders.map((header, index) => (
-                    <th scope="col" class:list={{ "cy-proof-column": index === 1 }}>
-                      {index === 1 ? (
-                        <svg
-                          class="cy-compare-icon"
-                          width="42"
-                          height="46"
-                          viewBox="0 0 42 46"
-                          fill="none"
-                          aria-hidden="true"
-                        >
-                          <rect x="7" y="4" width="28" height="38" rx="5" />
-                          <path d="m14 23 5 5 10-12" />
-                        </svg>
-                      ) : (
-                        <svg
-                          class="cy-compare-icon"
-                          width="42"
-                          height="46"
-                          viewBox="0 0 42 46"
-                          fill="none"
-                          aria-hidden="true"
-                        >
-                          <rect x="7" y="4" width="28" height="38" rx="5" />
-                          <path d="M13 15h16M13 21h12m-12 9 4-4 3 5 7-4" />
-                        </svg>
-                      )}
-                      <span>{header}</span>
-                    </th>
-                  ))
-                }</tr
-              ></thead
-            ><tbody
-              >{
-                C.comparison.map((row) => (
-                  <tr>
-                    <th scope="row">{row.label}</th>
-                    {row.values.map((value, index) => (
-                      <td class:list={{ "cy-proof-column": index === 1 }}>{value}</td>
-                    ))}
-                  </tr>
-                ))
-              }</tbody
-            >
-          </table>
-        </div>
-        <p class="cy-note">{C.compareNote}</p>
+        <figure class="cy-key-diagram" aria-describedby="cy-difference-caption">
+          <div class="cy-key-flow">
+            <div class="cy-difference-item">
+              <div class="cy-symbol-stage" aria-hidden="true">
+                <svg class="cy-key-shape" width="96" height="116" viewBox="0 0 96 116" fill="none">
+                  <circle cx="40" cy="28" r="22" stroke-width="10"></circle>
+                  <path d="M40 50v58m0-28h22m-22 22h22" stroke-width="12"></path>
+                </svg>
+              </div>
+              <span>{C.compareLabels[0]}</span>
+            </div>
+            <span class="cy-difference-arrow" aria-hidden="true">→</span>
+            <div class="cy-difference-item">
+              <div class="cy-symbol-stage" aria-hidden="true">
+                <div class="cy-proof-shape">
+                  <span class="cy-mini-wordmark">LEMMA</span>
+                  <svg width="80" height="26" viewBox="0 0 80 26" fill="none">
+                    <path d="M17 13h17m12 0h17"></path>
+                    <circle cx="11" cy="13" r="6"></circle>
+                    <circle cx="40" cy="13" r="6"></circle>
+                    <circle cx="69" cy="13" r="6"></circle>
+                  </svg>
+                  <span class="cy-mini-proof">ZK PROOF <span>✓</span></span>
+                </div>
+              </div>
+              <span>{C.compareLabels[1]}</span>
+            </div>
+          </div>
+          <figcaption id="cy-difference-caption">
+            <strong>{C.compareSummary}</strong>
+            <span>{C.compareNote}</span>
+          </figcaption>
+        </figure>
       </section>
 
       {
@@ -497,9 +465,15 @@ const attackerModels = [
         <h2 id="cy-uses-title">{C.usesTitle}</h2>
         <div class="cy-cards">
           {
-            C.uses.map((use) => (
+            C.uses.map((use, index) => (
               <a class="cy-example-card" href={L(`/cyber/verify/?card=${use.key}`)}>
                 <>
+                  <span class="cy-use-top">
+                    <>
+                      <span>LEMMA / CYBER</span>
+                      <span>0{index + 1}</span>
+                    </>
+                  </span>
                   <span class="cy-use-symbol" aria-hidden="true">
                     {use.symbol}
                   </span>
@@ -647,7 +621,21 @@ const attackerModels = [
     text-wrap: pretty;
   }
 
-  /* A straight silver card; its connected diagram stays completely readable. */
+  /* Shared brushed silver finish, with fine diagonal grooves and a raised edge. */
+  .cy-plate,
+  .cy-proof-shape,
+  .cy-example-card {
+    border: 1px solid #ffffffb3;
+    color: #1e293b;
+    background:
+      repeating-linear-gradient(115deg, #0f172a0d 0 1px, transparent 1px 4px),
+      linear-gradient(135deg, #fff, #e2e8f0 48%, #f8fafc 76%, #cbd5e1);
+    box-shadow:
+      inset 0 1px 0 #fff,
+      0 2px 0 #64748b,
+      0 4px 0 #e2e8f0,
+      0 20px 40px -18px #000b;
+  }
   .cy-plate-stage {
     max-width: 560px;
     margin: 44px auto 0;
@@ -655,14 +643,7 @@ const attackerModels = [
   .cy-plate {
     position: relative;
     padding: 25px 28px 0;
-    border: 1px solid #f0f2e8a6;
     border-radius: 16px;
-    color: #2d342c;
-    background: linear-gradient(120deg, #f4f5ef, #e0e4da 36%, #f2f4ed 70%, #d6ddd0);
-    box-shadow:
-      inset 0 1px 0 #fff,
-      0 2px 0 #89917e,
-      0 20px 48px -22px #000b;
   }
   .cy-card-top {
     display: flex;
@@ -757,7 +738,7 @@ const attackerModels = [
     top: 11px;
     padding-inline: 12px;
     color: #5e7050;
-    background: #e8ece2;
+    background: #edf1f6;
     font-size: 10px;
     line-height: 1.8;
   }
@@ -825,49 +806,93 @@ const attackerModels = [
     font-size: 11px;
   }
 
-  .cy-comparison-wrap {
-    max-width: 720px;
+  .cy-key-diagram {
+    margin: 42px 0 0;
+  }
+  .cy-key-flow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr);
+    align-items: center;
+    max-width: 520px;
     margin-inline: auto;
   }
-  .cy-comparison {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
+  .cy-difference-item {
+    display: grid;
+    justify-items: center;
+    gap: 20px;
+    min-width: 0;
+    color: #bac1af;
     font-size: 13px;
   }
-  .cy-comparison th,
-  .cy-comparison td {
-    padding: 20px 16px;
-    border-bottom: 1px solid #3c4432;
+  .cy-symbol-stage {
+    width: 100%;
+    height: 126px;
+    display: grid;
+    place-items: center;
+  }
+  .cy-key-shape {
+    stroke: #bac1af;
+  }
+  .cy-difference-arrow {
+    align-self: start;
+    padding-top: 45px;
+    color: #879376;
+    font:
+      28px/1 "Space Grotesk",
+      sans-serif;
+  }
+  .cy-proof-shape {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 156px;
+    max-width: calc(100% - 12px);
+    height: 100px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    transform: rotate(-6deg);
+    text-align: left;
+  }
+  .cy-mini-wordmark {
+    font:
+      9px/1 "Space Mono",
+      monospace;
+    letter-spacing: 0.12em;
+  }
+  .cy-proof-shape svg {
+    align-self: center;
+    stroke: #64748b;
+    stroke-width: 1;
+  }
+  .cy-mini-proof {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #64748b;
+    font:
+      7px/1 "Space Mono",
+      monospace;
+    letter-spacing: 0.08em;
+  }
+  .cy-mini-proof > span {
+    font-size: 11px;
+    color: #4d6140;
+  }
+  .cy-key-diagram figcaption {
+    display: grid;
+    gap: 8px;
+    margin: 34px auto 0;
+    max-width: 540px;
+    text-wrap: balance;
+  }
+  .cy-key-diagram figcaption strong {
+    color: #dde5d2;
+    font-size: 14px;
     font-weight: 400;
   }
-  .cy-comparison thead th {
-    font-size: 15px;
-    padding-block: 8px 24px;
-  }
-  .cy-comparison thead td,
-  .cy-comparison tbody th {
-    width: 24%;
-    text-align: left;
-    color: #929f83;
+  .cy-key-diagram figcaption > span {
+    color: #929c85;
     font-size: 11px;
-    padding-left: 4px;
-  }
-  .cy-compare-icon {
-    display: block;
-    margin: 0 auto 18px;
-    stroke: #89977a;
-    stroke-width: 1.2;
-  }
-  .cy-comparison .cy-proof-column {
-    color: #d4edb5;
-    background: #b4d98a05;
-  }
-  .cy-proof-column .cy-compare-icon {
-    stroke: #b3dc85;
-  }
-  .cy-comparison thead .cy-proof-column {
-    color: #a8e010;
   }
 
   .cy-mode,
@@ -1112,11 +1137,27 @@ const attackerModels = [
     align-items: center;
     min-width: 0;
     padding: 28px 20px;
-    border: 1px solid #454e39;
     border-radius: 12px;
   }
+  .cy-page .cy-example-card {
+    color: #1e293b;
+    text-shadow: 0 1px 0 #ffffffb3;
+  }
+  .cy-use-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 24px;
+    color: #64748b;
+    font:
+      8px/1.5 "Space Mono",
+      monospace;
+    letter-spacing: 0.08em;
+  }
   .cy-use-symbol {
-    color: #b7c5a4;
+    color: #64748b;
     font:
       500 28px/1.2 "Space Grotesk",
       sans-serif;
@@ -1135,18 +1176,18 @@ const attackerModels = [
     list-style: none;
     padding: 0;
     margin: 0 0 26px;
-    color: #a9b49b;
+    color: #475569;
     font-size: 11px;
   }
   .cy-example-card li + li::before {
     content: "×";
-    color: #6d7f5a;
+    color: #94a3b8;
     padding-inline: 7px;
   }
   .cy-use-link {
     margin-top: auto;
     font-size: 11px;
-    color: #c6cfb9;
+    color: #334155;
   }
   .cy-close {
     border-top: 1px solid #3e4435;
@@ -1250,25 +1291,42 @@ const attackerModels = [
       max-width: 32em;
       margin-inline: auto;
     }
-    .cy-comparison {
+    .cy-key-flow {
+      grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
+    }
+    .cy-difference-item {
+      gap: 16px;
       font-size: 11px;
     }
-    .cy-comparison th,
-    .cy-comparison td {
-      padding: 16px 8px;
+    .cy-proof-shape {
+      width: 122px;
+      height: 80px;
+      padding: 11px 12px;
+      border-radius: 8px;
     }
-    .cy-comparison thead th {
-      font-size: 12px;
+    .cy-mini-wordmark {
+      font-size: 8px;
     }
-    .cy-comparison thead td,
-    .cy-comparison tbody th {
-      width: 24%;
+    .cy-proof-shape svg {
+      width: 65px;
+      height: 21px;
+    }
+    .cy-mini-proof {
+      font-size: 6px;
+    }
+    .cy-key-shape {
+      width: 78px;
+      height: 96px;
+    }
+    .cy-difference-arrow {
+      font-size: 23px;
+      padding-top: 49px;
+    }
+    .cy-key-diagram figcaption strong {
+      font-size: 13px;
+    }
+    .cy-key-diagram figcaption > span {
       font-size: 10px;
-      padding-left: 0;
-    }
-    .cy-compare-icon {
-      width: 34px;
-      height: 38px;
     }
     .cy-note {
       font-size: 10px;
@@ -1359,9 +1417,6 @@ const attackerModels = [
     .cy-node {
       padding-inline: 5px;
       font-size: 9px;
-    }
-    .cy-comparison {
-      font-size: 10px;
     }
   }
 </style>
