@@ -1,7 +1,7 @@
 ---
 brief_no: 69
-title: "ConnectWise：ベンダーのアプリ資格情報が悪用され、顧客の Microsoft 365 テナントで自らに管理者権限が付与された(Huntress 調査・ConnectWise 発表) — 同意済みのアプリ ID による操作を、実行の前に「ベンダーが意図した操作か」確かめる層が無い"
-title_en: "ConnectWise: A vendor's app credential was abused to sign in to customer Microsoft 365 tenants and grant itself Global Administrator (Huntress research, ConnectWise advisory) — No layer checks, before it runs, whether an action by a consented app identity is one the vendor intended"
+title: "ConnectWise：ベンダーのアプリ資格情報が悪用されて顧客の Microsoft 365 テナントにサインインされ、同じ日にアプリ ID による管理者権限の自己付与も確認された(Huntress 調査・ConnectWise 発表) — 同意済みのアプリ ID による操作を、実行の前に「ベンダーが意図した操作か」確かめる層が無い"
+title_en: "ConnectWise: A vendor's app credential was abused to sign in to customer Microsoft 365 tenants, and on the same day app identities were seen granting themselves Global Administrator (Huntress research, ConnectWise advisory) — No layer checks, before it runs, whether an action by a consented app identity is one the vendor intended"
 pillar: 03-agent-authority
 primary_category: identity-auth
 secondary_categories: [agent-infrastructure]
@@ -27,9 +27,9 @@ impact: "約 1,000 テナントでサインイン活動、300 超で成功"
 
 ## 1. TL;DR
 
-2026 年 10 月、ConnectWise の Cloud Backup（旧 SkyKick）をはじめとするアプリの資格情報が悪用され、顧客の Microsoft 365（Entra ID）テナントへの不正なサインインが起きた。Huntress の調査では、攻撃元の IP からのサインイン活動が約 1,000 テナントで確認され、300 超で成功している。一部のテナントでは、ConnectWise のアプリ ID が自らを Global Administrator に付与し、他のアプリにクライアントシークレットを追加した。ConnectWise は 10 月 17 日に 7 つのアプリ ID を無効化し、Cloud Backup を停止した。
+2026 年 10 月、ConnectWise の Cloud Backup（旧 SkyKick）をはじめとするアプリの資格情報が悪用され、顧客の Microsoft 365（Entra ID）テナントへの不正なサインインが起きた。Huntress の調査では、攻撃元の IP からのサインイン活動が約 1,000 テナントで確認され、300 超で成功している。同じ日、一部のテナントでは、ConnectWise Cloud Management 系のアプリ ID が自らを Global Administrator に付与し、他のアプリにクライアントシークレットを追加した（Huntress は、この操作をサインインと同じ攻撃者のものとは結びつけていない）。ConnectWise は 10 月 17 日に 7 つのアプリ ID を無効化し、Cloud Backup を停止した。資格情報の露出経路は未解明で、インシデントは継続中である。
 
-異常には気づいていた。ConnectWise は 10 月 14 日に不正アクセスを発見し、Huntress は自社が監視するテナントで挙動を捉えた。ただし、アプリ ID の無効化は 10 月 17 日で、その間の 15 日にも、アプリによる管理者権限の付与が起きている。<strong>効かなかったのは、顧客が同意したアプリ ID の操作を、実行の前に「ベンダーが意図した操作か」独立に確かめる層である。</strong>資格情報の露出経路は未解明で、インシデントは継続中である。
+異常には気づいていた。ConnectWise は 10 月 14 日に不正アクセスを発見し、Huntress は自社が監視するテナントで挙動を捉えた。ただし、アプリ ID の無効化は 10 月 17 日で、その間の 15 日にも、アプリ ID による管理者権限の自己付与が起きている。<strong>効かなかったのは、顧客が同意したアプリ ID の操作を、実行の前に「ベンダーが意図した操作か」独立に確かめる層である。</strong>
 
 ## 2. 何が起きたか
 
@@ -43,9 +43,11 @@ impact: "約 1,000 テナントでサインイン活動、300 超で成功"
 事案は次の連鎖で成立している。
 
 1. 顧客テナントの管理者が、ConnectWise 製アプリに同意し、権限を与えていた。
-2. 何らかの経路で、そのアプリ ID の資格情報が攻撃者の手に渡った（経路は未解明）。
-3. 攻撃者がアプリとして認証し、Graph のトークンを得て、テナントを順に処理した。
-4. 一部のテナントで、アプリが自らに Global Administrator を付与し、他のアプリに資格情報を追加した。
+2. 何らかの経路で、Cloud Backup のアプリ ID の資格情報が攻撃者の手に渡った（経路は未解明）。
+3. 10 月 15 日 01:58（UTC）以降、一部のテナントで、Cloud Management 系のアプリ ID が自らにディレクトリロールを付与し、ある顧客テナントでは Global Administrator になって、他のアプリに資格情報を追加した。
+4. 同日 06:13（UTC）以降、攻撃元の IP が Cloud Backup のアプリとして認証し、Graph のトークンを得て、テナントを順に処理した。
+
+Huntress は、3 の操作を 4 と同じ攻撃者のものとは結びつけていない。
 
 この連鎖のうち、取り返しがつかなくなった実行は、3 と 4 の操作である。権限の根拠は、管理者がアプリに与えた同意であり、その操作がベンダーの意図したものか、誰が実行しているかは、実行の時点で顧客側から確かめる手段が示されていない。
 
@@ -53,12 +55,12 @@ impact: "約 1,000 テナントでサインイン活動、300 超で成功"
 
 - **2026-10-13〜14**: 同一の IP から、法律事務所の 4 テナントへのパスワードスプレー（成功したユーザーサインインは確認されていない）。
 - **2026-10-14**: ConnectWise が不正アクセスを発見（同社 advisory）。
-- **2026-10-15**: 01:58（UTC）以降、約 50 の監視テナントで、ConnectWise Cloud Management のサービスプリンシパルが自らにディレクトリロールを付与。03:44〜03:49 には、ある顧客テナントで Teams アプリが Global Administrator になり、Python のスクリプトで 2 つの別アプリにクライアントシークレットを追加した。06:13〜08:34 に、同じ IP がアプリとして認証し、Graph のトークンを得た。
+- **2026-10-15**: 01:58（UTC）以降、約 50 の監視テナントで、ConnectWise Cloud Management のサービスプリンシパルが自らにディレクトリロールを付与。03:44〜03:49 には、ある顧客テナントで ConnectWise Cloud Management の MS Teams アプリが Global Administrator になり、Python のスクリプトで 2 つの別アプリにクライアントシークレットを追加した。06:13〜08:34 に、同じ IP がアプリとして認証し、Graph のトークンを得た。
 - **2026-10-16**: Huntress が公表。162 テナントを確認。ConnectWise が advisory を公開（17:47 UTC）。Huntress は、パートナーのテナントで自社アプリに追加された不正な資格情報を削除した。
 - **2026-10-17**: 05:00（UTC）に ConnectWise が封じ込めの措置を始め、07:00 に 7 つのアプリ ID を無効化し、Cloud Backup を停止。Microsoft Threat Intelligence が X で注意を呼びかけ。Huntress が約 1,000 テナントの活動を報告。
 - **2026-10-19〜20**: Huntress と ConnectWise が更新を続けている。10 月 20 日 00:45（UTC）の更新の時点で、3 つのサービスは停止したままである。
 
-> 本件の事実は、Huntress（調査主体の自己公表）と ConnectWise の公式 advisory に拠る。Microsoft の見立ては、同社 Threat Intelligence の X の投稿と The Hacker News の報道に拠る。次の点は未確認または未解明である。資格情報の露出経路、製品の脆弱性が寄与したか（ConnectWise は「確認されていない」としている）、第 2 段階の操作を第 1 段階と同じ攻撃者が行ったか（Huntress は結びつけていない）。Graph のディレクトリ読み取りは監査記録を残さないため、アクセスがなかったとは言い切れない。
+> 本件の事実は、Huntress（調査主体の自己公表）と ConnectWise の公式 advisory に拠る。Microsoft の見立ては、同社 Threat Intelligence の X の投稿と The Hacker News の報道に拠る。次の点は未確認または未解明である。資格情報の露出経路、製品の脆弱性が寄与したか（ConnectWise は「確認されていない」としている）、ロールの自己付与の操作を、サインインと同じ攻撃者が行ったか（Huntress は結びつけていない）。Graph のディレクトリ読み取りは監査記録を残さないため、アクセスがなかったとは言い切れない。
 
 ## 4. なぜ止まらなかったか
 

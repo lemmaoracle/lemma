@@ -1,7 +1,7 @@
 ---
 brief_no: 134
-title: "東京都住宅供給公社：Excel 一覧から作った宛名ラベルの列が誤り、都営住宅の自治会長 770 名の氏名が別の住民に届いた(東京都発表) — 発送の前に、宛先と一覧の対応が確かめられなかった誤送付"
-title_en: "Tokyo Metropolitan Housing Supply Corporation: A wrong column in an Excel-built label list sent the names of 770 public-housing residents' association heads to other residents (Tokyo Metropolitan Government announcement) — A misdirected mailing, with no check before dispatch that the labels matched the list"
+title: "東京都住宅供給公社：Excel 一覧から宛名ラベルを作る際に住棟・号室を誤った部分から取り、都営住宅の自治会長 770 名の氏名が別の住民に届いた(東京都発表) — 宛先と一覧の対応を、発送の前に確かめる層が無い"
+title_en: "Tokyo Metropolitan Housing Supply Corporation: Address labels built from the wrong part of an Excel list sent the names of 770 public-housing residents' association heads to other residents (Tokyo Metropolitan Government announcement) — nothing checks, before dispatch, that the labels match the list"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: []
@@ -29,7 +29,7 @@ impact: "Names of 770 association heads reached other residents"
 
 On 28 September 2026, the Tokyo Metropolitan Housing Supply Corporation mailed 1,997 copies of a notice about a change in how to apply for drain-pipe cleaning to the residents' association heads of Tokyo public housing complexes. In 846, the address was wrong, and 770 reached residents other than the intended recipients. What arrived was the names of 770 public-housing residents' association heads. The Corporation and the Tokyo Housing Policy Headquarters announced it on 16 October. It was not a cyberattack. When building address labels from an Excel list, staff took the building and unit numbers from the wrong part of the list and attached the labels without noticing.
 
-It was a resident, not the Corporation, who noticed the error. <strong>What did not work was a layer that checks, apart from the operator and directly before dispatch, that destination and list match.</strong> It surfaced 15 days after mailing.
+It was a resident, not the Corporation, who noticed the error, 15 days after mailing. <strong>What did not work was a layer that checks, apart from the operator and directly before dispatch, that destination and list match.</strong>
 
 ## 2. What happened
 
@@ -46,7 +46,7 @@ The chain was as follows.
 3. The error went unnoticed and the labels were attached.
 4. The mailed notices reached residents other than the intended recipients.
 
-The irreversible action was step 4, dispatch. It rested on labels built with a wrong column, and apart from the operator's own eyes nothing checked at dispatch whether the labels matched the source list.
+The irreversible action was step 4, dispatch. It rested on labels built from the wrong part of the list. The announcement does not say whether any step checked the labels against the source list before dispatch.
 
 ## 3. Timeline — disclosure and response
 
@@ -67,7 +67,7 @@ From mailing to discovery was 15 days; from discovery to announcement, 3. The si
 
 The failure is neither operator skill nor outside attack. Dispatch ran with no means of checking that the label content matched the source list.
 
-That is the **gap between detection and proof**. It was a resident, not the Corporation, who noticed, calling 15 days after mailing. What failed sits before that. Directly before dispatch, nothing checked, apart from the operator's eyes and memory, whether these labels matched the list.
+That is the **gap between detection and proof**. It was a resident, not the Corporation, who noticed, calling 15 days after mailing. What failed sits before that. As far as the announcement shows, nothing directly before dispatch checked, apart from the operator's eyes and memory, whether these labels matched the list.
 
 The Corporation's prevention plan is stronger checking by multiple staff. More checkers help, but they do not leave a verifiable record that a check happened or what was compared with what. A human check remains the checker's memory and the fact of having checked.
 

@@ -28,7 +28,7 @@ impact: "Up to 22.52 million member records may have leaked"
 
 From around 10:00 JST on 9 October 2026, a third party accessed Sourcenext's member-information system and retrieved registered data through a member-information API. On 15 October the company said up to 22,519,960 member records may have leaked. Possible fields include email address, password, name, address, phone number and date of birth. Credit card data was not held in the affected system.
 
-Once the access was confirmed, the response was quick. The company confirmed it around 09:00 on 13 October and completed containment by 13:36 that day. <strong>What did not work was a layer that checks, per call, whether a member-information API call stays within the right party, purpose and volume.</strong> About four days passed between start and confirmation.
+About four days passed between the start of retrieval and confirmation. Once the access was confirmed, the response was quick. The company confirmed it around 09:00 on 13 October and completed containment by 13:36 that day. <strong>What did not work was a layer that checks, per call, whether a member-information API call stays within the right party, purpose and volume.</strong>
 
 ## 2. What happened
 
@@ -41,7 +41,7 @@ Once the access was confirmed, the response was quick. The company confirmed it 
 
 The chain was as follows.
 
-1. An API that returns member information was reachable from outside.
+1. As far as the disclosures show, an API that returns member information was usable by a third party (how it was reached is undisclosed).
 2. From around 10:00 on 9 October, a third party used it to retrieve registered data.
 3. Around 09:00 on 13 October the company confirmed the access and by 13:36 had completed containment, including blocking unauthorised external traffic.
 
@@ -65,7 +65,7 @@ Response:
 
 ## 4. Why it wasn't stopped
 
-The failure is not only that outside traffic reached an internal API. A lawful function, returning member information, passed repeatedly with no check, per call, of who was calling, for what, and at what volume.
+The failure is not only that a third party reached the member-information API. As far as the disclosures show, a lawful function, returning member information, was used for about four days with no check of who was calling, for what, and at what volume.
 
 That is the **gap between detection and proof**. Once confirmed, the response was quick: the company contained the access the same day. But confirmation came about four days after retrieval began. What failed sits before that. That an API can return member data and that this call is permitted are different facts, and in what has been published nothing checks the latter directly before the call. A store of more than 20 million records stayed retrievable for about four days.
 

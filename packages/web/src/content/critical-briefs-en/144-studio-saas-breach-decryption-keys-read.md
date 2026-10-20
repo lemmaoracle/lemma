@@ -28,7 +28,7 @@ attack_method: "supply-chain"
 
 From 30 September to 1 October 2026, a third party exploited a vulnerability in some functions of Studio, a no-code website-building service, to enter the cloud environment of its operator, Studio Inc. Studio published a first notice on 16 October and updated it on 18 October. What may have been exposed includes all registered users' account data (with hashed passwords), form submissions, and API keys and tokens for connected services, and <strong>the keys needed to decrypt encrypted data were read in the same intrusion</strong>. Studio says it has no confirmation that data was actually retrieved, but is responding as if it had been.
 
-Once the intrusion was confirmed, the response was quick. Studio confirmed it in an internal investigation on 13 October and fixed the vulnerability on 13–14 October. But confirmation came about 12 days after the unauthorised access. <strong>What did not work was a layer that checks, at the moment of reading, whether a read of entrusted data, keys and connected-service credentials is by a permitted party within a permitted scope.</strong> Downstream, the inquiry and form data of companies running their sites on Studio, including Link-U Group and Raksul, was affected. Studio says the number of affected records will come in a follow-up.
+Downstream, the inquiry and form data of companies running their sites on Studio, including Link-U Group and Raksul, was affected. Studio says the number of affected records will come in a follow-up. Once the intrusion was confirmed, the response was quick. Studio confirmed it in an internal investigation on 13 October and fixed the vulnerability on 13–14 October. But confirmation came 12–13 days after the unauthorised access (30 September to 1 October). <strong>What did not work was a layer that checks, at the moment of reading, whether a read of entrusted data, keys and connected-service credentials is by a permitted party within a permitted scope.</strong>
 
 ## 2. What happened
 
@@ -36,7 +36,7 @@ Once the intrusion was confirmed, the response was quick. Studio confirmed it in
 - **Nature of access**: a third party exploited a vulnerability in some Studio functions, reached the cloud environment and was able to retrieve data externally (Studio). The kind of vulnerability and the entry point are not disclosed.
 - **Period**: the unauthorised access confirmed so far ran from 30 September to 1 October (JST). Studio says the state continued until it dealt with it on 14 October.
 - **Data that may be affected**: all registered users' usernames, email addresses and hashed passwords; design-editor and CMS content; form submissions (including those in the trash, test submissions and submissions over plan limits; attachments by file name only); reCAPTCHA v3 settings, webhook URLs and live-preview URLs; API keys and tokens for connected services, passwords for protected pages, Google Sheets integration credentials and custom-proxy keys; and email, username and estimated country of Studio AI early-access applicants (December 2022 to August 2023), including people without accounts.
-- **Keys**: the keys needed to decrypt encrypted data were read in the same unauthorised access, so encrypted content may also have been seen (Studio).
+- **Keys**: the keys needed to decrypt encrypted data were read in the same unauthorised access, so form submissions, external-service API keys and tokens, Google Sheets integration credentials, custom-proxy keys, reCAPTCHA v3 settings and webhook URLs may have been seen even where stored encrypted (Studio).
 - **Not confirmed**: actual retrieval of data, tampering or deletion. Secondary harm is under investigation. The number of affected users and records has not been published.
 
 The chain was as follows.
@@ -56,9 +56,9 @@ The irreversible actions were steps 2 and 3. The entrusted data and the keys tha
 - **14 October**: the externally retrievable state ended; Google Sheets integration keys updated.
 - **16 October**: first notice; email to users who may be affected. Customer companies including Link-U Group (timely disclosure) and Raksul announced their own impact from that day.
 - **17 October**: encryption keys switched to new keys; guidance on reporting to the Personal Information Protection Commission for form users.
-- **18 October**: update with step-by-step guidance for each integration (Google Sheets, custom proxies, reCAPTCHA v3 and others).
+- **18 October**: update revising the Google Sheets and custom-proxy steps and adding how reCAPTCHA v3 is handled (no blanket secret-key replacement requested).
 
-> Facts here rest on Studio's official notice (first notice of 16 October, updated 18 October) and the official statements of customer companies. The entry point (which function, which vulnerability), what was actually retrieved, and the findings of an outside investigator have not been disclosed. "About 12 days to detection" is the gap between the start of the confirmed unauthorised access (30 September) and the date of confirmation in the internal investigation (13 October); what triggered confirmation is not disclosed.
+> Facts here rest on Studio's official notice (first notice of 16 October, updated 18 October) and the official statements of customer companies. The entry point (which function, which vulnerability), what was actually retrieved, and the findings of an outside investigator have not been disclosed. "12–13 days" is the gap between the confirmed unauthorised access (30 September to 1 October) and the date of confirmation in the internal investigation (13 October); what triggered confirmation is not disclosed.
 
 Downstream impact can be seen in customer companies' official statements.
 
@@ -67,17 +67,17 @@ Downstream impact can be seen in customer companies' official statements.
 
 Response:
 
-- **Keys and credentials replaced**: encryption keys were switched on 17 October and re-encryption of earlier data is in progress. Write-capable connected-service credentials were invalidated, and operation logs show no record of changes or deletions to customer data (as of 18 October).
-- **Requests to users**: change Studio passwords (not needed for Google- or Facebook-only login), change reused passwords, reissue live-preview URLs, reconnect Google Sheets and replace custom-proxy keys.
+- **Keys and credentials replaced**: encryption keys were switched on 17 October and re-encryption of earlier data is in progress. Credentials obtained by the third party, including some with permission to modify data, were invalidated, and the record of operations under them shows no changes or deletions to design-editor or CMS content (as of 18 October).
+- **Requests to users**: change Studio passwords (not needed for Google- or Facebook-only login), change reused passwords, delete live-preview URLs (reissuing if needed). Per-feature emails cover switching API-integration keys, changing protected-page passwords, reconnecting Google Sheets, replacing custom-proxy keys and switching webhook destination URLs.
 - **Reporting and investigation**: reports to the Personal Information Protection Commission and other authorities are under way; an outside specialist is being arranged.
 
 ## 4. Why it wasn't stopped
 
 The failure is not a customer's mismanagement. Many companies entrusted site data, form submissions and connected-service credentials to the environment of one provider, and once that environment was breached none of them had a way to check what was read.
 
-That is the **gap between detection and proof**. Once confirmed, the response was quick: Studio fixed the vulnerability within two days. But confirmation came about 12 days after the access. What failed sits before that. "The data is encrypted" and "the key that opens it cannot be read from the same environment" are different facts, and here the keys were read in the same intrusion. Encryption does not stop retrieval by a party that can read the key from the same environment.
+That is the **gap between detection and proof**. Once confirmed, the response was quick: Studio fixed the vulnerability within two days. But confirmation came 12–13 days after the access. What failed sits before that. "The data is encrypted" and "the key that opens it cannot be read from the same environment" are different facts, and here the keys were read in the same intrusion. Encryption does not stop retrieval by a party that can read the key from the same environment.
 
-Studio's decision to respond as if the data had been taken is sound. The result, though, is that customers, unable to confirm what was taken, must change passwords, rotate keys and notify across the board. Link-U and Raksul can only write that a leak "cannot be ruled out" because the record of retrieval is invisible from the customer side.
+Studio's decision to respond as if the data had been taken is sound. The result, though, is that customers, unable to confirm what was taken, must change passwords, rotate keys and notify across the board. Studio itself cannot confirm whether anything was retrieved; Link-U writes that a leak "cannot be ruled out" and Raksul that data "may have leaked". Customers have no record of their own to check what was read.
 
 The same structure appears in earlier Briefs. In [Sumsub](/critical/briefs/086-sumsub-support-environment-breach/), an identity vendor's support environment went unnoticed for 18 months. In [Salesloft Drift](/critical/briefs/064-salesloft-drift-oauth-salesforce/), one integration's stolen OAuth tokens queried over 700 Salesforce environments. In each, the environment lies out of the customer's sight and no independent check sat at the moment of reading.
 
