@@ -1,7 +1,7 @@
 ---
 brief_no: 69
-title: "ConnectWise：ベンダーのアプリ資格情報が悪用され、顧客の Microsoft 365 テナントで自らに管理者権限が付与された — 同意済みのアプリ ID による操作を、実行の前に「ベンダーが意図した操作か」確かめる層が無い"
-title_en: "ConnectWise: A vendor's app credential was abused to sign in to customer Microsoft 365 tenants and grant itself Global Administrator — No layer checks, before it runs, whether an action by a consented app identity is one the vendor intended"
+title: "ConnectWise：ベンダーのアプリ資格情報が悪用され、顧客の Microsoft 365 テナントで自らに管理者権限が付与された(Huntress 調査・ConnectWise 発表) — 同意済みのアプリ ID による操作を、実行の前に「ベンダーが意図した操作か」確かめる層が無い"
+title_en: "ConnectWise: A vendor's app credential was abused to sign in to customer Microsoft 365 tenants and grant itself Global Administrator (Huntress research, ConnectWise advisory) — No layer checks, before it runs, whether an action by a consented app identity is one the vendor intended"
 pillar: 03-agent-authority
 primary_category: identity-auth
 secondary_categories: [agent-infrastructure]
@@ -29,7 +29,7 @@ impact: "約 1,000 テナントでサインイン活動、300 超で成功"
 
 2026 年 10 月、ConnectWise の Cloud Backup（旧 SkyKick）をはじめとするアプリの資格情報が悪用され、顧客の Microsoft 365（Entra ID）テナントへの不正なサインインが起きた。Huntress の調査では、攻撃元の IP からのサインイン活動が約 1,000 テナントで確認され、300 超で成功している。一部のテナントでは、ConnectWise のアプリ ID が自らを Global Administrator に付与し、他のアプリにクライアントシークレットを追加した。ConnectWise は 10 月 17 日に 7 つのアプリ ID を無効化し、Cloud Backup を停止した。
 
-検出は効いていた。ConnectWise は 10 月 14 日に異常を検知し、Huntress は自社が監視するテナントで挙動を捉えた。<strong>効かなかったのは、顧客が同意したアプリ ID の操作を、実行の前に「ベンダーが意図した操作か」独立に確かめる層である。</strong>資格情報の露出経路は未解明で、インシデントは継続中である。
+異常には気づいていた。ConnectWise は 10 月 14 日に不正アクセスを発見し、Huntress は自社が監視するテナントで挙動を捉えた。ただし、アプリ ID の無効化は 10 月 17 日で、その間の 15 日にも、アプリによる管理者権限の付与が起きている。<strong>効かなかったのは、顧客が同意したアプリ ID の操作を、実行の前に「ベンダーが意図した操作か」独立に確かめる層である。</strong>資格情報の露出経路は未解明で、インシデントは継続中である。
 
 ## 2. 何が起きたか
 
@@ -37,8 +37,8 @@ impact: "約 1,000 テナントでサインイン活動、300 超で成功"
 - **資格情報の悪用**: Huntress によれば、Cloud Backup のアプリ ID の資格情報（クライアントアサーション）が、顧客テナントへのサインインに使われた。個々の顧客のパスワードは不要で、アプリとして Microsoft Entra ID からトークンを得る形である。
 - **規模**: Huntress は 10 月 16 日時点で 162 テナント、その後 173 テナントで不正なサインインを確認した。10 月 17 日には、攻撃元 IP のサインイン活動が約 1,000 テナントにあり、300 超で成功したと報告している。資格情報は、アプリに同意した全テナントで通るため、実際の影響はさらに広い可能性がある。
 - **第 2 波**: 政策、国家安全保障、通商、重要鉱物の分野の 16 テナントを狙う標的型の試行があり、多くはアプリが導入されていないため失敗した。
-- **ConnectWise の対応**: 7 つのアプリ ID を無効化し、関連する証明書を失効させ、Cloud Backup を停止した。SaaS Security と Cloud Management はオフラインにして調査を続けている。無効化は「テナント内で既に行われた変更を元に戻さない」と説明している。
-- **Microsoft の見立て**: THN の報道によれば、Microsoft は本件を、信頼されたアプリの侵害による「活発なサプライチェーン攻撃」と説明し、`Directory.ReadWrite.All` のような権限の悪用を指摘している（Microsoft の一次発表は未確認）。
+- **ConnectWise の対応**: 10 月 17 日 07:00（UTC）に 7 つのアプリ ID を無効化し、関連する証明書を失効させ、Cloud Backup を停止した。Cloud Backup と連携する SaaS Security と Cloud Management も、予防として停止している。無効化は「テナント内で既に行われた変更を元に戻さない」とし、発行済みのアクセストークンは失効するまで使える可能性があると説明している（同社 advisory）。
+- **Microsoft の見立て**: Microsoft Threat Intelligence は 10 月 17 日の X の投稿で、本件を、信頼された OAuth アプリの侵害による「活発なサプライチェーン攻撃」と説明した。THN の報道によれば、`Directory.ReadWrite.All` のような、顧客が与えていた権限の悪用も指摘している。
 
 事案は次の連鎖で成立している。
 
@@ -52,21 +52,21 @@ impact: "約 1,000 テナントでサインイン活動、300 超で成功"
 ## 3. 時系列 — 公表と対応
 
 - **2026-10-13〜14**: 同一の IP から、法律事務所の 4 テナントへのパスワードスプレー（成功したユーザーサインインは確認されていない）。
-- **2026-10-14**: ConnectWise が異常を検知（THN の報道による）。
+- **2026-10-14**: ConnectWise が不正アクセスを発見（同社 advisory）。
 - **2026-10-15**: 01:58（UTC）以降、約 50 の監視テナントで、ConnectWise Cloud Management のサービスプリンシパルが自らにディレクトリロールを付与。03:44〜03:49 には、ある顧客テナントで Teams アプリが Global Administrator になり、Python のスクリプトで 2 つの別アプリにクライアントシークレットを追加した。06:13〜08:34 に、同じ IP がアプリとして認証し、Graph のトークンを得た。
-- **2026-10-16**: Huntress が公表。162 テナントを確認。Huntress は、パートナーのテナントで自社アプリに追加された不正な資格情報を削除した。
-- **2026-10-17**: ConnectWise が 7 つのアプリ ID を無効化し、Cloud Backup を停止。Huntress が約 1,000 テナントの活動を報告。
-- **2026-10-19**: Huntress が更新を続けている。
+- **2026-10-16**: Huntress が公表。162 テナントを確認。ConnectWise が advisory を公開（17:47 UTC）。Huntress は、パートナーのテナントで自社アプリに追加された不正な資格情報を削除した。
+- **2026-10-17**: 05:00（UTC）に ConnectWise が封じ込めの措置を始め、07:00 に 7 つのアプリ ID を無効化し、Cloud Backup を停止。Microsoft Threat Intelligence が X で注意を呼びかけ。Huntress が約 1,000 テナントの活動を報告。
+- **2026-10-19〜20**: Huntress と ConnectWise が更新を続けている。10 月 20 日 00:45（UTC）の更新の時点で、3 つのサービスは停止したままである。
 
-> 本件の事実は、Huntress（調査主体の自己公表）に拠る。ConnectWise と Microsoft の声明は、Huntress と The Hacker News の報道を介したものである。ConnectWise の公式 advisory と status ページは、執筆時点で直接確認できていない。次の点は未確認または未解明である。資格情報の露出経路、製品の脆弱性が寄与したか（ConnectWise は不明としている）、無効化の正確な時刻（報道間で表記が異なる）、第 2 段階の操作を第 1 段階と同じ攻撃者が行ったか（Huntress は結びつけていない）。Graph のディレクトリ読み取りは監査記録を残さないため、アクセスがなかったとは言い切れない。
+> 本件の事実は、Huntress（調査主体の自己公表）と ConnectWise の公式 advisory に拠る。Microsoft の見立ては、同社 Threat Intelligence の X の投稿と The Hacker News の報道に拠る。次の点は未確認または未解明である。資格情報の露出経路、製品の脆弱性が寄与したか（ConnectWise は「確認されていない」としている）、第 2 段階の操作を第 1 段階と同じ攻撃者が行ったか（Huntress は結びつけていない）。Graph のディレクトリ読み取りは監査記録を残さないため、アクセスがなかったとは言い切れない。
 
 ## 4. なぜ止まらなかったか
 
 この事案の失敗は、顧客のパスワードの弱さでも、顧客の操作の誤りでもない。顧客が同意したアプリ ID が、アプリとして認証し、ロールの付与や資格情報の追加という管理操作を、実行の前に「ベンダーの意図した操作か」を確かめられないまま通したことにある。
 
-**検出と証明の落差**は、ここにある。検出は効いていた。ConnectWise は 10 月 14 日に異常に気づき、Huntress は、アプリが自らを昇格させた操作を、User-Agent の違い（ベンダーの .NET SDK ではなく Python-urllib）などから見分けている。しかし、効かなかったのは、その手前である。アプリ ID の資格情報は、持つ者にそのアプリの権限をそのまま与える。顧客側から見ると、正規のアプリの操作と、資格情報を持つ別の主体の操作は、認証の時点では区別がつかない。
+**検出と証明の落差**は、ここにある。異常には気づいていた。ConnectWise は 10 月 14 日に不正アクセスを発見し、Huntress は、アプリが自らを昇格させた操作を、User-Agent の違い（ベンダーの .NET SDK ではなく Python-urllib）などから見分けている。ただし、気づいた後も、無効化までの間に管理者権限の付与は通っている。効かなかったのは、その手前である。アプリ ID の資格情報は、持つ者にそのアプリの権限をそのまま与える。顧客側から見ると、正規のアプリの操作と、資格情報を持つ別の主体の操作は、認証の時点では区別がつかない。
 
-対応も、後から働く。ConnectWise のアプリ無効化、Huntress の推奨（アプリの無効化、資格情報の確認、ロールの確認、監査ログの確認）は必要だが、いずれも操作が実行された後の対処である。Todyl の報告によれば、アプリを無効化しても、発行済みのトークンは最長 90 分有効なままになりうる。
+対応も、後から働く。ConnectWise のアプリ無効化、Huntress の推奨（アプリの無効化、資格情報の確認、ロールの確認、監査ログの確認）は必要だが、いずれも操作が実行された後の対処である。Todyl の報告によれば、アプリを無効化しても、発行済みのトークンは最長 90 分有効なままになりうる。ConnectWise も、発行済みのトークンは失効するまで使える可能性があるとしている。
 
 同じ構造は、これまでの Brief にも現れている。[Vercel/Context.ai](https://lemma.frame00.com/ja/critical/briefs/059-vercel-contextai-oauth/) では、AI ツールへの「全許可」の OAuth が入口になった。[Salesloft Drift](https://lemma.frame00.com/ja/critical/briefs/064-salesloft-drift-oauth-salesforce/) では、盗まれた OAuth トークンで 700 超の Salesforce 環境が参照された。いずれも、同意された非人間の ID が、実行の直前に独立した確認を受けないまま使われている。
 
@@ -90,10 +90,13 @@ impact: "約 1,000 テナントでサインイン活動、300 超で成功"
 
 ## 6. Sources
 
+- **ConnectWise（一次・企業公式）**: Cloud Backup (formerly known as SkyKick) Service Interruption（2026-10-16 公開、10-20 まで更新） — <https://www.connectwise.com/company/trust/advisories>
+- **Microsoft Threat Intelligence（一次・X の投稿）**: ConnectWise Cloud Backup の OAuth アプリの侵害についての投稿（2026-10-17） — <https://x.com/MsftSecIntel/status/2111358888125878426>
 - **Huntress（一次・調査主体の自己公表）**: Vendor credential enables unauthorized access（2026-10-16 公開、10-19 まで更新） — <https://www.huntress.com/blog/vendor-credential-enables-unauthorized-access>
 - **The Hacker News（独立報道）**: ConnectWise Suspends Cloud Backup After Attackers Compromise Microsoft 365 Tenants（2026-10-18） — <https://thehackernews.com/2026/10/connectwise-suspends-cloud-backup-after.html>
-- **The Hacker News（独立報道）**: Hackers use compromised ConnectWise app（2026-10-17） — <https://thehackernews.com/2026/10/hackers-use-compromised-connectwise.html>
+- **Todyl（独立解析）**: Investigation: Unauthorized Access Through the ConnectWise Cloud Backup Microsoft 365 App（2026-10-16 公開、10-19 更新） — <https://www.todyl.com/blog/investigation-unauthorized-access-through-the-connectwise-cloud-backup-microsoft-365-app>
+- **The Hacker News（独立報道）**: Hackers Use Compromised ConnectWise Credential to Sign In to 173 Microsoft 365 Tenants（2026-10-17） — <https://thehackernews.com/2026/10/hackers-use-compromised-connectwise.html>
 
-調査主体である Huntress は、被害テナントを監視する当事者でもあり、自社のアプリも標的にされている。ConnectWise と Microsoft の声明は、上記の報道を介した引用である。公式 advisory の URL を確認でき次第、一次として差し替える。
+調査主体である Huntress は、被害テナントを監視する当事者でもあり、自社のアプリも標的にされている。ConnectWise の advisory は Trust Center の同じページで更新が続いており、内容は 10 月 20 日 00:45（UTC）の更新の時点のものである。Microsoft の `Directory.ReadWrite.All` の指摘は、THN の報道に拠る。
 
 参照: 事後の検知が証明にならない論点は[「AI時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)。

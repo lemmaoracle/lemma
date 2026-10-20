@@ -1,7 +1,7 @@
 ---
 brief_no: 134
-title: "東京都住宅供給公社：Excel 一覧から作った宛名ラベルの列が誤り、都営住宅の自治会長 770 名の氏名が別の住民に届いた — 発送の前に、宛先と一覧の対応が確かめられなかった誤送付"
-title_en: "Tokyo Metropolitan Housing Supply Corporation: A wrong column in an Excel-built label list sent the names of 770 public-housing residents' association heads to other residents — A misdirected mailing, with no check before dispatch that the labels matched the list"
+title: "東京都住宅供給公社：Excel 一覧から作った宛名ラベルの列が誤り、都営住宅の自治会長 770 名の氏名が別の住民に届いた(東京都発表) — 発送の前に、宛先と一覧の対応が確かめられなかった誤送付"
+title_en: "Tokyo Metropolitan Housing Supply Corporation: A wrong column in an Excel-built label list sent the names of 770 public-housing residents' association heads to other residents (Tokyo Metropolitan Government announcement) — A misdirected mailing, with no check before dispatch that the labels matched the list"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: []
@@ -29,7 +29,7 @@ impact: "自治会長 770 名の氏名が別の住民に届いた"
 
 2026 年 9 月 28 日、東京都住宅供給公社が、都営住宅の自治会長宛てに「排水管清掃の申込方法変更のお知らせ」1,997 通を発送した。そのうち 846 通で宛先が誤っており、770 通が本来の宛先とは別の住民に届いた。届いたのは都営住宅の自治会長 770 名の氏名で、公社と東京都住宅政策本部が 10 月 16 日に公表した。サイバー攻撃ではない。Excel の一覧から宛名ラベルを作る際に、棟・号室を取る列を誤り、気づかないまま貼り付けた。
 
-検出は効いた。ただし、受け取った住民の連絡による。<strong>効かなかったのは、発送の直前に、宛先と一覧の対応を作業者とは別に確かめる層である。</strong>発覚は発送の 15 日後だった。
+誤りに気づいたのは、公社ではなく、受け取った住民だった。<strong>効かなかったのは、発送の直前に、宛先と一覧の対応を作業者とは別に確かめる層である。</strong>発覚は発送の 15 日後だった。
 
 ## 2. 何が起きたか
 
@@ -67,7 +67,7 @@ impact: "自治会長 770 名の氏名が別の住民に届いた"
 
 この事案の失敗は、作業者の技量でも、外部からの攻撃でもない。発送という実行が、ラベルの内容と元の一覧の対応を確かめる手段を持たないまま行われたことにある。
 
-**検出と証明の落差**は、ここにある。検出は効いていた。ただし、それは受け取った住民が公社に連絡するという形で、発送の 15 日後に働いた。効かなかったのは、その手前である。発送の直前に、このラベルがこの宛先のものとして一覧と合っているかを、作業者の目や記憶とは別に確かめる層が無かった。
+**検出と証明の落差**は、ここにある。誤りに気づいたのは公社ではなく、受け取った住民で、その連絡は発送の 15 日後だった。効かなかったのは、その手前である。発送の直前に、このラベルがこの宛先のものとして一覧と合っているかを、作業者の目や記憶とは別に確かめる層が無かった。
 
 公社の再発防止策は、複数の職員によるチェック体制の強化である。確認する人数を増やすことは有効だが、確認が行われたこと、何と何を突き合わせたかを、検証可能な形で残すものではない。人の確認は、確認した者の記憶と、確認したという事実にとどまる。
 
@@ -97,4 +97,4 @@ impact: "自治会長 770 名の氏名が別の住民に届いた"
 
 本件は、当事者（東京都・公社）の公表のみを一次とし、独立した第三者による検証や、英語の外部報道は確認できていない。公表は報道発表の 1 件で、手元で確認できる出典は単独である。日本の報道・ブログは出典に含めていない。
 
-参照: 事後の検知が証明にならない論点は[「AI時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)。Pillar の整理は[規制属性の証明](https://lemma.frame00.com/ja/pillars/#attribute)。
+参照: 事後の検知が証明にならない論点は[「AI時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)。Pillar の整理は[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance)。

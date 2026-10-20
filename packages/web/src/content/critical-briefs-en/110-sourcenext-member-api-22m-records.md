@@ -1,7 +1,7 @@
 ---
 brief_no: 110
-title: "ソースネクスト：会員情報取得 API が悪用され、最大 2,252 万件の会員情報が取得された可能性がある — 取得の量と用途を、呼び出しのたびに確かめる層が無い"
-title_en: "Sourcenext: A member-information API was abused, and up to 22.52 million member records may have been taken — No layer checks the volume and purpose of each call as it runs"
+title: "ソースネクスト：会員情報取得 API が悪用され、最大 2,252 万件の会員情報が取得された可能性がある(ソースネクスト発表) — 取得の量と用途を、呼び出しのたびに確かめる層が無い"
+title_en: "Sourcenext: A member-information API was abused, and up to 22.52 million member records may have been taken (Sourcenext announcement) — No layer checks the volume and purpose of each call as it runs"
 pillar: 04-regulatory-attribute
 primary_category: identity-auth
 secondary_categories: [kyc-aml-disclosure]
@@ -28,7 +28,7 @@ impact: "Up to 22.52 million member records may have leaked"
 
 From around 10:00 JST on 9 October 2026, a third party accessed Sourcenext's member-information system and retrieved registered data through a member-information API. On 15 October the company said up to 22,519,960 member records may have leaked. Possible fields include email address, password, name, address, phone number and date of birth. Credit card data was not held in the affected system.
 
-Detection worked. The company confirmed the access on 13 October and cut it off by 13:36 that day. <strong>What did not work was a layer that checks, per call, whether a member-information API call stays within the right party, purpose and volume.</strong> About four days passed between start and confirmation.
+Once the access was confirmed, the response was quick. The company confirmed it around 09:00 on 13 October and completed containment by 13:36 that day. <strong>What did not work was a layer that checks, per call, whether a member-information API call stays within the right party, purpose and volume.</strong> About four days passed between start and confirmation.
 
 ## 2. What happened
 
@@ -43,7 +43,7 @@ The chain was as follows.
 
 1. An API that returns member information was reachable from outside.
 2. From around 10:00 on 9 October, a third party used it to retrieve registered data.
-3. Around 09:00 on 13 October the company confirmed the access and by 13:36 had blocked external traffic.
+3. Around 09:00 on 13 October the company confirmed the access and by 13:36 had completed containment, including blocking unauthorised external traffic.
 
 The irreversible action was step 2, the retrieval. It rested on an API designed to return member data, and no published account shows that, at each call, anyone checked who was calling, for what, and at what volume.
 
@@ -51,14 +51,14 @@ The irreversible action was step 2, the retrieval. It rested on an API designed 
 
 - **9 October 2026, about 10:00**: unauthorised access began (as established later).
 - **13 October, about 09:00**: Sourcenext confirmed the access; contained by 13:36.
-- **15 October**: announced; reported to the Personal Information Protection Commission; all account passwords invalidated.
-- **16 October**: police consulted (partly planned at the time of the notice).
+- **15 October**: announced; reported to the Personal Information Protection Commission; password resets required at login.
+- **16 October**: police consulted (per the FAQ).
 
-> Facts here rest on Sourcenext's official notice and FAQ. "Four days" is the difference between start (about 10:00 on 9 October) and confirmation (about 09:00 on 13 October); what triggered confirmation is not disclosed. An outside forensic investigation is under way, so the method, the vulnerability and the actual count may change. The company also disclosed a 2023 breach in which a website vulnerability led to tampering with a payment application and the leak of about 120,000 people's data (official notice of 14 February 2023).
+> Facts here rest on Sourcenext's official notice and FAQ. "Four days" is the difference between start (about 10:00 on 9 October) and confirmation (about 09:00 on 13 October); what triggered confirmation is not disclosed. An outside forensic investigation is under way, so the method, the vulnerability and the actual count may change. The company also disclosed a 2023 breach in which unauthorised access through a vulnerability in part of its site's system led to tampering with a payment application, and personal data of about 120,000 people (including 112,132 credit-card records) may have leaked (official notice of 14 February 2023).
 
 Response:
 
-- **Password invalidation**: all customers' passwords were invalidated, with resets required.
+- **Password invalidation**: passwords within the leak's scope are being invalidated in turn, with resets required at login (FAQ).
 - **Fix**: the vulnerability in the affected system was fixed; other vulnerabilities are being checked.
 - **Notification**: email to registered addresses and a dedicated contact line.
 - **Guidance**: change reused passwords elsewhere and watch for spoofed email, SMS and calls.
@@ -67,7 +67,7 @@ Response:
 
 The failure is not only that outside traffic reached an internal API. A lawful function, returning member information, passed repeatedly with no check, per call, of who was calling, for what, and at what volume.
 
-That is the **gap between detection and proof**. Detection worked: the company confirmed the access and blocked it the same day. What failed sits before that. That an API can return member data and that this call is permitted are different facts, and in what has been published nothing checks the latter directly before the call. A store of more than 20 million records stayed retrievable for about four days.
+That is the **gap between detection and proof**. Once confirmed, the response was quick: the company contained the access the same day. But confirmation came about four days after retrieval began. What failed sits before that. That an API can return member data and that this call is permitted are different facts, and in what has been published nothing checks the latter directly before the call. A store of more than 20 million records stayed retrievable for about four days.
 
 The response, blocking, fixing, invalidating passwords and investigating, is necessary but works after retrieval. Invalidating passwords lowers the value of what was taken; it does not protect the moment of taking.
 
@@ -94,7 +94,7 @@ Note: the proof shows only that a call lies within the registered permission. It
 ## 6. Sources
 
 - **Sourcenext (primary, company notice)**: Apology and notice on customer information leak from unauthorised access to our site (2026-10-15) — <https://www.sourcenext.com/support/i/2026/1015_info/>
-- **Sourcenext (primary, company FAQ)**: Frequently asked questions on the information leak (2026-10) — <https://www.sourcenext.com/support/i/2026/1015_1/>
+- **Sourcenext (primary, company FAQ)**: Frequently asked questions on the information leak (no date on the page; it describes the 16 October police consultation as done) — <https://www.sourcenext.com/support/i/2026/1015_1/>
 - **Sourcenext (primary, company notice, earlier incident)**: Apology and notice on the 2023 personal-information leak (2023-02-14) — <https://www.sourcenext.com/support/i/2023/0214_info/>
 
 Only the parties' own official notices serve as primary here; no independent third-party verification or English-language outside reporting has been found. The method and vulnerability are undisclosed, and the notice ("member-information API") and the FAQ ("unauthorised access to servers") word the access differently. Japanese media and blogs are not used as sources.

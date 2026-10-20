@@ -1,7 +1,7 @@
 ---
 brief_no: 144
-title: "Studio：ノーコード Web 制作 SaaS のクラウド環境が侵害され、暗号化データの復号鍵も同時に読み出された — 預けた顧客データを、暗号化では守れなかった。委託先の環境で何が取得されたかを、預けた側が確かめる手段が無い"
-title_en: "Studio: A no-code website-builder SaaS's cloud environment was breached, and the keys to decrypt its encrypted data were read in the same intrusion — Encryption did not protect what customers entrusted. Customers have no way to check what was taken from a provider's environment"
+title: "Studio：ノーコード Web 制作 SaaS のクラウド環境が侵害され、暗号化データの復号鍵も同時に読み出された(Studio 発表) — 委託先の環境で何が取得されたかを、預けた側が確かめる手段が無い"
+title_en: "Studio: A no-code website-builder SaaS's cloud environment was breached, and the keys to decrypt its encrypted data were read in the same intrusion (Studio announcement) — Customers have no way to check what was taken from a provider's environment"
 pillar: 03-agent-authority
 primary_category: identity-auth
 secondary_categories: [data-provenance]
@@ -28,7 +28,7 @@ attack_method: "supply-chain"
 
 2026 年 9 月 30 日から 10 月 1 日にかけて、ノーコード Web 制作サービス「Studio」を運営する Studio 株式会社のクラウド環境に、第三者が一部機能の脆弱性を突いて侵入した。Studio は 10 月 16 日に第一報を公表し、10 月 18 日に更新した。侵害されたのは、全登録ユーザーのアカウント情報（ハッシュ化パスワードを含む）、フォームの送信内容、外部サービスの API キーやトークンなどで、<strong>暗号化データの復号に必要な鍵も、同じ不正アクセスで読み出された</strong>。Studio は「取得された事実は確認できていないが、取得されたものとみなして対応する」としている。
 
-検出は効いた。Studio は 10 月 13 日に社内調査で侵入を確認し、13〜14 日に脆弱性を修正している。<strong>効かなかったのは、預けられたデータ、鍵、外部連携の資格情報が、読み出される時点で「許された主体・範囲か」を確かめる層である。</strong>下流では、Link-U Group、ラクスルなど、Studio で自社サイトを運営する企業の問い合わせ・フォーム情報に波及している。影響件数は、Studio が続報で公表するとしている。
+確認してからの対応は速かった。Studio は 10 月 13 日に社内調査で侵入を確認し、13〜14 日に脆弱性を修正している。ただし、確認は不正アクセスから約 12 日後である。<strong>効かなかったのは、預けられたデータ、鍵、外部連携の資格情報が、読み出される時点で「許された主体・範囲か」を確かめる層である。</strong>下流では、Link-U Group、ラクスルなど、Studio で自社サイトを運営する企業の問い合わせ・フォーム情報に波及している。影響件数は、Studio が続報で公表するとしている。
 
 ## 2. 何が起きたか
 
@@ -75,7 +75,7 @@ attack_method: "supply-chain"
 
 この事案の失敗は、利用企業の管理の誤りではない。多数の企業が、サイトのデータ、フォームの送信内容、外部連携の資格情報を 1 つの委託先 SaaS の環境に預け、その環境が一度侵害されると、預けた側の誰も、何が読まれたかを確かめる手段を持たないことにある。
 
-**検出と証明の落差**は、ここにある。検出は効いていた。Studio は侵入を確認し、2 日以内に脆弱性を修正した。しかし効かなかったのは、その手前である。「データが暗号化されている」ことと、「そのデータを開く鍵が、データと同じ環境から読み出せない」ことは別の事実であり、本件では鍵も同じ侵入で読み出された。暗号化は、鍵が同じ環境にある限り、読み出しの権限を持つ者に対しては取得を止めない。
+**検出と証明の落差**は、ここにある。確認してからの対応は速かった。Studio は侵入を確認し、2 日以内に脆弱性を修正した。ただし、確認は不正アクセスから約 12 日後である。効かなかったのは、その手前である。「データが暗号化されている」ことと、「そのデータを開く鍵が、データと同じ環境から読み出せない」ことは別の事実であり、本件では鍵も同じ侵入で読み出された。暗号化は、鍵が同じ環境にある限り、読み出しの権限を持つ者に対しては取得を止めない。
 
 Studio の「取得されたとみなして対応する」という判断は、誠実である。ただし、その結果、預けた側は、何が取得されたのかを確認できないまま、全件を対象に、パスワードの変更、鍵の入れ替え、通知を行うことになる。Link-U とラクスルが「可能性を否定できない」と書かざるを得ないのは、取得の記録が、預けた側から見えないためである。
 

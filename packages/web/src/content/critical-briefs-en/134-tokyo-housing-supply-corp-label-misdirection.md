@@ -1,7 +1,7 @@
 ---
 brief_no: 134
-title: "東京都住宅供給公社：Excel 一覧から作った宛名ラベルの列が誤り、都営住宅の自治会長 770 名の氏名が別の住民に届いた — 発送の前に、宛先と一覧の対応が確かめられなかった誤送付"
-title_en: "Tokyo Metropolitan Housing Supply Corporation: A wrong column in an Excel-built label list sent the names of 770 public-housing residents' association heads to other residents — A misdirected mailing, with no check before dispatch that the labels matched the list"
+title: "東京都住宅供給公社：Excel 一覧から作った宛名ラベルの列が誤り、都営住宅の自治会長 770 名の氏名が別の住民に届いた(東京都発表) — 発送の前に、宛先と一覧の対応が確かめられなかった誤送付"
+title_en: "Tokyo Metropolitan Housing Supply Corporation: A wrong column in an Excel-built label list sent the names of 770 public-housing residents' association heads to other residents (Tokyo Metropolitan Government announcement) — A misdirected mailing, with no check before dispatch that the labels matched the list"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: []
@@ -29,7 +29,7 @@ impact: "Names of 770 association heads reached other residents"
 
 On 28 September 2026, the Tokyo Metropolitan Housing Supply Corporation mailed 1,997 copies of a notice about a change in how to apply for drain-pipe cleaning to the residents' association heads of Tokyo public housing complexes. In 846, the address was wrong, and 770 reached residents other than the intended recipients. What arrived was the names of 770 public-housing residents' association heads. The Corporation and the Tokyo Housing Policy Headquarters announced it on 16 October. It was not a cyberattack. When building address labels from an Excel list, staff took the building and unit numbers from the wrong part of the list and attached the labels without noticing.
 
-Detection worked, but only through a resident's call. <strong>What did not work was a layer that checks, apart from the operator and directly before dispatch, that destination and list match.</strong> It surfaced 15 days after mailing.
+It was a resident, not the Corporation, who noticed the error. <strong>What did not work was a layer that checks, apart from the operator and directly before dispatch, that destination and list match.</strong> It surfaced 15 days after mailing.
 
 ## 2. What happened
 
@@ -67,7 +67,7 @@ From mailing to discovery was 15 days; from discovery to announcement, 3. The si
 
 The failure is neither operator skill nor outside attack. Dispatch ran with no means of checking that the label content matched the source list.
 
-That is the **gap between detection and proof**. Detection worked, but as a resident's call 15 days after mailing. What failed sits before that. Directly before dispatch, nothing checked, apart from the operator's eyes and memory, whether these labels matched the list.
+That is the **gap between detection and proof**. It was a resident, not the Corporation, who noticed, calling 15 days after mailing. What failed sits before that. Directly before dispatch, nothing checked, apart from the operator's eyes and memory, whether these labels matched the list.
 
 The Corporation's prevention plan is stronger checking by multiple staff. More checkers help, but they do not leave a verifiable record that a check happened or what was compared with what. A human check remains the checker's memory and the fact of having checked.
 
@@ -97,4 +97,4 @@ Note: the proof shows only that a label was built from that row of the registere
 
 Only the parties' own release serves as primary here; no independent third-party verification or English-language outside reporting has been found, and this is a single source. Japanese media and blogs are not used as sources.
 
-References: why after-the-fact detection is not proof is covered in [the last layer left in AI-era cyber defense](/blog/detection-is-not-proof/). The pillar view is [regulatory attribute proof](/pillars/#attribute).
+References: why after-the-fact detection is not proof is covered in [the last layer left in AI-era cyber defense](/blog/detection-is-not-proof/). The pillar view is [Pillar 01 — provenance proof](/pillars/#provenance).

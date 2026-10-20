@@ -1,7 +1,7 @@
 ---
 brief_no: 144
-title: "Studio：ノーコード Web 制作 SaaS のクラウド環境が侵害され、暗号化データの復号鍵も同時に読み出された — 預けた顧客データを、暗号化では守れなかった。委託先の環境で何が取得されたかを、預けた側が確かめる手段が無い"
-title_en: "Studio: A no-code website-builder SaaS's cloud environment was breached, and the keys to decrypt its encrypted data were read in the same intrusion — Encryption did not protect what customers entrusted. Customers have no way to check what was taken from a provider's environment"
+title: "Studio：ノーコード Web 制作 SaaS のクラウド環境が侵害され、暗号化データの復号鍵も同時に読み出された(Studio 発表) — 委託先の環境で何が取得されたかを、預けた側が確かめる手段が無い"
+title_en: "Studio: A no-code website-builder SaaS's cloud environment was breached, and the keys to decrypt its encrypted data were read in the same intrusion (Studio announcement) — Customers have no way to check what was taken from a provider's environment"
 pillar: 03-agent-authority
 primary_category: identity-auth
 secondary_categories: [data-provenance]
@@ -28,7 +28,7 @@ attack_method: "supply-chain"
 
 From 30 September to 1 October 2026, a third party exploited a vulnerability in some functions of Studio, a no-code website-building service, to enter the cloud environment of its operator, Studio Inc. Studio published a first notice on 16 October and updated it on 18 October. What may have been exposed includes all registered users' account data (with hashed passwords), form submissions, and API keys and tokens for connected services, and <strong>the keys needed to decrypt encrypted data were read in the same intrusion</strong>. Studio says it has no confirmation that data was actually retrieved, but is responding as if it had been.
 
-Detection worked. Studio confirmed the intrusion in an internal investigation on 13 October and fixed the vulnerability on 13–14 October. <strong>What did not work was a layer that checks, at the moment of reading, whether a read of entrusted data, keys and connected-service credentials is by a permitted party within a permitted scope.</strong> Downstream, the inquiry and form data of companies running their sites on Studio, including Link-U Group and Raksul, was affected. Studio says the number of affected records will come in a follow-up.
+Once the intrusion was confirmed, the response was quick. Studio confirmed it in an internal investigation on 13 October and fixed the vulnerability on 13–14 October. But confirmation came about 12 days after the unauthorised access. <strong>What did not work was a layer that checks, at the moment of reading, whether a read of entrusted data, keys and connected-service credentials is by a permitted party within a permitted scope.</strong> Downstream, the inquiry and form data of companies running their sites on Studio, including Link-U Group and Raksul, was affected. Studio says the number of affected records will come in a follow-up.
 
 ## 2. What happened
 
@@ -75,7 +75,7 @@ Response:
 
 The failure is not a customer's mismanagement. Many companies entrusted site data, form submissions and connected-service credentials to the environment of one provider, and once that environment was breached none of them had a way to check what was read.
 
-That is the **gap between detection and proof**. Detection worked: Studio confirmed the intrusion and fixed the vulnerability within two days. What failed sits before that. "The data is encrypted" and "the key that opens it cannot be read from the same environment" are different facts, and here the keys were read in the same intrusion. Encryption does not stop retrieval by a party that can read the key from the same environment.
+That is the **gap between detection and proof**. Once confirmed, the response was quick: Studio fixed the vulnerability within two days. But confirmation came about 12 days after the access. What failed sits before that. "The data is encrypted" and "the key that opens it cannot be read from the same environment" are different facts, and here the keys were read in the same intrusion. Encryption does not stop retrieval by a party that can read the key from the same environment.
 
 Studio's decision to respond as if the data had been taken is sound. The result, though, is that customers, unable to confirm what was taken, must change passwords, rotate keys and notify across the board. Link-U and Raksul can only write that a leak "cannot be ruled out" because the record of retrieval is invisible from the customer side.
 
