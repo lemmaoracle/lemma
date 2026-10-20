@@ -83,8 +83,8 @@ Dispatch rested on labels built from the wrong part of the list. **The problem i
 
 ## 3. Timeline — disclosure and response
 
-- **2026-09-28 (Mon)**: notices mailed.
-- **2026-10-13 (Tue)**: a resident who received a misdirected notice contacted the Corporation; the error came to light.
+- **2026-09-28**: notices mailed.
+- **2026-10-13**: a resident who received a misdirected notice contacted the Corporation; the error came to light.
 - **2026-10-16**: the Housing Policy Headquarters and the Corporation announced it.
 
 > Facts here rest on the Tokyo Metropolitan Government press release. The error is described only as quoting the building and unit number "from the wrong part of the list"; which column was mistaken is not given. Figures for mailings, misdirected items and names are the published values and have not been independently verified.

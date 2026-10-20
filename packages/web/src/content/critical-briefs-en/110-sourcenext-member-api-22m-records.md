@@ -81,8 +81,8 @@ Once the access was confirmed, the response was quick. The company confirmed it 
 
 ## 3. Timeline — disclosure and response
 
-- **2026-10-09, about 10:00**: unauthorised access began (as established later).
-- **2026-10-13, about 09:00**: Sourcenext confirmed the access; contained by 13:36.
+- **2026-10-09**: from about 10:00, unauthorised access began (as established later).
+- **2026-10-13**: at about 09:00, Sourcenext confirmed the access; contained by 13:36.
 - **2026-10-15**: announced; reported to the Personal Information Protection Commission; password resets required at login.
 - **2026-10-16**: police consulted (per the FAQ).
 

@@ -84,12 +84,12 @@ The anomaly was noticed. ConnectWise discovered the unauthorised access on 14 Oc
 
 ## 3. Timeline — disclosure and response
 
-- **13–14 October 2026**: password spraying from one IP against four law-firm tenants (no successful user sign-ins seen).
-- **14 October**: ConnectWise discovered the unauthorised access (company advisory).
-- **15 October**: from 01:58 UTC, ConnectWise Cloud Management service principals assigned themselves directory roles in about 50 monitored tenants. At 03:44–03:49 in one tenant, the ConnectWise Cloud Management MS Teams app became Global Administrator and a Python script added client secrets to two other apps. From 06:13 to 08:34 the same IP authenticated as the app and obtained Graph tokens.
-- **16 October**: Huntress published; 162 tenants confirmed. ConnectWise published its advisory (17:47 UTC). Huntress removed an unauthorised credential from its own app in a partner tenant.
-- **17 October**: ConnectWise began containment at 05:00 UTC and at 07:00 disabled seven application identities and suspended Cloud Backup. Microsoft Threat Intelligence posted a warning on X. Huntress reported about 1,000 tenants with activity.
-- **19–20 October**: Huntress and ConnectWise continued to update. As of ConnectWise's update at 00:45 UTC on 20 October, all three services remained suspended.
+- **2026-10-13**: through 10-14, password spraying from one IP against four law-firm tenants (no successful user sign-ins seen).
+- **2026-10-14**: ConnectWise discovered the unauthorised access (company advisory).
+- **2026-10-15**: from 01:58 UTC, ConnectWise Cloud Management service principals assigned themselves directory roles in about 50 monitored tenants. At 03:44–03:49 in one tenant, the ConnectWise Cloud Management MS Teams app became Global Administrator and a Python script added client secrets to two other apps. From 06:13 to 08:34 the same IP authenticated as the app and obtained Graph tokens.
+- **2026-10-16**: Huntress published; 162 tenants confirmed. ConnectWise published its advisory (17:47 UTC). Huntress removed an unauthorised credential from its own app in a partner tenant.
+- **2026-10-17**: ConnectWise began containment at 05:00 UTC and at 07:00 disabled seven application identities and suspended Cloud Backup. Microsoft Threat Intelligence posted a warning on X. Huntress reported about 1,000 tenants with activity.
+- **2026-10-19**: through 10-20, Huntress and ConnectWise continued to update. As of ConnectWise's update at 00:45 UTC on 20 October, all three services remained suspended.
 
 > Facts here rest on Huntress, a researcher publishing its own findings, and ConnectWise's official advisory. Microsoft's view rests on its Threat Intelligence post on X and The Hacker News; the point about `Directory.ReadWrite.All` rests on THN's report. Unconfirmed or unknown: how the credential was exposed; whether a product vulnerability contributed (ConnectWise says this "has not been established"); whether the role self-assignment was run by the same attacker as the sign-ins (Huntress does not link them). Graph directory reads leave no audit record, so access cannot be ruled out. Huntress is both the researcher and a party monitoring affected tenants, and its own app was also targeted. ConnectWise keeps updating its advisory on the same page; what is cited here is as of its update at 00:45 UTC on 20 October.
 

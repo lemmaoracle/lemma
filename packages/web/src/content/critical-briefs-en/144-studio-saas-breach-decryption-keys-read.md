@@ -84,9 +84,9 @@ Once the intrusion was confirmed, the response was quick. Studio confirmed it in
 
 ## 3. Timeline — disclosure and response
 
-- **2026-09-30 – 10-01**: unauthorised access (the period confirmed so far).
+- **2026-09-30**: through 10-01, unauthorised access (the period confirmed so far).
 - **2026-10-13**: Studio confirmed the intrusion in an internal investigation.
-- **2026-10-13 – 14**: vulnerability fixed and the entry route closed.
+- **2026-10-13**: through 10-14, vulnerability fixed and the entry route closed.
 - **2026-10-14**: the externally retrievable state ended; Google Sheets integration keys updated.
 - **2026-10-16**: first notice; email to users who may be affected. Customer companies including Link-U Group (timely disclosure) and Raksul announced their own impact from that day.
 - **2026-10-17**: encryption keys switched to new keys; guidance on reporting to the Personal Information Protection Commission for form users.
