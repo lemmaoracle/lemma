@@ -1,22 +1,10 @@
 ---
 /**
- * Cyber Proof Card — sample verification faces。
- *
- * `/cyber/verify/`（EN）と `/ja/cyber/verify/`（JA）。
- *
- * この面は **サンプルのカード面**であり、ライブ検証でも実データでもない。
- * `output: static` なのでクエリによる分岐は Astro frontmatter では行わない。
- * 3種類のカード面（transfer / decrypt / api）とカードが見つからない面を
- * すべて静的生成し、クライアントで `?card=` を allowlist に厳密一致させて
- * 表示だけを切り替える。JS 無効時はカードが見つからない面をそのまま出す。
- *
- * 事実の扱い（この面の規律）:
- *   - 実口座番号・実データ・詳細な攻撃手順は載せない。ハッシュは短い
- *     プレースホルダのみ。
- *   - ライブ検証・本番データと誤認させる判定や数値は書かない。
- *   - 提供状況を保証しない免責を EN/JA で表示する。
- *   - 次の行動は Discovery Call 予約と /cyber/ へ戻るだけ。送金・復号・
- *     API 実行のボタンは置かない。
+ * Illustrative conditions for transfer, data access and service actions.
+ * The static examples neither perform live checks nor execute actions.
+ * Keep strict client-side selection of transfer / decrypt / api; missing
+ * and unknown values show the fallback, including when JavaScript is off.
+ * Examples do not promise product availability or verification results.
  */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
@@ -41,110 +29,136 @@ const backHref = L("/cyber/");
 
 const C = isJa
   ? {
-      title: "Cyber Proof Card — サンプルの検証面｜Lemma",
+      title: "Cyber — 操作ごとの確認例｜Lemma",
       description:
-        "転送・復号・API の3種類について、Lemma の Cyber Proof Card のサンプル面を示します。ハッシュは短いプレースホルダで、ライブ検証でも実データでもありません。",
-      eyebrow: "Cyber Proof Card",
-      h1Head: "カード別サンプル、",
-      h1Accent: "操作ごとに1枚。",
-      lede: "転送・復号・API の3種類を、それぞれ1枚の例として示します。ここに載るハッシュは短いプレースホルダで、ライブ検証でも実データでもありません。",
-      sampleBadge: "サンプル",
-      kindLabel: "カード種別",
-      inputLabel: "入力ハッシュ",
-      exampleNote:
-        "この面は例です。ライブの検証結果でも、実際のデータでもありません。",
+        "送金・データ取得・サービス間の操作で、実行前にどんな条件を確かめるかを示した例です。",
+      eyebrow: "Lemma / Cyber",
+      h1Head: "操作の前に、",
+      h1Accent: "確かめる内容。",
+      lede: "送金・データ取得・サービス間の操作で、どんな条件を確かめるかを示した例です。",
+      sampleBadge: "説明用の例",
+      kindLabel: "対象の操作",
+      exampleNote: "説明用に作った例です。実際の操作や確認は行いません。",
       cards: [
         {
           key: "transfer",
-          type: "転送",
-          title: "転送カード（例）",
-          desc: "口座間の価値移動を想定した例です。ハッシュは短いプレースホルダで、実際の送金データではありません。",
-          hash: "9f2a…c41d",
-          result: "一致",
+          type: "送金",
+          title: "登録した相手への送金",
+          desc: "会社に登録した経理担当者が、8万円を送金する場合。以下の条件に合う依頼だけを通す想定です。",
+          checks: [
+            { label: "担当者", value: "会社に登録した経理担当者" },
+            { label: "振込先", value: "登録済みの口座" },
+            { label: "金額", value: "8万円（上限10万円）" },
+          ],
+          outcome: "この例では、条件内の8万円は通し、上限を超える12万円は止めます。",
         },
         {
           key: "decrypt",
-          type: "復号",
-          title: "復号カード（例）",
-          desc: "保護されたペイロードの復号を想定した例です。ハッシュは短いプレースホルダで、実際のデータではありません。",
-          hash: "7b31…d0e8",
-          result: "一致",
+          type: "データ取得",
+          title: "必要な範囲だけ取り出す",
+          desc: "業務に必要な顧客データを取り出す場合。担当者・対象・取り出せる範囲を確認する想定です。",
+          checks: [
+            { label: "担当者", value: "対象の業務を担当する人" },
+            { label: "対象", value: "指定した顧客データ" },
+            { label: "範囲", value: "業務に必要な項目だけ" },
+          ],
+          outcome:
+            "担当者・対象・範囲が合う依頼を通し、別のデータや範囲外の項目を求める依頼は止める想定です。",
         },
         {
           key: "api",
-          type: "API",
-          title: "API カード（例）",
-          desc: "サービスへの API 呼び出しを想定した例です。ハッシュは短いプレースホルダで、実際のリクエストではありません。",
-          hash: "3c9f…a2b6",
-          result: "一致",
+          type: "サービス間の操作",
+          title: "承認した内容でサービスを呼び出す",
+          desc: "外部サービスに作業を依頼する場合。承認した操作と対象に合っているかを確認する想定です。",
+          checks: [
+            { label: "呼び出す相手", value: "指定したサービス" },
+            { label: "操作", value: "承認した処理" },
+            { label: "対象", value: "指定したデータ" },
+          ],
+          outcome:
+            "承認した操作と対象が一致する依頼を通し、操作や対象が変わった依頼は止める想定です。",
         },
       ],
       notFound: {
-        title: "カードが見つかりません",
-        desc: "カード指定がないか、サンプルカードと一致しませんでした。URL の ?card= には transfer / decrypt / api のいずれかを指定します。",
+        title: "確認する例を選んでください。",
+        desc: "送金・データ取得・サービス間の操作の例を、Cyber ページから選べます。",
       },
       disclaimer:
-        "本面のサンプルは例示であり、製品としての提供状況や検証結果を保証するものではありません。",
+        "条件や表示は説明用です。実際の操作や確認結果、製品の提供状況を示すものではありません。",
       next: {
-        eyebrow: "次の一手",
-        h2Head: "まずは会話から、",
-        h2Accent: "対象と方法を設計する。",
-        lede: "この面のカードは例です。実際の対象と組み込み方は Discovery Call で確認します。",
-        cta: "Discovery Call を予約 →",
+        eyebrow: "早期アクセス",
+        h2Head: "守りたい操作から、",
+        h2Accent: "一緒に整理する。",
+        lede: "実際の業務で確かめたい条件と、既存システムへの組み込み方を相談できます。",
+        cta: "導入を相談する →",
       },
-      backLabel: "Cyber に戻る →",
+      backLabel: "Cyber の説明に戻る →",
     }
   : {
-      title: "Cyber Proof Card — sample verification | Lemma",
+      title: "Cyber — Example checks for each action | Lemma",
       description:
-        "Sample Cyber Proof Cards for transfer, decryption, and API operations. Short placeholder hashes only — not a live verification and not real data.",
-      eyebrow: "Cyber Proof Card",
-      h1Head: "Sample cards,",
-      h1Accent: "one per operation.",
-      lede: "Three operation types — transfer, decryption, and API — shown one example card each. The hashes are short placeholders, not a live check and not real data.",
-      sampleBadge: "Sample",
-      kindLabel: "Card type",
-      inputLabel: "Input hash",
+        "Illustrative conditions to check before a transfer, data request or action between services goes through.",
+      eyebrow: "Lemma / Cyber",
+      h1Head: "Before the action,",
+      h1Accent: "check the details.",
+      lede: "Examples of the conditions to check before a transfer, data request or action between services goes through.",
+      sampleBadge: "Illustrative example",
+      kindLabel: "Action",
       exampleNote:
-        "This face is an example. It is not a live verification result and not real data.",
+        "An illustrative example. It does not execute an action or perform a live check.",
       cards: [
         {
           key: "transfer",
           type: "Transfer",
-          title: "Transfer card (example)",
-          desc: "An example that stands for moving value between accounts. The hash is a short placeholder, not real transfer data.",
-          hash: "9f2a…c41d",
-          result: "match",
+          title: "A transfer to a registered recipient",
+          desc: "A registered finance member requests an ¥80,000 transfer. Only requests that meet these conditions would go through.",
+          checks: [
+            { label: "Person", value: "Finance member registered with the organization" },
+            { label: "Recipient", value: "Registered account" },
+            { label: "Amount", value: "¥80,000 (¥100,000 limit)" },
+          ],
+          outcome:
+            "In this example, ¥80,000 within the conditions goes through. A ¥120,000 request over the limit is stopped.",
         },
         {
           key: "decrypt",
-          type: "Decryption",
-          title: "Decryption card (example)",
-          desc: "An example that stands for decrypting a protected payload. The hash is a short placeholder, not real data.",
-          hash: "7b31…d0e8",
-          result: "match",
+          type: "Data access",
+          title: "Retrieve only the data needed",
+          desc: "A person requests customer data for their work. The person, target data and allowed scope would be checked.",
+          checks: [
+            { label: "Person", value: "Person responsible for this work" },
+            { label: "Target", value: "Specified customer data" },
+            { label: "Scope", value: "Only the fields needed for the work" },
+          ],
+          outcome:
+            "Requests matching the person, target and scope would go through. Requests for different data or extra fields would be stopped.",
         },
         {
           key: "api",
-          type: "API",
-          title: "API card (example)",
-          desc: "An example that stands for calling a service API. The hash is a short placeholder, not a real request.",
-          hash: "3c9f…a2b6",
-          result: "match",
+          type: "Connected services",
+          title: "Call a service with the approved details",
+          desc: "A request asks an external service to do some work. The approved action and target would be checked.",
+          checks: [
+            { label: "Service", value: "Specified service" },
+            { label: "Action", value: "Approved operation" },
+            { label: "Target", value: "Specified data" },
+          ],
+          outcome:
+            "Requests matching the approved action and target would go through. Changes to the action or target would be stopped.",
         },
       ],
       notFound: {
-        title: "Card not found",
-        desc: "No card was specified, or it did not match a sample card. The ?card= query accepts transfer, decrypt, or api.",
+        title: "Choose an example to explore.",
+        desc: "Select a transfer, data access or connected service example from the Cyber page.",
       },
       disclaimer:
-        "These samples are illustrative; they do not promise product availability or any verification result.",
+        "The conditions and displays are illustrative. They do not represent actual actions, verification results or product availability.",
       next: {
-        eyebrow: "Next step",
-        h2Head: "Start with a conversation.",
-        h2Accent: "Scope the subject and method.",
-        lede: "The cards on this face are examples. The real subject and integration are scoped in a Discovery Call.",
-        cta: "Book a Discovery Call →",
+        eyebrow: "Early access",
+        h2Head: "Start with an action.",
+        h2Accent: "Work through the conditions.",
+        lede: "Discuss the conditions you want to check in your workflow and where the check fits into your existing system.",
+        cta: "Discuss your integration →",
       },
       backLabel: "Back to Cyber →",
     };
@@ -160,8 +174,10 @@ const C = isJa
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  {/* JS 有効時のみ、クエリ判定より先に fallback 面を隠してちらつきを防ぐ。
-      JS 無効ならこの class は付かず、fallback 面がそのまま表示される。 */}
+  {
+    /* JS 有効時のみ、クエリ判定より先に fallback 面を隠してちらつきを防ぐ。
+      JS 無効ならこの class は付かず、fallback 面がそのまま表示される。 */
+  }
   <script is:inline>
     document.documentElement.classList.add("cyv-has-js");
   </script>
@@ -193,14 +209,15 @@ const C = isJa
               <span class="cyv-kind-value">{card.type}</span>
             </p>
             <p class="cyv-card-desc">{card.desc}</p>
-            <p class="cyv-readout">
-              <span class="cyv-readout-key">{C.inputLabel}</span>
-              <code class="cyv-hash">{card.hash}</code>
-              <span class="cyv-readout-dash" aria-hidden="true">
-                —
-              </span>
-              <span class="cyv-readout-result">{card.result}</span>
-            </p>
+            <dl class="cyv-checks">
+              {card.checks.map((check) => (
+                <div>
+                  <dt>{check.label}</dt>
+                  <dd>{check.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <p class="cyv-outcome">{card.outcome}</p>
             <p class="cyv-example-note">{C.exampleNote}</p>
           </section>
         ))
@@ -211,17 +228,12 @@ const C = isJa
       <section class="cyv-close" aria-labelledby="cyv-close-h">
         <p class="cyv-eyebrow">{C.next.eyebrow}</p>
         <h2 id="cyv-close-h" class="cyv-h2">
-          {C.next.h2Head}{!isJa && " "}<span class="cyv-h2-accent"
-            >{C.next.h2Accent}</span
-          >
+          {C.next.h2Head}{!isJa && " "}<span class="cyv-h2-accent">{C.next.h2Accent}</span>
         </h2>
         <p class="cyv-sub">{C.next.lede}</p>
         <div class="cyv-actions">
-          <a
-            class="cyv-btn cyv-btn--primary"
-            href={discoveryHref}
-            target="_blank"
-            rel="noopener">{C.next.cta}</a
+          <a class="cyv-btn cyv-btn--primary" href={discoveryHref} target="_blank" rel="noopener"
+            >{C.next.cta}</a
           >
           <a class="cyv-btn cyv-btn--ghost" href={backHref}>{C.backLabel}</a>
         </div>
@@ -238,8 +250,7 @@ const C = isJa
      入力値を HTML へ挿入しないので XSS は生じない。 */
   const allowedCards: ReadonlyArray<string> = ["transfer", "decrypt", "api"];
   const param = new URLSearchParams(window.location.search).get("card");
-  const key =
-    param !== null && allowedCards.includes(param) ? param : null;
+  const key = param !== null && allowedCards.includes(param) ? param : null;
   const faces = document.querySelectorAll<HTMLElement>("[data-cyv-card]");
   faces.forEach((face) => {
     face.hidden = face.getAttribute("data-cyv-card") !== key;
@@ -492,44 +503,33 @@ const C = isJa
     overflow-wrap: anywhere;
   }
 
-  /* ─── 読み取り行（入力ハッシュ — 一致） ─── */
-  .cyv-readout {
-    margin: 0 0 16px;
-    padding: 14px 16px;
-    background: var(--lemma-cream-deep);
-    border: 1px solid var(--cyv-line);
-    border-left: 3px solid var(--cyv-lime);
-    border-radius: 10px;
+  .cyv-checks {
+    margin: 0 0 20px;
+    border-block: 1px solid var(--cyv-line);
+  }
+  .cyv-checks > div {
+    display: grid;
+    grid-template-columns: minmax(90px, 1fr) minmax(0, 3fr);
+    gap: 16px;
+    padding-block: 14px;
     font-size: 14px;
-    line-height: 1.7;
-    color: var(--cyv-text-1);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 8px;
-    overflow-wrap: anywhere;
+    line-height: 1.8;
   }
-  .cyv-readout-key {
-    font-family: var(--font-display);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+  .cyv-checks > div + div {
+    border-top: 1px solid var(--cyv-line);
+  }
+  .cyv-checks dt {
     color: var(--cyv-text-3);
   }
-  .cyv-hash {
-    font-family: var(--font-display);
-    font-size: 14.5px;
-    font-weight: 700;
-    color: var(--cyv-text-1);
+  .cyv-checks dd {
+    margin: 0;
     overflow-wrap: anywhere;
-    word-break: break-word;
   }
-  .cyv-readout-dash {
-    color: var(--cyv-text-3);
-  }
-  .cyv-readout-result {
-    font-weight: 700;
-    color: var(--accent);
+  .cyv-outcome {
+    margin: 0 0 20px;
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--cyv-text-1);
   }
   .cyv-example-note {
     margin: 0;
