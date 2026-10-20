@@ -92,7 +92,7 @@ The payment at step 3 was a normal payment to the registered account. **The prob
 - **2026-05-23**: Polaris spots an anomaly in its group Booking.com account and starts investigating.
 - **Investigation**: Payout accounts at several hotels had been rewritten. At one hotel part of the receivables was paid into the fraudulent account, a loss of about ¥9 million; at the others an early response prevented fraudulent payouts.
 - **2026-05-28**: Polaris discloses the unauthorised access. The travel-industry outlet TRAICY reports it the same day.
-- **2026-06-02–03**: Security outlets ScanNetSecurity and Security NEXT report it.
+- **2026-06-02**: through 06-03, security outlets ScanNetSecurity and Security NEXT report it.
 
 > The facts here rest on Polaris Holdings' disclosure of 28 May and the reporting on it. How the attacker got in, and whether guests' personal data leaked, were still under investigation at disclosure. The disclosure document has since been taken down from the company's site, so this Brief cites the press coverage.
 
