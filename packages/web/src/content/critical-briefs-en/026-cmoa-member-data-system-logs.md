@@ -47,6 +47,7 @@ controls:
     item: "Keep logs apart from member data, in a form that shows any tampering"
 impact: "Five member-data fields and some system logs leaked"
 takeaway: "What the stolen logs contained could only be worked out after they were taken."
+self_check: "If your logs were taken, could you say right away what leaked?"
 ---
 
 ## 1. TL;DR
