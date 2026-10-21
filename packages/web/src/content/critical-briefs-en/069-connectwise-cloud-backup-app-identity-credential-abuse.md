@@ -51,7 +51,7 @@ controls:
 attack_method: "supply-chain"
 impact: "Sign-in activity in about 1,000 tenants, more than 300 successful"
 takeaway: "Nothing checked, before they ran, whether administrative actions by a consented app identity were ones the vendor intended."
-self_check: "If a consented app granted itself administrator rights, could you stop it before it ran?"
+self_check: "Do you know which apps you have installed, and what permissions each one holds?"
 ---
 
 ## 1. TL;DR
@@ -147,7 +147,7 @@ The same structure appears in [Vercel/Context.ai](/critical/briefs/059-vercel-co
 
 Three things to confirm in your organisation about apps consented in your tenant
 
-- Can you list the third-party apps consented in your tenant and the permissions each holds?
+- Do you regularly review for apps no longer in use, or permissions broader than needed?
 - When an app identity assigns itself a role or adds credentials to another app, who is notified?
 - When a vendor discloses a compromise, is there a set procedure and owner for disabling that app and checking issued tokens, added credentials and assigned roles?
 
