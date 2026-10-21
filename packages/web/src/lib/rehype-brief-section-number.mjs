@@ -383,7 +383,7 @@ function shortUrl(href) {
   return s;
 }
 
-function deriveSources(root) {
+function deriveSources(root, isEn) {
   for (const { node } of sectionBlocks(root, 6)) {
     if (!isEl(node, "ul")) continue;
     const parts = labelledItems(node);
@@ -448,9 +448,24 @@ function deriveSources(root) {
         ]),
       ]);
     });
-    replaceNode(root, node, h("ol", "rx-srcs", lis));
+    // 一次ソースは開いたまま、それ以外（報道・解析）は畳む。どちらかが無ければ畳まない。
+    const primary = typed.map(([, , type]) => PRIMARY_RE.test(type));
+    const shown = lis.filter((_, i) => primary[i]);
+    const folded = lis.filter((_, i) => !primary[i]);
+    if (!shown.length || !folded.length) {
+      replaceNode(root, node, h("ol", "rx-srcs", lis));
+      continue;
+    }
+    const more = h("details", "rx-srcs-more", [
+      h("summary", null, [
+        txt(isEn ? `${folded.length} more (reporting, analysis)` : `報道・解析 ${folded.length} 件`),
+      ]),
+      h("ol", "rx-srcs", folded),
+    ]);
+    replaceNode(root, node, h("div", "rx-srcs-wrap", [h("ol", "rx-srcs", shown), more]));
   }
 }
+const PRIMARY_RE = /一次|primary/i;
 
 /**
  * `**…。** 本文` の空白を落とす。日本語では閉じの `**` の直後に文字を続けると
@@ -483,7 +498,7 @@ function deriveReportComponents(root, fm, isEn) {
   deriveTimeline(root);
   deriveCounter(root, isEn);
   deriveFacts(root, 5);
-  deriveSources(root);
+  deriveSources(root, isEn);
 }
 
 function applyReportLayout(tree, fm, isEn) {

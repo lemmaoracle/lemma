@@ -239,6 +239,11 @@ const briefSchema = z
     attack_method: z.enum(BRIEF_ATTACK_SLUGS).optional(),
     impact: z.string().min(1).optional(),
     takeaway: z.string().min(1).optional(),
+    /**
+     * report レイアウトの表紙の下・TL;DR の上に出す「自社で確かめる」カード（2026-10-21）。
+     * 読者への問い（1文・「〜か。」）と §5 へのボタン。無ければカードは出ない。
+     */
+    self_check: z.string().min(1).optional(),
   })
   .refine(
     (data) => {

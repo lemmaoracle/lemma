@@ -215,6 +215,10 @@ const tocSections = headings
   .filter((h) => !/配布について|distribution/i.test(h.text))
   .map((h, i) => ({ num: i + 1, text: h.text, slug: h.slug }));
 
+// 表紙の下の「自社で確かめる」カード（report・frontmatter self_check）。
+const selfCheck = isReport ? (brief.data.self_check as string | undefined) : undefined;
+const counterSlug = tocSections.find((s) => s.num === 5)?.slug;
+
 // 配布定型文（旧 §9）が本文に残っていない Brief には、テンプレート側で
 // 短い注記を描画する（6章化で md から定型文を落とすため。移行中の旧本文
 // と二重にならないように本文側を検出してゲート）。
@@ -484,6 +488,21 @@ const labels = isJa
               )}
               <div><span class="k">{labels.authors}</span>{brief.data.authors.join(", ")}</div>
             </div>
+            {selfCheck && (
+              <aside class="rx-check" aria-label={isJa ? "自社で確かめる" : "Ask yourself"}>
+                <div class="rx-check-h">
+                  <svg class="rx-check-ic" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2.5 4 5.6v6.1c0 4.9 3.4 8.6 8 9.8 4.6-1.2 8-4.9 8-9.8V5.6z" />
+                    <path class="tick" d="m8.4 12.2 2.5 2.5 4.9-5.1" />
+                  </svg>
+                  <span>{isJa ? "自社で確かめる" : "Ask yourself"}</span>
+                </div>
+                <p class="rx-check-q">{selfCheck}</p>
+                {counterSlug && (
+                  <a class="rx-check-a" href={`#${counterSlug}`}>{isJa ? "対策を見る" : "How to counter this"}<span aria-hidden="true">→</span></a>
+                )}
+              </aside>
+            )}
             {/* スマホ・タブレットでは右レール（目次）が消えるので、表紙の下に
                 畳んだ目次を置く。広い画面では出さない。 */}
             <details class="rx-mtoc">
@@ -2320,6 +2339,63 @@ const labels = isJa
     line-height: 1.6;
     color: var(--tx);
   }
+  /* 自社で確かめる（表紙の下・TL;DR の上） */
+  .rx-check {
+    margin: 16px 0 0;
+    padding: 12px 18px 13px;
+    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid rgba(111, 156, 0, 0.35);
+  }
+  .rx-check-h {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ok-light);
+    letter-spacing: 0.04em;
+  }
+  .rx-check-ic {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    padding: 3px;
+    border-radius: 50%;
+    background: var(--ok);
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .rx-check-ic .tick {
+    stroke-width: 2.4;
+  }
+  .rx-check-a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--ok);
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .rx-check-a:hover {
+    background: #b8ec2a;
+  }
+  .rx-check-q {
+    margin: 6px 0 0;
+    font-family: var(--font-serif-jp);
+    font-weight: 700;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--tx);
+  }
   .rx-meta div {
     display: flex;
     gap: 9px;
@@ -3019,6 +3095,21 @@ const labels = isJa
     display: block;
     font-size: 12px;
     color: var(--muted);
+  }
+  /* 一次以外の出典は畳む（番号は一次から続ける） */
+  .brief-body.is-report :global(.rx-srcs-more) {
+    margin: 0;
+  }
+  .brief-body.is-report :global(.rx-srcs-more > summary) {
+    cursor: pointer;
+    padding: 10px 0;
+    font-size: 12.5px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+  }
+  .brief-body.is-report :global(.rx-srcs-more > .rx-srcs) {
+    counter-reset: none;
+    border-top: 0;
   }
   .brief-body.is-report :global(.rx-also) {
     margin: 16px 0 0;

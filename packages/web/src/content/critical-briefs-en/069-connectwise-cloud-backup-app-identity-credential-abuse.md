@@ -51,24 +51,25 @@ controls:
 attack_method: "supply-chain"
 impact: "Sign-in activity in about 1,000 tenants, more than 300 successful"
 takeaway: "Nothing checked, before they ran, whether administrative actions by a consented app identity were ones the vendor intended."
+self_check: "If a consented app granted itself administrator rights, could you stop it before it ran?"
 ---
 
 ## 1. TL;DR
 
 In October 2026, credentials for ConnectWise applications, including Cloud Backup (formerly SkyKick), were abused to sign in to customers' Microsoft 365 tenants. Huntress reported sign-in activity from the attacker's IP in about 1,000 tenants, more than 300 of them successful. On the same day, in two customer tenants, the identity of another ConnectWise app made itself Global Administrator (Huntress does not tie this to the same attacker as the sign-ins). How the credential was exposed is unknown, and the incident is ongoing.
 
-The attacker used no customer password. It authenticated as an app the customer's administrator had consented to. At authentication, the app's own action and another party's action using its credential look the same.
+The attacker used no customer password; it authenticated as an app the customer's administrator had consented to. At authentication, the app's own action and another party's action using its credential look the same.
 
-The anomaly was noticed. ConnectWise discovered the unauthorised access on 14 October. But on the 15th, before the app identities were disabled on the 17th, the self-granted administrator rights still went through. What did not work was a layer that checks independently, before it runs, whether an action by a consented app identity is one the vendor intended.
+ConnectWise discovered the unauthorised access on 14 October, yet on the 15th, before the app identities were disabled on the 17th, the self-granted administrator rights went through. What did not work was a layer that checks independently, before it runs, whether an action by a consented app identity is one the vendor intended.
 
 ## 2. What happened
 
 - **Scope of products**: ConnectWise's Cloud Backup (formerly SkyKick) and Cloud Management Microsoft 365 apps, installed with administrator consent in MSP and customer tenants.
-- **Credential abuse**: per Huntress, the Cloud Backup app identity's credential was used to sign in to customer tenants. No customer password was needed; the attacker obtained tokens as the app.
+- **Credential abuse**: the Cloud Backup app identity's credential was used to sign in to customer tenants (Huntress). No customer password was needed; tokens were obtained as the app.
 - **Scale**: on 17 October Huntress reported attacker-IP sign-in activity in about 1,000 tenants, with more than 300 succeeding (162 tenants were confirmed as of the 16th). The credential works wherever the app is consented, so real exposure may be larger.
 - **Self-granted admin rights**: on 15 October, in two customer tenants, the identity of Cloud Management's Microsoft Teams app made itself Global Administrator and added credentials to other apps.
-- **ConnectWise response**: on 17 October it disabled seven app identities, revoked related certificates and suspended three services including Cloud Backup. It says disabling does not reverse changes already made, and issued tokens may remain usable until they expire (company advisory).
-- **Route in**: how the credential reached the attacker is unknown. ConnectWise says a product vulnerability "has not been established".
+- **ConnectWise response**: on 17 October it disabled seven app identities, revoked related certificates and suspended three services including Cloud Backup. Disabling does not reverse changes already made, and issued tokens may remain usable until they expire (company advisory).
+- **Route in**: unknown. A product vulnerability "has not been established" (ConnectWise).
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Events as far as disclosed</span></div>
@@ -89,7 +90,7 @@ The anomaly was noticed. ConnectWise discovered the unauthorised access on 14 Oc
 - **2026-10-17**: ConnectWise disabled seven app identities and suspended Cloud Backup. Microsoft Threat Intelligence posted a warning on X. Huntress reported about 1,000 tenants with activity.
 - **2026-10-19**: Huntress confirmed the same self-granting of admin rights in a second customer tenant. Updates continued into 10-20; as of 00:45 UTC on 20 October, all three services remained suspended.
 
-> Facts here rest on Huntress, a researcher publishing its own findings, and ConnectWise's official advisory. Unconfirmed: how the credential was exposed, whether a product vulnerability contributed (ConnectWise says this "has not been established"), and whether the self-granted admin rights and the sign-ins were the same attacker. Huntress also monitors affected tenants, and its own app was targeted.
+> Facts here rest on Huntress, a researcher publishing its own findings, and ConnectWise's official advisory. Unconfirmed: how the credential was exposed, whether a product vulnerability contributed, and whether the self-granted admin rights and the sign-ins were the same attacker. Huntress also monitors affected tenants, and its own app was targeted.
 
 ### After disclosure
 
@@ -98,9 +99,7 @@ The anomaly was noticed. ConnectWise discovered the unauthorised access on 14 Oc
 
 ## 4. Why it wasn't stopped
 
-The failure is neither weak customer passwords nor a mistake. Authentication went through on a consented app identity's credential, and role assignment and credential additions by another app identity also went through, with no check before they ran that they were operations the vendor intended.
-
-The anomaly was noticed. ConnectWise discovered the access on 14 October, and Huntress told the self-elevation apart using clues such as an unusual user agent. But administrator grants went through until the apps were disabled, and issued tokens may stay usable for a while after. What failed sits before that. An app credential gives its holder the app's permissions as they stand.
+The failure is neither weak customer passwords nor a mistake. An app credential gives its holder the app's permissions as they stand, and role assignment and credential additions went through with no check before they ran that they were operations the vendor intended.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The detection–proof gap</span></div>
@@ -116,9 +115,9 @@ The anomaly was noticed. ConnectWise discovered the access on 14 October, and Hu
 </div>
 </figure>
 
-"The app was consented to" and "this action is one the vendor intends" are different facts. The first is recorded at install; the second must be checked each time. That distance is what this Brief calls the **gap between detection and proof**, and it is a structural gap.
+Detection worked: Huntress told the self-elevation apart using clues such as an unusual user agent. But it came after the action, and administrator grants went through until the apps were disabled. "The app was consented to" and "this action is one the vendor intends" are different facts: the first is recorded at install, the second must be checked each time. That distance is the **gap between detection and proof**, and it is a structural gap.
 
-The same structure appears in earlier Briefs. In [Vercel/Context.ai](/critical/briefs/059-vercel-contextai-oauth/), an "allow all" OAuth grant to an AI tool was the entry point; in [Salesloft Drift](/critical/briefs/064-salesloft-drift-oauth-salesforce/), stolen OAuth tokens queried over 700 Salesforce environments. In each, a consented non-human identity was used with no independent check directly before the action.
+The same structure appears in [Vercel/Context.ai](/critical/briefs/059-vercel-contextai-oauth/) (an "allow all" OAuth grant to an AI tool as the entry point) and [Salesloft Drift](/critical/briefs/064-salesloft-drift-oauth-salesforce/) (stolen OAuth tokens used to query over 700 Salesforce environments).
 
 ## 5. How to counter this
 
@@ -126,10 +125,8 @@ The same structure appears in earlier Briefs. In [Vercel/Context.ai](/critical/b
 
 ### Industries and operations to watch
 
-- **Industry · Procurement & supply chain**: MSPs, and organisations that hand Microsoft 365 backup or management to an outside service. Vendor apps are sometimes consented to with tenant-wide permissions.
+- **Industry · Procurement & supply chain**: MSPs, and organisations that hand Microsoft 365 backup or management to an outside service. Backup and management SaaS often ask for tenant-wide permissions.
 - **Operation · Accounts & permissions**: Managing the apps installed in a tenant and the permissions they hold. The actions here came not from a user but from a consented app identity.
-
-The same hole exists in many organisations that entrust tenant permissions to outside services. Backup and management SaaS ask for broad permissions, and once consent is given, often no one, on either the customer's or the vendor's side, has the job of checking each later action.
 
 ### Do today's controls close it?
 
@@ -142,9 +139,9 @@ The same hole exists in many organisations that entrust tenant permissions to ou
 
 ### What is needed
 
-1. **Decide at install which actions an app identity may take.** For example, reading backup data is allowed; self-assigning directory roles or adding credentials to other apps is not. Decide by kind of action; the breadth of consented permissions alone does not draw this line.
-2. **Hold permission-changing actions for a check before they run.** When a role assignment or credential addition comes from an app identity, check it against the decided scope and refuse it if it falls outside. Also check, separately from the credential, that it came from the registered execution environment.
-3. **Record which permission each action relied on, separately from the app.** Keep what was held and what was let through somewhere apart from the app's own records, in a form you can later show a third party — that is, as proof.
+1. **Decide at install which actions an app identity may take.** For example, reading backup data is allowed; self-assigning directory roles or adding credentials to other apps is not. Decide by kind of action: the breadth of consented permissions alone does not draw this line.
+2. **Hold permission-changing actions for a check before they run.** Check role assignments and credential additions from an app identity against the decided scope, and refuse those outside it. Also check, separately from the credential, that they came from the registered execution environment.
+3. **Record which permission each action relied on, separately from the app.** Keep what was held and what was let through in a form you can later show a third party — that is, as proof.
 
 ### Checklist
 

@@ -173,7 +173,7 @@ Note: this still fails if the approver is tricked into approving, or if the appr
 
 ## 6. Sources
 
-- **Polaris Holdings (Company disclosure)**: “Notice of unauthorised access (Booking.com account)” (Japanese) (2026-05-28) — the document has since been taken down from the company's site
+- **Polaris Holdings (Primary, company disclosure)**: “Notice of unauthorised access (Booking.com account)” (Japanese) (2026-05-28) — the document has since been taken down from the company's site
 - **Security NEXT (Press)**: “Payout account details at lodging booking service tampered, fraudulent transfer — Polaris HD” (Japanese) (2026-06-03) — <https://www.security-next.com/185176>
 - **TRAICY (Press)**: “Polaris HD suffers fraudulent transfer after unauthorised access to Booking.com; phishing messages to guests also confirmed” (Japanese) (2026-05-28) — <https://www.traicy.com/posts/20260528371641/>
 - **ScanNetSecurity (Press)**: “Unauthorised access to Booking.com, sales payout account tampered; about ¥9 million lost” (Japanese) (2026-06-02) — <https://scan.netsecurity.ne.jp/article/2026/06/02/55403.html>
