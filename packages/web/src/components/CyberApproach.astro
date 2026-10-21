@@ -1,0 +1,1350 @@
+---
+import type { Locale } from "../i18n/translations";
+import verifyQr from "../assets/cyber-verify-qr.svg";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+// Decorative sample data, not an executable ruleset or a verifiable proof.
+const encodedRules = (scope: string) =>
+  btoa(
+    JSON.stringify({
+      scope,
+      ...(scope === "export"
+        ? { source: "support", target: "customer-records", limit: 100, window: 900 }
+        : scope === "bank"
+          ? { source: "supplier", target: "payment-account", approvals: 2, window: 3600 }
+          : { source: "member", target: "voucher", limit: 5000, window: 300 }),
+      approval: "required",
+      expiry: "configured",
+    }),
+  )
+    .repeat(12)
+    .slice(0, 1440);
+const guardrailCode = (operation: string) =>
+  [
+    "await guardrail(",
+    "  { circuitId, proof, publicSignals },",
+    "  { throw: true }",
+    ");",
+    `await ${operation}(request);`,
+  ].join("\n");
+const C =
+  locale === "ja"
+    ? {
+        title: "不正な依頼を、実行の直前で止める。",
+        intro:
+          "Cyber は、依頼の内容を「確認票」にまとめ、決めた条件と照合する仕組みです。システムでも、窓口でも、操作を進める前に確かめます。",
+        admin: "管理者",
+        preset: "あらかじめ設定",
+        ruleset: "管理者のルール",
+        fields: ["依頼元", "対象", "条件"],
+        check: "設定した条件と照合",
+        verified: "照合完了",
+        expired: "期限切れ",
+        rejected: "期限切れのため実行しない",
+        match: "一致",
+        mismatch: "不一致・期限切れ",
+        formats: "業務に合わせた使い方で",
+        code: "システムに組み込む",
+        codeNote: "今回の依頼用の確認データを、実行直前に検証。",
+        paper: "QR で確認する",
+        documentLine: "依頼内容に、確認票を添えて。",
+        sample: "見本",
+        paperNote: "経理担当者が、依頼と確認結果を照合。",
+        caption:
+          "業務に取り入れる場合の例です。最後は期限切れの確認票を受け付けない例です。SDK例は確認データの検証部分で、依頼内容・許可条件との照合も組み込み先で設計します。QRの場合は担当者が結果を見て判断します。",
+        accessible:
+          "管理者のルールを先に用意し、利用者が提出する確認票を重ねて、実行前に照合します。最初の2例はライム色の光が一周し、確認票が右へ抜けます。最後の例は期限切れの確認票です。赤い枠で拒否を示し、左下へ落として実行を止めます。QRの場合は担当者が結果を見て判断します。",
+        scenarios: [
+          {
+            key: "export",
+            status: "valid" as const,
+            mode: "code" as const,
+            name: "顧客データの出力",
+            actor: "サポート担当",
+            request: "顧客100件をCSVに",
+            rules: "出力できる顧客・項目を設定",
+            values: ["サポート担当", "申請した顧客100件", "申請した項目のみ"],
+            pass: "申請した100件を出力",
+            stop: "範囲外の出力を止める",
+            operation: "exportCustomers",
+          },
+          {
+            key: "bank",
+            status: "valid" as const,
+            mode: "paper" as const,
+            name: "振込先口座の変更",
+            actor: "取引先",
+            request: "振込先の口座を変更",
+            rules: "取引先・承認者・期限を設定",
+            values: ["登録済みの取引先", "変更後の振込先", "担当者の承認・期限"],
+            pass: "経理が承認して口座を更新",
+            stop: "経理が更新を保留",
+            document: "振込先変更の依頼書",
+          },
+          {
+            key: "points",
+            status: "expired" as const,
+            mode: "code" as const,
+            name: "期限切れの確認票を再利用",
+            actor: "第三者",
+            request: "5,000ポイントを交換",
+            rules: "本人・交換上限・有効期限を設定",
+            values: ["会員を名乗る依頼", "5,000ポイント", "有効期限切れ"],
+            pass: "商品券を発行",
+            stop: "期限切れのため商品券を発行しない",
+            operation: "issueVoucher",
+          },
+        ],
+        animation: "図のアニメーションを一時停止",
+        pause: "一時停止",
+        play: "再生",
+      }
+    : {
+        title: "Stop malicious requests before execution.",
+        intro:
+          "Cyber brings a request into a confirmation card and checks it against your rules. In software or at a service counter, check before you act.",
+        admin: "Administrator",
+        preset: "Set up in advance",
+        ruleset: "Administrator rules",
+        fields: ["Source", "Target", "Conditions"],
+        check: "Check against your rules",
+        verified: "Check complete",
+        expired: "Expired",
+        rejected: "Expired — do not execute",
+        match: "Match",
+        mismatch: "Mismatch or expired",
+        formats: "Choose how it fits your work",
+        code: "Integrate into software",
+        codeNote: "Verify this request’s confirmation data before execution.",
+        paper: "Check with a QR code",
+        documentLine: "A confirmation card with the request.",
+        sample: "Sample",
+        paperNote: "Accounting staff compare the request with the result.",
+        caption:
+          "Illustrative workflows. The last example rejects an expired confirmation card. The SDK excerpt verifies confirmation data; the integration must also check the request and permission rules. With a QR code, staff review the result and decide whether to proceed.",
+        accessible:
+          "Administrator rules are prepared first. A submitted confirmation card slides over them for a check before execution. In the first two examples, lime light travels around the edge and the card exits right. The last example uses an expired card: its border glows red, then it falls left and execution is blocked. With a QR code, staff review the result and decide whether to proceed.",
+        scenarios: [
+          {
+            key: "export",
+            status: "valid" as const,
+            mode: "code" as const,
+            name: "Customer data export",
+            actor: "Support staff",
+            request: "Export 100 customers to CSV",
+            rules: "Set allowed customers and fields",
+            values: ["Support staff", "100 requested customers", "Requested fields only"],
+            pass: "Export the requested 100",
+            stop: "Stop out-of-scope exports",
+            operation: "exportCustomers",
+          },
+          {
+            key: "bank",
+            status: "valid" as const,
+            mode: "paper" as const,
+            name: "Bank account change",
+            actor: "Supplier",
+            request: "Change the payment account",
+            rules: "Set suppliers, approvers and expiry",
+            values: ["Registered supplier", "New payment account", "Staff approval · expiry"],
+            pass: "Accounting approves and updates",
+            stop: "Accounting puts it on hold",
+            document: "Account change request",
+          },
+          {
+            key: "points",
+            status: "expired" as const,
+            mode: "code" as const,
+            name: "Reusing an expired confirmation card",
+            actor: "Third party",
+            request: "Exchange 5,000 points",
+            rules: "Set identity, limits and expiry",
+            values: ["Claimed member identity", "5,000 points", "Validity period expired"],
+            pass: "Issue a voucher",
+            stop: "Expired: no voucher is issued",
+            operation: "issueVoucher",
+          },
+        ],
+        animation: "Pause diagram animation",
+        pause: "Pause",
+        play: "Play",
+      };
+---
+
+<section id="cy-how" class="approach" aria-labelledby="cy-approach-title" data-cy-approach>
+  <h2 id="cy-approach-title">{C.title}</h2>
+  <p class="intro">{C.intro}</p>
+  <figure aria-describedby="cy-approach-caption">
+    <div class="sr-only">
+      <p>{C.accessible}</p>
+      <ol>
+        {
+          C.scenarios.map((scenario) => (
+            <li>
+              <strong>{scenario.name}</strong>: {scenario.rules}。{scenario.actor} —{" "}
+              {scenario.request}。
+              {scenario.status === "expired"
+                ? `${C.expired}: ${scenario.stop}`
+                : `${C.match}: ${scenario.pass}。${C.mismatch}: ${scenario.stop}`}
+              。
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    <div class="boards" aria-hidden="true" data-cy-approach-board>
+      {
+        C.scenarios.map((scenario, index) => (
+          <div
+            class:list={["board", { invalid: scenario.status === "expired" }]}
+            data-cy-scenario={scenario.key}
+            style={`--scenario: ${index}`}
+          >
+            <div class="admin">
+              <div class="admin-heading">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 7h16M4 17h16M8 4v6m8 4v6" />
+                </svg>
+                <>
+                  <strong>{C.admin}</strong>
+                  <span>{C.preset}</span>
+                </>
+              </div>
+              <p>{scenario.rules}</p>
+            </div>
+
+            <div class="requester">
+              <svg class="person" width="52" height="64" viewBox="0 0 52 64" fill="none">
+                <circle cx="26" cy="16" r="10" />
+                <path d="M8 56V46a18 18 0 0 1 36 0v10M16 44v12m20-12v12" />
+              </svg>
+              <strong>{scenario.actor}</strong>
+              <span class="request-text">{scenario.request}</span>
+              <span class="scenario-index">0{index + 1} / 03</span>
+              <span class="incoming" />
+            </div>
+
+            <div class="card-space" data-cy-approach-tilt>
+              <div class="card-tilt">
+                <div class="rule-card">
+                  <div class="rule-heading">
+                    <strong>{C.ruleset}</strong>
+                    <span>PRESET / {C.sample}</span>
+                  </div>
+                  <p
+                    class="rule-data"
+                    data-rules={encodedRules(scenario.key)}
+                    data-previous-rules={encodedRules(
+                      C.scenarios[(index + C.scenarios.length - 1) % C.scenarios.length]?.key ??
+                        scenario.key,
+                    )}
+                  >
+                    {encodedRules(scenario.key)}
+                  </p>
+                </div>
+                <div class="card-slide">
+                  <div class="card" data-cy-approach-card>
+                    <svg class="verification-edge" fill="none">
+                      <rect class="edge-trail edge-halo" x="1" y="1" rx="13" pathLength="100" />
+                      <rect class="edge-trail" x="1" y="1" rx="13" pathLength="100" />
+                    </svg>
+                    <div class="card-top">
+                      <>
+                        <span>LEMMA</span>
+                        <span>
+                          {scenario.status === "expired" ? "EXPIRED CARD" : "CONFIRMATION CARD"}
+                        </span>
+                      </>
+                    </div>
+                    <strong class="wordmark">Cyber</strong>
+                    <p class="card-label">{scenario.request}</p>
+                    <dl>
+                      {C.fields.map((field, fieldIndex) => (
+                        <div>
+                          <dt>{field}</dt>
+                          <dd>{scenario.values[fieldIndex]}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <div class="check">
+                      <span class="check-mark">
+                        <span class={scenario.status === "expired" ? "rejected" : "verified"}>
+                          {scenario.status === "expired" ? "×" : "✓"}
+                        </span>
+                      </span>
+                      <span class="check-copy">
+                        <span class="checking">{C.check}</span>
+                        <span class={scenario.status === "expired" ? "rejected" : "verified"}>
+                          {scenario.status === "expired" ? C.rejected : C.verified}
+                        </span>
+                      </span>
+                      <i />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="formats">
+              <p class="formats-label">{C.formats}</p>
+              <div class="format-stage">
+                {scenario.mode === "code" ? (
+                  <div class="format code-format">
+                    <div class="format-heading">
+                      <strong>{C.code}</strong>
+                    </div>
+                    <div class="code-sheet">
+                      <div class="code-top">
+                        <span />
+                        <span />
+                        <span />
+                        <b>@lemmaoracle/verify</b>
+                      </div>
+                      <pre set:text={guardrailCode(scenario.operation)} />
+                    </div>
+                    <p class="format-note">{C.codeNote}</p>
+                  </div>
+                ) : (
+                  <div class="format paper-format">
+                    <div class="format-heading">
+                      <strong>{C.paper}</strong>
+                    </div>
+                    <div class="paper-sheet">
+                      <div class="paper-content">
+                        <span class="paper-brand">CYBER / {C.sample}</span>
+                        <strong>{scenario.document}</strong>
+                        <span class="paper-line" />
+                        <span class="paper-line short" />
+                        <p>{C.documentLine}</p>
+                      </div>
+                      <img src={verifyQr.src} width="80" height="80" alt="" loading="lazy" />
+                    </div>
+                    <p class="format-note">{C.paperNote}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+    <div class="motion-control">
+      <button
+        type="button"
+        aria-label={C.animation}
+        aria-pressed="false"
+        data-cy-approach-toggle
+        hidden
+      >
+        <span class="pause-label"><span aria-hidden="true">Ⅱ</span> {C.pause}</span>
+        <span class="play-label"><span aria-hidden="true">▷</span> {C.play}</span>
+      </button>
+    </div>
+    <figcaption id="cy-approach-caption">{C.caption}</figcaption>
+  </figure>
+</section>
+
+<script>
+  const section = document.querySelector<HTMLElement>("[data-cy-approach]");
+  const board = section?.querySelector<HTMLElement>("[data-cy-approach-board]");
+  const cardSpace = section?.querySelector<HTMLElement>("[data-cy-approach-tilt]");
+  const tilts = Array.from(section?.querySelectorAll<HTMLElement>(".card-tilt") ?? []);
+  const toggle = section?.querySelector<HTMLButtonElement>("[data-cy-approach-toggle]");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const ruleFields = Array.from(section?.querySelectorAll<HTMLElement>("[data-rules]") ?? []);
+  const rewriteRules = () => {
+    // Follow the CSS clock so rewrites share pause, offscreen and scenario timing.
+    const timeline = board
+      ?.querySelector<HTMLElement>(".board")
+      ?.getAnimations()
+      .find(
+        (animation) =>
+          animation instanceof CSSAnimation && animation.animationName === "scenario-show",
+      );
+    const time = Number(timeline?.currentTime ?? 0);
+    ruleFields.forEach((field, index) => {
+      const next = field.dataset.rules ?? "";
+      const previous = field.dataset.previousRules ?? next;
+      const phase = (((time - index * 8000) % 24000) + 24000) % 24000;
+      const count = Math.min(next.length, Math.floor((phase / 650) * next.length));
+      const value = next.slice(0, count) + previous.slice(count);
+      field.textContent === value ? undefined : (field.textContent = value);
+    });
+    const enabled =
+      section?.classList.contains("active") &&
+      !section.classList.contains("paused") &&
+      !reducedMotion.matches;
+    enabled
+      ? section?.setAttribute("data-rules-frame", String(requestAnimationFrame(rewriteRules)))
+      : undefined;
+  };
+  const syncRules = () => {
+    cancelAnimationFrame(Number(section?.dataset.rulesFrame ?? 0));
+    reducedMotion.matches
+      ? ruleFields.forEach((field) => (field.textContent = field.dataset.rules ?? ""))
+      : section?.classList.contains("active") && !section.classList.contains("paused")
+        ? rewriteRules()
+        : undefined;
+  };
+  const resetTilt = () => {
+    tilts.forEach((tilt) => tilt.style.removeProperty("--tilt"));
+  };
+  const observer =
+    typeof IntersectionObserver === "undefined"
+      ? undefined
+      : new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              section?.classList.toggle("active", entry.isIntersecting);
+              entry.isIntersecting ? undefined : resetTilt();
+              syncRules();
+            });
+          },
+          { threshold: 0.2 },
+        );
+  section && board && observer
+    ? (section.classList.add("ready"), observer.observe(board), toggle?.removeAttribute("hidden"))
+    : undefined;
+  toggle?.addEventListener("click", () => {
+    const paused = section?.classList.toggle("paused") ?? false;
+    toggle.setAttribute("aria-pressed", String(paused));
+    paused ? resetTilt() : undefined;
+    syncRules();
+  });
+  const rotationToward = (bounds: DOMRect, x: number, y: number) => {
+    const dx = x - bounds.left - bounds.width / 2;
+    const dy = y - bounds.top - bounds.height / 2;
+    const distance = Math.hypot(dx, dy);
+    const axis = distance > 0 ? [-dy / distance, dx / distance, 0] : [0, 1, 0];
+    const angle = Math.atan2(distance, bounds.width * 0.6) * (40 / Math.PI);
+    return `rotate3d(${axis.join(", ")}, ${angle}deg)`;
+  };
+  document.addEventListener(
+    "pointermove",
+    (event) => {
+      const enabled =
+        event.pointerType === "mouse" &&
+        finePointer.matches &&
+        !reducedMotion.matches &&
+        section?.classList.contains("active") &&
+        !section.classList.contains("paused");
+      const bounds = enabled ? cardSpace?.getBoundingClientRect() : undefined;
+      const rotation = bounds ? rotationToward(bounds, event.clientX, event.clientY) : undefined;
+      rotation ? tilts.forEach((tilt) => tilt.style.setProperty("--tilt", rotation)) : undefined;
+    },
+    { passive: true },
+  );
+  document.documentElement.addEventListener("pointerleave", resetTilt);
+  window.addEventListener("blur", resetTilt);
+  reducedMotion.addEventListener("change", resetTilt);
+  reducedMotion.addEventListener("change", syncRules);
+  finePointer.addEventListener("change", resetTilt);
+</script>
+
+<style>
+  .approach {
+    margin-top: 112px;
+    scroll-margin-top: 100px;
+  }
+  .approach *,
+  .approach *::before,
+  .approach *::after {
+    box-sizing: border-box;
+  }
+  h2 {
+    font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
+    font-size: clamp(23px, 3vw, 32px);
+    font-weight: 500;
+    line-height: 1.6;
+    margin: 0 0 24px;
+    text-wrap: balance;
+    word-break: auto-phrase;
+  }
+  .intro {
+    max-width: 640px;
+    margin: 0 auto 44px;
+    color: #bac1af;
+    font-size: 15px;
+    line-height: 1.95;
+    text-wrap: pretty;
+  }
+  figure {
+    margin: 0;
+  }
+  .boards {
+    display: grid;
+    gap: 72px;
+    overflow: clip;
+    overflow-clip-margin: 12px;
+  }
+  .board {
+    --gap: clamp(24px, 4vw, 52px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 330px) minmax(0, 1fr);
+    column-gap: var(--gap);
+    row-gap: 44px;
+    align-items: center;
+    padding: 0 8px;
+    text-align: left;
+  }
+  .admin {
+    grid-area: 1 / 2;
+    position: relative;
+    padding: 13px 16px;
+    border: 1px solid #3e4435;
+    border-radius: 8px;
+    color: #d4d9ca;
+  }
+  .admin::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    height: 44px;
+    border-left: 1px dashed #69725c;
+  }
+  .admin-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .admin-heading svg {
+    stroke: #bac1af;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    flex-shrink: 0;
+  }
+  .admin-heading strong {
+    font-weight: 500;
+  }
+  .admin-heading span {
+    color: #929c85;
+    margin-left: auto;
+    font-size: 10px;
+  }
+  .admin p {
+    margin: 6px 0 0;
+    font-size: 11px;
+    color: #929c85;
+  }
+  .requester {
+    grid-area: 2 / 1;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    text-align: center;
+  }
+  .person {
+    stroke: #d4d9ca;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+  }
+  .requester strong {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .request-text {
+    max-width: 100%;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #d4d9ca;
+    text-wrap: balance;
+  }
+  .scenario-index {
+    font-family: "Space Mono", monospace;
+    font-size: 9px;
+    color: #929c85;
+    letter-spacing: 0.1em;
+  }
+  .incoming {
+    position: absolute;
+    top: 50%;
+    right: calc(-1 * var(--gap));
+    width: var(--gap);
+    height: 1px;
+    background: #515944;
+  }
+  .incoming::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border-top: 1px solid #7b866b;
+    border-right: 1px solid #7b866b;
+    transform: rotate(45deg);
+  }
+  .card-space {
+    grid-area: 2 / 2;
+    perspective: 900px;
+    perspective-origin: 50% 50%;
+    transform-style: preserve-3d;
+  }
+  .card-tilt {
+    position: relative;
+    transform: var(--tilt, rotate3d(0, 1, 0, 0deg));
+    transform-origin: 50% 50%;
+    transform-style: preserve-3d;
+    transition: transform 160ms ease-out;
+  }
+  .rule-card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 10px 18px 18px;
+    border: 1px solid #94a88070;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #c5e9870c, #c5e98702 55%, #9bb5780b);
+    color: #929f84;
+    transform: translate3d(12px, -34px, -18px);
+    backface-visibility: hidden;
+  }
+  .rule-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .rule-heading strong {
+    font-weight: 400;
+  }
+  .rule-heading span {
+    font-family: "Space Mono", monospace;
+    font-size: 7px;
+    letter-spacing: 0.03em;
+  }
+  .rule-data {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    margin: 14px 0 0;
+    font-family: "Space Mono", monospace;
+    font-size: 9px;
+    line-height: 1.9;
+    letter-spacing: 0.03em;
+    overflow-wrap: anywhere;
+    mask-image: linear-gradient(#000b, #0005);
+  }
+  .card-slide {
+    transform: translate3d(0, 0, 18px);
+    transform-origin: 50% 50%;
+    transform-style: preserve-3d;
+  }
+  .card {
+    position: relative;
+    padding: 22px 24px 18px;
+    border: 1px solid #ffffffb3;
+    border-radius: 14px;
+    color: #24312c;
+    background:
+      repeating-linear-gradient(115deg, #0f172a09 0 1px, transparent 1px 4px),
+      linear-gradient(135deg, #fff, #e2e8f0 48%, #f8fafc 76%, #cbd5e1);
+    backface-visibility: hidden;
+  }
+  .invalid .card {
+    color: #503734;
+    border-color: #e9b7a8;
+    background:
+      repeating-linear-gradient(115deg, #632d2410 0 1px, transparent 1px 4px),
+      linear-gradient(135deg, #f4e6df, #cfb5ad 48%, #ead8cf 76%, #b9a09a);
+  }
+  .invalid .card-top,
+  .invalid dt {
+    color: #835f56;
+  }
+  .invalid dl > div:last-child dd {
+    color: #a3342c;
+  }
+  .verification-edge {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .edge-trail {
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    stroke: #b6ff28;
+    stroke-width: 3px;
+    stroke-linecap: round;
+    stroke-dasharray: 22 78;
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  .edge-halo {
+    stroke-width: 10px;
+    stroke-opacity: 0.55;
+    filter: blur(4px);
+  }
+  .invalid .edge-trail {
+    stroke: #ff6657;
+    stroke-dasharray: none;
+    opacity: 0.8;
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: #5e6a6b;
+    font-family: "Space Mono", monospace;
+    font-size: 8px;
+    letter-spacing: 0.08em;
+  }
+  .wordmark {
+    display: block;
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 500;
+    font-size: 48px;
+    letter-spacing: -0.06em;
+    line-height: 1.2;
+    margin: 15px 0 5px;
+  }
+  .card-label {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 20px;
+    line-height: 1.65;
+  }
+  dl {
+    margin: 0;
+    font-size: 12px;
+  }
+  dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-top: 1px solid #42535c29;
+  }
+  dt {
+    color: #65706c;
+  }
+  dd {
+    margin: 0;
+    font-weight: 500;
+  }
+  .check {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #42535c29;
+    font-size: 11px;
+  }
+  .check-mark {
+    display: grid;
+    place-items: center;
+    width: 19px;
+    height: 19px;
+    border: 1px solid #8a9978;
+    border-radius: 50%;
+    color: #4c6338;
+    font-size: 11px;
+  }
+  .check-copy {
+    display: grid;
+  }
+  .check-copy > span {
+    grid-area: 1 / 1;
+  }
+  .checking {
+    opacity: 0;
+  }
+  .verified {
+    opacity: 1;
+    color: #4c6338;
+  }
+  .rejected {
+    color: #a3342c;
+  }
+  .invalid .check-mark {
+    border-color: #b96c60;
+  }
+  .check i {
+    margin-left: auto;
+    width: 5px;
+    height: 5px;
+    background: #708b47;
+    border-radius: 50%;
+    opacity: 1;
+  }
+  .invalid .check i {
+    background: #c3473b;
+  }
+  .formats {
+    grid-area: 3 / 2;
+    position: relative;
+  }
+  .formats::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    height: 44px;
+    border-left: 1px solid #3e4435;
+  }
+  .formats-label {
+    color: #929c85;
+    font-size: 10px;
+    text-align: center;
+    margin: 0 0 16px;
+  }
+  .format-stage {
+    display: grid;
+    perspective: 900px;
+  }
+  .format {
+    min-width: 0;
+    transform-origin: 50% 40%;
+  }
+  .format-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 10px;
+    font-size: 12px;
+  }
+  .format-heading strong {
+    font-weight: 500;
+    color: #d4d9ca;
+  }
+  .code-sheet {
+    border: 1px solid #404835;
+    border-radius: 7px;
+    background: #191d14;
+    min-height: 135px;
+    overflow: hidden;
+  }
+  .code-top {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 13px;
+    border-bottom: 1px solid #32392a;
+  }
+  .code-top > span {
+    width: 4px;
+    height: 4px;
+    background: #5f6b4e;
+    border-radius: 50%;
+  }
+  .code-top b {
+    font-family: "Space Mono", monospace;
+    font-size: 8px;
+    font-weight: 400;
+    color: #929c85;
+    margin-left: auto;
+  }
+  pre {
+    margin: 0;
+    padding: 18px 13px;
+    white-space: pre;
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    line-height: 1.9;
+    color: #c6cfbc;
+  }
+  .paper-sheet {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 135px;
+    padding: 17px;
+    border: 1px solid #ece9db;
+    background: linear-gradient(125deg, #faf9f1, #deded2);
+    color: #30382c;
+    border-radius: 2px;
+  }
+  .paper-content {
+    min-width: 0;
+    flex: 1;
+  }
+  .paper-brand {
+    display: block;
+    font-family: "Space Mono", monospace;
+    font-size: 8px;
+    letter-spacing: 0.05em;
+    color: #67715e;
+    margin-bottom: 6px;
+  }
+  .paper-content > strong {
+    font-size: 13px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .paper-line {
+    display: block;
+    height: 1px;
+    background: #6e79563b;
+    margin-top: 7px;
+    width: 95%;
+  }
+  .paper-line.short {
+    width: 65%;
+  }
+  .paper-content p {
+    margin: 10px 0 0;
+    font-size: 8px;
+    line-height: 1.65;
+    color: #67715e;
+  }
+  .paper-sheet img {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+  .format-note {
+    margin: 10px 0 0;
+    color: #929c85;
+    font-size: 11px;
+    line-height: 1.8;
+    text-align: center;
+  }
+  .motion-control {
+    min-height: 25px;
+    margin: 20px 0 12px;
+    text-align: center;
+  }
+  button {
+    font: inherit;
+    font-size: 11px;
+    color: #929c85;
+    background: none;
+    border: 1px solid #424b36;
+    border-radius: 20px;
+    padding: 3px 11px;
+    cursor: pointer;
+  }
+  button:hover {
+    color: #d4d9ca;
+    border-color: #7b866b;
+  }
+  button:focus-visible {
+    outline: 2px solid #a8e010;
+    outline-offset: 5px;
+  }
+  button[hidden],
+  .play-label {
+    display: none;
+  }
+  .paused .pause-label {
+    display: none;
+  }
+  .paused .play-label {
+    display: inline;
+  }
+  figcaption {
+    max-width: 620px;
+    margin: 0 auto;
+    color: #929c85;
+    font-size: 11px;
+    line-height: 1.9;
+    text-wrap: pretty;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @keyframes scenario-show {
+    0%,
+    33.332% {
+      opacity: 1;
+      visibility: visible;
+    }
+    33.333%,
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+  @keyframes format-turn {
+    0% {
+      opacity: 0;
+      transform: rotateY(10deg) translateY(3px);
+    }
+    2%,
+    31% {
+      opacity: 1;
+      transform: rotateY(0deg) translateY(0);
+    }
+    33.333%,
+    100% {
+      opacity: 0;
+      transform: rotateY(-10deg) translateY(-3px);
+    }
+  }
+  /* Each example occupies eight seconds of the shared 24-second timeline. */
+  @keyframes card-slide {
+    0%,
+    3.333% {
+      transform: translate3d(calc(-100% - var(--gap)), 0, 18px);
+    }
+    6.25%,
+    26.667% {
+      transform: translate3d(0, 0, 18px);
+    }
+    30%,
+    100% {
+      transform: translate3d(calc(100% + var(--gap)), 0, 18px);
+    }
+  }
+  @keyframes card-reject {
+    0%,
+    3.333% {
+      transform: translate3d(calc(-100% - var(--gap)), 0, 18px) rotateZ(0deg);
+    }
+    6.25%,
+    17.083% {
+      transform: translate3d(0, 0, 18px) rotateZ(0deg);
+      animation-timing-function: linear;
+    }
+    22.083%,
+    100% {
+      transform: translate3d(-105%, 145px, 18px) rotateZ(-42deg);
+    }
+  }
+  @keyframes rejected-face {
+    0%,
+    3.333% {
+      opacity: 0;
+    }
+    6.25%,
+    17.083% {
+      opacity: 1;
+      animation-timing-function: linear;
+    }
+    22.083%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes rejection-edge {
+    0%,
+    10.415% {
+      opacity: 0;
+    }
+    10.417%,
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes rejected {
+    0%,
+    10.415% {
+      opacity: 0;
+    }
+    10.417%,
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes rejection-checking {
+    0%,
+    10.415% {
+      opacity: 1;
+    }
+    10.417%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes card-face {
+    0%,
+    3.333% {
+      opacity: 0;
+    }
+    6.25%,
+    26.667% {
+      opacity: 1;
+    }
+    30%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes edge-trace {
+    0%,
+    10.415% {
+      stroke-dashoffset: 100;
+      opacity: 0;
+    }
+    10.417% {
+      stroke-dashoffset: 100;
+      opacity: 1;
+    }
+    13.125% {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+    13.75%,
+    100% {
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+  }
+  @keyframes checking {
+    0%,
+    13.124% {
+      opacity: 1;
+    }
+    13.125%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes verified {
+    0%,
+    13.124% {
+      opacity: 0;
+    }
+    13.125%,
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes status-light {
+    0%,
+    13.124% {
+      opacity: 0.3;
+    }
+    13.125%,
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ready .boards {
+      gap: 0;
+    }
+    .ready .board {
+      grid-area: 1 / 1;
+      align-self: start;
+      animation: scenario-show 24s steps(1, end) infinite;
+      animation-delay: calc(var(--scenario) * 8s - 24s);
+    }
+    .ready .format {
+      animation: format-turn 24s ease-in-out infinite;
+      animation-delay: calc(var(--scenario) * 8s - 24s);
+    }
+    .ready .card-slide {
+      animation: card-slide 24s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      animation-delay: calc(var(--scenario) * 8s - 24s);
+    }
+    .ready .card {
+      animation: card-face 24s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      animation-delay: calc(var(--scenario) * 8s - 24s);
+    }
+    .ready .edge-trail {
+      animation: edge-trace 24s linear infinite;
+      animation-delay: calc(var(--scenario) * 8s - 24s);
+    }
+    .ready .checking {
+      animation: checking 24s steps(1, end) infinite;
+      animation-delay: calc(var(--scenario) * 8s - 24s);
+    }
+    .ready .verified {
+      animation: verified 24s steps(1, end) infinite;
+      animation-delay: calc(var(--scenario) * 8s - 24s);
+    }
+    .ready .check i {
+      animation: status-light 24s steps(1, end) infinite;
+      animation-delay: calc(var(--scenario) * 8s - 24s);
+    }
+    .ready .invalid .card-slide {
+      animation-name: card-reject;
+      animation-timing-function: ease-in;
+    }
+    .ready .invalid .card {
+      animation-name: rejected-face;
+    }
+    .ready .invalid .edge-trail {
+      animation-name: rejection-edge;
+    }
+    .ready .invalid .checking {
+      animation-name: rejection-checking;
+    }
+    .ready .rejected {
+      animation: rejected 24s steps(1, end) infinite;
+      animation-delay: calc(var(--scenario) * 8s - 24s);
+    }
+    .ready .invalid .check i {
+      animation-name: rejected;
+    }
+    .ready:not(.active) .boards .board,
+    .ready:not(.active) .boards .board *,
+    .ready.paused .boards .board,
+    .ready.paused .boards .board * {
+      animation-play-state: paused;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-tilt {
+      transform: none;
+      transition: none;
+    }
+    .motion-control {
+      display: none;
+    }
+  }
+  @media (max-width: 900px) and (min-width: 701px) {
+    .board {
+      --gap: 24px;
+      grid-template-columns: minmax(0, 1fr) 280px minmax(0, 1fr);
+      padding: 0;
+    }
+    .card {
+      padding-inline: 20px;
+    }
+  }
+  @media (max-width: 700px) {
+    .approach {
+      margin-top: 80px;
+    }
+    .intro {
+      font-size: 13px;
+      margin-bottom: 34px;
+    }
+    .board {
+      --gap: 20px;
+      grid-template-columns: 76px minmax(0, 1fr);
+      padding: 0;
+      width: 100%;
+      max-width: 430px;
+      margin-inline: auto;
+    }
+    .admin {
+      padding: 11px 12px;
+    }
+    .admin-heading {
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+    .admin-heading span {
+      flex-basis: 100%;
+      margin-left: 24px;
+      font-size: 9px;
+    }
+    .admin p {
+      font-size: 10px;
+    }
+    .requester strong {
+      font-size: 11px;
+    }
+    .request-text {
+      font-size: 10px;
+    }
+    .scenario-index {
+      font-size: 8px;
+    }
+    .person {
+      width: 42px;
+      height: 52px;
+    }
+    .card {
+      padding: 18px 16px 14px;
+      border-radius: 11px;
+    }
+    .card-top {
+      font-size: 6px;
+      letter-spacing: 0.03em;
+    }
+    .rule-card {
+      padding-inline: 12px;
+      border-radius: 11px;
+      transform: translate3d(8px, -34px, -18px);
+    }
+    .rule-heading {
+      font-size: 9px;
+      gap: 4px;
+    }
+    .rule-heading span {
+      font-size: 6px;
+    }
+    .rule-data {
+      font-size: 8px;
+    }
+    .edge-trail {
+      rx: 10px;
+    }
+    .wordmark {
+      font-size: 40px;
+      margin-top: 13px;
+    }
+    .card-label {
+      font-size: 12px;
+      margin-bottom: 14px;
+    }
+    dl {
+      font-size: 11px;
+    }
+    .check {
+      font-size: 9px;
+      gap: 6px;
+    }
+    .check-mark {
+      width: 16px;
+      height: 16px;
+      font-size: 9px;
+    }
+    .formats {
+      grid-area: 3 / 1 / auto / -1;
+      width: min(100%, 330px);
+      justify-self: center;
+      margin-top: 2px;
+    }
+    .formats::before {
+      display: none;
+    }
+    .motion-control {
+      margin-top: 16px;
+    }
+    figcaption {
+      font-size: 10px;
+    }
+  }
+  @media (max-width: 360px) {
+    .board {
+      grid-template-columns: 60px minmax(0, 1fr);
+      --gap: 16px;
+    }
+    .card {
+      padding-inline: 12px;
+    }
+    .card-top {
+      font-size: 5px;
+    }
+    pre {
+      font-size: 9px;
+    }
+  }
+</style>

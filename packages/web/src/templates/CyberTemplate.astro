@@ -10,6 +10,8 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import CyberApproach from "../components/CyberApproach.astro";
+import CyberComparison from "../components/CyberComparison.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { localePath } from "../lib/urls";
 import "@fontsource/space-grotesk/latin-500.css";
@@ -25,78 +27,20 @@ const isJa = locale === "ja";
 const L = (path: string) => localePath(base, path);
 const C = isJa
   ? {
-      title: "Cyber — 大切な操作を、実行の前に確かめる。｜Lemma",
+      title: "Cyber — なりすましも、改ざんも。不正な操作を止める。｜Lemma",
       description:
-        "送金やデータ取得の直前に、依頼した人・対象・条件を確認。Cyber が通す操作と止める操作、仕組み、公開実験、導入の進め方を紹介します。",
-      headline: ["大切な操作を、", "実行の前に確かめる。"],
+        "なりすましや依頼内容の改ざんによる不正な操作を、実行の直前で止める。顧客データの取得や送金の前に、依頼元・対象・条件を照合する Cyber の仕組みと公開実験を紹介します。",
+      headline: ["なりすましも、改ざんも。", "不正な操作を止める。"],
       intro:
-        "送金やデータ取得の直前に、依頼した人・対象・条件を確かめ、条件に合う操作だけを通す仕組みです。",
+        "顧客データの取得や送金に、依頼元・対象・条件の確認を組み込む。条件に合わない操作を、実行の直前で止めます。",
       availability: "早期アクセス受付中",
       call: "導入を相談する",
-      learn: "送金の例を見る",
-      sample: "説明用の例",
-      exampleTitle: "通す操作と、止める操作。",
-      exampleIntro: "たとえば、送金上限を10万円、振込先を登録済みの口座に決めた場合。",
-      cardTitle: "送金前のチェック",
-      chain: [
-        {
-          label: "会社",
-          value: "acme.example",
-          note: "会社のドメインを確認",
-          icon: "M5 22V7l9-4 9 4v15M3 23h22M10 9v3m8-3v3m-8 4v3m8-3v3",
-        },
-        {
-          label: "担当者",
-          value: "経理担当者",
-          note: "この会社に登録済み",
-          icon: "M14 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM5 25v-2a9 9 0 0 1 18 0v2",
-        },
-        {
-          label: "送金依頼",
-          value: "¥80,000",
-          note: "登録済みの振込先",
-          icon: "M4 8h14M14 4l4 4-4 4M24 20H10m4-4-4 4 4 4",
-        },
-      ],
-      binding: "会社・担当者・送金内容をひと組に",
-      limits: ["上限10万円以内", "登録した振込先と一致"],
-      cardResult: "条件に合うので、実行へ",
-      cardNote: "架空の送金を使った説明用の図です。実際の送金や確認結果ではありません。",
-      cardLink: "確認内容の例を見る",
-      outcomes: [
-        { amount: "¥80,000", detail: "登録済みの振込先・上限以内", result: "通す", allowed: true },
-        {
-          amount: "¥120,000",
-          detail: "登録済みの振込先でも、上限超過",
-          result: "止める",
-          allowed: false,
-        },
-      ],
-      gateTitle: "条件を決めて、実行前に確かめる。",
-      steps: [
-        { title: "条件を決める", text: "誰が、どの相手に、いくらまで操作できるかを決めます。" },
-        {
-          title: "依頼に結び付ける",
-          text: "確認に必要な情報を、今回の担当者・相手先・金額とひと組にします。",
-        },
-        {
-          title: "実行前に確かめる",
-          text: "システムが内容を確認し、条件に合う操作だけを通します。",
-        },
-      ],
-      request: "操作の依頼",
-      gate: "実行前の確認",
-      system: "実行",
-      checks: ["依頼した担当者", "対象・金額", "期限・承認"],
-      pass: "条件に一致",
-      fail: "内容の不一致・期限切れ",
-      stop: "止める",
-      gateNote: "送金・データ取得など、守りたい操作の直前にこの確認を組み込みます。",
-      compareTitle: "ログインに加えて、今回の操作も確認。",
+      learn: "どう守るかを見る",
+      compareTitle: "その人の権限から、その依頼の確認へ。",
       compareLabels: ["ログイン・権限", "今回の依頼を確認"],
-      compareSummary: "担当者が同じでも、相手先や金額が変われば確かめ直す。",
+      compareSummary: "担当者が同じでも、取り出す顧客や項目が変われば確かめ直す。",
       compareNote:
-        "確認した内容を今回の依頼と結び付け、別の相手先や金額の依頼へ流用できないようにします。",
+        "確認した内容を今回の依頼と結び付け、別の顧客データや申請にない項目の出力に流用できないようにします。",
       miniLabel: "今回の依頼",
       usesTitle: "守りたい操作に合わせて。",
       usesIntro: "送金、データ取得、サービス間の連携。失敗すると取り戻しにくい操作から始めます。",
@@ -124,12 +68,14 @@ const C = isJa
         },
       ],
       example: "確認内容の例を見る",
-      evidenceTitle: "不正な操作を試した、公開実験。",
+      evidenceTitle: "AI 攻撃を食い止めます。",
       evidenceIntro:
         "7種類のAIで、データ持ち出しや送金など5つのシナリオを試しました。用意した実験環境で、実行前の確認がどう働くかを確かめています。",
       modes: ["実行前の確認なし", "実行前の確認あり"],
-      insecureResult: "攻撃の目的を達成。残りは、決められた手順数の範囲では未完了。",
-      secureResult: "保護対象への不正な操作を阻止。",
+      attackSuccessCount: "攻撃成功数",
+      insecureResult:
+        "35件中26件で、データ持ち出しや不正送金などの目的を達成。残り9件は、手順数の上限内では未完了。",
+      secureResult: "攻撃成功は35件中0件。35件すべてで、保護対象への不正な操作を阻止。",
       evidenceScope:
         "既知の弱点を用意し、使える道具と手順数を限った実験です。確認を組み込んだ操作が対象で、現実の攻撃すべてへの対応を示す結果ではありません。",
       resultDetails: "モデル・シナリオ別の結果",
@@ -145,7 +91,7 @@ const C = isJa
       unfinished: "手順数の上限内では未完了",
       blocked: "不正な操作を阻止",
       source: "実験の条件・結果を見る",
-      workflowsTitle: "いつもの業務を、どう変えるか。",
+      workflowsTitle: "業務への組み込み",
       workflowsIntro:
         "担当者が確認して進める方法と、実行前にシステムが確認する方法。業務に合わせた3つの取り入れ方です。",
       workflowsNote:
@@ -337,87 +283,20 @@ const C = isJa
       liveNote: "証明データを入力して確かめる、技術者向けのツールも公開しています。",
     }
   : {
-      title: "Cyber — Check important actions before they go through. | Lemma",
+      title: "Cyber — Stop unauthorized actions before execution. | Lemma",
       description:
-        "Check the person, target and conditions before a transfer or data request goes through. Explore what Cyber allows and stops, how it works, published experiments and integration.",
-      headline: ["Check the request.", "Before it goes through."],
+        "Stop unauthorized actions caused by impersonation or altered requests at the execution gate. See how Cyber checks the requester, target and conditions before protected data access or transfers.",
+      headline: ["Impersonation. Tampering.", "Stop unauthorized actions."],
       intro:
-        "Check who is asking, what they want to do and whether the conditions match, just before a transfer or data request goes through.",
+        "Add requester, target and condition checks to customer data access and transfers. Stop actions that do not match before they execute.",
       availability: "Early access",
       call: "Discuss your integration",
-      learn: "See a transfer example",
-      sample: "Illustrative example",
-      exampleTitle: "What goes through. What gets stopped.",
-      exampleIntro: "For example: transfers are limited to ¥100,000 and a registered recipient.",
-      cardTitle: "Check before transfer",
-      chain: [
-        {
-          label: "Organization",
-          value: "acme.example",
-          note: "Organization domain checked",
-          icon: "M5 22V7l9-4 9 4v15M3 23h22M10 9v3m8-3v3m-8 4v3m8-3v3",
-        },
-        {
-          label: "Person",
-          value: "Finance member",
-          note: "Registered with this organization",
-          icon: "M14 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM5 25v-2a9 9 0 0 1 18 0v2",
-        },
-        {
-          label: "Transfer request",
-          value: "¥80,000",
-          note: "Registered recipient",
-          icon: "M4 8h14M14 4l4 4-4 4M24 20H10m4-4-4 4 4 4",
-        },
-      ],
-      binding: "Organization, person and transfer tied together",
-      limits: ["Within ¥100,000 limit", "Registered recipient matches"],
-      cardResult: "Conditions match. Ready to proceed.",
-      cardNote: "An illustration using a fictional transfer. Not an actual transfer or live check.",
-      cardLink: "Explore the example checks",
-      outcomes: [
-        {
-          amount: "¥80,000",
-          detail: "Registered recipient. Within the limit.",
-          result: "Allow",
-          allowed: true,
-        },
-        {
-          amount: "¥120,000",
-          detail: "Registered recipient. Over the limit.",
-          result: "Stop",
-          allowed: false,
-        },
-      ],
-      gateTitle: "Set the conditions. Check before execution.",
-      steps: [
-        {
-          title: "Set the conditions",
-          text: "Decide who can act, for which recipient and up to what amount.",
-        },
-        {
-          title: "Tie them to this request",
-          text: "Tie the information needed for the check to this person, recipient and amount.",
-        },
-        {
-          title: "Check before execution",
-          text: "The system checks the details and allows only actions that meet the conditions.",
-        },
-      ],
-      request: "Action request",
-      gate: "Check before execution",
-      system: "Execute",
-      checks: ["Person requesting", "Target & amount", "Expiry & approval"],
-      pass: "Conditions match",
-      fail: "Mismatch or expired",
-      stop: "Stop",
-      gateNote:
-        "Add this check just before the transfer, data access or other action you want to protect.",
-      compareTitle: "Beyond login: check this action too.",
+      learn: "See how Cyber works",
+      compareTitle: "From a person's permissions to this request.",
       compareLabels: ["Login & permissions", "Check this request"],
-      compareSummary: "Same person. Different recipient or amount. Check again.",
+      compareSummary: "Same person. Different customers or fields. Check again.",
       compareNote:
-        "Tie the checked details to this request so they cannot be reused for a different recipient or amount.",
+        "Tie the checked details to this request so they cannot be reused to export other customer data or unrequested fields.",
       miniLabel: "THIS REQUEST",
       usesTitle: "Start with the action to protect.",
       usesIntro:
@@ -446,13 +325,15 @@ const C = isJa
         },
       ],
       example: "Explore the example checks",
-      evidenceTitle: "Published tests of unauthorized actions.",
+      evidenceTitle: "Stop AI attacks.",
       evidenceIntro:
         "Seven AI models attempted five scenarios, including data exfiltration and transfers. These experiments examine how the check works in a prepared test environment.",
       modes: ["Without the execution check", "With the execution check"],
+      attackSuccessCount: "Successful attacks",
       insecureResult:
-        "Attacks achieved their objective. The others were unfinished within the allowed number of steps.",
-      secureResult: "Unauthorized actions against the protected operations were blocked.",
+        "26 of 35 attacks achieved objectives such as data exfiltration or unauthorized transfers. The other nine were unfinished within the step limit.",
+      secureResult:
+        "0 of 35 attacks succeeded. Unauthorized actions against the protected operations were blocked in all 35 tests.",
       evidenceScope:
         "The test systems contain known weaknesses, with limited tools and steps. Results apply to operations with the check in place; they do not establish protection against every real-world attack.",
       resultDetails: "Results by model and scenario",
@@ -468,7 +349,7 @@ const C = isJa
       unfinished: "Unfinished within the step limit",
       blocked: "Unauthorized action blocked",
       source: "See test conditions and results",
-      workflowsTitle: "How everyday work could change.",
+      workflowsTitle: "Fit Cyber into your workflow",
       workflowsIntro:
         "Checks a person reviews before acting, or checks the system runs before execution. Three ways to fit Cyber into your workflow.",
       workflowsNote:
@@ -698,6 +579,8 @@ const attackCount = attackerModels.reduce(
   (total, model) => total + model.results.reduce<number>((sum, result) => sum + result, 0),
   0,
 );
+// All 35 SECURE outcomes are blocked in example-cyber-attack/README.md.
+const secureAttackCount = 0;
 ---
 
 <Layout
@@ -716,8 +599,7 @@ const attackCount = attackerModels.reduce(
         <p class="cy-claim">{C.headline.map((line) => <span>{line}</span>)}</p>
         <p class="cy-intro">{C.intro}</p>
         <div class="cy-actions">
-          <a class="cy-btn cy-primary" href="#cy-example"
-            >{C.learn} <span aria-hidden="true">↓</span></a
+          <a class="cy-btn cy-primary" href="#cy-how">{C.learn} <span aria-hidden="true">↓</span></a
           >
           <a
             class="cy-btn cy-ghost"
@@ -729,135 +611,7 @@ const attackCount = attackerModels.reduce(
         <p class="cy-availability">{C.availability}</p>
       </section>
 
-      <section id="cy-example" class="cy-section" aria-labelledby="cy-example-title">
-        <h2 id="cy-example-title">{C.exampleTitle}</h2>
-        <p class="cy-section-intro">{C.exampleIntro}</p>
-        <figure class="cy-plate-stage">
-          <article
-            class="cy-plate"
-            aria-labelledby="cy-card-title"
-            aria-describedby="cy-card-caption"
-          >
-            <div class="cy-card-top">
-              <span class="cy-wordmark">LEMMA / CYBER</span><span class="cy-sample">{C.sample}</span
-              >
-            </div>
-            <h3 id="cy-card-title">{C.cardTitle}</h3>
-            <ol class="cy-bind-chain">
-              {
-                C.chain.map((item, index) => (
-                  <li>
-                    <div class="cy-chain-content">
-                      <span class="cy-card-label">
-                        0{index + 1} / {item.label}
-                      </span>
-                      <svg
-                        class="cy-chain-icon"
-                        width="28"
-                        height="28"
-                        viewBox="0 0 28 28"
-                        fill="none"
-                        aria-hidden="true"
-                      >
-                        <path d={item.icon} />
-                      </svg>
-                      <strong>{item.value}</strong>
-                      <span class="cy-card-detail">{item.note}</span>
-                    </div>
-                    {index < C.chain.length - 1 && (
-                      <span class="cy-chain-arrow" aria-hidden="true">
-                        →
-                      </span>
-                    )}
-                  </li>
-                ))
-              }
-            </ol>
-            <div class="cy-binding"><span>{C.binding}</span></div>
-            <ul class="cy-card-conditions">
-              {
-                C.limits.map((limit) => (
-                  <li>
-                    <span aria-hidden="true">✓</span>
-                    {limit}
-                  </li>
-                ))
-              }
-            </ul>
-            <div class="cy-card-result">
-              <span class="cy-result-mark" aria-hidden="true">✓</span><span>{C.cardResult}</span>
-            </div>
-          </article>
-          <figcaption id="cy-card-caption">
-            {C.cardNote}<a href={L("/cyber/verify/?card=transfer")}
-              >{C.cardLink} <span aria-hidden="true">↗</span></a
-            >
-          </figcaption>
-        </figure>
-
-        <div class="cy-outcomes">
-          {
-            C.outcomes.map((outcome) => (
-              <div class:list={["cy-outcome", { "cy-outcome-stopped": !outcome.allowed }]}>
-                <>
-                  <strong>{outcome.amount}</strong>
-                  <span>{outcome.detail}</span>
-                </>
-                <b>
-                  <span aria-hidden="true">{outcome.allowed ? "✓" : "×"}</span> {outcome.result}
-                </b>
-              </div>
-            ))
-          }
-        </div>
-      </section>
-
-      <section id="cy-how" class="cy-section" aria-labelledby="cy-gate-title">
-        <h2 id="cy-gate-title">{C.gateTitle}</h2>
-        <ol class="cy-steps">
-          {
-            C.steps.map((step, index) => (
-              <li>
-                <>
-                  <span class="cy-step-number">0{index + 1}</span>
-                  <h3>{step.title}</h3>
-                  <p>{step.text}</p>
-                </>
-              </li>
-            ))
-          }
-        </ol>
-        <figure
-          class="cy-gate-diagram"
-          aria-labelledby="cy-gate-title"
-          aria-describedby="cy-gate-caption"
-        >
-          <div class="cy-gate-flow">
-            <div class="cy-node">{C.request}</div><span class="cy-arrow" aria-hidden="true">→</span
-            ><div class="cy-gate"><strong>Cyber</strong><span>{C.gate}</span></div><div
-              class="cy-pass"
-            >
-              <span>{C.pass}</span><span class="cy-arrow" aria-hidden="true">→</span>
-            </div><div class="cy-node">{C.system}</div>
-          </div>
-          <ul class="cy-gate-checks">
-            {
-              C.checks.map((check) => (
-                <li>
-                  <span aria-hidden="true">✓</span>
-                  {check}
-                </li>
-              ))
-            }
-          </ul>
-          <div class="cy-stop">
-            <span>{C.fail}</span><span aria-hidden="true">↓</span><strong
-              ><span aria-hidden="true">×</span> {C.stop}</strong
-            >
-          </div>
-          <figcaption id="cy-gate-caption" class="cy-note">{C.gateNote}</figcaption>
-        </figure>
-      </section>
+      <CyberApproach locale={locale} />
 
       <section id="cy-difference" class="cy-section" aria-labelledby="cy-difference-title">
         <h2 id="cy-difference-title">{C.compareTitle}</h2>
@@ -1019,6 +773,8 @@ const attackCount = attackerModels.reduce(
         </figure>
       </section>
 
+      <CyberComparison locale={locale} />
+
       <section class="cy-section" aria-labelledby="cy-uses-title">
         <h2 id="cy-uses-title">{C.usesTitle}</h2>
         <p class="cy-section-intro">{C.usesIntro}</p>
@@ -1058,13 +814,16 @@ const attackCount = attackerModels.reduce(
         <p class="cy-section-intro">{C.evidenceIntro}</p>
         <div class="cy-evidence-summary">
           <div>
-            <span>{C.modes[0]}</span><strong>{attackCount} <small>/ {scenarioCount}</small></strong
-            ><p>{C.insecureResult}</p>
+            <span>{C.modes[0]}</span>
+            <p class="cy-metric-label">{C.attackSuccessCount}</p>
+            <strong>{attackCount} <small>/ {scenarioCount}</small></strong><p>{C.insecureResult}</p>
           </div>
           <div>
-            <span>{C.modes[1]}</span><strong
-              >{scenarioCount} <small>/ {scenarioCount}</small></strong
-            ><p>{C.secureResult}</p>
+            <span>{C.modes[1]}</span>
+            <p class="cy-metric-label">{C.attackSuccessCount}</p>
+            <strong>{secureAttackCount} <small>/ {scenarioCount}</small></strong><p>
+              {C.secureResult}
+            </p>
           </div>
         </div>
         <p class="cy-note">{C.evidenceScope}</p>
@@ -1088,6 +847,7 @@ const attackCount = attackerModels.reduce(
                   role="region"
                   aria-label={`${C.modes[modeIndex]} / ${C.scenario}`}
                   tabindex="0"
+                  data-cy-results-reveal
                 >
                   <table class="cy-dot-grid">
                     <>
@@ -1105,13 +865,14 @@ const attackCount = attackerModels.reduce(
                         {C.scenarios.map((name, scenarioIndex) => (
                           <tr>
                             <th scope="row">{name}</th>
-                            {attackerModels.map((model) => (
+                            {attackerModels.map((model, modelIndex) => (
                               <td>
                                 <span
                                   class:list={[
                                     "cy-dot",
                                     { "cy-lit": secure || model.results[scenarioIndex] === 1 },
                                   ]}
+                                  style={`--cy-dot-order: ${scenarioIndex * attackerModels.length + modelIndex}`}
                                   aria-hidden="true"
                                 />
                                 <span class="cy-sr-only">
@@ -1300,6 +1061,24 @@ const attackCount = attackerModels.reduce(
 </Layout>
 
 <script>
+  const resultObserver =
+    typeof IntersectionObserver === "undefined"
+      ? undefined
+      : new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) =>
+              entry.isIntersecting
+                ? (entry.target.classList.add("cy-results-entered"),
+                  observer.unobserve(entry.target))
+                : undefined,
+            );
+          },
+          { threshold: 0.15 },
+        );
+  document.querySelectorAll<HTMLElement>("[data-cy-results-reveal]").forEach((matrix) => {
+    resultObserver?.observe(matrix);
+  });
+
   const workflowSection = document.querySelector<HTMLElement>("[data-cy-workflows]");
   const workflowTabs = Array.from(
     workflowSection?.querySelectorAll<HTMLButtonElement>("[data-cy-workflow-tab]") ?? [],
@@ -1479,67 +1258,6 @@ const attackCount = attackerModels.reduce(
     word-break: auto-phrase;
     text-wrap: balance;
   }
-  .cy-outcomes {
-    display: grid;
-    gap: 12px;
-    max-width: 560px;
-    margin: 28px auto 0;
-    text-align: left;
-  }
-  .cy-outcome {
-    display: grid;
-    grid-template-columns: 100px minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 16px;
-    padding: 17px 20px;
-    border: 1px solid #3e4435;
-    border-radius: 8px;
-    font-size: 11px;
-  }
-  .cy-outcome strong {
-    font:
-      500 22px/1.2 "Space Grotesk",
-      sans-serif;
-    letter-spacing: -0.04em;
-  }
-  .cy-outcome > span {
-    color: #929c85;
-  }
-  .cy-outcome b {
-    color: #a8e010;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  .cy-outcome-stopped b {
-    color: #c98b78;
-  }
-  .cy-steps {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 28px;
-    max-width: 720px;
-    padding: 0;
-    margin: 36px auto 0;
-    list-style: none;
-    text-align: left;
-  }
-  .cy-step-number {
-    color: #929c85;
-    font:
-      11px/1.5 "Space Mono",
-      monospace;
-  }
-  .cy-steps h3 {
-    margin: 12px 0 10px;
-    font-size: 14px;
-    font-weight: 500;
-  }
-  .cy-steps p {
-    margin: 0;
-    color: #929c85;
-    font-size: 12px;
-    line-height: 1.9;
-  }
   .cy-use-description {
     margin: 0 0 18px;
     color: #475569;
@@ -1564,7 +1282,7 @@ const attackCount = attackerModels.reduce(
   }
   .cy-evidence-summary strong {
     display: block;
-    margin: 18px 0 14px;
+    margin: 8px 0 14px;
     font:
       500 48px/1 "Space Grotesk",
       sans-serif;
@@ -1579,6 +1297,10 @@ const attackCount = attackerModels.reduce(
     color: #929c85;
     font-size: 11px;
     line-height: 1.9;
+  }
+  .cy-evidence-summary .cy-metric-label {
+    margin-top: 14px;
+    color: #bac1af;
   }
   .cy-details {
     max-width: 720px;
@@ -1932,9 +1654,28 @@ const attackCount = attackerModels.reduce(
   .cy-close > .cy-actions {
     margin-top: 28px;
   }
-
+  @keyframes cy-result-light {
+    0% {
+      opacity: 0.3;
+    }
+    16% {
+      opacity: 1;
+    }
+    32% {
+      opacity: 0.4;
+    }
+    53%,
+    100% {
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cy-results-entered .cy-lit {
+      animation: cy-result-light 820ms ease-out both;
+      animation-delay: calc(var(--cy-dot-order) * 18ms);
+    }
+  }
   /* Shared brushed silver surface with fine diagonal grooves. */
-  .cy-plate,
   .cy-proof-shape,
   .cy-example-card {
     border: 1px solid #ffffffb3;
@@ -1943,170 +1684,6 @@ const attackCount = attackerModels.reduce(
       repeating-linear-gradient(115deg, #0f172a0d 0 1px, transparent 1px 4px),
       linear-gradient(135deg, #fff, #e2e8f0 48%, #f8fafc 76%, #cbd5e1);
   }
-  .cy-plate-stage {
-    max-width: 560px;
-    margin: 44px auto 0;
-  }
-  .cy-plate {
-    position: relative;
-    padding: 25px 28px 0;
-    border-radius: 16px;
-  }
-  .cy-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .cy-wordmark {
-    font:
-      10px/1.5 "Space Mono",
-      monospace;
-    letter-spacing: 0.1em;
-  }
-  .cy-sample {
-    font-size: 10px;
-    color: #626e58;
-  }
-  .cy-plate h3 {
-    font-family: "Space Grotesk", "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
-    font-size: 22px;
-    line-height: 1.6;
-    margin-block: 24px 26px;
-    font-weight: 500;
-  }
-  .cy-bind-chain {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-  }
-  .cy-bind-chain li {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 0;
-  }
-  .cy-chain-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 0;
-  }
-  .cy-card-label {
-    font-size: 10px;
-    color: #637256;
-  }
-  .cy-chain-icon {
-    stroke: #617451;
-    stroke-width: 1;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    margin-block: 13px 12px;
-  }
-  .cy-bind-chain strong {
-    font-size: 13px;
-    line-height: 1.6;
-    font-weight: 500;
-  }
-  .cy-bind-chain li:last-child strong {
-    font:
-      500 24px/1.2 "Space Grotesk",
-      sans-serif;
-    letter-spacing: -0.04em;
-  }
-  .cy-card-detail {
-    margin-top: 5px;
-    color: #65715c;
-    font-size: 9px;
-    line-height: 1.7;
-  }
-  .cy-chain-arrow {
-    position: absolute;
-    top: 46px;
-    right: -19px;
-    color: #839475;
-    font:
-      19px/1 "Space Grotesk",
-      sans-serif;
-  }
-  .cy-binding {
-    position: relative;
-    height: 23px;
-    border: 1px solid #7488655c;
-    border-top: 0;
-    margin: 14px 15px 24px;
-    border-radius: 0 0 4px 4px;
-  }
-  .cy-binding > span {
-    display: inline-block;
-    position: relative;
-    top: 11px;
-    padding-inline: 12px;
-    color: #5e7050;
-    background: #edf1f6;
-    font-size: 10px;
-    line-height: 1.8;
-  }
-  .cy-card-conditions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px 22px;
-    padding: 17px 0;
-    margin: 0;
-    border-top: 1px solid #6e82523b;
-    list-style: none;
-  }
-  .cy-card-conditions li {
-    display: flex;
-    gap: 7px;
-    font-size: 10px;
-    color: #5d6c51;
-  }
-  .cy-card-conditions li > span {
-    color: #51713c;
-  }
-  .cy-card-result {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    padding: 17px 20px;
-    margin-inline: -28px;
-    border-top: 1px solid #6e82523b;
-    border-radius: 0 0 16px 16px;
-    background: #6f865c0a;
-    font-size: 12px;
-  }
-  .cy-result-mark {
-    display: grid;
-    place-items: center;
-    width: 20px;
-    height: 20px;
-    border: 1px solid #75876980;
-    border-radius: 50%;
-    color: #526746;
-    font-size: 11px;
-  }
-  .cy-plate-stage figcaption {
-    margin-top: 22px;
-    color: #939e85;
-    font-size: 10px;
-    line-height: 1.8;
-  }
-  .cy-plate-stage figcaption a {
-    display: block;
-    width: fit-content;
-    margin: 6px auto 0;
-    padding: 5px 10px;
-    color: #c3ccba;
-    font-size: 11px;
-  }
-
   .cy-key-diagram {
     margin: 42px 0 0;
   }
@@ -2312,116 +1889,6 @@ const attackCount = attackerModels.reduce(
     border: 0;
   }
 
-  .cy-gate-diagram {
-    margin: 50px 0 0;
-  }
-  .cy-gate-flow {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
-  }
-  .cy-node {
-    padding: 22px 20px;
-    border: 1px solid #69705c;
-    border-radius: 8px;
-    font-size: 13px;
-  }
-  .cy-arrow {
-    color: #b299ed;
-    font:
-      28px/1 "Space Grotesk",
-      sans-serif;
-  }
-  .cy-gate {
-    position: relative;
-    display: grid;
-    align-content: center;
-    width: 184px;
-    min-height: 130px;
-    border-inline: 1px solid #69705c;
-    font-size: 12px;
-  }
-  .cy-gate strong {
-    font:
-      500 26px/1.5 "Space Grotesk",
-      sans-serif;
-  }
-  .cy-gate > span {
-    color: #bac1af;
-    font-size: 11px;
-  }
-  .cy-gate::before,
-  .cy-gate::after {
-    content: "";
-    position: absolute;
-    top: -8px;
-    bottom: -8px;
-    width: 2px;
-    background: #b299ed;
-    transform: skew(-20deg);
-  }
-  .cy-gate::before {
-    left: 18px;
-  }
-  .cy-gate::after {
-    right: 18px;
-  }
-  .cy-pass {
-    position: relative;
-  }
-  .cy-pass > span:first-child {
-    position: absolute;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    color: #b8d98a;
-    font-size: 10px;
-  }
-  .cy-pass .cy-arrow {
-    color: #a8e010;
-  }
-  .cy-gate-checks {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px 22px;
-    list-style: none;
-    padding: 0;
-    margin: 32px 0 0;
-  }
-  .cy-gate-checks li {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    color: #c6cfb9;
-    font-size: 11px;
-  }
-  .cy-gate-checks li > span {
-    color: #a8e010;
-  }
-  .cy-stop {
-    display: grid;
-    justify-items: center;
-    margin-top: 24px;
-    color: #b98578;
-    font-size: 10px;
-  }
-  .cy-stop > span:nth-child(2) {
-    font-size: 21px;
-    line-height: 1.5;
-  }
-  .cy-stop strong {
-    padding: 4px 17px;
-    border: 1px solid #815342;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 400;
-  }
-  .cy-gate-diagram .cy-note {
-    margin-top: 28px;
-  }
   .cy-cards {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2569,37 +2036,6 @@ const attackCount = attackerModels.reduce(
     .cy-section-intro {
       font-size: 13px;
     }
-    .cy-outcome {
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 8px 14px;
-      padding: 16px;
-    }
-    .cy-outcome > span {
-      grid-column: 1;
-    }
-    .cy-outcome b {
-      grid-column: 2;
-      grid-row: 1 / 3;
-    }
-    .cy-steps {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 22px;
-      max-width: 360px;
-    }
-    .cy-steps li {
-      display: grid;
-      grid-template-columns: 24px minmax(0, 1fr);
-      column-gap: 16px;
-    }
-    .cy-step-number {
-      padding-top: 3px;
-    }
-    .cy-steps h3 {
-      margin: 0 0 8px;
-    }
-    .cy-steps p {
-      grid-column: 2;
-    }
     .cy-evidence-summary {
       gap: 20px;
     }
@@ -2645,68 +2081,6 @@ const attackCount = attackerModels.reduce(
     }
     .cy-page h2 {
       font-size: 23px;
-    }
-    .cy-plate-stage {
-      margin-top: 36px;
-    }
-    .cy-plate {
-      padding: 20px 16px 0;
-      border-radius: 13px;
-    }
-    .cy-wordmark {
-      font-size: 8px;
-    }
-    .cy-sample {
-      font-size: 9px;
-    }
-    .cy-plate h3 {
-      font-size: 20px;
-      margin-block: 23px;
-    }
-    .cy-bind-chain {
-      gap: 14px;
-    }
-    .cy-card-label {
-      font-size: 9px;
-    }
-    .cy-bind-chain strong {
-      font-size: 10px;
-    }
-    .cy-bind-chain li:last-child strong {
-      font-size: 20px;
-    }
-    .cy-card-detail {
-      font-size: 8px;
-      max-width: 10em;
-    }
-    .cy-chain-arrow {
-      right: -13px;
-      font-size: 16px;
-    }
-    .cy-binding {
-      margin-inline: 9px;
-    }
-    .cy-binding > span {
-      font-size: 9px;
-    }
-    .cy-card-conditions {
-      gap: 7px 12px;
-      padding-block: 14px;
-    }
-    .cy-card-conditions li {
-      font-size: 9px;
-    }
-    .cy-card-result {
-      margin-inline: -16px;
-      padding: 15px 10px;
-      gap: 7px;
-      border-radius: 0 0 13px 13px;
-      font-size: 11px;
-    }
-    .cy-plate-stage figcaption {
-      font-size: 9px;
-      max-width: 32em;
-      margin-inline: auto;
     }
     .cy-key-flow {
       grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
@@ -2762,40 +2136,6 @@ const attackCount = attackerModels.reduce(
       width: 20px;
       height: 20px;
     }
-    .cy-gate-flow {
-      gap: 8px;
-    }
-    .cy-gate {
-      width: 104px;
-      min-height: 110px;
-      flex-shrink: 0;
-    }
-    .cy-gate strong {
-      font-size: 20px;
-    }
-    .cy-gate::before {
-      left: 10px;
-    }
-    .cy-gate::after {
-      right: 10px;
-    }
-    .cy-node {
-      padding: 18px 8px;
-      font-size: 10px;
-    }
-    .cy-gate-flow .cy-arrow {
-      font-size: 19px;
-    }
-    .cy-pass > span:first-child {
-      font-size: 9px;
-      bottom: 25px;
-    }
-    .cy-gate-checks {
-      gap: 8px 12px;
-    }
-    .cy-gate-checks li {
-      font-size: 10px;
-    }
     .cy-cards {
       grid-template-columns: minmax(0, 1fr);
       gap: 15px;
@@ -2812,22 +2152,6 @@ const attackCount = attackerModels.reduce(
     }
     .cy-close {
       padding-top: 46px;
-    }
-  }
-  @media (max-width: 360px) {
-    .cy-card-result {
-      font-size: 10px;
-      gap: 5px;
-    }
-    .cy-gate-flow {
-      gap: 5px;
-    }
-    .cy-gate {
-      width: 92px;
-    }
-    .cy-node {
-      padding-inline: 5px;
-      font-size: 9px;
     }
   }
 </style>

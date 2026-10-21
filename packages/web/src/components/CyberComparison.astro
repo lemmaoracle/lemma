@@ -1,0 +1,534 @@
+---
+import type { Locale } from "../i18n/translations";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const methods = [
+  {
+    key: "waf",
+    values: ["primary", "outside", "extended", "extended", "outside"],
+    url: "https://docs.aws.amazon.com/waf/latest/developerguide/what-is-aws-waf.html",
+  },
+  {
+    key: "patterns",
+    values: ["primary", "outside", "outside", "extended", "outside"],
+    url: "https://coreruleset.org/docs/2-how-crs-works/2-1-anomaly_scoring/",
+  },
+  {
+    key: "dpop",
+    values: ["outside", "primary", "extended", "outside", "outside"],
+    url: "https://www.rfc-editor.org/rfc/rfc9449.html#section-4.2",
+  },
+  {
+    key: "signatures",
+    values: ["outside", "extended", "primary", "extended", "extended"],
+    url: "https://csrc.nist.gov/pubs/fips/186-5/final",
+  },
+  {
+    key: "policy",
+    values: ["extended", "outside", "extended", "primary", "extended"],
+    url: "https://www.openpolicyagent.org/docs",
+  },
+  {
+    key: "cyber",
+    values: ["outside", "outside", "primary", "primary", "primary"],
+    url: "",
+  },
+] as const;
+const marks = { primary: "○", extended: "△", outside: "―" } as const;
+const C =
+  locale === "ja"
+    ? {
+        title: "既存の対策と、Cyber の役割。",
+        intro: "何をブロックするかで、役割を比較。",
+        method: "方式",
+        columns: [
+          { lines: ["攻撃", "文字列"], label: "攻撃文字列・形式違反を含む呼び出し" },
+          { lines: ["盗難", "トークン", "の流用"], label: "盗まれたトークンの流用" },
+          { lines: ["依頼の", "改ざん"], label: "確認済みの依頼内容の改ざん" },
+          { lines: ["条件外", "の操作"], label: "権限・承認・業務条件から外れた操作" },
+          { lines: ["紙の", "不正依頼"], label: "紙で届く依頼の依頼元・内容・承認の不一致" },
+        ],
+        states: { primary: "主な防御対象", extended: "追加設計・連携", outside: "主な対象外" },
+        legend: "記号の意味",
+        source: "公式資料",
+        details: "比較条件・出典",
+        note: "○も設定・実行側との連携が必要です。紙・QRは担当者が照合・判断します。",
+        basis:
+          "代表的な用途の比較です。製品・構成によって範囲は変わります。「攻撃文字列」はSQLインジェクションなどの文字列や形式違反、「依頼の改ざん」は確認した対象・金額などの差し替え、「紙の不正依頼」は依頼元・内容・承認の不一致を指します。すべての攻撃を防ぐ意味ではありません。",
+        descriptions: {
+          waf: {
+            name: "WAF",
+            note: "攻撃文字列や形式違反を検査。独自ルールやJWT検証などの追加機能で範囲を広げられますが、有効なトークンの盗用や依頼本文との一致は別の対策が必要です。",
+          },
+          patterns: {
+            name: "パターンマッチ",
+            note: "既知の攻撃文字列や形式違反を照合。業務条件もルール化できますが、形式が正しい依頼の真正性や承認は、文字列だけでは確認できません。",
+          },
+          dpop: {
+            name: "DPoP",
+            note: "トークンに対応する秘密鍵の保有を確認し、トークンだけを盗んだ第三者の流用を防ぎます。HTTPメソッド・URIにも結び付きますが、本文全体の改ざん対策は拡張設計が必要です。",
+          },
+          signatures: {
+            name: "電子署名",
+            note: "署名対象データの改ざんを検知。トークン流用対策には署名付きチャレンジなどで鍵保有・鮮度を確かめる設計、業務条件には判断ルールが必要です。紙の署名付きQRも、読み取り・照合を組み合わせて使えます。",
+          },
+          policy: {
+            name: "ポリシーエンジン",
+            note: "OPAを例に、権限や業務条件から外れる操作を判定。JWT署名検証もできますが、現在の依頼との一致や実行制御、紙の入力・照合画面は別途設計します。",
+          },
+          cyber: {
+            name: "Cyber",
+            note: "依頼と確認データを結び付け、内容の差し替えや条件外の操作を止める設計。紙・QRでは担当者が照合します。SDKの検証だけでは依頼内容や許可条件を判定せず、組み込み先で一致確認・実行制御を設計します。トークン自体の流用防止には、提示者・トークン・今回の依頼の結び付けや再使用管理が別途必要です。",
+          },
+        },
+        extraSources: [
+          {
+            label: "WAFとJWT検証",
+            url: "https://developers.cloudflare.com/api-shield/security/jwt-validation/",
+          },
+          {
+            label: "OPAの署名検証",
+            url: "https://www.openpolicyagent.org/docs/policy-reference/builtins/tokens",
+          },
+          {
+            label: "署名付き紙QRの実例",
+            url: "https://spec.smarthealth.cards/#via-qr-print-or-scan",
+          },
+        ],
+      }
+    : {
+        title: "How Cyber fits with your existing controls.",
+        intro: "Compare the threats each approach is used to block.",
+        method: "Approach",
+        columns: [
+          { lines: ["Attack", "strings"], label: "Calls with attack strings or format violations" },
+          { lines: ["Stolen", "token", "use"], label: "Misuse of stolen tokens" },
+          { lines: ["Request", "changes"], label: "Tampering with confirmed request data" },
+          {
+            lines: ["Out-of-", "policy", "actions"],
+            label: "Actions outside permissions, approvals or business rules",
+          },
+          {
+            lines: ["Forged", "paper", "requests"],
+            label: "Paper requests with mismatched source, content or approval",
+          },
+        ],
+        states: {
+          primary: "Primary protection",
+          extended: "Added design or integration",
+          outside: "Outside primary scope",
+        },
+        legend: "Symbol meanings",
+        source: "Official documentation",
+        details: "Comparison criteria and sources",
+        note: "○ still requires setup and integration with execution controls. With paper or QR, staff compare the request and decide whether to proceed.",
+        basis:
+          "A comparison of representative uses. Coverage varies by product and configuration. Attack strings include SQL injection and format violations; request changes mean replacing confirmed fields such as the target or amount; forged paper requests mean a mismatch in source, content or approval. This does not imply protection against every attack.",
+        descriptions: {
+          waf: {
+            name: "WAF",
+            note: "Inspect attack strings and format violations. Custom rules and features such as JWT validation extend coverage. Misuse of a valid stolen token and matching the current request body require other controls.",
+          },
+          patterns: {
+            name: "Pattern matching",
+            note: "Match known attack strings and format violations. Business conditions can be expressed as rules, but strings alone do not establish the authenticity or approval of a well-formed request.",
+          },
+          dpop: {
+            name: "DPoP",
+            note: "Prevent use by someone who steals the token without its bound private key. Proofs also bind the HTTP method and URI. Protecting the entire request body requires an extension.",
+          },
+          signatures: {
+            name: "Digital signatures",
+            note: "Detect changes to signed data. Token misuse needs a protocol such as signed challenges to check key possession and freshness; business conditions need decision rules. Signed QR on paper needs scanning and comparison in the workflow.",
+          },
+          policy: {
+            name: "Policy engines",
+            note: "OPA evaluates permissions and business rules and can verify JWT signatures. Matching the current request, enforcing decisions, and capturing and reviewing paper requests require integration.",
+          },
+          cyber: {
+            name: "Cyber",
+            note: "Designed to bind confirmation data to a request and block changed data or actions outside its rules. Staff compare paper or QR requests. SDK verification alone does not evaluate request content or permissions: matching and execution controls need integration. Preventing token misuse needs separate presenter, token and request binding and reuse controls.",
+          },
+        },
+        extraSources: [
+          {
+            label: "WAF and JWT validation",
+            url: "https://developers.cloudflare.com/api-shield/security/jwt-validation/",
+          },
+          {
+            label: "OPA signature verification",
+            url: "https://www.openpolicyagent.org/docs/policy-reference/builtins/tokens",
+          },
+          {
+            label: "Signed QR on paper",
+            url: "https://spec.smarthealth.cards/#via-qr-print-or-scan",
+          },
+        ],
+      };
+---
+
+<section id="cy-comparison" class="comparison" aria-labelledby="cy-comparison-title">
+  <h2 id="cy-comparison-title">{C.title}</h2>
+  <p class="intro">{C.intro}</p>
+  <table
+    aria-labelledby="cy-comparison-title"
+    aria-describedby="cy-comparison-legend cy-comparison-note"
+  >
+    <colgroup><col class="method-column" />{C.columns.map(() => <col />)}</colgroup>
+    <thead>
+      <tr>
+        <th scope="col">{C.method}</th>
+        {
+          C.columns.map((column) => (
+            <th scope="col" aria-label={column.label}>
+              {column.lines.map((line) => (
+                <span>{line}</span>
+              ))}
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        methods.map((method) => (
+          <tr class:list={{ cyber: method.key === "cyber" }}>
+            <th scope="row">
+              {method.url ? (
+                <a
+                  href={method.url}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={`${C.descriptions[method.key].name} — ${C.source}`}
+                >
+                  {C.descriptions[method.key].name}
+                  <span aria-hidden="true"> ↗</span>
+                </a>
+              ) : (
+                <strong>Cyber</strong>
+              )}
+            </th>
+            {method.values.map((value, index) => (
+              <td title={`${C.columns[index]?.label} — ${C.states[value]}`}>
+                <span class:list={["mark", value]} aria-hidden="true">
+                  {marks[value]}
+                </span>
+                <span class="sr-only">{C.states[value]}</span>
+              </td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <ul id="cy-comparison-legend" class="legend" aria-label={C.legend}>
+    {
+      Object.entries(marks).map(([state, mark]) => (
+        <li>
+          <span class:list={["mark", state]} aria-hidden="true">
+            {mark}
+          </span>
+          {C.states[state as keyof typeof marks]}
+        </li>
+      ))
+    }
+  </ul>
+  <p id="cy-comparison-note" class="note">{C.note}</p>
+  <details>
+    <summary>{C.details}</summary>
+    <div class="criteria">
+      <p>{C.basis}</p>
+      <dl>
+        {
+          methods.map((method) => (
+            <div>
+              <>
+                <dt>{C.descriptions[method.key].name}</dt>
+                <dd>{C.descriptions[method.key].note}</dd>
+              </>
+            </div>
+          ))
+        }
+      </dl>
+      <ul class="sources">
+        {
+          C.extraSources.map((source) => (
+            <li>
+              <a href={source.url} target="_blank" rel="noopener">
+                {source.label}
+                <span aria-hidden="true"> ↗</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </details>
+</section>
+
+<style>
+  .comparison {
+    margin-top: 112px;
+    scroll-margin-top: 100px;
+  }
+  .comparison *,
+  .comparison *::before,
+  .comparison *::after {
+    box-sizing: border-box;
+  }
+  h2 {
+    margin: 0 0 24px;
+    font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
+    font-size: clamp(23px, 3vw, 32px);
+    font-weight: 500;
+    line-height: 1.6;
+    text-wrap: balance;
+    word-break: auto-phrase;
+  }
+  .intro {
+    margin: 0 0 32px;
+    color: #bac1af;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    text-align: center;
+  }
+  .method-column {
+    width: 24%;
+  }
+  th,
+  td {
+    padding: 16px 8px;
+    border-bottom: 1px solid #3e4435;
+    vertical-align: middle;
+  }
+  thead th {
+    color: #bac1af;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.8;
+  }
+  thead th span {
+    display: block;
+    white-space: nowrap;
+  }
+  th:first-child {
+    text-align: left;
+    padding-left: 18px;
+  }
+  tbody th {
+    color: #f4f7ef;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+  .mark {
+    display: inline-block;
+    font-family: "Noto Sans JP", sans-serif;
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 400;
+  }
+  .primary {
+    color: #b5dc69;
+  }
+  .extended {
+    color: #bcb38d;
+  }
+  .outside {
+    color: #929c85;
+    font-size: 19px;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  tbody a {
+    display: inline-block;
+    text-wrap: balance;
+  }
+  a > span {
+    font-size: 0.8em;
+    color: #929c85;
+  }
+  a:hover {
+    color: #c5e987;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  a:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid #a8e010;
+    outline-offset: 5px;
+  }
+  .cyber {
+    background: #a8e01008;
+  }
+  .cyber th,
+  .cyber td {
+    border-bottom-color: #6e833b;
+  }
+  .cyber strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    color: #c5e987;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 24px;
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+    color: #bac1af;
+    font-size: 11px;
+    line-height: 1.8;
+  }
+  .legend li {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .legend .mark {
+    font-size: 17px;
+  }
+  .note {
+    max-width: 660px;
+    margin: 14px auto 0;
+    color: #929c85;
+    font-size: 10px;
+    line-height: 1.9;
+    text-wrap: pretty;
+  }
+  details {
+    margin: 24px 0 0;
+    border-block: 1px solid #3e4435;
+    text-align: left;
+  }
+  summary {
+    padding: 13px 0;
+    color: #929c85;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  summary:hover {
+    color: #dce6cf;
+  }
+  .criteria {
+    padding-bottom: 20px;
+    color: #bac1af;
+    font-size: 11px;
+    line-height: 1.9;
+  }
+  .criteria > p {
+    margin: 0 0 18px;
+  }
+  dl {
+    margin: 0;
+  }
+  dl > div {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 12px;
+  }
+  dt {
+    color: #f4f7ef;
+  }
+  dd {
+    margin: 0;
+  }
+  .sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+    color: #929c85;
+  }
+  .sources a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 700px) {
+    .comparison {
+      margin-top: 80px;
+    }
+    .intro {
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+    .method-column {
+      width: 24%;
+    }
+    th,
+    td {
+      padding: 15px 2px;
+    }
+    th:first-child {
+      padding-left: 4px;
+    }
+    thead th {
+      font-size: 10px;
+    }
+    tbody th {
+      font-size: 11px;
+    }
+    .mark {
+      font-size: 21px;
+    }
+    .outside {
+      font-size: 16px;
+    }
+    .cyber strong {
+      font-size: 21px;
+    }
+    .legend {
+      font-size: 10px;
+      gap: 8px 16px;
+      margin-top: 20px;
+    }
+    .legend li {
+      gap: 5px;
+    }
+    .legend .mark {
+      font-size: 15px;
+    }
+    dl > div {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      margin-top: 16px;
+    }
+  }
+
+  @media (max-width: 359px) {
+    thead th {
+      font-size: 9px;
+    }
+  }
+</style>

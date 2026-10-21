@@ -56,14 +56,14 @@ const C = isJa
           key: "decrypt",
           type: "データ取得",
           title: "必要な範囲だけ取り出す",
-          desc: "業務に必要な顧客データを取り出す場合。担当者・対象・取り出せる範囲を確認する想定です。",
+          desc: "サポート担当者が、出力APIで申請した100件の顧客データを取り出す場合。担当者・対象・項目を確認する想定です。",
           checks: [
-            { label: "担当者", value: "対象の業務を担当する人" },
-            { label: "対象", value: "指定した顧客データ" },
+            { label: "担当者", value: "対象業務のサポート担当者" },
+            { label: "対象", value: "申請した100件の顧客データ" },
             { label: "範囲", value: "業務に必要な項目だけ" },
           ],
           outcome:
-            "担当者・対象・範囲が合う依頼を通し、別のデータや範囲外の項目を求める依頼は止める想定です。",
+            "申請した100件と必要な項目だけを通し、全顧客のデータや申請にない項目を求める依頼は止める想定です。",
         },
         {
           key: "api",
@@ -124,14 +124,14 @@ const C = isJa
           key: "decrypt",
           type: "Data access",
           title: "Retrieve only the data needed",
-          desc: "A person requests customer data for their work. The person, target data and allowed scope would be checked.",
+          desc: "A support member uses an export API to retrieve 100 requested customer records. The person, target customers and fields would be checked.",
           checks: [
-            { label: "Person", value: "Person responsible for this work" },
-            { label: "Target", value: "Specified customer data" },
+            { label: "Person", value: "Support member responsible for this work" },
+            { label: "Target", value: "100 requested customer records" },
             { label: "Scope", value: "Only the fields needed for the work" },
           ],
           outcome:
-            "Requests matching the person, target and scope would go through. Requests for different data or extra fields would be stopped.",
+            "Only the 100 requested records and required fields would go through. Requests for all customer data or unrequested fields would be stopped.",
         },
         {
           key: "api",
