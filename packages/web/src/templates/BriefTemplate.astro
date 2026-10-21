@@ -215,9 +215,8 @@ const tocSections = headings
   .filter((h) => !/配布について|distribution/i.test(h.text))
   .map((h, i) => ({ num: i + 1, text: h.text, slug: h.slug }));
 
-// 表紙の下の「自社で確かめる」カード（report・frontmatter self_check / first_step）。
+// 表紙の下の「自社で確かめる」カード（report・frontmatter self_check）。
 const selfCheck = isReport ? (brief.data.self_check as string | undefined) : undefined;
-const firstStep = isReport ? (brief.data.first_step as string | undefined) : undefined;
 const counterSlug = tocSections.find((s) => s.num === 5)?.slug;
 
 // 配布定型文（旧 §9）が本文に残っていない Brief には、テンプレート側で
@@ -497,16 +496,10 @@ const labels = isJa
                     <path class="tick" d="m8.4 12.2 2.5 2.5 4.9-5.1" />
                   </svg>
                   <span>{isJa ? "自社で確かめる" : "Ask yourself"}</span>
-                  {counterSlug && (
-                    <a class="rx-check-a" href={`#${counterSlug}`}>{isJa ? "対策を見る" : "How to counter"} →</a>
-                  )}
                 </div>
                 <p class="rx-check-q">{selfCheck}</p>
-                {firstStep && (
-                  <p class="rx-check-s">
-                    <b>{isJa ? "まず 1 つ" : "Start here"}</b>
-                    <span>{firstStep}</span>
-                  </p>
+                {counterSlug && (
+                  <a class="rx-check-a" href={`#${counterSlug}`}>{isJa ? "対策を見る" : "How to counter this"}<span aria-hidden="true">→</span></a>
                 )}
               </aside>
             )}
@@ -2380,16 +2373,20 @@ const labels = isJa
     stroke-width: 2.4;
   }
   .rx-check-a {
-    margin-left: auto;
-    font-size: 12.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--ok);
+    color: var(--ink);
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: 0;
-    color: var(--ok-light);
     text-decoration: none;
-    white-space: nowrap;
   }
   .rx-check-a:hover {
-    text-decoration: underline;
+    background: #b8ec2a;
   }
   .rx-check-q {
     margin: 6px 0 0;
@@ -2397,16 +2394,6 @@ const labels = isJa
     font-weight: 700;
     font-size: 16.5px;
     line-height: 1.6;
-    color: var(--tx);
-  }
-  .rx-check-s {
-    margin: 4px 0 0;
-    font-size: 13px;
-    line-height: 1.75;
-    color: var(--muted);
-  }
-  .rx-check-s b {
-    margin-right: 8px;
     color: var(--tx);
   }
   .rx-meta div {

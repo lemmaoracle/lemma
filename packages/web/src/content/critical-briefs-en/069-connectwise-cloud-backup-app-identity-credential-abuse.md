@@ -52,7 +52,6 @@ attack_method: "supply-chain"
 impact: "Sign-in activity in about 1,000 tenants, more than 300 successful"
 takeaway: "Nothing checked, before they ran, whether administrative actions by a consented app identity were ones the vendor intended."
 self_check: "If a consented app granted itself administrator rights, could you stop it before it ran?"
-first_step: "In the Entra ID admin centre, list the third-party apps consented in your tenant and the permissions each holds. If you use ConnectWise apps, check audit logs from 14 October for role assignments and added credentials."
 ---
 
 ## 1. TL;DR
