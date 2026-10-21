@@ -1,109 +1,168 @@
 ---
 brief_no: 109
-title: "ServiceNow AI Platform：未認証の 1 リクエストが sandbox を抜けてコード実行に達した（CVE-2026-6875）"
-title_en: "ServiceNow AI Platform — one unauthenticated request escaped the sandbox to code execution (CVE-2026-6875)"
+title: "ServiceNow AI Platform：ログイン前に届くページの入力がサンドボックスを抜けてコード実行に至り、詳細の公開から 3 日で悪用の試行が観測された(CVE-2026-6875) — 入口がどこであれ、管理者の作成のような操作を、実行の前に誰に許されたかで確かめる層が無い"
+title_en: "ServiceNow AI Platform: input to a page reachable before login escaped the sandbox to code execution, and exploitation attempts were seen three days after details went public (CVE-2026-6875) — No layer checks, before it runs, who authorised an action like creating an admin, whatever the entry point"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["agent-infrastructure"]
-incident_date: 2026-07-18
+incident_date: 2026-07-17
 published: 2026-07-24
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
-related_briefs: ["046-servicenow-unauthenticated-api", "088-kestra-auth-filter-bypass-rce", "094-cursor-duneslide-sandbox-escape", "003-starlette-badhost", "033-f5-bigip-edge-pivot"]
+related_briefs: ["046-servicenow-unauthenticated-api", "088-kestra-auth-filter-bypass-rce", "094-cursor-duneslide-sandbox-escape"]
 status: published
-version: "1.1"
-og_lead_ja: "ServiceNow CVE-2026-6875 — 未認証の1リクエストが sandbox を抜け RCE"
-og_lead_en: "ServiceNow CVE-2026-6875 — one unauthenticated request escapes the sandbox to RCE"
+version: "2.0"
+og_lead_ja: "ServiceNow CVE-2026-6875：ログイン前の 1 リクエストがサンドボックスを抜けてコード実行"
+og_lead_en: "ServiceNow CVE-2026-6875: one request before login escapes the sandbox to code execution"
+layout: "report"
+og_kicker_ja: "サイバー攻撃事例 · 脆弱性の悪用"
+og_kicker_en: "CYBERATTACK · VULNERABILITY EXPLOIT"
+og_headline_ja: "ログインの前に、\n管理者を作れる穴が\n業務基盤にあった。\n<accent>公開の 3 日後に悪用の試行</accent>"
+og_headline_en: "A hole let anyone create an admin before logging in.\n<accent>Exploit attempts three days after disclosure.</accent>"
+key_figures:
+  - value: "9.5"
+    unit: "CVSS 4.0"
+    label: "深刻度（ServiceNow の採点・Critical）。ログインは要らない"
+    tone: "alert"
+  - value: "04-01 → 07-13"
+    label: "発見者の報告から、アドバイザリの公開まで。クラウドには報告から 24 時間以内に緩和策"
+  - value: "07-14 → 07-17"
+    label: "発見者が詳細を公開してから、悪用の試行が観測されるまで"
+glossary:
+  - term: "サンドボックス"
+    desc: "外から受け取ったコードを、できることを制限した環境で動かす仕組み。制限の外に出られると、システムの権限で何でもできる。"
+  - term: "ログイン前の入口（pre-auth）"
+    desc: "ログインしていない人でも届くページや API。ここに穴があると、誰でも攻撃を試せる。"
+  - term: "MID Server"
+    desc: "ServiceNow が社内ネットワークのサーバーとやり取りするために、利用企業の中に置く中継サーバー。"
+insight:
+  slug: "reachability-as-permission"
+  label: "届けば実行できる"
+  quote: "ログイン前の入口に入った値がサンドボックスを抜けると、その後の操作は、誰に許されたかを問われないまま正規の処理として通った。"
 industries: ["ai"]
+operations: ["account-admin"]
+controls:
+  - slug: "hold-unverified"
+    item: "管理者の作成など権限を変える操作は、誰に許されたかを確かめるまで通さない"
+  - slug: "audit-trail"
+    item: "どの許可でどの操作をしたかを、基盤とは別に記録する"
+impact: "未適用のインスタンスで、ログインなしにデータの読み出しと管理者の作成が可能"
+takeaway: "ログイン前の入口から届いた操作でも、管理者の作成のような操作を、実行の前に誰に許されたかで確かめる手順が無かった。"
+self_check: "業務基盤で、ログインせずに届く入口から管理者が作られたら、使われる前に気づけるか。"
 ---
 
-> **改訂（v1.1 / 2026-09-01）**: 初版は Defused の初報に基づき、観測された悪用が「公開 PoC とは別経路で同じコード実行に到達した」と記述していた。Defused はその後この記述を訂正し、捕捉したペイロードは Searchlight Cyber の公開 PoC と一致すると述べている。本版では該当箇所を訂正し、§4 の論旨を「別経路の存在」ではなく「経路が公になった時点で到達可能性がそのまま実行可能性になる」構造の分析へ置き換えた。
-
----
+> **改訂（v2.0 / 2026-10-21）**: 一般の読者が読める構成に組み直し、§5 を「対策するには」にした。ServiceNow のアドバイザリ（KB3137947）、発見者の研究、Defused の投稿で事実を取り直した。クラウドへの対処は「4 月から順次」ではなく報告から 24 時間以内の緩和策だったこと、発見者の詳細の公開は 7 月 14 日だったこと、アドバイザリの表現（「当社のインスタンスに対する悪用は把握していない」）と報道向けの声明を分けて書いた。v1.1（2026-09-01）では、Defused の初報の「公開 PoC とは別の経路」を同社の訂正に従って改めている。
 
 ## 1. TL;DR
 
-ServiceNow AI Platform（旧 Now Platform）の未認証 sandbox 脱出 RCE「CVE-2026-6875」に対する悪用の試行が 2026 年 7 月に観測された。Searchlight Cyber が 4 月 1 日に報告した本脆弱性は、認証を経ていない攻撃者が公開到達可能なエンドポイント（`/assessment_thanks.do`）に届いた 1 リクエストで sandbox を抜け、任意コード実行に至る。観測されたペイロードは、Defused の訂正によれば Searchlight の公開 PoC と一致するものであった。ServiceNow はホスト型を 4 月から順次対処・セルフホスト型向け更新を 7 月 13 日に公開し、自社ホスト型での悪用は確認していないとしている。ここで問われるのは、実行が「エンドポイントに到達できたか」で決まり、行動ごとの認可の独立検証で決まっていない点である――とりわけ 1 点の到達が管理者作成・MID Server 到達・インスタンス全体の掌握へ波及する構造にある。
+ServiceNow AI Platform に、ログインせずに届くページ（`/assessment_thanks.do`）の入力を JavaScript として評価させ、サンドボックスを抜けて任意のコードを動かせる脆弱性 CVE-2026-6875（CVSS 4.0 で 9.5）があった。Searchlight Cyber が 4 月 1 日に報告し、ServiceNow は 24 時間以内にクラウドへ緩和策を入れ、7 月 13 日にアドバイザリを公開した。発見者が 14 日に詳細を公開すると、17 日には悪用の試行が観測された。
 
----
+抜けたコードは、どのテーブルのデータも読み、管理者を作り、社内ネットワークに置かれた中継サーバー（MID Server）でコマンドを動かせる。どれも、基盤から見ればシステム自身の正規の処理として実行される。
+
+実際の侵害は報告されていないが、詳細の公開から 3 日で、修正を当てていないインスタンスに向けた試行は始まった。効かなかったのは、どの入口から来たかに関係なく、管理者の作成のような権限を変える操作を、実行の前に誰に許されたかで確かめる層である。
 
 ## 2. 何が起きたか
 
-- **対象**: ServiceNow AI Platform（旧 Now Platform）。エンタープライズのコアワークフローに AI を統合する PaaS。ServiceNow によれば年 1,000 億件超のワークフローを処理し、Fortune 500 の 85% に採用されているとされる
-- **脆弱性**: CVE-2026-6875。未認証（pre-auth）の sandbox 脱出による RCE。一部報道は深刻度を CVSS 9 台（Critical、報道値 9.5）と伝える
-- **発見・報告**: Searchlight Cyber が発見し 2026-04-01 に報告（“Smashing the ServiceNow Sandbox: Pre-Authentication RCE”）
-- **修正**: ServiceNow はホスト型インスタンスを 4 月から順次対処。セルフホスト型向けの更新を 2026-07-13 に公開
-- **悪用**: Defused が週末にかけて悪用の試行を確認（最初の試行は金曜）。試行は Searchlight が記録した未認証の到達点 `/assessment_thanks.do` を突く。Defused は当初「sandbox 脱出の gadget が公開 PoC とは別経路で同じコード実行 primitive に到達する」と述べたが、のちに捕捉したペイロードは Searchlight の公開 PoC と一致すると訂正している
-- **影響**: 未認証の攻撃者が sandbox を抜け、インスタンス全体の掌握、テーブル内データへのアクセス、管理者アカウント作成、接続された MID Server プロキシへのコマンド実行に及び得る（高難度攻撃）
-- **ベンダー見解**: ServiceNow は公式アドバイザリで「ServiceNow がホストするインスタンスに対する悪用の証拠は観測していない」とし、セルフホスト／ホスト型双方の顧客にパッチ適用を強く推奨
+- **対象**: ServiceNow AI Platform。企業の IT・人事・顧客対応などの業務を載せる基盤で、同社によれば Fortune 500 の 85% 超が使う。
+- **脆弱性**: CVE-2026-6875。ログイン前に届くページ `/assessment_thanks.do` のパラメータが、データの検索条件として JavaScript のまま評価される。評価はサンドボックスの中で行われるが、別のスクリプトを読み込む仕組みを使うと制限の外に出られた。
+- **深刻度**: CVSS 4.0 で 9.5（Critical、ServiceNow の採点）。攻撃の難しさは「高」と評価されている。
+- **できること**: どのテーブルのデータも読める。管理者を作れる。社内ネットワークにある中継サーバー（MID Server）でコマンドを実行できる（発見者）。
+- **修正**: クラウドのインスタンスには報告から 24 時間以内に緩和策が入った。7 月 13 日のアドバイザリで、各系列（Zurich、Yokohama、Australia、Brazil）の修正版を示した。修正版は、ログイン前の通信に「1 つの式しか実行させない」制限（Guarded Script）を直ちに効かせる。
+- **悪用**: 7 月 17 日から試行が観測された。Defused は捕らえたペイロードが発見者の公開した検証用のものと同じだと述べている（当初の「別の経路」は 20 日に訂正）。実際の侵害は報告されておらず、CISA の悪用確認済み脆弱性カタログ（KEV）にも載っていない（2026-10-20 時点）。
 
-事象は次の連鎖で成立している。
-
-1. **未認証エンドポイントへの到達**: 攻撃者が認証を経ずに、未認証で到達可能な sink（`/assessment_thanks.do`）へ細工した HTTP リクエストを送る
-2. **sandbox の脱出**: sandbox 脱出の gadget を用いて、プラットフォームの隔離を抜ける。観測された試行のペイロードは Searchlight の公開 PoC と一致する（当初は「別ルート」と報じられたが訂正された）
-3. **コード実行**: ServiceNow プラットフォーム内で任意コードを実行する。認証を要さないため、到達可能性がそのまま実行可能性に転化する
-4. **権限の波及**: インスタンス全体の掌握、テーブル内データへのアクセス、管理者アカウントの作成、接続された MID Server プロキシへのコマンド実行に及び得る
-
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">発見者が示した攻撃の流れ</span></div>
+<p class="rx-ex-cap">入口の穴はパッチで塞ぐ。止めどころは ④ にもあり、権限を変える操作を実行の前に誰に許されたかで確かめれば、穴を抜けても全権にはならない。</p>
+<div class="rx-chain">
+<div class="rx-step"><div class="who">攻撃者</div><div class="no">1</div><b>ログイン前に届くページに、細工した値を送る</b><p><code>/assessment_thanks.do</code></p></div>
+<div class="rx-step"><div class="who">基盤</div><div class="no">2</div><b>値を JavaScript として評価する</b><p>サンドボックスの中で。</p></div>
+<div class="rx-step crit"><div class="who">攻撃者のコード</div><div class="no">3</div><b>別のスクリプトの読み込みを使い、サンドボックスの外に出る</b><p>制限の無い環境で動く。</p></div>
+<div class="rx-step crit"><div class="who">攻撃者のコード</div><div class="no">4</div><b>データを読み、管理者を作り、MID Server でコマンドを動かす</b><p>正規の処理として実行される。</p></div>
+</div>
+</figure>
 
 ## 3. 時系列 — 公表と対応
 
-- 2026-04-01: Searchlight Cyber が CVE-2026-6875 を ServiceNow に報告
-- 2026-04〜: ServiceNow がホスト型インスタンスを順次対処
-- 2026-07-13: ServiceNow がセルフホスト型インスタンス向けの更新（KB 記事）を公開
-- 2026-07-17 前後（金曜）: 悪用の試行が最初に観測される
-- 2026-07-18〜19（週末）: Defused が悪用の試行を確認・公表。`/assessment_thanks.do` を突き、sandbox 脱出の gadget は公開 PoC とは別経路で同じコード実行に到達する、と述べる
-- 2026-07（その後）: Defused が上記を訂正し、捕捉したペイロードは Searchlight Cyber の公開 PoC と一致すると述べる
-- 2026-07-20: 報道（BleepingComputer 等）。ServiceNow は自社ホスト型インスタンスでの悪用証拠は未観測と表明し、パッチ適用を推奨
+- **2026-04-01**: Searchlight Cyber が ServiceNow に報告。ServiceNow は 24 時間以内に、すべてのクラウドのインスタンスへ緩和策を入れた。
+- **2026-07-13**: ServiceNow がアドバイザリ（KB3137947）を公開し、修正版を案内。「当社のインスタンスに対する悪用は、現時点で把握していない」。
+- **2026-07-14**: Searchlight Cyber が技術的な詳細を公開。
+- **2026-07-17**: 悪用の試行が観測され始める（報道）。
+- **2026-07-18**: Defused が X で公表。発見者の公開した PoC とは別の経路だと述べた。
+- **2026-07-20**: Defused が訂正し、捕らえたペイロードは公開されたものと同じだとした。ServiceNow は報道に、自社がホストするインスタンスに関わる証拠は観測していないと述べた。カナダのサイバーセキュリティセンターも、悪用の報告を注意喚起に追記した。
 
-> 注: 技術的事実は Searchlight Cyber の研究、Defused の実地悪用報告、NVD（CVE-2026-6875）、および確立メディア（BleepingComputer・Help Net Security・SecurityWeek 等）に基づく。深刻度スコア・悪用範囲・被害の有無は出典・時点により幅があり、ServiceNow は自社ホスト型での悪用証拠を未観測としている。**Defused の初報にあった「公開 PoC とは別経路」という特徴づけは同社自身が訂正しており、本版はその訂正に従う。** 観測されたのは公開 PoC と一致するペイロードによる試行であり、実害の発生を独立に確認した報告は本稿改訂時点で無い。最新の一次情報（ベンダーアドバイザリ・NVD）を参照されたい。
+> 事実は ServiceNow のアドバイザリ、Searchlight Cyber の研究、Defused の投稿（いずれも一次）と報道に拠る。セルフホスト型の修正がいつ届いたかは、報道によって 6 月と 7 月 13 日で食い違う。2026 年 10 月の時点で、実際の侵害、KEV への登録、日本の公的機関の注意喚起は確認できない。
 
-公表後の対応と業界の動きは次のとおり。
+### 公表後の対応
 
-- **Searchlight Cyber**: 本脆弱性を発見し 4 月 1 日に ServiceNow へ報告。研究（“Smashing the ServiceNow Sandbox: Pre-Authentication RCE”）で未認証 sandbox 脱出 RCE を記録
-- **ServiceNow**: ホスト型インスタンスを 4 月から順次対処、セルフホスト型向け更新を 7 月 13 日に公開。公式アドバイザリでは「自社がホストするインスタンスに対する悪用の証拠は観測していない」とし、双方の顧客にパッチ適用を推奨。なお同社は前月、未認証 API 経由で顧客インスタンスのデータが照会された別インシデントを非公開に開示している（後続アドバイザリで bug bounty 関連の研究活動に紐づくと説明。[Brief No.046](https://lemma.frame00.com/ja/critical/briefs/046-servicenow-unauthenticated-api/) 参照）
-- **Defused / 報道**: Defused が週末に悪用の試行を確認・公表し、当初は `/assessment_thanks.do` を突く悪用が公開 PoC とは別経路で同じコード実行に到達すると指摘したが、のちに捕捉したペイロードは公開 PoC と一致すると訂正した。BleepingComputer・Help Net Security・SecurityWeek 等が初報を報道しており、これらの記事は本稿改訂時点で訂正を反映していない
-- **業界横断の論点**: 大規模に AI ワークフローを実行するエンタープライズ基盤において、未認証の到達点＋ sandbox 脱出がインスタンス全体の掌握に直結し得ることが再認識された。パッチで既知経路を塞ぐことと、実行の可否を行動ごとの認可の独立検証に置き換えることは別の層であり、後者がなければ、経路が公になるたびに同じ実行へ届く試みが残る
-
-「AI プラットフォーム上のコード実行を、到達したエンドポイントや sandbox の境界ではなく、行動ごとの独立検証可能な認可でどう縛るか」は、本事案を契機にエンタープライズ AI 基盤の要件として議論が進む見込み。
-
----
+- **SecurityWeek**: 観測された試行は、脆弱なシステムを探すセキュリティ業界の者による可能性もあると伝えた。
+- **ServiceNow**: 修正版の Guarded Script は、ログイン前の通信には直ちに効き、ログイン後の通信にはクラウドで約 4 週間かけて広げる。セルフホスト型では、管理者が段階を手で進める。
 
 ## 4. なぜ止まらなかったか
 
-中心的な失敗 primitive は、**プラットフォームがコード実行を「認証を経ない特定エンドポイントに到達できたか」で許し、「この行動がこの主体・このスコープで認可されているか」の独立検証で許していなかった**点にある。認証を要さない sink に届いた 1 リクエストが sandbox を抜けて実行に至るとき、到達可能性と実行権限が事実上一体化している。
+この事案の失敗は、利用企業の不注意でも、パッチの遅れだけでもない。ログイン前の入口に入った値がサンドボックスを抜けると、データの読み出しも管理者の作成も、誰に許されたかを問われないまま、基盤の正規の処理として通る作りだった。
 
-本事案に固有なのは、**sandbox という隔離（実行を封じ込める前提の層）自体が、認証を経ない 1 リクエストで脱出された**点だ。しかも、セルフホスト型向け更新の公開から数日のうちに、同じ未認証の到達点へ向けた試行が観測されている。これは、防御を特定の経路や表層シグナル（到達したエンドポイント、認証の有無、sandbox の境界）に依存させる限り、その経路が公になった時点で到達可能性がそのまま実行可能性に転化することを示す。求められるのは、経路ではなく行動そのものに紐づく、独立検証可能な認可である。
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 2</span><span class="rx-ex-t">検出と証明の落差</span></div>
+<p class="rx-ex-cap">証明は操作が実行される前に働き、検出は試行や異常が表に出た後に働く。その間、入口を抜けたコードの操作は正規の処理として扱われる。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>証明の層 · 今回なし</b>権限を変える操作を、実行の前に誰に許されたかで確かめる</div>
+<div class="rx-zone gapz"><b>落差</b><span>未適用なら管理者が作られる。<br>公開から試行まで 3 日</span></div>
+<div class="rx-zone det"><b>検出の層 · 気づいた</b>試行を観測し、修正版を当てる</div>
+<div class="rx-g g1"><div class="t">STEP 1</div><b>入口に細工した値が届く</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>管理者の作成が通る</b></div>
+<div class="rx-g g3"><div class="t">STEP 3</div><b>試行に気づく</b></div>
+<div class="rx-g g4"><div class="t">STEP 4</div><b>修正版を当てる</b></div>
+</div>
+</figure>
 
-[Brief No.046](https://lemma.frame00.com/ja/critical/briefs/046-servicenow-unauthenticated-api/)（[ServiceNow 未認証 API](https://lemma.frame00.com/ja/critical/briefs/046-servicenow-unauthenticated-api/)、設定ひとつで認証が外れ未認証のまま顧客インスタンスが照会された）と同一ベンダーで、「未認証の到達がそのまま特権操作になる」構造を反復している（別インシデント・別エンドポイント・sandbox 脱出という点で独立）。[Brief No.088](https://lemma.frame00.com/ja/critical/briefs/088-kestra-auth-filter-bypass-rce/)（[Kestra](https://lemma.frame00.com/ja/critical/briefs/088-kestra-auth-filter-bypass-rce/)、パス末尾で認証が外れ未認証のまま root でコード実行）、[Brief No.003](https://lemma.frame00.com/ja/critical/briefs/003-starlette-badhost/)（[Starlette / BadHost](https://lemma.frame00.com/ja/critical/briefs/003-starlette-badhost/)、Host ヘッダー操作で認証回避）とは、認証・認可の表層判定が実行権限に直結する構造で同型。[Brief No.094](https://lemma.frame00.com/ja/critical/briefs/094-cursor-duneslide-sandbox-escape/)（[Cursor / DuneSlide](https://lemma.frame00.com/ja/critical/briefs/094-cursor-duneslide-sandbox-escape/)、仕込まれた 1 つの指示が sandbox を抜けて任意コード実行）とは sandbox 脱出の面で、[Brief No.033](https://lemma.frame00.com/ja/critical/briefs/033-f5-bigip-edge-pivot/)（[F5 BIG-IP](https://lemma.frame00.com/ja/critical/briefs/033-f5-bigip-edge-pivot/)、1 台の侵害がドメイン全体へ連鎖）とは 1 点の到達が全体掌握へ波及する面で連なる。共通する primitive は同じである。すなわち、**到達可能性・表層シグナルが、行動ごとの認可とは独立している**。
+検出は働いた。ServiceNow は報告から 24 時間でクラウドに緩和策を入れ、Defused は詳細の公開から 3 日で試行を捕らえている。ただ、パッチは見つかった入口を塞ぐもので、「入口に届いた」と「この操作が許されている」は別々の事実なのに、この基盤では前者が後者を兼ねていた。この隔たりが**検出と証明の落差**であり、構造的な欠落である。
 
-Searchlight Cyber による発見・報告、ServiceNow のパッチ提供、Defused による実地悪用の検出・警告、報道を通じた可視化は、被害の抑止に不可欠であり、本 Brief がその役割を否定するものではない。脆弱性の発見からパッチ、実地悪用の観測に至る系列は、防御側が対処するための起点である。検出は確かに役割を果たす。
+同じ構造は、[ServiceNow の未認証 API](https://lemma.frame00.com/ja/critical/briefs/046-servicenow-unauthenticated-api/)（設定一つで認証が外れ、顧客インスタンスのデータが照会された）にも現れている。
 
-一方で、パッチ適用と実地悪用の検出は、「いま到達しているこのリクエストが、実行を認可された正規の行動か、未認証のまま sandbox を抜けようとする悪用か」を、**その実行が始まる時点で**行動そのものに紐づけて独立に立証する材料にはならない。更新公開の数日後に、公開 PoC と一致するペイロードが未適用のインスタンスへ向けられたという経緯は、防御が特定の経路・シグナルに依存する限り、その経路が公になった時点で同じ結果へ抜けられることを示している。パッチは既知の経路を塞ぐが、実行の可否が「到達できたか」で決まる構造そのものは、行動ごとの認可を独立検証しない限り残る。監査で「このプラットフォーム上のコード実行は、認可された主体による正規の行動だったか」を立証する材料として、「認証エンドポイントを通っていない・sandbox 内にいるはず」という表層の前提だけでは、行動の認可の独立した証跡にならない。これは検出層の射程外にある、構造的に独立した層の落差である。
+## 5. 対策するには
 
----
+**入口の穴は塞ぎ、抜けた後の操作は権限で止める。** 修正版を当て、ログイン前に届く入口を減らす。そのうえで、管理者の作成や社内のサーバーでのコマンドのように権限を変える操作は、どの入口から来たかに関係なく、実行の前に誰に許された操作かを確かめる。次の穴が見つかっても、全権には届かない。
 
-## 5. 証明があれば、何が変わるか
+### 注意したい業界・業務
 
-事前証明（pre-action attestation）は、実行を始める前に、その行動が認可されていることを、到達したエンドポイントや sandbox の境界とは独立に検証可能な証明として要求する（proof-as-auth）。証明が伴わなければ、認可なき実行を既定で拒否する（deny-by-default）。これは sandbox 脱出のバグそのものを消すものではなく、認可されていない実行を成立させない設計原則である。ただし本事案は未認証（匿名）の pre-auth 悪用であり、初動の到達点そのものに主体を紐づけることはできない。したがって proof-as-auth が本ケースで最も強く効くのは初動ではなく、**その後の特権波及**――管理者作成・MID Server 到達・テーブルデータ・インスタンス全体の掌握――を「1 点の到達＝全権」に転化させない層としてである。既知経路を塞ぐパッチ・実地悪用の検出（detection 的な「到達した／既知の穴」）と、行動ごとの認可の事前証明（「この実行はいま認可されているか」）は代替ではなく **補完** の関係にある。
+- **業界 · AI導入（業種横断）**: IT・人事・顧客対応の業務を、ServiceNow のような業務基盤に載せている組織。基盤には業務データと、社内システムへの接続が集まる。
+- **業務 · アカウント・権限の管理**: 管理者アカウントの作成と、基盤から社内のサーバーへの接続。今回はどちらも、ログイン前の 1 リクエストから届きうる。
 
-本事案で露呈した検出と証明の落差（未認証の到達点＋ sandbox 脱出が、行動ごとの認可を独立検証しないまま実行に至る）に対して、Lemma は、実行を始める前に、その行動がこの主体・このスコープで認可されていることを、到達経路や sandbox の境界とは独立に検証可能な暗号証明として要求する設計を提示している。
+### いまの対策で埋まるか
 
-- **行動ごとの認可の deny-by-default**: 特権操作を始める前に、「この行動はこのスコープで認可されている」ことを、到達したエンドポイント・認証の有無・sandbox の境界とは切り離して証明させ、証明が伴わない実行を既定で拒否する。「未認証の sink に到達できた」ことを特権実行の根拠にしない
-- **経路非依存の認可**: 認可を到達経路ではなく行動そのものに紐づけることで、経路が新規か既知かにかかわらず、一貫して拒否の既定が働く
-- **スコープ付き権限と最小環境**: MID Server 到達・管理者作成のような特権操作を、行動ごとのスコープ付き認可証明の下でのみ許し、1 点の到達が全体掌握へ波及する連鎖を断つ。本事案のように初動が未認証で主体を持たない場合でも、この波及遮断の層は独立して働く
-- **選択的開示**: 「この実行が認可要件を満たす」ことだけを最小開示し、内部の資格情報・秘密は環境外に出さない
+| 対策 | 今回 | 理由 |
+| --- | --- | --- |
+| 修正版の適用 | 一部 | 見つかった入口は塞がる。適用までの間と、次に見つかる入口には効かない。 |
+| ログインと多要素認証（MFA） | 関係しない | 入口はログインの前にあった。 |
+| サンドボックス | 効かない | 制限の外に出る方法があった。 |
+| 管理者の作成や接続の監視 | 一部 | 気づくことはできるが、作られた後になる。 |
 
-なお、未認証・匿名の攻撃者による初動の到達点そのものに proof-as-auth を課すことは、その公開経路の信頼モデルを「到達＝許可」から「認可の証明＝許可」へ変更することを意味し、鍵の窃取が争点となる事案（[Brief No.103](https://lemma.frame00.com/ja/critical/briefs/103-ostium-oracle-signer-key-future-priced-data/) 等）に比べ初動への適用は弱い。本層の主眼は、既知経路を塞ぐパッチと組み合わせつつ、到達後の特権波及を「1 点の到達＝全権」に転化させない補完にある。その射程を正直に見積もったうえで、検出（既知経路を塞ぐパッチ・実地悪用の観測）は既知の穴の封じ込めに、事前証明（特権実行前の行動認可の検証）は波及の遮断に、それぞれ相補的に働く。
+### 必要になるもの
 
----
+1. **修正版を当て、ログイン前に届く入口を減らす。** セルフホスト型では、Guarded Script の段階も自分で進める。使っていない公開ページやゲストの通信は止める。
+2. **権限を変える操作は、入口と関係なく、実行の前に確かめる。** 管理者の作成、ロールの付与、社内のサーバーでのコマンドは、誰がどの許可で行うのかを照合し、照合できなければ通さない。
+3. **どの許可でどの操作をしたかを、基盤とは別に残す。** 止めた操作と通した操作を、後から第三者に示せる形、つまり証明として残す。
+
+### 点検チェックリスト
+
+業務基盤（クラウド・自社運用）について、組織で確かめる 3 項目
+
+- 自社が使う業務基盤のうち、ログインせずに届くページや API を言えるか。
+- 新しい管理者アカウントが作られたとき、誰に知らせが届くか。
+- 重大な脆弱性が公表されたとき、何日以内に修正版を当てるかが決まっているか。
+
+注：入口を抜けたコードが、許可を照合する仕組みそのものを書き換えられる位置で動けば、この確認も破られうる。照合を基盤の外に置くほど強くなるが、正規の管理作業にも手間が増える。
 
 ## 6. Sources
 
-- **Searchlight Cyber（発見元の研究）**: “Smashing the ServiceNow Sandbox: Pre-Authentication RCE” — <https://slcyber.io/research-center/smashing-the-servicenow-sandbox-pre-authentication-rce/>
-- **NVD**: CVE-2026-6875 — <https://nvd.nist.gov/vuln/detail/CVE-2026-6875>
-- **The Hacker News（訂正を収載）**: “Critical ServiceNow AI Platform Flaw Exploited for Unauthenticated Code Execution”（2026-07。Defused による「捕捉したペイロードは Searchlight Cyber の公開 PoC と一致する」との訂正を記載）— <https://thehackernews.com/2026/07/critical-servicenow-ai-platform-flaw.html>
-- **BleepingComputer**: “Critical ServiceNow code execution flaw now exploited in attacks”（2026-07-20、Defused の初報・ServiceNow 声明。訂正前の記述）— <https://www.bleepingcomputer.com/news/security/critical-servicenow-code-execution-flaw-now-exploited-in-attacks/>
-- **Help Net Security**: “ServiceNow pre-auth RCE exploited in the wild (CVE-2026-6875)”（2026-07-20）— <https://www.helpnetsecurity.com/2026/07/20/servicenow-cve-2026-6875-exploited/>
+- **ServiceNow（一次・ベンダーのアドバイザリ）**: 「CVE-2026-6875 - Sandbox Escape in ServiceNow AI Platform」（2026-07-13） — <https://support.servicenow.com/kb?id=kb_article_view&sysparm_article=KB3137947>
+- **Searchlight Cyber（一次・発見者の研究）**: 「Smashing the ServiceNow Sandbox: Pre-Authentication RCE」（2026-07-14） — <https://slcyber.io/research-center/smashing-the-servicenow-sandbox-pre-authentication-rce/>
+- **Defused（一次・X の投稿）**: 悪用の試行の観測（2026-07-18） — <https://x.com/DefusedCyber/status/2078418391321219448>
+- **Defused（一次・X の投稿）**: ペイロードが公開 PoC と同じだったとする訂正（2026-07-20） — <https://x.com/DefusedCyber/status/2079231498109235248>
+- **NVD（一次・脆弱性データベース）**: CVE-2026-6875（2026-07-13） — <https://nvd.nist.gov/vuln/detail/CVE-2026-6875>
+- **カナダ サイバーセキュリティセンター（一次・注意喚起）**: 「ServiceNow security advisory (AV26-693)」（2026-07-14） — 07-20 更新 · <https://cyber.gc.ca/en/alerts-advisories/servicenow-security-advisory-av26-693>
+- **BleepingComputer（報道）**: 「Critical ServiceNow code execution flaw now exploited in attacks」（2026-07-20） — <https://www.bleepingcomputer.com/news/security/critical-servicenow-code-execution-flaw-now-exploited-in-attacks/>
+- **Help Net Security（報道）**: 「ServiceNow pre-auth RCE exploited in the wild (CVE-2026-6875)」（2026-07-20） — <https://www.helpnetsecurity.com/2026/07/20/servicenow-cve-2026-6875-exploited/>
+- **SecurityWeek（報道）**: 「Exploitation of ServiceNow Vulnerability Seen Days After Disclosure」（2026-07-21） — <https://www.securityweek.com/exploitation-of-servicenow-vulnerability-seen-days-after-disclosure/>
 
 参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)
