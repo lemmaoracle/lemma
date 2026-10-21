@@ -65,7 +65,7 @@ impact: "\u904b\u8ee2\u514d\u8a31\u8a3c 1 \u5104 5,300 \u4e07\u4ef6\u8d85\u304c\
 
 > 「Caesars は IDScan.net の顧客ではなく、2025 年 2 月以降 VeriScan を使用していない。にもかかわらず IDScan.net は自社サイトで当社を取引先として掲載している」——Caesars Entertainment。本人確認を担う事業者が公開する取引先一覧でさえ、独立に確かめられないまま古い状態で残っていた。
 
-年齢を証明するために渡した政府 ID が第三者から流出した [Brief 052](https://lemma.frame00.com/ja/critical/briefs/052-discord-age-verification-id-leak/)、KYC データを保有する側の内部露出を扱った [Brief 077](https://lemma.frame00.com/ja/critical/briefs/077-idmerit-kyc-data-exposure/) と [Brief 086](https://lemma.frame00.com/ja/critical/briefs/086-sumsub-support-environment-breach/) は、いずれも同じ失敗の型——確認のために原本を渡す設計——を別の業種で示している。
+年齢を証明するために渡した政府 ID が第三者から流出した [Brief 052](https://lemma.frame00.com/ja/critical/briefs/052-discord-age-verification-id-leak/)、KYC データの露出と帰属の争いを扱った [Brief 077](https://lemma.frame00.com/ja/critical/briefs/077-idmerit-kyc-data-exposure/) と [Brief 086](https://lemma.frame00.com/ja/critical/briefs/086-sumsub-support-environment-breach/) は、いずれも同じ失敗の型——確認のために原本を渡す設計——を別の業種で示している。
 
 ## 5. 証明があれば、何が変わるか
 

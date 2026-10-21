@@ -65,7 +65,7 @@ Detection worked. Researchers pointed to the source within days using their own 
 
 > "Caesars has not been a client of IDScan.net and has not used VeriScan since February 2025, despite IDScan.net listing them as a client on their website." — Caesars Entertainment. Even the client list published by a company whose business is verifying identity had been left standing, out of date and unchecked.
 
-[Brief 052](/critical/briefs/052-discord-age-verification-id-leak/), where government ID handed over to prove age surfaced through a third party, and [Brief 077](/critical/briefs/077-idmerit-kyc-data-exposure/) and [Brief 086](/critical/briefs/086-sumsub-support-environment-breach/), on exposure inside the companies holding KYC data, are the same failure in other sectors: a design in which proving something requires handing over the original.
+[Brief 052](/critical/briefs/052-discord-age-verification-id-leak/), where government ID handed over to prove age surfaced through a third party, and [Brief 077](/critical/briefs/077-idmerit-kyc-data-exposure/), on an exposure of KYC data and the dispute over whose it was, and [Brief 086](/critical/briefs/086-sumsub-support-environment-breach/), on exposure inside a company holding KYC data, are the same failure in other sectors: a design in which proving something requires handing over the original.
 
 ## 5. What proof would have changed
 

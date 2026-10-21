@@ -1,7 +1,7 @@
 ---
 brief_no: 77
-title: "IDMerit：約10億件の KYC データ「露出」が係争に — 認証なしの公開 DB は見つかったが、それが誰の管理下のデータかを、いまも誰も証明できない（Cybernews 報道・IDMerit 否認）"
-title_en: "IDMerit: the disputed billion-record KYC exposure — an unsecured database was found, but no one can prove whose data it was (Cybernews report, IDMerit denial)"
+title: "IDMerit：本人確認に使われたとみられる約 10 億件がパスワードの無い DB で見つかったと報じられたが、IDMerit は否認し、帰属は確定しないまま(Cybernews 報道・IDMerit 否認) — 見つかったデータが誰の管理下にあったかを、記録で示せる層が無い"
+title_en: "IDMerit: about a billion records apparently used for identity checks were reported found in a password-less database, IDMerit denied it, and whose data it was remains unsettled (Cybernews report, IDMerit denial) — No layer can show, from records, whose custody the data was in"
 pillar: "04-regulatory-attribute"
 primary_category: "kyc-aml-disclosure"
 secondary_categories: ["data-provenance", "attribute-proof-bypass"]
@@ -9,102 +9,158 @@ incident_date: 2026-02-18
 published: 2026-06-23
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["013-coinbase-kyc-insider-breach", "086-sumsub-support-environment-breach", "021-wirecard-balance-attestation", "052-discord-age-verification-id-leak"]
+related_briefs: ["086-sumsub-support-environment-breach", "013-coinbase-kyc-insider-breach", "052-discord-age-verification-id-leak"]
 status: published
-version: "2.0"
-og_lead_ja: "IDMerit 10億件露出の係争 — 帰属を誰も証明できない"
-og_lead_en: "IDMerit's disputed billion-record exposure — custody no one can prove"
-gap_detected: "Cybernews が認証なしで公開されていた MongoDB を発見・通報し、翌日に該当データベースは閉鎖された。"
-gap_missing: "露出したデータが誰の管理下にあり、どの契約・取得根拠に基づくものか（custody）を、当事者・研究者・規制当局の誰も検証可能な形で証明できない。"
-gap_fix: "KYC データの各レコードに管理主体・取得根拠・契約層への検証可能な来歴を同伴させ、露出時に帰属と適法性を証拠ベースで即座に確定できるようにする。"
+version: "3.0"
+og_lead_ja: "IDMerit 10 億件露出の係争 — 誰のデータかを誰も記録で示せない"
+og_lead_en: "IDMerit's disputed billion-record exposure — no one can show whose data it was"
+layout: "report"
+og_kicker_ja: "情報漏えい事例 · 帰属の係争"
+og_kicker_en: "DATA EXPOSURE · DISPUTED CUSTODY"
+og_headline_ja: "本人確認のデータが\n公開の DB で見つかった。\n誰のものかは決まらない。\n<accent>約 10 億件（報道の主張）</accent>"
+og_headline_en: "Identity-check data was found in an open database. Whose it was is unsettled.\n<accent>About 1 billion records (as claimed).</accent>"
+key_figures:
+  - value: "約 10 億"
+    unit: "件"
+    label: "機微な個人データを含むとされるレコード（Cybernews の主張・未検証）。総数は約 30 億件"
+    tone: "alert"
+  - value: "11-11 → 11-12"
+    label: "パスワードの無い DB の発見から、閉じられるまで（2025 年）"
+  - value: "取り下げ"
+    label: "IDMerit を相手取った集団訴訟（2026-03 提訴）。判断が出ないまま 06-03 に終わった"
+glossary:
+  - term: "データソース"
+    desc: "本人確認の事業者が照会する、通信会社や公的記録などの外部のデータの持ち主。本人確認の事業者は、多くのデータソースにつないで結果を返す。"
+  - term: "帰属（カストディ）"
+    desc: "そのデータが誰の管理下にあり、誰が守る責任を負うか。漏えいの通知や責任の所在は、帰属から決まる。"
+  - term: "MongoDB"
+    desc: "広く使われるデータベースの一種。設定によっては、パスワード無しでインターネットから読める状態になる。"
+insight:
+  slug: "custody-unprovable"
+  label: "誰のデータかを示せない"
+  quote: "公開された DB があったことは確かめられても、それが誰の管理下のデータかを、否認する側も指摘する側も記録で示せなかった。"
 industries: ["finance"]
+operations: ["data-access"]
+controls:
+  - slug: "audit-trail"
+    item: "どのデータを、誰の管理下で、どこに置いているかを記録する"
+impact: "約 10 億件の露出が報じられ、帰属は係争（件数は未検証）"
+takeaway: "見つかったデータが誰の管理下にあり、どの契約で預かったものかを、記録で示す手順が無かった。"
+self_check: "自社の利用者のデータが見つかったと指摘されたとき、自社の管理下のものかどうかを記録で答えられるか。"
 ---
 
-> **改訂（v2.0 / 2026-07-03）**: 初版は Cybernews の報道に基づき、確定した露出として記述していた。IDMerit による公式な否認と係争の状況を踏まえ、本版では両論を併記し、「露出の帰属（custody）を誰も検証可能な形で証明できない」という構造の分析へ再構成した。独立に検証されていない数値には注記を付す。
-
----
+> **改訂（v3.0 / 2026-10-21）**: 一般の読者が読める構成に組み直し、§5 を「対策するには」にした。Cybernews の記事（アーカイブ）と IDMerit の声明を読み直し、IDMerit が「独立したデータソースに関わるポートが開いていた可能性」は認めていたこと、Cybernews の注記（発見者は外部の協力者で、報酬をめぐるやり取りを後から知った）、米国の集団訴訟の提訴と取り下げを加えた。AI 生成が疑われる媒体と、出所の分からない KYC ブログ群を出典から外した。v2.0（2026-07-03）では、確定した露出としていた初版を、係争として書き直している。
 
 ## 1. TL;DR
 
-セキュリティ媒体 Cybernews は 2026-02-18、認証（パスワード）なしで公開されていた MongoDB から、身元確認（KYC）事業者 IDMerit に紐づくとされる機微個人記録・約 10 億件（総レコード数は 30 億件超、26 か国・約 1TB — いずれも Cybernews の主張で未検証）が露出していたと報じた。IDMerit は「当社は顧客データを保有・管理・保存しない」「精査の結果、露出・脆弱性・不正アクセスは確認されなかった」と全面否認し、調査報告書を求めた際に金銭を要求されたとしてランサム目的の疑いを表明している。本事案の核心は侵害の有無をめぐる水掛け論ではなく、露出した DB の管理責任（custody）が誰に帰属するのかを、当事者・研究者・規制当局の誰も検証可能な形で証明できない点にある。露出の検出は機能したが、帰属の証明が存在しない — 「検出と証明の落差」の純度の高い実例である。
+セキュリティ媒体 Cybernews は 2026 年 2 月 18 日、パスワードの無い MongoDB で、本人確認（KYC）に使われたとみられる個人データ約 10 億件（総数約 30 億件、26 か国）が見つかり、IDMerit のものだと報じた。DB は 2025 年 11 月 11 日に見つかり、通知の翌日に閉じられた。IDMerit は、顧客データも独立したデータソースのデータも所有・管理・保存しておらず、自社の環境に露出は無かったと否認した。
 
----
+一方で IDMerit は、独立したデータソースに関わる一部のポートが開いていた可能性は認めている。Cybernews が帰属の根拠として示したのは、コレクションの名前などの手がかりと「当チームはそう考える」という判断で、DB の持ち主を示す記録は、どちらの側からも公開されていない。
+
+DB は通知の翌日に閉じられ、検出は働いた。米国で起こされた集団訴訟も、判断が出ないまま取り下げで終わった。効かなかったのは、見つかったデータが誰の管理下にあり、どの契約で預かったものかを、記録で示せる層である。
 
 ## 2. 何が起きたか
 
-- **報道主体 / 発見**: Cybernews 研究チーム。認証のかかっていない MongoDB を 2025-11-11 に発見し通知、翌 11-12 に該当 DB は閉鎖された。公開開示は 2026-02-18
-- **Cybernews の主張（未検証）**: 総計 30 億件超のレコードのうち、機微個人データを含むものが約 10 億件。26 か国・総量約 1TB。露出内容は氏名・住所・生年月日・国民 ID 番号・電話番号・メールアドレス・性別・通信事業者メタデータ、および **KYC / AML の検証ログ**。集中度が高いのは米国・メキシコ・フィリピン・ドイツ・イタリアで、米国約 2.03 億件・メキシコ約 1.24 億件との報道値がある
-- **IDMerit の否認（Biometric Update 掲載の公式回答）**: 「当社は SaaS 事業者であり、顧客データを保有・管理・保存しない（検証は API 経由で処理される）」「通知を受けてソフトウェア・セキュリティ管理・構成・ログを包括的に精査したが、露出・脆弱性・不正アクセスは確認されなかった」「露出したとされるデータは、検証時に接続する独立データソース由来であり、パートナー各社も侵害・持ち出しを否定した」。さらに、調査報告書を求めたところ金銭を要求されたとして、**ランサム目的の事案との疑い**を表明している
-- **帰属の不確かさ**: 後追い報道（Fox News 等）も、当該 DB を「研究者が IDMerit のものと*考えている*（believe）」と表現しており、帰属は報道段階から確定していない
-- **争点の中心（構造）**: 当該 DB が IDMerit のものか、独立データソースのものか、両者の契約下のどの層のものかを、**検証可能な来歴（provenance / custody chain）で裏づけられない**。ゆえに、露出が事実でも否認が事実でも、どちらの側もそれを証明できない
+- **当事者**: IDMerit（米カリフォルニア州）。180 か国超・440 以上のデータソースにつなぎ、本人確認を API で提供する（同社）。
+- **発見**: Cybernews と協力する外部の研究者が、パスワードの無い MongoDB を 2025 年 11 月 11 日に見つけた。通知の翌日、11 月 12 日に閉じられた。公表は 2026 年 2 月 18 日。
+- **主張された規模（未検証）**: 約 30 億件。うち約 10 億件が国別に分かれ、機微な個人データを含むとされ、残りはログとみられる。約 1TB、26 か国。米国約 2.03 億件、メキシコ約 1.24 億件など。
+- **データの種類（主張）**: 氏名、住所、生年月日、国民 ID 番号、電話番号、メールアドレス、性別、通信事業者のメタデータなど。
+- **帰属の根拠**: Cybernews は「当チームは、この DB が IDMerit のものだと考える」とし、一部の国のコレクション名（idmtelco）などを挙げた。持ち主を直接示すホスト名などは公開していない。
+- **IDMerit の否認**: 顧客データも、独立したデータソースが持つデータも、所有・管理・保存していない。精査の結果、IDMerit の環境に露出・脆弱性・不正アクセスは無かった。ただし、独立したデータソースに関わる一部のポートが開いていて、データベースが露出しうる状態だった可能性は認めた。報告書を求めたところ金銭を要求され、ランサム目的を疑ったとした。
+- **Cybernews の注記**: 発見者は外部の協力者で、報酬をめぐる発見者と IDMerit のやり取りは 2 月 26 日まで知らなかった。社内の研究者が技術的な内容を確かめ、発見は正当だとした。
 
-本件は悪用の立証ではなく「露出と帰属不能」が主題である。争いのない核と係争部分を分けて整理する。
-
-1. **争いのない核（構成）**: 認証（パスワード）のかかっていない DB が、公開ネットワーク上で到達可能な状態にあった — 到達がそのまま閲覧に直結し得る構成
-2. **争いのない核（内容）**: その DB に、KYC 関連とされる大量の個人データが格納されていた
-3. **ここから先が係争**: 当該 DB の所有者・管理者が誰か（IDMerit か、独立データソースか、下請・連携先か）を、外部から検証可能な証跡で確定できない
-4. **来歴の不在**: データの適法性・出所（本人同意・取得根拠・契約層）も、来歴が同伴していないため事後に再構成できない
-5. **帰結**: 侵害の有無・責任の所在・被害範囲のいずれも、当事者の自己申告に依存したまま確定しない。否認する側も、自らの主張を裏づける証明を提示できない
-
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">公表された範囲で見た、経過</span></div>
+<p class="rx-ex-cap">止めどころは ①。データを置くときに、誰の管理下で、どの契約によるものかを記録していれば、④ の争いは記録で決着できた。</p>
+<div class="rx-chain">
+<div class="rx-step"><div class="who">誰か（争われている）</div><div class="no">1</div><b>本人確認に使われたとみられるデータを、DB に置く</b><p>持ち主は IDMerit か、データソースか。</p></div>
+<div class="rx-step crit"><div class="who">DB</div><div class="no">2</div><b>パスワード無しで、インターネットから読める状態になる</b><p>約 30 億件（主張）。</p></div>
+<div class="rx-step"><div class="who">研究者</div><div class="no">3</div><b>見つけて通知し、翌日に DB が閉じられる</b><p>2025-11-11 → 11-12。</p></div>
+<div class="rx-step crit"><div class="who">当事者</div><div class="no">4</div><b>帰属をめぐって主張が割れ、記録では決着しない</b><p>否認と反論。訴訟は取り下げ。</p></div>
+</div>
+</figure>
 
 ## 3. 時系列 — 公表と対応
 
-- 2025-11-11: Cybernews が認証なしの MongoDB を発見し、IDMerit に通知
-- 2025-11-12: 該当 DB が閉鎖される
-- 2025-11〜2026-02: 発見から公開開示まで約 99 日の空白（この間隔自体も論点）
-- 2026-02-18: Cybernews が公開開示。Fox News、Panda Security 等が後追い報道
-- 2026-02 下旬: IDMerit が否認と反論（顧客データ非保存・独立ソース由来・ランサム疑い）。Biometric Update 等の業界専門媒体が、確定事実ではなく<strong>係争中の主張（dispute）</strong>として両論を報道。同時期に、IDMerit の反論に沿って報道を「fake news」と断じる同型の記事群も複数出現した（多くは KYC 関連事業者のブログ等で、独立検証を伴わない）
+- **2025-11-11**: 研究者がパスワードの無い DB を見つけ、通知する。
+- **2025-11-12**: DB が閉じられる。
+- **2026-02-18**: Cybernews が公表。翌日、見出しを「IDMerit data breach」に改め、DB を「IDMerit が所有する」と書き改めた。
+- **2026-02-20**: Biometric Update が、IDMerit の否認を掲載する。
+- **2026-02-26**: Cybernews が、発見者と IDMerit の間に報酬をめぐるやり取りがあったことを知る（同社の注記）。
+- **2026-03-11**: 米カリフォルニア州南部地区の連邦地裁に、IDMerit を相手取った集団訴訟が起こされる。
+- **2026-06-03**: 原告が訴えを取り下げる。判断は出ていない。
 
-> 注: 件数・国別内訳・データ内容はいずれも Cybernews の主張に依拠し、独立に検証されていない。IDMerit の否認もまた、外部が検証できる証跡を伴っていない。本 Brief はいずれの主張の真偽も認定せず、双方が証明を提示できないという構造そのものを対象とする。
+> 件数と中身は Cybernews の主張で、独立に確かめられていない。IDMerit の否認も、外から確かめられる記録を伴っていない。2026 年 10 月の時点で、監督当局の判断や、DB の持ち主を特定した公表は無い。この Brief は、どちらの主張の真偽も認定しない。
 
-公表後の対応と業界の動きは次のとおり。
+### 公表後の対応
 
-- **Cybernews**: findings は正当であり、DB は誰でもアクセス可能な状態だったとの立場を維持
-- **IDMerit**: 侵害を全面否認。「顧客データを保有・管理・保存しない」「独立データソース由来」とし、報告書要求への金銭要求を根拠にランサム目的の疑いを表明
-- **業界専門媒体**: Biometric Update 等は本件を確定事実ではなく<strong>係争（dispute）</strong>として報道。一方、IDMerit の反論に沿って「fake news」と断じる同型記事も複数の KYC 関連事業者ブログ等に出現したが、これらも独立検証を伴わず、反証の証明にはなっていない
-- **規制上の論点**: custody の連鎖が不透明であること自体が、通知義務・監督・責任配分といった規制対応を難しくする。KYC / AML における「取得時点の確認」から「データ来歴の伴走」への転換が、本件を契機に論点として浮上している
-
----
+- **Cybernews**: 発見は正当だとする立場を保ち、修正の販売はしていないと注記した。
+- **IDMerit**: 同じ時期に、データを保存しない設計を説明するブログを公開したが、事案には直接触れていない。
 
 ## 4. なぜ止まらなかったか
 
-中心的な失敗 primitive は、**データ管理責任（custody）の検証可能な帰属証明の不在**である。KYC / AML 事業は「誰の・どの取得根拠の・どの契約下のデータか」という属性と来歴の塊を扱うが、その custody を証明する仕組みが存在しないため、露出が疑われた瞬間に「誰の責任か」を誰も証明できなくなる。
+この事案の失敗は、どちらかの主張の誤りに帰着しない。本人確認のデータが、事業者、データソース、その間の連携をまたいで流れるなかで、見つかった DB が誰の管理下にあったかを、どの側も記録で示せなかった。
 
-[Brief 013](https://lemma.frame00.com/ja/critical/briefs/013-coinbase-kyc-insider-breach/)（Coinbase の内部経由 KYC データ漏洩）・[Brief 086](https://lemma.frame00.com/ja/critical/briefs/086-sumsub-support-environment-breach/)（Sumsub のサポート環境侵害)は、KYC データの**保有・保護**の失敗だった。本事案はさらにその手前、**そのデータが誰の管理下にあったのかすら証明できない**という層の失敗であり、KYC / AML カテゴリの別側面を補完する。[Brief 021](https://lemma.frame00.com/ja/critical/briefs/021-wirecard-balance-attestation/)（Wirecard の残高証明偽装）とは、「属性・帰属の主張が検証されないまま流通する」点で連続する。[Brief 052](https://lemma.frame00.com/ja/critical/briefs/052-discord-age-verification-id-leak/)（年齢確認ベンダー経由の ID 流出）が示した「検証者が原本の集約点になる」リスクは、本事案では「集約点が存在したとして、それが誰の集約点だったのか」という一段深い不確定性として現れている。
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 2</span><span class="rx-ex-t">検出と証明の落差</span></div>
+<p class="rx-ex-cap">証明はデータを置く時点で働き、検出は公開された DB が見つかった後に働く。検出は DB を閉じさせたが、誰のデータかは決めない。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>証明の層 · 今回なし</b>データを置くとき、誰の管理下で、どの契約かを記録する</div>
+<div class="rx-zone gapz"><b>落差</b><span>DB は閉じたが、<br>誰のものかは決まらない</span></div>
+<div class="rx-zone det"><b>検出の層 · 気づいた</b>研究者が見つけ、通知して閉じさせる</div>
+<div class="rx-g g1"><div class="t">STEP 1</div><b>DB が公開される</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>研究者が見つける</b></div>
+<div class="rx-g g3"><div class="t">STEP 3</div><b>DB が閉じられる</b></div>
+<div class="rx-g g4"><div class="t">STEP 4</div><b>帰属で争う</b></div>
+</div>
+</figure>
 
-KYC / AML や年齢確認の義務化が広がるほど、検証データは事業者・独立データソース・下請の間を流れ、管理責任の境界は増える。custody に証明が同伴しない限り、この境界の数だけ「誰のデータか誰も証明できない」露出が再生産される。
+検出は働いた。DB は通知の翌日に閉じられている。ただ、「公開された DB があった」ことは確かめられても、「それが誰の管理下のデータか」は別の事実で、記録が無いため、否認する側も指摘する側も示せなかった。この隔たりが**検出と証明の落差**であり、構造的な欠落である。
 
-Cybernews による発見・通知、翌日の DB 閉鎖という**検出は機能した**。公開状態は捕捉され、遮断された。本 Brief はその役割を否定しない。
+同じ構造は、[Sumsub](https://lemma.frame00.com/ja/critical/briefs/086-sumsub-support-environment-breach/)（本人確認の委託先で、取引先の利用者の連絡先が中心の外に残っていた）にも現れている。
 
-一方で、検出は帰属を証明しない。露出したデータが誰の管理下にあったか（custody）、どの契約・どの取得根拠に基づくか（来歴）を、当事者・研究者・規制当局の誰も検証可能な形で証明できない。ゆえに IDMerit の否認と Cybernews の主張は平行線をたどり、侵害の有無・責任の所在・被害範囲のいずれも確定しない。規制・監査の観点では、否認が事実であってもそれを立証する材料がなく、露出が事実であっても責任追及の起点が定まらない — **どちらに転んでも、証明の不在だけが確定している**。
+## 5. 対策するには
 
----
+**本人確認のデータが、誰の管理下で、どこに置かれているかを、記録で示せるようにする。** 本人確認の事業者は多くのデータソースにつなぎ、データは組織をまたいで流れる。委託する側は、委託先とその先のデータソースが、預けたデータを保存するのか、どこに置くのかを契約で決め、記録を求める。漏えいを指摘されたとき、自社のものかどうかを記録で答えられる。
 
-## 5. 証明があれば、何が変わるか
+### 注意したい業界・業務
 
-事前証明（pre-execution attestation）と検証可能な来歴は、この構造を反転させる。KYC データの各レコードに管理主体・取得根拠・契約層への検証可能な参照が同伴していれば、露出発生時に「誰の・どの根拠のデータか」を即座に証明でき、責任の所在と適法性の争いを証拠ベースで決着できる。露出の検出（detection）と、帰属の証明（proof）は代替ではなく**補完**の関係にあり、両者が重なって初めて、検出後の水掛け論は事前の帰属証明へと置き換わる。
+- **業界 · 金融・FinTech**: 本人確認を API で外部に任せる金融機関、決済、暗号資産の事業者。利用者のデータは、委託先の先のデータソースにも渡る。
+- **業務 · 照会・参照**: 本人確認のために、外部のデータソースに利用者の情報を照会する業務。照会のたびに、データが組織をまたいで動く。
 
-本件が示すのは、「侵害があったか」を事後に争う以前に、**データの管理責任と来歴が証明可能でなければ、責任追及も反証もできない**という構造である。IDMerit の否認（「保存しない」「独立ソース由来」）が事実だとしても、それを裏づける来歴が存在しなければ外部は検証できず、露出が事実であっても同じく証明できない。係争が平行線をたどる原因は、どちらかの不誠実ではなく、証明の層の不在にある。
+### いまの対策で埋まるか
 
-- **custody の検証可能な帰属**: KYC データの各レコードに、管理主体・契約層への検証可能な参照を同伴させ、露出時に「誰の管理下のデータか」を即座に確定する
-- **取得根拠の来歴**: 本人同意・取得根拠・保持期間を検証可能な来歴として刻み、適法性の争いを証拠ベースで決着させる
-- **原本を集約しない検証**: 「この属性は確認済み」という結論だけを独立検証可能な証明として受け渡し、検証者・データソースのいずれも原本属性の無帰属な集約点にならないようにする
-- **否認可能性の証明**: 「保存していない」という主張自体を、検証可能な形で立証できるようにする — 否認する側にとっても、証明の層は防御になる
+| 対策 | 今回 | 理由 |
+| --- | --- | --- |
+| 委託先の「保存しない」という説明 | 一部 | 委託先自身の環境は説明できても、その先のデータソースまでは示さない。 |
+| データ処理の契約（保存の有無・場所） | 一部 | 決めていても、守られたことを外から確かめる記録が無ければ、争いは決着しない。 |
+| データベースの公開設定の点検 | 一部 | 開いた DB は見つけられるが、見つけた後に誰のものかは示さない。 |
+| 研究者による発見と通知 | 一部 | DB は翌日に閉じられたが、誰のものかは決まらなかった。 |
 
----
+### 必要になるもの
+
+1. **データの流れを、委託先の先まで把握する。** どのデータソースに照会し、どこに保存されるか（されないか）を、委託先に一覧で出してもらう。
+2. **保存と場所を契約で決め、記録で確かめる。** 保存しないなら、保存していないことを示す記録を求める。保存するなら、場所と期間を決める。
+3. **誰の管理下で、どの契約によるかを残す。** データごとに、管理する主体と預けた根拠を、後から第三者に示せる形、つまり証明として残す。指摘を受けたとき、自社のものかどうかをすぐに答えられる。
+
+### 点検チェックリスト
+
+本人確認を外部に任せている組織で確かめる 3 項目
+
+- 委託先が照会するデータソースと、データが保存される場所を言えるか。
+- 委託先の「保存しない」という説明を、説明以外の記録で確かめているか。
+- 自社の利用者のデータが見つかったと指摘されたとき、自社の管理下のものかを記録で答えられるか。
+
+注：記録を残しても、記録そのものを偽れば争いは決着しない。記録は、当事者から独立して確かめられる形で残す必要がある。また、委託先の先のデータソースまで記録を求めると、契約の交渉は重くなる。
 
 ## 6. Sources
 
-- **Cybernews（原報道・発見元）**: “IDMerit data breach: 1 billion records of personal data exposed in KYC data leak”（2026-02-18）— <https://cybernews.com/security/global-data-leak-exposes-billion-records/>
-- **Biometric Update（IDMerit の公式回答を掲載・係争として報道）**: “IDMerit disputes report of 1B records exposed in unsecured ID verification database”（2026-02）— <https://www.biometricupdate.com/202602/idmerit-disputes-report-of-1b-records-exposed-in-unsecured-id-verification-database>
-- **Fox News（後追い報道。DB の帰属を「researchers believe」と表現）**: “1 billion identity records exposed in ID verification data leak”（2026-02）— <https://www.foxnews.com/tech/1-billion-identity-records-exposed-id-verification-data-leak>
-- **Panda Security（後追い報道）**: “Over one billion customer records belonging to IDMerit users left unprotected online”（2026-02）— <https://www.pandasecurity.com/en/mediacenter/customer-records-idmerit-unprotected/>
-- **Fincrime Central（後追い報道）**: “IDMerit data breach: 1 billion records of personal data exposed in KYC data leak”（2026-02）— <https://fincrimecentral.com/idmerit-kyc-data-one-billion-records-exposed/>
-- **KYC Finland（IDMerit の反論に沿う KYC 事業者ブログ。独立検証なし）**: “Why IDMERIT Became a Target for Fake ‘Data of Billions Leaked’ Claims” — <https://www.kycfinland.com/blog/idmerit-became-target-fake-data-billions-leaked-claims/>
-- **IDMerit 公式ブログ（同時期の投稿。本事案への直接言及はない）**: “IDMERIT’s Prevent Data Leaks with KYC Compliance Solutions”（2026-02-20）— <https://www.idmerit.com/blog/idmerits-prevent-data-leaks-with-kyc-compliance-solutions/>
-- **reference 実装（GitHub）**: regulatory-attribute proof sample — <https://github.com/lemmaoracle/example-origin>
+- **Cybernews（一次・発見者側の報道）**: 「IDMerit data breach: 1 billion records of personal data exposed in KYC data leak」（2026-02-18） — 現在は閲覧制限。2026-02-22 のアーカイブ · <https://web.archive.org/web/20260222075348/https://cybernews.com/security/global-data-leak-exposes-billion-records/>
+- **米国連邦地裁（一次・裁判記録）**: Andrizzi v. IDMerit LLC, No. 3:26-cv-01527（S.D. Cal.、2026-03-11 提訴・06-03 取り下げ） — <https://www.courtlistener.com/docket/72421353/andrizzi-v-idmerit-llc/>
+- **米国連邦地裁（一次・訴状）**: Andrizzi v. IDMerit LLC の訴状（2026-03-11） — <https://storage.courtlistener.com/recap/gov.uscourts.casd.847125/gov.uscourts.casd.847125.1.0.pdf>
+- **Biometric Update（報道・IDMerit の声明を掲載）**: 「IDMerit disputes report of 1B records exposed in unsecured ID verification database」（2026-02-20） — 02-26 更新 · <https://www.biometricupdate.com/202602/idmerit-disputes-report-of-1b-records-exposed-in-unsecured-id-verification-database>
+- **Fox News（報道・IDMerit の声明を掲載）**: 「1 billion identity records exposed in ID verification data leak」（2026-03-11） — <https://www.foxnews.com/tech/1-billion-identity-records-exposed-id-verification-data-leak>
 
-本件は当事者間で事実関係が係争中であり、本資料はいずれの主張の真偽も認定しません。
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance)、[Seal](https://lemma.frame00.com/ja/seal/)
+本件は当事者の間で事実関係が争われており、この Brief はいずれの主張の真偽も認定しない。
