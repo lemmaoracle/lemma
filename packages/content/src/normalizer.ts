@@ -39,12 +39,11 @@ export const BN254_PRIME = BigInt(
 export const CHUNK_SIZE = 31;
 
 /** Raise a validation error — used at API boundaries. */
-// imperative: pre-condition validation — no functional alternative for call-site abort
-/* eslint-disable functional/no-throw-statements */
 const raise = (message: string): never => {
+  // imperative: pre-condition validation — no functional alternative for call-site abort
+  // eslint-disable-next-line functional/no-throw-statements
   throw new Error(message);
 };
-/* eslint-enable functional/no-throw-statements */
 
 /**
  * Abort (raise) when `condition` holds, otherwise fall through.

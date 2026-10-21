@@ -8,9 +8,8 @@
  * (same convention as `packages/feeds/src/feeds/fail.ts`).
  */
 
-// imperative: sync pre-condition validation must abort the call site — no functional alternative
-/* eslint-disable functional/no-throw-statements */
 export const raise = (message: string): never => {
+  // imperative: sync pre-condition validation must abort the call site — no functional alternative
+  // eslint-disable-next-line functional/no-throw-statements
   throw new Error(message);
 };
-/* eslint-enable functional/no-throw-statements */
