@@ -240,9 +240,9 @@ const briefSchema = z
     impact: z.string().min(1).optional(),
     takeaway: z.string().min(1).optional(),
     /**
-     * report レイアウトの記事に出す2行（2026-10-21）。
-     * - `self_check`: TL;DR の箱の下に「自社で確かめる」として出す問い（1文・「〜か。」）。
-     * - `first_step`: §5 のリードの下に「まず 1 つ」として出す、今日できる一手（1文）。
+     * report レイアウトの表紙の下・TL;DR の上に出す「自社で確かめる」カード（2026-10-21）。
+     * - `self_check`: 読者への問い（1文・「〜か。」）。これが無ければカードは出ない。
+     * - `first_step`: 同じカードの「まず 1 つ」。今日できる一手。
      */
     self_check: z.string().min(1).optional(),
     first_step: z.string().min(1).optional(),
