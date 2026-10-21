@@ -49,7 +49,7 @@ controls:
 attack_method: "human-error"
 impact: "177,000 policyholders' data sent to another insurer"
 takeaway: "Nothing checked, before the send, that the contents matched the recipient."
-self_check: "When you send files split by client, can you match the contents to the recipient before sending, without relying on someone's eyes?"
+self_check: "Can you match files split by client against their recipients before sending?"
 ---
 
 > **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". TOPPAN's and Sompo Japan's disclosures were re-read; the facts are unchanged.
