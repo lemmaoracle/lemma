@@ -42,14 +42,14 @@ insight:
 industries: ["finance"]
 operations: ["delivery"]
 controls:
-  - slug: "separate-approval"
-    item: "Before sending, someone other than the operator checks the contents"
   - slug: "hold-unverified"
-    item: "Don't send until the contents are confirmed to match the recipient"
+    item: "Don't send until the contents are matched to the recipient"
+  - slug: "audit-trail"
+    item: "Record which files were sent and what they were matched against"
 attack_method: "human-error"
 impact: "177,000 policyholders' data sent to another insurer"
 takeaway: "Nothing checked, before the send, that the contents matched the recipient."
-self_check: "When you send files split by client, can someone other than the operator confirm before sending that the contents belong to that client?"
+self_check: "When you send files split by client, can you match the contents to the recipient before sending, without relying on someone's eyes?"
 ---
 
 > **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". TOPPAN's and Sompo Japan's disclosures were re-read; the facts are unchanged.
@@ -146,7 +146,7 @@ The same structure appears in [Tokyo Metropolitan Housing Supply Corporation's a
 Three things to confirm in your organisation about sending data per client
 
 - Are files split by client handled by the same person in the same place?
-- Before sending, does someone other than the operator confirm the contents belong to that client?
+- Before sending, are the contents matched to the client by means other than human eyes?
 - If a contractor does such sending for you, do you know its checking procedure?
 
 Note: if the range registered for a recipient is itself wrong, a wrong send still goes through. Until a matching mechanism is in place, human checks such as a separate checker have to fill the gap.
