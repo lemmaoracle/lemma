@@ -497,6 +497,9 @@ const labels = isJa
                     <path class="tick" d="m8.4 12.2 2.5 2.5 4.9-5.1" />
                   </svg>
                   <span>{isJa ? "自社で確かめる" : "Ask yourself"}</span>
+                  {counterSlug && (
+                    <a class="rx-check-a" href={`#${counterSlug}`}>{isJa ? "対策を見る" : "How to counter"} →</a>
+                  )}
                 </div>
                 <p class="rx-check-q">{selfCheck}</p>
                 {firstStep && (
@@ -504,9 +507,6 @@ const labels = isJa
                     <b>{isJa ? "まず 1 つ" : "Start here"}</b>
                     <span>{firstStep}</span>
                   </p>
-                )}
-                {counterSlug && (
-                  <a class="rx-check-a" href={`#${counterSlug}`}>{isJa ? "対策を見る" : "See how to counter this"} →</a>
                 )}
               </aside>
             )}
@@ -2348,81 +2348,66 @@ const labels = isJa
   }
   /* 自社で確かめる（表紙の下・TL;DR の上） */
   .rx-check {
-    margin: 20px 0 0;
-    padding: 20px 24px 18px;
-    border-radius: 12px;
+    margin: 16px 0 0;
+    padding: 12px 18px 13px;
+    border-radius: 10px;
     background: var(--card);
     border: 1px solid rgba(111, 156, 0, 0.35);
-    box-shadow: var(--sh-s);
   }
   .rx-check-h {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 13px;
+    gap: 8px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--ok-light);
     letter-spacing: 0.04em;
   }
   .rx-check-ic {
     flex: none;
-    width: 30px;
-    height: 30px;
-    padding: 5px;
+    width: 22px;
+    height: 22px;
+    padding: 3px;
     border-radius: 50%;
     background: var(--ok);
     fill: none;
     stroke: var(--ink);
-    stroke-width: 1.8;
+    stroke-width: 2;
     stroke-linejoin: round;
     stroke-linecap: round;
   }
   .rx-check-ic .tick {
-    stroke-width: 2.2;
-  }
-  .rx-check-q {
-    margin: 12px 0 0;
-    font-family: var(--font-serif-jp);
-    font-weight: 700;
-    font-size: clamp(18px, 2.2vw, 21px);
-    line-height: 1.6;
-    color: var(--tx);
-  }
-  .rx-check-s {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 12px;
-    margin: 14px 0 0;
-    padding-top: 12px;
-    border-top: 1px solid var(--line);
-    font-size: 14px;
-    line-height: 1.8;
-    color: var(--tx-soft);
-  }
-  .rx-check-s b {
-    font-size: 12.5px;
-    color: var(--tx);
-    white-space: nowrap;
+    stroke-width: 2.4;
   }
   .rx-check-a {
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 13.5px;
+    margin-left: auto;
+    font-size: 12.5px;
     font-weight: 700;
+    letter-spacing: 0;
     color: var(--ok-light);
     text-decoration: none;
+    white-space: nowrap;
   }
   .rx-check-a:hover {
     text-decoration: underline;
   }
-  @media (max-width: 640px) {
-    .rx-check {
-      padding: 16px 18px 14px;
-    }
-    .rx-check-s {
-      grid-template-columns: 1fr;
-      gap: 2px;
-    }
+  .rx-check-q {
+    margin: 6px 0 0;
+    font-family: var(--font-serif-jp);
+    font-weight: 700;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--tx);
+  }
+  .rx-check-s {
+    margin: 4px 0 0;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+  .rx-check-s b {
+    margin-right: 8px;
+    color: var(--tx);
   }
   .rx-meta div {
     display: flex;
