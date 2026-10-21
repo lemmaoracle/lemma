@@ -49,6 +49,7 @@ controls:
     item: "Record whose data was retrieved, separately from the caller"
 impact: "Up to 22.52 million member records may have leaked"
 takeaway: "Nothing checked, on each retrieval, whether a member-information API call stayed within the permitted party, purpose and volume."
+self_check: "If your API started returning member data in bulk, could you stop it before it was sent?"
 ---
 
 ## 1. TL;DR

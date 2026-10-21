@@ -50,6 +50,7 @@ controls:
     item: "Record what was read in a form the customer can see"
 attack_method: "supply-chain"
 takeaway: "Nothing checked, as entrusted data and the keys that open it were read, that the reader was a permitted party within a permitted scope."
+self_check: "If keys or passwords you entrusted to a vendor were read, could you say what was read?"
 ---
 
 ## 1. TL;DR

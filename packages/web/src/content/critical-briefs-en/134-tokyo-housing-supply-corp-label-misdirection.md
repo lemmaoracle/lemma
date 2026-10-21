@@ -49,6 +49,7 @@ controls:
 attack_method: "human-error"
 impact: "Names of 770 association heads reached other residents"
 takeaway: "Nothing checked, apart from the operator and before dispatch, that the labels matched the source list."
+self_check: "If address labels no longer matched the source list, would someone other than the person who made them catch it before shipping?"
 ---
 
 ## 1. TL;DR

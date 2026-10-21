@@ -53,6 +53,7 @@ controls:
 attack_method: "account-takeover"
 impact: "About \u00a59M lost at one hotel"
 takeaway: "Nothing had someone else confirm a payout-account change before money moved."
+self_check: "If your payout bank account were changed, could you notice and stop it before the first payment?"
 ---
 
 > **Revision (v2.0 / 2026-10-16)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Press coverage and industry research were re-checked.
