@@ -1,116 +1,170 @@
 ---
 brief_no: 84
-title: "香港 Deepfake ビデオ会議詐欺：CFO・同僚全員をリアルタイム deepfake で偽装し、約 2,560 万ドルの送金を実行させた — 顔と声の確認が「本人が今ここにいる」ことの証明にならなくなった構造（香港警察 / Arup）"
-title_en: "Hong Kong deepfake video-call fraud: a real-time deepfake of the CFO and every colleague drove a ~$25.6M transfer — seeing a face and hearing a voice no longer proves the person is actually present (Hong Kong Police / Arup)"
+title: "香港ディープフェイク会議詐欺（Arup）：英国本社の CFO と同僚を装った録画のビデオ会議を信じ、財務担当者が約 HK$2 億を 15 回に分けて送金した(香港政府の立法会答弁・Arup 確認) — 送金の指示が本物かを、指示が届いたのとは別の経路で確かめる手順が無い"
+title_en: "Hong Kong deepfake meeting fraud (Arup): trusting a pre-recorded video call that faked the UK CFO and colleagues, a finance employee sent about HK$200 million in 15 transfers (Hong Kong government LegCo reply, Arup confirmation) — Nothing confirms a payment instruction through a channel other than the one it came in on"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
 secondary_categories: ["identity-auth", "data-provenance"]
-incident_date: 2024-02-04
+incident_date: 2024-01-29
 published: 2026-06-26
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
-related_briefs: ["034-ekyc-liveness-bypass", "050-grok-deepfake-consent-provenance", "053-youtube-deepfake-likeness-provenance"]
+related_briefs: ["034-ekyc-liveness-bypass", "032-booking-payout-account-tampering", "050-grok-deepfake-consent-provenance"]
 status: published
-version: "1.1"
-og_lead_ja: "香港 Deepfake ビデオ会議詐欺、CFO・同僚全員を偽装し約 2,560 万ドル送金"
-og_lead_en: "Hong Kong deepfake video-call fraud: faked CFO drove a ~$25.6M transfer"
-gap_detected: "Post-transfer reconciliation surfaced the fraud, and the Hong Kong Police investigation and disclosure and Arup's hardened controls all operated."
-gap_missing: "There was no means to prove, independently of the video and audio, that the person on the far side of the video call was the real CFO, so the deepfake passed as proof of the approver's identity."
-gap_fix: "Before executing a high-value approval, independently verify the approver's identity provenance with Lemma as cryptographic proof separate from video and audio, and prevent it up front."
+version: "2.0"
+og_lead_ja: "香港ディープフェイク会議詐欺：偽の CFO の指示で約 HK$2 億を送金（Arup）"
+og_lead_en: "Hong Kong deepfake meeting fraud: a fake CFO's instruction moved HK$200M (Arup)"
+layout: "report"
+og_kicker_ja: "サイバー攻撃事例 · なりすまし"
+og_kicker_en: "CYBERATTACK · IMPERSONATION"
+og_headline_ja: "本社の CFO と同僚を\n偽の映像で装い、\n送金を指示した。\n<accent>約 HK$2 億を送金</accent>"
+og_headline_en: "Fake video of the CFO and colleagues ordered the transfers.\n<accent>About HK$200M sent.</accent>"
+summary_labels: ["What happened", "Why it was hard to tell", "The missing layer"]
+key_figures:
+  - value: "≈ HK$200"
+    unit: "million"
+    label: "Sent (about US$25.6 million), on instructions in the name of the UK head-office CFO"
+    tone: "alert"
+  - value: "15"
+    unit: "transfers"
+    label: "Made within one week, to five Hong Kong bank accounts"
+  - value: "01-29 → 05-16"
+    label: "From the police report to Arup confirming it was the victim"
+glossary:
+  - term: "Deepfake"
+    desc: "AI-made video or audio that imitates a real person. Publicly posted video and audio are the raw material."
+  - term: "Business email compromise (BEC)"
+    desc: "Fraud that poses as an executive or supplier to order a payment or a change of bank details. Here a video call was added to the email."
+  - term: "Callback"
+    desc: "Calling the person back on a contact registered in advance, not the one the instruction came from, to confirm it is really them."
+insight:
+  slug: "face-and-voice-as-approval"
+  label: "Faces and voices taken as the authority"
+  quote: "A meeting full of familiar faces and voices was taken as proof that a payment instruction was genuine."
+industries: ["finance"]
+operations: ["approval", "payment-change"]
 controls:
   - slug: "separate-approval"
-    item: "Confirm a transfer instruction with the real person through a channel other than the call"
+    item: "Confirm a transfer instruction with the person through a channel other than the meeting"
+  - slug: "hold-unverified"
+    item: "Hold the transfer until the person has confirmed it"
 attack_method: "impersonation"
-impact: "HK$200 million wired to five accounts"
+impact: "About HK$200M sent to five accounts in 15 transfers"
+takeaway: "Nothing confirmed a payment instruction in a manager's name through a separate channel before the money moved."
+self_check: "If a payment instruction in a manager's name came over a video call, could you confirm it with them another way before paying?"
 ---
 
-> **Revision (v1.1 / 2026-10-17)**: The Japanese title and summary now give the US-dollar figure as about $25.6M, matching §2 and press reports (HK$200 million ≈ US$25.6 million).
+> **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Facts were re-checked against the Hong Kong government's Legislative Council reply. Corrected: the video call was a pre-recorded fake with no dialogue, not a "real-time conversation"; there were 15 transfers; and police disclosed the case on February 2.
 
 ## 1. TL;DR
 
-In January 2024, a finance employee at a multinational company in Hong Kong wired about $25.6 million (HK$200 million) to five accounts after "speaking directly" on a video call with several people including the CFO, the finance team, and an outside adviser. Every participant in that meeting was a real-time deepfake. The employee had been suspicious of an earlier phishing email, but the "video call with familiar faces and voices" turned that suspicion into conviction. The Hong Kong Police disclosed the case on February 4, 2024. Arup (the major UK engineering firm) was later confirmed as the victim company. As a single case, this is the clearest demonstration yet that visual and auditory confirmation — "I saw the face, I heard the voice, I spoke with several people" — no longer functions as a basis for trust under modern AI generation technology.
+In January 2024, a finance employee at the Hong Kong office of UK engineering firm Arup, acting on instructions in the name of the UK head-office CFO, sent about HK$200 million (about US$25.6 million) to five accounts in 15 transfers over one week. What made the instructions believable was a video call showing the CFO and colleagues; everyone on screen was a fake built from publicly posted video and audio. Hong Kong police disclosed the case on February 2, and Arup confirmed it was the victim in May.
 
----
+The employee suspected the first message was phishing, but a meeting full of familiar faces and voices dispelled the doubt. The call was pre-recorded with no dialogue; the fake CFO ended it on a pretext, and later instructions came by messaging app and other channels.
+
+The employee spotted the fraud by checking with head office, but only after 15 transfers had gone through. What failed was the layer that confirms a payment instruction is genuine, through a channel other than the one it came in on, before it is carried out.
 
 ## 2. What happened
 
-- **Subject**: A finance employee at a multinational company (Hong Kong-based). Arup (a major UK-based engineering firm) was later confirmed as the victim company
-- **Scale of loss**: About HK$200 million (Hong Kong dollars) ≈ about US$25.6 million (at the rate of the time). Dispersed across five Hong Kong bank accounts
-- **Summary**: The finance employee received a phishing email purporting to be "instructions from the CFO" regarding a confidential financial transaction. Suspicious of the content, the employee then received and joined an invitation to a video call hosted by the "CFO." The meeting included the CFO, several colleagues, and outside parties, all of whom gave instructions with familiar faces and voices. Every participant was a deepfake
-- **Technical method**: Real-time deepfakes generated from publicly available video and audio reproduced the CFO and several colleagues as video and audio
-- **How it surfaced**: After the transfer, when the employee checked with the real CFO and parties at headquarters, it emerged that no such meeting or instruction had ever existed
-- **Hong Kong Police**: Disclosed the case on 2024-02-04. Around the same time it also announced arrests (6 people) in a separate deepfake fraud case
-- **Arup**: Around May 2024, confirmed to the media that it was the victim company. It stated that it had strengthened its security measures
+- **Who**: A finance employee at the Hong Kong office of Arup, a major UK engineering firm. The instructions came in the name of the UK head-office CFO.
+- **Loss**: About HK$200 million (about US$25.6 million), sent in 15 transfers to five Hong Kong bank accounts within one week.
+- **How**: In mid-January a message in the CFO's name proposed a "secret transaction". The employee was suspicious, but the CFO and colleagues appeared on a video call the employee was invited to, and all of them were fakes. Police said it was a recording made from video and audio posted on YouTube and elsewhere, with no dialogue with the employee. The fake CFO ended the meeting on a pretext and continued the instructions by messaging app, email and one-to-one video calls.
+- **Discovery**: The employee checked with the UK head office. The case was reported to police on January 29.
+- **Internal systems**: Arup said none of its internal systems were compromised and its finances and operations were not affected. Its CIO later called it "technology-enhanced social engineering".
+- **Investigation**: Still under investigation as of June 2024 (LegCo reply). As of October 2026, no arrests or recovery of funds in this case have been reported.
 
-The incident came together as the following chain.
-
-1. **Collection of public material**: Collect public video (meeting recordings, talks, social-media video, etc.) and audio of the target company's CFO, executives, and staff
-2. **Generation of the deepfake model**: Use the collected video and audio to generate deepfake video and voice clones that can be applied to a real-time video call
-3. **Initial contact via phishing email**: Send the finance employee an email claiming to be "confidential transaction instructions from the CFO." The employee is suspicious
-4. **Dispelling the suspicion (video call)**: Have the employee join a video-call invitation, where the deepfake-reproduced CFO, several colleagues, and outside parties give "direct" instructions. The visual and auditory confirmation of "I confirmed several familiar faces and voices" turns the employee's suspicion into trust
-5. **Execution of the transfer**: The employee disperses HK$200 million across five accounts, executing after the "I confirmed it directly on the video call" procedure
-6. **Discovery through verification**: After the transfer, the fraud is discovered through verification with the real CFO and parties
-
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain of events, as far as disclosed</span></div>
+<p class="rx-ex-cap">The point to stop it was between ③ and ④: after the meeting dispelled the doubt, and before the first transfer, there was a chance to confirm with head office through a channel other than the meeting.</p>
+<div class="rx-chain">
+<div class="rx-step"><div class="who">Attacker</div><div class="no">1</div><b>Builds fake video of the CFO and colleagues from public video and audio</b><p>Material from YouTube and elsewhere.</p></div>
+<div class="rx-step"><div class="who">Attacker posing as the CFO</div><div class="no">2</div><b>Sends a message about a "secret transaction"</b><p>The employee suspects phishing.</p></div>
+<div class="rx-step crit"><div class="who">Fake CFO and colleagues</div><div class="no">3</div><b>Order the transfers on a pre-recorded video call</b><p>No dialogue; the meeting ends on a pretext.</p></div>
+<div class="rx-step crit"><div class="who">Employee</div><div class="no">4</div><b>Makes 15 transfers to five accounts in a week</b><p>Instructions continue by messaging app and more.</p></div>
+</div>
+</figure>
 
 ## 3. Timeline — disclosure and response
 
-- **January 2024 (early to mid)**: The finance employee receives an email claiming to be "confidential transaction instructions from the CFO." Suspects it may be phishing
-- **January 2024 (mid)**: Receives and joins an invitation to a video call hosted by the "CFO." In the meeting, participants posing as the CFO, several colleagues, and outside parties (all deepfakes) instruct the employee to execute the transaction
-- **January 2024 (same to late)**: The employee disperses HK$200 million across five accounts. The fraud is later discovered through verification with the real parties. Reported to the Hong Kong Police
-- **2024-02-04**: The Hong Kong Police disclose the case at a press conference (the company and employee names withheld). They also announce arrests (6 people) in a separate, contemporaneous deepfake fraud case
-- **Around May 2024**: Arup is confirmed as the victim company. Comments that it has conducted an investigation and strengthened its measures
+- **2024-01 (mid)**: A message in the name of the UK head-office CFO reaches the employee. It is about a secret transaction, and the employee suspects phishing.
+- **The following week**: The employee joins the video call and, following instructions, makes 15 transfers to five accounts.
+- **2024-01-29**: After checking with head office, the employee realises it is a fraud and the case is reported to police.
+- **2024-02-02**: Hong Kong police's Cyber Security and Technology Crime Bureau (CSTCB) discloses the case at a briefing, without naming the company.
+- **2024-05-16**: Arup confirms to CNN and others that it was the victim: "fake voices and images were used".
+- **2024-06-26**: Hong Kong's Secretary for Security answers in the Legislative Council: the meeting was pre-recorded with no interaction, and the case is under investigation.
 
-> Note: This Brief draws on the Hong Kong Police disclosure and Arup's confirmation of the breach as primary sources. The company name was initially withheld, and the loss amount is an approximate currency conversion as of the time of disclosure. Figures and the sequence of events vary across reporting outlets, so refer to the latest public information.
+> Facts rest on the Hong Kong government's Legislative Council reply (primary), Arup's statement and its CIO's interview, and reporting of the police briefing. The date of the video call has not been disclosed, and reports differ on how many people appeared in it.
 
-The response and industry movement after disclosure:
+### After disclosure
 
-- **Hong Kong Police**: Disclosed the case on 2024-02-04. Issued an alert as a deepfake fraud case. Also announced 6 arrests in a separate case at the same time
-- **Arup**: Confirmed the breach and conducted internal security training and procedural hardening. Officially commented that "the threat from AI and deepfakes is real"
-- **Cross-industry point**: Since this case, companies that had positioned "face confirmation on a video call" as an approval procedure for financial transactions have been forced to review their procedures. Mandating out-of-band verification — reconciliation over an independent communication path — has been debated
-- **Democratization of AI and generation technology**: It has been noted that the improved accessibility of real-time deepfake generation tools has spread to criminal groups attacks that previously only state-level actors could carry out
-- **Regulation and compliance**: Strengthening of internal controls at financial institutions and multinationals (especially "two-or-more approvers," "out-of-band verification," and "additional verification for high-value transactions") is accelerating. The debate also widens in relation to the EU AI Act's deepfake transparency requirements
-
----
+- **Hong Kong police**: Advised testing a suspicious video call by asking the person to move their head or by probing with questions, and calling to check when a relative or friend asks for money (LegCo reply).
+- **Arup**: Said attacks such as invoice fraud, phishing, WhatsApp voice spoofing and deepfakes were rising in number and sophistication.
 
 ## 4. Why it wasn't stopped
 
-The central **failure primitive is "the visual and auditory confirmation of having seen the face, heard the voice, and spoken in real time on video no longer functions as proof that the person is actually present."**
+This case was not a failure of the employee's care or of the meeting software. The payment instruction was checked only inside the channels it arrived through (the messages and the meeting), and those channels were fake end to end.
 
-Corporate financial-approval processes have long substituted "I confirmed the CFO's face and voice over phone or video call" for the factual confirmation that "the CFO instructed this directly." This case makes clear that the substitution no longer holds. Deepfake technology made the sensory confirmation of "matching face and voice" copyable — given publicly available video and audio, a person's appearance can be generated in real time while the person is absent.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The detection–proof gap</span></div>
+<p class="rx-ex-cap">Proof works before a transfer is made; detection works after the fraud surfaces. In between, the faces and voices seen on the call are treated as the reason to believe the instruction.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Proof layer · absent</b>Before paying, confirm the instruction through a channel other than the meeting</div>
+<div class="rx-zone gapz"><b>The gap</b><span>15 transfers went through.<br>Head office not yet asked</span></div>
+<div class="rx-zone det"><b>Detection layer · noticed</b>Check with head office and find the fraud</div>
+<div class="rx-g g1"><div class="t">STEP 1</div><b>A fake meeting dispels the doubt</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>15 transfers go through</b></div>
+<div class="rx-g g3"><div class="t">STEP 3</div><b>Head office check reveals it</b></div>
+<div class="rx-g g4"><div class="t">STEP 4</div><b>Reported to police</b></div>
+</div>
+</figure>
 
-The employee's decision process was reasonable: suspicion of the phishing email → confirmation of several known individuals on the video call → trust and execution. The problem lies in the **system design in which visual and auditory confirmation functioned as "proof of provenance."** It tried to prove the fact that "the CFO approved this transfer" by the sensory confirmation that "the CFO joined the video call by face and voice," but the latter no longer proves the former.
+Detection worked: the employee doubted the first message and in the end found the fraud by checking with head office. But that check came after the transfers, and although "I saw the CFO on a call" and "the CFO ordered this transfer" are separate facts, the first was accepted as grounds for the second. That distance is the **detection–proof gap**, and it is a structural one.
 
-Comparison with [Brief No.034](/critical/briefs/034-ekyc-liveness-bypass/) (eKYC liveness bypass): No.034 deceived a biometric authentication system with "injected video," but this case differs structurally in that it **deceived human sensory confirmation**. Rather than fooling an automated system, it surrounded a suspicious, sensible human with multiple deepfakes to make them "certain." It shares the attribute-proof-bypass category with [Brief No.050](/critical/briefs/050-grok-deepfake-consent-provenance/) (Grok non-consensual deepfake generation) and No.053 (YouTube deepfake of a public figure), but this case is the largest-scale instance in which a deepfake was used as the direct causal path of fraud loss.
+The same structure appears in [eKYC liveness bypass](/critical/briefs/034-ekyc-liveness-bypass/) (fabricated video passing an identity check).
 
-Reporting, reconciliation, the Hong Kong Police investigation, and Arup's hardened internal controls are indispensable for grasping the harm and deterring recurrence, and this Brief does not deny that role. In fact, the fraud was discovered through post-transfer reconciliation, and the disclosure of the case spread awareness of the similar method across the industry. These after-the-fact responses should be strengthened.
+## 5. How to counter this
 
-At the same time, detection and reconciliation do not establish — independently of the video and audio, and before the transfer is executed — "that the person on the far side of the video call is the real CFO." The finance employee did all the verification possible (was suspicious, and confirmed several faces and voices on the video call). What was missing is a mechanism that cryptographically fixes, independently of video and audio, the provenance of the CFO's identity having "approved this transfer." Unless the fact of approval and the identity of the approver are recorded in an independently verifiable form, visual confirmation will keep being used as a "substitute proof" and will keep being defeated. As long as detection judges the authenticity of video after the fact, the response can only trail the harm.
+**Confirm a payment instruction through a channel other than the one it arrived on, before paying.** However good fake video gets, confirming with the person on a contact registered in advance tells you whether the instruction is genuine regardless of the video. Make it a rule that this check is never skipped, least of all for large transactions or instructions labelled "secret" or "urgent".
 
----
+### Industries and operations to watch
 
-## 5. What proof would have changed
+- **Industry · Finance & FinTech**: Finance and accounting teams that can be told to pay by an overseas head office or parent company. The more executives' video and voice are public through talks and social media, the more raw material there is for fakes.
+- **Operation · Approval & sign-off**: Paying on the strength of a manager's instruction or approval. Here, seeming to meet the instructing person on a call stood in for approval.
 
-Pre-execution attestation closes this gap by inserting one step — independent verification of the approver's identity provenance — into the execution path of a high-value approval. By requiring, before execution, that "this transaction was approved by this authorized party under these conditions" via a cryptographic channel separate from video and audio, and by fixing the fact of approval as a pre-execution proof, it provides a design in which, even if a deepfake reproduces the video, that proof cannot be forged. Detection that judges the authenticity of video after the fact and pre-execution attestation that independently verifies the approver's identity before execution are not substitutes but **complements**.
+### Do today's controls close it?
 
-Against the gap this case exposed (visual confirmation of "face and voice" no longer functioning as proof of "the person's actual presence"), Lemma proposes the following.
+| Control | This case | Why |
+| --- | --- | --- |
+| Caution about suspicious messages | Partial | The employee doubted the first message, but the following meeting dispelled the doubt. |
+| Confirming with a manager on a video call | Ineffective | The meeting used to confirm was itself fake video and voices. |
+| Approval by more than one person | Partial | It still passes if approvers rely on the same meeting or the same channel's instructions. |
+| Checking with head office | Partial | It revealed the fraud, but only after the transfers. |
 
-- **Pre-execution attestation of the approver's identity**: Before executing a high-value transfer or critical business approval, confirm the approver's identity provenance (independent verification of identity via public key / ZK proof) through a cryptographic channel separate from video and audio
-- **Fixing the provenance of approval**: Record the fact that "this transaction was approved by this authorized party, at this date and time, under these conditions" as cryptographic proof that cannot be tampered with after the fact. No matter how sophisticated the deepfake, forging this proof would require access to the private key
-- **Independence from video confirmation**: Demote visual and auditory confirmation from "trust gate" to "auxiliary information," and support the move to a design in which independent attribute proof is the gate
-- **Selective disclosure**: Without disclosing the CFO's full personal information, prove with minimal disclosure only that "this person approved with this authority," and use it as an internal compliance record
+### What is needed
 
-Detection (after-the-fact judgment of the authenticity of video) and pre-execution attestation (independent verification of the approver's identity before execution) are not substitutes but complements, and only by combining them can deepfake-based approval impersonation be distinguished before it occurs. For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/#attribute) and [Seal](https://lemma.frame00.com/seal/).
+1. **Confirm with the person through a separate channel.** Call back on a phone number or account registered in advance, such as the internal directory. Contacts given in the instruction, or checks inside the same meeting or chat, do not count.
+2. **Hold the transfer until it is confirmed.** Transfers that meet set conditions, such as amount or a new payee, are not made until the check is done. Treat "secret" and "urgent" as reasons to hold.
+3. **Record who confirmed, and through which channel.** For each transfer, record who checked, the channel and the time, in a form that can later be shown to a third party: in other words, as proof.
 
----
+### Checklist
+
+Three things to confirm in your organisation about payment instructions from managers or head office
+
+- Is there a set procedure to confirm a payment instruction in a manager's name with them through a separate channel?
+- Is that check impossible to skip, whatever the amount or a "secret" label?
+- When an employee doubts an instruction, is it clear who they can stop and consult?
+
+Note: if the registered contact itself is hijacked, the separate-channel check passes too. The extra step also delays urgent legitimate payments. The police's spotting tips (asking the person to move, testing with conversation) work against recorded fakes, but video generation keeps improving, so spotting alone cannot be relied on.
 
 ## 6. Sources
 
-- **Hong Kong Police (primary, disclosure)**: 2024-02-04 press conference. Announced as a "super deepfake" fraud case — reported by multiple international media outlets
-- **Arup official confirmation**: Arup's comment to the media confirming it as the victim company (around May 2024) — BBC, The Guardian, CNN, etc.
-- **Fortune**: "Arup deepfake fraud scam victim Hong Kong $25 million CFO" (additional primary reporting confirming Arup as the victim, 2024-05-17) — https://fortune.com/europe/2024/05/17/arup-deepfake-fraud-scam-victim-hong-kong-25-million-cfo/
-- **South China Morning Post**: "Deepfake video call used in HK$200 million fraud" (2024-02-04)
-- **CNN**: "Finance worker pays out $25 million after video call with deepfake 'chief financial officer'" (2024-02-04) — https://www.cnn.com/2024/05/16/tech/arup-deepfake-scam-loss-hong-kong-intl-hnk
-- **The Guardian**: "Arup loses $25m after employee duped by deepfake video call" (2024)
+- **Hong Kong SAR Government, Security Bureau (Primary, LegCo reply)**: "LCQ9: Combating frauds involving deepfake" (2024-06-26) — <https://www.info.gov.hk/gia/general/202406/26/P2024062600192.htm>
+- **World Economic Forum (Primary, Arup CIO interview)**: "'This happens more frequently than people realize': Arup chief on the lessons learned from a $25m deepfake crime" (2025-02-04) — <https://www.weforum.org/stories/2025/02/deepfake-ai-cybercrime-arup/>
+- **CNN (Reporting, quotes Arup's statement)**: "Arup revealed as victim of $25 million deepfake scam involving Hong Kong employee" (2024-05-16) — <https://edition.cnn.com/2024/05/16/tech/arup-deepfake-scam-loss-hong-kong-intl-hnk>
+- **Fortune (Reporting, quotes Arup's statement)**: "A deepfake 'CFO' tricked the British design firm behind the Sydney Opera House in $25 million fraud" (2024-05-17) — <https://fortune.com/europe/2024/05/17/arup-deepfake-fraud-scam-victim-hong-kong-25-million-cfo/>
+- **The Standard (Reporting, police briefing)**: "HK's first deepfake video conference scam involving HK$200 million" (2024-02-04) — <https://www.thestandard.com.hk/news/article/213122/HKs-first-deepfake-video-conference-scam-involving-HK200-million>
+- **Hong Kong Free Press (Reporting, AFP)**: "Multinational loses HK$200 million to deepfake video scam" (2024-02-05) — <https://hongkongfp.com/2024/02/05/multinational-loses-hk200-million-to-deepfake-video-conference-scam-hong-kong-police-say/>
+- **CNN (Reporting)**: "Finance worker pays out $25 million after video call with deepfake 'chief financial officer'" (2024-02-04) — <https://edition.cnn.com/2024/02/04/asia/deepfake-cfo-scam-hong-kong-intl-hnk>
+- **South China Morning Post (Reporting)**: "'Everyone looked real': multinational firm's Hong Kong office loses HK$200 million after scammers stage deepfake video meeting" (2024-02-04) — <https://www.scmp.com/news/hong-kong/law-and-crime/article/3250851/everyone-looked-real-multinational-firms-hong-kong-office-loses-hk200-million-after-scammers-stage>
 
 References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/)
