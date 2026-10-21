@@ -47,7 +47,7 @@ controls:
     item: "Keep logs apart from member data, in a form that shows any tampering"
 impact: "Five member-data fields and some system logs leaked"
 takeaway: "What the stolen logs contained could only be worked out after they were taken."
-self_check: "If your logs were taken, could you say right away what leaked?"
+self_check: "Do you know whether your system logs contain member information?"
 ---
 
 ## 1. TL;DR
@@ -137,7 +137,7 @@ The same gap exists at most services with members. Many protect the database, bu
 
 Three questions for services that handle member data
 
-- Do your system logs contain email addresses, dates of birth or user input? Can you list what they contain?
+- If your logs were taken, could you say right away what leaked?
 - Are your logs kept in the same environment as the member-data system? Could an attacker who reaches it delete or alter them?
 - If you are breached, how will you show that the logs used in the investigation have not been altered?
 

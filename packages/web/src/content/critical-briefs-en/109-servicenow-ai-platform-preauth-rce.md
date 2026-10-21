@@ -49,7 +49,7 @@ controls:
     item: "Record which permission allowed which action, outside the platform"
 impact: "On unpatched instances, data could be read and admins created without logging in"
 takeaway: "Nothing checked, before it ran, who had authorised an action like creating an admin, even when it came through a pre-login entry point."
-self_check: "If an admin were created on your business platform through an entry point reachable without login, would you notice before it was used?"
+self_check: "Do you know which entry points on your business platforms are reachable without login?"
 ---
 
 > **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Facts were re-checked against ServiceNow's advisory (KB3137947), the researcher's write-up and Defused's posts. Corrected: cloud instances got mitigations within 24 hours of the report (not "from April onward"); the researcher published details on July 14; and the advisory's wording ("not currently aware of exploitation against ServiceNow instances") is now kept separate from the statement given to the press. v1.1 (2026-09-01) had already changed Defused's first claim of "a different route from the public PoC" in line with its correction.
@@ -148,7 +148,7 @@ The same structure appears in [ServiceNow's unauthenticated API](/critical/brief
 
 Three things to confirm in your organisation about business platforms (cloud or self-run)
 
-- Can you name the pages and APIs on your business platforms that are reachable without logging in?
+- Have you closed the entry points reachable without login that you do not use?
 - When a new admin account is created, who gets notified?
 - When a critical vulnerability is announced, is there a set number of days within which fixes are applied?
 
