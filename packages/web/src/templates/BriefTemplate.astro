@@ -2846,6 +2846,40 @@ const labels = isJa
     font-size: 17px;
   }
 
+  /* 自社で確かめる（§1 の箱の下）・まず 1 つ（§5 リードの下） */
+  .brief-body.is-report :global(.rx-ask),
+  .brief-body.is-report :global(.rx-first) {
+    display: grid;
+    grid-template-columns: 118px minmax(0, 1fr);
+    gap: 18px;
+    align-items: baseline;
+  }
+  .brief-body.is-report :global(.rx-ask) {
+    padding: 14px 24px;
+    border-top: 1px solid var(--line);
+    background: var(--lite);
+  }
+  .brief-body.is-report :global(.rx-first) {
+    margin: 0 0 22px;
+    padding: 14px 18px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+  }
+  .brief-body.is-report :global(.rx-ask b),
+  .brief-body.is-report :global(.rx-first b) {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--tx);
+  }
+  .brief-body.is-report :global(.rx-ask p),
+  .brief-body.is-report :global(.rx-first p) {
+    margin: 0;
+    font-size: 15.5px;
+    line-height: 1.8;
+    color: var(--tx);
+  }
+
   /* 対策の表（md の表。状態語は span.bx-st のチップ） */
   .brief-body.is-report :global(table) {
     width: 100%;
@@ -3020,6 +3054,21 @@ const labels = isJa
     font-size: 12px;
     color: var(--muted);
   }
+  /* 一次以外の出典は畳む（番号は一次から続ける） */
+  .brief-body.is-report :global(.rx-srcs-more) {
+    margin: 0;
+  }
+  .brief-body.is-report :global(.rx-srcs-more > summary) {
+    cursor: pointer;
+    padding: 10px 0;
+    font-size: 12.5px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+  }
+  .brief-body.is-report :global(.rx-srcs-more > .rx-srcs) {
+    counter-reset: none;
+    border-top: 0;
+  }
   .brief-body.is-report :global(.rx-also) {
     margin: 16px 0 0;
     font-size: 13.5px;
@@ -3180,6 +3229,14 @@ const labels = isJa
     }
     .brief-body.is-report :global(.rx-exsum li.key) {
       margin: 0 -18px;
+      padding: 14px 18px;
+    }
+    .brief-body.is-report :global(.rx-ask),
+    .brief-body.is-report :global(.rx-first) {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .brief-body.is-report :global(.rx-ask) {
       padding: 14px 18px;
     }
     .brief-body.is-report :global(.rx-facts dl) {

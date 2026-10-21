@@ -213,7 +213,17 @@ function deriveExecSummary(root, fm, isEn) {
       h("p", null, p.children),
     ]),
   );
-  const box = h("div", "rx-exsum", [h("ol", null, lis)]);
+  const kids = [h("ol", null, lis)];
+  // frontmatter self_check → 箱の下の「自社で確かめる」1行。
+  if (fm.self_check) {
+    kids.push(
+      h("div", "rx-ask", [
+        h("b", null, [txt(isEn ? "Ask yourself" : "自社で確かめる")]),
+        h("p", null, [txt(String(fm.self_check))]),
+      ]),
+    );
+  }
+  const box = h("div", "rx-exsum", kids);
   root.splice(r[0], r[1] - r[0], txt("\n"), box, txt("\n"));
 }
 
@@ -298,15 +308,26 @@ const STATUS = new Map([
   ["effective", "ok"],
 ]);
 
-function deriveCounter(root, isEn) {
+function deriveCounter(root, fm, isEn) {
   const r = sectionRange(root, 5);
   if (!r) return;
 
-  // 冒頭の段落 → リード。
+  // 冒頭の段落 → リード。frontmatter first_step があれば、その下に「まず 1 つ」。
   const first = nextEl(root, r[0] - 1);
   if (first >= 0 && first < r[1] && isEl(root[first], "p")) {
     const p = root[first];
     p.properties = { ...(p.properties ?? {}), className: ["rx-lead"] };
+    if (fm.first_step) {
+      root.splice(
+        first + 1,
+        0,
+        txt("\n"),
+        h("div", "rx-first", [
+          h("b", null, [txt(isEn ? "Start here" : "まず 1 つ")]),
+          h("p", null, [txt(String(fm.first_step))]),
+        ]),
+      );
+    }
   }
 
   for (const { node } of sectionBlocks(root, 5)) {
@@ -383,7 +404,7 @@ function shortUrl(href) {
   return s;
 }
 
-function deriveSources(root) {
+function deriveSources(root, isEn) {
   for (const { node } of sectionBlocks(root, 6)) {
     if (!isEl(node, "ul")) continue;
     const parts = labelledItems(node);
@@ -448,9 +469,24 @@ function deriveSources(root) {
         ]),
       ]);
     });
-    replaceNode(root, node, h("ol", "rx-srcs", lis));
+    // 一次ソースは開いたまま、それ以外（報道・解析）は畳む。どちらかが無ければ畳まない。
+    const primary = typed.map(([, , type]) => PRIMARY_RE.test(type));
+    const shown = lis.filter((_, i) => primary[i]);
+    const folded = lis.filter((_, i) => !primary[i]);
+    if (!shown.length || !folded.length) {
+      replaceNode(root, node, h("ol", "rx-srcs", lis));
+      continue;
+    }
+    const more = h("details", "rx-srcs-more", [
+      h("summary", null, [
+        txt(isEn ? `${folded.length} more (reporting, analysis)` : `報道・解析 ${folded.length} 件`),
+      ]),
+      h("ol", "rx-srcs", folded),
+    ]);
+    replaceNode(root, node, h("div", "rx-srcs-wrap", [h("ol", "rx-srcs", shown), more]));
   }
 }
+const PRIMARY_RE = /一次|primary/i;
 
 /**
  * `**…。** 本文` の空白を落とす。日本語では閉じの `**` の直後に文字を続けると
@@ -481,9 +517,9 @@ function deriveReportComponents(root, fm, isEn) {
   deriveExecSummary(root, fm, isEn);
   deriveFacts(root, 2);
   deriveTimeline(root);
-  deriveCounter(root, isEn);
+  deriveCounter(root, fm, isEn);
   deriveFacts(root, 5);
-  deriveSources(root);
+  deriveSources(root, isEn);
 }
 
 function applyReportLayout(tree, fm, isEn) {
