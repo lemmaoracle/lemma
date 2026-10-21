@@ -51,6 +51,7 @@ controls:
 attack_method: "impersonation"
 impact: "36 municipalities suspended the service"
 takeaway: "Nothing let recipients check, beyond the sender display, that a notice came from the municipality."
+self_check: "Can people who receive notices in your name check they are genuine by something other than the sender address?"
 ---
 
 > **Revision (v2.0 / 2026-10-17)**: Restructured into the report layout, and §5 recast as "How to counter this". Arcadia's reports up to no. 11 were re-checked, and what has been disclosed about the entry route was added.
