@@ -50,7 +50,7 @@ controls:
     item: "Record what was read in a form the customer can see"
 attack_method: "supply-chain"
 takeaway: "Nothing checked, as entrusted data and the keys that open it were read, that the reader was a permitted party within a permitted scope."
-self_check: "If keys or passwords you entrusted to a vendor were read, could you say what was read?"
+self_check: "Do you keep a list of the keys and passwords you have entrusted to vendors?"
 ---
 
 ## 1. TL;DR
@@ -150,7 +150,7 @@ The same gap exists well beyond website building, at any organisation that entru
 
 Three questions for companies about what they entrust to a SaaS
 
-- Can you list the API keys, tokens, webhook destinations and integration credentials registered with each SaaS? If a provider is breached, is it decided which you replace first?
+- If a provider is breached, is it decided which API keys, tokens, webhook destinations and integration credentials you replace first?
 - Can you say which SaaS holds the personal data collected through your forms, and from when to when, including items in the trash and test submissions?
 - If a provider's breach makes you the one who notifies and reports, can you produce the count and period yourself?
 
