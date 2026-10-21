@@ -11,91 +11,149 @@ authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["065-hokkaido-hospital-hdd-disposal", "137-ssk-receipt-review-screen-display-proof", "149-revolut-italy-government-mailbox-disclosure-requests"]
 status: published
-version: "1.0"
+version: "2.0"
 og_lead_ja: "TOPPAN、損保ジャパン契約者 17.7 万名分のリストを別の保険会社へ誤送付"
 og_lead_en: "TOPPAN sent 177,426 Sompo Japan policyholder records to another insurer"
+layout: "report"
+og_kicker_ja: "情報漏えい事例 · 人の操作ミス"
+og_kicker_en: "DATA LEAK · HUMAN ERROR"
+og_headline_ja: "別の保険会社向けの\nファイルに、契約者の\nリストが紛れ込んだ。\n<accent>177,426 名分</accent>"
+og_headline_en: "A policyholder list slipped into a file for another insurer.\n<accent>177,426 people.</accent>"
+summary_labels: ["What happened", "Why it was hard to tell", "The missing layer"]
+key_figures:
+  - value: "177,426"
+    unit: "people"
+    label: "Sompo Japan policyholders in the list sent to the wrong insurer (may include duplicates). Kana names, policy numbers and more"
+    tone: "alert"
+  - value: "17:15"
+    label: "On the day of the mis-send (2026-09-01), when the receiving insurer queried the General Insurance Association of Japan"
+  - value: "28"
+    unit: "days"
+    label: "From the mis-send to disclosure (09-29)"
+glossary:
+  - term: "Premium deduction certificate service"
+    desc: "A shared service that issues non-life insurers' tax deduction certificates. TOPPAN runs it for 14 insurers."
+  - term: "Drag and drop"
+    desc: "Grabbing a file with the mouse and dropping it elsewhere. Drop it in the wrong place and the file ends up in an unintended folder or ZIP."
+insight:
+  slug: "contents-unchecked-before-send"
+  label: "Contents not matched before sending"
+  quote: "Only the operator's actions and eyes decided which company's data went to which recipient, and nothing matched contents against recipient before the send."
 industries: ["finance"]
 operations: ["delivery"]
 controls:
   - slug: "separate-approval"
     item: "Before sending, someone other than the operator checks the contents"
   - slug: "hold-unverified"
-    item: "Do not send until recipient and contents are confirmed to match"
+    item: "Don't send until the contents are confirmed to match the recipient"
 attack_method: "human-error"
-impact: "177,426 policyholders' records sent to another insurer"
-takeaway: "Nothing checked, before sending, that the contents matched the recipient."
+impact: "177,000 policyholders' data sent to another insurer"
+takeaway: "Nothing checked, before the send, that the contents matched the recipient."
+self_check: "When you send files split by client, can someone other than the operator confirm before sending that the contents belong to that client?"
 ---
+
+> **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". TOPPAN's and Sompo Japan's disclosures were re-read; the facts are unchanged.
 
 ## 1. TL;DR
 
-On September 1, 2026, TOPPAN, which runs an insurance-premium deduction certificate service for Japanese non-life insurers, sent a list of 177,426 Sompo Japan policyholders (possibly including duplicates) to another insurer. During a manual send, with ZIP files for several insurers sitting in one folder, a drag-and-drop slip copied Sompo Japan's file into another insurer's ZIP, and nobody rechecked the contents before sending. The recipient noticed the same day. **Detection worked. What didn't work was a layer that checks, independently of the operator, that the contents match the recipient before the send.**
+On September 1, 2026, while running the insurance premium deduction certificate service it operates for non-life insurers, TOPPAN sent a list of 177,426 Sompo Japan policyholders to another insurer by mistake. With ZIP files for several insurers in the same folder, a drag-and-drop slip put Sompo Japan's file inside another insurer's ZIP. TOPPAN confirmed it was not an outside attack.
+
+The ZIP's contents were not re-checked before sending. Only the operator's actions and eyes decided which company's data went to which recipient.
+
+The receiving insurer noticed the same day and queried the General Insurance Association of Japan. By then, though, the list had already left the company. What failed was the layer that checks, separately from the operator's actions and before the send, that the contents match the recipient.
 
 ## 2. What happened
 
-- **The service**: Operation of the insurance-premium deduction certificate service. Six non-life insurers including Sompo Japan, the General Insurance Association of Japan, and TOPPAN built the service; 14 insurers now outsource its operation to TOPPAN (per Sompo Japan's announcement).
-- **What was sent**: A CSV list of Sompo Japan policyholders who do not need a deduction certificate postcard. It went to one other non-life insurer.
-- **Scale**: 177,426 people. The figure may include the same policyholder more than once and may fall after review.
-- **Fields**: Name in katakana, policy number for premium deduction, and a business ID (a per-certificate unique key combining issue year, insurer identifier and policy number). Names in kanji, addresses, dates of birth, phone numbers, email addresses, card details, bank account details and My Number were not included.
-- **Cause**: A manual operating error and a gap in the checking procedure. TOPPAN states it was not caused by a system failure, unauthorized access or a cyberattack.
-- **What the parties say**: Sompo Japan says it contacted the receiving insurer and confirmed the data was completely deleted, and that no secondary leak or misuse has been confirmed so far. TOPPAN likewise says the recipient discarded and fully deleted the data and that no leak to third parties or external networks has been confirmed so far. TOPPAN also says it confirmed this was the only cross-insurer mix-up in this round of deliveries.
+- **Service**: Operations for the insurance premium deduction certificate service, which 14 non-life insurers outsource to TOPPAN (per Sompo Japan).
+- **What was mis-sent**: A list (CSV) of Sompo Japan policyholders who do not need a postcard certificate, sent to one other insurer.
+- **Count and fields**: 177,426 people (may include the same policyholder more than once). Name in kana, policy number for deduction purposes, and a work ID. No kanji names, addresses, dates of birth, phone numbers, emails, card or bank details, or My Number.
+- **Cause**: A manual operating slip and a gap in the checking procedure. With several insurers' ZIPs in the same folder, a drag and drop copied Sompo Japan's ZIP into another insurer's ZIP, and the contents were not re-checked before sending (per TOPPAN).
+- **At the recipient**: TOPPAN says the data was promptly deleted at the recipient and no leak to third parties has been confirmed. Sompo Japan says it contacted the recipient and confirmed deletion, and no secondary leak or misuse has been confirmed.
+- **Other mix-ups**: TOPPAN confirmed this was the only one in this delivery run.
 
-The misdirected send happened through the following chain.
-
-1. List data for each insurer was packed into a separate ZIP file, and files for several insurers sat in the same folder.
-2. An operator made a drag-and-drop error and copied Sompo Japan's ZIP into the ZIP meant for another insurer.
-3. The inside of the ZIP was not rechecked before sending.
-4. The file transfer service delivered it as that other insurer's data, and Sompo Japan's list reached the recipient.
-
-At the moment of delivery, the only check that the ZIP's contents matched the recipient was the operator's own eyes and procedure.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain of events, as far as disclosed</span></div>
+<p class="rx-ex-cap">The point to stop it was ③. Checking, separately from the operator's actions, that the ZIP's contents belonged to that recipient would have stopped the send.</p>
+<div class="rx-chain">
+<div class="rx-step"><div class="who">TOPPAN</div><div class="no">1</div><b>Packs each insurer's list into a ZIP and puts them in one folder</b><p>Several insurers' files.</p></div>
+<div class="rx-step crit"><div class="who">Operator</div><div class="no">2</div><b>A drag-and-drop slip puts Sompo Japan's file in another insurer's ZIP</b><p>2026-09-01.</p></div>
+<div class="rx-step crit"><div class="who">Operator</div><div class="no">3</div><b>Sends it by file transfer without re-checking the contents</b><p>Delivered as the other insurer's.</p></div>
+<div class="rx-step"><div class="who">Receiving insurer</div><div class="no">4</div><b>Notices the mix-up and queries the industry association</b><p>Same day, 17:15.</p></div>
+</div>
+</figure>
 
 ## 3. Timeline — disclosure and response
 
-- **2026-09-01**: The misdirected send occurs during a manual data transmission. At 17:15 the same day, the receiving insurer asks the General Insurance Association of Japan about another insurer's policyholder data in its delivery.
-- **2026-09-02**: The association asks TOPPAN to investigate, and the mix-up is confirmed. TOPPAN starts an investigation immediately and stops deliveries through the file transfer service.
-- **2026-09-29**: TOPPAN and Sompo Japan announce the incident on the same day.
+- **2026-09-01**: The mis-send happens during a manual transmission. At 17:15 the receiving insurer queries the General Insurance Association of Japan about another insurer's data mixed in.
+- **2026-09-02**: The association asks TOPPAN to investigate, and the mix-up is identified. TOPPAN stops the file transfer service.
+- **2026-09-29**: TOPPAN and Sompo Japan disclose on the same day.
 
-> The facts in this Brief rest on the official announcements of TOPPAN and Sompo Japan. The date, the sequence leading to discovery, the cause and the preventive measures appear only in TOPPAN's announcement; Sompo Japan's announcement refers readers to TOPPAN for them. The count and fields match in both. The deletion and the absence of any confirmed leak are statements by the parties themselves.
+> Facts rest on TOPPAN's and Sompo Japan's disclosures (both primary). How it happened, the cause and the measures appear only in TOPPAN's. The count and fields match in both. Statements on deletion and leaks are kept in each company's own words.
 
-Response and preventive measures after disclosure:
+### After disclosure
 
-- **Notice to affected policyholders**: Sompo Japan is sending individual notices to the email addresses registered with the service, and letters to those without one.
-- **TOPPAN's preventive measures**: Attach files only via "choose file"; assign a checker separate from the operator to review every step; compare attachment size and timestamps against the source data. As a permanent fix, systematize the sending process.
-- **Sompo Japan (toward the recipient)**: It says it promptly contacted the receiving insurer and confirmed the data had been deleted (no date is given).
-- **Sompo Japan (going forward)**: Working with the participating insurers and the association, it will press TOPPAN to carry out the measures and strengthen its oversight of outsourced operations.
-
-The mix-up was noticed on the day it happened; disclosure came 28 days later. The alert came from the recipient, not the sender.
+- **TOPPAN**: Will attach files only through "choose file", add a checker separate from the operator to review every step, and match attachment size and timestamps against the source data. As a lasting fix, it will systematise the sending process.
+- **Sompo Japan**: Is notifying affected policyholders individually by registered email, and by letter where no email is registered. It will press TOPPAN to carry out the measures and strengthen oversight of contractors.
 
 ## 4. Why it wasn't stopped
 
-The failure here was neither an external attack nor one operator's carelessness. **Before the irreversible act of delivery, there was no layer that checked, separately from the operator's actions, that the contents matched the recipient.**
+This case was not an outside attack, nor only one operator's carelessness. Only the operator's actions and eyes decided which company's data went to which recipient, and nothing matched contents against recipient before the send.
 
-Detection worked. The receiving insurer noticed data that wasn't its own and asked the association the same day. By then, the list of 177,426 people had already left the company. The point of no return was the delivery, and what didn't work came just before it: a step asking, "Is this ZIP's content something this recipient should receive?" What went into the ZIP was decided by the operator's handling alone, and nothing compared it with the recipient.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The detection–proof gap</span></div>
+<p class="rx-ex-cap">Proof works before sending; detection works after the recipient notices. Once sent, the data has left your hands.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Proof layer · absent</b>Before sending, match the contents to the recipient</div>
+<div class="rx-zone gapz"><b>The gap</b><span>177,426 records<br>already outside</span></div>
+<div class="rx-zone det"><b>Detection layer · noticed by recipient</b>The recipient spots the mix-up and asks</div>
+<div class="rx-g g1"><div class="t">STEP 1</div><b>Mixed into a ZIP</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>Sent unchecked</b></div>
+<div class="rx-g g3"><div class="t">STEP 3</div><b>Recipient notices</b></div>
+<div class="rx-g g4"><div class="t">STEP 4</div><b>Sending stopped</b></div>
+</div>
+</figure>
 
-Of TOPPAN's measures, a uniform way of choosing files, a checker separate from the operator, and comparing size and timestamps against the source data all strengthen human checking. The size comparison could catch a mix-up like this one, where a whole ZIP slipped inside another. But matching size and timestamps does not directly show that the contents belong to that recipient. Systematizing the send reduces manual handling, but unless what the recipient–contents match was based on can be independently verified, that match still rests on procedure and the people doing it.
+Detection worked: the receiving insurer noticed the same day and queried the association. But it noticed after the send, and although "the operator sent this ZIP to this recipient" and "this ZIP's contents belong to this recipient" are separate facts, the first alone let the send through. That distance is the **detection–proof gap**, and it is a structural one.
 
-The same structure appears in earlier Briefs. In [the Hokkaido hospital drives](/critical/briefs/065-hokkaido-hospital-hdd-disposal/), media assumed to be shredded reached the second-hand market unverified; at [Japan's claims-review Fund](/critical/briefs/137-ssk-receipt-review-screen-display-proof/), a record of a screen shown for over one second was no proof that a person had reviewed it; and at [Revolut](/critical/briefs/149-revolut-italy-government-mailbox-disclosure-requests/), customer data was handed over for months without the requester's authority being verified. In each case, the step before an irreversible act rested on a human assumption no one could independently check.
+The same structure appears in [Tokyo Metropolitan Housing Supply Corporation's address labels](/critical/briefs/134-tokyo-housing-supply-corp-label-misdirection/) (no one other than the person who made them caught that the labels no longer matched the source list before shipping).
 
-> "We had not rechecked the contents inside the ZIP file before sending it." — TOPPAN's announcement
+## 5. How to counter this
 
-## 5. What proof would have changed
+**Before sending, match the contents to the recipient, separately from the operator's actions.** Adding checkers still relies on human eyes. Record "whose data is this" for each file when it is created, match it automatically against the recipient just before sending, and don't send what doesn't match.
 
-There is no need to stop having one operator handle data for several insurers. Where a proof step could be inserted is not in adding more human checks, but in mechanically matching, right before delivery, "which insurer's data is in this file" against "may this recipient receive that insurer's data."
+### Industries and operations to watch
 
-Lemma's proposed design for this gap:
+- **Industry · Finance & FinTech**: Insurers and others that handle large numbers of policyholders and outsource document production and mailing. At the contractor, several companies' data sits in front of the same operator.
+- **Operation · Sending & delivery**: Manually sending files split by client. A wrong file name or location mixes in another company's data.
 
-- **Bind provenance to the contents.** When the data is produced, attach to each file a provenance proof showing which insurer its business data belongs to. The pre-delivery check opens ZIPs down to any nested archive and checks every file inside.
-- **Define in advance what each recipient may receive.** Register, per recipient, the insurers and formats it may receive, and stop any delivery containing a file whose provenance falls outside that scope before it executes. A delivery containing any file without a provenance proof is stopped as well.
-- **Record the match separately from the operator's actions.** Keep a record, apart from the operator's activity log, of which proofs a delivery passed on, so it can be audited later.
+### Do today's controls close it?
 
-This is where it differs from after-the-fact detection. Detection works when the recipient notices unfamiliar data — by which time the data has already left. A proof asks whether the contents match the recipient before delivery. This layer complements detection rather than replacing it.
+| Control | This case | Why |
+| --- | --- | --- |
+| Operator's check before sending | Ineffective | The ZIP's contents were not re-checked before sending (per TOPPAN). |
+| A checker separate from the operator | Partial | More chances to catch errors, but still relies on human eyes. |
+| Matching size and timestamps | Partial | It can catch a whole ZIP slipping in, but does not directly show the contents belong to that recipient. |
+| Systematising the sending process | Partial | Less manual work, but without matching contents to recipient, the error just moves elsewhere. |
 
-Note: if the per-recipient scope is itself registered wrongly, a wrong delivery will still pass. Deletion or reuse of data after it reaches the recipient is also outside this check.
+### What is needed
+
+1. **Record whose data each file is when it is created.** Make the owning company identifiable down to each file inside a ZIP.
+2. **Match contents to recipient automatically just before sending.** Register which companies' data each recipient may receive, and stop sends that include non-matching files or files of unknown owner.
+3. **Record what was matched before sending.** Keep the match results and what was sent, separately from the operator's activity log, in a form that can later be shown to a third party: in other words, as proof.
+
+### Checklist
+
+Three things to confirm in your organisation about sending data per client
+
+- Are files split by client handled by the same person in the same place?
+- Before sending, does someone other than the operator confirm the contents belong to that client?
+- If a contractor does such sending for you, do you know its checking procedure?
+
+Note: if the range registered for a recipient is itself wrong, a wrong send still goes through. Until a matching mechanism is in place, human checks such as a separate checker have to fill the gap.
 
 ## 6. Sources
 
-- **TOPPAN (primary, corporate announcement)**: Notice of misdirected data in the outsourced operation of the insurance-premium deduction certificate service (2026-09-29, in Japanese) — <https://www.holdings.toppan.com/ja/info/toppan_info20260929.pdf>
-- **Sompo Japan Insurance (primary, corporate announcement)**: Notice of misdirected data by an outsourcing contractor for the insurance-premium deduction certificate service (2026-09-29, in Japanese) — <https://www.sompo-japan.co.jp/-/media/SJNK/files/news/2026/20260929_1.pdf?la=ja-JP>
+- **TOPPAN (Primary, company disclosure)**: Notice on data mis-sent in the insurance premium deduction certificate service it operates (2026-09-29, Japanese) — <https://www.holdings.toppan.com/ja/info/toppan_info20260929.pdf>
+- **Sompo Japan (Primary, company disclosure)**: Notice on data mis-sent by a contractor in the insurance premium deduction certificate service (2026-09-29, Japanese) — <https://www.sompo-japan.co.jp/-/media/SJNK/files/news/2026/20260929_1.pdf?la=ja-JP>
 
-References: On why after-the-fact detection is not proof, see ["The last layer left in AI-era cyber defense"](/blog/detection-is-not-proof/). On proving data provenance, see [Pillar 01 — Verifiable Origin](/pillars/#provenance).
-
-The only primary sources for this incident are the official announcements of the parties (TOPPAN and Sompo Japan); as of this writing, no independent third-party verification has been found. The name of the insurer that received the data has not been disclosed.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
