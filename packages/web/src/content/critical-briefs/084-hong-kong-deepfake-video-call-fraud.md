@@ -1,116 +1,169 @@
 ---
 brief_no: 84
-title: "香港 Deepfake ビデオ会議詐欺：CFO・同僚全員をリアルタイム deepfake で偽装し、約 2,560 万ドルの送金を実行させた — 顔と声の確認が「本人が今ここにいる」ことの証明にならなくなった構造（香港警察 / Arup）"
-title_en: "Hong Kong deepfake video-call fraud: a real-time deepfake of the CFO and every colleague drove a ~$25.6M transfer — seeing a face and hearing a voice no longer proves the person is actually present (Hong Kong Police / Arup)"
+title: "香港ディープフェイク会議詐欺（Arup）：英国本社の CFO と同僚を装った録画のビデオ会議を信じ、財務担当者が約 HK$2 億を 15 回に分けて送金した(香港政府の立法会答弁・Arup 確認) — 送金の指示が本物かを、指示が届いたのとは別の経路で確かめる手順が無い"
+title_en: "Hong Kong deepfake meeting fraud (Arup): trusting a pre-recorded video call that faked the UK CFO and colleagues, a finance employee sent about HK$200 million in 15 transfers (Hong Kong government LegCo reply, Arup confirmation) — Nothing confirms a payment instruction through a channel other than the one it came in on"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
 secondary_categories: ["identity-auth", "data-provenance"]
-incident_date: 2024-02-04
+incident_date: 2024-01-29
 published: 2026-06-26
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
-related_briefs: ["034-ekyc-liveness-bypass", "050-grok-deepfake-consent-provenance", "053-youtube-deepfake-likeness-provenance"]
+related_briefs: ["034-ekyc-liveness-bypass", "032-booking-payout-account-tampering", "050-grok-deepfake-consent-provenance"]
 status: published
-version: "1.1"
-og_lead_ja: "香港 Deepfake ビデオ会議詐欺、CFO・同僚全員を偽装し約 2,560 万ドル送金"
-og_lead_en: "Hong Kong deepfake video-call fraud: faked CFO drove a ~$25.6M transfer"
-gap_detected: "送金後の確認照合で詐欺が発覚し、香港警察の捜査・公表と Arup の対策強化が作動した。"
-gap_missing: "ビデオ会議の向こうにいるのが本物の CFO であることを映像・音声とは独立に証明する手段が無く、deepfake が「承認者の identity」の証明として通用した。"
-gap_fix: "高額承認の実行前に、承認者の identity 来歴を映像・音声とは独立した暗号証明として Lemma で検証し、事前に防ぐ。"
+version: "2.0"
+og_lead_ja: "香港ディープフェイク会議詐欺：偽の CFO の指示で約 HK$2 億を送金（Arup）"
+og_lead_en: "Hong Kong deepfake meeting fraud: a fake CFO's instruction moved HK$200M (Arup)"
+layout: "report"
+og_kicker_ja: "サイバー攻撃事例 · なりすまし"
+og_kicker_en: "CYBERATTACK · IMPERSONATION"
+og_headline_ja: "本社の CFO と同僚を\n偽の映像で装い、\n送金を指示した。\n<accent>約 HK$2 億を送金</accent>"
+og_headline_en: "Fake video of the CFO and colleagues ordered the transfers.\n<accent>About HK$200M sent.</accent>"
+key_figures:
+  - value: "約 HK$2"
+    unit: "億"
+    label: "送金された額（約 2,560 万米ドル）。英国本社の CFO を名乗る指示による"
+    tone: "alert"
+  - value: "15"
+    unit: "回"
+    label: "1 週間のうちに、香港の 5 つの口座へ分けて送金"
+  - value: "01-29 → 05-16"
+    label: "警察への届け出から、Arup が被害を認めるまで"
+glossary:
+  - term: "ディープフェイク"
+    desc: "AI で作った、実在の人物に似せた映像や声。公開されている動画や音声が素材になる。"
+  - term: "ビジネスメール詐欺（BEC）"
+    desc: "経営者や取引先を装い、送金や振込先の変更を指示する詐欺。今回はメールに加えてビデオ会議が使われた。"
+  - term: "コールバック"
+    desc: "指示が届いたのとは別の、あらかじめ登録した連絡先に、こちらからかけ直して本人に確かめること。"
+insight:
+  slug: "face-and-voice-as-approval"
+  label: "顔と声が指示の根拠になる"
+  quote: "見覚えのある顔と声が映った会議が、送金の指示が本物であることの根拠として使われた。"
+industries: ["finance"]
+operations: ["approval", "payment-change"]
 controls:
   - slug: "separate-approval"
     item: "送金の指示は、会議とは別の経路で本人に確かめる"
+  - slug: "hold-unverified"
+    item: "本人に確かめられるまで、送金を止める"
 attack_method: "impersonation"
-impact: "約 HK$2 億を 5 口座へ送金"
+impact: "約 HK$2 億を 15 回に分けて 5 口座へ送金"
+takeaway: "上長を名乗る送金の指示を、指示が届いたのとは別の経路で、送金の前に確かめる手順が無かった。"
+self_check: "上長を名乗る送金の指示がビデオ会議で届いたら、送金の前に、会議とは別の経路で本人に確かめられるか。"
 ---
 
-> **改訂（v1.1 / 2026-10-17）**: 被害額の米ドル換算を、§2 と報道（HK$2 億 ≒ 2,560 万米ドル）に合わせて「約 2,600 万ドル」から「約 2,560 万ドル」に統一した。
+> **改訂（v2.0 / 2026-10-21）**: 一般の読者が読める構成に組み直し、§5 を「対策するには」にした。香港政府の立法会答弁で事実を取り直し、ビデオ会議は「リアルタイムの会話」ではなく対話の無い録画だったこと、送金が 15 回だったこと、警察の公表が 2 月 2 日だったことを訂正した。
 
 ## 1. TL;DR
 
-2024 年 1 月、香港のある多国籍企業の財務担当者が、ビデオ会議で CFO・財務チーム・外部顧問を含む複数の人物と「直接会話」した後、約 2,560 万ドル（HK$2 億）を 5 つの口座に振り込んだ。会議に参加していた全員がリアルタイム deepfake だった。担当者は事前にフィッシングメールへの疑念を持っていたが、「知っている顔と声のビデオ通話」によって確信に変えられた。香港警察が 2024 年 2 月 4 日に公表。後に Arup（英国の大手エンジニアリング会社）が被害企業として確認した。「顔を見た・声を聞いた・複数人と話した」という視覚・聴覚確認が、現代の AI 生成技術によって信頼の根拠として機能しなくなったことを、単一事案として最も明確に示した事例である。
+2024 年 1 月、英エンジニアリング大手 Arup の香港オフィスで、財務担当者が英国本社の CFO を名乗る指示を受け、1 週間のうちに 15 回、計約 HK$2 億（約 2,560 万米ドル）を 5 つの口座に送金した。指示を信じさせたのは、CFO と同僚が映ったビデオ会議で、映っていたのは全員、公開された動画と声から作られた偽物だった。香港警察が 2 月 2 日に公表し、Arup は 5 月に被害を認めた。
 
----
+担当者は最初のメッセージをフィッシングと疑ったが、見覚えのある顔と声が並ぶ会議で疑いは解けた。会議は録画で対話は無く、偽の CFO は口実を付けて会議を終え、その後の指示はメッセージアプリなどで続いた。
+
+担当者は本社に照会して詐欺に気づいたが、その前に 15 回の送金は通った。効かなかったのは、送金の指示が本物かを、指示が届いたのとは別の経路で、実行の前に確かめる層である。
 
 ## 2. 何が起きたか
 
-- **対象**: 多国籍企業（香港拠点）の財務担当者。後に Arup（英国系大手エンジニアリング会社）が被害企業と確認
-- **被害規模**: 約 HK$2 億（香港ドル）≒ 約 2,560 万米ドル（当時レート）。5 つの香港の銀行口座に分散送金
-- **事案概要**: 財務担当者が「CFO からの指示（極秘の金融取引について）」と称するフィッシングメールを受信。内容に疑念を持ったが、その後「CFO」が主催するビデオ会議への招待を受け参加。会議では CFO・複数の同僚・外部関係者が参加しており、全員が知った顔と声で指示を出した。すべての参加者が deepfake だった
-- **技術手法**: 公開されている動画・音声から生成されたリアルタイム deepfake で、CFO および複数の同僚を映像・音声として再現
-- **発覚経緯**: 送金後、担当者が本社の本物の CFO・関係者に確認を取ったところ、そのような会議も指示も存在しなかったことが判明
-- **香港警察**: 2024-02-04 に事案を公表。同時期に deepfake を用いた別の詐欺事案での逮捕者（6 名）も発表
-- **Arup**: 2024 年 5 月ごろ、メディア取材に対し被害企業であることを確認。セキュリティ対策の強化を実施したと述べた
+- **対象**: 英エンジニアリング大手 Arup の香港オフィスの財務部門の社員。指示は、英国本社の CFO を名乗って届いた。
+- **被害**: 約 HK$2 億（約 2,560 万米ドル）。1 週間のうちに 15 回に分けて、香港の 5 つの口座へ送金した。
+- **手口**: 1 月中旬、CFO を名乗り「秘密の取引」を持ちかけるメッセージが届いた。担当者は疑ったが、招かれたビデオ会議に CFO と同僚が映り、全員が偽物だった。警察によれば、YouTube などで公開された動画と声から作った録画で、担当者との対話は無かった。偽の CFO は口実を付けて会議を終え、以後はメッセージアプリ、メール、1 対 1 のビデオ会議で指示を続けた。
+- **発覚**: 担当者が英国本社に照会して分かった。1 月 29 日に警察へ届け出た。
+- **社内のシステム**: Arup は、社内のシステムは侵害されておらず、財務と業務への影響も無いと述べた。同社の CIO は後に「技術で強化したソーシャルエンジニアリング」と呼んでいる。
+- **捜査**: 2024 年 6 月の時点で捜査中（立法会答弁）。2026 年 10 月の時点で、この事案の逮捕や資金の回収は公表されていない。
 
-事象は次の連鎖で成立している。
-
-1. **公開素材の収集**: ターゲット企業の CFO・役員・社員の公開動画（会議録画・講演・SNS 動画等）および音声を収集
-2. **deepfake モデルの生成**: 収集した映像・音声を用いて、リアルタイムビデオ会議に適用可能な deepfake 映像・音声クローンを生成
-3. **フィッシングメールによる初期接触**: 財務担当者に「CFO からの極秘取引指示」と称するメールを送信。担当者は疑念を持つ
-4. **疑念の解消（ビデオ会議）**: ビデオ会議招待で担当者を参加させ、deepfake で再現した CFO・複数の同僚・外部関係者が「直接」指示を与える。「知っている顔と声を複数人確認した」という視覚・聴覚確認が、担当者の疑念を信頼に変える
-5. **送金実行**: 担当者が HK$2 億を 5 口座に分散送金。「ビデオ会議で直接確認した」という手続きを経ての実行
-6. **確認で発覚**: 送金後に本物の CFO・関係者への確認で詐欺が判明
-
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">公表された範囲で見た、経過</span></div>
+<p class="rx-ex-cap">止めどころは ③ と ④ の間。会議で疑いが解けた後、最初の送金の前に、会議とは別の経路で本社に確かめる機会があった。</p>
+<div class="rx-chain">
+<div class="rx-step"><div class="who">攻撃者</div><div class="no">1</div><b>公開された動画と声から、CFO と同僚の偽の映像を作る</b><p>YouTube などの公開素材。</p></div>
+<div class="rx-step"><div class="who">CFO を名乗る攻撃者</div><div class="no">2</div><b>「秘密の取引」を持ちかけるメッセージを送る</b><p>担当者はフィッシングを疑う。</p></div>
+<div class="rx-step crit"><div class="who">偽の CFO と同僚</div><div class="no">3</div><b>録画のビデオ会議で、送金を指示する</b><p>対話は無く、口実を付けて会議を終える。</p></div>
+<div class="rx-step crit"><div class="who">担当者</div><div class="no">4</div><b>1 週間で 15 回、5 つの口座へ送金する</b><p>指示はメッセージアプリなどで続いた。</p></div>
+</div>
+</figure>
 
 ## 3. 時系列 — 公表と対応
 
-- **2024年1月（初旬〜中旬）**: 財務担当者が「CFO からの極秘取引指示」を称するメールを受信。フィッシングの可能性を疑う
-- **2024年1月（中旬）**: 「CFO」主催のビデオ会議への招待を受け参加。会議で CFO・複数の同僚・外部関係者を名乗る参加者（全員 deepfake）から取引実行の指示を受ける
-- **2024年1月（同〜下旬）**: 担当者が HK$2 億を 5 つの口座に分散送金。その後、本物の関係者への確認で詐欺と発覚。香港警察に通報
-- **2024-02-04**: 香港警察が記者会見で事案を公表（企業名・担当者名は非公開）。同時期の deepfake 詐欺関連逮捕（6 名、別事案）も発表
-- **2024年5月（前後）**: Arup が被害企業として確認。調査と対策強化を実施済みとコメント
+- **2024-01 中旬**: 担当者に、英国本社の CFO を名乗るメッセージが届く。秘密の取引の話で、担当者はフィッシングを疑う。
+- **その後の 1 週間**: ビデオ会議に参加し、指示に従って 15 回、5 つの口座へ送金。
+- **2024-01-29**: 担当者が本社に照会して詐欺と分かり、警察に届け出る。
+- **2024-02-02**: 香港警察のサイバー犯罪部門（CSTCB）が会見で公表。社名は伏せた。
+- **2024-05-16**: Arup が CNN などに、被害企業であることを認める。「偽の声と映像が使われた」。
+- **2024-06-26**: 香港政府の保安局長が立法会で答弁。会議は録画で対話は無く、事案は捜査中と説明した。
 
-> 注: 本 Brief は一次情報として香港警察の公表および Arup の被害確認に基づく。企業名は当初非公開であり、被害金額は公表時点の為替換算による概算である。数値・経緯は各社報道により幅があるため最新の公開情報を参照されたい。
+> 事実は香港政府の立法会答弁（一次）、Arup の声明と CIO の談話、警察の会見の報道に拠る。ビデオ会議の日付は公表されていない。会議に映った人数は報道によって幅がある。
 
-公表後の対応と業界の動きは次のとおり。
+### 公表後の対応
 
-- **香港警察**: 2024-02-04 に事案を公表。deepfake を使った詐欺事案として注意喚起。別事案での6名逮捕も同時発表
-- **Arup**: 被害を確認し、内部セキュリティトレーニングと手続き強化を実施。「AIと deepfake に対する脅威は実在する」と公式コメント
-- **業界横断の論点**: 本事案以降、「ビデオ通話での顔確認」を金融取引の承認手順として位置づけていた企業が、手続きの見直しを迫られた。帯域外確認（out-of-band verification）——独立した通信経路での照合——の義務化が議論された
-- **AI・生成技術の民主化**: リアルタイム deepfake 生成ツールのアクセシビリティ向上が、以前は国家レベルのアクターのみが行えた攻撃を犯罪グループに普及させたとの指摘
-- **規制・コンプライアンス**: 金融機関・多国籍企業の内部統制（特に「2名以上の承認」「帯域外確認」「高額取引の追加検証」）の強化が加速。EU AI Act の deep fake 透明性要件との関係でも議論が広がる
-
----
+- **香港警察**: 怪しいビデオ会議では、相手に頭を動かしてもらう、会話の内容で試す、家族や知人に送金を頼まれたら電話で確かめる、といった見分け方を勧めた（立法会答弁）。
+- **Arup**: 請求書詐欺、フィッシング、WhatsApp の声のなりすまし、ディープフェイクといった攻撃が、数も巧妙さも増えていると述べた。
 
 ## 4. なぜ止まらなかったか
 
-中心的な<strong>失敗 primitive は「顔を見た・声を聞いた・映像でリアルタイム通話したという視覚・聴覚確認が、その人物が本当にそこにいることの証明として機能しなくなった」</strong>である。
+この事案の失敗は、担当者の不注意でも、会議のツールの欠陥でもない。送金の指示が本物かを、指示が届いたのと同じ経路（メッセージと会議）の中でしか確かめておらず、その経路ごと偽物だった。
 
-企業の財務承認プロセスは長らく「CFO が直接指示した」という事実確認を、「CFO の顔と声を電話・ビデオ通話で確認した」で代替してきた。本事案はその代替が成立しなくなったことを明示する。deepfake 技術は「顔・声の一致」という感覚的確認をコピー可能にした——公開されている映像・音声があれば、本人不在のままリアルタイムで本人の外見を生成できる。
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 2</span><span class="rx-ex-t">検出と証明の落差</span></div>
+<p class="rx-ex-cap">証明は送金が実行される前に働き、検出は詐欺が表に出た後に働く。その間、会議で見た顔と声が、指示が本物である根拠として扱われる。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>証明の層 · 今回なし</b>送金の前に、会議とは別の経路で指示を確かめる</div>
+<div class="rx-zone gapz"><b>落差</b><span>15 回の送金は通った。<br>本社への照会はまだ</span></div>
+<div class="rx-zone det"><b>検出の層 · 気づいた</b>本社に照会し、詐欺と分かる</div>
+<div class="rx-g g1"><div class="t">STEP 1</div><b>偽の会議で疑いが解ける</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>15 回の送金が通る</b></div>
+<div class="rx-g g3"><div class="t">STEP 3</div><b>本社に照会して気づく</b></div>
+<div class="rx-g g4"><div class="t">STEP 4</div><b>警察に届け出る</b></div>
+</div>
+</figure>
 
-担当者の判断プロセスは合理的だった：フィッシングメールへの疑念→ビデオ会議で複数の既知人物を確認→信頼して実行。問題は**視覚・聴覚確認が「来歴の証明」として機能していたシステム設計**にある。CFO が「この送金を承認した」という事実を、「CFO の顔と声でビデオ会議に参加した」という感覚的確認で証明しようとしたが、後者はもはや前者を証明しない。
+検出は働いた。担当者は最初のメッセージを疑い、最後は本社に照会して詐欺に気づいている。ただ、照会は送金の後で、「会議で CFO を見た」と「CFO がこの送金を指示した」は別々の事実なのに、前者が後者の根拠として通った。この隔たりが**検出と証明の落差**であり、構造的な欠落である。
 
-[Brief No.034](https://lemma.frame00.com/ja/critical/briefs/034-ekyc-liveness-bypass/)（eKYC ライブネス bypass）との比較：No.034 は「注入された映像」で生体認証システムを騙した事案だが、本事案は**人間の感覚確認を騙した**点で構造が異なる。自動システムを騙すのではなく、疑念を持った賢明な人間を複数の deepfake で包囲して「確信」させた。[Brief No.050](https://lemma.frame00.com/ja/critical/briefs/050-grok-deepfake-consent-provenance/)（Grok deepfake 非同意生成）・No.053（YouTube deepfake 著名人）とは属性証明バイパスの面で同カテゴリだが、本事案は詐欺被害の直接的な因果経路として deepfake が用いられた最大規模の事例である。
+同じ構造は、[eKYC のライブネス回避](https://lemma.frame00.com/ja/critical/briefs/034-ekyc-liveness-bypass/)（作った映像で本人確認の仕組みを通す）にも現れている。
 
-通報・確認照合・香港警察の捜査・Arup の内部対策強化は、被害の把握と再発抑止に不可欠であり、本 Brief がその役割を否定するものではない。実際に、送金後の確認照合によって詐欺は発覚し、事案の公表によって類似手口の注意喚起が業界に広まった。これらの事後対応は強化されるべきである。
+## 5. 対策するには
 
-一方で、検出・確認照合は「ビデオ会議の向こうにいるのが本物の CFO であること」を、映像・音声とは独立に、しかも送金の実行前に立証しない。財務担当者は可能な限りの確認（疑念を持ち、ビデオ会議で複数の顔と声を確認）を行った。欠けていたのは、CFO の identity が「この送金を承認した」ことの来歴を、映像・音声とは独立に暗号的に固定する仕組みである。承認の事実と、その承認者のアイデンティティが独立検証可能な形で記録されていなければ、視覚確認は「代替の証明」として使われ続け、そして突破され続ける。検出が映像の真贋を後追いで判定する限り、対応は被害の後追いにならざるを得ない。
+**送金の指示は、届いた経路とは別の経路で、送金の前に確かめる。** 偽の映像の出来がどれほど良くなっても、あらかじめ登録した連絡先で本人に確かめれば、指示が本物かは映像と関係なく分かる。高額の取引や「秘密」「急ぎ」と言われる指示ほど、この確認を省かない決まりにする。
 
----
+### 注意したい業界・業務
 
-## 5. 証明があれば、何が変わるか
+- **業界 · 金融・経理**: 海外の本社や親会社から送金を指示されうる組織の財務・経理。経営層の動画や声が講演や SNS で公開されているほど、偽物を作る素材がそろう。
+- **業務 · 承認・決裁**: 上長の指示や承認を根拠に送金する業務。今回は、指示した本人と会議で会ったように見えたことが、承認の代わりになった。
 
-事前証明（pre-execution attestation）は、高額承認の実行経路に、承認者の identity 来歴の独立検証を 1 段挟むことで、この落差を埋める。実行の前に「このトランザクションを、この権限者が、この条件下で承認した」ことを映像・音声とは別の暗号経路で要求し、承認の事実を事前証明として固定することで、deepfake が映像を再現しても、その証明を偽造できない設計を提供する。映像の真贋を後追いで判定する検出と、承認者 identity を実行前に独立検証する事前証明は、代替ではなく **補完** の関係にある。
+### いまの対策で埋まるか
 
-本事案で露呈した検出と証明の落差（「顔・声の視覚確認」が「本人の実在」の証明として機能しなくなった）に対し、Lemma は以下を提示する。
+| 対策 | 今回 | 理由 |
+| --- | --- | --- |
+| 怪しいメッセージへの注意 | 一部 | 担当者は最初のメッセージを疑ったが、続く会議で疑いが解けた。 |
+| ビデオ会議での上長の確認 | 効かない | 確認に使った会議そのものが、偽の映像と声だった。 |
+| 複数人での承認 | 一部 | 承認する人も、同じ会議や同じ経路の指示を根拠にすれば通ってしまう。 |
+| 本社への照会 | 一部 | 詐欺は分かったが、照会したのは送金の後だった。 |
 
-- **承認者アイデンティティの事前証明**: 高額送金・重要業務承認の実行前に、承認者のアイデンティティ来歴（公開鍵 / ZK 証明による身元の独立検証）を映像・音声とは別の暗号経路で確認する
-- **承認の来歴固定**: 「このトランザクションを、この権限者が、この日時にこの条件で承認した」という事実を、事後改ざん不可能な暗号証明として記録する。deepfake がどれほど精巧でも、この証明を偽造するためには秘密鍵へのアクセスが必要になる
-- **映像確認からの独立**: 視覚・聴覚確認を「信頼のゲート」から「補助情報」に降格させ、独立した属性証明をゲートとする設計への移行を支援する
-- **選択的開示**: CFO の完全な個人情報を開示せずに、「この者がこの権限で承認した」ことだけを最小開示で証明し、内部コンプライアンス記録として活用する
+### 必要になるもの
 
-検出（映像の真贋の事後判定）と事前証明（承認者 identity の実行前の独立検証）は代替ではなく補完であり、両者を組み合わせて初めて deepfake による承認偽装を未然に区別できる。設計と適用範囲は [Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute) および [Seal](https://lemma.frame00.com/ja/seal/) を参照のこと。
+1. **指示とは別の経路で、本人に確かめる。** 社内の名簿など、あらかじめ登録した電話番号やアカウントに、こちらからかけ直す。指示の中に書かれた連絡先や、同じ会議・同じチャットの中での確認は数えない。
+2. **確かめられるまで、送金を止める。** 金額や新しい送金先など、決めた条件に当たる送金は、確認が済むまで実行しない。「秘密」「急ぎ」は、止める理由として扱う。
+3. **誰が、どの経路で確かめたかを残す。** 送金ごとに、確かめた人・経路・日時を記録し、後から第三者に示せる形、つまり証明として残す。
 
----
+### 点検チェックリスト
+
+上長や本社からの送金の指示について、組織で確かめる 3 項目
+
+- 上長を名乗る送金の指示を、指示とは別の経路で本人に確かめる手順が決まっているか。
+- その確認は、金額や「秘密」の指定にかかわらず、省けない決まりになっているか。
+- 担当者が指示を疑ったとき、送金を止めて相談できる相手が決まっているか。
+
+注：登録した連絡先そのものが乗っ取られていれば、別の経路での確認も通ってしまう。また、確認に手間がかかる分、急ぎの正規の送金も遅れる。警察の勧める見分け方（頭を動かしてもらう、会話で試す）は、録画の偽物には効くが、映像を作る技術は進んでおり、見分け方だけには頼れない。
 
 ## 6. Sources
 
-- **香港警察（一次・公表）**: 2024-02-04 記者会見。Super deepfake 詐欺事案として発表 — 複数国際メディア報道
-- **Arup 公式確認**: Arup が被害企業と確認したメディアへのコメント（2024年5月前後）— BBC・The Guardian・CNN 等
-- **Fortune**: "Arup deepfake fraud scam victim Hong Kong $25 million CFO"（Arup 被害確認の追加一次報道、2024-05-17）— https://fortune.com/europe/2024/05/17/arup-deepfake-fraud-scam-victim-hong-kong-25-million-cfo/
-- **South China Morning Post**: "Deepfake video call used in HK$200 million fraud"（2024-02-04）
-- **CNN**: "Finance worker pays out $25 million after video call with deepfake 'chief financial officer'"（2024-02-04）— https://www.cnn.com/2024/05/16/tech/arup-deepfake-scam-loss-hong-kong-intl-hnk
-- **The Guardian**: "Arup loses $25m after employee duped by deepfake video call"（2024年）
+- **香港特別行政区政府 保安局（一次・立法会答弁）**: 「LCQ9: Combating frauds involving deepfake」（2024-06-26） — <https://www.info.gov.hk/gia/general/202406/26/P2024062600192.htm>
+- **世界経済フォーラム（一次・Arup CIO の談話）**: 「'This happens more frequently than people realize': Arup chief on the lessons learned from a $25m deepfake crime」（2025-02-04） — <https://www.weforum.org/stories/2025/02/deepfake-ai-cybercrime-arup/>
+- **CNN（報道・Arup の声明を引用）**: 「Arup revealed as victim of $25 million deepfake scam involving Hong Kong employee」（2024-05-16） — <https://edition.cnn.com/2024/05/16/tech/arup-deepfake-scam-loss-hong-kong-intl-hnk>
+- **Fortune（報道・Arup の声明を引用）**: 「A deepfake 'CFO' tricked the British design firm behind the Sydney Opera House in $25 million fraud」（2024-05-17） — <https://fortune.com/europe/2024/05/17/arup-deepfake-fraud-scam-victim-hong-kong-25-million-cfo/>
+- **The Standard（報道・警察の会見）**: 「HK's first deepfake video conference scam involving HK$200 million」（2024-02-04） — <https://www.thestandard.com.hk/news/article/213122/HKs-first-deepfake-video-conference-scam-involving-HK200-million>
+- **Hong Kong Free Press（報道・AFP）**: 「Multinational loses HK$200 million to deepfake video scam」（2024-02-05） — <https://hongkongfp.com/2024/02/05/multinational-loses-hk200-million-to-deepfake-video-conference-scam-hong-kong-police-say/>
+- **CNN（報道）**: 「Finance worker pays out $25 million after video call with deepfake 'chief financial officer'」（2024-02-04） — <https://edition.cnn.com/2024/02/04/asia/deepfake-cfo-scam-hong-kong-intl-hnk>
+- **South China Morning Post（報道）**: 「'Everyone looked real': multinational firm's Hong Kong office loses HK$200 million after scammers stage deepfake video meeting」（2024-02-04） — <https://www.scmp.com/news/hong-kong/law-and-crime/article/3250851/everyone-looked-real-multinational-firms-hong-kong-office-loses-hk200-million-after-scammers-stage>
 
 参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)
