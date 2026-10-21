@@ -19,12 +19,11 @@ const byteToBits = (byte: number): ReadonlyArray<Bit> =>
   Array.from({ length: 8 }, (_, i): Bit => ((byte >> (7 - i)) & 1) as Bit);
 
 /** Raise a validation error at the API boundary. */
-// imperative: pre-condition validation — no functional alternative for call-site abort
-/* eslint-disable functional/no-throw-statements */
 const raise = (message: string): never => {
+  // imperative: pre-condition validation — no functional alternative for call-site abort
+  // eslint-disable-next-line functional/no-throw-statements
   throw new Error(message);
 };
-/* eslint-enable functional/no-throw-statements */
 
 /**
  * Convert a raw secret string into the `keyBits` witness signal — the
