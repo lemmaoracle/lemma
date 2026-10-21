@@ -118,7 +118,7 @@ This case was not a failure to protect the verification core. Face and ID images
 
 Detection worked: Sumsub found the intrusion in its own review and told its clients. But it found it about 18 months later, and although "the core is protected" and "held data exists only where it is needed" are separate facts, only the first had been checked. That distance is the **detection–proof gap**, and it is a structural one.
 
-The same structure appears in [IDMerit](/critical/briefs/077-idmerit-kyc-data-exposure/) (data collected for identity checks left publicly exposed without protection).
+The same structure appears in [Awa Bank](/critical/briefs/142-awa-bank-test-environment-repurposed-leak/) (customer data that should have been deleted left in a test environment past its purpose).
 
 ## 5. How to counter this
 

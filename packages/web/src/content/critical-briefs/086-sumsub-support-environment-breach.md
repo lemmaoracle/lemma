@@ -117,7 +117,7 @@ self_check: "本人確認を任せた委託先から利用者の連絡先が漏�
 
 検出は働いた。Sumsub は自社の点検で侵入を見つけ、取引先に知らせている。ただ、見つけたのは約 18 か月後で、「中心の仕組みは守られている」と「預かったデータは要る所にしか無い」は別々の事実なのに、前者しか確かめられていなかった。この隔たりが**検出と証明の落差**であり、構造的な欠落である。
 
-同じ構造は、[IDMerit](https://lemma.frame00.com/ja/critical/briefs/077-idmerit-kyc-data-exposure/)（本人確認のために集めたデータが、保護されないまま公開状態に置かれた）にも現れている。
+同じ構造は、[阿波銀行](https://lemma.frame00.com/ja/critical/briefs/142-awa-bank-test-environment-repurposed-leak/)（役目を終えたテスト環境に、消すはずの顧客データが残っていた）にも現れている。
 
 ## 5. 対策するには
 
