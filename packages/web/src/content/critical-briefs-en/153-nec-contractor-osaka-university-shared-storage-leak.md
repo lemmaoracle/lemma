@@ -1,7 +1,7 @@
 ---
 brief_no: 153
-title: "NEC：委託先への攻撃で、大学に知らされていない協力会社と共有していたファイルが持ち出された(NEC・大阪大学・大阪公立大学の公表) — 大学のデータを誰と共有してよいかを、渡す前に照合する層が無い"
-title_en: "NEC: An attack on a contractor exposed files NEC had shared with a partner the university was never told about (NEC, Osaka University and Osaka Metropolitan University disclosures) — Nothing checks, before data is handed over, who it may be shared with"
+title: "NEC の委託先への攻撃で、大阪公立大学のシステムが止まり、大阪大学の個人情報を含むファイルが共有のクラウドストレージから持ち出された(NEC・大阪大学・大阪公立大学の公表) — 委託したデータが誰と共有されるかを、渡す前に照合する層が無い"
+title_en: "An attack on NEC's contractor took down Osaka Metropolitan University's systems, and files with Osaka University personal data were taken from shared cloud storage (NEC, Osaka University and Osaka Metropolitan University disclosures) — Nothing checks, before data is handed over, who it will be shared with"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [identity-auth]
@@ -18,7 +18,7 @@ layout: "report"
 og_kicker_ja: "サイバー攻撃事例 · 委託先経由の侵入"
 og_kicker_en: "CYBERATTACK · VIA A CONTRACTOR"
 og_headline_ja: "大学に知らされていない\n協力会社と共有していた\nファイルが、持ち出された。\n<accent>大阪大学で 77,851 人分</accent>"
-og_headline_en: "Files shared with a partner the university was never told about were taken.\n<accent>77,851 people at Osaka University.</accent>"
+og_headline_en: "An attack on a contractor, and files were taken from shared cloud storage.\n<accent>77,851 people at Osaka University.</accent>"
 summary_labels: ["What happened", "Why it was hard to tell", "The missing layer"]
 key_figures:
   - value: "77,851"
@@ -27,20 +27,19 @@ key_figures:
     tone: "alert"
   - value: "09-26 → 10-09"
     label: "From a third party downloading the files to NEC reporting it to Osaka University"
-  - value: "3"
-    unit: "points"
-    label: "What Osaka University called \"a serious problem\": an unreported partner's involvement, sharing without contractual basis, and keeping files that should have been deleted"
+  - value: "10-02 → 10-20"
+    label: "From Osaka Metropolitan University's systems going down to NEC reporting the cause as the attack on its contractor"
 glossary:
   - term: "Contractor"
     desc: "The company NEC contracts for system development and maintenance. It was attacked in late September. Osaka Metropolitan University calls it a \"subcontractor\". It has not been named."
   - term: "Partner company"
-    desc: "The company Osaka University says was \"not reported to the university\". NEC shared files to work with it. Whether it is the same company as the attacked contractor has not been disclosed."
+    desc: "The company Osaka University says was \"not reported to the university\". According to Osaka University, files were shared to work with it. Whether it is the same company as the attacked contractor has not been disclosed."
   - term: "Cloud storage"
     desc: "An online place to keep files and share them with others. Anyone the files are shared with can read them."
 insight:
   slug: "data-shared-beyond-contract"
   label: "Data shared beyond the contract"
-  quote: "Only NEC's own practice, as the university's contractor, decided who the university's data was shared with and when it was deleted, and nothing checked that against the university's contract before handing it over."
+  quote: "Nothing let the outsourcing side check, before handing data over, who it would be shared with and when it would be deleted."
 industries: ["public-sector", "supply-chain"]
 operations: ["data-access"]
 controls:
@@ -50,7 +49,7 @@ controls:
     item: "Record who data was shared with and when it was deleted, separately from the contractor's report"
 attack_method: "supply-chain"
 impact: "77,851 people's data leaked at Osaka University; systems down at Osaka Metropolitan University"
-takeaway: "Nothing checked, before handing it over, who a contractor could share a customer's data with."
+takeaway: "Nothing checked, before handing it over, who outsourced data would be shared with."
 self_check: "Can you name every contractor and subcontractor that touches your data?"
 ---
 
@@ -58,26 +57,26 @@ self_check: "Can you name every contractor and subcontractor that touches your d
 
 On October 20, 2026, NEC disclosed that a company it contracts for development and maintenance was attacked in late September, that stolen credentials were used to break into customer systems, and that files with personal data leaked from cloud storage the parties shared. The next day Osaka University disclosed a leak affecting 77,851 people, and Osaka Metropolitan University traced its outage from October 2 to the same attack.
 
-The account was legitimate and the files sat in the usual shared location, so it looked like ordinary work. According to Osaka University, NEC had shared the files, without basis in the contract, with a partner never reported to the university, and had kept files that should have been deleted.
+The account was legitimate and the files sat in the usual shared location, so it looked like ordinary work. According to Osaka University, a partner never reported to the university was involved; files were shared with it on cloud storage without basis in the contract, and files that should have been deleted were kept.
 
-NEC reported the download to Osaka University 13 days after the files were taken. What failed was the layer that checks, before handing data over, who it may be shared with.
+NEC reported the download to Osaka University 13 days after the files were taken. What failed was the layer that checks, before handing data over, who it will be shared with.
 
 ## 2. What happened
 
 - **The contract chain**: Osaka University contracts NEC to run its university-wide education computer system (the "campus system"); Osaka Metropolitan University contracts NEC to maintain and run its core systems. NEC contracted system development and maintenance to another company (the contractor), which has not been named.
 - **The attack**: The contractor was attacked in late September and stolen credentials for a legitimate account were abused. Customer systems were accessed from the contractor's device using that account, and files on servers were encrypted (per NEC). How the credentials were stolen, what rights the account had and whether multi-factor authentication was used have not been disclosed.
 - **Leak from shared storage**: Files leaked from cloud storage NEC created and used to share information between customers and NEC, and between NEC and its contractor. They included customers' personal data and system information (per NEC). How the files were downloaded has not been disclosed.
-- **Osaka University (leak only)**: On September 26, 2026, a third party downloaded files containing the university's personal data. A partner company not reported to the university was involved in part of the work, and NEC, without basis in its contract with the university, had shared the files on cloud storage to work with that partner. It had also kept files that should have been deleted after the work (per Osaka University). NEC's investigation found no sign of intrusion into the campus system.
+- **Osaka University (leak only)**: On September 26, 2026, a third party downloaded files containing the university's personal data. Osaka University says its subsequent inquiry confirmed that a partner company not reported to the university was involved in part of the work, that files were shared on cloud storage to work with that partner without basis in the contract, and that files that should have been deleted after the work were kept. NEC's investigation found no sign of intrusion into the campus system.
 - **What leaked at Osaka University**: 77,851 people (deduplicated: 59,014 alumni, 15,035 students, 3,802 staff). Name, university personal ID, university-issued email address, student or staff number, affiliation and more; the fields vary by person. No misuse or secondary harm has been confirmed (per Osaka University).
 - **Osaka Metropolitan University (encryption and leak)**: Its information infrastructure went down on October 2. The cause was unauthorized access to its systems using a legitimate account held by the subcontractor. It was also told that personal data and system information about the university in the cloud storage had leaked, but says the content and count are still being confirmed with NEC (per Osaka Metropolitan University).
-- **What NEC's statement does not say**: NEC's disclosure does not address the three points Osaka University raised. It says only "multiple" customers were affected (press reports say three, with personal data leaked at two).
+- **NEC's disclosure**: It does not describe the partner's involvement or how the files came to be shared. It says "multiple" customers were affected (press reports say three, with personal data leaked at two).
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The sequence, as disclosed</span></div>
 <p class="rx-ex-cap">The stopping point is ①. Had anyone checked, before placing the files in shared storage, whether the party was allowed under the university's contract, the files would not have been shared with the partner (how they were taken has not been disclosed).</p>
 <div class="rx-chain">
-<div class="rx-step crit"><div class="who">NEC</div><div class="no">1</div><b>Shares files containing university personal data with a partner via cloud storage</b><p>Without contractual basis (per Osaka University).</p></div>
-<div class="rx-step crit"><div class="who">NEC</div><div class="no">2</div><b>Files that should have been deleted after the work remain</b><p>Per Osaka University.</p></div>
+<div class="rx-step crit"><div class="who">Contractor side</div><div class="no">1</div><b>Files with university personal data are shared with a partner via cloud storage</b><p>Without contractual basis, per Osaka University.</p></div>
+<div class="rx-step crit"><div class="who">Contractor side</div><div class="no">2</div><b>Files that should have been deleted after the work are kept</b><p>Per Osaka University.</p></div>
 <div class="rx-step crit"><div class="who">Third party</div><div class="no">3</div><b>Downloads the shared files</b><p>Osaka University's files on 09-26.</p></div>
 <div class="rx-step"><div class="who">Attacker</div><div class="no">4</div><b>Encrypts Osaka Metropolitan University's systems via the contractor's legitimate account</b><p>Down on 10-02.</p></div>
 </div>
@@ -103,7 +102,7 @@ NEC reported the download to Osaka University 13 days after the files were taken
 
 ## 4. Why it wasn't stopped
 
-This case was not only about a contractor's credentials being stolen. Only NEC's own practice, as the university's contractor, decided who the university's data was shared with and when it was deleted, and nothing checked that against the university's contract.
+This case was not only about a contractor's credentials being stolen. Nothing let the university, as the outsourcing side, check who its data was shared with and when it was deleted.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The detection–proof gap</span></div>
@@ -112,7 +111,7 @@ This case was not only about a contractor's credentials being stolen. Only NEC's
 <div class="rx-zone proof"><b>Proof layer · absent</b>Before sharing, check whether the party is allowed under the contract</div>
 <div class="rx-zone gapz"><b>The gap</b><span>77,851 people's data<br>already taken</span></div>
 <div class="rx-zone det"><b>Detection layer · found later</b>After the files are taken, NEC reports to the university</div>
-<div class="rx-g g1"><div class="t">STEP 1</div><b>Shared outside the contract</b></div>
+<div class="rx-g g1"><div class="t">STEP 1</div><b>Shared with a partner</b></div>
 <div class="rx-g g2"><div class="t">STEP 2</div><b>Files not deleted</b></div>
 <div class="rx-g g3"><div class="t">STEP 3</div><b>Third party downloads</b></div>
 <div class="rx-g g4"><div class="t">STEP 4</div><b>Reported 13 days later</b></div>
