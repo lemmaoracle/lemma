@@ -1,6 +1,9 @@
 ---
+import { Code } from "astro:components";
+import type { ShikiTransformer } from "shiki";
 import type { Locale } from "../i18n/translations";
 import verifyQr from "../assets/cyber-verify-qr.svg";
+import { LEMMA_CODE_THEME } from "../lib/codeTheme";
 
 interface Props {
   locale: Locale;
@@ -31,12 +34,31 @@ const guardrailCode = (operation: string) =>
     ");",
     `await ${operation}(request);`,
   ].join("\n");
+const guardrailHighlight: ShikiTransformer = {
+  name: "cyber-guardrail",
+  tokens: (lines) =>
+    lines.map((line, index) =>
+      line.map((token) => ({
+        ...token,
+        ...(token.content.trim() === "guardrail"
+          ? { color: "#BDEB77", fontStyle: 2 }
+          : { color: token.content.trim() === "await" || index === 4 ? "#929C85" : token.color }),
+      })),
+    ),
+  line: (node, line) => ({
+    ...node,
+    properties: {
+      ...node.properties,
+      class: line <= 4 ? "line verification-code" : "line execution-code",
+    },
+  }),
+};
 const C =
   locale === "ja"
     ? {
-        title: "不正な依頼を、実行の直前で止める。",
+        title: "不正な依頼を実行直前で止める",
         intro:
-          "Cyber は、依頼の内容を「確認票」にまとめ、決めた条件と照合する仕組みです。システムでも、窓口でも、操作を進める前に確かめます。",
+          "Cyber は、決めた条件を満たしたときだけ、有効なカードを作れる仕組みです。依頼内容を変えると、同じカードでは確認を通りません。システムでも紙の QR でも、同じ仕組みで実行前に確かめられます。",
         admin: "管理者",
         preset: "あらかじめ設定",
         ruleset: "管理者のルール",
@@ -54,8 +76,6 @@ const C =
         documentLine: "依頼内容に、確認票を添えて。",
         sample: "見本",
         paperNote: "経理担当者が、依頼と確認結果を照合。",
-        caption:
-          "業務に取り入れる場合の例です。最後は期限切れの確認票を受け付けない例です。SDK例は確認データの検証部分で、依頼内容・許可条件との照合も組み込み先で設計します。QRの場合は担当者が結果を見て判断します。",
         accessible:
           "管理者のルールを先に用意し、利用者が提出する確認票を重ねて、実行前に照合します。最初の2例はライム色の光が一周し、確認票が右へ抜けます。最後の例は期限切れの確認票です。赤い枠で拒否を示し、左下へ落として実行を止めます。QRの場合は担当者が結果を見て判断します。",
         scenarios: [
@@ -104,9 +124,9 @@ const C =
         play: "再生",
       }
     : {
-        title: "Stop malicious requests before execution.",
+        title: "Stop malicious requests before execution",
         intro:
-          "Cyber brings a request into a confirmation card and checks it against your rules. In software or at a service counter, check before you act.",
+          "With Cyber, a valid card can only be created when your conditions are met. Change the request, and the same card no longer passes the check. The same approach works in software and with a QR code on paper, before the action goes ahead.",
         admin: "Administrator",
         preset: "Set up in advance",
         ruleset: "Administrator rules",
@@ -124,8 +144,6 @@ const C =
         documentLine: "A confirmation card with the request.",
         sample: "Sample",
         paperNote: "Accounting staff compare the request with the result.",
-        caption:
-          "Illustrative workflows. The last example rejects an expired confirmation card. The SDK excerpt verifies confirmation data; the integration must also check the request and permission rules. With a QR code, staff review the result and decide whether to proceed.",
         accessible:
           "Administrator rules are prepared first. A submitted confirmation card slides over them for a check before execution. In the first two examples, lime light travels around the edge and the card exits right. The last example uses an expired card: its border glows red, then it falls left and execution is blocked. With a QR code, staff review the result and decide whether to proceed.",
         scenarios: [
@@ -178,7 +196,7 @@ const C =
 <section id="cy-how" class="approach" aria-labelledby="cy-approach-title" data-cy-approach>
   <h2 id="cy-approach-title">{C.title}</h2>
   <p class="intro">{C.intro}</p>
-  <figure aria-describedby="cy-approach-caption">
+  <figure>
     <div class="sr-only">
       <p>{C.accessible}</p>
       <ol>
@@ -235,14 +253,7 @@ const C =
                     <strong>{C.ruleset}</strong>
                     <span>PRESET / {C.sample}</span>
                   </div>
-                  <p
-                    class="rule-data"
-                    data-rules={encodedRules(scenario.key)}
-                    data-previous-rules={encodedRules(
-                      C.scenarios[(index + C.scenarios.length - 1) % C.scenarios.length]?.key ??
-                        scenario.key,
-                    )}
-                  >
+                  <p class="rule-data" data-rules={encodedRules(scenario.key)}>
                     {encodedRules(scenario.key)}
                   </p>
                 </div>
@@ -304,7 +315,13 @@ const C =
                         <span />
                         <b>@lemmaoracle/verify</b>
                       </div>
-                      <pre set:text={guardrailCode(scenario.operation)} />
+                      <Code
+                        code={guardrailCode(scenario.operation)}
+                        lang="typescript"
+                        theme={LEMMA_CODE_THEME}
+                        transformers={[guardrailHighlight]}
+                        style="background: transparent"
+                      />
                     </div>
                     <p class="format-note">{C.codeNote}</p>
                   </div>
@@ -344,7 +361,6 @@ const C =
         <span class="play-label"><span aria-hidden="true">▷</span> {C.play}</span>
       </button>
     </div>
-    <figcaption id="cy-approach-caption">{C.caption}</figcaption>
   </figure>
 </section>
 
@@ -357,6 +373,13 @@ const C =
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
   const ruleFields = Array.from(section?.querySelectorAll<HTMLElement>("[data-rules]") ?? []);
+  const shuffleRules = (value: string, frame: number) =>
+    Array.from(value, (character, index) => {
+      const mixed = Math.imul(index + frame * 17 + character.charCodeAt(0), 0x45d9f3b);
+      return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[
+        (mixed ^ (mixed >>> 16)) & 63
+      ];
+    }).join("");
   const rewriteRules = () => {
     // Follow the CSS clock so rewrites share pause, offscreen and scenario timing.
     const timeline = board
@@ -369,10 +392,8 @@ const C =
     const time = Number(timeline?.currentTime ?? 0);
     ruleFields.forEach((field, index) => {
       const next = field.dataset.rules ?? "";
-      const previous = field.dataset.previousRules ?? next;
-      const phase = (((time - index * 8000) % 24000) + 24000) % 24000;
-      const count = Math.min(next.length, Math.floor((phase / 650) * next.length));
-      const value = next.slice(0, count) + previous.slice(count);
+      const phase = (((time - index * 5000) % 15000) + 15000) % 15000;
+      const value = phase < 650 ? shuffleRules(next, Math.floor(phase / 45) + index * 17) : next;
       field.textContent === value ? undefined : (field.textContent = value);
     });
     const enabled =
@@ -853,7 +874,7 @@ const C =
     color: #929c85;
     margin-left: auto;
   }
-  pre {
+  .code-sheet :global(pre) {
     margin: 0;
     padding: 18px 13px;
     white-space: pre;
@@ -861,6 +882,20 @@ const C =
     font-size: 10px;
     line-height: 1.9;
     color: #c6cfbc;
+  }
+  .code-sheet :global(code) {
+    font: inherit;
+  }
+  .code-sheet :global(.verification-code) {
+    display: inline-block;
+    min-width: 100%;
+    margin-inline: -7px;
+    padding-inline: 7px;
+    background: #a8e01008;
+    box-shadow: inset 2px 0 #789d46;
+  }
+  .code-sheet :global(.execution-code) {
+    opacity: 0.8;
   }
   .paper-sheet {
     display: flex;
@@ -922,7 +957,7 @@ const C =
   }
   .motion-control {
     min-height: 25px;
-    margin: 20px 0 12px;
+    margin: 20px 0 0;
     text-align: center;
   }
   button {
@@ -952,14 +987,6 @@ const C =
   }
   .paused .play-label {
     display: inline;
-  }
-  figcaption {
-    max-width: 620px;
-    margin: 0 auto;
-    color: #929c85;
-    font-size: 11px;
-    line-height: 1.9;
-    text-wrap: pretty;
   }
   .sr-only {
     position: absolute;
@@ -1001,110 +1028,110 @@ const C =
       transform: rotateY(-10deg) translateY(-3px);
     }
   }
-  /* Each example occupies eight seconds of the shared 24-second timeline. */
+  /* Each example occupies five seconds of the shared 15-second timeline. */
   @keyframes card-slide {
     0%,
-    3.333% {
+    5.333% {
       transform: translate3d(calc(-100% - var(--gap)), 0, 18px);
     }
-    6.25%,
-    26.667% {
+    10%,
+    23% {
       transform: translate3d(0, 0, 18px);
     }
-    30%,
+    26%,
     100% {
       transform: translate3d(calc(100% + var(--gap)), 0, 18px);
     }
   }
   @keyframes card-reject {
     0%,
-    3.333% {
+    5.333% {
       transform: translate3d(calc(-100% - var(--gap)), 0, 18px) rotateZ(0deg);
     }
-    6.25%,
-    17.083% {
+    10%,
+    19.667% {
       transform: translate3d(0, 0, 18px) rotateZ(0deg);
       animation-timing-function: linear;
     }
-    22.083%,
+    22.667%,
     100% {
       transform: translate3d(-105%, 145px, 18px) rotateZ(-42deg);
     }
   }
   @keyframes rejected-face {
     0%,
-    3.333% {
+    5.333% {
       opacity: 0;
     }
-    6.25%,
-    17.083% {
+    10%,
+    19.667% {
       opacity: 1;
       animation-timing-function: linear;
     }
-    22.083%,
+    22.667%,
     100% {
       opacity: 0;
     }
   }
   @keyframes rejection-edge {
     0%,
-    10.415% {
+    16.665% {
       opacity: 0;
     }
-    10.417%,
+    16.667%,
     100% {
       opacity: 1;
     }
   }
   @keyframes rejected {
     0%,
-    10.415% {
+    16.665% {
       opacity: 0;
     }
-    10.417%,
+    16.667%,
     100% {
       opacity: 1;
     }
   }
   @keyframes rejection-checking {
     0%,
-    10.415% {
+    16.665% {
       opacity: 1;
     }
-    10.417%,
+    16.667%,
     100% {
       opacity: 0;
     }
   }
   @keyframes card-face {
     0%,
-    3.333% {
+    5.333% {
       opacity: 0;
     }
-    6.25%,
-    26.667% {
+    10%,
+    23% {
       opacity: 1;
     }
-    30%,
+    26%,
     100% {
       opacity: 0;
     }
   }
   @keyframes edge-trace {
     0%,
-    10.415% {
+    16.665% {
       stroke-dashoffset: 100;
       opacity: 0;
     }
-    10.417% {
+    16.667% {
       stroke-dashoffset: 100;
       opacity: 1;
     }
-    13.125% {
+    21% {
       stroke-dashoffset: 0;
       opacity: 1;
     }
-    13.75%,
+    22%,
     100% {
       stroke-dashoffset: 0;
       opacity: 0;
@@ -1112,30 +1139,30 @@ const C =
   }
   @keyframes checking {
     0%,
-    13.124% {
+    20.999% {
       opacity: 1;
     }
-    13.125%,
+    21%,
     100% {
       opacity: 0;
     }
   }
   @keyframes verified {
     0%,
-    13.124% {
+    20.999% {
       opacity: 0;
     }
-    13.125%,
+    21%,
     100% {
       opacity: 1;
     }
   }
   @keyframes status-light {
     0%,
-    13.124% {
+    20.999% {
       opacity: 0.3;
     }
-    13.125%,
+    21%,
     100% {
       opacity: 1;
     }
@@ -1148,36 +1175,36 @@ const C =
     .ready .board {
       grid-area: 1 / 1;
       align-self: start;
-      animation: scenario-show 24s steps(1, end) infinite;
-      animation-delay: calc(var(--scenario) * 8s - 24s);
+      animation: scenario-show 15s steps(1, end) infinite;
+      animation-delay: calc(var(--scenario) * 5s - 15s);
     }
     .ready .format {
-      animation: format-turn 24s ease-in-out infinite;
-      animation-delay: calc(var(--scenario) * 8s - 24s);
+      animation: format-turn 15s ease-in-out infinite;
+      animation-delay: calc(var(--scenario) * 5s - 15s);
     }
     .ready .card-slide {
-      animation: card-slide 24s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      animation-delay: calc(var(--scenario) * 8s - 24s);
+      animation: card-slide 15s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      animation-delay: calc(var(--scenario) * 5s - 15s);
     }
     .ready .card {
-      animation: card-face 24s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      animation-delay: calc(var(--scenario) * 8s - 24s);
+      animation: card-face 15s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      animation-delay: calc(var(--scenario) * 5s - 15s);
     }
     .ready .edge-trail {
-      animation: edge-trace 24s linear infinite;
-      animation-delay: calc(var(--scenario) * 8s - 24s);
+      animation: edge-trace 15s linear infinite;
+      animation-delay: calc(var(--scenario) * 5s - 15s);
     }
     .ready .checking {
-      animation: checking 24s steps(1, end) infinite;
-      animation-delay: calc(var(--scenario) * 8s - 24s);
+      animation: checking 15s steps(1, end) infinite;
+      animation-delay: calc(var(--scenario) * 5s - 15s);
     }
     .ready .verified {
-      animation: verified 24s steps(1, end) infinite;
-      animation-delay: calc(var(--scenario) * 8s - 24s);
+      animation: verified 15s steps(1, end) infinite;
+      animation-delay: calc(var(--scenario) * 5s - 15s);
     }
     .ready .check i {
-      animation: status-light 24s steps(1, end) infinite;
-      animation-delay: calc(var(--scenario) * 8s - 24s);
+      animation: status-light 15s steps(1, end) infinite;
+      animation-delay: calc(var(--scenario) * 5s - 15s);
     }
     .ready .invalid .card-slide {
       animation-name: card-reject;
@@ -1193,8 +1220,8 @@ const C =
       animation-name: rejection-checking;
     }
     .ready .rejected {
-      animation: rejected 24s steps(1, end) infinite;
-      animation-delay: calc(var(--scenario) * 8s - 24s);
+      animation: rejected 15s steps(1, end) infinite;
+      animation-delay: calc(var(--scenario) * 5s - 15s);
     }
     .ready .invalid .check i {
       animation-name: rejected;
@@ -1328,9 +1355,6 @@ const C =
     .motion-control {
       margin-top: 16px;
     }
-    figcaption {
-      font-size: 10px;
-    }
   }
   @media (max-width: 360px) {
     .board {
@@ -1343,7 +1367,7 @@ const C =
     .card-top {
       font-size: 5px;
     }
-    pre {
+    .code-sheet :global(pre) {
       font-size: 9px;
     }
   }

@@ -10,8 +10,11 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import CyberProblem from "../components/CyberProblem.astro";
+import CyberHeroCard from "../components/CyberHeroCard.astro";
 import CyberApproach from "../components/CyberApproach.astro";
 import CyberComparison from "../components/CyberComparison.astro";
+import CyberWorkflowVisual from "../components/CyberWorkflowVisual.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { localePath } from "../lib/urls";
 import "@fontsource/space-grotesk/latin-500.css";
@@ -36,13 +39,7 @@ const C = isJa
       availability: "早期アクセス受付中",
       call: "導入を相談する",
       learn: "どう守るかを見る",
-      compareTitle: "その人の権限から、その依頼の確認へ。",
-      compareLabels: ["ログイン・権限", "今回の依頼を確認"],
-      compareSummary: "担当者が同じでも、取り出す顧客や項目が変われば確かめ直す。",
-      compareNote:
-        "確認した内容を今回の依頼と結び付け、別の顧客データや申請にない項目の出力に流用できないようにします。",
-      miniLabel: "今回の依頼",
-      usesTitle: "守りたい操作に合わせて。",
+      usesTitle: "保護対象となる操作",
       usesIntro: "送金、データ取得、サービス間の連携。失敗すると取り戻しにくい操作から始めます。",
       uses: [
         {
@@ -55,7 +52,7 @@ const C = isJa
         {
           key: "decrypt",
           symbol: "↗",
-          title: "データの取り出し",
+          title: "データ取得",
           description: "誰が、どのデータを、どこまで取り出せるかを確かめる。",
           conditions: ["担当者", "対象", "範囲"],
         },
@@ -68,7 +65,7 @@ const C = isJa
         },
       ],
       example: "確認内容の例を見る",
-      evidenceTitle: "AI 攻撃を食い止めます。",
+      evidenceTitle: "AI 攻撃も食い止める",
       evidenceIntro:
         "7種類のAIで、データ持ち出しや送金など5つのシナリオを試しました。用意した実験環境で、実行前の確認がどう働くかを確かめています。",
       modes: ["実行前の確認なし", "実行前の確認あり"],
@@ -91,7 +88,7 @@ const C = isJa
       unfinished: "手順数の上限内では未完了",
       blocked: "不正な操作を阻止",
       source: "実験の条件・結果を見る",
-      workflowsTitle: "業務への組み込み",
+      workflowsTitle: "ワークフローに組み込む",
       workflowsIntro:
         "担当者が確認して進める方法と、実行前にシステムが確認する方法。業務に合わせた3つの取り入れ方です。",
       workflowsNote:
@@ -106,7 +103,7 @@ const C = isJa
           key: "bank-change",
           label: "振込先口座変更",
           mode: "システム改修なし",
-          title: "確認をまとめて、今の会計システムで更新する。",
+          title: "会計システムを変えずに口座変更を確認",
           description: "取引先からの口座変更依頼を受け、経理が確認して更新する業務です。",
           before: [
             { actor: "取引先", title: "変更を依頼", detail: "メール・添付ファイル", kind: "step" },
@@ -127,14 +124,14 @@ const C = isJa
           after: [
             {
               actor: "取引先の登録担当者",
-              title: "確認票で依頼",
-              detail: "変更内容をひとまとめに",
+              title: "Cyber カードを発行",
+              detail: "変更依頼に QR を添付",
               kind: "step",
             },
             {
-              actor: "経理が確認",
-              title: "ひとつの確認票で照合",
-              detail: "会社・担当者・変更先口座",
+              actor: "経理担当者",
+              title: "検証ページでカードを検証",
+              detail: "依頼内容と確認結果を照合",
               kind: "check",
             },
             {
@@ -156,7 +153,7 @@ const C = isJa
           key: "customer-export",
           label: "顧客データの出力",
           mode: "システムに組み込み",
-          title: "申請した範囲を、CSV 出力の直前に確かめる。",
+          title: "CSV 出力前に申請範囲を確認",
           description: "顧客データをファイルに出力し、集計や外部の作業に渡す業務です。",
           before: [
             {
@@ -216,7 +213,7 @@ const C = isJa
           key: "point-exchange",
           label: "ポイントの交換",
           mode: "システムに組み込み",
-          title: "商品券を発行する前に、今回の交換内容を確かめる。",
+          title: "商品券発行前に交換条件を確認",
           description: "会員が貯めたポイントを、商品券などに交換する業務です。",
           before: [
             {
@@ -270,12 +267,12 @@ const C = isJa
             "商品券発行前に確認を組み込む想定です。発行後の監査は継続します。本人の登録方法や上限、承認の取り消しもあわせて決めます。",
         },
       ],
-      closeTitle: "まずは、守りたい操作をひとつ。",
+      closeTitle: "Cyber を導入する",
       closeIntro:
         "Cyber は早期アクセスを受け付けています。業務の内容を伺い、確認する条件と、既存システムのどこに組み込むかを一緒に整理します。",
       integrationNote:
         "確認を組み込んだ操作が保護の対象です。対象操作につながるすべての経路で確認し、承認の取り消し・期限切れ・同じ依頼の使い回しも防ぐ設計が必要です。",
-      technicalTitle: "技術・組み込みについて",
+      technicalTitle: "技術・組み込み情報",
       technicalBody:
         "内部では、必要な条件を満たしていることを確かめる「ゼロ知識証明（ZK）」という暗号技術を使います。会社・担当者・今回の依頼を結び付けて確認する設計です。",
       docs: "組み込みガイドを読む",
@@ -292,13 +289,7 @@ const C = isJa
       availability: "Early access",
       call: "Discuss your integration",
       learn: "See how Cyber works",
-      compareTitle: "From a person's permissions to this request.",
-      compareLabels: ["Login & permissions", "Check this request"],
-      compareSummary: "Same person. Different customers or fields. Check again.",
-      compareNote:
-        "Tie the checked details to this request so they cannot be reused to export other customer data or unrequested fields.",
-      miniLabel: "THIS REQUEST",
-      usesTitle: "Start with the action to protect.",
+      usesTitle: "Protected operations",
       usesIntro:
         "Transfers, data access and connected services. Start with actions that are hard to undo.",
       uses: [
@@ -325,7 +316,7 @@ const C = isJa
         },
       ],
       example: "Explore the example checks",
-      evidenceTitle: "Stop AI attacks.",
+      evidenceTitle: "Blocking AI attacks",
       evidenceIntro:
         "Seven AI models attempted five scenarios, including data exfiltration and transfers. These experiments examine how the check works in a prepared test environment.",
       modes: ["Without the execution check", "With the execution check"],
@@ -349,7 +340,7 @@ const C = isJa
       unfinished: "Unfinished within the step limit",
       blocked: "Unauthorized action blocked",
       source: "See test conditions and results",
-      workflowsTitle: "Fit Cyber into your workflow",
+      workflowsTitle: "Workflow integration",
       workflowsIntro:
         "Checks a person reviews before acting, or checks the system runs before execution. Three ways to fit Cyber into your workflow.",
       workflowsNote:
@@ -364,7 +355,7 @@ const C = isJa
           key: "bank-change",
           label: "Bank account changes",
           mode: "No system changes",
-          title: "Review the details together. Update your existing accounting system.",
+          title: "Check account changes without modifying the system",
           description:
             "Finance receives a supplier's bank account change request, reviews it and updates the record.",
           before: [
@@ -396,14 +387,14 @@ const C = isJa
           after: [
             {
               actor: "Registered supplier contact",
-              title: "Send one change record",
-              detail: "All change details together",
+              title: "Issue a Cyber card",
+              detail: "Attach its QR to the change request",
               kind: "step",
             },
             {
-              actor: "Finance checks",
-              title: "Review one record",
-              detail: "Organization, person and account",
+              actor: "Finance staff",
+              title: "Check the card on the verification page",
+              detail: "Compare the request with the result",
               kind: "check",
             },
             {
@@ -431,7 +422,7 @@ const C = isJa
           key: "customer-export",
           label: "Customer data exports",
           mode: "Integrated into your system",
-          title: "Check the requested scope just before creating the CSV.",
+          title: "Check the requested scope before CSV export",
           description: "Export customer data to a file for analysis or work by an external team.",
           before: [
             {
@@ -494,7 +485,7 @@ const C = isJa
           key: "point-exchange",
           label: "Points redemption",
           mode: "Integrated into your system",
-          title: "Check this redemption before issuing the voucher.",
+          title: "Check redemption conditions before voucher issuance",
           description: "Members exchange their earned points for vouchers or similar rewards.",
           before: [
             {
@@ -553,7 +544,7 @@ const C = isJa
             "This design adds the check before voucher issuance. Post-issue audits continue. Member registration, limits and revoked approvals must also be agreed.",
         },
       ],
-      closeTitle: "Start with one action to protect.",
+      closeTitle: "Get started with Cyber",
       closeIntro:
         "Cyber is accepting early-access inquiries. We will discuss your workflow, the conditions to check and where the check fits into your existing system.",
       integrationNote:
@@ -595,183 +586,29 @@ const secureAttackCount = 0;
   <main class="cy-page">
     <div class="cy-container">
       <section class="cy-hero" aria-labelledby="cy-title">
-        <h1 id="cy-title">Cyber</h1>
-        <p class="cy-claim">{C.headline.map((line) => <span>{line}</span>)}</p>
-        <p class="cy-intro">{C.intro}</p>
-        <div class="cy-actions">
-          <a class="cy-btn cy-primary" href="#cy-how">{C.learn} <span aria-hidden="true">↓</span></a
-          >
-          <a
-            class="cy-btn cy-ghost"
-            href={DISCOVERY_CALL_URL[locale]}
-            target="_blank"
-            rel="noopener">{C.call} <span aria-hidden="true">↗</span></a
-          >
+        <CyberHeroCard />
+        <div class="cy-hero-copy">
+          <h1 id="cy-title">Cyber</h1>
+          <p class="cy-claim">{C.headline.map((line) => <span>{line}</span>)}</p>
+          <p class="cy-intro">{C.intro}</p>
+          <div class="cy-actions">
+            <a class="cy-btn cy-primary" href="#cy-difference"
+              >{C.learn} <span aria-hidden="true">↓</span></a
+            >
+            <a
+              class="cy-btn cy-ghost"
+              href={DISCOVERY_CALL_URL[locale]}
+              target="_blank"
+              rel="noopener">{C.call} <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <p class="cy-availability">{C.availability}</p>
         </div>
-        <p class="cy-availability">{C.availability}</p>
       </section>
+
+      <CyberProblem locale={locale} />
 
       <CyberApproach locale={locale} />
-
-      <section id="cy-difference" class="cy-section" aria-labelledby="cy-difference-title">
-        <h2 id="cy-difference-title">{C.compareTitle}</h2>
-        <figure class="cy-key-diagram" aria-describedby="cy-difference-caption">
-          <div class="cy-key-flow">
-            <div class="cy-difference-item">
-              <div class="cy-symbol-stage" aria-hidden="true">
-                <svg
-                  class="cy-key-shape"
-                  width="98"
-                  height="126"
-                  viewBox="0 0 112 144"
-                  fill="none"
-                  focusable="false"
-                >
-                  <defs>
-                    <linearGradient
-                      id="cy-key-outline"
-                      x1="24"
-                      y1="5"
-                      x2="84"
-                      y2="132"
-                      gradientUnits="userSpaceOnUse"
-                    >
-                      <stop stop-color="#788795"></stop>
-                      <stop offset=".16" stop-color="#f1f5f9"></stop>
-                      <stop offset=".34" stop-color="#8b9aa9"></stop>
-                      <stop offset=".45" stop-color="#556575"></stop>
-                      <stop offset=".49" stop-color="#f8fafc"></stop>
-                      <stop offset=".57" stop-color="#cbd5e1"></stop>
-                      <stop offset=".73" stop-color="#657685"></stop>
-                      <stop offset=".88" stop-color="#e2e8f0"></stop>
-                      <stop offset="1" stop-color="#8b9aa9"></stop>
-                    </linearGradient>
-                    <linearGradient
-                      id="cy-key-face"
-                      x1="28"
-                      y1="5"
-                      x2="84"
-                      y2="132"
-                      gradientUnits="userSpaceOnUse"
-                    >
-                      <stop stop-color="#e2e8f0" stop-opacity=".19"></stop>
-                      <stop offset=".32" stop-color="#94a3b8" stop-opacity=".05"></stop>
-                      <stop offset=".48" stop-color="#f8fafc" stop-opacity=".16"></stop>
-                      <stop offset=".62" stop-color="#94a3b8" stop-opacity=".04"></stop>
-                      <stop offset="1" stop-color="#cbd5e1" stop-opacity=".12"></stop>
-                    </linearGradient>
-                    <linearGradient id="cy-key-highlight" x1="0" y1="0" x2="1" y2="1">
-                      <stop stop-color="#fff" stop-opacity=".85"></stop>
-                      <stop offset=".38" stop-color="#fff" stop-opacity=".08"></stop>
-                      <stop offset=".5" stop-color="#fff" stop-opacity=".7"></stop>
-                      <stop offset=".65" stop-color="#fff" stop-opacity="0"></stop>
-                      <stop offset="1" stop-color="#fff" stop-opacity=".2"></stop>
-                    </linearGradient>
-                    <pattern
-                      id="cy-key-brush"
-                      width="2"
-                      height="2"
-                      patternUnits="userSpaceOnUse"
-                      patternTransform="rotate(25)"
-                    >
-                      <path d="M0 0v2" stroke="#e2e8f0" stroke-opacity=".035" stroke-width=".5"
-                      ></path>
-                    </pattern>
-                    <path
-                      id="cy-key-profile"
-                      d="M44 58a28 28 0 1 1 24 0v58l-12 16-12-16v-6l8-8-8-8 8-8-8-8Z"></path>
-                    <linearGradient
-                      id="cy-key-fade"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="144"
-                      gradientUnits="userSpaceOnUse"
-                    >
-                      <stop stop-color="#fff" stop-opacity=".78"></stop>
-                      <stop offset=".4" stop-color="#fff" stop-opacity=".62"></stop>
-                      <stop offset=".75" stop-color="#fff" stop-opacity=".27"></stop>
-                      <stop offset="1" stop-color="#fff" stop-opacity=".08"></stop>
-                    </linearGradient>
-                    <mask
-                      id="cy-key-mask"
-                      maskUnits="userSpaceOnUse"
-                      x="0"
-                      y="0"
-                      width="112"
-                      height="144"
-                    >
-                      <rect width="112" height="144" fill="url(#cy-key-fade)"></rect>
-                    </mask>
-                  </defs>
-                  <g mask="url(#cy-key-mask)">
-                    <g
-                      transform="translate(0 144) scale(1 -1)"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <use
-                        href="#cy-key-profile"
-                        transform="translate(.7 1)"
-                        stroke="#070b0d"
-                        stroke-width="3"></use>
-                      <use
-                        href="#cy-key-profile"
-                        fill="url(#cy-key-face)"
-                        stroke="url(#cy-key-outline)"
-                        stroke-width="2.4"></use>
-                      <use href="#cy-key-profile" fill="url(#cy-key-brush)"></use>
-                      <use
-                        href="#cy-key-profile"
-                        transform="translate(-.35 -.35)"
-                        stroke="url(#cy-key-highlight)"
-                        stroke-width=".6"></use>
-                      <circle
-                        cx="56"
-                        cy="22"
-                        r="4.5"
-                        fill="#12140e"
-                        stroke="url(#cy-key-outline)"
-                        stroke-width="1.4"></circle>
-                      <path
-                        d="M62 62v53m-5-51v49"
-                        stroke="#070b0d"
-                        stroke-width="1.4"
-                        stroke-opacity=".8"></path>
-                      <path
-                        d="M61.4 62v53m-5-51v49"
-                        stroke="url(#cy-key-outline)"
-                        stroke-width=".6"
-                        stroke-opacity=".8"></path>
-                    </g>
-                  </g>
-                </svg>
-              </div>
-              <span>{C.compareLabels[0]}</span>
-            </div>
-            <span class="cy-difference-arrow" aria-hidden="true">→</span>
-            <div class="cy-difference-item">
-              <div class="cy-symbol-stage" aria-hidden="true">
-                <div class="cy-proof-shape">
-                  <span class="cy-mini-wordmark">LEMMA</span>
-                  <svg width="80" height="26" viewBox="0 0 80 26" fill="none">
-                    <path d="M17 13h17m12 0h17"></path>
-                    <circle cx="11" cy="13" r="6"></circle>
-                    <circle cx="40" cy="13" r="6"></circle>
-                    <circle cx="69" cy="13" r="6"></circle>
-                  </svg>
-                  <span class="cy-mini-proof">{C.miniLabel} <span>✓</span></span>
-                </div>
-              </div>
-              <span>{C.compareLabels[1]}</span>
-            </div>
-          </div>
-          <figcaption id="cy-difference-caption">
-            <strong>{C.compareSummary}</strong>
-            <span>{C.compareNote}</span>
-          </figcaption>
-        </figure>
-      </section>
 
       <CyberComparison locale={locale} />
 
@@ -971,7 +808,12 @@ const secureAttackCount = 0;
                     >
                       {phase.steps.map((step, index) => (
                         <li class:list={["cy-flow-step", `cy-flow-${step.kind}`]}>
-                          <div class="cy-flow-node">
+                          <div
+                            class:list={[
+                              "cy-flow-node",
+                              { "cy-flow-illustrated": phase.key === "after" && index < 2 },
+                            ]}
+                          >
                             {step.kind === "check" && (
                               <span class="cy-flow-check-label">
                                 <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -986,6 +828,13 @@ const secureAttackCount = 0;
                               </span>
                               {step.actor}
                             </span>
+                            {phase.key === "after" && index < 2 && (
+                              <CyberWorkflowVisual
+                                workflow={workflow.key}
+                                step={index}
+                                locale={locale}
+                              />
+                            )}
                             <strong>{step.title}</strong>
                             <span class="cy-flow-detail">{step.detail}</span>
                             {step.kind === "check" && workflow.stop && (
@@ -1143,7 +992,25 @@ const secureAttackCount = 0;
     text-align: center;
   }
   .cy-hero {
-    padding-top: 72px;
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-items: center;
+    min-height: calc(100svh - var(--navh, 74px));
+    margin-inline: -32px;
+    padding: 112px 32px 128px;
+  }
+  .cy-hero-copy {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+  .cy-hero h1,
+  .cy-hero .cy-claim {
+    text-shadow: 0 2px 24px #12140ecf;
+  }
+  .cy-hero .cy-ghost {
+    background: #12140ecf;
   }
   .cy-page h1 {
     font-family: "Space Grotesk", sans-serif;
@@ -1462,7 +1329,11 @@ const secureAttackCount = 0;
   }
   .cy-flow-after .cy-flow-track {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
     gap: 40px;
+  }
+  .cy-flow-before .cy-flow-track {
+    gap: 16px;
   }
   .cy-flow-track.cy-flow-branching {
     padding-bottom: 74px;
@@ -1483,6 +1354,14 @@ const secureAttackCount = 0;
     border: 1px solid #3e4435;
     border-radius: 8px;
     background: #171a12;
+  }
+  .cy-flow-before .cy-flow-node {
+    min-height: 104px;
+    padding: 12px 10px;
+    background: transparent;
+  }
+  .cy-flow-illustrated {
+    padding: 20px 16px;
   }
   .cy-flow-step:not(:last-child) .cy-flow-node::before,
   .cy-flow-step:not(:last-child) .cy-flow-node::after {
@@ -1511,6 +1390,12 @@ const secureAttackCount = 0;
   .cy-flow-after .cy-flow-step:not(:last-child) .cy-flow-node::after {
     left: calc(100% + 34px);
   }
+  .cy-flow-before .cy-flow-step:not(:last-child) .cy-flow-node::before {
+    width: 16px;
+  }
+  .cy-flow-before .cy-flow-step:not(:last-child) .cy-flow-node::after {
+    left: calc(100% + 10px);
+  }
   .cy-flow-actor {
     display: flex;
     align-items: baseline;
@@ -1536,6 +1421,20 @@ const secureAttackCount = 0;
     color: #929c85;
     font-size: 11px;
     line-height: 1.7;
+  }
+  .cy-flow-before .cy-flow-actor {
+    margin-bottom: 6px;
+    font-size: 9px;
+  }
+  .cy-flow-before .cy-flow-order {
+    font-size: 8px;
+  }
+  .cy-flow-before .cy-flow-node > strong {
+    font-size: 11px;
+  }
+  .cy-flow-before .cy-flow-detail {
+    margin-top: 4px;
+    font-size: 10px;
   }
   .cy-flow-effort .cy-flow-node {
     border-style: dashed;
@@ -1676,7 +1575,6 @@ const secureAttackCount = 0;
     }
   }
   /* Shared brushed silver surface with fine diagonal grooves. */
-  .cy-proof-shape,
   .cy-example-card {
     border: 1px solid #ffffffb3;
     color: #1e293b;
@@ -1684,96 +1582,6 @@ const secureAttackCount = 0;
       repeating-linear-gradient(115deg, #0f172a0d 0 1px, transparent 1px 4px),
       linear-gradient(135deg, #fff, #e2e8f0 48%, #f8fafc 76%, #cbd5e1);
   }
-  .cy-key-diagram {
-    margin: 42px 0 0;
-  }
-  .cy-key-flow {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr);
-    align-items: center;
-    max-width: 520px;
-    margin-inline: auto;
-  }
-  .cy-difference-item {
-    display: grid;
-    justify-items: center;
-    gap: 20px;
-    min-width: 0;
-    color: #bac1af;
-    font-size: 13px;
-  }
-  .cy-symbol-stage {
-    width: 100%;
-    height: 126px;
-    display: grid;
-    place-items: center;
-  }
-  .cy-key-shape {
-    display: block;
-    max-width: 100%;
-  }
-  .cy-difference-arrow {
-    align-self: start;
-    padding-top: 45px;
-    color: #879376;
-    font:
-      28px/1 "Space Grotesk",
-      sans-serif;
-  }
-  .cy-proof-shape {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 156px;
-    max-width: calc(100% - 12px);
-    height: 100px;
-    padding: 13px 15px;
-    border-radius: 10px;
-    transform: rotate(-6deg);
-    text-align: left;
-  }
-  .cy-mini-wordmark {
-    font:
-      9px/1 "Space Mono",
-      monospace;
-    letter-spacing: 0.12em;
-  }
-  .cy-proof-shape svg {
-    align-self: center;
-    stroke: #64748b;
-    stroke-width: 1;
-  }
-  .cy-mini-proof {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #64748b;
-    font:
-      7px/1 "Space Mono",
-      monospace;
-    letter-spacing: 0.08em;
-  }
-  .cy-mini-proof > span {
-    font-size: 11px;
-    color: #4d6140;
-  }
-  .cy-key-diagram figcaption {
-    display: grid;
-    gap: 8px;
-    margin: 34px auto 0;
-    max-width: 540px;
-    text-wrap: balance;
-  }
-  .cy-key-diagram figcaption strong {
-    color: #dde5d2;
-    font-size: 14px;
-    font-weight: 400;
-  }
-  .cy-key-diagram figcaption > span {
-    color: #929c85;
-    font-size: 11px;
-  }
-
   .cy-source,
   .cy-legend {
     color: #bac1af;
@@ -1970,6 +1778,10 @@ const secureAttackCount = 0;
       min-height: 0;
       padding: 14px 16px;
     }
+    .cy-flow-before .cy-flow-node {
+      min-height: 0;
+      padding: 10px 12px;
+    }
     .cy-flow-actor {
       margin-bottom: 6px;
     }
@@ -1987,6 +1799,14 @@ const secureAttackCount = 0;
       border-top: 0;
       border-bottom: 1px solid #68705d;
       transform: rotate(45deg);
+    }
+    .cy-flow-before .cy-flow-step:not(:last-child) .cy-flow-node::before {
+      width: 1px;
+      height: 16px;
+    }
+    .cy-flow-before .cy-flow-step:not(:last-child) .cy-flow-node::after {
+      top: calc(100% + 9px);
+      left: 22px;
     }
     .cy-flow-route {
       top: calc(100% + 6px);
@@ -2056,7 +1876,8 @@ const secureAttackCount = 0;
       padding-inline: 20px;
     }
     .cy-hero {
-      padding-top: 46px;
+      margin-inline: -20px;
+      padding: 88px 20px 104px;
     }
     .cy-page h1 {
       font-size: 92px;
@@ -2081,43 +1902,6 @@ const secureAttackCount = 0;
     }
     .cy-page h2 {
       font-size: 23px;
-    }
-    .cy-key-flow {
-      grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
-    }
-    .cy-difference-item {
-      gap: 16px;
-      font-size: 11px;
-    }
-    .cy-proof-shape {
-      width: 122px;
-      height: 80px;
-      padding: 11px 12px;
-      border-radius: 8px;
-    }
-    .cy-mini-wordmark {
-      font-size: 8px;
-    }
-    .cy-proof-shape svg {
-      width: 65px;
-      height: 21px;
-    }
-    .cy-mini-proof {
-      font-size: 6px;
-    }
-    .cy-key-shape {
-      width: 78px;
-      height: auto;
-    }
-    .cy-difference-arrow {
-      font-size: 23px;
-      padding-top: 49px;
-    }
-    .cy-key-diagram figcaption strong {
-      font-size: 13px;
-    }
-    .cy-key-diagram figcaption > span {
-      font-size: 10px;
     }
     .cy-note {
       font-size: 10px;

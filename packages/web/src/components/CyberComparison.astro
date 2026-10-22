@@ -8,57 +8,68 @@ interface Props {
 const { locale } = Astro.props;
 const methods = [
   {
+    key: "cyber",
+    values: ["primary", "primary", "primary", "primary"],
+    url: "",
+  },
+  {
     key: "waf",
-    values: ["primary", "outside", "extended", "extended", "outside"],
+    values: ["outside", "extended", "extended", "outside"],
     url: "https://docs.aws.amazon.com/waf/latest/developerguide/what-is-aws-waf.html",
   },
   {
     key: "patterns",
-    values: ["primary", "outside", "outside", "extended", "outside"],
+    values: ["outside", "outside", "extended", "outside"],
     url: "https://coreruleset.org/docs/2-how-crs-works/2-1-anomaly_scoring/",
   },
   {
     key: "dpop",
-    values: ["outside", "primary", "extended", "outside", "outside"],
+    values: ["primary", "extended", "outside", "outside"],
     url: "https://www.rfc-editor.org/rfc/rfc9449.html#section-4.2",
   },
   {
     key: "signatures",
-    values: ["outside", "extended", "primary", "extended", "extended"],
+    values: ["extended", "primary", "extended", "extended"],
     url: "https://csrc.nist.gov/pubs/fips/186-5/final",
   },
   {
     key: "policy",
-    values: ["extended", "outside", "extended", "primary", "extended"],
+    values: ["outside", "extended", "primary", "extended"],
     url: "https://www.openpolicyagent.org/docs",
-  },
-  {
-    key: "cyber",
-    values: ["outside", "outside", "primary", "primary", "primary"],
-    url: "",
   },
 ] as const;
 const marks = { primary: "○", extended: "△", outside: "―" } as const;
 const C =
   locale === "ja"
     ? {
-        title: "既存の対策と、Cyber の役割。",
-        intro: "何をブロックするかで、役割を比較。",
+        title: "既存対策との比較",
+        intro: "WAFやパターンマッチは攻撃文字列を検知。Cyberは、操作を進めてよいかを確かめます。",
         method: "方式",
         columns: [
-          { lines: ["攻撃", "文字列"], label: "攻撃文字列・形式違反を含む呼び出し" },
-          { lines: ["盗難", "トークン", "の流用"], label: "盗まれたトークンの流用" },
-          { lines: ["依頼の", "改ざん"], label: "確認済みの依頼内容の改ざん" },
-          { lines: ["条件外", "の操作"], label: "権限・承認・業務条件から外れた操作" },
-          { lines: ["紙の", "不正依頼"], label: "紙で届く依頼の依頼元・内容・承認の不一致" },
+          {
+            lines: ["盗難", "トークン", "不正利用"],
+            label: "盗難トークン不正利用：独立した確認データを持たずに保護対象の操作を実行すること",
+          },
+          {
+            lines: ["リクエスト", "の改ざん"],
+            label: "リクエストの改ざん：確認済みの顧客ID・金額・送付先などの差し替え",
+          },
+          {
+            lines: ["権限昇格"],
+            label: "権限昇格：本来の権限を超えて保護対象の操作を実行すること",
+          },
+          {
+            lines: ["書類の偽造"],
+            label: "書類の偽造：確認対象の書類の依頼元・内容・承認の不一致",
+          },
         ],
         states: { primary: "主な防御対象", extended: "追加設計・連携", outside: "主な対象外" },
         legend: "記号の意味",
         source: "公式資料",
         details: "比較条件・出典",
-        note: "○も設定・実行側との連携が必要です。紙・QRは担当者が照合・判断します。",
+        note: "保護対象に組み込んだ場合の比較です。盗難トークンは単独利用、権限昇格は保護操作への悪用、書類は確認票との不一致が対象。紙・QRは担当者が照合・判断します。",
         basis:
-          "代表的な用途の比較です。製品・構成によって範囲は変わります。「攻撃文字列」はSQLインジェクションなどの文字列や形式違反、「依頼の改ざん」は確認した対象・金額などの差し替え、「紙の不正依頼」は依頼元・内容・承認の不一致を指します。すべての攻撃を防ぐ意味ではありません。",
+          "保護対象の操作に対する代表的な防御の比較です。範囲は製品・構成によって変わります。「盗難トークン不正利用」は独立した確認データを持たないトークン単独の利用で、確認データも盗まれた場合の再使用防止は含みません。「リクエストの改ざん」は確認済みの顧客ID・金額・送付先などの差し替え。「権限昇格」は本来の権限を超えた保護対象の業務操作を指し、OS等の権限昇格そのものを防ぐ比較ではありません。「書類の偽造」は確認対象の依頼元・内容・承認の不一致で、書類全般の真贋判定ではありません。紙・QRは担当者が検証結果と書類を照合します。",
         descriptions: {
           waf: {
             name: "WAF",
@@ -82,7 +93,7 @@ const C =
           },
           cyber: {
             name: "Cyber",
-            note: "依頼と確認データを結び付け、内容の差し替えや条件外の操作を止める設計。紙・QRでは担当者が照合します。SDKの検証だけでは依頼内容や許可条件を判定せず、組み込み先で一致確認・実行制御を設計します。トークン自体の流用防止には、提示者・トークン・今回の依頼の結び付けや再使用管理が別途必要です。",
+            note: "JWT等のトークンとは独立した確認データを要求し、トークンだけでの実行、依頼の差し替え、条件外の操作を止める設計。紙・QRでは担当者が照合します。SDKの検証だけでは依頼内容や許可条件を判定せず、組み込み先で一致確認・実行制御を設計します。確認データも盗まれた場合の再使用対策や、攻撃文字列の汎用検知は別途必要です。",
           },
         },
         extraSources: [
@@ -98,23 +109,37 @@ const C =
             label: "署名付き紙QRの実例",
             url: "https://spec.smarthealth.cards/#via-qr-print-or-scan",
           },
+          {
+            label: "Cyberのトークン＋確認データの実装例",
+            url: "https://github.com/lemmaoracle/example-cyber-attack/blob/7be5b4031fca9d134df6aca8ec1452929e5ee97f/packages/unauthorized-data-exfiltration/server/src/middleware.ts#L169",
+          },
         ],
       }
     : {
-        title: "How Cyber fits with your existing controls.",
-        intro: "Compare the threats each approach is used to block.",
+        title: "Comparison with existing controls",
+        intro:
+          "WAFs and pattern matching inspect attack strings. Cyber checks whether a protected action may proceed.",
         method: "Approach",
         columns: [
-          { lines: ["Attack", "strings"], label: "Calls with attack strings or format violations" },
-          { lines: ["Stolen", "token", "use"], label: "Misuse of stolen tokens" },
-          { lines: ["Request", "changes"], label: "Tampering with confirmed request data" },
           {
-            lines: ["Out-of-", "policy", "actions"],
-            label: "Actions outside permissions, approvals or business rules",
+            lines: ["Stolen", "token", "misuse"],
+            label:
+              "Stolen token misuse: executing a protected action without independent confirmation data",
           },
           {
-            lines: ["Forged", "paper", "requests"],
-            label: "Paper requests with mismatched source, content or approval",
+            lines: ["Request", "tampering"],
+            label:
+              "Request tampering: replacing confirmed fields such as customer ID, amount or destination",
+          },
+          {
+            lines: ["Privilege", "escalation"],
+            label:
+              "Privilege escalation: executing a protected action beyond the user's authorized permissions",
+          },
+          {
+            lines: ["Document", "forgery"],
+            label:
+              "Document forgery: mismatched source, content or approval in a protected document workflow",
           },
         ],
         states: {
@@ -125,9 +150,9 @@ const C =
         legend: "Symbol meanings",
         source: "Official documentation",
         details: "Comparison criteria and sources",
-        note: "○ still requires setup and integration with execution controls. With paper or QR, staff compare the request and decide whether to proceed.",
+        note: "For integrated, protected actions: token-only misuse, abuse of elevated privileges, and documents that mismatch confirmation data. With paper or QR, staff compare the request and decide whether to proceed.",
         basis:
-          "A comparison of representative uses. Coverage varies by product and configuration. Attack strings include SQL injection and format violations; request changes mean replacing confirmed fields such as the target or amount; forged paper requests mean a mismatch in source, content or approval. This does not imply protection against every attack.",
+          "Representative defenses for protected actions; coverage varies by product and configuration. Stolen token misuse means token-only execution without independent confirmation data, excluding replay protection when that data is also stolen. Request tampering means replacing confirmed fields such as a customer ID, amount or destination. Privilege escalation refers to protected business actions beyond the user's authorized permissions, not preventing OS-level privilege escalation itself. Document forgery means mismatched source, content or approval in the protected workflow, not authenticating every kind of document. With paper or QR, staff compare verification results with the document.",
         descriptions: {
           waf: {
             name: "WAF",
@@ -151,7 +176,7 @@ const C =
           },
           cyber: {
             name: "Cyber",
-            note: "Designed to bind confirmation data to a request and block changed data or actions outside its rules. Staff compare paper or QR requests. SDK verification alone does not evaluate request content or permissions: matching and execution controls need integration. Preventing token misuse needs separate presenter, token and request binding and reuse controls.",
+            note: "Designed to require confirmation data independent of a token such as a JWT, blocking token-only execution, changed requests and out-of-policy actions. Staff compare paper or QR requests. SDK verification alone does not evaluate request content or permissions: matching and execution controls need integration. Replay protection when confirmation data is also stolen, and general attack-string detection, need separate controls.",
           },
         },
         extraSources: [
@@ -166,6 +191,10 @@ const C =
           {
             label: "Signed QR on paper",
             url: "https://spec.smarthealth.cards/#via-qr-print-or-scan",
+          },
+          {
+            label: "Cyber token-plus-confirmation example",
+            url: "https://github.com/lemmaoracle/example-cyber-attack/blob/7be5b4031fca9d134df6aca8ec1452929e5ee97f/packages/unauthorized-data-exfiltration/server/src/middleware.ts#L169",
           },
         ],
       };
@@ -238,36 +267,32 @@ const C =
     }
   </ul>
   <p id="cy-comparison-note" class="note">{C.note}</p>
-  <details>
-    <summary>{C.details}</summary>
-    <div class="criteria">
-      <p>{C.basis}</p>
-      <dl>
-        {
-          methods.map((method) => (
-            <div>
-              <>
-                <dt>{C.descriptions[method.key].name}</dt>
-                <dd>{C.descriptions[method.key].note}</dd>
-              </>
-            </div>
-          ))
-        }
-      </dl>
-      <ul class="sources">
-        {
-          C.extraSources.map((source) => (
-            <li>
-              <a href={source.url} target="_blank" rel="noopener">
-                {source.label}
-                <span aria-hidden="true"> ↗</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </details>
+  <div class="criteria" aria-labelledby="cy-comparison-criteria">
+    <h3 id="cy-comparison-criteria">{C.details}</h3>
+    <p>{C.basis}</p>
+    <dl>
+      {
+        methods.map((method) => (
+          <div>
+            <dt>{C.descriptions[method.key].name}</dt>
+            <dd>{C.descriptions[method.key].note} </dd>
+          </div>
+        ))
+      }
+    </dl>
+    <ul class="sources">
+      {
+        C.extraSources.map((source) => (
+          <li>
+            <a href={source.url} target="_blank" rel="noopener">
+              {source.label}
+              <span aria-hidden="true"> ↗</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </section>
 
 <style>
@@ -365,8 +390,7 @@ const C =
     text-decoration: underline;
     text-underline-offset: 4px;
   }
-  a:focus-visible,
-  summary:focus-visible {
+  a:focus-visible {
     outline: 2px solid #a8e010;
     outline-offset: 5px;
   }
@@ -412,52 +436,48 @@ const C =
     line-height: 1.9;
     text-wrap: pretty;
   }
-  details {
-    margin: 24px 0 0;
-    border-block: 1px solid #3e4435;
-    text-align: left;
-  }
-  summary {
-    padding: 13px 0;
-    color: #929c85;
-    font-size: 11px;
-    cursor: pointer;
-  }
-  summary:hover {
-    color: #dce6cf;
-  }
   .criteria {
-    padding-bottom: 20px;
-    color: #bac1af;
-    font-size: 11px;
-    line-height: 1.9;
+    margin: 24px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid #3e4435;
+    text-align: left;
+    color: #929c85;
+    font-size: 9px;
+    line-height: 1.75;
+  }
+  .criteria h3 {
+    margin: 0 0 5px;
+    font-size: inherit;
+    font-weight: 500;
   }
   .criteria > p {
-    margin: 0 0 18px;
+    margin: 0 0 5px;
   }
   dl {
     margin: 0;
   }
   dl > div {
-    display: grid;
-    grid-template-columns: 150px minmax(0, 1fr);
-    gap: 16px;
-    margin-top: 12px;
+    display: inline;
   }
   dt {
-    color: #f4f7ef;
+    display: inline;
+    color: #bac1af;
+    font-weight: 500;
+  }
+  dt::after {
+    content: " — ";
   }
   dd {
+    display: inline;
     margin: 0;
   }
   .sources {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 24px;
+    gap: 3px 14px;
     list-style: none;
     padding: 0;
-    margin: 20px 0 0;
-    color: #929c85;
+    margin: 6px 0 0;
   }
   .sources a {
     text-decoration: underline;
@@ -484,7 +504,7 @@ const C =
       margin-bottom: 24px;
     }
     .method-column {
-      width: 24%;
+      width: 28%;
     }
     th,
     td {
@@ -518,11 +538,6 @@ const C =
     }
     .legend .mark {
       font-size: 15px;
-    }
-    dl > div {
-      grid-template-columns: 1fr;
-      gap: 4px;
-      margin-top: 16px;
     }
   }
 
