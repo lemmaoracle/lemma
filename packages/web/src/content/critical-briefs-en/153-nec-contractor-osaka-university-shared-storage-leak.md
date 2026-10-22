@@ -1,7 +1,7 @@
 ---
 brief_no: 153
-title: "NEC：委託先の正規アカウントの認証情報が盗まれて大阪公立大学のシステムが暗号化され、共有のクラウドストレージからは大阪大学の 77,851 人分の個人情報を含むファイルが持ち出された(NEC・大阪大学・大阪公立大学の公表) — 大学のデータを誰と共有してよいかを、渡す前に照合する層が無い"
-title_en: "NEC: Stolen credentials for a contractor's legitimate account were used to encrypt Osaka Metropolitan University's systems, and files with data on 77,851 people at Osaka University were taken from shared cloud storage (NEC, Osaka University and Osaka Metropolitan University disclosures) — Nothing checks, before data is handed over, who it may be shared with"
+title: "NEC：委託先への攻撃で、大学に知らされていない協力会社と共有していたファイルが持ち出された(NEC・大阪大学・大阪公立大学の公表) — 大学のデータを誰と共有してよいかを、渡す前に照合する層が無い"
+title_en: "NEC: An attack on a contractor exposed files NEC had shared with a partner the university was never told about (NEC, Osaka University and Osaka Metropolitan University disclosures) — Nothing checks, before data is handed over, who it may be shared with"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [identity-auth]
