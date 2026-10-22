@@ -1,7 +1,7 @@
 ---
 brief_no: 153
-title: "NEC の委託先への攻撃で、大阪公立大学のシステムが止まり、大阪大学の個人情報を含むファイルが共有のクラウドストレージから持ち出された(NEC・大阪大学・大阪公立大学の公表) — 委託したデータが誰と共有されるかを、渡す前に照合する層が無い"
-title_en: "An attack on NEC's contractor took down Osaka Metropolitan University's systems, and files with Osaka University personal data were taken from shared cloud storage (NEC, Osaka University and Osaka Metropolitan University disclosures) — Nothing checks, before data is handed over, who it will be shared with"
+title: "NEC の委託先への攻撃で、大阪大学の個人情報を含むファイルが共有のクラウドストレージから持ち出された(NEC・大阪大学・大阪公立大学の公表) — 委託したデータが誰と共有されるかを、渡す前に照合する層が無い"
+title_en: "An attack on NEC's contractor led to files with Osaka University personal data being taken from shared cloud storage (NEC, Osaka University and Osaka Metropolitan University disclosures) — Nothing checks, before data is handed over, who it will be shared with"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [identity-auth]
