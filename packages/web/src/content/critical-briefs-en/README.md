@@ -38,6 +38,9 @@ latest 11 on 2026-09-12). Same principles as the JA canon.
   (e.g. `(Unit 42 research)`, `(CVE-2026-59822, added to CISA KEV)`).
 - The H1 is a **statement** (something happened), not a noun phrase.
 - The half after the `—` says, in one sentence, **what was structurally missing**.
+- **Do not put the cover `key_figures` numbers (counts, people, amounts) in the title** (2026-10-22, from 153).
+  On the article they appear large on the cover right under the H1; the list and share cards show them via `og_lead`, `impact` and `og_headline`.
+  Keep the title to what happened and what was missing. Remove them from existing Briefs when revising.
 
 ## The six chapters
 
