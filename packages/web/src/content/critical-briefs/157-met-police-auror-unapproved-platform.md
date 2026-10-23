@@ -1,7 +1,7 @@
 ---
 brief_no: 157
-title: "ロンドン警視庁：警官と職員が、承認されていない外部の基盤 Auror に自分で登録し、容疑者の個人情報を載せた(英 ICO の処分) — 外部の基盤が承認済みかを、使う時点で照合する層が無い"
-title_en: "Metropolitan Police: Officers signed themselves up to Auror, an unapproved outside platform, and uploaded suspects' data (UK ICO action) — Nothing checks at the point of use whether a platform is approved"
+title: "ロンドン警視庁：「承認済み」と誤って伝わった外部の基盤に、警官らが容疑者の情報を載せた(英 ICO の処分) — 承認済みかを、使う時点で照合する層が無い"
+title_en: "Metropolitan Police: Officers put suspects' data on an outside platform wrongly said to be approved (UK ICO action) — Nothing checks at the point of use whether a platform is approved"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [identity-auth]
@@ -17,8 +17,8 @@ og_lead_en: "Met Police: about 500 accounts and data on 179 people on an unappro
 layout: "report"
 og_kicker_ja: "情報管理の事例 · 未承認ツールの利用"
 og_kicker_en: "DATA GOVERNANCE · UNAPPROVED TOOL"
-og_headline_ja: "承認されていない外部の基盤に、\n警官が自分でアカウントを作った。\n<accent>179 人分の個人情報を掲載</accent>"
-og_headline_en: "Officers signed themselves up\nto an unapproved outside platform.\n<accent>Data on 179 people uploaded.</accent>"
+og_headline_ja: "「承認済み」と誤って伝わった\n外部の基盤に、警官らが登録した。\n<accent>179 人分の個人情報を掲載</accent>"
+og_headline_en: "Officers joined an outside platform\nwrongly said to be approved.\n<accent>Data on 179 people uploaded.</accent>"
 summary_labels: ["何が起きたか", "どう広がったか", "欠けていた層"]
 key_figures:
   - value: "179"
