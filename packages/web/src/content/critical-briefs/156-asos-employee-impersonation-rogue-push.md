@@ -72,13 +72,12 @@ ASOS は直ちに通知のサービスへのアクセスを制限したとした
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">公表された範囲で見た、経過</span></div>
-<p class="rx-ex-cap">止めどころは ③。顧客への一斉通知を、送る前に承認済みの配信と照合していれば、承認の無い通知は顧客に届かない。① ② のログイン情報が ③ の送信に使われたかと、③ と ④ の順は公表されていない。</p>
+<p class="rx-ex-cap">止めどころは ②。顧客への一斉通知を、送る前に承認済みの配信と照合していれば、承認の無い通知は顧客に届かない。① のログイン情報が ② の送信に使われたかと、② と ③ の順は公表されていない。</p>
 <div class="rx-chain">
-<div class="rx-step crit"><div class="who">攻撃者</div><div class="no">1</div><b>信頼できる相手を装い、社員のログイン情報を得る</b><p>8 日の ASOS の説明（報道）。</p></div>
-<div class="rx-step"><div class="who">攻撃者</div><div class="no">2</div><b>そのログイン情報で、ASOS が使う外部のサービスの情報に入る</b><p>通知のサービスと同じかは非公表。</p></div>
-<div class="rx-step crit"><div class="who">攻撃者</div><div class="no">3</div><b>公式アプリの通知で、攻撃者の文面が顧客に送られる</b><p>10 月 6 日 10 時ごろ。</p></div>
-<div class="rx-step"><div class="who">攻撃者</div><div class="no">4</div><b>氏名や連絡先などにアクセスする</b><p>支払いカードとパスワードは対象外とされる。</p></div>
-<div class="rx-step"><div class="who">ASOS</div><div class="no">5</div><b>通知のサービスへのアクセスを制限する</b><p>気づいた時刻は非公表。</p></div>
+<div class="rx-step crit"><div class="who">攻撃者</div><div class="no">1</div><b>社員のログイン情報を得て、外部のサービスの情報に入る</b><p>信頼できる相手を装った（8 日の ASOS の説明・報道）。通知のサービスと同じかは非公表。</p></div>
+<div class="rx-step crit"><div class="who">攻撃者</div><div class="no">2</div><b>公式アプリの通知で、攻撃者の文面が顧客に送られる</b><p>10 月 6 日 10 時ごろ。</p></div>
+<div class="rx-step"><div class="who">攻撃者</div><div class="no">3</div><b>氏名や連絡先などにアクセスする</b><p>支払いカードとパスワードは対象外とされる。</p></div>
+<div class="rx-step"><div class="who">ASOS</div><div class="no">4</div><b>通知のサービスへのアクセスを制限する</b><p>気づいた時刻は非公表。</p></div>
 </div>
 </figure>
 
