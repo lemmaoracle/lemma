@@ -109,7 +109,7 @@ countries: ["us"]
 <p class="rx-ex-cap">ここでいう証明は、手作業の送金を実行する前に「この送金は、本物と照合できた依頼に結びついているか」を照合し、記録に残すこと。検出は、送金のあとに不正に気づくこと。</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>証明の層 · 無かった</b>送金を、照合済みの依頼に結びつける</div>
-<div class="rx-zone gapz"><b>落差</b><span>5,920 万ドルが<br>外部の口座へ</span></div>
+<div class="rx-zone gapz"><b>落差</b><span>未回収<br>5,920 万ドル</span></div>
 <div class="rx-zone det"><b>検出の層 · 働いた</b>事態を把握し、回収を求める</div>
 <div class="rx-g g1"><div class="t">STEP 1</div><b>社員が標的に</b></div>
 <div class="rx-g g2"><div class="t">STEP 2</div><b>統制が働かない</b></div>

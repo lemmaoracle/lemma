@@ -107,7 +107,7 @@ The failure was not missing controls on paper. **Wire controls the company belie
 <p class="rx-ex-cap">Proof here means checking, before a manual wire goes out, that it is tied to a request verified as genuine, and keeping a record. Detection means noticing fraud after the transfers.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Proof layer · absent</b>Tie each wire to a verified request</div>
-<div class="rx-zone gapz"><b>Gap</b><span>$59.2M to<br>outside accounts</span></div>
+<div class="rx-zone gapz"><b>Gap</b><span>$59.2M<br>unrecovered</span></div>
 <div class="rx-zone det"><b>Detection layer · worked</b>Identify the problem and pursue recovery</div>
 <div class="rx-g g1"><div class="t">STEP 1</div><b>Employee targeted</b></div>
 <div class="rx-g g2"><div class="t">STEP 2</div><b>Controls don't operate</b></div>
