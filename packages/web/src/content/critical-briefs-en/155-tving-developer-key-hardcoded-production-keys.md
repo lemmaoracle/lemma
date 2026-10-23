@@ -81,14 +81,13 @@ Load monitoring stopped the first attempt. What was missing was a layer that che
   - A 2024 penetration test had found keys written into source code, but it had not been fixed.
 
 <figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The five stages the investigators set out</span></div>
-<p class="rx-ex-cap">The stopping points are ③ and ⑤. Had each use of a production key been checked against whose work it was for, a key with no requested work behind it could not enter production or create a server. How ①'s key was stolen has not been determined.</p>
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The path the investigators traced</span></div>
+<p class="rx-ex-cap">The stopping points are ② and ④. Had each use of a production key been checked against whose work it was for, a key with no requested work behind it could not enter production or create a server. How ①'s key was stolen has not been determined.</p>
 <div class="rx-chain">
-<div class="rx-step"><div class="who">Attacker</div><div class="no">1</div><b>Enters the development environment with a developer's key</b><p>May 29. How the key was stolen is not determined.</p></div>
-<div class="rx-step crit"><div class="who">Attacker</div><div class="no">2</div><b>Takes all 361 projects and finds production keys</b><p>Even one key could reach them all (per investigators).</p></div>
-<div class="rx-step crit"><div class="who">Attacker</div><div class="no">3</div><b>Enters production and obtains the database ID and password</b><p>Kept in plaintext, investigators said.</p></div>
-<div class="rx-step"><div class="who">Attacker</div><div class="no">4</div><b>Tries a first exfiltration</b><p>May 30. Stopped after a CPU 100% alert.</p></div>
-<div class="rx-step crit"><div class="who">Attacker</div><div class="no">5</div><b>Creates a virtual server with another key and sends 24 GB out</b><p>May 31. No alert; the server was later deleted.</p></div>
+<div class="rx-step"><div class="who">Attacker</div><div class="no">1</div><b>Enters development with a developer's key and takes all 361 projects</b><p>May 29. How the key was stolen is not determined. Even one key could reach them all (per investigators).</p></div>
+<div class="rx-step crit"><div class="who">Attacker</div><div class="no">2</div><b>Enters production with a key found there and obtains the database ID and password</b><p>Kept in plaintext, investigators said.</p></div>
+<div class="rx-step"><div class="who">Attacker</div><div class="no">3</div><b>Tries a first exfiltration</b><p>May 30. Stopped after a CPU 100% alert.</p></div>
+<div class="rx-step crit"><div class="who">Attacker</div><div class="no">4</div><b>Creates a virtual server with another key and sends 24 GB out</b><p>May 31. No alert; the server was later deleted.</p></div>
 </div>
 </figure>
 
