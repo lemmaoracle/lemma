@@ -1,7 +1,7 @@
 ---
 brief_no: 162
-title: "はてな：警察を名乗る詐欺グループに経理部長の PC を遠隔操作され、社内で承認された資金移動を経て、会社の資金が外部の口座へ送られた(同社の開示・特別調査委員会) — 送金と資金移動を、理由の裏付けと照合してから実行する層が無い"
-title_en: "Hatena: Scammers posing as police took remote control of the head of accounting's PC, and company funds moved through internally approved transfers to outside accounts (company disclosure, special investigation committee) — Nothing checks transfers and fund moves against a documented reason before executing them"
+title: "はてな：警察を名乗る電話から経理部長の PC が遠隔操作され、社内の資金移動を経て資金が外部へ送られた(同社の開示・特別調査委員会) — 送金と資金移動を、理由の裏付けと照合してから実行する層が無い"
+title_en: "Hatena: A call from fake police led to remote control of the head of accounting's PC, and funds left through internal fund moves (company disclosure, special investigation committee) — Nothing checks transfers and fund moves against a documented reason before executing them"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
