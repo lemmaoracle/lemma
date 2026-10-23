@@ -1,7 +1,7 @@
 ---
 brief_no: 160
-title: "米ボルティモア市：取引先の社員を名乗る偽の担当者が取引先登録に加えられ、偽の無効小切手で振込先が書き換えられた(市の監察官の報告) — 担当者の追加と振込先の変更を、取引先の登録済みの窓口で照合する層が無かった"
-title_en: "City of Baltimore: A fake contact posing as a supplier's employee was added to the supplier's account, and a forged voided check switched its bank account (city Inspector General report) — Nothing checked the new contact or the bank change with the supplier's registered contact"
+title: "米ボルティモア市：取引先の社員を名乗る偽の担当者が取引先登録に加えられ、振込先が書き換えられた(市の監察官の報告) — 担当者の追加と振込先の変更を、取引先の登録済みの連絡先で照合する層が無い"
+title_en: "City of Baltimore: A fake contact posing as a supplier's employee was added to the supplier's account, and its bank account was switched (city Inspector General report) — Nothing checks a new contact or a bank change with the supplier's registered contact"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
@@ -27,7 +27,7 @@ key_figures:
   - value: "12-09 → 02-19"
     label: "From the fake contact's request to join the supplier account to the bank account being switched (city Inspector General)"
   - value: "2 levels"
-    label: "of approval on the bank change. The supplier's contact was still never checked (city Inspector General)"
+    label: "of approval on the bank change. Checking with the supplier was not required by procedure (city Inspector General)"
 glossary:
   - term: "Workday"
     desc: "A cloud service for HR and procurement. Since 2022 Baltimore has used it for suppliers to view invoices and payments and to update contacts and bank accounts."
@@ -37,8 +37,8 @@ glossary:
     desc: "An independent city office that investigates fraud and waste in city government and publishes public synopses of its findings."
 insight:
   slug: "contact-added-without-supplier-check"
-  label: "Contacts added without asking the supplier"
-  quote: "The fake contact was added to the supplier's account without anyone checking with the supplier's own contact. The bank change submitted from there passed two levels of approval."
+  label: "Contacts added without checking with the supplier"
+  quote: "The fake contact was added to the supplier's account without anyone checking with the supplier's registered contact. The bank change submitted from there passed two levels of approval."
 industries: ["public-sector"]
 operations: ["payment-change", "account-admin"]
 controls:
@@ -57,15 +57,15 @@ countries: ["us"]
 
 ## 1. TL;DR
 
-In February and March 2025 the City of Baltimore, Maryland, sent two payments totaling $1.52 million, owed to a supplier, to an account controlled by someone posing as one of its employees. The impostor first got added as a supplier contact in Workday, the city's procurement system, then switched the bank account with a forged voided check (city Inspector General report).
+In February and March 2025 the City of Baltimore, Maryland, sent two payments totaling $1.52 million, owed to a supplier, to an account controlled by someone posing as one of the supplier's employees. The impostor first got added as a supplier contact in Workday, the city's procurement system, then submitted a bank change with a forged voided check; the account was switched on February 19 (city Inspector General report).
 
-A city employee approved the new contact, and two more approved the bank change. But no step checked with the supplier's registered contact, and the rules at the time required neither a call to the supplier nor a list of its authorized signers.
+A city employee approved the new contact without contacting the supplier (Inspector General). Two more approved the bank change, but the rules at the time required neither a call to the supplier nor a list of its authorized signers.
 
 On March 13 a bank alert tipped off the city and the second payment came back. About $0.8 million from the first had not been recovered at the time of the report. What failed was the layer that checks new contacts and bank changes with the supplier's registered contact.
 
 ## 2. What happened
 
-- **Party**: The City of Baltimore's Department of Accounts Payable, under the Comptroller, which handles city payments. Since August 2022 the city has used Workday for procurement and supplier management; suppliers update contacts and bank accounts there. The Bureau of Procurement and Accounts Payable handle contact requests.
+- **Party**: The City of Baltimore's Department of Accounts Payable, under the Comptroller, which handles city payments. Since August 2022 the city has used Workday for procurement and supplier management; suppliers update contacts and bank accounts there. Contact requests are handled by the Bureau of Procurement and by Accounts Payable.
 - **Who was impersonated**: A supplier employee. The name on the impostor's request matched that employee, who has no role in the supplier's finances. The email address given was not one the supplier issues to staff.
 - **Loss**: $803,384.44 on February 21, 2025 and $721,236.60 on March 10, a total of $1,524,621.04, went to the impostor's account. The second came back. The first had not been recovered at the time of the report. The city filed an insurance claim. The supplier was paid again for both.
 - **How it came to light**: On March 13, the bank holding the impostor's account called the city's bank about possible fraud, and the city's finance department was told.
@@ -79,7 +79,7 @@ Per the Inspector General's report, the attack ran as follows.
 <div class="rx-chain">
 <div class="rx-step crit"><div class="who">Impostor</div><div class="no">1</div><b>Poses as a supplier employee and asks to be added as a contact</b><p>December 9, 2024. Used an email address the supplier does not issue.</p></div>
 <div class="rx-step crit"><div class="who">City</div><div class="no">2</div><b>Approves the request and adds them to the supplier account</b><p>December 11. Some details on the request did not match the record.</p></div>
-<div class="rx-step crit"><div class="who">Impostor, city</div><div class="no">3</div><b>Submits a bank change with a forged voided check; it is approved</b><p>Approved by two staff on January 10, 2025. The bank account is switched on February 19.</p></div>
+<div class="rx-step crit"><div class="who">Impostor, city</div><div class="no">3</div><b>Submits a bank change with a forged voided check; it is approved</b><p>One approved on January 10, 2025, then another. Both said they did not recall seeing the voided check. Workday records show city staff switching the account on February 19.</p></div>
 <div class="rx-step crit"><div class="who">City</div><div class="no">4</div><b>Sends two payments, $1.52M in all, to the switched account</b><p>February 21 and March 10.</p></div>
 <div class="rx-step good"><div class="who">Banks, city</div><div class="no">5</div><b>The receiving bank flags possible fraud</b><p>March 13. The second payment came back.</p></div>
 </div>
@@ -90,9 +90,9 @@ Per the Inspector General's report, the attack ran as follows.
 - **2024-12-09**: The impostor, posing as a supplier employee, asks to be added as a contact.
 - **2024-12-11**: A city employee approves the request and adds the impostor to the supplier account. From that day the impostor tries several times to change the bank account.
 - **2025-01-04**: The impostor submits a bank change with a forged voided check in the supplier's name.
-- **2025-01-10**: Two city employees approve the change submitted on January 7.
+- **2025-01-10**: A city employee approves the change submitted on January 7; another then approves it (date not given).
 - **2025-01-31**: The impostor emails the city asking about an invoice and to switch the bank account (again on February 5).
-- **2025-02-19**: Workday records show the supplier's bank account switched to the impostor's.
+- **2025-02-19**: After the impostor's emailed requests, Workday records show a city employee switching the supplier's bank account to the impostor's.
 - **2025-02-21**: $803,384.44 goes to the impostor's account.
 - **2025-03-10**: $721,236.60 goes out; it is later returned to the city.
 - **2025-03-13**: The bank holding the impostor's account alerts the city's bank to possible fraud.
@@ -100,16 +100,16 @@ Per the Inspector General's report, the attack ran as follows.
 - **2025-07-31**: Accounts Payable responds to the Inspector General's report.
 - **2025-08-27**: The Inspector General publishes a public synopsis.
 
-> The facts rely on the Inspector General's public synopsis and Accounts Payable's response (both primary). The synopsis summarizes a fuller report given to city management. Its timeline graphic dates the request "Dec. 9, 2025" and its text dates the voided check "January 4, 2024"; from the sequence, we read these as December 2024 and January 2025.
+> The facts rely on the Inspector General's public synopsis and Accounts Payable's response (both primary). The synopsis summarizes a fuller report given to city management. Its timeline graphic dates the request and the addition "Dec. 9, 2025" and "Dec. 11, 2025" and its text dates the voided check "January 4, 2024"; from the sequence, we read these as December 2024 and January 2025.
 
 ### After disclosure
 
-- **Inspector General**: Found Accounts Payable had no procedure for verifying supplier contacts and strongly recommended a list of authorized users for each supplier account. Controls created after similar cases in 2020 and 2022 were not carried over to Workday. Also called for staff training and rules requiring immediate reporting of suspected fraud. The matter was referred to law enforcement.
+- **Inspector General**: Found Accounts Payable had no procedure for verifying supplier contacts and strongly recommended a list of authorized users for each supplier account. Controls created after similar cases in 2020 and 2022 were not being used (Comptroller's office leadership said they were not carried over to Workday). The Inspector General received the complaint about six days after the city learned of the fraud. Also called for staff training and rules requiring immediate reporting of suspected fraud. The matter was referred to law enforcement.
 - **Accounts Payable**: Now requires cross-verification with supplier contacts for all banking changes. From August 2025 in Workday: a restricted role for sensitive supplier-profile updates, email alerts to all listed supplier contacts on pending changes, a 48-hour delay with layered reviews for bank-account changes, and flags for rapid, duplicate or unusual profile activity. Talks are under way to add bank-account validation tools.
 
 ## 4. Why it wasn't stopped
 
-The failure was not a lack of approvals. **Both the new contact and the bank change were approved, but neither was checked with the supplier's registered contact.**
+The failure was not a lack of approvals. **Both the new contact and the bank change were approved, but no procedure required checking with the supplier's registered contact.**
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The gap between detection and proof</span></div>
@@ -125,7 +125,7 @@ The failure was not a lack of approvals. **Both the new contact and the bank cha
 </div>
 </figure>
 
-The city learned of it from the receiving bank; the second payment came back, the first did not. Adding approvers does not help when the only party checked is the one who made the request. That distance is the **gap between detection and proof**, and it is structural.
+The city learned of it from the receiving bank; the second payment came back, the first did not. Unless the check goes to the supplier's registered contact, adding approvers does not stop an impostor. That distance is the **gap between detection and proof**, and it is structural.
 
 The same structure appears in [Polaris Holdings / Booking.com](/critical/briefs/032-booking-payout-account-tampering/) (a hotel's payout account was switched in the legitimate admin screen).
 
@@ -143,16 +143,16 @@ The same structure appears in [Polaris Holdings / Booking.com](/critical/briefs/
 
 | Control | This case | Why |
 | --- | --- | --- |
-| Multiple approvers | Partial | Two staff approved the bank change. If only the requester is checked, an impostor still passes. |
-| Supporting documents | Partial | The voided check was forged. Documents can be made. |
+| Multiple approvers | Partial | Two staff approved the bank change. Without a required check with the supplier, an impostor still passes. |
+| Supporting documents | Ineffective | The voided check was forged; both approvers said they did not recall seeing it. Documents can be forged. |
 | Supplier self-service portal | Partial | Suppliers enter their own details, but anyone added as a contact also looks like the supplier. |
-| Bank fraud detection | Partial | The second payment came back. The first was too late. |
+| Bank fraud detection | Partial | The second payment came back. The alert came too late for the first. |
 
 ### What is needed
 
 1. **Treat adding a contact as seriously as a bank change.** Check with the supplier's registered contact before adding anyone to a supplier account.
 2. **Activate a bank change only when confirmed with the supplier's registered contact.** Do not decide on a contact given in the request or on attached documents alone.
-3. **Record who approved the change, and on what check.** Keep it in a form that can be verified later, as proof, and pay only to accounts that carry that proof.
+3. **Record who approved the change, and on what check.** Tie it to the supplier's list of authorized contacts and keep it as proof, so you can later show whose request was checked by whom.
 
 ### Checklist
 
