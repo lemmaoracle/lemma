@@ -1,7 +1,7 @@
 ---
 brief_no: 163
-title: "米テキサス州リバティ市：取引先に似せたドメインから、実際にある債務と同じ額の支払いの請求が届き、市はその請求に応じて送金した(市の声明) — 支払いの請求が本当にその取引先から出たかを、送金の前に照合する層が見えない"
-title_en: "City of Liberty, Texas: A payment request for the exact amount the city really owed arrived from a domain made to look like the vendor's, and the city wired the money (city statement) — No check, before paying, that the request really came from that vendor is visible"
+title: "米リバティ市：取引先に似せたドメインから本物と同じ額の請求が届き、市が送金した(市の声明) — 支払いの請求が本当にその取引先から出たかを、送金の前に照合する層が見えない"
+title_en: "City of Liberty, Texas: A lookalike vendor domain sent a request for the exact amount owed, and the city paid it (city statement) — No check, before paying, that the request really came from that vendor is visible"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
