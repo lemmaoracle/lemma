@@ -76,7 +76,7 @@ countries: ["us"]
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">公表された範囲で見た、経過の連鎖</span></div>
-<p class="rx-ex-cap">止めどころは ② と ③。担当者の追加と振込先の変更を、取引先の登録済みの連絡先で照合していれば、④ の支払いは起きない。② と ③ では、市の職員の承認が働いていた。</p>
+<p class="rx-ex-cap">止めどころは ② と ③。担当者の追加と振込先の変更を、取引先の登録済みの連絡先で照合していれば、④ の支払いは起きない。② と ③ では、市の職員の承認はあった。</p>
 <div class="rx-chain">
 <div class="rx-step crit"><div class="who">第三者</div><div class="no">1</div><b>取引先の社員を名乗り、担当者の追加を申し込む</b><p>2024 年 12 月 9 日。取引先が配るものではないメールアドレスを書いた。</p></div>
 <div class="rx-step crit"><div class="who">市</div><div class="no">2</div><b>申し込みを承認し、取引先の登録に加える</b><p>12 月 11 日。申し込みの一部の情報は、登録と合っていなかった。</p></div>
