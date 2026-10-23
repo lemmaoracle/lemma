@@ -23,6 +23,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not apply an agent's edit to its own MCP config until a person has confirmed it"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

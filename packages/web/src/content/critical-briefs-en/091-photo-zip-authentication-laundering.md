@@ -25,6 +25,7 @@ controls:
   - slug: "ownership-check"
     item: "Even when a mail passes authentication, confirm it really came from the booking party"
 attack_method: "impersonation"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

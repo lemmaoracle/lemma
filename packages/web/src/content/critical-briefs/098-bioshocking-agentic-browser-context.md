@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "ページが与えた指示が正当と確かめるまで、認証情報を渡さない"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

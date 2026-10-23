@@ -24,6 +24,7 @@ controls:
     item: "公開しようとしている人が本当の作者か確かめる"
 attack_method: "supply-chain"
 impact: "約 37 パッケージに感染"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

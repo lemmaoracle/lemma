@@ -18,6 +18,7 @@ industries: ["finance", "ai"]
 controls:
   - slug: "hold-unverified"
     item: "決済の確定を確かめるまで、サービスを提供しない"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

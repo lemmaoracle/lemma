@@ -24,6 +24,7 @@ controls:
 attack_method: "privilege-abuse"
 impact: "Names, addresses and CPR numbers of about 8.8 million people retrieved"
 takeaway: "Access was granted, but nothing checked each lookup against the permitted scope."
+countries: ["dk"]
 ---
 
 ## 1. TL;DR

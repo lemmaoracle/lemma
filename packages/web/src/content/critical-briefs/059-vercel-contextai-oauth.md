@@ -20,6 +20,7 @@ gap_fix: "高リスク行動の前に「この操作は、この主体に、こ�
 industries: ["ai", "developers"]
 operations: ["account-admin"]
 attack_method: "supply-chain"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

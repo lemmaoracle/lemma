@@ -2,6 +2,7 @@ import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 import {
   BRIEF_ATTACK_SLUGS,
+  BRIEF_COUNTRY_SLUGS,
   BRIEF_CONTROL_SLUGS,
   BRIEF_INDUSTRY_SLUGS,
   BRIEF_OPERATION_SLUGS,
@@ -237,6 +238,11 @@ const briefSchema = z
      *   一文（「〜を確かめる手順が無かった。」）。無ければ題の後半を使う。
      */
     attack_method: z.enum(BRIEF_ATTACK_SLUGS).optional(),
+    /**
+     * 国・地域（2026-10-23・必須）。一覧の行のラベル・「国・地域」の絞り込み・
+     * 表紙の下の段に出す。選び方と語彙は config/briefFacets.ts の BRIEF_COUNTRIES。
+     */
+    countries: z.array(z.enum(BRIEF_COUNTRY_SLUGS)).min(1).max(2),
     impact: z.string().min(1).optional(),
     takeaway: z.string().min(1).optional(),
     /**

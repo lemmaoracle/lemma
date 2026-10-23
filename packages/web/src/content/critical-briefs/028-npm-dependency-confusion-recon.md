@@ -24,6 +24,7 @@ controls:
     item: "取り込む前に、パッケージが名乗る社内の発行元から出たか確かめる"
 attack_method: "supply-chain"
 impact: "悪性パッケージ 33 以上を npm に公開"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

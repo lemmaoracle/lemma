@@ -23,6 +23,7 @@ controls:
     item: "Do not arrest on a face match alone; hold until it is independently corroborated"
 attack_method: "ai-misuse"
 impact: "One man wrongfully arrested as someone else"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

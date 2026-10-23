@@ -21,6 +21,7 @@ industries: ["retail", "finance"]
 controls:
   - slug: "ownership-check"
     item: "Check that code running at checkout was legitimately placed by the store"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

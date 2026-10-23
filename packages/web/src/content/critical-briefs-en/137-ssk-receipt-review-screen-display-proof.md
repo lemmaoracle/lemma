@@ -20,6 +20,7 @@ controls:
   - slug: "audit-trail"
     item: "Record that a person actually reviewed the claim, not just that it was displayed"
 impact: "290 staff used a tool that auto-pressed Enter"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

@@ -21,6 +21,7 @@ industries: ["finance"]
 operations: ["data-access"]
 attack_method: "privilege-abuse"
 impact: "少なくとも 69,461 名分の KYC データが流出"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

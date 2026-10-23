@@ -16,6 +16,7 @@ og_lead_ja: "IDScan.net、運転免許証 1.5 億件超がダークウェブで�
 og_lead_en: "IDScan.net: 153M+ scanned driver's licenses sold on the dark web"
 attack_method: "supply-chain"
 impact: "153M+ driver's licence scans for sale"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

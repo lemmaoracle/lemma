@@ -24,6 +24,7 @@ controls:
     item: "Verify, by a means separate from the UI, that the bytes being signed match what the screen shows"
 attack_method: "supply-chain"
 impact: "~401,347 ETH (~$1.5B) drained"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

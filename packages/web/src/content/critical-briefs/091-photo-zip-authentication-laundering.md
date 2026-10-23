@@ -25,6 +25,7 @@ controls:
   - slug: "ownership-check"
     item: "認証を通ったメールでも、本当に予約サイトからの連絡か確かめる"
 attack_method: "impersonation"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

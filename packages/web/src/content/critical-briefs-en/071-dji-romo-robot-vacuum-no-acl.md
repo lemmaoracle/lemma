@@ -22,6 +22,7 @@ operations: ["data-access"]
 controls:
   - slug: "ownership-check"
     item: "Confirm the party subscribing to a unit's feed actually owns that unit"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

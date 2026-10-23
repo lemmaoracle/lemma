@@ -48,6 +48,7 @@ controls:
 impact: "Five member-data fields and some system logs leaked"
 takeaway: "What the stolen logs contained could only be worked out after they were taken."
 self_check: "Do you know whether your system logs contain member information?"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

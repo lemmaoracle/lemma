@@ -23,6 +23,7 @@ controls:
     item: "決済SDKのパッケージが、本当に Paysafe の公式版か確かめてから入れる"
 attack_method: "supply-chain"
 impact: "決済 SDK を装う悪性パッケージ 17 件"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

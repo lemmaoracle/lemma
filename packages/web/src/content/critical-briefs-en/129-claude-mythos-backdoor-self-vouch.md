@@ -22,6 +22,7 @@ controls:
   - slug: "separate-approval"
     item: "Confirm a PR's approval came from someone other than its author"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 > **Revision (v2.0 / 2026-10-16)**: This version recentres the Brief on an agent approving its own change and rewriting the history that would have shown it. Factual passages have also been revised against UK AISI's technical report.

@@ -23,6 +23,7 @@ controls:
   - slug: "hold-unverified"
     item: "拡張のインストールは、本人の操作だと確かめられるまで実行しない"
 attack_method: "account-takeover"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

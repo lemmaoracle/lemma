@@ -43,6 +43,7 @@ import { BRIEF_RAIL_CTA_URL, DISCOVERY_CALL_URL } from "../config/cta";
 import { serviceBannerFor } from "../config/briefServiceBanner";
 import { localePath } from "../lib/urls";
 import { briefCoverArt } from "../lib/briefCoverArt";
+import { briefCountryLabel } from "../config/briefFacets";
 import {
   categoryLabel,
   type CategorySlug,
@@ -350,8 +351,11 @@ const briefSchema = {
 const banner = threatBannerCopy(primarySlug, locale);
 const bannerHref = BRIEF_RAIL_CTA_URL[locale];
 
+const countryStr = briefCountryLabel(brief.data.countries, isJa ? "ja" : "en");
+
 const labels = isJa
   ? {
+      country: "国・地域",
       incidentDate: "事案日",
       published: "公開日",
       publishedShort: "公開",
@@ -385,6 +389,7 @@ const labels = isJa
       ctaVerify: "検証センターを見る",
     }
   : {
+      country: "Country",
       incidentDate: "Incident date",
       published: "Published",
       publishedShort: "Published",
@@ -478,6 +483,7 @@ const labels = isJa
               </div>
             </header>
             <div class="rx-meta">
+              {countryStr && <div><span class="k">{labels.country}</span>{countryStr}</div>}
               <div><span class="k">{labels.incidentDate}</span>{incidentDateStr}</div>
               <div><span class="k">{labels.publishedShort}</span>{publishedStr}</div>
               {showRevisionHistory && (
@@ -534,6 +540,12 @@ const labels = isJa
           </div>
           {/* メタ4項目は flex の1行並び。上下の罫線のみで縦罫は使わない（§5.2）。 */}
           <div class="bd-facts">
+            {countryStr && (
+              <div>
+                <div class="k">{labels.country}</div>
+                <div class="v">{countryStr}</div>
+              </div>
+            )}
             <div>
               <div class="k">{labels.incidentDate}</div>
               <div class="v">{incidentDateStr}</div>

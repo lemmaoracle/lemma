@@ -50,6 +50,7 @@ controls:
 impact: "On unpatched instances, data could be read and admins created without logging in"
 takeaway: "Nothing checked, before it ran, who had authorised an action like creating an admin, even when it came through a pre-login entry point."
 self_check: "Do you know which entry points on your business platforms are reachable without login?"
+countries: ["global"]
 ---
 
 > **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Facts were re-checked against ServiceNow's advisory (KB3137947), the researcher's write-up and Defused's posts. Corrected: cloud instances got mitigations within 24 hours of the report (not "from April onward"); the researcher published details on July 14; and the advisory's wording ("not currently aware of exploitation against ServiceNow instances") is now kept separate from the statement given to the press. v1.1 (2026-09-01) had already changed Defused's first claim of "a different route from the public PoC" in line with its correction.

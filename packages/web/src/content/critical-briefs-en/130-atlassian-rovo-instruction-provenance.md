@@ -25,6 +25,7 @@ controls:
   - slug: "hold-unverified"
     item: "Hold any outbound send until the instruction's origin is confirmed"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

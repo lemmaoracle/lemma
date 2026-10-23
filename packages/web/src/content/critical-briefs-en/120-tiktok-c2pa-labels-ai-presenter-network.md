@@ -24,6 +24,7 @@ controls:
     item: "Let viewers check whether a video's publisher is the real creator it claims to be"
 attack_method: "ai-misuse"
 impact: "550+ misleading videos drew over 3 million views"
+countries: ["sg", "my"]
 ---
 
 ## 1. TL;DR

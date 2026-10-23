@@ -24,6 +24,7 @@ controls:
     item: "動画の発信者が実在の作り手か、視聴の時点で確かめられるようにする"
 attack_method: "ai-misuse"
 impact: "偽情報動画 550 本超が計 300 万回超再生された"
+countries: ["sg", "my"]
 ---
 
 ## 1. TL;DR

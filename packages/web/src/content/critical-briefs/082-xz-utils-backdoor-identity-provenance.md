@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "リリースに署名した開発者が、実在の本人か確かめる"
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

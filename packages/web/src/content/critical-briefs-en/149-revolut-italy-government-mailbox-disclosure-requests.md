@@ -24,6 +24,7 @@ controls:
 attack_method: "impersonation"
 impact: "Customer data handed over for months"
 takeaway: "The state certified delivery, but nothing checked the requester's authority before disclosure."
+countries: ["it"]
 ---
 
 ## 1. TL;DR

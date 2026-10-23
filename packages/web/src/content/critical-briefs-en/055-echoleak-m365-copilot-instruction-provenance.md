@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "Check that instructions the AI follows actually come from the user"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -21,6 +21,7 @@ industries: ["supply-chain"]
 operations: ["account-admin", "data-access"]
 attack_method: "supply-chain"
 impact: "CRM records mass-extracted over ~24 hours"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

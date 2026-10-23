@@ -23,6 +23,7 @@ controls:
     item: "proof に署名した prover が正規に認可されたものか、出金の前に確かめる"
 attack_method: "impersonation"
 impact: "約 170 万ドル相当がブリッジから流出"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "相手チェーンで burn が実在すると確かめるまで発行しない"
 impact: "裏づけのない約 50 億 SYS が発行"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

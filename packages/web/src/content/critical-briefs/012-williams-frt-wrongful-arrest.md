@@ -25,6 +25,7 @@ controls:
     item: "裏づけが取れるまで、逮捕に進まない"
 attack_method: "ai-misuse"
 impact: "1 人を誤認逮捕し約 30 時間拘束"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

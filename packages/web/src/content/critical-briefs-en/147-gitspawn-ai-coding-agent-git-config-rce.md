@@ -17,6 +17,7 @@ og_lead_en: "GitSpawn: seven AI coding agents run code via git config"
 industries: ["developers"]
 attack_method: "ai-misuse"
 impact: "Code ran in 7 AI coding agents"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

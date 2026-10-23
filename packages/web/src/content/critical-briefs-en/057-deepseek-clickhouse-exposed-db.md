@@ -20,6 +20,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this p
 industries: ["ai"]
 operations: ["data-access"]
 impact: "Over a million log lines and plaintext chat history exposed"
+countries: ["cn"]
 ---
 
 ## 1. TL;DR

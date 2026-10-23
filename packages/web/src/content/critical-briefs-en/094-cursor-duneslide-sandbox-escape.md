@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "Check where an instruction the agent read came from before it acts on it"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

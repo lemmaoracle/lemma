@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm the ID document was actually issued by its issuer"
 attack_method: "impersonation"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

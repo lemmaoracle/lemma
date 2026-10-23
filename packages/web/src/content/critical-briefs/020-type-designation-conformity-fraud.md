@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "提出された試験データが、規定の条件で取られたか確かめる"
 impact: "3 車種の型式指定が取り消された"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

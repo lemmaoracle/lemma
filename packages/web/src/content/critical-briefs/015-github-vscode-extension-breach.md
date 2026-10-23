@@ -24,6 +24,7 @@ controls:
     item: "入れる前に、拡張が正規の発行元の正規ビルドか確かめる"
 attack_method: "supply-chain"
 impact: "内部リポジトリ約 3,800 件が複製・窃取された"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

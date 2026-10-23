@@ -23,6 +23,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not pay out until input and payout amounts are confirmed to match"
 impact: "About $11.58M drained from the bridge"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -51,6 +51,7 @@ controls:
 attack_method: "supply-chain"
 takeaway: "預けたデータとそれを開く鍵が読み出されるとき、許された主体と範囲かを確かめる手順が無かった。"
 self_check: "委託先に預けた鍵やパスワードを、一覧で把握しているか。"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

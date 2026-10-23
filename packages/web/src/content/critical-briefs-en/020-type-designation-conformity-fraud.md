@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm submitted test data was obtained under the prescribed conditions"
 impact: "Type designation of three models revoked"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

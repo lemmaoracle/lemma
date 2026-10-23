@@ -222,6 +222,7 @@ operations: ["delivery"]               # 業務
 controls:                              # 対策（4 つ・増やすのは 4 つに当てはまらない Brief が 3 本たまったとき）
   - { slug: "ownership-check", item: "…" }
 attack_method: "impersonation"         # 手口：account-takeover / impersonation / privilege-abuse / supply-chain / human-error / ai-misuse
+countries: ["jp"]                      # 国・地域（必須・2 つまで）。事案が起きた国。国に結びつかないものは "global"
 impact: "36 自治体が配信を停止"          # 影響。数字だけにせず何の数かを書く。公表が無ければ書かない
 takeaway: "届いた通知が自治体のものかを、送信元の表示とは別に確かめる手順が無かった。"  # いま読むに選んだときの一文
 ```
@@ -229,6 +230,13 @@ takeaway: "届いた通知が自治体のものかを、送信元の表示とは
 EN ファイルの `impact` / `takeaway` / `controls[].item` は英語で書く。「いま読む 3 本」は
 `config/briefPicks.ts` で週に一度選ぶ（業界と手口が 3 本で重ならないように）。脅威タイプ
 （`primary_category`）は内部分類として残し、一覧の入口には使わない。
+
+`countries` だけは記事にも出す（表紙の下の段の「国・地域」）。一覧では行の先頭のラベルと
+「国・地域」の絞り込みになる。選ぶのは**事案が起きた国**（被害を受けた組織の所在、公表・
+処分した当局の国）で、調査した研究者の国ではない。OSS・ライブラリの脆弱性、暗号資産の
+プロトコル、AI のツールや模型の研究、多国にまたがる攻撃は `global`（国際）。語彙は
+`config/briefFacets.ts` の `BRIEF_COUNTRIES`。lemma_oracle の X 投稿でも、書き出しの
+ラベルに国を入れる（`A spoofing case in the UK:`）。
 
 `industries` / `operations` / `controls` は**一覧のファセット用の索引で、記事には描画
 しない**。語彙・ラベル・アイコンは `config/briefFacets.ts`。記事中の「注意したい

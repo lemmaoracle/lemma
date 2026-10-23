@@ -21,6 +21,7 @@ industries: ["finance", "retail"]
 controls:
   - slug: "ownership-check"
     item: "端末が読んだ有効期限を、発行者の署名済み記録と照合する"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

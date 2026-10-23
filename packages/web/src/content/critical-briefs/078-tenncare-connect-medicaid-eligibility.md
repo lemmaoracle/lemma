@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "判定が正しいデータと世帯に基づくと確かめるまで打ち切らない"
 impact: "数千人の給付が違法に打ち切り"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

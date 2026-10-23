@@ -21,6 +21,7 @@ industries: ["supply-chain"]
 operations: ["account-admin", "data-access"]
 attack_method: "supply-chain"
 impact: "約 24 時間にわたり CRM レコードを大量抽出"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

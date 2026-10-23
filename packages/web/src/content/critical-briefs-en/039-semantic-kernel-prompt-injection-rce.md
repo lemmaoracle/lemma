@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Execute an AI-invoked function only after confirming the call and its parameters are within authorized scope"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

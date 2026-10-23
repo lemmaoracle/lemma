@@ -20,6 +20,7 @@ gap_fix: "Before a withdrawal executes, require an independently verifiable proo
 industries: ["finance"]
 operations: ["approval"]
 impact: "About 515.2 million NIGHT (roughly $10 million) drained"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

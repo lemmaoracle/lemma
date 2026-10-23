@@ -21,6 +21,7 @@ industries: ["manufacturing"]
 controls:
   - slug: "ownership-check"
     item: "Authenticate each connection with a key unique to that unit"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

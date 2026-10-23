@@ -21,6 +21,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm the input the model reads matches what humans reviewed"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

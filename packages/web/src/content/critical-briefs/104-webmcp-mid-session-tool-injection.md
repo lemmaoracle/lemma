@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "呼び出すツールが、本当にそのサイトが登録したものか確かめる"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

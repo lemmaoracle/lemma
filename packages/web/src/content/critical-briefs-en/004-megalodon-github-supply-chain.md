@@ -23,6 +23,7 @@ controls:
     item: "Before merging, confirm each commit really comes from the legitimate developer"
 attack_method: "supply-chain"
 impact: "Spoofed commits pushed to 5,561 repositories in 6 hours"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

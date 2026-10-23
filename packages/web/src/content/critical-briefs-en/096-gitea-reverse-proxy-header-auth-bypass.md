@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm an admin-claiming header really came from the trusted reverse proxy"
 attack_method: "impersonation"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -17,6 +17,7 @@ og_lead_en: "Unit 42: AI-agent-run intrusion completed in under 10 hours"
 industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "Breach completed in under 10 hours"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

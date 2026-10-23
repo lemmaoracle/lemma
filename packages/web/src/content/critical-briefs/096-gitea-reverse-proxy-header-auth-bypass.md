@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "管理者を名乗るヘッダーが、本当に信頼した逆プロキシから来たか確かめる"
 attack_method: "impersonation"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -21,6 +21,7 @@ industries: ["ai", "developers"]
 controls:
   - slug: "ownership-check"
     item: "Before loading, check that a checkpoint is one the agent itself saved"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

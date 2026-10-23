@@ -19,6 +19,7 @@ gap_missing: "There was no layer to check before access whether the accessing pa
 gap_fix: "Before a high-risk action, independently verify with Lemma that this requesting party legitimately holds authority over data in this scope, and prevent it up front."
 industries: ["ai"]
 operations: ["account-admin", "data-access"]
+countries: ["us"]
 ---
 
 ## 1. TL;DR

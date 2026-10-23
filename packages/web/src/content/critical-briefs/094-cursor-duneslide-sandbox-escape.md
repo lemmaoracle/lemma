@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "エージェントが読んだ指示の出どころを、実行の前に確かめる"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

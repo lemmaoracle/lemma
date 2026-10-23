@@ -18,6 +18,7 @@ gap_detected: "Researchers reverse-engineered the SDK to surface how it worked a
 gap_missing: "There was no layer at collection time to check whether a relay truly originated from a consenting device or under what source and consent the training data was gathered, so scraping leaving home connections passed through indistinguishable from ordinary use."
 gap_fix: "Before ingesting data into AI training, independently verify with Lemma that this data was gathered under a verifiable source and consent, and prevent it up front."
 industries: ["ai"]
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -23,6 +23,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not install an extension until the action is confirmed to come from the real user"
 attack_method: "account-takeover"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -21,6 +21,7 @@ industries: ["ai", "developers"]
 controls:
   - slug: "ownership-check"
     item: "Before deserializing, confirm the data came from a legitimate sender"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

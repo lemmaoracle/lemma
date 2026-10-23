@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Copilot が編集した数値を、元データと突き合わせるまで共有しない"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

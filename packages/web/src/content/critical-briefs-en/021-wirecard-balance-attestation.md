@@ -24,6 +24,7 @@ controls:
     item: "Confirm balance letters directly with the issuing bank"
 attack_method: "impersonation"
 impact: "EUR 1.9 billion in cash that did not exist"
+countries: ["de"]
 ---
 
 ## 1. TL;DR

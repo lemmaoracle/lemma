@@ -52,6 +52,7 @@ attack_method: "impersonation"
 impact: "Japan's first laptop farm dismantled; hundreds of millions of yen sent abroad"
 takeaway: "The ID was genuine, but nothing tied its holder to the person working on the other side of the screen before the work was handed over."
 self_check: "Before handing over work, can you confirm the outside worker is the same person as the ID holder?"
+countries: ["jp"]
 ---
 
 > **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". The joint advisory was re-read and the harm to clients it describes (published source code, a defaced website) was added. A description of Brief 084 as a "real-time deepfake" was removed to match that Brief's revision (the call was a recording with no dialogue).

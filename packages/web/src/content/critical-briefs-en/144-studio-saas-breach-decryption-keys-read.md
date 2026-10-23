@@ -51,6 +51,7 @@ controls:
 attack_method: "supply-chain"
 takeaway: "Nothing checked, as entrusted data and the keys that open it were read, that the reader was a permitted party within a permitted scope."
 self_check: "Do you keep a list of the keys and passwords you have entrusted to vendors?"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

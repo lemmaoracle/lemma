@@ -52,6 +52,7 @@ attack_method: "supply-chain"
 impact: "Sign-in activity in about 1,000 tenants, more than 300 successful"
 takeaway: "Nothing checked, before they ran, whether administrative actions by a consented app identity were ones the vendor intended."
 self_check: "Do you know which apps you have installed, and what permissions each one holds?"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

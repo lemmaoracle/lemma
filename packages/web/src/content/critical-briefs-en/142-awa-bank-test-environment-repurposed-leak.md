@@ -50,6 +50,7 @@ attack_method: "account-takeover"
 impact: "27,745 customer and shareholder records leaked"
 takeaway: "When an environment past its purpose stayed in use for other work, nothing re-checked the customer data left in it or the way in from outside."
 self_check: "Can you say for certain that no customer data remains in environments built for development or testing?"
+countries: ["jp"]
 ---
 
 > **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Awa Bank's first notice and follow-up were re-read; the facts are unchanged, and as of October 2026 there has been no third notice.

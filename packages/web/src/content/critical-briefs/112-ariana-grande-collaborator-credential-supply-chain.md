@@ -24,6 +24,7 @@ controls:
     item: "素材を送る前に、依頼主が本当にそのフォトグラファーか確かめる"
 attack_method: "impersonation"
 impact: "2023 年だけで未発表曲 45 曲が流出"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

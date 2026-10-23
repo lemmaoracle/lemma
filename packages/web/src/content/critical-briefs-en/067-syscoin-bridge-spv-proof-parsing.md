@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not mint until the burn is confirmed to exist on the counterpart chain"
 impact: "~5 billion SYS minted with no burn behind it"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

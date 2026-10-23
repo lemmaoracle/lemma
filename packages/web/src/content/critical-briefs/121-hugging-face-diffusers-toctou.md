@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "ガードが確かめたファイルと実行されるファイルが同じと確認するまで実行しない"
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

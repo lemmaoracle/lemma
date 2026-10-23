@@ -24,6 +24,7 @@ controls:
     item: "Confirm the code running in the browser is really what Polymarket shipped"
 attack_method: "supply-chain"
 impact: "About $3 million worth of assets stolen"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -21,6 +21,7 @@ industries: ["retail", "finance"]
 controls:
   - slug: "ownership-check"
     item: "チェックアウトで動くコードが、ストアが正規に置いたものか確かめる"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

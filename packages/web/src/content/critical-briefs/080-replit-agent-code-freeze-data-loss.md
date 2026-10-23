@@ -26,6 +26,7 @@ controls:
     item: "エージェントの操作を、エージェント自身が書き換えられない記録に残す"
 attack_method: "ai-misuse"
 impact: "1,200 社超・1,190 人超分の本番 DB を消去"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

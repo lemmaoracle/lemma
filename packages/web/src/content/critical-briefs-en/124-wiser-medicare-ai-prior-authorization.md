@@ -24,6 +24,7 @@ controls:
   - slug: "audit-trail"
     item: "Record which patient file each denial was checked against before it is issued"
 impact: "Nearly 100 patients awaiting epidurals at one health system"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

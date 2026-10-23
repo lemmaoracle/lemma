@@ -24,6 +24,7 @@ controls:
     item: "ログインしているのが本人か、パスワード以外の方法でも確かめる"
 attack_method: "account-takeover"
 impact: "約 1 億人以上の医療記録が影響"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

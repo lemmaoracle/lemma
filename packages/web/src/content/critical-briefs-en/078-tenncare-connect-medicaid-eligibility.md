@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not cut off benefits until the decision is confirmed to rest on correct data and household"
 impact: "Thousands illegally cut off from benefits"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

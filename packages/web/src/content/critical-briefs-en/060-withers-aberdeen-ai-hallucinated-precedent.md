@@ -23,6 +23,7 @@ controls:
     item: "Before filing, confirm each cited case actually exists in the original source"
 attack_method: "ai-misuse"
 impact: "All four attorneys sanctioned and the trial vacated"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

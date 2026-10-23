@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "AI が呼ぶ関数と引数が許された範囲か、確かめてから実行する"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

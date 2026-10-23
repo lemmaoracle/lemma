@@ -20,6 +20,7 @@ gap_fix: "未知のツールであっても「この操作は、正規に認可�
 industries: ["public-sector", "finance"]
 attack_method: "ai-misuse"
 impact: "メキシコの 6 政府機関が侵害された"
+countries: ["mx", "br"]
 ---
 
 ## 1. TL;DR

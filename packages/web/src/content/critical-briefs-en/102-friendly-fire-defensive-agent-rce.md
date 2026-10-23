@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Don't let the agent run a binary under review until its origin is established"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

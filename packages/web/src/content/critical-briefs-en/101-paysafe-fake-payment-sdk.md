@@ -23,6 +23,7 @@ controls:
     item: "Confirm a payment SDK package is really Paysafe's official one before installing"
 attack_method: "supply-chain"
 impact: "17 malicious packages posing as payment SDKs"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

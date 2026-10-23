@@ -20,6 +20,7 @@ gap_fix: "鍵や認証情報の保有ではなく「この行動が、スコー�
 operations: ["account-admin"]
 attack_method: "account-takeover"
 impact: "1 台の侵害からドメイン全体が乗っ取られた"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -23,6 +23,7 @@ controls:
     item: "同梱の設定は、作者と中身を確かめるまで実行しない"
 attack_method: "ai-misuse"
 impact: "Microsoft 系 4 組織の 73 リポジトリが無効化"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

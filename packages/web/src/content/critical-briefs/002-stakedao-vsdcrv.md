@@ -26,6 +26,7 @@ controls:
     item: "受け入れる前に、メッセージが正規のコントラクトから来たか確かめる"
 attack_method: "account-takeover"
 impact: "5.4 兆 vsdCRV が不正ミントされた"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

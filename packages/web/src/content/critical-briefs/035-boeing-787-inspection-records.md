@@ -23,6 +23,7 @@ controls:
   - slug: "audit-trail"
     item: "検査記録に、実際に検査した人・時刻・測定結果を残す"
 impact: "約 450 機が対象（関係筋）"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

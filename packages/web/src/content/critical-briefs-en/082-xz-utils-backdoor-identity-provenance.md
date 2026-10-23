@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm the developer who signed a release is a real, verified person"
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

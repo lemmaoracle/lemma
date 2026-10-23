@@ -19,6 +19,7 @@ gap_missing: "There was no layer to prove, before ingestion, what a corpus conta
 gap_fix: "Rather than asking whether it is public, independently verify with Lemma the provenance and composition of a corpus (origin, consent, absence of known dangerous material) before ingestion, and prevent it up front."
 industries: ["ai"]
 impact: "~12,000 live credentials found in a training corpus"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

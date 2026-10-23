@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Return no data until the requester is authenticated"
 impact: "Unauthenticated table queries succeeded for some customers"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

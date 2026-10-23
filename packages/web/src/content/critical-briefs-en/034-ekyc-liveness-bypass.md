@@ -52,6 +52,7 @@ attack_method: "impersonation"
 impact: "Bypass kits sold in 22 Telegram channels and groups"
 takeaway: "Nothing checked that video reaching the app was taken live by a real camera."
 self_check: "If the face video in your ID check were swapped for a recording or a deepfake, would you catch it before opening the account?"
+countries: ["global"]
 ---
 
 > **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Facts were re-checked against the MIT Technology Review article. Removed price ranges the article does not give, and a "deepfakes are 11% of fraud" figure whose source could not be confirmed. "Rooted Android" was changed to match the article (offers to jailbreak phones). Added the FinCEN alert, Japan's rule change and iProov's test.

@@ -49,6 +49,7 @@ attack_method: "supply-chain"
 impact: "Client end-users' names and contact details exposed (number undisclosed)"
 takeaway: "Nothing checked where personal data held for identity checks lingered outside the core, or who could read it."
 self_check: "Do you know which user information your identity-check vendor keeps, and where?"
+countries: ["gb"]
 ---
 
 > **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Facts were re-checked against Sumsub's disclosure and its clients' notices (Ndax, Bitpanda). The earlier "French users' contact data" framing was removed: it came only from a low-quality outlet's headline, unsupported even by its own text, and that outlet was dropped from the sources. The FinCEN proposed rule was removed as only loosely related.

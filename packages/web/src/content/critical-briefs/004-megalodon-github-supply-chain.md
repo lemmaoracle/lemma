@@ -23,6 +23,7 @@ controls:
     item: "取り込む前に、コミットが本当に正規の開発者のものか確かめる"
 attack_method: "supply-chain"
 impact: "6 時間で 5,561 リポジトリに偽装コミット"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

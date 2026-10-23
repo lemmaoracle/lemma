@@ -21,6 +21,7 @@ industries: ["ai"]
 operations: ["disclosure"]
 attack_method: "ai-misuse"
 impact: "9 reduced-visibility crashes (1 death, 1 injury)"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

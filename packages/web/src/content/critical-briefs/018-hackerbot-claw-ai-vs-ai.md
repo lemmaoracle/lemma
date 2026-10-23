@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "取り込む指示ファイルの出所と、改ざんの有無を確かめる"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -23,6 +23,7 @@ controls:
     item: "Verify the signing code is the audited original before putting it into use"
 attack_method: "supply-chain"
 impact: "About 16M ADA drained from 374 addresses"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

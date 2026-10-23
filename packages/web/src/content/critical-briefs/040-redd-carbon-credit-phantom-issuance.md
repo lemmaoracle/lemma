@@ -22,6 +22,7 @@ operations: ["approval"]
 controls:
   - slug: "ownership-check"
     item: "申告された保全面積・伐採量を、衛星データなど原データと照らして確かめる"
+countries: ["br"]
 ---
 
 ## 1. TL;DR

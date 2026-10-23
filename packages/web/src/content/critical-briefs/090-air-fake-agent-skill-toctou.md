@@ -24,6 +24,7 @@ controls:
   - slug: "hold-unverified"
     item: "スキルが参照する外部ページが検査時と同じか確かめるまで実行しない"
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

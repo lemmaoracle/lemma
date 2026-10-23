@@ -26,6 +26,7 @@ controls:
     item: "Before accepting, confirm the message came from the legitimate contract"
 attack_method: "account-takeover"
 impact: "5.4 trillion vsdCRV minted from a forged message"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

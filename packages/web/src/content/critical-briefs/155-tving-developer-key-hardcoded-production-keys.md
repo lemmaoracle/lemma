@@ -56,6 +56,7 @@ attack_method: "account-takeover"
 impact: "3,954 万アカウント（重複を含む）の利用者情報が流出"
 takeaway: "本番のキーは、誰のどの作業かを問われずに使えた。"
 self_check: "本番環境に入れるキーが、それぞれ誰のどの作業のためにあるかを把握しているか。"
+countries: ["kr"]
 ---
 
 ## 1. TL;DR

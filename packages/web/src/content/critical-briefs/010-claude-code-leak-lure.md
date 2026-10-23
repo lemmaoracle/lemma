@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "入手したファイルが、正規の配布元のものか確かめる"
 attack_method: "impersonation"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

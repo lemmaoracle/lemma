@@ -20,6 +20,7 @@ gap_fix: "人間の操作に割り込む AI 判断の前に「この行動はい
 industries: ["manufacturing"]
 attack_method: "ai-misuse"
 impact: "追突 4 件・負傷 4 件の申告"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

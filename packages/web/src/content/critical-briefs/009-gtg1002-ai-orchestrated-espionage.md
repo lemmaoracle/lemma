@@ -20,6 +20,7 @@ gap_fix: "外部システムへ作用する前に「この操作は、この主�
 industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "約 30 の標的を攻撃、少数で侵入成功"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

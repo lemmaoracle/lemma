@@ -17,6 +17,7 @@ og_lead_en: "RubyDoc.info doc builds ran arbitrary code from 500+ RubyGems spam 
 industries: ["developers"]
 attack_method: "supply-chain"
 impact: "\u60aa\u6027\u30d1\u30c3\u30b1\u30fc\u30b8 500 \u8d85\u3092\u524a\u9664"
+countries: ["global"]
 ---
 
 > **改訂（v2.0 / 2026-10-16）**: 主題を、新規アカウントによる RubyGems への大量登録・公開と、RubyDoc.info のドキュメント生成サーバでの任意コード実行に組み直した。あわせて一次資料を取り直し、CDN キャッシュ不具合の報告・修正の日付、RubyDoc.info 側でのネットワーク遮断の変更、APIキー窃取の試みについての Ruby Central の評価を追記した。行為主体の帰属と事案の性格づけは §3 の注記に移した。

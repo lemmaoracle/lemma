@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "署名する前に、イベントが正規のコントラクトから出たか確かめる"
 impact: "ブリッジから約 81.5 万ドルが流出"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

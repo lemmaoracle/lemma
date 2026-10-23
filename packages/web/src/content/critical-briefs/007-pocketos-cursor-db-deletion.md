@@ -26,6 +26,7 @@ controls:
     item: "正規の依頼と確かめられるまで、破壊的な操作は実行しない"
 attack_method: "ai-misuse"
 impact: "本番 DB とバックアップを 9 秒で全削除"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

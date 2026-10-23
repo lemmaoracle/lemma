@@ -25,6 +25,7 @@ controls:
     item: "Confirm the release was triggered by the real maintainer before installing it"
 attack_method: "account-takeover"
 impact: "Nine compromised versions published in about 38 minutes"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

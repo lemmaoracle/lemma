@@ -23,6 +23,7 @@ controls:
     item: "Do not execute bundled config until its author and contents are verified"
 attack_method: "ai-misuse"
 impact: "73 repositories across 4 Microsoft orgs disabled"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

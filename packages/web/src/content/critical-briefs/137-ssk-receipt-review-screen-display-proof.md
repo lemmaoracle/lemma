@@ -20,6 +20,7 @@ controls:
   - slug: "audit-trail"
     item: "「画面を表示した」ではなく、人が内容を確認したことを記録する"
 impact: "職員 290 人が自動で Enter を押すツールを使った"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

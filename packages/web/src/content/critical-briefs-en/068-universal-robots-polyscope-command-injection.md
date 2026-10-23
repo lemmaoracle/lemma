@@ -21,6 +21,7 @@ industries: ["manufacturing"]
 controls:
   - slug: "ownership-check"
     item: "Confirm the sender of a command is authorized to operate the robot"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

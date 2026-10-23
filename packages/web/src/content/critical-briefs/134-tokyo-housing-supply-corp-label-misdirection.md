@@ -50,6 +50,7 @@ attack_method: "human-error"
 impact: "自治会長 770 名の氏名が別の住民に届いた"
 takeaway: "宛先と元の一覧の対応を、発送の前に作業者とは別に確かめる手順が無かった。"
 self_check: "宛名と元の一覧を、発送の前に照合できるか。"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

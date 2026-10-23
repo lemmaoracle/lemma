@@ -23,6 +23,7 @@ controls:
     item: "署名に使うコードが、監査済みの正規版か確かめてから使う"
 attack_method: "supply-chain"
 impact: "374 アドレスから約 1,600 万 ADA が流出"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

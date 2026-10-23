@@ -23,6 +23,7 @@ controls:
   - slug: "audit-trail"
     item: "Record who actually performed the inspection, when, and what was measured"
 impact: "Roughly 450 aircraft affected (per sources)"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "Check that each item has the provenance and consent to be used for training"
 impact: "Over 800 faces escaped blurring in a 0.1% sample alone"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

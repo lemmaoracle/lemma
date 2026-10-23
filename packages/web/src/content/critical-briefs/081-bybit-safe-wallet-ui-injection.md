@@ -24,6 +24,7 @@ controls:
     item: "署名する中身が画面の表示と同じか、UI とは別の方法で確かめる"
 attack_method: "supply-chain"
 impact: "約 401,347 ETH（約 15 億ドル相当）が流出"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

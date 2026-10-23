@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm the origin and integrity of instruction files an agent ingests"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR
