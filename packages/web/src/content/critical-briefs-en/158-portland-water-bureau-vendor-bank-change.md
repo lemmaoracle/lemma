@@ -1,7 +1,7 @@
 ---
 brief_no: 158
-title: "米ポートランド市：取引先を装う相手が、パスワード再設定のリンクで取引先登録に入り、工事代金が別の口座へ送られた(米司法省・宣誓供述を引いた報道) — 新しい振込先を、取引先の登録済みの連絡先で照合してから払う層が無い"
-title_en: "City of Portland: An impostor used a password-reset link to enter a contractor's supplier account, and a construction payment went to another account (US DOJ, press citing an affidavit) — Nothing checks a new bank account against the supplier's registered contact before paying"
+title: "米ポートランド市：取引先を装う相手が、パスワード再設定のリンクで取引先登録に入り、工事代金を別の口座へ送らせた(米司法省ほか) — 新しい振込先を、取引先の登録済みの連絡先で照合してから払う層が無い"
+title_en: "City of Portland: An impostor used a password-reset link to enter a contractor's supplier account and had a construction payment sent elsewhere (US DOJ and others) — Nothing checks a new bank account against the supplier's registered contact before paying"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
@@ -111,7 +111,7 @@ The failure was neither in spotting the email nor in the bank's detection. **An 
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The gap between detection and proof</span></div>
-<p class="rx-ex-cap">Proof here means checking, before paying, that a new bank account really belongs to the supplier, through the supplier's registered contact, and keeping a record. Detection means noticing possible fraud after the transfer and stopping it.</p>
+<p class="rx-ex-cap">Proof here means checking, before paying, that a new bank account really belongs to the supplier, through the supplier's registered contact, and keeping a record. Detection means noticing possible fraud after the transfer.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Proof layer · absent</b>Check a new account with the supplier before paying</div>
 <div class="rx-zone gapz"><b>Gap</b><span>$6.7M went to<br>another account</span></div>
