@@ -60,7 +60,7 @@ self_check: "Do you know which outside services have been signed up to with your
 
 On October 14, 2026, the UK Information Commissioner's Office (ICO) announced a reprimand and enforcement notice against the Metropolitan Police Service (MPS). From March 2023 to September 2024, officers and staff used Auror, a retail crime intelligence platform the Met had not approved, creating about 500 accounts. In 2024, personal data on 179 shoplifting suspects was uploaded, three of them under 18.
 
-Officers, encouraged by retailers, used QR codes sent by the operator to create their own accounts with Met email addresses. Some began after a former officer's account of it. The site carried the Met's logo, and by the Met's account its URL filter classed the site as professional services and did not block it (per the ICO).
+Officers, encouraged by retailers, used QR codes sent by the operator to create their own accounts with Met email addresses. Some began after a former officer's account of it. By the Met's account, the site carried the Met's logo and statements that the Met was a customer, and its URL filter classed the site as professional services and did not block it (per the ICO).
 
 The Met noticed through internal reports and blocked access, but data on 179 people had already been uploaded. What failed was the layer that checks, at sign-up and at upload, whether an outside platform is approved.
 
@@ -78,7 +78,7 @@ The Met noticed through internal reports and blocked access, but data on 179 peo
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The sequence, following the ICO notice</span></div>
 <p class="rx-ex-cap">The stopping points are ② and ③. Had signing up with a work email and uploading personal data each been checked against whether the platform was approved, an unapproved platform would have been stopped.</p>
 <div class="rx-chain">
-<div class="rx-step"><div class="who">Retailers / operator</div><div class="no">1</div><b>Recommend Auror to officers and send sign-up QR codes</b><p>The site carried the Met's logo.</p></div>
+<div class="rx-step"><div class="who">Retailers / operator</div><div class="no">1</div><b>Recommend Auror to officers and send sign-up QR codes</b><p>By the Met's account, the site carried its logo.</p></div>
 <div class="rx-step crit"><div class="who">Officers / staff</div><div class="no">2</div><b>Create their own accounts with Met email addresses</b><p>About 500. Wrongly told it was approved.</p></div>
 <div class="rx-step crit"><div class="who">Officers / staff</div><div class="no">3</div><b>Upload suspects' names and other details</b><p>179 people in 2024.</p></div>
 <div class="rx-step"><div class="who">Met</div><div class="no">4</div><b>An internal security incident is reported and access is blocked</b><p>Reported August 29, 2024; blocked September 26.</p></div>
