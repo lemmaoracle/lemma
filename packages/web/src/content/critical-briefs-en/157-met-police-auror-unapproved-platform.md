@@ -1,7 +1,7 @@
 ---
 brief_no: 157
-title: "ロンドン警視庁：警官と職員が、承認されていない小売犯罪の情報共有基盤 Auror に組織のメールでアカウントを作り、容疑者の個人情報を載せた(英 ICO の処分) — 外部の基盤が承認済みかを、使う時点で照合する層が無い"
-title_en: "Metropolitan Police: Officers and staff signed up to Auror, an unapproved retail crime platform, with work email and uploaded suspects' personal data (UK ICO action) — Nothing checks at the point of use whether an outside platform is approved"
+title: "ロンドン警視庁：警官と職員が、承認されていない外部の基盤 Auror に自分で登録し、容疑者の個人情報を載せた(英 ICO の処分) — 外部の基盤が承認済みかを、使う時点で照合する層が無い"
+title_en: "Metropolitan Police: Officers signed themselves up to Auror, an unapproved outside platform, and uploaded suspects' data (UK ICO action) — Nothing checks at the point of use whether a platform is approved"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [identity-auth]
@@ -19,7 +19,7 @@ og_kicker_ja: "情報管理の事例 · 未承認ツールの利用"
 og_kicker_en: "DATA GOVERNANCE · UNAPPROVED TOOL"
 og_headline_ja: "承認されていない外部の基盤に、\n警官が自分でアカウントを作った。\n<accent>179 人分の個人情報を掲載</accent>"
 og_headline_en: "Officers signed themselves up\nto an unapproved outside platform.\n<accent>Data on 179 people uploaded.</accent>"
-summary_labels: ["What happened", "Why it wasn't stopped", "The missing layer"]
+summary_labels: ["What happened", "How it spread", "The missing layer"]
 key_figures:
   - value: "179"
     unit: "people"
@@ -53,26 +53,26 @@ controls:
 attack_method: "human-error"
 impact: "Personal data on 179 people uploaded to an unapproved outside platform"
 takeaway: "Whether the outside platform was approved was asked neither at sign-up nor at upload."
-self_check: "Do you know every outside service your staff use for work?"
+self_check: "Do you know which outside services have been signed up to with your organisation's email addresses?"
 ---
 
 ## 1. TL;DR
 
 On October 14, 2026, the UK Information Commissioner's Office (ICO) announced a reprimand and enforcement notice against the Metropolitan Police Service (MPS). From March 2023 to September 2024, officers and staff used Auror, a retail crime intelligence platform the Met had not approved, creating about 500 accounts. In 2024, personal data on 179 shoplifting suspects was uploaded, three of them under 18.
 
-Officers created the accounts themselves with Met email addresses, after retailers recommended the platform and its operator sent them QR codes. A former officer wrongly told them it was approved, and the site carried the Met's logo. The Met's website blocking did not stop it (per the ICO).
+Officers, encouraged by retailers, used QR codes sent by the operator to create their own accounts with Met email addresses. Some began after a former officer's account of it. The site carried the Met's logo, and by the Met's account its URL filter classed the site as professional services and did not block it (per the ICO).
 
-There was policy, and the ICO said the policy itself was appropriate. What was missing was a layer that checks, at sign-up and at upload, whether an outside platform is approved.
+The Met noticed through internal reports and blocked access, but data on 179 people had already been uploaded. What failed was the layer that checks, at sign-up and at upload, whether an outside platform is approved.
 
 ## 2. What happened
 
 - **The organisation**: The Metropolitan Police Service (MPS). The ICO acted under Part 3 of the Data Protection Act 2018, which covers processing for law enforcement.
-- **Auror's status**: The Met had not procured, approved or adopted Auror as an organisation, and there was no contract or information-sharing agreement (per the ICO). An approval board on June 27, 2023 reviewed only the mobile app and recommended approval with caveats, but the app was blocked by the Met's own IT controls. The browser version officers actually used never went through any approval process (per the ICO).
-- **The approval process**: No one from the data protection team attended the board. The person requesting approval decided whether a DPIA was needed, wrote that it was not, and no one challenged it. The board accepted the former officer's claim that the platform was approved without checking (per the ICO).
+- **Auror's status**: The Met had not procured, approved or adopted Auror as an organisation, and there was no contract or information-sharing agreement (per the ICO). An approval board on June 27, 2023 reviewed only the mobile app and approved it with caveats, but the app was blocked by the Met's own IT controls. The browser version officers actually used never went through any approval process (per the ICO).
+- **The approval process**: No one from the data protection team attended the board. The person requesting approval decided whether a DPIA was needed, wrote that it was not, and this was not challenged. The board took the former officer's statement that the platform was already in use through a browser to mean it was approved, and did not check (per the ICO).
 - **Accounts**: About 500 between March 2023 and September 2024, 375 of them active. Because people registered individually, the Met had no central record of use. The first use the Met knows of is January 2024, but the ICO says use from March 2023 is "possible".
-- **What was uploaded**: Officers identified suspects they recognised in retailers' CCTV images and uploaded their details. Of the 179 people, 128 had names only, 49 names and dates of birth, and 2 also home addresses. A small number of entries referred to the use of facial recognition. 59 people were arrested, charged, convicted or circulated as wanted (per the ICO).
+- **What was uploaded**: Officers identified suspects they recognised in retailers' CCTV images and uploaded their details. Of the 179 people, 128 had names only, 49 names and dates of birth, and 2 also home addresses. A small number of entries referred to the use of facial recognition. 59 people were arrested, charged, convicted or circulated as wanted as a result of being identified on the platform (the Met's internal analysis, cited by the ICO).
 - **The ICO's findings**: Sharing dates of birth and addresses when names would have done was unnecessary, and so unlawful. There were no appropriate technical or organisational measures, and no DPIA before high-risk processing. Measures to make sure only approved technology is used are still lacking, so the ICO issued an enforcement notice (per the ICO).
-- **Reporting and notification**: No personal data breach report was submitted. The Met judged there was no high risk requiring individuals to be told, and they were not (per the ICO).
+- **Reporting and notification**: No personal data breach report was submitted. The Met judged there was no high risk requiring notification to individuals (per the ICO).
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The sequence, following the ICO notice</span></div>
@@ -88,14 +88,16 @@ There was policy, and the ICO said the policy itself was appropriate. What was m
 
 ## 3. Timeline — disclosure and response
 
-- **March 2023**: Officers begin using Auror (exact date unknown).
+- **2023-03**: Auror is made available to officers (exact date unknown). The ICO says use from this point is possible but not proven.
 - **2023-06-27**: An approval board reviews the Auror mobile app. The data protection team is not present.
-- **January 2024**: The first use the Met knows of. Per the ICO announcement, data on the 179 people was uploaded between January and September.
+- **2024-01**: The first use the Met knows of. Per the ICO announcement, data on the 179 people was uploaded between January and September.
 - **2024-08-29**: The first security incident report: an officer had uploaded the names of suspects they recognised.
-- **2024-09-26**: A second report notes the platform "has not been approved" by cyber security, and access is blocked the same day. In October, staff are told to stop using it.
-- **December 2024**: The ICO learns of it while talking with the Met's data protection officer about another matter.
+- **2024-09-26**: A second report notes the platform "has not been approved" by cyber security, and access is blocked the same day.
+- **2024-10**: Staff are told to stop using it.
+- **2024-12**: The ICO learns of it while talking with the Met's data protection officer about another matter.
 - **2025-04-10**: The ICO opens a formal investigation.
-- **2025-12-11**: The Met signs a formal contract with Auror. It resumes use on January 26, 2026, after a DPIA.
+- **2025-12-11**: The Met signs a formal contract with Auror.
+- **2026-01-26**: Use resumes after a DPIA.
 - **2026-09-23**: The ICO issues the reprimand and enforcement notice.
 - **2026-10-14**: The ICO publishes it.
 
@@ -105,7 +107,7 @@ There was policy, and the ICO said the policy itself was appropriate. What was m
 
 - **The Met**: Accepted the provisional findings, including that governance at the time was insufficient. It set up a Commander-led Gold Group, had Auror remove the Met's logo (confirmed November 5, 2024) and asked Auror for the shared data. It found no retailer had used the data to ban anyone, take civil action or share it further (per the ICO).
 - **Use since reinstatement**: Officers can only view; they cannot upload or enter free text. Training is required first, and the Met can audit use (per the ICO).
-- **What the enforcement notice requires**: Within three months, identify unapproved outside platforms in use. Within six months, assess and approve each one or block it technically, revise the approval process, and set standard controls and training for sharing with third parties. Within twelve months, test that the measures work (per the ICO).
+- **What the enforcement notice requires**: Within three months (then at least annually), identify unapproved outside platforms in use and review and revise the approval process. Within six months, assess and approve each one or block it technically, set standard controls for sharing with third parties, and review training. Within twelve months, test that the measures work. The Met must send the ICO periodic updates (per the ICO).
 
 ## 4. Why it wasn't stopped
 
@@ -125,9 +127,9 @@ This case was not about missing policy. Whether the outside platform was approve
 </div>
 </figure>
 
-Internal reporting worked and the Met blocked access. But it noticed after data was uploaded, and blocking took about another month (the ICO said no explanation was given). "Could sign up with a Met email" and "is a platform the Met approved" are separate facts, and no layer checked the first against the second. That distance is the **detection–proof gap**, and it is a structural one.
+Internal reporting worked and the Met blocked access, but it noticed after data was uploaded, and blocking took about another month (the ICO said no explanation was given). "Could sign up with a Met email" and "is a platform the Met approved" are separate facts, and the ICO notice shows no layer checking the first against the second. That distance is the **detection–proof gap**, and it is a structural one.
 
-The same structure appears in [Awa Bank](/critical/briefs/142-awa-bank-test-environment-repurposed-leak/) (an environment past its purpose was put to other use without being re-checked).
+The same structure appears in [Awa Bank](/critical/briefs/142-awa-bank-test-environment-repurposed-leak/) (an environment still holding customer data stayed in other use without anyone re-confirming it should).
 
 ## 5. How to counter this
 
@@ -135,7 +137,7 @@ The same structure appears in [Awa Bank](/critical/briefs/142-awa-bank-test-envi
 
 ### Industries and operations to watch
 
-- **Industry · Government & public sector**: Police forces and local governments where staff readily start using handy outside services. The ICO called this a repeat of the 2021 Clearview AI (facial recognition) case.
+- **Industry · Government & public sector**: Police forces and local governments where staff readily start using handy outside services. The ICO called it a repeat of the type of incident behind its December 2021 reprimand of the Met over Clearview AI facial recognition.
 - **Industry · Services & retail**: Retailers that share crime intelligence with police and government, and the companies running the sharing platforms. Here the operator sent officers sign-up QR codes.
 - **Operation · Disclosure & data release**: Uploading personal data to outside platforms. The ICO found sharing dates of birth and addresses, when names would have done, unlawful.
 - **Operation · Approval & sign-off**: Approving new tools. Only the requester decided whether a DPIA was needed, and data protection staff were absent from the board.
@@ -145,7 +147,7 @@ The same structure appears in [Awa Bank](/critical/briefs/142-awa-bank-test-envi
 | Control | This case | Why |
 | --- | --- | --- |
 | Policy | Partial | The ICO said the policy itself was appropriate, but it was not backed by technical measures or training. |
-| Website blocking | Partial | The site was classed as professional services and was not stopped. |
+| URL filter | Ineffective | By the Met's account, the site was classed as professional services and was not stopped. |
 | Approval board | Partial | It reviewed only the mobile app; the browser version used never went through the process. |
 | Internal incident reports | Partial | They noticed after uploads, and blocking took about a month. |
 
@@ -169,7 +171,7 @@ Note: misuse inside an approved platform, or uploading fields that are not neede
 
 - **ICO (Primary, reprimand and enforcement notice)**: "Metropolitan Police Service – Reprimand and Enforcement Notice" (2026-09-23) — <https://ico.org.uk/media2/a5tcelok/metropolitan-police-service-reprimand-and-enforcement-notice.pdf>
 - **ICO (Primary, announcement)**: "ICO takes action against Metropolitan Police Service" (2026-10-14) — <https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2026/10/ico-takes-action-against-metropolitan-police-service-over-information-governance-failures/>
-- **ICO (Primary, enforcement listing)**: "Metropolitan Police Service" (reprimand, 2026-09) — <https://ico.org.uk/action-weve-taken/enforcement/2026/09/metropolitan-police-service-reprimand/>
+- **ICO (Primary, enforcement listing)**: "Metropolitan Police Service" (reprimand and enforcement notice, 2026-09) — <https://ico.org.uk/action-weve-taken/enforcement/2026/09/metropolitan-police-service-reprimand/>
 - **Auror (Primary, operator announcement, background)**: "Auror rolls out across London to take on repeat offenders and organised retail crime" (2026-04-28) — <https://www.auror.co/media-center/auror-rolls-out-across-london-to-take-on-repeat-offenders-and-organised-retail-crime>
 
 References: ["The last layer left in AI-era cyber defense"](https://lemma.frame00.com/blog/detection-is-not-proof/)
