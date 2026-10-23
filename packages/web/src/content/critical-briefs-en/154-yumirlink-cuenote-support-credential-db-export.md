@@ -51,7 +51,7 @@ controls:
 attack_method: "account-takeover"
 impact: "About 9 million records with email addresses output (estimate)"
 takeaway: "The disclosures show no step that checks a provider staff login against which customer's request it is for."
-self_check: "On your email delivery service, do you know whether provider staff accounts exist in your environment, and what they can do?"
+self_check: "Do you know whether your email delivery provider's staff can view or export your recipient list?"
 ---
 
 ## 1. TL;DR
