@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "身分証が、発行元が実際に発行したものか確かめる"
 attack_method: "impersonation"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

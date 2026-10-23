@@ -20,6 +20,7 @@ gap_fix: "年齢制限のある機能を認可する前に「18 歳以上であ�
 operations: ["disclosure"]
 attack_method: "supply-chain"
 impact: "政府発行 ID 画像 7 万枚が盗まれた"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

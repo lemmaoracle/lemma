@@ -24,6 +24,7 @@ controls:
   - slug: "hold-unverified"
     item: "Verify the origin and authorization of a value marked 'safe' before running it with stronger privileges"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

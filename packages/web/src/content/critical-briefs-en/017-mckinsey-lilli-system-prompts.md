@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm the instructions governing the AI are the legitimate, untampered ones"
 attack_method: "ai-misuse"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

@@ -20,6 +20,7 @@ gap_fix: "肖像を素材とする生成の前に本人の認可を独立検証�
 industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "未成年の性的ディープフェイク 123 件を半年で把握"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

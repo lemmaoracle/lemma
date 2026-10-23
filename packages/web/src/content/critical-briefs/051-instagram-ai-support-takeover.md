@@ -26,6 +26,7 @@ controls:
     item: "持ち主と確かめられるまで、メール変更を実行しない"
 attack_method: "account-takeover"
 impact: "20,225 アカウントが乗っ取られた"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

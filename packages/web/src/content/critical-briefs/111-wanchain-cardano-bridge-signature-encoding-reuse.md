@@ -20,6 +20,7 @@ gap_fix: "払い出しを実行する前に、署名対象が区切り・長さ�
 industries: ["finance"]
 operations: ["approval"]
 impact: "約 5 億 1,520 万 NIGHT（約 1,000 万ドル）が流出"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

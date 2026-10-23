@@ -20,6 +20,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this o
 industries: ["ai", "developers"]
 operations: ["account-admin"]
 attack_method: "supply-chain"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

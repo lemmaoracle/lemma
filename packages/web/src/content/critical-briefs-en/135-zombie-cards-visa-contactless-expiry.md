@@ -21,6 +21,7 @@ industries: ["finance", "retail"]
 controls:
   - slug: "ownership-check"
     item: "Check the expiry date the terminal read against the issuer's signed record"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

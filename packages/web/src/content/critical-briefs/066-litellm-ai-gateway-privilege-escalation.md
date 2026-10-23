@@ -20,6 +20,7 @@ gap_fix: "特権操作の前に「この操作は、この主体に、付与さ�
 industries: ["ai", "developers"]
 operations: ["account-admin"]
 attack_method: "privilege-abuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -20,6 +20,7 @@ gap_fix: "破壊的になり得る操作の前に、それを要求する主体�
 industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "設定 1,342 件が暗号化され復旧不能に"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

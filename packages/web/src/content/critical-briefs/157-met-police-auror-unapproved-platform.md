@@ -12,13 +12,13 @@ related_pack: [B-regulatory]
 related_briefs: ["142-awa-bank-test-environment-repurposed-leak", "152-denmark-cpr-lawful-access-misuse"]
 status: published
 version: "1.0"
-og_lead_ja: "ロンドン警視庁、未承認の外部基盤に約 500 アカウント・179 人分の個人情報（英 ICO）"
-og_lead_en: "Met Police: about 500 accounts and data on 179 people on an unapproved platform (ICO)"
+og_lead_ja: "ロンドン警視庁、「承認済み」と誤って伝わった外部基盤に 179 人分の個人情報（英 ICO）"
+og_lead_en: "Met Police: data on 179 people put on a platform wrongly said to be approved (ICO)"
 layout: "report"
 og_kicker_ja: "情報管理の事例 · 未承認ツールの利用"
 og_kicker_en: "DATA GOVERNANCE · UNAPPROVED TOOL"
-og_headline_ja: "「承認済み」と誤って伝わった\n外部の基盤に、警官らが登録した。\n<accent>179 人分の個人情報を掲載</accent>"
-og_headline_en: "Officers joined an outside platform\nwrongly said to be approved.\n<accent>Data on 179 people uploaded.</accent>"
+og_headline_ja: "「承認済み」と誤って\n伝わった外部の基盤に、\n警官らが登録した。\n<accent>179 人分の個人情報を掲載</accent>"
+og_headline_en: "Officers joined a platform\nwrongly said to be approved.\n<accent>Data on 179 people uploaded.</accent>"
 summary_labels: ["何が起きたか", "どう広がったか", "欠けていた層"]
 key_figures:
   - value: "179"
@@ -54,6 +54,7 @@ attack_method: "human-error"
 impact: "179 人分の個人情報が、承認されていない外部の基盤に載せられた"
 takeaway: "外部の基盤が承認済みかは、アカウントを作るときにも情報を載せるときにも問われなかった。"
 self_check: "組織のメールアドレスで登録された外部のサービスを把握しているか。"
+countries: ["gb"]
 ---
 
 ## 1. TL;DR

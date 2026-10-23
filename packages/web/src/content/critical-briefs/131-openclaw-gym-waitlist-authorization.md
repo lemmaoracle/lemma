@@ -23,6 +23,7 @@ controls:
     item: "他人の予約に触れる操作は、利用者の権限内か確かめるまで実行しない"
 attack_method: "ai-misuse"
 impact: "他人の予約 1 件が取り消され、戻せなかった"
+countries: ["au"]
 ---
 
 ## 1. TL;DR

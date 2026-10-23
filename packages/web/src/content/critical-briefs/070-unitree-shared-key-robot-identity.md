@@ -21,6 +21,7 @@ industries: ["manufacturing"]
 controls:
   - slug: "ownership-check"
     item: "機体ごとの固有の鍵で、接続相手を確かめる"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

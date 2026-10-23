@@ -24,6 +24,7 @@ controls:
     item: "Check not just the signature count but that the signing keys are uncompromised"
 attack_method: "account-takeover"
 impact: "Roughly $24.15 million (USDC) drained"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

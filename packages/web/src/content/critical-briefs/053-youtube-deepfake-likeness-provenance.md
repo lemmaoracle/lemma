@@ -24,6 +24,7 @@ controls:
     item: "動画の顔や声が、本人の同意を得て使われたものか確かめる"
 attack_method: "impersonation"
 impact: "なりすまし詐欺広告が約 2 億回再生された"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

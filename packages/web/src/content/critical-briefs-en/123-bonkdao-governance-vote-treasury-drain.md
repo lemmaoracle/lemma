@@ -24,6 +24,7 @@ controls:
     item: "Hold treasury transfers until it is confirmed the voting power behind them was legitimately held"
 attack_method: "privilege-abuse"
 impact: "About $20 million in BONK moved from the treasury"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not execute until the files the guard checked are confirmed to be the files being run"
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

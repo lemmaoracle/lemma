@@ -50,6 +50,7 @@ attack_method: "supply-chain"
 impact: "大阪大学で 77,851 人分が漏えい、大阪公立大学でシステムが停止"
 takeaway: "委託したデータが誰と共有されるかを、渡す前に照合する手順が無かった。"
 self_check: "自社のデータに触れている委託先と再委託先を、すべて言えるか。"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

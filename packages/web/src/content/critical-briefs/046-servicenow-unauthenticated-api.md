@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "要求者の認証を確かめるまで、データを返さない"
 impact: "一部顧客でテーブルへの未認証照会が成功"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

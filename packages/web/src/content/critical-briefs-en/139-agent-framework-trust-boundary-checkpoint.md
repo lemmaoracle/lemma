@@ -15,6 +15,7 @@ version: "1.0"
 og_lead_ja: "LangChain・LangGraph ほか 6 フレームワークに 11 件の脆弱性"
 og_lead_en: "11 flaws across six major agent frameworks (Check Point)"
 industries: ["ai", "developers"]
+countries: ["global"]
 ---
 
 ## 1. TL;DR

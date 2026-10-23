@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm a downloaded file actually comes from the legitimate publisher"
 attack_method: "impersonation"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

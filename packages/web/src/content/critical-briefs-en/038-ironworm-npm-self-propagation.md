@@ -24,6 +24,7 @@ controls:
     item: "Check that the publisher is truly the package's legitimate author"
 attack_method: "supply-chain"
 impact: "Roughly 37 packages infected"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

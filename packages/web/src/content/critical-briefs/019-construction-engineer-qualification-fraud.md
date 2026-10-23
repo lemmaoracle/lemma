@@ -20,6 +20,7 @@ gap_fix: "配置の前に「この技術者は、必要な国家資格を、要�
 controls:
   - slug: "ownership-check"
     item: "配置の前に、申告された実務経験が本当にあるか確かめる"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

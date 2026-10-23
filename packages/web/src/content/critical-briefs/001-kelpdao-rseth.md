@@ -24,6 +24,7 @@ controls:
     item: "署名する前に、メッセージが正規の出所から来たか確かめる"
 attack_method: "supply-chain"
 impact: "116,500 rsETH（約 460 億円相当）が不正アンロック"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

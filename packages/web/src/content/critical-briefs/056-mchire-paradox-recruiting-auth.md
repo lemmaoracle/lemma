@@ -19,6 +19,7 @@ gap_missing: "「このアクセス主体が、このレコードに対して正
 gap_fix: "高リスク行動の前に「この要求主体は、このスコープのデータへの権限を正当に持つ」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai"]
 operations: ["account-admin", "data-access"]
+countries: ["us"]
 ---
 
 ## 1. TL;DR

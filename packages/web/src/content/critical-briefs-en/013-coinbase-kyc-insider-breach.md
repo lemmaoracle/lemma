@@ -21,6 +21,7 @@ industries: ["finance"]
 operations: ["data-access"]
 attack_method: "privilege-abuse"
 impact: "KYC data of at least 69,461 customers exfiltrated"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

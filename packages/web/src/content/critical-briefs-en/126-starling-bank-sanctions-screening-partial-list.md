@@ -24,6 +24,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not open accounts until screening is confirmed to cover the full sanctions list"
 impact: "Over 54,000 accounts opened for 49,000 high-risk customers"
+countries: ["gb"]
 ---
 
 ## 1. TL;DR

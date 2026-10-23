@@ -20,6 +20,7 @@ gap_fix: "Even for an unknown tool, independently verify with Lemma that the ope
 industries: ["public-sector", "finance"]
 attack_method: "ai-misuse"
 impact: "Six Mexican government agencies compromised"
+countries: ["mx", "br"]
 ---
 
 ## 1. TL;DR

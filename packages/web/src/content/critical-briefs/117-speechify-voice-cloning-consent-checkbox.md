@@ -21,6 +21,7 @@ industries: ["ai"]
 controls:
   - slug: "ownership-check"
     item: "声の持ち主本人が利用を認めたか、生成の前に確かめる"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

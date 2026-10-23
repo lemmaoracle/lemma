@@ -23,6 +23,7 @@ controls:
     item: "AI が読む指示ファイルが、正規の作者によるものか確かめる"
 attack_method: "supply-chain"
 impact: "34 超のパッケージと 384 超の版に混入"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

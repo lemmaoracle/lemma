@@ -19,6 +19,7 @@ gap_missing: "No attribute travels with the transaction to verify — and block 
 gap_fix: "Attach verifiable regulatory attributes to the sender and the source of funds so the counterparty and settlement infrastructure can verify a sanctions status and block out-of-scope transfers before execution, and prevent it up front."
 industries: ["finance"]
 impact: "Over $110 billion moved on-chain under sanctions"
+countries: ["ru", "kg"]
 ---
 
 ## 1. TL;DR

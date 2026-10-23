@@ -24,6 +24,7 @@ controls:
     item: "財庫の移転は、議決権が正統に保持されたか確かめるまで執行しない"
 attack_method: "privilege-abuse"
 impact: "財庫から約 2,000 万ドル相当の BONK が移された"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

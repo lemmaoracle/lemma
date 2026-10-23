@@ -24,6 +24,7 @@ controls:
     item: "ブラウザで動くコードが、本当にPolymarketが配信したものか確かめる"
 attack_method: "supply-chain"
 impact: "約 300 万ドル相当の資産が盗まれた"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

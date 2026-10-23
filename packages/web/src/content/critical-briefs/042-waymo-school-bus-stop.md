@@ -20,6 +20,7 @@ gap_fix: "停止義務のような安全に関わる行動を起こす前に「�
 industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "Austin 学区で今年度 19 件の通過を記録"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

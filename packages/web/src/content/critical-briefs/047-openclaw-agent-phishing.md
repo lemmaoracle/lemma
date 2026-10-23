@@ -25,6 +25,7 @@ controls:
   - slug: "hold-unverified"
     item: "送り主を確かめるまで、社外へ送らない"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

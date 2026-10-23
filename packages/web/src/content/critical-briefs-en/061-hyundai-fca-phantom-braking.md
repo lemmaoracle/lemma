@@ -20,6 +20,7 @@ gap_fix: "Before an AI decision that overrides human operation, independently ve
 industries: ["manufacturing"]
 attack_method: "ai-misuse"
 impact: "4 rear-end crashes and 4 injuries alleged"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

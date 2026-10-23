@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm the model's publisher really is OpenAI before running anything from it"
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

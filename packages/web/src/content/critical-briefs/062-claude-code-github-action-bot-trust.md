@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "起動した相手が、本当に権限を持つ bot か確かめる"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

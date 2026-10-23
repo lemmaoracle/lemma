@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Don't start a repo-bundled MCP config until its author and scope are confirmed"
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

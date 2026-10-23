@@ -21,6 +21,7 @@ industries: ["supply-chain"]
 operations: ["data-access"]
 attack_method: "supply-chain"
 impact: "700 社超の Salesforce 環境を横断照会"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

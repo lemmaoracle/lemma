@@ -18,6 +18,7 @@ gap_detected: "The detection chain worked — Hexens's discovery and responsible
 gap_missing: "There is no layer that independently verifies — at the moment downstream bridges, stablecoins, and exchanges accept Aptos-side state — whether that state was correctly produced under sound type resolution."
 gap_fix: "Before an action such as a bridge withdrawal or a stablecoin issuance, verify the integrity and provenance of the upstream state relied on and the authorization to accept it — decoupled from the chain's own fix — and stop acceptance when no proof accompanies it, verified independently by Lemma, and prevent it up front."
 industries: ["finance"]
+countries: ["global"]
 ---
 
 ## 1. TL;DR

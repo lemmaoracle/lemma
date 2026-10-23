@@ -51,6 +51,7 @@ attack_method: "supply-chain"
 impact: "77,851 people's data leaked at Osaka University; systems down at Osaka Metropolitan University"
 takeaway: "Nothing checked, before handing it over, who outsourced data would be shared with."
 self_check: "Can you name every contractor and subcontractor that touches your data?"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

@@ -234,3 +234,79 @@ export const BRIEF_FACET_EXTRA_ICONS: Record<string, string> = {
   exposure:
     '<circle cx="11" cy="11" r="7.6"/><circle cx="11" cy="11" r="4"/><circle cx="11" cy="11" r="0.9" fill="currentColor"/><path d="M11 1.8v3M11 17.2v3M1.8 11h3M17.2 11h3"/>',
 };
+
+/**
+ * 国・地域（2026-10-23）。一覧の行のラベル・「国・地域」の絞り込み・表紙の下の
+ * 段に出す。事案が起きた国（被害を受けた組織の所在、公表・処分した当局の国）で
+ * 選び、調査した研究者の国では選ばない。2 か国が同じだけ中心なら 2 つまで。
+ * 国に結びつかないもの（OSS・ライブラリの脆弱性、暗号資産のプロトコル、AI の
+ * ツールや模型の研究、多国にまたがる攻撃）は `global`。並びは絞り込みの並び。
+ */
+export const BRIEF_COUNTRY_SLUGS = [
+  "jp",
+  "us",
+  "gb",
+  "kr",
+  "cn",
+  "hk",
+  "tw",
+  "sg",
+  "au",
+  "nz",
+  "ca",
+  "de",
+  "fr",
+  "it",
+  "nl",
+  "dk",
+  "se",
+  "ie",
+  "in",
+  "my",
+  "ru",
+  "kg",
+  "ae",
+  "br",
+  "mx",
+  "global",
+] as const;
+export type BriefCountrySlug = (typeof BRIEF_COUNTRY_SLUGS)[number];
+
+export const BRIEF_COUNTRIES: Record<BriefCountrySlug, { slug: string; ja: string; en: string }> = {
+  jp: { slug: "jp", ja: "日本", en: "Japan" },
+  us: { slug: "us", ja: "米国", en: "US" },
+  gb: { slug: "gb", ja: "英国", en: "UK" },
+  kr: { slug: "kr", ja: "韓国", en: "South Korea" },
+  cn: { slug: "cn", ja: "中国", en: "China" },
+  hk: { slug: "hk", ja: "香港", en: "Hong Kong" },
+  tw: { slug: "tw", ja: "台湾", en: "Taiwan" },
+  sg: { slug: "sg", ja: "シンガポール", en: "Singapore" },
+  au: { slug: "au", ja: "オーストラリア", en: "Australia" },
+  nz: { slug: "nz", ja: "ニュージーランド", en: "New Zealand" },
+  ca: { slug: "ca", ja: "カナダ", en: "Canada" },
+  de: { slug: "de", ja: "ドイツ", en: "Germany" },
+  fr: { slug: "fr", ja: "フランス", en: "France" },
+  it: { slug: "it", ja: "イタリア", en: "Italy" },
+  nl: { slug: "nl", ja: "オランダ", en: "Netherlands" },
+  dk: { slug: "dk", ja: "デンマーク", en: "Denmark" },
+  se: { slug: "se", ja: "スウェーデン", en: "Sweden" },
+  ie: { slug: "ie", ja: "アイルランド", en: "Ireland" },
+  in: { slug: "in", ja: "インド", en: "India" },
+  my: { slug: "my", ja: "マレーシア", en: "Malaysia" },
+  ru: { slug: "ru", ja: "ロシア", en: "Russia" },
+  kg: { slug: "kg", ja: "キルギス", en: "Kyrgyzstan" },
+  ae: { slug: "ae", ja: "アラブ首長国連邦", en: "UAE" },
+  br: { slug: "br", ja: "ブラジル", en: "Brazil" },
+  mx: { slug: "mx", ja: "メキシコ", en: "Mexico" },
+  global: { slug: "global", ja: "国際", en: "Global" },
+};
+
+/** 表示用：「日本・米国」/「Japan / US」。 */
+export function briefCountryLabel(
+  slugs: readonly string[] | undefined,
+  loc: "ja" | "en",
+): string | null {
+  if (!slugs || slugs.length === 0) return null;
+  const names = slugs.map((s) => BRIEF_COUNTRIES[s as BriefCountrySlug]?.[loc] ?? s);
+  return names.join(loc === "ja" ? "・" : " / ");
+}

@@ -18,6 +18,7 @@ industries: ["finance", "ai"]
 controls:
   - slug: "hold-unverified"
     item: "Do not deliver the service until settlement is confirmed"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -20,6 +20,7 @@ gap_fix: "高リスク行動の前に「この主体は、このスコープの�
 industries: ["ai"]
 operations: ["data-access"]
 impact: "100 万行超のログと平文のチャット履歴が露出"
+countries: ["cn"]
 ---
 
 ## 1. TL;DR

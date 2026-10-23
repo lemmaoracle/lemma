@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "審査対象のバイナリは、出所を確かめるまで実行させない"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

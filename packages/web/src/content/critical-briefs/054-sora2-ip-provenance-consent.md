@@ -21,6 +21,7 @@ industries: ["media", "ai"]
 controls:
   - slug: "hold-unverified"
     item: "権利者の許諾を確かめるまで、著作権キャラを生成しない"
+countries: ["us", "jp"]
 ---
 
 ## 1. TL;DR

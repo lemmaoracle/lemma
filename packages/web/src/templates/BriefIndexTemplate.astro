@@ -54,6 +54,8 @@ import {
   BRIEF_ATTACKS,
   BRIEF_CONTROLS,
   BRIEF_CONTROL_SLUGS,
+  BRIEF_COUNTRIES,
+  briefCountryLabel,
   BRIEF_INDUSTRIES,
   BRIEF_OPERATIONS,
   FACET_ICON_ATTRS,
@@ -157,6 +159,8 @@ const industryLabel = (b: AnyBrief): string | null => {
   const i = (b.data.industries as BriefIndustrySlug[] | undefined)?.[0];
   return i ? BRIEF_INDUSTRIES[i][loc] : null;
 };
+const countryLabel = (b: AnyBrief): string | null =>
+  briefCountryLabel(b.data.countries as string[] | undefined, loc);
 const shortTitle = (b: AnyBrief): string => {
   const lead = isJa ? b.data.og_lead_ja : b.data.og_lead_en;
   return lead ?? (isJa ? b.data.title : b.data.title_en).split(" — ")[0];
@@ -193,11 +197,15 @@ const usedOperations = Object.values(BRIEF_OPERATIONS).filter((f) =>
 const usedAttacks = Object.values(BRIEF_ATTACKS).filter((f) =>
   allBriefs.some((b) => b.data.attack_method === f.slug),
 );
+const usedCountries = Object.values(BRIEF_COUNTRIES).filter((f) =>
+  allBriefs.some((b) => (b.data.countries as string[] | undefined)?.includes(f.slug)),
+);
 /* アーカイブの絞り込み表示用のラベル（?industry= 等の値 → 表示名）。 */
 const facetLabels: Record<string, string> = {};
 for (const f of Object.values(BRIEF_INDUSTRIES)) facetLabels[`industry:${f.slug}`] = f[loc];
 for (const f of Object.values(BRIEF_OPERATIONS)) facetLabels[`operation:${f.slug}`] = f[loc];
 for (const f of Object.values(BRIEF_ATTACKS)) facetLabels[`attack:${f.slug}`] = f[loc];
+for (const f of Object.values(BRIEF_COUNTRIES)) facetLabels[`country:${f.slug}`] = f[loc];
 for (const slug of BRIEF_CONTROL_SLUGS) facetLabels[`control:${slug}`] = BRIEF_CONTROLS[slug][loc];
 
 // Category usage: count primary + secondary occurrences across all Briefs.
@@ -273,6 +281,7 @@ function briefCardData(b: AnyBrief) {
   const cats = [primarySlug, ...secondarySlugs].join(",");
   const searchBlob = [
     mainTitle,
+    briefCountryLabel(b.data.countries as string[] | undefined, loc) ?? "",
     primaryCatLabel,
     ...secondaryCatLabels,
     `no${briefNoPad}`,
@@ -295,6 +304,7 @@ function briefCardData(b: AnyBrief) {
     facetInd: ((b.data.industries as string[] | undefined) ?? []).join(","),
     facetOps: ((b.data.operations as string[] | undefined) ?? []).join(","),
     facetAttack: (b.data.attack_method as string | undefined) ?? "",
+    facetCountry: ((b.data.countries as string[] | undefined) ?? []).join(","),
     facetCtl: ((b.data.controls as { slug: string }[] | undefined) ?? [])
       .map((c) => c.slug)
       .join(","),
@@ -312,6 +322,7 @@ const labels = isJa
       controlCount: (n: number) => `解説 ${n} 本`,
       restH: "そのほかの新着",
       readMore: "読む",
+      fCountry: "国・地域",
       fIndustry: "業界",
       fOperation: "業務",
       fAttack: "手口",
@@ -361,6 +372,7 @@ const labels = isJa
       controlCount: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
       restH: "More recent briefs",
       readMore: "Read",
+      fCountry: "Country",
       fIndustry: "Industry",
       fOperation: "Operation",
       fAttack: "Attack method",
@@ -450,10 +462,12 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
               const c = briefCardData(b);
               const ind = industryLabel(b);
               const atk = attackLabel(b);
+              const ctry = countryLabel(b);
               return (
                 <a class="ix-pick" href={c.href}>
                   <div class={`ix-cover ix-cover--${i % 3}`}>
                     <span class="ix-cover-meta">
+                      {ctry && <span class="ix-ctry ix-ctry--dark">{ctry}</span>}
                       {ind && <b>{ind}</b>}{ind && atk && " · "}{atk}
                     </span>
                     {b.data.impact && <span class="ix-cover-impact">{b.data.impact}</span>}
@@ -501,6 +515,12 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         <section class="ix-rest" aria-label={labels.restH}>
           <form class="ix-filter" action={archiveHref} method="get">
             <h2 class="ix-h">{labels.restH}</h2>
+            <label><span class="sr">{labels.fCountry}</span>
+              <select name="country">
+                <option value="">{labels.fCountry}</option>
+                {usedCountries.map((f) => <option value={f.slug}>{f[loc]}</option>)}
+              </select>
+            </label>
             <label><span class="sr">{labels.fIndustry}</span>
               <select name="industry">
                 <option value="">{labels.fIndustry}</option>
@@ -531,7 +551,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
               return (
                 <a class="ix-row" href={c.href}>
                   <span class="ix-row-body">
-                    <span class="ix-row-m">{meta}</span>
+                    <span class="ix-row-m">{countryLabel(b) && <span class="ix-ctry">{countryLabel(b)}</span>}{meta}</span>
                     <span class="ix-row-t">{shortTitle(b)}</span>
                     {b.data.impact && <span class="ix-row-i">{b.data.impact}</span>}
                   </span>
@@ -552,6 +572,12 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       <section aria-label={labels.allBriefs}>
         <div class="cb-listhead ix-filter ix-filter--arc">
           <h2 class="ix-h">{labels.allBriefs} <span class="ix-h-n">{briefsCount}</span></h2>
+          <label><span class="sr">{labels.fCountry}</span>
+            <select data-facet="country">
+              <option value="">{labels.fCountry}</option>
+              {usedCountries.map((f) => <option value={f.slug}>{f[loc]}</option>)}
+            </select>
+          </label>
           <label><span class="sr">{labels.fIndustry}</span>
             <select data-facet="industry">
               <option value="">{labels.fIndustry}</option>
@@ -656,10 +682,11 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
                     data-industry={c.facetInd}
                     data-operation={c.facetOps}
                     data-attack={c.facetAttack}
+                    data-country={c.facetCountry}
                     data-control={c.facetCtl}
                   >
                     <span class="ix-row-body">
-                      <span class="ix-row-m">{meta}<span class="ix-row-no"> · No.{c.briefNoPad}</span></span>
+                      <span class="ix-row-m">{countryLabel(b) && <span class="ix-ctry">{countryLabel(b)}</span>}{meta}<span class="ix-row-no"> · No.{c.briefNoPad}</span></span>
                       <span class="ix-row-t">{shortTitle(b)}</span>
                       {b.data.impact && <span class="ix-row-i">{b.data.impact}</span>}
                     </span>
@@ -1117,6 +1144,26 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     font-size: 12px;
     line-height: 1.5;
     color: #8a9083;
+  }
+  /* 国・地域のラベル（2026-10-23）。日付の前に置き、日本以外が続いているかを
+     一覧の左端だけで追えるようにする。 */
+  .ix-ctry {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 0 6px;
+    border: 1px solid #c9cfc3;
+    border-radius: 4px;
+    background: #fff;
+    color: var(--tx);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    vertical-align: 1px;
+  }
+  .ix-ctry--dark {
+    border-color: rgba(201, 239, 90, 0.5);
+    background: transparent;
+    color: #e8eedf;
   }
   .ix-row-t {
     font-size: 16px;
@@ -1964,7 +2011,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       const archive = root.dataset.archiveHref;
       if (
         archive &&
-        (["category", "pillar", "q", "industry", "operation", "attack", "control"].some((k) => legacy.has(k)))
+        (["category", "pillar", "q", "industry", "operation", "attack", "control", "country"].some((k) => legacy.has(k)))
       ) {
         location.replace(archive + "?" + legacy.toString());
       }
@@ -1990,7 +2037,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     // 業界・業務・手口・対策の絞り込み（2026-10-17）。一覧トップのフォームと
     // 対策タイルから ?industry= / ?operation= / ?attack= / ?control= で来る。
     // 脅威タイプ・柱・検索と AND で効く。
-    const FACET_KEYS = ["industry", "operation", "attack", "control"] as const;
+    const FACET_KEYS = ["country", "industry", "operation", "attack", "control"] as const;
     const facetLabels: Record<string, string> = JSON.parse(root.dataset.facetLabels || "{}");
     const facets: Record<string, string> = {};
     function facetMatches(card: HTMLElement): boolean {

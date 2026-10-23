@@ -20,6 +20,7 @@ gap_fix: "Rather than possession of a key or credential, independently verify wi
 operations: ["account-admin"]
 attack_method: "account-takeover"
 impact: "One appliance compromise led to full Active Directory takeover"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

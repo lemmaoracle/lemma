@@ -26,6 +26,7 @@ controls:
     item: "Do not execute destructive operations until they are confirmed as authorized"
 attack_method: "ai-misuse"
 impact: "Production database and backups wiped in 9 seconds"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

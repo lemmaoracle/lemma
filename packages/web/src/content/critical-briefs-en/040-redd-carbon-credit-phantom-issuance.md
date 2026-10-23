@@ -22,6 +22,7 @@ operations: ["approval"]
 controls:
   - slug: "ownership-check"
     item: "Check declared conservation area and logging volume against source data such as satellite imagery"
+countries: ["br"]
 ---
 
 ## 1. TL;DR

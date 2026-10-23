@@ -20,6 +20,7 @@ gap_fix: "Before acting on an external system, independently verify with Lemma t
 industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "About 30 targets attacked; a few breached"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -23,6 +23,7 @@ controls:
   - slug: "hold-unverified"
     item: "入金額と払出額が一致すると確かめるまで払い出さない"
 impact: "ブリッジから約 1,158 万ドルが流出"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

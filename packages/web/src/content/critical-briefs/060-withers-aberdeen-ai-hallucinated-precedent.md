@@ -23,6 +23,7 @@ controls:
     item: "引用した判例が実在するか、提出の前に原典で確かめる"
 attack_method: "ai-misuse"
 impact: "弁護士 4 名が制裁を受け、公判が取り消し"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

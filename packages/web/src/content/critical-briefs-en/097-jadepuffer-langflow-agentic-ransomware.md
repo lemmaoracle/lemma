@@ -20,6 +20,7 @@ gap_fix: "Before any potentially destructive operation, verify the requesting pr
 industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "1,342 configuration items encrypted beyond recovery"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

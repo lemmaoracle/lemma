@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "Before minting, confirm a deposit came from the legitimate source channel"
 impact: "~$4.67M in assets withdrawn"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

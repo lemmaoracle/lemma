@@ -24,6 +24,7 @@ controls:
     item: "Check that a video's face and voice are used with the person's consent"
 attack_method: "impersonation"
 impact: "Celebrity-impersonation scam ads viewed about 200 million times"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

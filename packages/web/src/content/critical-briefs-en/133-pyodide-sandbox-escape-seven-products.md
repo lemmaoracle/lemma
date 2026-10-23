@@ -18,6 +18,7 @@ gap_detected: "Detection can work. Dangerous module calls and anomalous process 
 gap_missing: "The premise — 'it's isolated by the sandbox' — was never independently verified before execution."
 gap_fix: "Before code runs with host privileges, independently verify that the isolation boundary actually holds."
 industries: ["developers", "ai"]
+countries: ["global"]
 ---
 
 ## 1. TL;DR

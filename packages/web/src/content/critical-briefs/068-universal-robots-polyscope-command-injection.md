@@ -21,6 +21,7 @@ industries: ["manufacturing"]
 controls:
   - slug: "ownership-check"
     item: "命令の送り手が、ロボットを操作してよい相手か確かめる"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

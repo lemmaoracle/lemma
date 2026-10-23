@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm the triggering actor is really an authorized bot, not just named '[bot]'"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

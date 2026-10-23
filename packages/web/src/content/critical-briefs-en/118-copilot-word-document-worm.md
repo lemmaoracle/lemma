@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not share Copilot-edited figures until they are checked against the source data"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -19,6 +19,7 @@ gap_missing: "「削除済み」という表示を信じる限り、認証情報
 gap_fix: "認証情報を使う前に「この鍵は本当に失効済みである」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["developers"]
 operations: ["account-admin"]
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -16,6 +16,7 @@ og_lead_ja: "Transformers、同意確認前にリモートコードをディス�
 og_lead_en: "Transformers writes remote code to disk before consent check (CVE-2026-80047)"
 industries: ["ai"]
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

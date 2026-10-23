@@ -25,6 +25,7 @@ controls:
     item: "Do not proceed to arrest until the match is corroborated"
 attack_method: "ai-misuse"
 impact: "One man wrongfully arrested and held about 30 hours"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

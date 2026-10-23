@@ -50,6 +50,7 @@ controls:
 impact: "Drives holding data on about 179,000 patients circulated online"
 takeaway: "Nothing let the client confirm, drive by drive, that what it sent for destruction was destroyed."
 self_check: "Can you show that each computer or disk you sent for disposal was actually destroyed, one by one?"
+countries: ["jp"]
 ---
 
 > **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Facts were re-checked against both hospitals' notices, the contractor's statement, the Ministry of Health's notice and Japanese press. The patient counts in the hospitals' notices (about 170,000 and 8,800) are now given, and figures not in the notices (drive counts, about 186,900 people, up to about 510,000) are marked as press reports. The earlier claim that a paper certificate of destruction was issued without shredding was removed as unverifiable in primary sources. English secondary reports were replaced with Japanese reporting.

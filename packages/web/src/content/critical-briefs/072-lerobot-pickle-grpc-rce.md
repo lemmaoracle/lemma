@@ -21,6 +21,7 @@ industries: ["ai", "developers"]
 controls:
   - slug: "ownership-check"
     item: "受け取ったデータが正当な送り手からか、復元の前に確かめる"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

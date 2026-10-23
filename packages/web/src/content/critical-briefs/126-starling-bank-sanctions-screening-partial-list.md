@@ -24,6 +24,7 @@ controls:
   - slug: "hold-unverified"
     item: "照合先が制裁リストの全体か確かめるまで、口座を開かない"
 impact: "高リスク顧客 4.9 万人に 5.4 万口座超を開設"
+countries: ["gb"]
 ---
 
 ## 1. TL;DR

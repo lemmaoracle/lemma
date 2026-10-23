@@ -20,6 +20,7 @@ gap_fix: "Require the subject's authorization as independently verifiable proof 
 industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "123 sexual deepfake cases of minors in six months"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

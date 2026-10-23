@@ -51,6 +51,7 @@ attack_method: "supply-chain"
 impact: "約 1,000 テナントでサインイン活動、300 超で成功"
 takeaway: "同意済みのアプリ ID による管理操作を、実行の前に、ベンダーが意図した操作か確かめる手順が無かった。"
 self_check: "導入したアプリと、それぞれに与えた権限を把握しているか。"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

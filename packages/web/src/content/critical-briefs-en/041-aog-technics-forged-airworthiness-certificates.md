@@ -25,6 +25,7 @@ controls:
     item: "Do not install parts whose certificates cannot be verified"
 attack_method: "supply-chain"
 impact: "Over 60,000 parts circulated with forged certificates"
+countries: ["gb"]
 ---
 
 ## 1. TL;DR

@@ -23,6 +23,7 @@ controls:
   - slug: "audit-trail"
     item: "事故のとき誰が運転を制御していたかを記録し、外から確かめられるようにする"
 impact: "17 件の事故のうち 2 件は遠隔運転手が起こした"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

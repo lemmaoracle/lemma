@@ -24,6 +24,7 @@ controls:
     item: "署名の数だけでなく、署名した鍵が侵害されていないか確かめる"
 attack_method: "account-takeover"
 impact: "約 2,415 万ドル（USDC）が流出"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

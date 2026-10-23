@@ -21,6 +21,7 @@ controls:
   - slug: "hold-unverified"
     item: "権限が確かめられるまで、設定からコマンドを実行しない"
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

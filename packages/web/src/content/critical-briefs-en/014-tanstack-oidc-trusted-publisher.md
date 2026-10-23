@@ -24,6 +24,7 @@ controls:
     item: "Beyond the signature, confirm the contents are the intended build output"
 attack_method: "supply-chain"
 impact: "84 malicious versions published across 42 packages"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

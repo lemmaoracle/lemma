@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Don't hand over credentials until the page's instructions are confirmed legitimate"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -24,6 +24,7 @@ controls:
     item: "Before signing, confirm the message came from its legitimate source"
 attack_method: "supply-chain"
 impact: "116,500 rsETH (approx. ¥46B) unlocked without authorization"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

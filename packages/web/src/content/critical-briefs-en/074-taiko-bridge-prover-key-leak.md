@@ -23,6 +23,7 @@ controls:
     item: "Before a withdrawal, confirm the prover that signed the proof is a legitimately authorized one"
 attack_method: "impersonation"
 impact: "~$1.7M withdrawn from the bridge vault"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

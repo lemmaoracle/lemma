@@ -24,6 +24,7 @@ controls:
     item: "署名だけでなく、中身が意図したビルド出力か確かめる"
 attack_method: "supply-chain"
 impact: "42 パッケージに悪性 84 バージョンが公開"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

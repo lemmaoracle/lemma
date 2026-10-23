@@ -23,6 +23,7 @@ controls:
   - slug: "hold-unverified"
     item: "エージェントが MCP 設定を書き換えたら、人が確かめるまで反映しない"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

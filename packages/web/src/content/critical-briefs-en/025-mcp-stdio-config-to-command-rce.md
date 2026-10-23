@@ -21,6 +21,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not run commands from a configuration until its authority is verified"
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

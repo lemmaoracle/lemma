@@ -21,6 +21,7 @@ industries: ["ai"]
 controls:
   - slug: "ownership-check"
     item: "Confirm the voice's owner authorized the use before generating audio"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

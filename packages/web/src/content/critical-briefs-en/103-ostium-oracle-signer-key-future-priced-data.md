@@ -23,6 +23,7 @@ controls:
     item: "Don't finalize payouts until the signer and the price data are confirmed legitimate"
 attack_method: "account-takeover"
 impact: "Up to roughly $18 million (USDC) drained"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

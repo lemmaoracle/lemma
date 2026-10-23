@@ -23,6 +23,7 @@ controls:
     item: "署名者と価格データが正当か確かめるまで、支払いを確定しない"
 attack_method: "account-takeover"
 impact: "最大約 1,800 万ドル（USDC）が流出"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

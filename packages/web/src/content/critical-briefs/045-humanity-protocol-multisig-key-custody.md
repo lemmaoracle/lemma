@@ -23,6 +23,7 @@ controls:
   - slug: "separate-approval"
     item: "閾値の署名が、別々の人が別々の端末でしたものか確かめる"
 impact: "3,200 万ドル超が流出"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

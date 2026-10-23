@@ -56,6 +56,7 @@ attack_method: "account-takeover"
 impact: "User data from 39.5M accounts (including duplicates) leaked"
 takeaway: "Production keys could be used without being asked whose work they were for."
 self_check: "Do you know whose work each of your production access keys is for?"
+countries: ["kr"]
 ---
 
 ## 1. TL;DR

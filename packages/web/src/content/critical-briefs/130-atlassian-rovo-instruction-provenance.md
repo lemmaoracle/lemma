@@ -25,6 +25,7 @@ controls:
   - slug: "hold-unverified"
     item: "外部への送信は、指示の出所を確かめるまで止める"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

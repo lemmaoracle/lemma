@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "入金が正規の発信元チャネルから来たか、発行の前に確かめる"
 impact: "約 467 万ドル相当が引き出された"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

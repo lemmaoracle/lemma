@@ -23,6 +23,7 @@ controls:
   - slug: "audit-trail"
     item: "Record who was in control at the time of each crash so it can be verified externally"
 impact: "2 of 17 crashes were caused by remote teleoperators"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

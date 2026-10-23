@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "AI に渡す指示が、正規のまま改ざんされていないか確かめる"
 attack_method: "ai-misuse"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

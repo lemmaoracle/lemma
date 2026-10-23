@@ -26,6 +26,7 @@ controls:
     item: "Do not change the account email until ownership is confirmed"
 attack_method: "account-takeover"
 impact: "20,225 Instagram accounts taken over"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

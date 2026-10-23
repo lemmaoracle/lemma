@@ -20,6 +20,7 @@ gap_fix: "Before a privileged operation, independently verify with Lemma that th
 industries: ["ai", "developers"]
 operations: ["account-admin"]
 attack_method: "privilege-abuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

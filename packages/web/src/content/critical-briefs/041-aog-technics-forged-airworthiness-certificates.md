@@ -25,6 +25,7 @@ controls:
     item: "証書を確かめられない部品は機体に組み込まない"
 attack_method: "supply-chain"
 impact: "偽造証書付きの部品 6 万点超が出回った"
+countries: ["gb"]
 ---
 
 ## 1. TL;DR

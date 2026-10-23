@@ -23,6 +23,7 @@ controls:
   - slug: "hold-unverified"
     item: "データの来歴を確かめるまで、学習に取り込まない"
 impact: "有効な認証情報 221,303 件が公開データに残っていた"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

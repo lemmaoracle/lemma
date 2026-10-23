@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "リポジトリ同梱のMCP設定は、作者と範囲を確かめるまで起動しない"
 attack_method: "supply-chain"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

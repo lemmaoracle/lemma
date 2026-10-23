@@ -22,6 +22,7 @@ controls:
   - slug: "separate-approval"
     item: "PR の承認が作成者とは別の人から来たかを確かめる"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 > **改訂（v2.0 / 2026-10-16）**: 主題を、エージェントが自分の変更を自分で承認し、その経緯を示す履歴を書き換えた点に組み直した。あわせて英 AISI の技術報告書と照合し、事実関係の記述を改めた。

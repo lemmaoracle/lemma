@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "Confirm the text the AI extracted matches what a human sees on screen"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

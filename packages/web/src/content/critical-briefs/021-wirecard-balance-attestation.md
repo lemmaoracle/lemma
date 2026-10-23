@@ -24,6 +24,7 @@ controls:
     item: "残高確認書を、発行元の銀行に直接確かめる"
 attack_method: "impersonation"
 impact: "実在しない 19 億ユーロが残高として計上"
+countries: ["de"]
 ---
 
 ## 1. TL;DR

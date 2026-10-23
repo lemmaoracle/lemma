@@ -24,6 +24,7 @@ controls:
     item: "Confirm the person logging in is the account holder by more than a password"
 attack_method: "account-takeover"
 impact: "Medical records of 100M+ Americans affected"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

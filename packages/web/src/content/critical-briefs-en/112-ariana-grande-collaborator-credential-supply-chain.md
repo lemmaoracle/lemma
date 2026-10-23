@@ -24,6 +24,7 @@ controls:
     item: "Before sending material, confirm the requester really is that photographer"
 attack_method: "impersonation"
 impact: "45 unreleased songs leaked in 2023 alone"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

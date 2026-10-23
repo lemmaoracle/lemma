@@ -24,6 +24,7 @@ controls:
   - slug: "hold-unverified"
     item: "「安全」と印付けた値を強い権限で実行する前に、出所と認可を確かめる"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -23,6 +23,7 @@ controls:
   - slug: "separate-approval"
     item: "Check that threshold signatures came from separate people on separate devices"
 impact: "Over $32M drained"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

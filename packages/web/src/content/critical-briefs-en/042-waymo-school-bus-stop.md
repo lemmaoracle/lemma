@@ -20,6 +20,7 @@ gap_fix: "Before taking a safety-critical action such as a stopping obligation, 
 industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "19 instances logged by the Austin school district this year"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

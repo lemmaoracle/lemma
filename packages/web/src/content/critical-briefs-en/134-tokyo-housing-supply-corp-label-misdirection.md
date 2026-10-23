@@ -50,6 +50,7 @@ attack_method: "human-error"
 impact: "Names of 770 association heads reached other residents"
 takeaway: "Nothing checked, apart from the operator and before dispatch, that the labels matched the source list."
 self_check: "Can you match address labels against the source list before shipping?"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

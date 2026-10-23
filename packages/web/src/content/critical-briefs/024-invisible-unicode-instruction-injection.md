@@ -21,6 +21,7 @@ controls:
   - slug: "ownership-check"
     item: "人が確認した入力とモデルが読む入力が同じか確かめる"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -23,6 +23,7 @@ controls:
   - slug: "audit-trail"
     item: "自動不採用の判定を、誰がどう確かめたかを記録に残す"
 impact: "筆頭原告が 100 件超の求人で落選（原告主張）"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

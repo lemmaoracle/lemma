@@ -48,6 +48,7 @@ controls:
 impact: "Reported exposure of about 1 billion records; custody disputed (figures unverified)"
 takeaway: "Nothing could show, from records, whose custody the exposed data was in or under which contract it was held."
 self_check: "If someone said your users' data had been found exposed, could you answer from records whether it was in your custody?"
+countries: ["us"]
 ---
 
 > **Revision (v3.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Cybernews's article (archived) and IDMerit's statement were re-read. Added: IDMerit acknowledged that ports associated with independent data sources "could have been open"; Cybernews's note (the finder was an outside contributor, and it learned of the payment exchange later); and the US class action's filing and dismissal. Sources suspected of being AI-generated, and a network of KYC blogs of unclear ownership, were removed. v2.0 (2026-07-03) had already recast the first version, which treated the exposure as established, as a dispute.

@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "エラー報告に書かれた手順が、本当に Sentry のものか確かめる"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

@@ -23,6 +23,7 @@ controls:
     item: "Check that instruction files the AI reads come from a legitimate author"
 attack_method: "supply-chain"
 impact: "Over 34 packages and 384+ versions/artifacts"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

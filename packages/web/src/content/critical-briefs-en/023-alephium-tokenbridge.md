@@ -23,6 +23,7 @@ controls:
   - slug: "ownership-check"
     item: "Before signing, confirm the event came from the legitimate contract"
 impact: "About $815K drained from the bridge"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

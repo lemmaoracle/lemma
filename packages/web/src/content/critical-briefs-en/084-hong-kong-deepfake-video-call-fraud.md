@@ -52,6 +52,7 @@ attack_method: "impersonation"
 impact: "About HK$200M sent to five accounts in 15 transfers"
 takeaway: "Nothing confirmed a payment instruction in a manager's name through a separate channel before the money moved."
 self_check: "If a payment instruction in a manager's name came over a video call, could you confirm it with them another way before paying?"
+countries: ["hk", "gb"]
 ---
 
 > **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Facts were re-checked against the Hong Kong government's Legislative Council reply. Corrected: the video call was a pre-recorded fake with no dialogue, not a "real-time conversation"; there were 15 transfers; and police disclosed the case on February 2.

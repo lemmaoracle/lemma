@@ -25,6 +25,7 @@ controls:
   - slug: "hold-unverified"
     item: "Send nothing outside until the sender is verified"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

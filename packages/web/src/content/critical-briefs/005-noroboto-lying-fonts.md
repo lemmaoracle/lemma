@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "AI が読んだ文字列が、人が画面で見た文章と同じか確かめる"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

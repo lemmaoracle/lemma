@@ -23,6 +23,7 @@ controls:
     item: "Do not run an action touching another person's booking until it is confirmed within the user's authority"
 attack_method: "ai-misuse"
 impact: "A stranger's booking cancelled, irreversibly"
+countries: ["au"]
 ---
 
 ## 1. TL;DR

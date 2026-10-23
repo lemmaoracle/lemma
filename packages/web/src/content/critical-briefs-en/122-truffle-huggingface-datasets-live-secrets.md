@@ -23,6 +23,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not ingest a dataset for training until its provenance is verified"
 impact: "221,303 still-valid credentials in public datasets"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

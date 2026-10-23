@@ -24,6 +24,7 @@ controls:
     item: "Before ingesting, confirm the package was issued by the internal publisher it claims"
 attack_method: "supply-chain"
 impact: "33+ malicious packages published to npm"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

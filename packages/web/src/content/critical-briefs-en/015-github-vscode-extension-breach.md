@@ -24,6 +24,7 @@ controls:
     item: "Before installing, confirm the extension is the legitimate publisher's genuine build"
 attack_method: "supply-chain"
 impact: "About 3,800 internal repositories cloned"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

@@ -21,6 +21,7 @@ industries: ["media", "ai"]
 controls:
   - slug: "hold-unverified"
     item: "Do not generate copyrighted characters until the rightsholder's permission is confirmed"
+countries: ["us", "jp"]
 ---
 
 ## 1. TL;DR

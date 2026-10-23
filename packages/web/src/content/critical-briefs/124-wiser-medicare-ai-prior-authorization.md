@@ -24,6 +24,7 @@ controls:
   - slug: "audit-trail"
     item: "不承認がどの患者記録に照らした判定かを、処分の前に記録する"
 impact: "1 医療システムで硬膜外注射の待機が約 100 人"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

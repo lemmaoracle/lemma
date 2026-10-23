@@ -22,6 +22,7 @@ controls:
   - slug: "ownership-check"
     item: "素材に、学習に使ってよい来歴と同意があるか確かめる"
 impact: "0.1% の標本だけで 800 超の顔がぼかしを逃れた"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

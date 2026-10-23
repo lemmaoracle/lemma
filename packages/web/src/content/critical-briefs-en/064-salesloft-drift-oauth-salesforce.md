@@ -21,6 +21,7 @@ industries: ["supply-chain"]
 operations: ["data-access"]
 attack_method: "supply-chain"
 impact: "700+ Salesforce environments queried"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

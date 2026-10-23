@@ -22,6 +22,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not generate an image until the subject's consent and age are verified"
 attack_method: "ai-misuse"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

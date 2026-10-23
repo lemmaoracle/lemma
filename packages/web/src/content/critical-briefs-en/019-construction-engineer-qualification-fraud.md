@@ -20,6 +20,7 @@ gap_fix: "Before placement, independently verify with Lemma that the engineer va
 controls:
   - slug: "ownership-check"
     item: "Before placement, confirm the declared practical experience is real"
+countries: ["jp"]
 ---
 
 ## 1. TL;DR

@@ -23,6 +23,7 @@ controls:
   - slug: "audit-trail"
     item: "Record who verified each automated rejection, and how, before it is sent"
 impact: "Lead plaintiff rejected for 100+ openings (alleged)"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

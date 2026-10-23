@@ -21,6 +21,7 @@ industries: ["ai"]
 operations: ["disclosure"]
 attack_method: "ai-misuse"
 impact: "視界低下に関わる事故 9 件（死亡 1・負傷 1）"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

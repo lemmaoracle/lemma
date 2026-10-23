@@ -25,6 +25,7 @@ controls:
     item: "リリースを起動したのが正規のメンテナ本人か、取り込む前に確かめる"
 attack_method: "account-takeover"
 impact: "約 38 分で汚染された版 9 本が公開された"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

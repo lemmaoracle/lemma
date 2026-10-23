@@ -21,6 +21,7 @@ industries: ["ai", "developers"]
 controls:
   - slug: "ownership-check"
     item: "読み込む前に、チェックポイントが自分で保存したものか確かめる"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

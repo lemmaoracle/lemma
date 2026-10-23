@@ -19,6 +19,7 @@ gap_missing: "There is no layer that independently establishes, at the moment co
 gap_fix: "Before content is ingested into training, verify — decoupled from the default value or the administrator's configuration action, and independently through Lemma — that the use is authorized by the rights holder and that each ingested datum carries a proof of consent, and prevent it up front."
 industries: ["ai"]
 operations: ["disclosure"]
+countries: ["us"]
 ---
 
 ## 1. TL;DR

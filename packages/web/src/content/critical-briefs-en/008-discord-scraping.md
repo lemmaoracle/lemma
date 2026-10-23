@@ -23,6 +23,7 @@ controls:
   - slug: "hold-unverified"
     item: "Do not publish the dataset until it is confirmed to be collected within the terms"
 impact: "2.05 billion messages scraped and published"
+countries: ["global"]
 ---
 
 > **Revision (v1.1 / 2026-10-17)**: Corrected the exact message count in §2 to 2,052,206,308, as given in the research team's paper (arXiv 2502.00627).

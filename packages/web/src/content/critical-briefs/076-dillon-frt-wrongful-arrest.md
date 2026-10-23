@@ -23,6 +23,7 @@ controls:
     item: "顔認証の一致だけで逮捕せず、裏付けがとれるまで止める"
 attack_method: "ai-misuse"
 impact: "1 人が別人として誤認逮捕"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

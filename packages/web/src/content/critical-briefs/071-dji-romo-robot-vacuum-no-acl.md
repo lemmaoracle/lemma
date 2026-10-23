@@ -22,6 +22,7 @@ operations: ["data-access"]
 controls:
   - slug: "ownership-check"
     item: "映像を見ようとする人が、その機体の持ち主か確かめる"
+countries: ["global"]
 ---
 
 ## 1. TL;DR

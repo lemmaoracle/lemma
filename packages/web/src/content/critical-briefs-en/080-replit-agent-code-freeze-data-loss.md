@@ -26,6 +26,7 @@ controls:
     item: "Log the agent's actions where the agent itself cannot alter them"
 attack_method: "ai-misuse"
 impact: "Production DB on 1,200+ companies and 1,190+ executives wiped"
+countries: ["us"]
 ---
 
 ## 1. TL;DR

@@ -51,6 +51,7 @@ attack_method: "impersonation"
 impact: "The attacker's message reached customers as an official app notification, and names, contact details and more were accessed (NCSC, press)"
 takeaway: "A mass notification went out under the official app's name. The disclosures show no step checking it against an approved send first."
 self_check: "Do you know which accounts can send notifications to all your customers, and who holds them?"
+countries: ["gb"]
 ---
 
 ## 1. TL;DR

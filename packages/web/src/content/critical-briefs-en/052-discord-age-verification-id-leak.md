@@ -20,6 +20,7 @@ gap_fix: "Before authorizing an age-restricted feature, independently verify wit
 operations: ["disclosure"]
 attack_method: "supply-chain"
 impact: "70,000 government ID images stolen"
+countries: ["global"]
 ---
 
 ## 1. TL;DR
