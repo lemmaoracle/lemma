@@ -80,7 +80,7 @@ As far as disclosed, the attack ran as follows.
 <p class="rx-ex-cap">The stopping point is ②. Had the company checked, before paying, that the instruction really came from that executive, the transfer in ③ would not happen. The company says ② followed its existing rules.</p>
 <div class="rx-chain">
 <div class="rx-step crit"><div class="who">Third party</div><div class="no">1</div><b>Poses as an executive in the business chat and orders a transfer</b><p>March 19. Fake account or takeover: not disclosed.</p></div>
-<div class="rx-step crit"><div class="who">ZUU</div><div class="no">2</div><b>Processes it under existing rules and processes</b><p>The company says authenticity checks between the chat and the payment process were insufficient.</p></div>
+<div class="rx-step crit"><div class="who">ZUU</div><div class="no">2</div><b>Says it processed it under existing rules and processes</b><p>The company says authenticity checks between the chat and the payment process were insufficient.</p></div>
 <div class="rx-step crit"><div class="who">ZUU</div><div class="no">3</div><b>Pays ¥96M to an outside account</b><p>Same day.</p></div>
 <div class="rx-step good"><div class="who">ZUU</div><div class="no">4</div><b>Suspects the instruction, requests a recall, reports to police</b><p>Soon after the transfer. Recovery described as extremely difficult.</p></div>
 </div>

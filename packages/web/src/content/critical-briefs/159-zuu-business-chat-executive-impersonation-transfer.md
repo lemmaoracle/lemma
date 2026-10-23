@@ -81,7 +81,7 @@ ZUU は振込の後まもなく指示を疑い、第三者の不正とみて動�
 <p class="rx-ex-cap">止めどころは ②。指示が本当にその役員から出たかを、振込の前に照合していれば、③ の振込は起きない。同社は、② は従来のルールに則っていたとしている。</p>
 <div class="rx-chain">
 <div class="rx-step crit"><div class="who">第三者</div><div class="no">1</div><b>社内のビジネスチャットで、役員を装って送金を指示する</b><p>3 月 19 日。偽のアカウントか乗っ取りかは非公表。</p></div>
-<div class="rx-step crit"><div class="who">ZUU</div><div class="no">2</div><b>従来のルールとプロセスに則って処理する</b><p>同社は、チャットと振込の手続きのつなぎ目で、指示の真正性の確認が不十分だったとする。</p></div>
+<div class="rx-step crit"><div class="who">ZUU</div><div class="no">2</div><b>従来のルールとプロセスに則って処理したとする</b><p>同社は、チャットと振込の手続きのつなぎ目で、指示の真正性の確認が不十分だったとする。</p></div>
 <div class="rx-step crit"><div class="who">ZUU</div><div class="no">3</div><b>外部の口座へ 9,600 万円を振り込む</b><p>同日。</p></div>
 <div class="rx-step good"><div class="who">ZUU</div><div class="no">4</div><b>指示を疑い、組戻しを頼み、被害届を出す</b><p>振込の後まもなく。回収は極めて困難とされる。</p></div>
 </div>
