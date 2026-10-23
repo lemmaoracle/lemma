@@ -1,7 +1,7 @@
 ---
 brief_no: 159
-title: "ZUU：社内のビジネスチャットで役員を装った第三者の送金指示が、社内のルールどおりに処理され、同日のうちに外部の口座へ振り込まれた(同社の開示・特別調査) — 送金の指示が本当にその役員から出たかを、振込の前に照合する層が無い"
-title_en: "ZUU: A transfer instruction from someone posing as an executive in the company's business chat was processed under the company's own rules and paid out the same day (company disclosure, special investigation) — Nothing checks, before paying, that an instruction really came from that executive"
+title: "ZUU：社内のビジネスチャットで役員を装った第三者の送金指示に基づき、同日のうちに外部の口座へ振り込まれた(同社の開示・特別調査) — 送金の指示が本当にその役員から出たかを、振込の前に照合する層が無い"
+title_en: "ZUU: A transfer instruction from someone posing as an executive in the company's business chat was paid out to an outside account the same day (company disclosure, special investigation) — Nothing checks, before paying, that an instruction really came from that executive"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
@@ -12,13 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["084-hong-kong-deepfake-video-call-fraud", "032-booking-payout-account-tampering"]
 status: published
 version: "1.0"
-og_lead_ja: "ZUU、ビジネスチャットで役員を装う送金指示に従い 9,600 万円を振込 — 社内のルールどおりに通った"
-og_lead_en: "ZUU paid ¥96M on a business-chat instruction from a fake executive — and it went through by the rules"
+og_lead_ja: "ZUU、ビジネスチャットで役員を装う送金指示に従い 9,600 万円を振込 — 同日のうちに外部の口座へ"
+og_lead_en: "ZUU paid ¥96M on a business-chat instruction from a fake executive — the same day"
 layout: "report"
 og_kicker_ja: "サイバー攻撃事例 · ニセ社長詐欺"
 og_kicker_en: "CYBERATTACK · CEO FRAUD"
-og_headline_ja: "役員を装うチャットの指示が、\n社内のルールどおりに通った。\n<accent>9,600 万円が外部の口座へ</accent>"
-og_headline_en: "A chat instruction from a fake executive\nwent through by the company's rules.\n<accent>¥96M paid out.</accent>"
+og_headline_ja: "役員を装うチャットの指示で、\n同じ日に振り込まれた。\n<accent>9,600 万円が外部の口座へ</accent>"
+og_headline_en: "A chat instruction from a fake executive\nwas paid the same day.\n<accent>¥96M paid out.</accent>"
 summary_labels: ["What happened", "Why it went through", "The missing layer"]
 key_figures:
   - value: "¥96M"
@@ -39,7 +39,7 @@ glossary:
 insight:
   slug: "instruction-processed-without-origin-proof"
   label: "Payment instructions that pass without proof of origin"
-  quote: "The company's rules and processes were in place and worked. Even so, an instruction from a fake executive was processed exactly by those steps and paid to an outside account the same day."
+  quote: "The company disclosed that the payment followed its existing rules and processes. The later investigation cited poor application of those rules. No step checking, before paying, that the instruction really came from that executive is visible."
 industries: ["finance"]
 operations: ["approval", "payment-change"]
 controls:
@@ -51,7 +51,7 @@ controls:
     item: "Record whose instruction was paid, and how it was confirmed"
 attack_method: "impersonation"
 impact: "A chat instruction from a fake executive sent ¥96M to an outside account (booked as an extraordinary loss)"
-takeaway: "A chat instruction from a fake executive was processed under the company's own rules. Nothing checked, before paying, that it really came from that executive."
+takeaway: "A chat instruction from a fake executive was paid to an outside account the same day. Nothing checked, before paying, that it really came from that executive."
 self_check: "Can you confirm, before paying, that a payment instruction received by chat or email really came from that executive?"
 countries: ["jp"]
 ---
@@ -60,7 +60,7 @@ countries: ["jp"]
 
 On March 19, 2026, ZUU, listed on the Tokyo Stock Exchange Growth market, received a transfer instruction in its business chat from someone posing as an executive and paid ¥96 million to an outside account the same day. The company disclosed that the payment followed its existing rules and processes. It requested a recall and filed a police report, but called recovery extremely difficult.
 
-The rules checked that the steps were followed, not that the instruction came from that executive. ZUU itself cites insufficient authenticity checks where the chat tool meets the payment process.
+The later special investigation cited poor understanding and application of the rules, and ZUU itself cites insufficient authenticity checks where the chat tool meets the payment process. Rules alone do not stop a disguised instruction if nothing checks where it came from.
 
 ZUU suspected the instruction soon after paying and acted on it. The transfer still went through. What failed was the layer that checks, before paying, that an instruction really came from that executive.
 
@@ -77,7 +77,7 @@ As far as disclosed, the attack ran as follows.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain, as far as disclosed</span></div>
-<p class="rx-ex-cap">The stopping point is ②. Had the company checked, before paying, that the instruction really came from that executive, the transfer in ③ would not happen. The internal steps in ② worked as designed.</p>
+<p class="rx-ex-cap">The stopping point is ②. Had the company checked, before paying, that the instruction really came from that executive, the transfer in ③ would not happen. The company says ② followed its existing rules.</p>
 <div class="rx-chain">
 <div class="rx-step crit"><div class="who">Third party</div><div class="no">1</div><b>Poses as an executive in the business chat and orders a transfer</b><p>March 19. Fake account or takeover: not disclosed.</p></div>
 <div class="rx-step crit"><div class="who">ZUU</div><div class="no">2</div><b>Processes it under existing rules and processes</b><p>The company says authenticity checks between the chat and the payment process were insufficient.</p></div>
@@ -99,12 +99,12 @@ As far as disclosed, the attack ran as follows.
 
 - **ZUU (done)**: Moved all internal communication to Slack with mandatory SSO and two-factor authentication. Required multiple approvers for transfers and began, provisionally, confirming first-time payees in advance. Broke up a concentration of bank-account administrator rights and removed unneeded accounts.
 - **ZUU (planned)**: Make confirmation by phone, in person or online mandatory for large transfers. Revise accounting rules and add staff, including at the accounting-lead level. Set security standards covering group companies and contractors. Executives are returning part of their pay, and the CEO will directly oversee accounting and finance for now.
-- **Causes cited by the investigation**: Weak internal controls over payment approval and withdrawals (poor understanding and inconsistent application of the rules, among others), understaffed accounting, insufficient attention to internal-audit findings, and insufficient vigilance against fake accounts and insufficient measures for the business chat.
+- **Causes cited by the investigation**: Weak internal controls over payment approval and withdrawals (poor understanding and inconsistent application of the rules, and a cashier lacking accounting experience), understaffed accounting, insufficient attention to internal-audit findings, and insufficient vigilance against fake accounts and insufficient measures for the business chat.
 - **Industry**: Japan's National Police Agency reports CEO fraud since around January 2026, in which emails posing as executives get staff to set up social-media groups, disclose account balances and then send money: 127 cases and about ¥3.88 billion in losses in January–June.
 
 ## 4. Why it wasn't stopped
 
-The failure was not a lack of internal rules. **The rules checked that the steps were followed, but nothing in front of the payment checked that the instruction really came from that executive.**
+The failure was not a lack of internal rules. **There were rules, but nothing in front of the payment checked that the instruction really came from that executive.**
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The gap between detection and proof</span></div>
@@ -114,7 +114,7 @@ The failure was not a lack of internal rules. **The rules checked that the steps
 <div class="rx-zone gapz"><b>Gap</b><span>¥96M to an<br>outside account</span></div>
 <div class="rx-zone det"><b>Detection layer · worked</b>The instruction is doubted soon after paying</div>
 <div class="rx-g g1"><div class="t">STEP 1</div><b>Fake executive's order</b></div>
-<div class="rx-g g2"><div class="t">STEP 2</div><b>Processed by the rules</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>Processed under existing rules, per ZUU</b></div>
 <div class="rx-g g3"><div class="t">STEP 3</div><b>03-19 transfer</b></div>
 <div class="rx-g g4"><div class="t">STEP 4</div><b>Doubt, recall request</b></div>
 </div>
@@ -138,16 +138,16 @@ The same structure appears in [the Hong Kong deepfake meeting fraud](/critical/b
 
 | Control | This case | Why |
 | --- | --- | --- |
-| Internal payment rules | Partial | The steps worked. Whether the instruction really came from that executive was not one of them. |
+| Internal payment rules | Partial | Rules existed but were not consistently applied (special investigation). Whether they covered checking an instruction's origin is not disclosed. |
 | Multiple approvers | Partial | More approvers looking at the same instruction can still pass a faked one. |
 | Two-factor authentication, SSO | Partial | Protects real accounts from takeover. Instructions from fake accounts still have to be told apart. |
-| Recall and police report | Partial | After-the-fact remedies; once withdrawn, money rarely comes back. |
+| Recall and police report | Ineffective | After-the-fact remedies that do not stop the transfer. Recovery is described as extremely difficult. |
 
 ### What is needed
 
 1. **Confirm with the person who gave the instruction, by a different means.** Do not verify a chat instruction inside the same chat.
-2. **Do not pay on instructions you cannot confirm.** The more an instruction pushes for speed or secrecy, the less you skip the check.
-3. **Record whose instruction was paid, and how it was confirmed.** Keep it in a form that can be verified later, as proof, and pay only on instructions that carry that proof.
+2. **Do not pay on instructions you cannot confirm.** Never skip the check, least of all when an instruction urges speed or secrecy.
+3. **Record whose instruction was paid, and how it was confirmed.** Keep the result as proof, separate from the chat history, so the instruction's origin can be shown to a third party later.
 
 ### Checklist
 

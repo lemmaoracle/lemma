@@ -1,7 +1,7 @@
 ---
 brief_no: 159
-title: "ZUU：社内のビジネスチャットで役員を装った第三者の送金指示が、社内のルールどおりに処理され、同日のうちに外部の口座へ振り込まれた(同社の開示・特別調査) — 送金の指示が本当にその役員から出たかを、振込の前に照合する層が無い"
-title_en: "ZUU: A transfer instruction from someone posing as an executive in the company's business chat was processed under the company's own rules and paid out the same day (company disclosure, special investigation) — Nothing checks, before paying, that an instruction really came from that executive"
+title: "ZUU：社内のビジネスチャットで役員を装った第三者の送金指示に基づき、同日のうちに外部の口座へ振り込まれた(同社の開示・特別調査) — 送金の指示が本当にその役員から出たかを、振込の前に照合する層が無い"
+title_en: "ZUU: A transfer instruction from someone posing as an executive in the company's business chat was paid out to an outside account the same day (company disclosure, special investigation) — Nothing checks, before paying, that an instruction really came from that executive"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
@@ -12,13 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["084-hong-kong-deepfake-video-call-fraud", "032-booking-payout-account-tampering"]
 status: published
 version: "1.0"
-og_lead_ja: "ZUU、ビジネスチャットで役員を装う送金指示に従い 9,600 万円を振込 — 社内のルールどおりに通った"
-og_lead_en: "ZUU paid ¥96M on a business-chat instruction from a fake executive — and it went through by the rules"
+og_lead_ja: "ZUU、ビジネスチャットで役員を装う送金指示に従い 9,600 万円を振込 — 同日のうちに外部の口座へ"
+og_lead_en: "ZUU paid ¥96M on a business-chat instruction from a fake executive — the same day"
 layout: "report"
 og_kicker_ja: "サイバー攻撃事例 · ニセ社長詐欺"
 og_kicker_en: "CYBERATTACK · CEO FRAUD"
-og_headline_ja: "役員を装うチャットの指示が、\n社内のルールどおりに通った。\n<accent>9,600 万円が外部の口座へ</accent>"
-og_headline_en: "A chat instruction from a fake executive\nwent through by the company's rules.\n<accent>¥96M paid out.</accent>"
+og_headline_ja: "役員を装うチャットの指示で、\n同じ日に振り込まれた。\n<accent>9,600 万円が外部の口座へ</accent>"
+og_headline_en: "A chat instruction from a fake executive\nwas paid the same day.\n<accent>¥96M paid out.</accent>"
 summary_labels: ["何が起きたか", "なぜ通ったか", "欠けていた層"]
 key_figures:
   - value: "9,600"
@@ -40,7 +40,7 @@ glossary:
 insight:
   slug: "instruction-processed-without-origin-proof"
   label: "出どころを問わずに通る送金の指示"
-  quote: "社内のルールとプロセスは働いていた。それでも、役員を装った指示は、その手順どおりに処理され、同じ日に外部の口座へ振り込まれた。"
+  quote: "同社は、振込は従来のルールとプロセスに則って行われたと開示した。のちの調査は、規程の運用の不徹底を挙げた。指示が本当にその役員から出たかを、振込の前に照合する手順は見えない。"
 industries: ["finance"]
 operations: ["approval", "payment-change"]
 controls:
@@ -52,7 +52,7 @@ controls:
     item: "誰の指示を、何で照合して振り込んだかを残す"
 attack_method: "impersonation"
 impact: "役員を装うチャットの指示で、9,600 万円が外部の口座へ振り込まれた（特別損失に計上）"
-takeaway: "役員を装うチャットの指示が、社内のルールどおりに処理された。指示が本当にその役員から出たかを、振込の前に照合する層が無かった。"
+takeaway: "役員を装うチャットの指示に基づき、同日に外部の口座へ振り込まれた。指示が本当にその役員から出たかを、振込の前に照合する層が無かった。"
 self_check: "チャットやメールで届いた送金の指示が、本当にその役員から出たものかを、振込の前に照合できるか。"
 countries: ["jp"]
 ---
@@ -61,9 +61,9 @@ countries: ["jp"]
 
 東証グロース上場の ZUU は 2026 年 3 月 19 日、社内のビジネスチャットで役員を装った第三者の送金指示を受け、同じ日に 9,600 万円を外部の口座へ振り込んだ。同社は、振込は社内の従来のルールとプロセスに則って行われたと開示している。組戻しを頼み、被害届も出したが、回収は極めて困難とした。
 
-社内のルールは、決められた手順を踏んだかを確認する。指示が本当にその役員から出たかは確認しない。同社自身も、チャットのツールと振込の手続きのつなぎ目で、指示の真正性の確認が不十分だったと原因を挙げている。
+のちの特別調査は、規程の理解不足と運用の不徹底を原因に挙げた。同社自身も、チャットのツールと振込の手続きのつなぎ目で、指示の真正性の確認が不十分だったとしている。ルールがあっても、指示が本当にその役員から出たかを照合する手順が無ければ、装われた指示は通る。
 
-ZUU は振込の直後に指示を疑い、第三者の不正とみて動いた。それでも振込は通った。効かなかったのは、送金の指示が本当にその役員から出たかを、振込の前に照合する層である。
+ZUU は振込の後まもなく指示を疑い、第三者の不正とみて動いた。それでも振込は通った。効かなかったのは、送金の指示が本当にその役員から出たかを、振込の前に照合する層である。
 
 ## 2. 何が起きたか
 
@@ -78,7 +78,7 @@ ZUU は振込の直後に指示を疑い、第三者の不正とみて動いた�
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">公表された範囲で見た、経過の連鎖</span></div>
-<p class="rx-ex-cap">止めどころは ②。指示が本当にその役員から出たかを、振込の前に照合していれば、③ の振込は起きない。② の社内の手順は、決められたとおりに働いた。</p>
+<p class="rx-ex-cap">止めどころは ②。指示が本当にその役員から出たかを、振込の前に照合していれば、③ の振込は起きない。同社は、② は従来のルールに則っていたとしている。</p>
 <div class="rx-chain">
 <div class="rx-step crit"><div class="who">第三者</div><div class="no">1</div><b>社内のビジネスチャットで、役員を装って送金を指示する</b><p>3 月 19 日。偽のアカウントか乗っ取りかは非公表。</p></div>
 <div class="rx-step crit"><div class="who">ZUU</div><div class="no">2</div><b>従来のルールとプロセスに則って処理する</b><p>同社は、チャットと振込の手続きのつなぎ目で、指示の真正性の確認が不十分だったとする。</p></div>
@@ -100,12 +100,12 @@ ZUU は振込の直後に指示を疑い、第三者の不正とみて動いた�
 
 - **ZUU（実施済み）**: 社内の連絡を Slack に全社で移し、SSO の接続と 2 段階認証を必須にした。送金の承認を複数名にし、初めての振込先には事前に確認する運用を暫定で始めた。銀行口座の管理者の権限が一部に集まっていたのを解き、不要なアカウントを廃止した。
 - **ZUU（これから）**: 高額の振込では、電話・対面・オンラインなどで確認する流れを必須にする。経理の規程を改め、経理の責任者を含めて人を増やす。グループ会社と業務の委託先も含めたセキュリティの基準を整える。役員報酬の一部を自主返上し、経理・財務は当面、代表取締役が直接受け持つ。
-- **特別調査が挙げた原因**: 支払いの承認と出金の内部統制の不十分さ（規程の理解不足と運用の不徹底など）、経理部門の人手不足、内部監査の結果の認識不足、偽のアカウントなどへの警戒とビジネスチャットへの対策の不十分さ。
+- **特別調査が挙げた原因**: 支払いの承認と出金の内部統制の不十分さ（規程の理解不足と運用の不徹底、出納責任者の経理の知識・経験の不十分さ）、経理部門の人手不足、内部監査の結果の認識不足、偽のアカウントなどへの警戒とビジネスチャットへの対策の不十分さ。
 - **業界の動き**: 警察庁は、2026 年 1 月ごろから、経営者を装うメールで SNS のグループを作らせ、口座の残高を答えさせたうえで送金させる「ニセ社長詐欺」が発生しているとし、1〜6 月で 127 件、約 38 億 8,000 万円の被害を伝えた。
 
 ## 4. なぜ止まらなかったか
 
-この事案の失敗は、社内のルールが無かったことではない。**ルールは手順を踏んだかを確認したが、送金の指示が本当にその役員から出たかを照合する層が、振込の手前に無かった**ことにある。
+この事案の失敗は、社内のルールが無かったことではない。**ルールはあったが、送金の指示が本当にその役員から出たかを照合する層が、振込の手前に無かった**ことにある。
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 2</span><span class="rx-ex-t">検出と証明の落差</span></div>
@@ -115,7 +115,7 @@ ZUU は振込の直後に指示を疑い、第三者の不正とみて動いた�
 <div class="rx-zone gapz"><b>落差</b><span>9,600 万円が<br>外部の口座へ</span></div>
 <div class="rx-zone det"><b>検出の層 · 働いた</b>振込の後まもなく、指示を疑う</div>
 <div class="rx-g g1"><div class="t">STEP 1</div><b>役員を装う指示</b></div>
-<div class="rx-g g2"><div class="t">STEP 2</div><b>ルールどおりに処理</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>同社は従来のルールで処理</b></div>
 <div class="rx-g g3"><div class="t">STEP 3</div><b>03-19 振込</b></div>
 <div class="rx-g g4"><div class="t">STEP 4</div><b>疑い、組戻しを依頼</b></div>
 </div>
@@ -139,16 +139,16 @@ ZUU は振込の直後に指示を疑い、第三者の不正とみて動いた�
 
 | 対策 | 今回 | 理由 |
 | --- | --- | --- |
-| 社内の振込のルール | 一部 | 手順は働いた。指示が本当にその役員から出たかは、手順の対象ではなかった。 |
+| 社内の振込のルール | 一部 | 規程はあったが、運用は徹底されていなかった（特別調査）。指示の出どころの照合が規程に入っていたかは、公表されていない。 |
 | 送金の承認を複数名に | 一部 | 承認者が増えても、見ているのが同じ指示なら、装われた指示は通りうる。 |
 | 2 段階認証・SSO | 一部 | 本物のアカウントの乗っ取りを防ぐ。偽のアカウントからの指示は、別に見分ける必要がある。 |
-| 組戻しと被害届 | 一部 | 振込の後の手当てで、引き出された後は戻りにくい。 |
+| 組戻しと被害届 | 効かない | 振込の後の手当てで、送金そのものは止めない。回収は極めて困難とされる。 |
 
 ### 必要になるもの
 
 1. **指示が届いたのとは別の手段で、指示した本人に照合する。** チャットで届いた指示を、同じチャットの中で確かめない。
 2. **照合できない送金の指示は、振り込まない。** 急ぎや秘密を求める指示ほど、照合を省かない。
-3. **誰の指示を、何で照合して振り込んだかを残す。** 後から照合できる形、つまり証明として残し、振込はその証明が伴う指示にだけ行う。
+3. **誰の指示を、何で照合して振り込んだかを残す。** チャットの履歴とは別に、照合の結果を証明として残す。後から、指示の出どころを第三者に示せる。
 
 ### 点検チェックリスト
 
