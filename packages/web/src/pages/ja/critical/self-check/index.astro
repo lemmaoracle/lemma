@@ -176,7 +176,7 @@ const CONSULT_EXAMPLES = [
   pagePath="/critical/self-check/"
   localesAvailable={["ja"]}
   title={`ビジネスメール詐欺・不正送金の対策チェックリスト（実例 ${total} 項目・無料）｜Lemma`}
-  ogTitle="その連絡、なりすましかも。不正送金の手口で 5 分セルフチェック｜Lemma"
+  ogTitle="なりすましによる不正送金を、止められていますか。5 分セルフチェック｜Lemma"
   jsonLd={jsonLd}
   description={`振込先の変更、社長や役員を装う送金の指示、偽のビデオ会議。国内外で実際に起きた ${briefCount} 件の事案から作った ${total} 項目で、自社の経理・承認・アカウント管理を業務ごとにセルフチェックできます。登録は不要です。`}
 >
@@ -186,8 +186,8 @@ const CONSULT_EXAMPLES = [
       <div class="lp-in lp-hero-in">
         <div class="lp-hero-tx">
           <p class="lp-kicker">ビジネスメール詐欺・不正送金の対策チェックリスト</p>
-          <h1>その連絡、<br /><mark>なりすましかも。</mark></h1>
-          <p class="lp-lead">実際に起きたなりすまし・不正送金・攻撃の手口で、自社の業務を 5 分でチェック。</p>
+          <h1>なりすましによる<br />不正送金を、<br /><mark>止められていますか。</mark></h1>
+          <p class="lp-lead">国内外で実際に起きた {briefCount} 件の事案から作ったチェック項目で、<br class="lp-br" />自社の業務を 5 分で点検できます。</p>
           <div class="lp-cta">
             <a class="lp-btn" href="#who">無料でチェックする</a>
           </div>
@@ -731,9 +731,18 @@ const CONSULT_EXAMPLES = [
     font-weight: 700;
     color: #4e7a00;
   }
+  .lp-hero h1,
+  .lp-lead,
+  .lp-who h2,
+  .lp-bubble,
+  .lp-real p {
+    /* 日本語を文節で折り返す（語の途中で切らない）。 */
+    word-break: auto-phrase;
+    text-wrap: pretty;
+  }
   .lp-hero h1 {
     margin: 18px 0 0;
-    font-size: 58px;
+    font-size: 52px;
     line-height: 1.35;
     font-weight: 800;
     letter-spacing: 0.01em;
@@ -1626,7 +1635,10 @@ const CONSULT_EXAMPLES = [
       padding-top: 104px;
     }
     .lp-hero h1 {
-      font-size: 38px;
+      font-size: 34px;
+    }
+    .lp-br {
+      display: none;
     }
     .lp-who h2,
     .lp-lemma h2,
