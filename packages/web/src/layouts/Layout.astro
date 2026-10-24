@@ -290,11 +290,11 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
               gtag('js', new Date());
               gtag('config', '${googleAnalyticsId}');
               // メール登録の完了。Tally のフォームは完了後にトップへ ?form= で
-              // 戻す（2026-10-24）：newsletter＝定期のメール、checklist＝点検表。
+              // 戻す（2026-10-24）：newsletter＝定期のメール、consult＝セルフチェックからのメール相談。
               // 再読み込みで二重に数えないよう、タブの中で 1 回だけ。
               (function () {
                 var form = new URLSearchParams(location.search).get('form');
-                if (form !== 'newsletter' && form !== 'checklist') return;
+                if (form !== 'newsletter' && form !== 'consult') return;
                 try {
                   if (sessionStorage.getItem('cv_' + form)) return;
                   sessionStorage.setItem('cv_' + form, '1');

@@ -1,0 +1,770 @@
+---
+/**
+ * Critical Brief のセルフチェック（2026-10-24・日本語だけ）。
+ *
+ * 記事の点検チェックリストを、狙われた業務ごとにまとめて、画面の中で
+ * はい／いいえ／分からない で答えてもらう。Excel で配ると一気に出回るので
+ * ファイルは渡さず、登録も求めない。回答はこのブラウザの中だけで扱い
+ * （localStorage に下書きとして残すだけ）、どこにも送らない。
+ *
+ * 見込み客の情報は、結果を見て不安になった人の「メールで相談」から受ける
+ * （Tally 2jE9dj を新しいタブで開き、選んだ業務と「はい」と言い切れなかった
+ * 項目の id だけを隠しフィールドで渡す）。記事から来たとき（?from=slug）は、
+ * その記事の業務を選んだ状態で開き、その記事の項目に印を付ける。
+ */
+import { getCollection } from "astro:content";
+import Layout from "../../../../layouts/Layout.astro";
+import Navigation from "../../../../components/Navigation.astro";
+import Footer from "../../../../components/FooterRenewal.astro";
+import { getTranslations } from "../../../../i18n/translations";
+import { CONSULT_FORM_URL, BRIEF_WEEKLY_URL } from "../../../../config/cta";
+import type { BriefEntry } from "../../../../data/criticalBriefs";
+import { selfCheckGroups, selfCheckItemCount } from "../../../../lib/briefSelfCheck";
+
+const locale = "ja" as const;
+const base = "/ja";
+const t = getTranslations(locale);
+const briefs = (await getCollection("critical-briefs")) as BriefEntry[];
+const groups = selfCheckGroups(briefs);
+const total = selfCheckItemCount(groups);
+const briefCount = new Set(groups.flatMap((g) => g.items.flatMap((i) => i.sources.map((x) => x.id)))).size;
+const pad = (no: number) => String(no).padStart(3, "0");
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath="/critical/briefs/check/"
+  localesAvailable={["ja"]}
+  title="セルフチェック：実際に起きた手口が、自社で通らないか｜Lemma Critical Brief"
+  description={`実際に起きた ${briefCount} 件の事案から作った ${total} の問いで、振込先の変更・承認・アカウント管理などが自社で通らないかを、はい／いいえで点検できます。登録は不要です。`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <main class="ck">
+    <nav class="ck-crumb" aria-label="パンくず">
+      <a href="/ja/">ホーム</a><span>/</span><a href="/ja/critical/briefs/">Critical Brief</a><span>/</span><span>セルフチェック</span>
+    </nav>
+    <header class="ck-head">
+      <div class="ck-k">LEMMA CRITICAL BRIEF · SELF-CHECK</div>
+      <h1>実際に起きた手口が、<br />自社で通らないか点検する</h1>
+      <p>
+        Critical Brief で分析した {briefCount} 件の事案から、「同じことが自社で起きないか」を点検する {total} の問いにまとめました。事例をまたいで同じ問いは 1 つにしています。業務を選んで、はい／いいえ／分からない で答えてください。
+      </p>
+      <ul class="ck-points">
+        <li><b>登録は要りません</b><span>答えはこのブラウザの中だけで扱い、どこにも送りません</span></li>
+        <li><b>事例から作った問い</b><span>どの問いにも元の事例が付き、記事で根拠を読めます</span></li>
+        <li><b>不安な点はメールで相談</b><span>結果を見て気になる点を、メールで聞けます</span></li>
+      </ul>
+    </header>
+
+    <section class="ck-step" aria-labelledby="ck-s1">
+      <h2 id="ck-s1"><span class="ck-n">1</span>点検する業務を選ぶ</h2>
+      <div class="ck-ops" role="group" aria-label="業務">
+        {groups.map((g) => (
+          <button type="button" class="ck-op" data-op={g.key} aria-pressed="false">
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={g.icon} />
+            <span class="ck-op-l">{g.label}</span>
+            <span class="ck-op-c">{g.items.length} 問</span>
+          </button>
+        ))}
+      </div>
+      <p class="ck-hint" data-ck-empty>業務を選ぶと、その業務の項目が出ます。いくつ選んでもかまいません。</p>
+    </section>
+
+    <section class="ck-step" aria-labelledby="ck-s2" data-ck-items hidden>
+      <h2 id="ck-s2"><span class="ck-n">2</span>はい／いいえ／分からない で答える</h2>
+      <p class="ck-hint">「はい」と言い切れない項目が、手当てが要る所です。</p>
+      {groups.map((g) => (
+        <div class="ck-group" data-group={g.key} hidden>
+          <h3 class="ck-gh">{g.label}</h3>
+          <ol class="ck-list">
+            {g.items.map((it) => (
+              <li class="ck-item" data-item={it.id} data-src={it.sources.map((x) => x.id).join(" ")}>
+                <div class="ck-q">
+                  <p>{it.text}</p>
+                  <div class="ck-src">
+                    <span class="ck-from">いま読んでいた記事の問い</span>
+                    <span class="ck-src-l">事例</span>
+                    {it.sources.map((x) => (
+                      <a href={`/ja/critical/briefs/${x.id}/`} target="_blank" rel="noopener" title={x.title}>No.{pad(x.no)}</a>
+                    ))}
+                  </div>
+                </div>
+                <div class="ck-ans" role="radiogroup" aria-label={it.text}>
+                  <button type="button" role="radio" aria-checked="false" data-v="yes">はい</button>
+                  <button type="button" role="radio" aria-checked="false" data-v="no">いいえ</button>
+                  <button type="button" role="radio" aria-checked="false" data-v="unsure">分からない</button>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </section>
+
+    <section class="ck-step ck-result" aria-labelledby="ck-s3" data-ck-result hidden>
+      <h2 id="ck-s3"><span class="ck-n">3</span>結果</h2>
+      <p class="ck-sum" data-ck-sum></p>
+      <div data-ck-gaps></div>
+      <div class="ck-consult">
+        <div>
+          <b>気になる点を、メールで相談する</b>
+          <span>結果を見て不安な点や、自社の業務への当てはめ方を、メールでお返事します。答えの中身は送られません。選んだ業務と、「はい」と言い切れなかった項目の番号だけをフォームに添えます。</span>
+        </div>
+        <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">メールで相談する<span aria-hidden="true"> →</span></a>
+      </div>
+      <div class="ck-tools">
+        <button type="button" class="ck-sub" data-ck-print>結果を印刷する</button>
+        <button type="button" class="ck-sub" data-ck-reset>答えを消す</button>
+        <a class="ck-sub" href={BRIEF_WEEKLY_URL} target="_blank" rel="noopener">新しい事例をメールで受け取る</a>
+      </div>
+      <p class="ck-note">
+        この点検は、公開情報をもとにした事案の構造分析から作ったもので、特定の組織への監査・診断・助言ではありません。網羅性・正確性や、不正を防ぐ効果は保証しません。© 2026 FRAME00株式会社
+      </p>
+    </section>
+
+    <div class="ck-bar" data-ck-bar hidden>
+      <span data-ck-progress></span>
+      <a href="#ck-s3" class="ck-bar-btn">結果を見る</a>
+    </div>
+  </main>
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<script is:inline>
+  (function () {
+    var KEY = "lemma_selfcheck_v2";
+    var root = document.querySelector(".ck");
+    if (!root) return;
+    var state = { ops: [], ans: {} };
+    try {
+      var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (saved && saved.ans) state = { ops: saved.ops || [], ans: saved.ans };
+    } catch (e) {}
+    var from = new URLSearchParams(location.search).get("from");
+    var started = false;
+    function save() {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+    function ev(name, params) {
+      if (typeof window.gtag === "function") window.gtag("event", name, params || {});
+    }
+    var $ = function (s, el) { return (el || root).querySelector(s); };
+    var $$ = function (s, el) { return Array.prototype.slice.call((el || root).querySelectorAll(s)); };
+
+    // 記事から来たとき：その記事の問いに印を付けて各業務の先頭へ寄せ、
+    // その記事のいちばん近い業務を選ぶ。
+    if (from) {
+      var mine = $$(".ck-item").filter(function (li) {
+        return (li.getAttribute("data-src") || "").split(" ").indexOf(from) >= 0;
+      });
+      mine.slice().reverse().forEach(function (li) {
+        li.classList.add("is-from");
+        li.parentNode.insertBefore(li, li.parentNode.firstChild);
+      });
+      if (mine.length) {
+        var g = mine[0].closest("[data-group]").getAttribute("data-group");
+        if (state.ops.indexOf(g) < 0) state.ops.push(g);
+      }
+    }
+
+    function render() {
+      $$(".ck-op").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(state.ops.indexOf(b.getAttribute("data-op")) >= 0));
+      });
+      $$("[data-group]").forEach(function (g) {
+        g.hidden = state.ops.indexOf(g.getAttribute("data-group")) < 0;
+      });
+      var any = state.ops.length > 0;
+      $("[data-ck-items]").hidden = !any;
+      $("[data-ck-result]").hidden = !any;
+      $("[data-ck-bar]").hidden = !any;
+      $("[data-ck-empty]").hidden = any;
+      // 複数の業務に出る問いは、選んだ業務のうち最初の 1 か所にだけ出す。
+      var seen = {};
+      var shown = [];
+      $$(".ck-item").forEach(function (li) {
+        var id = li.getAttribute("data-item");
+        var inOpen = !li.closest("[data-group]").hidden;
+        li.hidden = inOpen && !!seen[id];
+        if (inOpen && !seen[id]) {
+          seen[id] = true;
+          shown.push(li);
+        }
+        var v = state.ans[id];
+        $$("[data-v]", li).forEach(function (b) {
+          b.setAttribute("aria-checked", String(b.getAttribute("data-v") === v));
+        });
+        li.setAttribute("data-state", v || "");
+      });
+      var answered = 0;
+      var gaps = [];
+      shown.forEach(function (li) {
+        var v = state.ans[li.getAttribute("data-item")];
+        if (v) answered++;
+        if (v === "no" || v === "unsure") gaps.push(li);
+      });
+      $("[data-ck-progress]").textContent =
+        "回答 " + answered + " / " + shown.length + "　・　はいと言い切れない " + gaps.length;
+      $("[data-ck-sum]").innerHTML = answered
+        ? "答えた " + answered + " 問のうち、<b>「はい」と言い切れない問いが " + gaps.length + " つ</b>ありました。" +
+          (answered < shown.length ? "（まだ答えていない問いが " + (shown.length - answered) + " つあります）" : "")
+        : "まだ答えていません。上の問いに答えると、ここに「はい」と言い切れない問いがまとまります。";
+      var box = $("[data-ck-gaps]");
+      box.innerHTML = "";
+      var byGroup = {};
+      gaps.forEach(function (li) {
+        var g = li.closest("[data-group]");
+        var key = g.getAttribute("data-group");
+        if (!byGroup[key]) {
+          byGroup[key] = document.createElement("div");
+          byGroup[key].className = "ck-gap";
+          var h = document.createElement("b");
+          h.textContent = g.querySelector(".ck-gh").textContent;
+          byGroup[key].appendChild(h);
+          byGroup[key].appendChild(document.createElement("ul"));
+          box.appendChild(byGroup[key]);
+        }
+        var v = state.ans[li.getAttribute("data-item")];
+        var item = document.createElement("li");
+        item.innerHTML = '<span class="ck-tag ck-tag--' + v + '">' + (v === "no" ? "いいえ" : "分からない") + "</span>";
+        item.appendChild(document.createTextNode(li.querySelector("p").textContent));
+        var src = li.querySelector(".ck-src").cloneNode(true);
+        var mark = src.querySelector(".ck-from");
+        if (mark) mark.remove();
+        src.className = "ck-gap-src";
+        item.appendChild(src);
+        byGroup[key].querySelector("ul").appendChild(item);
+      });
+      var link = $("[data-ck-consult]");
+      var u = new URL(link.getAttribute("href"));
+      u.searchParams.set("ops", state.ops.join(","));
+      u.searchParams.set("gaps", gaps.map(function (li) { return li.getAttribute("data-item"); }).join(",").slice(0, 900));
+      u.searchParams.set("ref", from ? "selfcheck_from_brief" : "selfcheck");
+      link.href = u.toString();
+    }
+
+    root.addEventListener("click", function (e) {
+      var op = e.target.closest(".ck-op");
+      if (op) {
+        var k = op.getAttribute("data-op");
+        var i = state.ops.indexOf(k);
+        if (i >= 0) state.ops.splice(i, 1);
+        else state.ops.push(k);
+        save();
+        render();
+        return;
+      }
+      var b = e.target.closest(".ck-ans [data-v]");
+      if (b) {
+        var id = b.closest(".ck-item").getAttribute("data-item");
+        var v = b.getAttribute("data-v");
+        if (state.ans[id] === v) delete state.ans[id];
+        else state.ans[id] = v;
+        if (!started) {
+          started = true;
+          ev("self_check_start", { from_brief: from || undefined });
+        }
+        save();
+        render();
+        return;
+      }
+      if (e.target.closest("[data-ck-print]")) {
+        ev("self_check_print");
+        window.print();
+        return;
+      }
+      if (e.target.closest("[data-ck-reset]")) {
+        state.ans = {};
+        save();
+        render();
+        return;
+      }
+      if (e.target.closest("[data-ck-consult]")) {
+        ev("self_check_consult", { ops: state.ops.join(","), gaps: $$(".ck-gap li").length });
+      }
+    });
+
+    // 結果まで読んだら 1 回だけ数える。
+    var counted = false;
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (x) {
+          if (!x.isIntersecting || counted || x.target.hidden) return;
+          counted = true;
+          ev("self_check_result", {
+            ops: state.ops.join(","),
+            answered: Object.keys(state.ans).length,
+            gaps: $$(".ck-gap li").length,
+          });
+        });
+      }).observe($("[data-ck-result]"));
+    }
+
+    render();
+    if (from) {
+      var target = $(".ck-item.is-from:not([hidden])");
+      if (target) setTimeout(function () { target.scrollIntoView({ block: "center" }); }, 60);
+    }
+  })();
+</script>
+
+<style>
+  .ck {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 112px 20px 120px;
+    color: #16190f;
+  }
+  .ck-crumb {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    color: #6a7064;
+  }
+  .ck-crumb a {
+    color: #3c4237;
+    text-decoration: none;
+  }
+  .ck-head {
+    margin-top: 18px;
+    padding: 30px 32px 28px;
+    border-radius: 16px;
+    color: #e9eee3;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0) 0 0 / 18px 18px,
+      linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
+  }
+  .ck-k {
+    font-family: "Space Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    color: #c9e57a;
+  }
+  .ck-head h1 {
+    margin: 12px 0 0;
+    font-family: "Space Grotesk", "Noto Serif JP", Georgia, serif;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.45;
+    color: #fff;
+  }
+  .ck-head p {
+    margin: 14px 0 0;
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: #d6dcd0;
+  }
+  .ck-points {
+    list-style: none;
+    margin: 20px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .ck-points li {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .ck-points b {
+    font-size: 13.5px;
+    color: #fff;
+  }
+  .ck-points span {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #c8cfc2;
+  }
+  .ck-step {
+    margin-top: 36px;
+    scroll-margin-top: 96px;
+  }
+  .ck-step h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+    font-size: 19px;
+    font-weight: 700;
+  }
+  .ck-n {
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #2f372f;
+    color: #c9e57a;
+    font: 600 13px "Space Mono", monospace;
+  }
+  .ck-hint {
+    margin: 0 0 14px;
+    font-size: 13px;
+    color: #6a7064;
+  }
+  .ck-ops {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .ck-op {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 10px;
+    align-items: center;
+    padding: 12px 14px;
+    text-align: left;
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    border-radius: 12px;
+    color: #16190f;
+    cursor: pointer;
+    font: inherit;
+  }
+  .ck-op svg {
+    grid-row: 1 / 3;
+    width: 22px;
+    height: 22px;
+    color: #4e7a00;
+  }
+  .ck-op-l {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .ck-op-c {
+    font-size: 12px;
+    color: #6a7064;
+  }
+  .ck-op[aria-pressed="true"] {
+    background: #2f372f;
+    border-color: #2f372f;
+    color: #fff;
+  }
+  .ck-op[aria-pressed="true"] svg {
+    color: #c9e57a;
+  }
+  .ck-op[aria-pressed="true"] .ck-op-c {
+    color: #c8cfc2;
+  }
+  .ck-gh {
+    margin: 22px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #2f372f;
+    font-size: 16px;
+  }
+  .ck-list {
+    list-style: none;
+    margin: 0;
+    padding: 4px 16px;
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    border-radius: 12px;
+  }
+  .ck-q {
+    min-width: 0;
+  }
+  .ck-src {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    margin-top: 4px;
+    font-size: 11.5px;
+    color: #6a7064;
+  }
+  .ck-src a {
+    font-family: "Space Mono", monospace;
+    color: #4e7a00;
+    text-decoration: none;
+  }
+  .ck-src a:hover {
+    text-decoration: underline;
+  }
+  .ck-from {
+    display: none;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: #eef7d2;
+    color: #4e7a00;
+    font-weight: 700;
+  }
+  .ck-item.is-from {
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    background: #f6fbe8;
+    scroll-margin-top: 96px;
+  }
+  .ck-item.is-from .ck-from {
+    display: inline-block;
+  }
+  .ck-item[hidden] {
+    display: none;
+  }
+  .ck-item {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-top: 1px dashed #dcdfd6;
+  }
+  .ck-item p {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .ck-ans {
+    flex: none;
+    display: inline-flex;
+    border: 1px solid #dcdfd6;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .ck-ans button {
+    padding: 6px 12px;
+    background: #fff;
+    border: 0;
+    border-left: 1px solid #dcdfd6;
+    font: inherit;
+    font-size: 12.5px;
+    color: #3c4237;
+    cursor: pointer;
+  }
+  .ck-ans button:first-child {
+    border-left: 0;
+  }
+  .ck-ans [data-v="yes"][aria-checked="true"] {
+    background: #2f372f;
+    color: #fff;
+  }
+  .ck-ans [data-v="no"][aria-checked="true"] {
+    background: #b4341c;
+    color: #fff;
+  }
+  .ck-ans [data-v="unsure"][aria-checked="true"] {
+    background: #c98a12;
+    color: #fff;
+  }
+  .ck-sum {
+    margin: 0 0 14px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .ck-result :global(.ck-gap) {
+    margin: 0 0 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    border-radius: 12px;
+  }
+  .ck-result :global(.ck-gap > b) {
+    font-size: 13px;
+    color: #3c4237;
+  }
+  .ck-result :global(.ck-gap-src) {
+    display: inline-flex;
+    gap: 6px;
+    margin-left: 8px;
+    font-size: 11px;
+  }
+  .ck-result :global(.ck-gap-src a) {
+    font-family: "Space Mono", monospace;
+    color: #4e7a00;
+    text-decoration: none;
+  }
+  .ck-result :global(.ck-gap-src .ck-src-l) {
+    color: #6a7064;
+  }
+  .ck-result :global(.ck-gap ul) {
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ck-result :global(.ck-gap li) {
+    padding: 4px 0;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .ck-result :global(.ck-tag) {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .ck-result :global(.ck-tag--no) {
+    background: #b4341c;
+  }
+  .ck-result :global(.ck-tag--unsure) {
+    background: #c98a12;
+  }
+  .ck-consult {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 20px 22px;
+    border-radius: 14px;
+    color: #e9eee3;
+    background: linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
+  }
+  .ck-consult > div b {
+    display: block;
+    font-size: 16px;
+    color: #fff;
+  }
+  .ck-consult > div span {
+    display: block;
+    margin-top: 4px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #c8cfc2;
+  }
+  .ck-btn {
+    flex: none;
+    white-space: nowrap;
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: #a8e010;
+    color: #16190f;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+  }
+  .ck-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .ck-sub {
+    padding: 8px 14px;
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 13px;
+    color: #3c4237;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .ck-note {
+    margin: 16px 0 0;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #6a7064;
+  }
+  .ck-bar {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 12px 10px 18px;
+    border-radius: 999px;
+    background: #2f372f;
+    color: #e9eee3;
+    font-size: 13px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    z-index: 20;
+    white-space: nowrap;
+  }
+  .ck-bar-btn {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #a8e010;
+    color: #16190f;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  @media (max-width: 760px) {
+    .ck {
+      padding-top: 92px;
+    }
+    .ck-head {
+      padding: 22px 18px;
+    }
+    .ck-head h1 {
+      font-size: 22px;
+    }
+    .ck-points {
+      grid-template-columns: 1fr;
+    }
+    .ck-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .ck-consult {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .ck-bar {
+      left: 16px;
+      right: 16px;
+      transform: none;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+  }
+  @media print {
+    :global(nav),
+    :global(footer),
+    .ck-crumb,
+    .ck-ops,
+    .ck-bar,
+    .ck-tools,
+    .ck-consult,
+    .ck-ans,
+    .ck-hint {
+      display: none !important;
+    }
+    .ck {
+      padding: 0;
+    }
+    .ck-head {
+      background: none;
+      color: #16190f;
+      padding: 0;
+    }
+    .ck-head h1,
+    .ck-head p,
+    .ck-points b,
+    .ck-points span {
+      color: #16190f;
+    }
+    .ck-points {
+      display: none;
+    }
+    .ck-item[data-state="yes"]::after {
+      content: "はい";
+    }
+    .ck-item[data-state="no"]::after {
+      content: "いいえ";
+    }
+    .ck-item[data-state="unsure"]::after {
+      content: "分からない";
+    }
+    .ck-item::after {
+      flex: none;
+      font-size: 12px;
+      font-weight: 700;
+    }
+  }
+</style>
