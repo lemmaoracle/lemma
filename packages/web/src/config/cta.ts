@@ -48,13 +48,19 @@ export const BRIEF_RAIL_CTA_URL: Readonly<Record<Locale, string>> = {
 } as const;
 
 /**
- * 記事の対策の章、チェックリストのあとの週 1 回のメールの入口（2026-10-24）。
- * 本文は登録なしで全部読めるまま、持ち帰る価値（毎週の新しい事例と点検の
+ * 記事の対策の章、チェックリストのあとのメールの入口（2026-10-24）。
+ * 本文は登録なしで全部読めるまま、持ち帰る価値（新しい事例と点検の
  * 項目）で受ける。フォームは BRIEF_RAIL_CTA_URL と同じで、`ref` だけ分ける。
  */
 export const BRIEF_CHECKLIST_CTA_URL: Readonly<Record<Locale, string>> = {
   ja: "https://tally.so/r/EkMj82?ref=brief_checklist&utm_source=brief_checklist&utm_medium=cta&utm_campaign=brief_to_weekly",
   en: "https://tally.so/r/rjvN2X?ref=brief_checklist&utm_source=brief_checklist&utm_medium=cta&utm_campaign=brief_to_weekly",
+} as const;
+
+/** 同じフォームの、記事の TL;DR のあとの 1 行の入口（2026-10-24）。 */
+export const BRIEF_TLDR_CTA_URL: Readonly<Record<Locale, string>> = {
+  ja: "https://tally.so/r/EkMj82?ref=brief_tldr&utm_source=brief_tldr&utm_medium=cta&utm_campaign=brief_to_weekly",
+  en: "https://tally.so/r/rjvN2X?ref=brief_tldr&utm_source=brief_tldr&utm_medium=cta&utm_campaign=brief_to_weekly",
 } as const;
 
 export const DASHBOARD_URL = "https://dashboard.lemma.workers.dev" as const;

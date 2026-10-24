@@ -503,12 +503,15 @@ function deriveReportComponents(root, fm, isEn) {
 }
 
 /**
- * チェックリスト（とその「注：」）の直後に、週 1 回のメールの入口の目印を
- * 置く（中身は BriefTemplate の BriefWeeklyCta・2026-10-24）。本文は登録なしで
+ * メールの入口の目印を置く（中身は BriefTemplate の BriefWeeklyCta・
+ * 2026-10-24）。TL;DR のあとの 1 行と、チェックリスト（とその「注：」）の直後。本文は登録なしで
  * 全部読めるまま。対策の章の表を畳む案も試したが、SEO も読み手の得も変わらず、
  * 対策を探しに来た人には表も答えの一部なので、開いたままにした。
  */
 function markWeeklySlot(root) {
+  // TL;DR のあと（2 章の h2 の直前）の 1 行の入口。
+  const s2 = sectionHeadIndex(root, 2);
+  if (s2 >= 0) root.splice(s2, 0, { type: "element", tagName: "div", properties: { dataBriefWeeklyTopSlot: "" }, children: [] });
   const r = sectionRange(root, 5);
   if (!r) return;
   for (let i = r[0]; i < root.length; i++) {

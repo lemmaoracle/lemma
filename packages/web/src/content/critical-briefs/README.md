@@ -254,9 +254,9 @@ EN ファイルの `impact` / `takeaway` / `controls[].item` は英語で書く�
 md には何も書かない。`controls` は §5 の「必要なこと」と同じ順に書く（「記録する」は最後に
 回る）。分類の無い Brief は、末尾に従来の関連 Brief が出る。
 
-**週 1 回のメールの入口（2026-10-24）**：§5 のチェックリスト（とその「注：」）のあとに、
-週 1 回のメールの入口を出す（`components/BriefWeeklyCta.astro`・行き先は `config/cta.ts` の
-`BRIEF_CHECKLIST_CTA_URL`）。本文は登録の先に置かず、表も畳まずに全部読めるままにする
+**メールの入口（2026-10-24）**：TL;DR のあとに 1 行、§5 のチェックリスト（とその「注：」）
+のあとに帯で、定期的なメールの入口を出す（`components/BriefWeeklyCta.astro`・行き先は `config/cta.ts` の
+`BRIEF_TLDR_CTA_URL` / `BRIEF_CHECKLIST_CTA_URL`・`ref` で置き場所を分ける）。本文は登録の先に置かず、表も畳まずに全部読めるままにする
 （検索から対策を探しに来た人を答えの手前で止めないため。畳んでも SEO は変わらず、読み手に
 とっては表も答えの一部）。
 
