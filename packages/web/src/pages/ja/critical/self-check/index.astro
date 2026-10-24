@@ -349,8 +349,8 @@ const jsonLd = [
         <div class="ck-score-n"><b data-ck-score-n></b><span>点</span></div>
         <div class="ck-score-bar" aria-hidden="true"><i data-ck-score-bar></i></div>
         <p class="ck-score-msg" data-ck-score-msg></p>
-        <p class="ck-score-help">自社での確認や見直しが難しい場合は、メールでご相談いただけます（無料）。</p>
-        <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">メールで相談する<span aria-hidden="true"> →</span></a>
+        <p class="ck-score-help">自社での確認や見直しが難しい場合は、メールでご相談いただけます。</p>
+        <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="16" height="12" rx="2"/><path d="M3.5 6l7.5 6 7.5-6"/></svg>メールで相談する（無料）<span aria-hidden="true">→</span></a>
       </div>
       <button type="button" class="ck-more" data-ck-more hidden></button>
       <div data-ck-gaps></div>
@@ -1776,17 +1776,32 @@ const jsonLd = [
   .ck-result :global(.ck-tag--unsure) {
     background: #c98a12;
   }
+  /* 結果でいちばん押してほしいボタン。ほかの緑と並ばないよう、トップの .btn.solid
+     （墨の地・白い字）にして、メールの印だけライムにする。 */
   .ck-btn {
-    display: inline-block;
-    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 280px;
     white-space: nowrap;
-    padding: 14px 26px;
+    padding: 16px 28px;
     border-radius: 999px;
-    background: #a8e010;
-    color: #16190f;
-    font-weight: 700;
-    font-size: 14px;
+    background: #16190f;
+    color: #fff;
+    font-weight: 800;
+    font-size: 15.5px;
     text-decoration: none;
+    box-shadow: 0 8px 20px rgba(22, 25, 15, 0.22);
+  }
+  .ck-btn:hover {
+    background: #000;
+  }
+  .ck-btn svg {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: #a8e010;
   }
   .ck-done {
     margin: 16px 0 0;
@@ -1991,6 +2006,11 @@ const jsonLd = [
     }
     .lp-list-grid {
       columns: 1;
+    }
+    .ck-btn {
+      display: flex;
+      min-width: 0;
+      width: 100%;
     }
     .ck-legend {
       grid-template-columns: 1fr;
