@@ -498,7 +498,49 @@ function deriveReportComponents(root, fm, isEn) {
   deriveTimeline(root);
   deriveCounter(root, isEn);
   deriveFacts(root, 5);
+  foldCounterDetails(root, isEn);
   deriveSources(root, isEn);
+}
+
+/**
+ * 対策の章を短くする（2026-10-24）。「注意したい業界・業務」と「いまの対策で
+ * 埋まるか」の 2 つの表は、見出しだけ見せて「詳しく見る」で開く（登録は求め
+ * ない）。開いたままにするのは、リード・必要になるもの・チェックリスト。
+ * チェックリスト（とその「注：」）の直後には、週 1 回のメールの入口の目印を
+ * 置く（中身は BriefTemplate の BriefWeeklyCta）。
+ */
+const FOLD_HEADS = /^(注意したい業界・業務|いまの対策で埋まるか|Industries and operations to watch|Do today['’]s controls close it\?)$/i;
+
+function foldCounterDetails(root, isEn) {
+  const r = sectionRange(root, 5);
+  if (!r) return;
+  for (let i = r[0]; i < root.length; i++) {
+    const node = root[i];
+    if (isEl(node, "h2")) break;
+    if (isEl(node, "h3") && FOLD_HEADS.test(textOf(node).trim())) {
+      let end = i + 1;
+      while (
+        end < root.length &&
+        !isEl(root[end], "h2") &&
+        !isEl(root[end], "h3") &&
+        !(isEl(root[end]) && /\b(rx-box|bx-checklist)\b/.test(String(root[end].properties?.className ?? "")))
+      ) end++;
+      const body = root.slice(i + 1, end);
+      const summary = h("summary", "rx-more-s", [
+        h("span", "rx-more-t", node.children),
+        h("span", "rx-more-a", [txt(isEn ? "Show details" : "詳しく見る")]),
+      ]);
+      root.splice(i, end - i, h("details", "rx-more", [summary, ...body]));
+    }
+    const cls = String(node.properties?.className ?? "");
+    if (isEl(node) && /\bbx-checklist\b/.test(cls)) {
+      // 直後の「注：」はチェックリストの続きなので、その後ろに置く。
+      const nx = nextEl(root, i);
+      const after = nx >= 0 && /\brx-aside\b/.test(String(root[nx].properties?.className ?? "")) ? nx : i;
+      root.splice(after + 1, 0, { type: "element", tagName: "div", properties: { dataBriefWeeklySlot: "" }, children: [] });
+      i = after + 1;
+    }
+  }
 }
 
 function applyReportLayout(tree, fm, isEn) {
