@@ -1490,14 +1490,18 @@ const jsonLd = [
     width: 100%;
     margin: 0 0 16px;
     padding: 14px 18px;
-    border: 1px dashed #8fc80c;
-    border-radius: 14px;
-    background: #f6fbe8;
+    border: 0;
+    /* トップの .btn.ghostd（薄いライム地・濃い緑の字）に合わせる。形はこのページのボタンと同じ丸。 */
+    border-radius: 999px;
+    background: rgba(168, 224, 16, 0.16);
     font: inherit;
     font-size: 15px;
     font-weight: 800;
-    color: #3c5a00;
+    color: #4e7a00;
     cursor: pointer;
+  }
+  .ck-more:hover {
+    background: rgba(168, 224, 16, 0.26);
   }
   .ck-more[hidden],
   .ck-group[hidden] {
