@@ -45,15 +45,32 @@ const sections: LegalSection[] = [
     body: `<p>Users may combine ZK proofs with selective disclosure (<code>bbs+</code> or <code>opaque</code> format). We receive only the disclosed attributes; undisclosed attributes are not processed.</p>`,
   },
   {
+    heading: "Personal Information Collected Through Website Forms",
+    body: `<p>Through forms on the Service's website (email inquiries, contact requests, newsletter sign-ups, and similar), we collect:</p>
+<ul>
+<li>Information you enter, such as your email address, name, company, role, title, and company size</li>
+<li>The content of your inquiry</li>
+<li>Where you came from (referring page and campaign identifiers)</li>
+</ul>
+<p><strong>Purposes</strong>: replying to your inquiry; information about Lemma and our other products and services; updates such as new case analyses for newsletter subscribers; and aggregate, non-identifying analysis to improve the website and Service.</p>
+<p><strong>Processors and storage</strong>: Forms are provided by Tally (Tally BV, Belgium) and responses are stored in the EU. Website analytics use Google Analytics (Google LLC, United States).</p>
+<p><strong>Unsubscribing</strong>: You can stop our emails at any time using the link in each email or by contacting us below.</p>`,
+  },
+  {
+    heading: "Security Measures",
+    body: `<p>We take necessary and appropriate measures to prevent leakage, loss, or damage of personal information, including limiting access to the staff who need it, selecting and supervising processors, and encrypting data in transit and at rest.</p>`,
+  },
+  {
     heading: "Retention",
     body: `<ul>
 <li><strong>Metadata</strong>: retained for the period necessary to provide the Service.</li>
 <li><strong>Logs</strong>: retained for operational needs (up to 90 days), then deleted.</li>
+<li><strong>Personal information from website forms</strong>: retained as long as needed to reply and to send the information described above; deleted promptly on request.</li>
 </ul>`,
   },
   {
     heading: "User Rights",
-    body: `<p>Users may exercise the following rights regarding their metadata held by us:</p>
+    body: `<p>Users may exercise the following rights regarding their metadata and personal information held by us:</p>
 <ul>
 <li>Right to access</li>
 <li>Right to correction and deletion</li>
@@ -72,7 +89,7 @@ const sections: LegalSection[] = [
   {
     heading: "Contact",
     body: `<p>For questions about this policy or to exercise any of the rights above:</p>
-<p>FRAME00 Inc.<br>Email: <a href="mailto:contact@frame00.com">contact@frame00.com</a></p>`,
+<p>FRAME00, Inc. (フレームダブルオー株式会社)<br>3-5-7 Ebisu-minami, Shibuya-ku, Tokyo 150-0022, Japan<br>Representative Director: Mayumi Hara<br>Email: <a href="mailto:contact@frame00.com">contact@frame00.com</a></p>`,
   },
 ];
 
@@ -86,8 +103,8 @@ const description =
   base={base}
   tag="Privacy Policy"
   title="Privacy Policy"
-  lastUpdated="Last updated: May 2, 2026"
-  intro={`FRAME00 Inc. (&ldquo;we&rdquo;) provides Lemma (the &ldquo;Service&rdquo;). This policy describes the data we receive, store, and process, given the cryptographic design of the Service.`}
+  lastUpdated="Last updated: October 24, 2026"
+  intro={`FRAME00 Inc. (&ldquo;we&rdquo;) provides Lemma (the &ldquo;Service&rdquo;) and its website. This policy describes the data we receive, store, and process, given the cryptographic design of the Service.`}
   sections={sections}
   description={description}
 />
