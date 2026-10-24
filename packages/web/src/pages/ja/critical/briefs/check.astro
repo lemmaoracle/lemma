@@ -51,7 +51,7 @@ const CONSULT_EXAMPLES = [
       <a href="/ja/">ホーム</a><span>/</span><a href="/ja/critical/briefs/">Critical Brief</a><span>/</span><span>セルフチェック</span>
     </nav>
     <p class="ck-print-head" data-ck-print-head></p>
-    <p class="ck-done" data-ck-done hidden>相談を受け付けました。ご記入のメールアドレスへ、メールでお返事します。</p>
+    <p class="ck-done" data-ck-done hidden>相談を受け付けました。3 営業日以内に、ご記入のメールアドレスへお返事します。届かないときは、迷惑メールのフォルダもご確認ください。</p>
     <header class="ck-head">
       <div class="ck-k">LEMMA CRITICAL BRIEF · SELF-CHECK</div>
       <h1>実際に起きた手口が、<br />自社で通らないか点検する</h1>
@@ -121,11 +121,12 @@ const CONSULT_EXAMPLES = [
       <div class="ck-consult">
         <div class="ck-consult-tx">
           <b>言い切れなかった項目を、メールで相談する</b>
-          <span>「はい」と言い切れなかった項目について、ほかの事例での手当ての例と、社内で確認する順番を、メールでお返事します。FRAME00 の担当者が AI も使って下書きし、目を通してからお送りします。</span>
+          <span>「はい」と言い切れなかった項目について、ほかの事例での手当ての例と、社内で確認する順番を、メールでお返事します。FRAME00 の担当者が AI も使って下書きし、目を通してから、3 営業日以内にお送りします。</span>
           <ul class="ck-promise">
             <li>費用はかかりません</li>
             <li>製品のご案内はしません</li>
             <li>お返事はメールだけで、お電話はしません</li>
+            <li>3 営業日以内にお返事します</li>
           </ul>
           <div class="ck-ex">
             <span>相談の例（押すと、フォームに入った状態で開きます）</span>
@@ -133,6 +134,7 @@ const CONSULT_EXAMPLES = [
               <a href={CONSULT_FORM_URL} target="_blank" rel="noopener" data-ck-consult data-q={q}>{q}</a>
             ))}
           </div>
+          <small>いま被害が起きている・振り込んでしまった、というときは、このフォームを待たずに、取引銀行と警察（最寄りの警察署か #9110）にすぐご連絡ください。</small>
           <small data-ck-attach>答えの中身は送られません。選んだ業務と、言い切れない項目の番号だけをフォームに添えます。</small>
         </div>
         <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">無料でメール相談する<span aria-hidden="true"> →</span></a>
@@ -162,6 +164,10 @@ const CONSULT_EXAMPLES = [
         <details>
           <summary>相談は無料ですか。営業の連絡は来ますか</summary>
           <p>無料です。お返事はメールだけで、お電話や製品のご案内はしません。</p>
+        </details>
+        <details>
+          <summary>お返事はいつ届きますか</summary>
+          <p>3 営業日以内に、メールでお返事します。届かないときは、迷惑メールのフォルダもご確認ください。</p>
         </details>
         <details>
           <summary>答えを残したくないときは</summary>
