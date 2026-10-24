@@ -82,13 +82,14 @@ countries: ["kr"]
   - 2024 年の模擬ハッキングで、キーがソースコードに直接書かれている点が見つかっていたが、直されていなかった。
 
 <figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">調査団がたどった経過</span></div>
-<p class="rx-ex-cap">止めどころは ② と ④。本番のキーを使うときに、誰のどの作業のための使用かを照合していれば、申請された作業と結びつかないキーでは本番に入れず、仮想サーバも作れない。① のキーがどう盗まれたかは特定されていない。</p>
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">調査団が分けた 5 段階</span></div>
+<p class="rx-ex-cap">止めどころは ③ と ⑤。本番のキーを使うときに、誰のどの作業のための使用かを照合していれば、申請された作業と結びつかないキーでは本番に入れず、仮想サーバも作れない。① のキーがどう盗まれたかは特定されていない。</p>
 <div class="rx-chain">
-<div class="rx-step"><div class="who">攻撃者</div><div class="no">1</div><b>開発者のキーで開発環境に入り、プロジェクト 361 件を持ち出す</b><p>5 月 29 日。キーの盗まれ方は特定されていない。キー 1 本でも、すべてに届く権限だった（調査団）。</p></div>
-<div class="rx-step crit"><div class="who">攻撃者</div><div class="no">2</div><b>その中の本番のキーで本番環境に入り、データベースの ID とパスワードを得る</b><p>平文で置かれていたと調査団は指摘した。</p></div>
-<div class="rx-step"><div class="who">攻撃者</div><div class="no">3</div><b>1 回目の持ち出しを試みる</b><p>5 月 30 日。CPU 100% の警報で止められる。</p></div>
-<div class="rx-step crit"><div class="who">攻撃者</div><div class="no">4</div><b>別のキーで仮想サーバを作り、24GB を外部へ送る</b><p>5 月 31 日。警報は鳴らず、サーバは後で消された。</p></div>
+<div class="rx-step"><div class="who">攻撃者</div><div class="no">1</div><b>開発者の接続キーで、開発環境に入る</b><p>5 月 29 日。キーの盗まれ方は特定されていない。</p></div>
+<div class="rx-step crit"><div class="who">攻撃者</div><div class="no">2</div><b>開発プロジェクト 361 件をすべて持ち出し、本番のキーを得る</b><p>キー 1 本でも、すべてに届く権限だった（調査団）。</p></div>
+<div class="rx-step crit"><div class="who">攻撃者</div><div class="no">3</div><b>本番のキーで本番環境に入り、データベースの ID とパスワードを得る</b><p>平文で置かれていたと調査団は指摘した。</p></div>
+<div class="rx-step"><div class="who">攻撃者</div><div class="no">4</div><b>1 回目の持ち出しを試みる</b><p>5 月 30 日。CPU 100% の警報で止められる。</p></div>
+<div class="rx-step crit"><div class="who">攻撃者</div><div class="no">5</div><b>別のキーで仮想サーバを作り、24GB を外部へ送る</b><p>5 月 31 日。警報は鳴らず、サーバは後で消された。</p></div>
 </div>
 </figure>
 
