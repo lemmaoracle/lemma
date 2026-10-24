@@ -82,7 +82,8 @@ The Met noticed through internal reports and blocked access, but data on 179 peo
 <div class="rx-step"><div class="who">Retailers / operator</div><div class="no">1</div><b>Recommend Auror to officers and send sign-up QR codes</b><p>By the Met's account, the site carried its logo.</p></div>
 <div class="rx-step crit"><div class="who">Officers / staff</div><div class="no">2</div><b>Create their own accounts with Met email addresses</b><p>About 500. Wrongly told it was approved.</p></div>
 <div class="rx-step crit"><div class="who">Officers / staff</div><div class="no">3</div><b>Upload suspects' names and other details</b><p>179 people in 2024.</p></div>
-<div class="rx-step"><div class="who">Met</div><div class="no">4</div><b>An internal security incident is reported and access is blocked</b><p>Reported August 29, 2024; blocked September 26.</p></div>
+<div class="rx-step"><div class="who">Met</div><div class="no">4</div><b>An internal security incident is reported</b><p>August 29, 2024.</p></div>
+<div class="rx-step"><div class="who">Met</div><div class="no">5</div><b>Access is blocked</b><p>September 26, 2024.</p></div>
 </div>
 </figure>
 
