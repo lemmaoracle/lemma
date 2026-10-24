@@ -100,7 +100,7 @@ const PERSONAS = [
     from: "攻撃者が取引先の登録に入り込んだときの通知",
     real: "米国の市では、偽の担当者が取引先の登録に加えられ、振込先が書き換えられて 152 万ドルが送られました。",
     slug: "160-baltimore-workday-supplier-contact-bank-change",
-    checks: ["管理者や担当者が追加されたとき、誰に知らせが届くか", "使っていない入口や広すぎる権限を、定期的に閉じているか"],
+    checks: ["管理者や担当者が追加されたとき、担当者に知らせが届くか", "使っていない入口や広すぎる権限を、定期的に閉じているか"],
     ops: ["account-admin"],
     btn: "アカウントの項目でチェックする",
   },
@@ -120,7 +120,7 @@ const PERSONAS = [
     real: "国内の病院では、破砕したはずの電子カルテの HDD の一部が、ネットオークションで落札されました。",
     slug: "065-hokkaido-hospital-hdd-disposal",
     checks: ["委託先の「消した」という説明を、消去の記録や写真で確認しているか", "委託先の再委託や転売を、事前に知る取り決めがあるか"],
-    ops: ["data-access"],
+    ops: ["other"],
     btn: "委託の項目でチェックする",
   },
 ];
@@ -128,8 +128,8 @@ const PERSONAS = [
 const FAQ = [
   { q: "答えは、どう扱われますか", a: "どの項目に何と答えたかは、会社や個人が分からない形で集計し、事例の分析とチェック項目の改善に使います。会社名やメールアドレスを伺うのは、メールで相談するときだけです。" },
   { q: "担当外の項目は、どう答えればよいですか", a: "「分からない」を選んでください。結果に、その業務について社内で誰に聞けばよいかを出します。" },
-  { q: "結果は、診断や点数ですか", a: "いいえ。実際に起きた事例から作った、点検の目安です。点数やランクは付けません。" },
-  { q: "相談は無料ですか。製品の案内は来ますか", a: "無料です。お返事はメールだけで、お電話はしません。お返事に、Lemma（照合できたものだけを通す仕組み）のご案内を添えることがあります。" },
+  { q: "結果の「できている」の数は、何を表しますか", a: "答えた項目のうち「はい」の数です。実際に起きた事例から作った点検の目安で、診断や他社との比較ではありません。" },
+  { q: "相談は無料ですか。製品の案内は来ますか", a: "無料です。お返事はメールだけで、お電話はしません。お返事に、Lemma（本物だと確認できたものだけを通す仕組み）のご案内を添えることがあります。ご案内は、メールに返信して「停止」とお伝えいただければ止めます。" },
   { q: "お返事はいつ届きますか", a: "3 営業日以内に、メールでお返事します。届かないときは、迷惑メールのフォルダもご確認ください。" },
   { q: "答えを残したくないときは", a: "結果の下の「答えを消す」を押すと、このブラウザに残った答えをすべて消します。" },
 ];
@@ -321,15 +321,20 @@ const CONSULT_EXAMPLES = [
 
     <section class="ck-step ck-result" aria-labelledby="ck-s3" data-ck-result hidden>
       <h2 id="ck-s3"><span class="ck-n">3</span>結果</h2>
+      <div class="ck-score" data-ck-score hidden>
+        <div class="ck-score-n"><span>できている</span><b data-ck-score-n></b><small data-ck-score-of></small></div>
+        <div class="ck-score-bar" aria-hidden="true"><i data-ck-score-bar></i></div>
+        <p class="ck-score-msg" data-ck-score-msg></p>
+      </div>
       <p class="ck-sum" data-ck-sum></p>
       <div data-ck-gaps></div>
       <div class="ck-consult">
         <div class="ck-consult-tx">
           <b>要確認の項目を、メールで相談する</b>
-          <span>要確認の項目（「いいえ」「分からない」）について、ほかの事例での手当ての例と、社内で確認する順番を、メールでお返事します。FRAME00 の担当者が AI も使って下書きし、目を通してから、3 営業日以内にお送りします。</span>
+          <span>要確認の項目（「いいえ」「分からない」）について、ほかの事例での手当ての例と、社内で確認する順番を、FRAME00 の担当者がメールでお返事します。</span>
           <ul class="ck-promise">
             <li>費用はかかりません</li>
-            <li>お返事に、Lemma のご案内を添えることがあります</li>
+            <li>お返事に、Lemma のご案内を添えることがあります（いつでも止められます）</li>
             <li>お返事はメールだけで、お電話はしません</li>
             <li>3 営業日以内にお返事します</li>
           </ul>
@@ -340,32 +345,32 @@ const CONSULT_EXAMPLES = [
             ))}
           </div>
           <small>いま被害が起きている・振り込んでしまった、というときは、このフォームを待たずに、取引銀行と警察（最寄りの警察署か #9110）にすぐご連絡ください。</small>
-          <small data-ck-attach>フォームには、選んだ業務と、要確認の項目の番号を添えます。</small>
+          <small data-ck-attach>フォームには、選んだ業務と、要確認の項目（どれに何と答えたか）を添えます。</small>
         </div>
         <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">無料でメール相談する<span aria-hidden="true"> →</span></a>
       </div>
       <div class="ck-tools">
-        <button type="button" class="ck-sub" data-ck-print>結果を印刷する</button>
+        <button type="button" class="ck-sub" data-ck-print>結果を PDF で保存・印刷</button>
         <button type="button" class="ck-sub" data-ck-reset>答えを消す</button>
         <a class="ck-sub" href={BRIEF_WEEKLY_URL} target="_blank" rel="noopener">新しい事例をメールで受け取る</a>
       </div>
       <p class="ck-print-only">
         相談・最新のチェック項目：https://lemma.frame00.com/ja/critical/self-check/
       </p>
-      <section class="ck-faq" aria-labelledby="ck-faq-h">
-        <h3 id="ck-faq-h">よくある質問</h3>
-        {FAQ.map((f) => (
-          <details>
-            <summary>{f.q}</summary>
-            <p>{f.a}</p>
-          </details>
-        ))}
-      </section>
-      <p class="ck-note">
-        この点検は、公開情報をもとにした事案の構造分析から作ったもので、特定の組織への監査・診断・助言ではありません。網羅性・正確性や、不正を防ぐ効果は保証しません。© 2026 FRAME00株式会社
-      </p>
     </section>
 
+    <section class="ck-faq" aria-labelledby="ck-faq-h">
+      <h3 id="ck-faq-h">よくある質問</h3>
+      {FAQ.map((f) => (
+        <details>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </section>
+    <p class="ck-note">
+      この点検と、メールでのお返事は、公開された事例にもとづく一般的な情報の提供で、特定の組織への監査・診断・助言ではありません。網羅性・正確性や、不正を防ぐ効果は保証しません。© 2026 FRAME00株式会社
+    </p>
     </div>
 
     <section class="lp-list" aria-labelledby="lp-list-h">
@@ -521,6 +526,31 @@ const CONSULT_EXAMPLES = [
             : "答えた " + answered + " 項目は、すべて「はい」でした。") +
           (answered < shown.length ? "（まだ答えていない項目が " + (shown.length - answered) + " 項目あります）" : "") +
           (unsure ? "<br><span class=\"ck-soft\">「分からない」があるのは普通のことです。社内で誰が知っているかが分かれば、それだけで一歩進みます。</span>" : "");
+      // 点数（答えた項目のうち「はい」の数）と、帯ごとのひと言。
+      var yes = answered - gaps.length;
+      $("[data-ck-score]").hidden = !answered;
+      if (answered) {
+        var rate = yes / answered;
+        $("[data-ck-score-n]").textContent = String(yes);
+        $("[data-ck-score-of]").textContent = " / " + answered + " 項目";
+        $("[data-ck-score-bar]").style.width = Math.round(rate * 100) + "%";
+        $("[data-ck-score-msg]").textContent =
+          unsure * 2 >= answered
+            ? "「分からない」が多めです。下に、業務ごとに社内で誰に聞けばよいかをまとめました。まずはその方に確認してみてください。"
+            : rate === 1
+              ? "チェックした範囲では、実際の事案で通られた所は押さえられています。新しい事例が出たら、また点検してみてください。"
+              : rate >= 0.8
+                ? "多くは押さえられています。要確認の項目だけ、元の事例を読んで見直してみてください。"
+                : rate >= 0.5
+                  ? "半分以上はできています。要確認の項目は、実際の事案で通られた所です。担当の方と一緒に見直してみてください。"
+                  : "要確認の項目が多めです。まずは「いいえ」の項目から、元の事例を読んでみてください。気になる点は、メールで相談できます。";
+      }
+      // 要確認は「いいえ」を先に。
+      gaps.sort(function (a, b) {
+        var va = state.ans[a.getAttribute("data-item")] === "no" ? 0 : 1;
+        var vb = state.ans[b.getAttribute("data-item")] === "no" ? 0 : 1;
+        return va - vb;
+      });
       var box = $("[data-ck-gaps]");
       box.innerHTML = "";
       var byGroup = {};
@@ -563,12 +593,25 @@ const CONSULT_EXAMPLES = [
         return b ? b.textContent : k;
       });
       $("[data-ck-attach]").textContent =
-        "フォームには、選んだ業務（" + opLabels.join("、") + "）と、要確認の項目 " + gaps.length + " 件の番号を添えます。";
-      var gapIds = gaps.map(function (li) { return li.getAttribute("data-item"); }).join(",").slice(0, 900);
+        "フォームには、選んだ業務（" + opLabels.join("、") + "）と、要確認の項目 " + gaps.length + " 件（どれに「いいえ」「分からない」と答えたか）を添えます。";
+      // 「いいえ」と「分からない」を分けて渡す（返事が変わるため）。長すぎるときは項目の境目で切る。
+      var idsOf = function (v) {
+        var out = "";
+        gaps.forEach(function (li) {
+          var id = li.getAttribute("data-item");
+          if (state.ans[id] !== v) return;
+          var next = out ? out + "," + id : id;
+          if (next.length <= 600) out = next;
+        });
+        return out;
+      };
+      var gapIds = idsOf("no") + (idsOf("unsure") ? "|" + idsOf("unsure") : "");
       $$("[data-ck-consult]").forEach(function (link) {
         var u = new URL(link.getAttribute("href"));
         u.searchParams.set("ops", state.ops.join(","));
         u.searchParams.set("gaps", gapIds);
+        u.searchParams.set("no", idsOf("no"));
+        u.searchParams.set("unsure", idsOf("unsure"));
         u.searchParams.set("ref", from ? "selfcheck_from_brief" : "selfcheck");
         if (link.getAttribute("data-q")) u.searchParams.set("q", link.getAttribute("data-q"));
         link.href = u.toString();
@@ -1354,7 +1397,8 @@ const CONSULT_EXAMPLES = [
     overflow: hidden;
   }
   .ck-ans button {
-    padding: 6px 12px;
+    min-height: 36px;
+    padding: 6px 14px;
     background: #fff;
     border: 0;
     border-left: 1px solid #dcdfd6;
@@ -1377,6 +1421,53 @@ const CONSULT_EXAMPLES = [
   .ck-ans [data-v="unsure"][aria-checked="true"] {
     background: #c98a12;
     color: #fff;
+  }
+  .ck-score {
+    margin: 0 0 16px;
+    padding: 20px 22px;
+    border-radius: 16px;
+    background: #f6f8ef;
+    border: 1px solid #e3e6dc;
+  }
+  .ck-score-n {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .ck-score-n span {
+    font-size: 14px;
+    font-weight: 700;
+    color: #3c4237;
+  }
+  .ck-score-n b {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .ck-score-n small {
+    font-size: 16px;
+    font-weight: 700;
+    color: #6a7064;
+  }
+  .ck-score-bar {
+    height: 10px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: #e4e7de;
+    overflow: hidden;
+  }
+  .ck-score-bar i {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: #8fc80c;
+    transition: width 0.3s;
+  }
+  .ck-score-msg {
+    margin: 12px 0 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.8;
   }
   .ck-sum {
     margin: 0 0 14px;
@@ -1660,11 +1751,14 @@ const CONSULT_EXAMPLES = [
       align-items: flex-start;
     }
     .ck-bar {
-      left: 16px;
-      right: 16px;
+      left: 12px;
+      right: 12px;
       transform: none;
       justify-content: space-between;
-      font-size: 12px;
+      gap: 8px;
+      padding-left: 14px;
+      font-size: 11.5px;
+      white-space: normal;
     }
   }
   @media print {
