@@ -289,16 +289,17 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', '${googleAnalyticsId}');
-              // メール登録（Tally の Critical Weekly）の完了。フォームは完了後に
-              // トップへ ?form=newsletter で戻す（2026-10-24）。再読み込みで
-              // 二重に数えないよう、タブの中で 1 回だけ。
+              // メール登録の完了。Tally のフォームは完了後にトップへ ?form= で
+              // 戻す（2026-10-24）：newsletter＝定期のメール、consult＝セルフチェックからのメール相談。
+              // 再読み込みで二重に数えないよう、タブの中で 1 回だけ。
               (function () {
-                if (new URLSearchParams(location.search).get('form') !== 'newsletter') return;
+                var form = new URLSearchParams(location.search).get('form');
+                if (form !== 'newsletter' && form !== 'consult') return;
                 try {
-                  if (sessionStorage.getItem('cv_nl')) return;
-                  sessionStorage.setItem('cv_nl', '1');
+                  if (sessionStorage.getItem('cv_' + form)) return;
+                  sessionStorage.setItem('cv_' + form, '1');
                 } catch (e) {}
-                gtag('event', 'generate_lead', { form: 'newsletter', locale: document.documentElement.lang || undefined });
+                gtag('event', 'generate_lead', { form: form, locale: document.documentElement.lang || undefined });
               })();
             `}
           />

@@ -1,16 +1,18 @@
 ---
 /**
- * 定期的なメールの入口（2026-10-24）。チェックリストのあとの帯と、TL;DR の
+ * 記事の入口（2026-10-24）。日本語はセルフチェックのページへ（この記事の
+ * 項目から始まる）、英語は定期のメールの登録へ。チェックリストのあとの帯と、TL;DR の
  * あとの 1 行の 2 か所（variant）。
  *
  * 対策の章を「続きは登録で」にする案も検討したが、検索から対策を探しに来た
  * 人を答えの手前で止めることになるので、本文は全部読めるままにした。
- * 登録は、持ち帰る価値（新しい事例と点検の項目）で受ける。
+ * 点検表を Excel で配ると一気に出回るので、ファイルは渡さず画面で答えて
+ * もらい、不安になった人からメールの相談を受ける。
  * 描画は記事の外で、ページを開いたときに rehype が置く目印
  * （`[data-brief-weekly-slot]` / `[data-brief-weekly-top-slot]`）へ移す。目印が
  * 無ければ出さない。行き先は config/cta.ts（`ref` で置き場所を分ける）。
  */
-import { BRIEF_CHECKLIST_CTA_URL, BRIEF_TLDR_CTA_URL } from "../config/cta";
+import { BRIEF_CHECKLIST_CTA_URL, BRIEF_TLDR_CTA_URL, CONSULT_FORM_URL } from "../config/cta";
 
 export interface BriefWeeklyCtaProps {
   locale: "ja" | "en";
@@ -20,14 +22,24 @@ export interface BriefWeeklyCtaProps {
 }
 
 const { locale, briefId, variant } = Astro.props as BriefWeeklyCtaProps;
-const href = (variant === "top" ? BRIEF_TLDR_CTA_URL : BRIEF_CHECKLIST_CTA_URL)[locale];
+const base = (variant === "top" ? BRIEF_TLDR_CTA_URL : BRIEF_CHECKLIST_CTA_URL)[locale];
+// 日本語はサイトの中のセルフチェック（同じタブ・この記事を ?from= で渡す）、
+// 英語は Tally（新しいタブ）。
+const external = base.startsWith("http");
+const href = external ? base : `${base}?from=${encodeURIComponent(briefId)}`;
+// 日本語の帯にだけ、メールの相談への 1 行（セルフチェックを経ずに聞きたい人へ）。
+const consultHref = `${CONSULT_FORM_URL}&ref=brief_band&from=${encodeURIComponent(briefId)}`;
 const isJa = locale === "ja";
+// 日本語はセルフチェック（チェックの印）、英語はメール（封筒）。
+const icon = isJa
+  ? '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="15" height="15" rx="3" /><path d="M7.5 11.2l2.4 2.4 4.8-5" /></svg>'
+  : '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="12" rx="2" /><path d="M3.5 6l7.5 6 7.5-6" /></svg>';
 const L = isJa
   ? {
-      head: "この点検の項目と、新しい事例をメールで受け取る",
-      sub: "新しい Critical Brief と、自社で照合したい点を定期的にお届けします。",
-      btn: "メールで受け取る",
-      top: "新しい事例と点検の項目を、定期的にメールで受け取る",
+      head: "この手口が自社で通らないか、セルフチェックする",
+      sub: "この記事と、同じ業務を狙ったほかの事例の項目に、はい／いいえで答えるだけ。登録は要りません。",
+      btn: "セルフチェックする",
+      top: "この手口が自社で通らないか、セルフチェックする（登録不要）",
     }
   : {
       head: "Get checks like these and new cases by email",
@@ -40,18 +52,21 @@ const L = isJa
 {variant === "checklist" ? (
   <aside class="wk" data-brief-weekly="checklist" data-brief={briefId} aria-label={L.head}>
     <span class="wk-ic" aria-hidden="true">
-      <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="12" rx="2" /><path d="M3.5 6l7.5 6 7.5-6" /></svg>
+      <Fragment set:html={icon} />
     </span>
     <span class="wk-tx">
       <b>{L.head}</b>
       <span>{L.sub}</span>
+      {isJa && (
+        <a class="wk-consult" href={consultHref} target="_blank" rel="noopener" data-wk-ev="brief_band_consult">この手口について、メールで相談する（無料）</a>
+      )}
     </span>
-    <a class="wk-btn" href={href} target="_blank" rel="noopener" data-wk-ev="brief_checklist_weekly">{L.btn}<span aria-hidden="true"> →</span></a>
+    <a class="wk-btn" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} data-wk-ev="brief_checklist_weekly">{L.btn}<span aria-hidden="true"> →</span></a>
   </aside>
 ) : (
-  <a class="wk-top" href={href} target="_blank" rel="noopener" data-brief-weekly="top" data-brief={briefId} data-wk-ev="brief_tldr_weekly">
+  <a class="wk-top" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} data-brief-weekly="top" data-brief={briefId} data-wk-ev="brief_tldr_weekly">
     <span class="wk-ic wk-ic--s" aria-hidden="true">
-      <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="12" rx="2" /><path d="M3.5 6l7.5 6 7.5-6" /></svg>
+      <Fragment set:html={icon} />
     </span>
     <span>{L.top}</span><span aria-hidden="true">→</span>
   </a>
@@ -69,8 +84,8 @@ const L = isJa
       return;
     }
     slot.replaceWith(box);
-    var btn = box.matches("[data-wk-ev]") ? box : box.querySelector("[data-wk-ev]");
-    if (btn)
+    var btns = box.matches("[data-wk-ev]") ? [box] : Array.prototype.slice.call(box.querySelectorAll("[data-wk-ev]"));
+    btns.forEach(function (btn) {
       btn.addEventListener("click", function () {
         if (typeof window.gtag !== "function") return;
         window.gtag("event", btn.getAttribute("data-wk-ev"), {
@@ -78,6 +93,7 @@ const L = isJa
           destination: btn.getAttribute("href"),
         });
       });
+    });
   })();
 </script>
 
@@ -126,6 +142,14 @@ const L = isJa
     color: var(--tx-soft);
   }
   /* 本文の中に入るので、本文のリンク色・下線に負けないよう a まで書く。 */
+  .wk a.wk-consult {
+    margin-top: 4px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #4e7a00;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
   .wk a.wk-btn {
     margin-left: auto;
     flex: none;

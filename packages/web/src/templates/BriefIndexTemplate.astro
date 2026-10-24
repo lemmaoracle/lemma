@@ -450,6 +450,15 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         </section>
       )}
 
+      {/* 日本語だけ：業務別のセルフチェック（LP）への入口（2026-10-24）。 */}
+      {isJa && !isArchive && (
+        <a class="ix-self" href="/ja/critical/self-check/">
+          <span class="ix-self-k">無料・登録不要</span>
+          <b>実際に起きた手口が、自社で通らないか。業務別セルフチェック</b>
+          <span class="ix-self-go">始める →</span>
+        </a>
+      )}
+
       {/* 脅威タイプで探す。
           トップ = 2列・件数の横バー（アーカイブへのリンク）。
           アーカイブ = 横並びの小さいチップ（絞り込みボタン）。同じ面が2枚続くと
@@ -816,6 +825,36 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     font-weight: 600;
     line-height: 1.6;
     color: var(--tx);
+  }
+  .ix-self {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 28px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    background: #eef7d2;
+    border: 1px solid #d6ec9a;
+    color: #16190f;
+    text-decoration: none;
+  }
+  .ix-self b {
+    font-size: 15px;
+  }
+  .ix-self-k {
+    flex: none;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #2f372f;
+    color: #c9e57a;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .ix-self-go {
+    margin-left: auto;
+    flex: none;
+    font-weight: 800;
+    color: #4e7a00;
   }
   .ix-picks {
     margin-top: 36px;

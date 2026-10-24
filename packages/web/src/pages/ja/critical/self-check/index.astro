@@ -1,0 +1,1723 @@
+---
+/**
+ * Critical Brief のセルフチェック（2026-10-24・日本語だけ）。
+ *
+ * 記事の点検チェックリストを、狙われた業務ごとにまとめて、画面の中で
+ * はい／いいえ／分からない で答えてもらう。Excel で配ると一気に出回るので
+ * ファイルは渡さず、登録も求めない。回答は localStorage に下書きとして残し、
+ * リサーチ用に「どの項目にどう答えたか」だけを GA4 のイベント（self_check_answer）で
+ * 集計する（会社や個人は分からない形）。
+ *
+ * 見込み客の情報は、結果を見て不安になった人の「メールで相談」から受ける
+ * （Tally 2jE9dj を新しいタブで開き、選んだ業務と要確認（いいえ・分からない）の
+ * 項目の id だけを隠しフィールドで渡す）。記事から来たとき（?from=slug）は、
+ * その記事の業務を選んだ状態で開き、その記事の項目に印を付ける。
+ */
+import { getCollection } from "astro:content";
+import Layout from "../../../../layouts/Layout.astro";
+import Navigation from "../../../../components/Navigation.astro";
+import Footer from "../../../../components/FooterRenewal.astro";
+import { getTranslations } from "../../../../i18n/translations";
+import { CONSULT_FORM_URL, BRIEF_WEEKLY_URL } from "../../../../config/cta";
+import type { BriefEntry } from "../../../../data/criticalBriefs";
+import { selfCheckGroups, selfCheckItemCount } from "../../../../lib/briefSelfCheck";
+
+const locale = "ja" as const;
+const base = "/ja";
+const t = getTranslations(locale);
+const briefs = (await getCollection("critical-briefs")) as BriefEntry[];
+const groups = selfCheckGroups(briefs);
+const total = selfCheckItemCount(groups);
+const pad = (no: number) => String(no).padStart(3, "0");
+// LP の事例のカード（2026-10-24）。見出しや画像に被害組織の名前は出さず、記事へつなぐ。
+const CASES = [
+  { slug: "158-portland-water-bureau-vendor-bank-change", fig: "670", unit: "万ドル", kind: "振込先の変更", text: "米国の市。取引先を装う相手に取引先登録の振込先を変えられ、工事代金が別の口座へ送られた。" },
+  { slug: "159-zuu-business-chat-executive-impersonation-transfer", fig: "9,600", unit: "万円", kind: "役員を装う指示", text: "国内の上場企業。社内のチャットで役員を装った送金の指示が届き、同じ日のうちに外部の口座へ振り込まれた。" },
+  { slug: "084-hong-kong-deepfake-video-call-fraud", fig: "約 HK$2", unit: "億", kind: "偽のビデオ会議", text: "香港の拠点。本社の CFO を装った録画のビデオ会議の指示で、15 回に分けて送金された。" },
+  { slug: "162-hatena-police-impersonation-remote-transfer", fig: "約 11.8", unit: "億円", kind: "警察を名乗る電話", text: "国内の上場企業。経理の責任者の PC が遠隔操作され、社内の資金移動を経て外部へ送られた。" },
+];
+// 「あなたの担当は？」（CLUBS の LP の「例を選ぶと、その人の1週間に切り替わる」に
+// ならう・2026-10-24）。担当を選ぶと、その担当に届きそうな連絡と、実際に起きたこと、
+// 先に見てほしい 2 項目が出て、ボタンでその業務（1 つ・5 分で終わる量）を選んだ
+// 状態のセルフチェックへ。
+const CH_ICON: Record<string, string> = {
+  mail: '<rect x="3" y="5" width="16" height="12" rx="2"/><path d="M3.5 6l7.5 6 7.5-6"/>',
+  chat: '<path d="M4 5h14v9H9l-4 3.5V14H4z"/>',
+  notice: '<path d="M6 15V10a5 5 0 0110 0v5l1.5 2h-13z"/><path d="M9.5 19a1.6 1.6 0 003 0"/>',
+  report: '<path d="M6 3.5h7l3.5 3.5v11.5H6z"/><path d="M13 3.5V7h3.5M8.5 11h5M8.5 14h5"/>',
+};
+const PERSONAS = [
+  {
+    key: "acct",
+    tab: "経理・財務",
+    who: "例：経理の担当・社員 80 人の製造業",
+    msg: "振込先の口座が変わりました。今月分から、こちらにお願いします。",
+    tag: "取引先のなりすまし",
+    ch: "mail",
+    chLabel: "メール",
+    av: "商",
+    sender: "株式会社〇〇商事 経理部",
+    addr: "keiri@oo-shoji.example",
+    subject: "【重要】お振込先変更のお願い",
+    from: "取引先の担当者を名乗る、偽のメール",
+    real: "米国の市では、この形の連絡で、工事代金 670 万ドルが別の口座へ送られました。",
+    slug: "158-portland-water-bureau-vendor-bank-change",
+    checks: ["振込先の変更を、メールの中ではなく登録済みの連絡先で確認しているか", "変わった直後の支払いを、照合が済むまで保留にしているか"],
+    ops: ["payment-change"],
+    btn: "経理の項目でチェックする",
+  },
+  {
+    key: "exec",
+    tab: "経営・管理職",
+    who: "例：経営企画の部長・社員 300 人のサービス業",
+    msg: "至急、この口座に送金してください。社内にはまだ内密に。",
+    tag: "社長・役員のなりすまし",
+    ch: "chat",
+    chLabel: "社内チャット",
+    av: "代",
+    sender: "代表取締役",
+    addr: "10:42",
+    subject: "",
+    from: "社長や役員を名乗る、偽のチャットやビデオ会議",
+    real: "国内の上場企業では、チャットで役員を装った指示に従い、同じ日に 9,600 万円が振り込まれました。",
+    slug: "159-zuu-business-chat-executive-impersonation-transfer",
+    checks: ["送金の指示を、届いた経路とは別の手段で本人に照合しているか", "振込の作成と承認を、別の人が行っているか"],
+    ops: ["approval"],
+    btn: "承認の項目でチェックする",
+  },
+  {
+    key: "it",
+    tab: "情報システム",
+    who: "例：情シスの課長・社員 200 人の IT 企業",
+    msg: "取引先の担当者を 1 名、追加しました。",
+    tag: "偽の担当者の登録",
+    ch: "notice",
+    chLabel: "取引先管理システムの通知",
+    av: "通",
+    sender: "取引先ポータル",
+    addr: "自動送信",
+    subject: "担当者が追加されました",
+    from: "攻撃者が取引先の登録に入り込んだときの通知",
+    real: "米国の市では、偽の担当者が取引先の登録に加えられ、振込先が書き換えられて 152 万ドルが送られました。",
+    slug: "160-baltimore-workday-supplier-contact-bank-change",
+    checks: ["管理者や担当者が追加されたとき、誰に知らせが届くか", "使っていない入口や広すぎる権限を、定期的に閉じているか"],
+    ops: ["account-admin"],
+    btn: "アカウントの項目でチェックする",
+  },
+  {
+    key: "ga",
+    tab: "総務・内部統制",
+    who: "例：総務の担当・病院や自治体の委託の窓口",
+    msg: "お預かりした機器は、作業のあと、すべて破砕しました。",
+    tag: "不正な持ち出し",
+    ch: "report",
+    chLabel: "委託先の作業報告書",
+    av: "報",
+    sender: "〇〇リサイクル株式会社",
+    addr: "PDF・1 ページ",
+    subject: "データ消去・破砕 完了報告書",
+    from: "委託先からの作業の報告（実際には破砕されていなかった）",
+    real: "国内の病院では、破砕したはずの電子カルテの HDD の一部が、ネットオークションで落札されました。",
+    slug: "065-hokkaido-hospital-hdd-disposal",
+    checks: ["委託先の「消した」という説明を、消去の記録や写真で確認しているか", "委託先の再委託や転売を、事前に知る取り決めがあるか"],
+    ops: ["data-access"],
+    btn: "委託の項目でチェックする",
+  },
+];
+// よくある質問（画面と FAQPage の構造化データの両方に使う）。
+const FAQ = [
+  { q: "答えは、どう扱われますか", a: "どの項目に何と答えたかは、会社や個人が分からない形で集計し、事例の分析とチェック項目の改善に使います。会社名やメールアドレスを伺うのは、メールで相談するときだけです。" },
+  { q: "担当外の項目は、どう答えればよいですか", a: "「分からない」を選んでください。結果に、その業務について社内で誰に聞けばよいかを出します。" },
+  { q: "結果は、診断や点数ですか", a: "いいえ。実際に起きた事例から作った、点検の目安です。点数やランクは付けません。" },
+  { q: "相談は無料ですか。製品の案内は来ますか", a: "無料です。お返事はメールだけで、お電話はしません。お返事に、Lemma（照合できたものだけを通す仕組み）のご案内を添えることがあります。" },
+  { q: "お返事はいつ届きますか", a: "3 営業日以内に、メールでお返事します。届かないときは、迷惑メールのフォルダもご確認ください。" },
+  { q: "答えを残したくないときは", a: "結果の下の「答えを消す」を押すと、このブラウザに残った答えをすべて消します。" },
+];
+const site = "https://lemma.frame00.com";
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ホーム", item: `${site}/ja/` },
+      { "@type": "ListItem", position: 2, name: "Critical Brief", item: `${site}/ja/critical/briefs/` },
+      { "@type": "ListItem", position: 3, name: "不正の手口セルフチェック", item: `${site}/ja/critical/self-check/` },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "不正の手口セルフチェック",
+    url: `${site}/ja/critical/self-check/`,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    inLanguage: "ja",
+    isAccessibleForFree: true,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
+    publisher: { "@type": "Organization", name: "FRAME00株式会社" },
+  },
+];
+// 相談の例（サービスデザイン・営業の案・2026-10-24）。押すとフォームの「いちばん気になる点」に入る。
+const CONSULT_EXAMPLES = [
+  "「分からない」だった項目を、社内で誰に聞けばよいか知りたい",
+  "振込先の変更の照合を、少ない人数の経理で回す方法を知りたい",
+  "委託先との取り決めに、何を足せばよいか知りたい",
+];
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath="/critical/self-check/"
+  localesAvailable={["ja"]}
+  title={`ビジネスメール詐欺・不正送金の対策チェックリスト（実例 ${total} 項目・無料）｜Lemma`}
+  ogTitle="なりすましによる不正送金を、止められていますか。5 分セルフチェック｜Lemma"
+  jsonLd={jsonLd}
+  description={`振込先の変更、社長や役員を装う送金の指示、偽のビデオ会議。国内外で実際に起きた事案から作った ${total} 項目で、自社の経理・承認・アカウント管理を業務ごとにセルフチェックできます。登録は不要です。`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <main class="ck">
+    <section class="lp-hero">
+      <div class="lp-in lp-hero-in">
+        <div class="lp-hero-tx">
+          <p class="lp-kicker">ビジネスメール詐欺・不正送金の対策チェックリスト</p>
+          <h1>なりすましによる<br />不正送金を、<br /><mark>止められていますか。</mark></h1>
+          <p class="lp-lead">実際の事案から作ったチェック項目で、5 分で点検。</p>
+          <div class="lp-cta">
+            <a class="lp-btn" href="#who">無料でチェックする</a>
+          </div>
+          <ul class="lp-ticks">
+            <li>登録不要</li>
+            <li>1 つの業務で 5 分</li>
+          </ul>
+        </div>
+        <div class="lp-mock" aria-hidden="true">
+          <div class="lp-mock-h"><span>振込先・口座の変更</span><span>10 項目</span></div>
+          <div class="lp-mock-r"><i class="is-yes">✓</i><p>振込先の変更を、登録済みの連絡先で確認しているか。</p></div>
+          <div class="lp-mock-r"><i class="is-no">✕</i><p>変わった直後の支払いを、照合が済むまで保留にしているか。</p></div>
+          <div class="lp-mock-r"><i class="is-un">?</i><p>登録を変えてよい担当者の一覧があるか。</p></div>
+          <div class="lp-mock-f">要確認 <strong>2</strong> 項目<span>次の一歩：経理・財務の責任者に聞いてみましょう</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lp-who" id="who" aria-labelledby="lp-who-h">
+      <div class="lp-in">
+        <h2 id="lp-who-h">あなたの担当は？</h2>
+        <p class="lp-who-sub">選ぶと、その担当を狙ったなりすましや攻撃の手口に切り替わります。</p>
+        <div class="lp-tabs" role="tablist" aria-label="担当">
+          {PERSONAS.map((p, i) => (
+            <button type="button" role="tab" class="lp-tab" data-lp-tab={p.key} aria-selected={i === 0 ? "true" : "false"}>{p.tab}</button>
+          ))}
+        </div>
+        {PERSONAS.map((p, i) => (
+          <div class="lp-panel" role="tabpanel" data-lp-panel={p.key} hidden={i !== 0}>
+            <div class="lp-msg">
+              <span class="lp-tag">⚠ {p.tag}</span>
+              <div class={`lp-win lp-win--${p.ch}`}>
+                <div class="lp-win-bar">
+                  <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={CH_ICON[p.ch]} />
+                  <span>{p.chLabel}</span>
+                </div>
+                <div class="lp-win-head">
+                  <span class="lp-win-av" aria-hidden="true">{p.av}</span>
+                  <span class="lp-win-who"><b>{p.sender}</b><small>{p.addr}</small></span>
+                </div>
+                {p.subject && <p class="lp-win-subj">{p.subject}</p>}
+                <p class="lp-bubble">「{p.msg}」</p>
+              </div>
+              <span class="lp-msg-from">{p.from}</span>
+              <span class="lp-who-ex">{p.who}</span>
+            </div>
+            <div class="lp-real">
+              <span class="lp-real-k">実際に起きたこと</span>
+              <p>{p.real} <a href={`/ja/critical/briefs/${p.slug}/`}>事例を読む →</a></p>
+              <span class="lp-real-k">まず、この 2 つ</span>
+              <ul>
+                {p.checks.map((c) => (
+                  <li>{c}</li>
+                ))}
+              </ul>
+              <a class="lp-btn" href="#start" data-lp-ops={p.ops.join(",")}>{p.btn}<span aria-hidden="true"> →</span></a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="lp-figs" aria-label="実際に起きた事案">
+      <div class="lp-in">
+        <p class="lp-figs-h">なりすまし・攻撃で、実際に送られた額</p>
+        <div class="lp-figs-row">
+          {CASES.map((c) => (
+            <a class="lp-fig" href={`/ja/critical/briefs/${c.slug}/`}>
+              <b>{c.fig}<small>{c.unit}</small></b>
+              <span>{c.kind}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <div class="ck-tool" id="start">
+    <p class="ck-print-head" data-ck-print-head></p>
+    <p class="ck-done" data-ck-done hidden>相談を受け付けました。3 営業日以内に、ご記入のメールアドレスへお返事します。届かないときは、迷惑メールのフォルダもご確認ください。</p>
+    <p class="lp-sec-k">セルフチェック</p>
+    <h2 class="ck-tool-h">業務を選んで、はい／いいえで答える</h2>
+
+    <section class="ck-step" aria-labelledby="ck-s1">
+      <h2 id="ck-s1"><span class="ck-n">1</span>点検する業務を選ぶ</h2>
+      <div class="ck-ops" role="group" aria-label="業務">
+        {groups.map((g) => (
+          <button type="button" class="ck-op" data-op={g.key} aria-pressed="false">
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={g.icon} />
+            <span class="ck-op-l">{g.label}</span>
+            <span class="ck-op-c">{g.items.length} 項目</span>
+          </button>
+        ))}
+      </div>
+      <p class="ck-hint" data-ck-empty>まずは担当の業務を 1 つ選んでください。あとから足せます。外しても、答えは残ります。</p>
+    </section>
+
+    <section class="ck-step" aria-labelledby="ck-s2" data-ck-items hidden>
+      <h2 id="ck-s2"><span class="ck-n">2</span>はい／いいえ／分からない で答える</h2>
+      <ul class="ck-hint ck-rules">
+        <li>規程や手順で決まっていて、そのとおりに回っていれば「はい」です。1 つの項目に 2 つのことが書いてあるときは、両方そろっているときだけ「はい」です。</li>
+        <li>担当外の言葉が出たり、社内で確認できなかったりする項目は「分からない」で大丈夫です。誰に聞けばよいかを結果に出します。</li>
+        <li>押した答えをもう一度押すと、答えを外せます。いくつかの業務に当てはまる項目は、1 か所にまとめて出しています。</li>
+      </ul>
+      {groups.map((g) => (
+        <div class="ck-group" data-group={g.key} hidden>
+          <h3 class="ck-gh">{g.label}</h3>
+          <ol class="ck-list">
+            {g.items.map((it) => (
+              <li class="ck-item" data-item={it.id} data-src={it.sources.map((x) => x.id).join(" ")}>
+                <div class="ck-q">
+                  <p>{it.text}</p>
+                  <div class="ck-src">
+                    <span class="ck-from">いま読んでいた記事の項目</span>
+                    <span class="ck-src-l">事例</span>
+                    {it.sources.map((x) => (
+                      <a href={`/ja/critical/briefs/${x.id}/`} target="_blank" rel="noopener" title={x.title}>No.{pad(x.no)}</a>
+                    ))}
+                  </div>
+                </div>
+                <div class="ck-ans" role="radiogroup" aria-label={it.text}>
+                  <button type="button" role="radio" aria-checked="false" data-v="yes">はい</button>
+                  <button type="button" role="radio" aria-checked="false" data-v="no">いいえ</button>
+                  <button type="button" role="radio" aria-checked="false" data-v="unsure">分からない</button>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </section>
+
+    <section class="ck-step ck-result" aria-labelledby="ck-s3" data-ck-result hidden>
+      <h2 id="ck-s3"><span class="ck-n">3</span>結果</h2>
+      <p class="ck-sum" data-ck-sum></p>
+      <div data-ck-gaps></div>
+      <div class="ck-consult">
+        <div class="ck-consult-tx">
+          <b>要確認の項目を、メールで相談する</b>
+          <span>要確認の項目（「いいえ」「分からない」）について、ほかの事例での手当ての例と、社内で確認する順番を、メールでお返事します。FRAME00 の担当者が AI も使って下書きし、目を通してから、3 営業日以内にお送りします。</span>
+          <ul class="ck-promise">
+            <li>費用はかかりません</li>
+            <li>お返事に、Lemma のご案内を添えることがあります</li>
+            <li>お返事はメールだけで、お電話はしません</li>
+            <li>3 営業日以内にお返事します</li>
+          </ul>
+          <div class="ck-ex">
+            <span>相談の例（押すと、フォームに入った状態で開きます）</span>
+            {CONSULT_EXAMPLES.map((q) => (
+              <a href={CONSULT_FORM_URL} target="_blank" rel="noopener" data-ck-consult data-q={q}>{q}</a>
+            ))}
+          </div>
+          <small>いま被害が起きている・振り込んでしまった、というときは、このフォームを待たずに、取引銀行と警察（最寄りの警察署か #9110）にすぐご連絡ください。</small>
+          <small data-ck-attach>フォームには、選んだ業務と、要確認の項目の番号を添えます。</small>
+        </div>
+        <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">無料でメール相談する<span aria-hidden="true"> →</span></a>
+      </div>
+      <div class="ck-tools">
+        <button type="button" class="ck-sub" data-ck-print>結果を印刷する</button>
+        <button type="button" class="ck-sub" data-ck-reset>答えを消す</button>
+        <a class="ck-sub" href={BRIEF_WEEKLY_URL} target="_blank" rel="noopener">新しい事例をメールで受け取る</a>
+      </div>
+      <p class="ck-print-only">
+        相談・最新のチェック項目：https://lemma.frame00.com/ja/critical/self-check/
+      </p>
+      <section class="ck-faq" aria-labelledby="ck-faq-h">
+        <h3 id="ck-faq-h">よくある質問</h3>
+        {FAQ.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </section>
+      <p class="ck-note">
+        この点検は、公開情報をもとにした事案の構造分析から作ったもので、特定の組織への監査・診断・助言ではありません。網羅性・正確性や、不正を防ぐ効果は保証しません。© 2026 FRAME00株式会社
+      </p>
+    </section>
+
+    </div>
+
+    <section class="lp-list" aria-labelledby="lp-list-h">
+      <div class="lp-in">
+        <p class="lp-sec-k">一覧</p>
+        <h2 id="lp-list-h">業務別 チェック項目の一覧</h2>
+        <details class="lp-list-more">
+        <summary>全 {total} 項目を見る</summary>
+        <div class="lp-list-grid">
+          {groups.map((g) => (
+            <section class="lp-list-g">
+              <h3>{g.label}の不正対策チェック<span>{g.items.length} 項目</span></h3>
+              <ul>
+                {g.items.map((it) => (
+                  <li>{it.text}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="lp-lemma" aria-labelledby="lp-lemma-h">
+      <div class="lp-in lp-lemma-in">
+        <div>
+          <p class="lp-sec-k lp-sec-k--on">Lemma について</p>
+          <h2 id="lp-lemma-h">人の注意だけに頼らず、<br />照合できたものだけを通す</h2>
+          <p>
+            振込先の変更や送金の承認の手前で、本物だと照合できたものだけを通す。Lemma（FRAME00株式会社）は、その仕組みを作っています。
+          </p>
+        </div>
+        <div class="lp-lemma-cta">
+          <a class="lp-btn" href={CONSULT_FORM_URL} target="_blank" rel="noopener" data-ck-consult>無料でメール相談する</a>
+          <a class="lp-btn lp-btn--light" href="/ja/">Lemma を見る</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="lp-final">
+      <div class="lp-in">
+        <h2>まずは、あなたの担当の 5 分から。</h2>
+        <a class="lp-btn" href="#who">無料でチェックする</a>
+      </div>
+    </section>
+
+    <div class="ck-bar" data-ck-bar hidden>
+      <span data-ck-progress></span>
+      <a href="#ck-s3" class="ck-bar-btn">結果を見る</a>
+    </div>
+  </main>
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<script is:inline>
+  (function () {
+    var KEY = "lemma_selfcheck_v2";
+    var root = document.querySelector(".ck");
+    if (!root) return;
+    var state = { ops: [], ans: {} };
+    try {
+      var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (saved && saved.ans) state = { ops: saved.ops || [], ans: saved.ans };
+    } catch (e) {}
+    var params = new URLSearchParams(location.search);
+    var from = params.get("from");
+    // 分からなかった項目を、社内で誰に聞くか（業務ごと）。
+    var ASK = {
+      "payment-change": "経理・財務の責任者",
+      approval: "経理・財務の責任者",
+      "account-admin": "情報システムの担当",
+      "data-access": "情報システムの担当",
+      delivery: "配信や発送を担う部署",
+      disclosure: "情報システムか法務の担当",
+      other: "委託先との契約の担当",
+    };
+    // 相談のフォームから戻ったとき（?form=consult）。
+    if (params.get("form") === "consult") root.querySelector("[data-ck-done]").hidden = false;
+    var started = false;
+    var toolInView = false;
+    function save() {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+    function ev(name, params) {
+      if (typeof window.gtag === "function") window.gtag("event", name, params || {});
+    }
+    var $ = function (s, el) { return (el || root).querySelector(s); };
+    var $$ = function (s, el) { return Array.prototype.slice.call((el || root).querySelectorAll(s)); };
+
+    // 記事から来たとき：その記事の項目に印を付けて各業務の先頭へ寄せ、
+    // その記事のいちばん近い業務を選ぶ。
+    if (from) {
+      var mine = $$(".ck-item").filter(function (li) {
+        return (li.getAttribute("data-src") || "").split(" ").indexOf(from) >= 0;
+      });
+      mine.slice().reverse().forEach(function (li) {
+        li.classList.add("is-from");
+        li.parentNode.insertBefore(li, li.parentNode.firstChild);
+      });
+      if (mine.length) {
+        var g = mine[0].closest("[data-group]").getAttribute("data-group");
+        if (state.ops.indexOf(g) < 0) state.ops.push(g);
+      }
+    }
+
+    function render() {
+      $$(".ck-op").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(state.ops.indexOf(b.getAttribute("data-op")) >= 0));
+      });
+      $$("[data-group]").forEach(function (g) {
+        g.hidden = state.ops.indexOf(g.getAttribute("data-group")) < 0;
+      });
+      var any = state.ops.length > 0;
+      $("[data-ck-items]").hidden = !any;
+      $("[data-ck-result]").hidden = !any;
+      // 下の固定バーは、セルフチェックが画面に入っているときだけ（LP の上では出さない）。
+      $("[data-ck-bar]").hidden = !any || !toolInView;
+      $("[data-ck-empty]").hidden = any;
+      // 複数の業務に出る項目は、選んだ業務のうち最初の 1 か所にだけ出す。
+      var seen = {};
+      var shown = [];
+      $$(".ck-item").forEach(function (li) {
+        var id = li.getAttribute("data-item");
+        var inOpen = !li.closest("[data-group]").hidden;
+        li.hidden = inOpen && !!seen[id];
+        if (inOpen && !seen[id]) {
+          seen[id] = true;
+          shown.push(li);
+        }
+        var v = state.ans[id];
+        $$("[data-v]", li).forEach(function (b) {
+          b.setAttribute("aria-checked", String(b.getAttribute("data-v") === v));
+        });
+        li.setAttribute("data-state", v || "");
+      });
+      var answered = 0;
+      var gaps = [];
+      shown.forEach(function (li) {
+        var v = state.ans[li.getAttribute("data-item")];
+        if (v) answered++;
+        if (v === "no" || v === "unsure") gaps.push(li);
+      });
+      $("[data-ck-progress]").textContent =
+        answered + " / " + shown.length + " 項目 回答済み　・　要確認 " + gaps.length;
+      var unsure = gaps.filter(function (li) { return state.ans[li.getAttribute("data-item")] === "unsure"; }).length;
+      $("[data-ck-sum]").innerHTML = !answered
+        ? "まだ答えていません。上の項目に答えると、ここに要確認の項目（「いいえ」「分からない」）が、業務ごとの次の一歩とあわせてまとまります。"
+        : (gaps.length
+            ? "答えた " + answered + " 項目のうち、<b>要確認は " + gaps.length + " 項目</b>（「いいえ」「分からない」）でした。下に、業務ごとの次の一歩をまとめました。"
+            : "答えた " + answered + " 項目は、すべて「はい」でした。") +
+          (answered < shown.length ? "（まだ答えていない項目が " + (shown.length - answered) + " 項目あります）" : "") +
+          (unsure ? "<br><span class=\"ck-soft\">「分からない」があるのは普通のことです。社内で誰が知っているかが分かれば、それだけで一歩進みます。</span>" : "");
+      var box = $("[data-ck-gaps]");
+      box.innerHTML = "";
+      var byGroup = {};
+      gaps.forEach(function (li) {
+        var g = li.closest("[data-group]");
+        var key = g.getAttribute("data-group");
+        if (!byGroup[key]) {
+          byGroup[key] = document.createElement("div");
+          byGroup[key].className = "ck-gap";
+          var h = document.createElement("b");
+          h.textContent = g.querySelector(".ck-gh").textContent;
+          byGroup[key].appendChild(h);
+          var next = document.createElement("p");
+          next.className = "ck-next";
+          byGroup[key].appendChild(next);
+          byGroup[key].appendChild(document.createElement("ul"));
+          box.appendChild(byGroup[key]);
+        }
+        var v = state.ans[li.getAttribute("data-item")];
+        var item = document.createElement("li");
+        item.innerHTML = '<span class="ck-tag ck-tag--' + v + '">' + (v === "no" ? "いいえ" : "分からない") + "</span>";
+        item.appendChild(document.createTextNode(li.querySelector("p").textContent));
+        var src = li.querySelector(".ck-src").cloneNode(true);
+        var mark = src.querySelector(".ck-from");
+        if (mark) mark.remove();
+        src.className = "ck-gap-src";
+        item.appendChild(src);
+        byGroup[key].querySelector("ul").appendChild(item);
+      });
+      // 業務ごとの次の一歩（1 業務に 1 行まで）。いいえがあれば事例を読む、
+      // 分からないだけなら社内で誰に聞くか。
+      Object.keys(byGroup).forEach(function (key) {
+        var hasNo = byGroup[key].querySelector(".ck-tag--no");
+        byGroup[key].querySelector(".ck-next").textContent = hasNo
+          ? "次の一歩：元の事例を読み、自社で同じ手順になっていないかを確認しましょう。"
+          : "次の一歩：" + (ASK[key] || "担当の部署") + "に、この項目について聞いてみましょう。";
+      });
+      var opLabels = state.ops.map(function (k) {
+        var b = $('.ck-op[data-op="' + k + '"] .ck-op-l');
+        return b ? b.textContent : k;
+      });
+      $("[data-ck-attach]").textContent =
+        "フォームには、選んだ業務（" + opLabels.join("、") + "）と、要確認の項目 " + gaps.length + " 件の番号を添えます。";
+      var gapIds = gaps.map(function (li) { return li.getAttribute("data-item"); }).join(",").slice(0, 900);
+      $$("[data-ck-consult]").forEach(function (link) {
+        var u = new URL(link.getAttribute("href"));
+        u.searchParams.set("ops", state.ops.join(","));
+        u.searchParams.set("gaps", gapIds);
+        u.searchParams.set("ref", from ? "selfcheck_from_brief" : "selfcheck");
+        if (link.getAttribute("data-q")) u.searchParams.set("q", link.getAttribute("data-q"));
+        link.href = u.toString();
+      });
+    }
+
+    root.addEventListener("click", function (e) {
+      var tab = e.target.closest("[data-lp-tab]");
+      if (tab) {
+        var key = tab.getAttribute("data-lp-tab");
+        $$("[data-lp-tab]").forEach(function (t) { t.setAttribute("aria-selected", String(t === tab)); });
+        $$("[data-lp-panel]").forEach(function (p) { p.hidden = p.getAttribute("data-lp-panel") !== key; });
+        ev("self_check_persona", { persona: key });
+        return;
+      }
+      var go = e.target.closest("[data-lp-ops]");
+      if (go) {
+        // 担当のボタン：その業務だけを選んだ状態でセルフチェックへ（前に選んだ
+        // 業務は外す。答えは残る）。
+        state.ops = go.getAttribute("data-lp-ops").split(",");
+        save();
+        render();
+        ev("self_check_persona_start", { ops: go.getAttribute("data-lp-ops") });
+        return;
+      }
+      var op = e.target.closest(".ck-op");
+      if (op) {
+        var k = op.getAttribute("data-op");
+        var i = state.ops.indexOf(k);
+        if (i >= 0) state.ops.splice(i, 1);
+        else state.ops.push(k);
+        save();
+        render();
+        return;
+      }
+      var b = e.target.closest(".ck-ans [data-v]");
+      if (b) {
+        var id = b.closest(".ck-item").getAttribute("data-item");
+        var v = b.getAttribute("data-v");
+        if (state.ans[id] === v) delete state.ans[id];
+        else state.ans[id] = v;
+        if (!started) {
+          started = true;
+          ev("self_check_start", { from_brief: from || undefined });
+        }
+        // リサーチ用：どの項目にどう答えたか（会社や個人は分からない形・GA4 の
+        // カスタムディメンション check_item / check_answer で集計）。
+        if (state.ans[id]) {
+          ev("self_check_answer", {
+            check_item: id,
+            check_answer: state.ans[id],
+            check_op: b.closest("[data-group]").getAttribute("data-group"),
+          });
+        }
+        save();
+        render();
+        return;
+      }
+      if (e.target.closest("[data-ck-print]")) {
+        ev("self_check_print");
+        var labels = state.ops.map(function (k) {
+          var b = $('.ck-op[data-op="' + k + '"] .ck-op-l');
+          return b ? b.textContent : k;
+        });
+        $("[data-ck-print-head]").textContent =
+          "セルフチェックの結果（" + new Date().toLocaleDateString("ja-JP") + "）　業務：" + labels.join("、");
+        window.print();
+        return;
+      }
+      if (e.target.closest("[data-ck-reset]")) {
+        if (!window.confirm("このブラウザに残っている答えを、すべて消します。よろしいですか。")) return;
+        state.ans = {};
+        save();
+        render();
+        return;
+      }
+      if (e.target.closest("[data-ck-consult]")) {
+        ev("self_check_consult", { ops: state.ops.join(","), gaps: $$(".ck-gap li").length, example: !!e.target.closest("[data-q]") });
+      }
+    });
+
+    // 結果まで読んだら 1 回だけ数える。
+    var counted = false;
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (x) {
+          if (!x.isIntersecting || counted || x.target.hidden) return;
+          counted = true;
+          ev("self_check_result", {
+            ops: state.ops.join(","),
+            answered: Object.keys(state.ans).length,
+            gaps: $$(".ck-gap li").length,
+          });
+        });
+      }).observe($("[data-ck-result]"));
+    }
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) {
+        toolInView = es[0].isIntersecting;
+        render();
+      }).observe($(".ck-tool"));
+    }
+    render();
+    if (from) {
+      var target = $(".ck-item.is-from:not([hidden])");
+      if (target) setTimeout(function () { target.scrollIntoView({ block: "center" }); }, 60);
+    }
+  })();
+</script>
+
+<style>
+  .ck {
+    padding: 0 0 120px;
+    color: #16190f;
+    background: #fbfaf5;
+  }
+  .ck-tool {
+    max-width: 960px;
+    margin: 24px auto 0;
+    padding: 44px 56px 48px;
+    background: #fff;
+    border: 1px solid #e3e6dc;
+    border-radius: 24px;
+    box-shadow: 0 18px 50px rgba(47, 55, 47, 0.08);
+    scroll-margin-top: 84px;
+  }
+  .ck-tool-h {
+    margin: 6px 0 0;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+
+  .lp-in {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .lp-hero {
+    padding: 128px 0 72px;
+    background:
+      radial-gradient(60% 70% at 85% 30%, rgba(168, 224, 16, 0.22), transparent 70%),
+      radial-gradient(40% 60% at 0% 100%, rgba(168, 224, 16, 0.1), transparent 70%),
+      #fbfaf5;
+  }
+  .lp-hero-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 48px;
+    align-items: center;
+  }
+  .lp-kicker {
+    display: inline-block;
+    margin: 0;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #4e7a00;
+  }
+  .lp-hero h1,
+  .lp-lead,
+  .lp-who h2,
+  .lp-bubble,
+  .lp-real p {
+    /* 日本語を文節で折り返す（語の途中で切らない）。 */
+    word-break: auto-phrase;
+    text-wrap: pretty;
+  }
+  .lp-hero h1 {
+    margin: 18px 0 0;
+    font-size: 52px;
+    line-height: 1.35;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    color: #16190f;
+  }
+  .lp-hero mark {
+    background: linear-gradient(transparent 62%, rgba(168, 224, 16, 0.55) 62%);
+    color: inherit;
+  }
+  .lp-lead {
+    margin: 18px 0 0;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.9;
+    color: #3c4237;
+  }
+  .lp-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+  }
+  .lp-btn {
+    display: inline-block;
+    padding: 15px 26px;
+    border-radius: 999px;
+    background: #a8e010;
+    color: #16190f;
+    font-size: 15.5px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(120, 170, 0, 0.28);
+  }
+  .lp-btn:hover {
+    background: #b8ec2c;
+  }
+  .lp-btn--ghost {
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    box-shadow: none;
+    font-weight: 700;
+  }
+  .lp-btn--light {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+  }
+  .lp-ticks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    color: #3c4237;
+  }
+  .lp-ticks li::before {
+    content: "✓ ";
+    color: #4e7a00;
+    font-weight: 800;
+  }
+  .lp-mock {
+    padding: 20px;
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid #e3e6dc;
+    box-shadow: 0 24px 60px rgba(47, 55, 47, 0.14);
+    transform: rotate(1.2deg);
+  }
+  .lp-mock-h {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #2f372f;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .lp-mock-h span + span {
+    font-weight: 500;
+    color: #6a7064;
+  }
+  .lp-mock-r {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px dashed #dcdfd6;
+  }
+  .lp-mock-r p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .lp-mock-r i {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    font-style: normal;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .lp-mock-r .is-yes {
+    background: #2f372f;
+  }
+  .lp-mock-r .is-no {
+    background: #8a4b38;
+  }
+  .lp-mock-r .is-un {
+    background: #c98a12;
+  }
+  .lp-mock-f {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #eef7d2;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .lp-mock-f strong {
+    font-size: 20px;
+    margin: 0 2px;
+  }
+  .lp-mock-f span {
+    display: block;
+    margin-top: 2px;
+    font-weight: 500;
+    color: #4e7a00;
+    font-size: 12.5px;
+  }
+  .lp-sec-k {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #4e7a00;
+  }
+  .lp-sec-k--on {
+    color: #c9e57a;
+  }
+  .lp-who {
+    padding: 64px 0;
+    background: #fff;
+  }
+  .lp-who h2,
+  .lp-lemma h2,
+  .lp-final h2 {
+    margin: 8px 0 0;
+    font-size: 28px;
+    line-height: 1.45;
+    font-weight: 800;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .lp-who-sub {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: #6a7064;
+  }
+  .lp-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .lp-tab {
+    padding: 11px 20px;
+    border-radius: 999px;
+    border: 1px solid #dcdfd6;
+    background: #fff;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    color: #3c4237;
+    cursor: pointer;
+  }
+  .lp-tab[aria-selected="true"] {
+    background: #2f372f;
+    border-color: #2f372f;
+    color: #fff;
+  }
+  .lp-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 28px;
+    margin-top: 22px;
+    padding: 28px;
+    border-radius: 20px;
+    background: #f6f8ef;
+  }
+  .lp-panel[hidden] {
+    display: none;
+  }
+  .lp-tag {
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #8a4b38;
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 800;
+  }
+  .lp-msg-from {
+    display: block;
+    margin-top: 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #6a7064;
+  }
+  .lp-win {
+    overflow: hidden;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #e3e6dc;
+    box-shadow: 0 14px 34px rgba(47, 55, 47, 0.1);
+  }
+  .lp-win-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    background: #2f372f;
+    color: #e9eee3;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+  .lp-win-bar svg {
+    width: 18px;
+    height: 18px;
+    color: #c9e57a;
+  }
+  .lp-win-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px 0;
+  }
+  .lp-win-av {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #e4ead6;
+    color: #3c4237;
+    font-weight: 800;
+    font-size: 14px;
+  }
+  .lp-win--chat .lp-win-av {
+    background: #8a4b38;
+    color: #fff;
+  }
+  .lp-win-who b {
+    display: block;
+    font-size: 14px;
+  }
+  .lp-win-who small {
+    font-size: 12px;
+    color: #8a9084;
+  }
+  .lp-win-subj {
+    margin: 10px 18px 0;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .lp-bubble {
+    margin: 10px 18px 18px;
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.6;
+  }
+  .lp-win--chat .lp-bubble {
+    display: inline-block;
+    margin-left: 62px;
+    padding: 12px 16px;
+    border-radius: 4px 16px 16px 16px;
+    background: #f1f3ec;
+  }
+  .lp-win--report .lp-bubble {
+    padding: 12px 14px;
+    border: 1px dashed #c9cfc0;
+    border-radius: 8px;
+    font-size: 17px;
+  }
+  .lp-who-ex {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #8a9084;
+  }
+  .lp-real-k {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    color: #4e7a00;
+  }
+  .lp-real p {
+    margin: 4px 0 16px;
+    font-size: 15px;
+    line-height: 1.8;
+    font-weight: 600;
+  }
+  .lp-real p a {
+    font-size: 13px;
+    color: #4e7a00;
+    white-space: nowrap;
+  }
+  .lp-real ul {
+    margin: 6px 0 18px;
+    padding: 0;
+    list-style: none;
+  }
+  .lp-real li {
+    padding: 4px 0;
+    font-size: 14.5px;
+  }
+  .lp-real li::before {
+    content: "□ ";
+    color: #4e7a00;
+  }
+  .lp-figs {
+    padding: 40px 0 8px;
+  }
+  .lp-figs-h {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 800;
+    color: #6a7064;
+  }
+  .lp-figs-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .lp-fig {
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid #e3e6dc;
+    background: #fff;
+    color: #16190f;
+    text-decoration: none;
+  }
+  .lp-fig b {
+    display: block;
+    font-size: 24px;
+    font-weight: 800;
+  }
+  .lp-fig small {
+    margin-left: 2px;
+    font-size: 13px;
+  }
+  .lp-fig span {
+    font-size: 12.5px;
+    color: #6a7064;
+  }
+  .lp-list-more summary {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #4e7a00;
+    cursor: pointer;
+  }
+  .lp-list {
+    padding: 72px 0 0;
+  }
+  .lp-list h2 {
+    margin: 8px 0 0;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .lp-list-grid {
+    columns: 2;
+    column-gap: 28px;
+    margin-top: 22px;
+  }
+  .lp-list-g {
+    break-inside: avoid;
+    margin: 0 0 22px;
+  }
+  .lp-list-g h3 {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 6px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #2f372f;
+    font-size: 15px;
+  }
+  .lp-list-g h3 span {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6a7064;
+  }
+  .lp-list-g ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+  .lp-list-g li {
+    padding: 3px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: #3c4237;
+  }
+  .lp-lemma {
+    margin-top: 56px;
+    padding: 64px 0;
+    color: #e9eee3;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0) 0 0 / 18px 18px,
+      linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
+  }
+  .lp-lemma-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
+    gap: 36px;
+    align-items: center;
+  }
+  .lp-lemma h2 {
+    color: #fff;
+  }
+  .lp-lemma p {
+    margin: 14px 0 0;
+    font-size: 15px;
+    line-height: 1.9;
+    color: #d6dcd0;
+  }
+  .lp-lemma-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    text-align: center;
+  }
+  .lp-final {
+    padding: 72px 0 24px;
+    text-align: center;
+  }
+  .lp-final h2 {
+    margin-bottom: 20px;
+  }
+  .ck-step {
+    margin-top: 36px;
+    scroll-margin-top: 96px;
+  }
+  .ck-step h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+    font-size: 19px;
+    font-weight: 700;
+  }
+  .ck-n {
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #2f372f;
+    color: #c9e57a;
+    font: 600 13px "Space Mono", monospace;
+  }
+  .ck-hint {
+    margin: 0 0 14px;
+    font-size: 13px;
+    color: #6a7064;
+  }
+  .ck-ops {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .ck-op {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 10px;
+    align-items: center;
+    padding: 12px 14px;
+    text-align: left;
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    border-radius: 12px;
+    color: #16190f;
+    cursor: pointer;
+    font: inherit;
+  }
+  .ck-op svg {
+    grid-row: 1 / 3;
+    width: 22px;
+    height: 22px;
+    color: #4e7a00;
+  }
+  .ck-op-l {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .ck-op-c {
+    font-size: 12px;
+    color: #6a7064;
+  }
+  .ck-op[aria-pressed="true"] {
+    background: #2f372f;
+    border-color: #2f372f;
+    color: #fff;
+  }
+  .ck-op[aria-pressed="true"] svg {
+    color: #c9e57a;
+  }
+  .ck-op[aria-pressed="true"] .ck-op-c {
+    color: #c8cfc2;
+  }
+  .ck-gh {
+    margin: 22px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #2f372f;
+    font-size: 16px;
+  }
+  .ck-list {
+    list-style: none;
+    margin: 0;
+    padding: 4px 16px;
+    background: #fdfdfa;
+    border: 1px solid #dcdfd6;
+    border-radius: 12px;
+  }
+  .ck-q {
+    min-width: 0;
+  }
+  .ck-src {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    margin-top: 4px;
+    font-size: 11.5px;
+    color: #6a7064;
+  }
+  .ck-src a {
+    font-family: "Space Mono", monospace;
+    color: #4e7a00;
+    text-decoration: none;
+  }
+  .ck-src a:hover {
+    text-decoration: underline;
+  }
+  .ck-from {
+    display: none;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: #eef7d2;
+    color: #4e7a00;
+    font-weight: 700;
+  }
+  .ck-item.is-from {
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    background: #f6fbe8;
+    scroll-margin-top: 96px;
+  }
+  .ck-item.is-from .ck-from {
+    display: inline-block;
+  }
+  .ck-item[hidden] {
+    display: none;
+  }
+  .ck-item {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-top: 1px dashed #dcdfd6;
+  }
+  .ck-item p {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .ck-ans {
+    flex: none;
+    display: inline-flex;
+    border: 1px solid #dcdfd6;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .ck-ans button {
+    padding: 6px 12px;
+    background: #fff;
+    border: 0;
+    border-left: 1px solid #dcdfd6;
+    font: inherit;
+    font-size: 12.5px;
+    color: #3c4237;
+    cursor: pointer;
+  }
+  .ck-ans button:first-child {
+    border-left: 0;
+  }
+  .ck-ans [data-v="yes"][aria-checked="true"] {
+    background: #2f372f;
+    color: #fff;
+  }
+  .ck-ans [data-v="no"][aria-checked="true"] {
+    background: #8a4b38;
+    color: #fff;
+  }
+  .ck-ans [data-v="unsure"][aria-checked="true"] {
+    background: #c98a12;
+    color: #fff;
+  }
+  .ck-sum {
+    margin: 0 0 14px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .ck-result :global(.ck-gap) {
+    margin: 0 0 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    border-radius: 12px;
+  }
+  .ck-result :global(.ck-gap > b) {
+    font-size: 13px;
+    color: #3c4237;
+  }
+  .ck-result :global(.ck-gap-src) {
+    display: inline-flex;
+    gap: 6px;
+    margin-left: 8px;
+    font-size: 11px;
+  }
+  .ck-result :global(.ck-gap-src a) {
+    font-family: "Space Mono", monospace;
+    color: #4e7a00;
+    text-decoration: none;
+  }
+  .ck-result :global(.ck-gap-src .ck-src-l) {
+    color: #6a7064;
+  }
+  .ck-result :global(.ck-gap ul) {
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ck-result :global(.ck-gap li) {
+    padding: 4px 0;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .ck-result :global(.ck-tag) {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .ck-result :global(.ck-tag--no) {
+    background: #8a4b38;
+  }
+  .ck-result :global(.ck-tag--unsure) {
+    background: #c98a12;
+  }
+  .ck-consult {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 20px 22px;
+    border-radius: 14px;
+    color: #e9eee3;
+    background: linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
+  }
+  .ck-consult-tx > b {
+    display: block;
+    font-size: 16px;
+    color: #fff;
+  }
+  .ck-consult-tx > span {
+    display: block;
+    margin-top: 4px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #c8cfc2;
+  }
+  .ck-btn {
+    flex: none;
+    white-space: nowrap;
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: #a8e010;
+    color: #16190f;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+  }
+  .ck-consult-tx {
+    min-width: 0;
+  }
+  .ck-promise {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12.5px;
+    color: #fff;
+  }
+  .ck-promise li::before {
+    content: "✓ ";
+    color: #c9e57a;
+  }
+  .ck-ex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .ck-ex span {
+    flex-basis: 100%;
+    font-size: 11.5px;
+    color: #aab3a4;
+  }
+  .ck-ex a {
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.06);
+    color: #e9eee3;
+    font-size: 12px;
+    text-decoration: none;
+  }
+  .ck-ex a:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+  .ck-consult small {
+    display: block;
+    margin-top: 10px;
+    font-size: 11px;
+    color: #aab3a4;
+  }
+  .ck-done {
+    margin: 16px 0 0;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #eef7d2;
+    color: #3c5a00;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .ck-print-only,
+  .ck-print-head {
+    display: none;
+  }
+  .ck-rules {
+    margin: 0 0 14px;
+    padding-left: 18px;
+    line-height: 1.8;
+  }
+  .ck-faq {
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid #dcdfd6;
+  }
+  .ck-faq h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+  }
+  .ck-faq details {
+    border-bottom: 1px solid #ebede6;
+  }
+  .ck-faq summary {
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .ck-faq details p {
+    margin: 0 0 12px;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #3c4237;
+  }
+  .ck-result :global(.ck-soft) {
+    font-size: 13.5px;
+    color: #6a7064;
+  }
+  .ck-result :global(.ck-next) {
+    margin: 4px 0 2px;
+    font-size: 13px;
+    color: #4e7a00;
+  }
+  .ck-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .ck-sub {
+    padding: 8px 14px;
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 13px;
+    color: #3c4237;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .ck-note {
+    margin: 16px 0 0;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #6a7064;
+  }
+  .ck-bar {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 12px 10px 18px;
+    border-radius: 999px;
+    background: #2f372f;
+    color: #e9eee3;
+    font-size: 13px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    z-index: 20;
+    white-space: nowrap;
+  }
+  .ck-bar-btn {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #a8e010;
+    color: #16190f;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  @media (max-width: 900px) {
+    .lp-hero-in,
+    .lp-lemma-in {
+      grid-template-columns: 1fr;
+    }
+    .lp-panel {
+      grid-template-columns: 1fr;
+    }
+    .lp-figs-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .lp-mock {
+      transform: none;
+    }
+  }
+  @media (max-width: 760px) {
+    .ck-tool {
+      margin: 16px 12px 0;
+      padding: 28px 16px 32px;
+      border-radius: 18px;
+    }
+    .ck-tool-h {
+      font-size: 22px;
+    }
+    .lp-hero {
+      padding-top: 104px;
+    }
+    .lp-hero h1 {
+      font-size: 34px;
+    }
+    .lp-who h2,
+    .lp-lemma h2,
+    .lp-final h2 {
+      font-size: 22px;
+    }
+    .lp-list-grid {
+      columns: 1;
+    }
+    .ck-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .ck-consult {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .ck-bar {
+      left: 16px;
+      right: 16px;
+      transform: none;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+  }
+  @media print {
+    :global(nav),
+    :global(footer),
+    .lp-hero,
+    .lp-list,
+    .lp-who,
+    .lp-figs,
+    .lp-lemma,
+    .lp-final,
+    .lp-sec-k,
+    .ck-ops,
+    .ck-bar,
+    .ck-tools,
+    .ck-consult,
+    .ck-ans,
+    .ck-hint {
+      display: none !important;
+    }
+    .ck {
+      padding: 0;
+    }
+    .ck-tool {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-shadow: none;
+    }
+    .ck-tool-h {
+      display: none;
+    }
+    .ck-print-only,
+    .ck-print-head {
+      display: block;
+      font-size: 11px;
+    }
+    .ck-faq {
+      display: none !important;
+    }
+    .ck-item[data-state="yes"]::after {
+      content: "はい";
+    }
+    .ck-item[data-state="no"]::after {
+      content: "いいえ";
+    }
+    .ck-item[data-state="unsure"]::after {
+      content: "分からない";
+    }
+    .ck-item::after {
+      flex: none;
+      font-size: 12px;
+      font-weight: 700;
+    }
+  }
+</style>

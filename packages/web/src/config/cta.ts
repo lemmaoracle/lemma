@@ -48,18 +48,32 @@ export const BRIEF_RAIL_CTA_URL: Readonly<Record<Locale, string>> = {
 } as const;
 
 /**
- * 記事の対策の章、チェックリストのあとのメールの入口（2026-10-24）。
- * 本文は登録なしで全部読めるまま、持ち帰る価値（新しい事例と点検の
- * 項目）で受ける。フォームは BRIEF_RAIL_CTA_URL と同じで、`ref` だけ分ける。
+ * セルフチェック（/ja/critical/self-check/）の結果から開く「メールで相談」の
+ * Tally のフォーム（2026-10-24・日本語だけ）。ページが ops（選んだ業務）・
+ * gaps（「はい」と言い切れなかった項目の番号）・ref を足して開く。
+ */
+export const CONSULT_FORM_URL =
+  "https://tally.so/r/2jE9dj?utm_source=selfcheck&utm_medium=cta&utm_campaign=selfcheck_to_consult" as const;
+
+/** 定期のメールの登録（日本語）。セルフチェックの結果の下の小さな入口。 */
+export const BRIEF_WEEKLY_URL =
+  "https://tally.so/r/EkMj82?ref=selfcheck&utm_source=selfcheck&utm_medium=cta&utm_campaign=selfcheck_to_weekly" as const;
+
+/**
+ * 記事の対策の章、チェックリストのあとの入口（2026-10-24）。
+ * 本文は登録なしで全部読めるまま。日本語はセルフチェックのページ（記事の
+ * slug を ?from= で足す：BriefWeeklyCta・サイトの中のリンクなので utm は
+ * 付けない＝GA の流入元を上書きしない。どこから来たかはクリックのイベントで見る）、英語は定期のメールの Tally の
+ * フォーム。`ref` で置き場所を分ける。
  */
 export const BRIEF_CHECKLIST_CTA_URL: Readonly<Record<Locale, string>> = {
-  ja: "https://tally.so/r/EkMj82?ref=brief_checklist&utm_source=brief_checklist&utm_medium=cta&utm_campaign=brief_to_weekly",
+  ja: "/ja/critical/self-check/",
   en: "https://tally.so/r/rjvN2X?ref=brief_checklist&utm_source=brief_checklist&utm_medium=cta&utm_campaign=brief_to_weekly",
 } as const;
 
-/** 同じフォームの、記事の TL;DR のあとの 1 行の入口（2026-10-24）。 */
+/** 同じ入口の、記事の TL;DR のあとの 1 行（2026-10-24）。 */
 export const BRIEF_TLDR_CTA_URL: Readonly<Record<Locale, string>> = {
-  ja: "https://tally.so/r/EkMj82?ref=brief_tldr&utm_source=brief_tldr&utm_medium=cta&utm_campaign=brief_to_weekly",
+  ja: "/ja/critical/self-check/",
   en: "https://tally.so/r/rjvN2X?ref=brief_tldr&utm_source=brief_tldr&utm_medium=cta&utm_campaign=brief_to_weekly",
 } as const;
 

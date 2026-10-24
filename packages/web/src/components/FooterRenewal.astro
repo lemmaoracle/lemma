@@ -81,6 +81,7 @@ const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
     heading: isJa ? "リソース" : "Resources",
     links: [
       { label: "Critical Brief", href: L("/critical/briefs"), dot: true },
+      ...(isJa ? [{ label: "不正の手口セルフチェック", href: "/ja/critical/self-check/" }] : []),
       { label: isJa ? "ブログ" : "Blog", href: L("/blog") },
       { label: isJa ? "業界別ソリューション" : "Solutions by industry", href: L("/solutions/use-cases") },
       { label: isJa ? "用語集" : "Glossary", href: L("/glossary") },
