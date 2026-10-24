@@ -586,10 +586,9 @@ const CONSULT_EXAMPLES = [
       }
       var go = e.target.closest("[data-lp-ops]");
       if (go) {
-        // 担当のボタン：その業務を選んだ状態でセルフチェックへ（選び直しはせず足す）。
-        go.getAttribute("data-lp-ops").split(",").forEach(function (k) {
-          if (state.ops.indexOf(k) < 0) state.ops.push(k);
-        });
+        // 担当のボタン：その業務だけを選んだ状態でセルフチェックへ（前に選んだ
+        // 業務は外す。答えは残る）。
+        state.ops = go.getAttribute("data-lp-ops").split(",");
         save();
         render();
         ev("self_check_persona_start", { ops: go.getAttribute("data-lp-ops") });
