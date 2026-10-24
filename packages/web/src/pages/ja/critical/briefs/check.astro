@@ -29,6 +29,13 @@ const groups = selfCheckGroups(briefs);
 const total = selfCheckItemCount(groups);
 const briefCount = new Set(groups.flatMap((g) => g.items.flatMap((i) => i.sources.map((x) => x.id)))).size;
 const pad = (no: number) => String(no).padStart(3, "0");
+// LP の事例のカード（2026-10-24）。見出しや画像に被害組織の名前は出さず、記事へつなぐ。
+const CASES = [
+  { slug: "158-portland-water-bureau-vendor-bank-change", fig: "670", unit: "万ドル", kind: "振込先の変更", text: "米国の市。取引先を装う相手に取引先登録の振込先を変えられ、工事代金が別の口座へ送られた。" },
+  { slug: "159-zuu-business-chat-executive-impersonation-transfer", fig: "9,600", unit: "万円", kind: "役員を装う指示", text: "国内の上場企業。社内のチャットで役員を装った送金の指示が届き、同じ日のうちに外部の口座へ振り込まれた。" },
+  { slug: "084-hong-kong-deepfake-video-call-fraud", fig: "約 HK$2", unit: "億", kind: "偽のビデオ会議", text: "香港の拠点。本社の CFO を装った録画のビデオ会議の指示で、15 回に分けて送金された。" },
+  { slug: "162-hatena-police-impersonation-remote-transfer", fig: "約 11.8", unit: "億円", kind: "警察を名乗る電話", text: "国内の上場企業。経理の責任者の PC が遠隔操作され、社内の資金移動を経て外部へ送られた。" },
+];
 // 相談の例（サービスデザイン・営業の案・2026-10-24）。押すとフォームの「いちばん気になる点」に入る。
 const CONSULT_EXAMPLES = [
   "「分からない」だった項目を、社内で誰に聞けばよいか知りたい",
@@ -42,28 +49,75 @@ const CONSULT_EXAMPLES = [
   metaType="page"
   pagePath="/critical/briefs/check/"
   localesAvailable={["ja"]}
-  title="セルフチェック：実際に起きた手口が、自社で通らないか｜Lemma Critical Brief"
+  title="不正の手口セルフチェック（無料・登録不要）｜Lemma"
   description={`実際に起きた ${briefCount} 件の事案から作った ${total} のチェック項目で、振込先の変更・承認・アカウント管理などが自社で通らないかを、はい／いいえで点検できます。登録は不要です。`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <main class="ck">
-    <nav class="ck-crumb" aria-label="パンくず">
-      <a href="/ja/">ホーム</a><span>/</span><a href="/ja/critical/briefs/">Critical Brief</a><span>/</span><span>セルフチェック</span>
-    </nav>
+    <section class="lp-hero">
+      <div class="lp-in lp-hero-in">
+        <div class="lp-hero-tx">
+          <p class="lp-kicker">無料 ・ 登録不要 ・ 1 つの業務で 5 分</p>
+          <h1>実際に起きた不正の手口が、<br /><mark>自社で通らないか</mark>を<br />セルフチェック</h1>
+          <p class="lp-lead">
+            振込先の変更、上長を名乗る送金の指示、アカウントの追加。国内外で実際に起きた {briefCount} 件の事案から、{total} のチェック項目を作りました。担当の業務を選んで、はい／いいえで答えるだけです。
+          </p>
+          <div class="lp-cta">
+            <a class="lp-btn" href="#start" data-lp-start>無料でセルフチェックを始める</a>
+            <a class="lp-btn lp-btn--ghost" href="#cases">どんな事例から作ったか</a>
+          </div>
+          <ul class="lp-ticks">
+            <li>登録は要りません</li>
+            <li>答えはどこにも送りません</li>
+            <li>気になる点は無料でメール相談</li>
+          </ul>
+        </div>
+        <div class="lp-mock" aria-hidden="true">
+          <div class="lp-mock-h"><span>振込先・口座の変更</span><span>10 項目</span></div>
+          <div class="lp-mock-r"><p>振込先の変更を、メールの中の連絡先ではなく、登録済みの連絡先で確認しているか。</p><b class="is-yes">はい</b></div>
+          <div class="lp-mock-r"><p>振込先が変わった直後の支払いを、照合が済むまで保留にしているか。</p><b class="is-no">いいえ</b></div>
+          <div class="lp-mock-r"><p>取引先ごとに、登録を変えてよい担当者の一覧があるか。</p><b class="is-un">分からない</b></div>
+          <div class="lp-mock-f">言い切れない項目 <strong>2</strong><span>次の一歩：経理・財務の責任者に聞いてみましょう</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lp-cases" id="cases" aria-labelledby="lp-cases-h">
+      <div class="lp-in">
+        <p class="lp-sec-k">実際に起きた事案</p>
+        <h2 id="lp-cases-h">手口は、ふだんの業務の連絡の顔をして届きます</h2>
+        <div class="lp-case-grid">
+          {CASES.map((c) => (
+            <a class="lp-case" href={`/ja/critical/briefs/${c.slug}/`}>
+              <span class="lp-case-k">{c.kind}</span>
+              <span class="lp-case-fig">{c.fig}<small>{c.unit}</small></span>
+              <span class="lp-case-tx">{c.text}</span>
+              <span class="lp-case-more">事例を読む →</span>
+            </a>
+          ))}
+        </div>
+        <p class="lp-cases-note">どの事案でも、指示や変更が本物かを別の経路で照合する前に、支払いが通っていました。セルフチェックの項目は、こうした「通ってしまった所」から作っています。</p>
+      </div>
+    </section>
+
+    <section class="lp-how" aria-labelledby="lp-how-h">
+      <div class="lp-in">
+        <p class="lp-sec-k">使い方</p>
+        <h2 id="lp-how-h">3 つの手順で、手当てが要る所が分かります</h2>
+        <ol class="lp-steps">
+          <li><b>担当の業務を選ぶ</b><span>振込先の変更、承認、アカウントの管理など 7 つから。いくつ選んでもかまいません。</span></li>
+          <li><b>はい／いいえ／分からない で答える</b><span>規程や手順のとおりに回っていれば「はい」。担当外は「分からない」で大丈夫です。</span></li>
+          <li><b>言い切れない項目と、次の一歩が分かる</b><span>社内で誰に聞けばよいかも出します。気になる点は、無料でメール相談できます。</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="ck-tool" id="start">
     <p class="ck-print-head" data-ck-print-head></p>
     <p class="ck-done" data-ck-done hidden>相談を受け付けました。3 営業日以内に、ご記入のメールアドレスへお返事します。届かないときは、迷惑メールのフォルダもご確認ください。</p>
-    <header class="ck-head">
-      <div class="ck-k">LEMMA CRITICAL BRIEF · SELF-CHECK</div>
-      <h1>実際に起きた手口が、<br />自社で通らないか点検する</h1>
-      <p>
-        Critical Brief で分析した {briefCount} 件の事案から、「同じことが自社で起きないか」を点検する {total} のチェック項目にまとめました。担当の業務を選んで、はい／いいえ／分からない で答えてください。1 つの業務で 5 分ほどです。
-      </p>
-      <ul class="ck-points">
-        <li><b>登録は要りません</b><span>答えはどこにも送りません。このブラウザに残るので、共用のパソコンでは最後に「答えを消す」を押してください</span></li>
-        <li><b>事例から作ったチェック項目</b><span>どの項目にも元の事例が付き、記事で根拠を読めます</span></li>
-        <li><b>言い切れない所はメールで相談</b><span>結果をもとに、手当ての例と社内で確認する順番を、無料でお返事します</span></li>
-      </ul>
-    </header>
+    <p class="lp-sec-k">セルフチェック</p>
+    <h2 class="ck-tool-h">あなたの業務で、点検してみましょう</h2>
+    <p class="ck-privacy">答えはどこにも送りません。このブラウザに残るので、共用のパソコンでは最後に「答えを消す」を押してください。</p>
 
     <section class="ck-step" aria-labelledby="ck-s1">
       <h2 id="ck-s1"><span class="ck-n">1</span>点検する業務を選ぶ</h2>
@@ -177,6 +231,31 @@ const CONSULT_EXAMPLES = [
       <p class="ck-note">
         この点検は、公開情報をもとにした事案の構造分析から作ったもので、特定の組織への監査・診断・助言ではありません。網羅性・正確性や、不正を防ぐ効果は保証しません。© 2026 FRAME00株式会社
       </p>
+    </section>
+
+    </div>
+
+    <section class="lp-lemma" aria-labelledby="lp-lemma-h">
+      <div class="lp-in lp-lemma-in">
+        <div>
+          <p class="lp-sec-k lp-sec-k--on">Lemma について</p>
+          <h2 id="lp-lemma-h">人の注意だけに頼らず、<br />照合できたものだけを通す</h2>
+          <p>
+            このセルフチェックは、Lemma（FRAME00株式会社）が作っています。Lemma は、振込先の変更や送金の承認、アカウントの追加など、業務の手前で「本物だと照合できたものだけを通す」仕組みを作っています。照合したことが記録として残るので、あとから確認できます。
+          </p>
+        </div>
+        <div class="lp-lemma-cta">
+          <a class="lp-btn" href={CONSULT_FORM_URL} target="_blank" rel="noopener" data-ck-consult>無料でメール相談する</a>
+          <a class="lp-btn lp-btn--light" href="/ja/">Lemma を見る</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="lp-final">
+      <div class="lp-in">
+        <h2>まずは、担当の業務の 5 分から。</h2>
+        <a class="lp-btn" href="#start" data-lp-start>無料でセルフチェックを始める</a>
+      </div>
     </section>
 
     <div class="ck-bar" data-ck-bar hidden>
@@ -414,75 +493,350 @@ const CONSULT_EXAMPLES = [
 
 <style>
   .ck {
-    max-width: 820px;
-    margin: 0 auto;
-    padding: 112px 20px 120px;
+    padding: 0 0 120px;
     color: #16190f;
+    background: #fbfaf5;
   }
-  .ck-crumb {
-    display: flex;
-    gap: 8px;
-    font-size: 12px;
+  .ck-tool {
+    max-width: 960px;
+    margin: 24px auto 0;
+    padding: 44px 56px 48px;
+    background: #fff;
+    border: 1px solid #e3e6dc;
+    border-radius: 24px;
+    box-shadow: 0 18px 50px rgba(47, 55, 47, 0.08);
+    scroll-margin-top: 84px;
+  }
+  .ck-tool-h {
+    margin: 6px 0 0;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+  .ck-privacy {
+    margin: 6px 0 0;
+    font-size: 13px;
     color: #6a7064;
   }
-  .ck-crumb a {
-    color: #3c4237;
-    text-decoration: none;
+  .lp-in {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 20px;
   }
-  .ck-head {
-    margin-top: 18px;
-    padding: 30px 32px 28px;
+  .lp-hero {
+    padding: 128px 0 72px;
+    background:
+      radial-gradient(60% 70% at 85% 30%, rgba(168, 224, 16, 0.22), transparent 70%),
+      radial-gradient(40% 60% at 0% 100%, rgba(168, 224, 16, 0.1), transparent 70%),
+      #fbfaf5;
+  }
+  .lp-hero-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 48px;
+    align-items: center;
+  }
+  .lp-kicker {
+    display: inline-block;
+    margin: 0;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #4e7a00;
+  }
+  .lp-hero h1 {
+    margin: 18px 0 0;
+    font-size: 42px;
+    line-height: 1.35;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    color: #16190f;
+  }
+  .lp-hero mark {
+    background: linear-gradient(transparent 62%, rgba(168, 224, 16, 0.55) 62%);
+    color: inherit;
+  }
+  .lp-lead {
+    margin: 18px 0 0;
+    font-size: 16px;
+    line-height: 1.9;
+    color: #3c4237;
+  }
+  .lp-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+  }
+  .lp-btn {
+    display: inline-block;
+    padding: 15px 26px;
+    border-radius: 999px;
+    background: #a8e010;
+    color: #16190f;
+    font-size: 15.5px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(120, 170, 0, 0.28);
+  }
+  .lp-btn:hover {
+    background: #b8ec2c;
+  }
+  .lp-btn--ghost {
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    box-shadow: none;
+    font-weight: 700;
+  }
+  .lp-btn--light {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+  }
+  .lp-ticks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    color: #3c4237;
+  }
+  .lp-ticks li::before {
+    content: "✓ ";
+    color: #4e7a00;
+    font-weight: 800;
+  }
+  .lp-mock {
+    padding: 20px;
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid #e3e6dc;
+    box-shadow: 0 24px 60px rgba(47, 55, 47, 0.14);
+    transform: rotate(1.2deg);
+  }
+  .lp-mock-h {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #2f372f;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .lp-mock-h span + span {
+    font-weight: 500;
+    color: #6a7064;
+  }
+  .lp-mock-r {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px dashed #dcdfd6;
+  }
+  .lp-mock-r p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .lp-mock-r b {
+    flex: none;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    color: #fff;
+  }
+  .lp-mock-r .is-yes {
+    background: #2f372f;
+  }
+  .lp-mock-r .is-no {
+    background: #8a4b38;
+  }
+  .lp-mock-r .is-un {
+    background: #c98a12;
+  }
+  .lp-mock-f {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #eef7d2;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .lp-mock-f strong {
+    font-size: 20px;
+    margin: 0 2px;
+  }
+  .lp-mock-f span {
+    display: block;
+    margin-top: 2px;
+    font-weight: 500;
+    color: #4e7a00;
+    font-size: 12.5px;
+  }
+  .lp-sec-k {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #4e7a00;
+  }
+  .lp-sec-k--on {
+    color: #c9e57a;
+  }
+  .lp-cases,
+  .lp-how {
+    padding: 72px 0;
+  }
+  .lp-cases {
+    background: #fff;
+  }
+  .lp-cases h2,
+  .lp-how h2,
+  .lp-lemma h2,
+  .lp-final h2 {
+    margin: 8px 0 0;
+    font-size: 28px;
+    line-height: 1.45;
+    font-weight: 800;
+  }
+  .lp-case-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 28px;
+  }
+  .lp-case {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px 18px;
     border-radius: 16px;
+    background: #fbfaf5;
+    border: 1px solid #e3e6dc;
+    color: #16190f;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .lp-case:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(47, 55, 47, 0.1);
+  }
+  .lp-case-k {
+    align-self: flex-start;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #2f372f;
+    color: #c9e57a;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .lp-case-fig {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .lp-case-fig small {
+    margin-left: 2px;
+    font-size: 15px;
+  }
+  .lp-case-tx {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: #3c4237;
+  }
+  .lp-case-more {
+    margin-top: auto;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #4e7a00;
+  }
+  .lp-cases-note {
+    margin: 22px 0 0;
+    font-size: 15px;
+    line-height: 1.9;
+    font-weight: 600;
+  }
+  .lp-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: lp;
+  }
+  .lp-steps li {
+    counter-increment: lp;
+    padding: 22px 20px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #e3e6dc;
+  }
+  .lp-steps li::before {
+    content: counter(lp);
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #a8e010;
+    font-weight: 800;
+  }
+  .lp-steps b {
+    display: block;
+    margin-top: 12px;
+    font-size: 16px;
+  }
+  .lp-steps span {
+    display: block;
+    margin-top: 6px;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #3c4237;
+  }
+  .lp-lemma {
+    margin-top: 80px;
+    padding: 64px 0;
     color: #e9eee3;
     background:
       radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0) 0 0 / 18px 18px,
       linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
   }
-  .ck-k {
-    font-family: "Space Mono", monospace;
-    font-size: 10.5px;
-    letter-spacing: 0.18em;
-    color: #c9e57a;
+  .lp-lemma-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
+    gap: 36px;
+    align-items: center;
   }
-  .ck-head h1 {
-    margin: 12px 0 0;
-    font-family: "Space Grotesk", "Noto Serif JP", Georgia, serif;
-    font-weight: 600;
-    font-size: 28px;
-    line-height: 1.45;
+  .lp-lemma h2 {
     color: #fff;
   }
-  .ck-head p {
+  .lp-lemma p {
     margin: 14px 0 0;
-    font-size: 14.5px;
+    font-size: 15px;
     line-height: 1.9;
     color: #d6dcd0;
   }
-  .ck-points {
-    list-style: none;
-    margin: 20px 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
-  }
-  .ck-points li {
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+  .lp-lemma-cta {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 12px;
+    align-items: stretch;
+    text-align: center;
   }
-  .ck-points b {
-    font-size: 13.5px;
-    color: #fff;
+  .lp-final {
+    padding: 72px 0 24px;
+    text-align: center;
   }
-  .ck-points span {
-    font-size: 12px;
-    line-height: 1.6;
-    color: #c8cfc2;
+  .lp-final h2 {
+    margin-bottom: 20px;
   }
   .ck-step {
     margin-top: 36px;
@@ -567,7 +921,7 @@ const CONSULT_EXAMPLES = [
     list-style: none;
     margin: 0;
     padding: 4px 16px;
-    background: #fff;
+    background: #fdfdfa;
     border: 1px solid #dcdfd6;
     border-radius: 12px;
   }
@@ -891,17 +1245,43 @@ const CONSULT_EXAMPLES = [
     font-weight: 700;
     text-decoration: none;
   }
+  @media (max-width: 900px) {
+    .lp-hero-in,
+    .lp-lemma-in {
+      grid-template-columns: 1fr;
+    }
+    .lp-case-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .lp-steps {
+      grid-template-columns: 1fr;
+    }
+    .lp-mock {
+      transform: none;
+    }
+  }
   @media (max-width: 760px) {
-    .ck {
-      padding-top: 92px;
+    .ck-tool {
+      margin: 16px 12px 0;
+      padding: 28px 16px 32px;
+      border-radius: 18px;
     }
-    .ck-head {
-      padding: 22px 18px;
-    }
-    .ck-head h1 {
+    .ck-tool-h {
       font-size: 22px;
     }
-    .ck-points {
+    .lp-hero {
+      padding-top: 104px;
+    }
+    .lp-hero h1 {
+      font-size: 29px;
+    }
+    .lp-cases h2,
+    .lp-how h2,
+    .lp-lemma h2,
+    .lp-final h2 {
+      font-size: 22px;
+    }
+    .lp-case-grid {
       grid-template-columns: 1fr;
     }
     .ck-item {
@@ -924,7 +1304,13 @@ const CONSULT_EXAMPLES = [
   @media print {
     :global(nav),
     :global(footer),
-    .ck-crumb,
+    .lp-hero,
+    .lp-cases,
+    .lp-how,
+    .lp-lemma,
+    .lp-final,
+    .ck-privacy,
+    .lp-sec-k,
     .ck-ops,
     .ck-bar,
     .ck-tools,
@@ -936,18 +1322,13 @@ const CONSULT_EXAMPLES = [
     .ck {
       padding: 0;
     }
-    .ck-head {
-      background: none;
-      color: #16190f;
+    .ck-tool {
+      margin: 0;
       padding: 0;
+      border: 0;
+      box-shadow: none;
     }
-    .ck-head h1,
-    .ck-head p,
-    .ck-points b,
-    .ck-points span {
-      color: #16190f;
-    }
-    .ck-points {
+    .ck-tool-h {
       display: none;
     }
     .ck-print-only,
