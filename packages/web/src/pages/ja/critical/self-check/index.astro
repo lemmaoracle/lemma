@@ -126,12 +126,12 @@ const PERSONAS = [
 ];
 // よくある質問（画面と FAQPage の構造化データの両方に使う）。
 const FAQ = [
-  { q: "答えは、どう扱われますか", a: "どの項目に何と答えたかは、会社や個人が分からない形で集計し、事例の分析とチェック項目の改善に使います。会社名やメールアドレスを伺うのは、メールで相談するときだけです。" },
-  { q: "担当外の項目は、どう答えればよいですか", a: "「分からない」を選んでください。結果に、その業務について社内で誰に聞けばよいかを出します。" },
+  { q: "回答は、どう扱われますか", a: "どの項目にどう回答したかは、会社や個人が特定されない形で集計し、事例の分析とチェック項目の改善に使います。会社名やメールアドレスを伺うのは、メールでご相談いただく場合だけです。" },
+  { q: "担当外の項目は、どう答えればよいですか", a: "「分からない」を選んでください。結果の「確認が必要な項目」に並ぶので、担当部署への確認にお使いください。" },
   { q: "点数は、何を表しますか", a: "答えた項目のうち「はい」の割合を、100 点満点にしたものです。実際に起きた事例から作った点検の目安で、他社との比較ではありません。" },
   { q: "相談は無料ですか。製品の案内は来ますか", a: "無料です。お返事はメールだけで、お電話はしません。お返事に、Lemma（本物だと確認できたものだけを通す仕組み）のご案内を添えることがあります。ご案内は、メールに返信して「停止」とお伝えいただければ止めます。" },
   { q: "お返事はいつ届きますか", a: "3 営業日以内に、メールでお返事します。届かないときは、迷惑メールのフォルダもご確認ください。" },
-  { q: "答えを残したくないときは", a: "結果の下の「答えを消す」を押すと、このブラウザに残った答えをすべて消します。" },
+  { q: "回答を残したくない場合は", a: "結果の下の「回答を消す」を押すと、このブラウザに残っている回答をすべて消去します。" },
 ];
 const site = "https://lemma.frame00.com";
 const jsonLd = [
@@ -195,7 +195,7 @@ const jsonLd = [
           <div class="lp-mock-r"><i class="is-yes">✓</i><p>振込先の変更を、登録済みの連絡先で確認しているか。</p></div>
           <div class="lp-mock-r"><i class="is-no">✕</i><p>変わった直後の支払いを、照合が済むまで保留にしているか。</p></div>
           <div class="lp-mock-r"><i class="is-un">?</i><p>登録を変えてよい担当者の一覧があるか。</p></div>
-          <div class="lp-mock-f"><strong>33</strong> 点<span>下の項目について、担当と期限を決めて見直しましょう</span></div>
+          <div class="lp-mock-f"><strong>33</strong> 点<span>システムや業務の抜け漏れを点検し、対策を進めることをおすすめします</span></div>
         </div>
       </div>
     </section>
@@ -282,9 +282,9 @@ const jsonLd = [
     <section class="ck-step" aria-labelledby="ck-s2" data-ck-items hidden>
       <h2 id="ck-s2"><span class="ck-n">2</span>はい／いいえ／分からない で答える</h2>
       <ul class="ck-hint ck-rules">
-        <li>規程や手順で決まっていて、そのとおりに回っていれば「はい」です。1 つの項目に 2 つのことが書いてあるときは、両方そろっているときだけ「はい」です。</li>
-        <li>担当外の言葉が出たり、社内で確認できなかったりする項目は「分からない」で大丈夫です。誰に聞けばよいかを結果に出します。</li>
-        <li>押した答えをもう一度押すと、答えを外せます。いくつかの業務に当てはまる項目は、1 か所にまとめて出しています。</li>
+        <li>規程や手順で定められ、そのとおりに運用されていれば「はい」です。1 つの項目に 2 つの内容がある場合は、両方を満たすときだけ「はい」です。</li>
+        <li>担当外の内容や、社内で確認できない項目は「分からない」を選んでください。</li>
+        <li>選んだ回答をもう一度押すと、取り消せます。複数の業務に当てはまる項目は、1 か所にまとめて表示しています。</li>
       </ul>
       {groups.map((g) => (
         <div class="ck-group" data-group={g.key} hidden>
@@ -321,17 +321,17 @@ const jsonLd = [
         <div class="ck-score-n"><b data-ck-score-n></b><span>点</span></div>
         <div class="ck-score-bar" aria-hidden="true"><i data-ck-score-bar></i></div>
         <p class="ck-score-msg" data-ck-score-msg></p>
-        <p class="ck-score-help">自社で確認や見直しが難しいときは、メールで相談できます（無料）。</p>
+        <p class="ck-score-help">自社での確認や見直しが難しい場合は、メールでご相談いただけます（無料）。</p>
         <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">メールで相談する<span aria-hidden="true"> →</span></a>
       </div>
       <div data-ck-gaps></div>
       <div class="ck-tools">
         <button type="button" class="ck-sub" data-ck-print>結果を PDF で保存</button>
-        <button type="button" class="ck-sub" data-ck-reset>答えを消す</button>
+        <button type="button" class="ck-sub" data-ck-reset>回答を消す</button>
         <a class="ck-sub" href={BRIEF_WEEKLY_URL} target="_blank" rel="noopener">新しい事例をメールで受け取る</a>
       </div>
       <p class="ck-fine">
-        相談のお返事は、FRAME00 の担当者からメールで 3 営業日以内にお送りします。お返事に Lemma のご案内を添えることがあります（返信で止められます）。いま被害が起きているときは、取引銀行と警察（#9110）にすぐご連絡ください。
+        相談のお返事は、FRAME00 の担当者からメールで 3 営業日以内にお送りします。お返事に Lemma のご案内を添えることがあります（返信で止められます）。被害が発生している場合は、取引銀行と警察（#9110）に直ちにご連絡ください。
       </p>
       <p class="ck-print-only">
         相談・最新のチェック項目：https://lemma.frame00.com/ja/critical/self-check/
@@ -490,9 +490,9 @@ const jsonLd = [
         (answered ? "　・　" + Math.round(((answered - gaps.length) / answered) * 100) + " 点" : "");
       var unsure = gaps.filter(function (li) { return state.ans[li.getAttribute("data-item")] === "unsure"; }).length;
       $("[data-ck-sum]").textContent = !answered
-        ? "上の項目に答えると、ここに点数が出ます。"
+        ? "上の項目に回答すると、ここに点数が表示されます。"
         : answered < shown.length
-          ? "まだ答えていない項目が " + (shown.length - answered) + " 項目あります。答えた分で点数を出しています。"
+          ? "未回答の項目が " + (shown.length - answered) + " 項目あります。回答済みの項目で点数を出しています。"
           : "";
       // 点数（答えた項目のうち「はい」の割合を 100 点満点で）と、点数ごとの軽い説明。
       var yes = answered - gaps.length;
@@ -505,18 +505,18 @@ const jsonLd = [
         // 1 項目でも「いいえ」「分からない」があれば、警戒が要ると先に言う。
         var msg =
           score === 100
-            ? "チェックした範囲の項目は、すべて「はい」でした。手口は増え続けるので、システムや業務に新しい穴ができていないか、定期的に点検しましょう。"
-            : "「いいえ」「分からない」の項目が 1 つでもあると、そこから同じ手口が通るおそれがあります。" +
+            ? "チェックした範囲の項目は、すべて「はい」でした。手口は年々増えているため、システムや業務に新たな抜け漏れがないか、定期的な点検をおすすめします。"
+            : "「いいえ」「分からない」の項目が 1 つでもあると、同じ手口による被害につながるおそれがあります。" +
               (score >= 80
-                ? "下の項目は、実際の事案で攻撃の入口になった所です。"
+                ? "下記は、実際の事案で攻撃の起点となった項目です。"
                 : score >= 60
-                  ? "下の項目は、実際の事案で送金事故や情報の流出につながった所です。"
+                  ? "下記は、実際の事案で送金事故や情報の流出につながった項目です。"
                   : score >= 40
-                    ? "下の項目は、実際の事案で狙われた所と同じです。"
-                    : "実際に送金事故や情報の流出が起きた手口です。") +
-              "システムや業務の穴をつぶすよう、点検と対策を進めましょう。";
+                    ? "下記は、実際の事案で狙われた項目と同じです。"
+                    : "いずれも、実際に送金事故や情報の流出が起きた手口です。") +
+              "システムや業務の抜け漏れを点検し、対策を進めることをおすすめします。";
         $("[data-ck-score-msg]").textContent =
-          msg + (unsure * 2 >= answered ? "「分からない」が多いときは、まず担当の方に聞いてみましょう。" : "");
+          msg + (unsure * 2 >= answered ? "「分からない」が多い場合は、まず担当部署にご確認ください。" : "");
       }
       // 確認したい項目（いいえを先に）。業務ごとにまとめ、元の事例へのリンクを添える。
       gaps.sort(function (a, b) {
@@ -525,7 +525,7 @@ const jsonLd = [
         return va - vb;
       });
       var box = $("[data-ck-gaps]");
-      box.innerHTML = gaps.length ? '<p class="ck-gaps-h">確認したい項目</p>' : "";
+      box.innerHTML = gaps.length ? '<p class="ck-gaps-h">確認が必要な項目</p>' : "";
       var byGroup = {};
       gaps.forEach(function (li) {
         var g = li.closest("[data-group]");
@@ -638,7 +638,7 @@ const jsonLd = [
         return;
       }
       if (e.target.closest("[data-ck-reset]")) {
-        if (!window.confirm("このブラウザに残っている答えを、すべて消します。よろしいですか。")) return;
+        if (!window.confirm("このブラウザに残っている回答を、すべて消去します。よろしいですか。")) return;
         state.ans = {};
         save();
         render();
