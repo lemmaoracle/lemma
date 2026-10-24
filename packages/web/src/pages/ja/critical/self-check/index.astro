@@ -4,11 +4,12 @@
  *
  * 記事の点検チェックリストを、狙われた業務ごとにまとめて、画面の中で
  * はい／いいえ／分からない で答えてもらう。Excel で配ると一気に出回るので
- * ファイルは渡さず、登録も求めない。回答はこのブラウザの中だけで扱い
- * （localStorage に下書きとして残すだけ）、どこにも送らない。
+ * ファイルは渡さず、登録も求めない。回答は localStorage に下書きとして残し、
+ * リサーチ用に「どの項目にどう答えたか」だけを GA4 のイベント（self_check_answer）で
+ * 集計する（会社や個人は分からない形）。
  *
  * 見込み客の情報は、結果を見て不安になった人の「メールで相談」から受ける
- * （Tally 2jE9dj を新しいタブで開き、選んだ業務と「はい」と言い切れなかった
+ * （Tally 2jE9dj を新しいタブで開き、選んだ業務と要確認（いいえ・分からない）の
  * 項目の id だけを隠しフィールドで渡す）。記事から来たとき（?from=slug）は、
  * その記事の業務を選んだ状態で開き、その記事の項目に印を付ける。
  */
@@ -125,7 +126,7 @@ const PERSONAS = [
 ];
 // よくある質問（画面と FAQPage の構造化データの両方に使う）。
 const FAQ = [
-  { q: "答えは、どこかに送られますか", a: "送られません。答えはこのブラウザに残るだけです。メールで相談するときだけ、選んだ業務と、言い切れない項目の番号をフォームに添えます。" },
+  { q: "答えは、どう扱われますか", a: "どの項目に何と答えたかは、会社や個人が分からない形で集計し、事例の分析とチェック項目の改善に使います。会社名やメールアドレスを伺うのは、メールで相談するときだけです。" },
   { q: "担当外の項目は、どう答えればよいですか", a: "「分からない」を選んでください。結果に、その業務について社内で誰に聞けばよいかを出します。" },
   { q: "結果は、診断や点数ですか", a: "いいえ。実際に起きた事例から作った、点検の目安です。点数やランクは付けません。" },
   { q: "相談は無料ですか。製品の案内は来ますか", a: "無料です。お返事はメールだけで、お電話はしません。お返事に、Lemma（照合できたものだけを通す仕組み）のご案内を添えることがあります。" },
@@ -197,10 +198,10 @@ const CONSULT_EXAMPLES = [
         </div>
         <div class="lp-mock" aria-hidden="true">
           <div class="lp-mock-h"><span>振込先・口座の変更</span><span>10 項目</span></div>
-          <div class="lp-mock-r"><p>振込先の変更を、登録済みの連絡先で確認しているか。</p><b class="is-yes">はい</b></div>
-          <div class="lp-mock-r"><p>変わった直後の支払いを、照合が済むまで保留にしているか。</p><b class="is-no">いいえ</b></div>
-          <div class="lp-mock-r"><p>登録を変えてよい担当者の一覧があるか。</p><b class="is-un">分からない</b></div>
-          <div class="lp-mock-f">言い切れない項目 <strong>2</strong><span>次の一歩：経理・財務の責任者に聞いてみましょう</span></div>
+          <div class="lp-mock-r"><i class="is-yes">✓</i><p>振込先の変更を、登録済みの連絡先で確認しているか。</p></div>
+          <div class="lp-mock-r"><i class="is-no">✕</i><p>変わった直後の支払いを、照合が済むまで保留にしているか。</p></div>
+          <div class="lp-mock-r"><i class="is-un">?</i><p>登録を変えてよい担当者の一覧があるか。</p></div>
+          <div class="lp-mock-f">要確認 <strong>2</strong> 項目<span>次の一歩：経理・財務の責任者に聞いてみましょう</span></div>
         </div>
       </div>
     </section>
@@ -324,8 +325,8 @@ const CONSULT_EXAMPLES = [
       <div data-ck-gaps></div>
       <div class="ck-consult">
         <div class="ck-consult-tx">
-          <b>言い切れなかった項目を、メールで相談する</b>
-          <span>「はい」と言い切れなかった項目について、ほかの事例での手当ての例と、社内で確認する順番を、メールでお返事します。FRAME00 の担当者が AI も使って下書きし、目を通してから、3 営業日以内にお送りします。</span>
+          <b>要確認の項目を、メールで相談する</b>
+          <span>要確認の項目（「いいえ」「分からない」）について、ほかの事例での手当ての例と、社内で確認する順番を、メールでお返事します。FRAME00 の担当者が AI も使って下書きし、目を通してから、3 営業日以内にお送りします。</span>
           <ul class="ck-promise">
             <li>費用はかかりません</li>
             <li>お返事に、Lemma のご案内を添えることがあります</li>
@@ -339,7 +340,7 @@ const CONSULT_EXAMPLES = [
             ))}
           </div>
           <small>いま被害が起きている・振り込んでしまった、というときは、このフォームを待たずに、取引銀行と警察（最寄りの警察署か #9110）にすぐご連絡ください。</small>
-          <small data-ck-attach>フォームには、選んだ業務と、言い切れない項目の番号を添えます。</small>
+          <small data-ck-attach>フォームには、選んだ業務と、要確認の項目の番号を添えます。</small>
         </div>
         <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">無料でメール相談する<span aria-hidden="true"> →</span></a>
       </div>
@@ -511,12 +512,12 @@ const CONSULT_EXAMPLES = [
         if (v === "no" || v === "unsure") gaps.push(li);
       });
       $("[data-ck-progress]").textContent =
-        answered + " / " + shown.length + " 項目 回答済み　・　言い切れない項目 " + gaps.length;
+        answered + " / " + shown.length + " 項目 回答済み　・　要確認 " + gaps.length;
       var unsure = gaps.filter(function (li) { return state.ans[li.getAttribute("data-item")] === "unsure"; }).length;
       $("[data-ck-sum]").innerHTML = !answered
-        ? "まだ答えていません。上の項目に答えると、ここに「はい」と言い切れない項目が、業務ごとの次の一歩とあわせてまとまります。"
+        ? "まだ答えていません。上の項目に答えると、ここに要確認の項目（「いいえ」「分からない」）が、業務ごとの次の一歩とあわせてまとまります。"
         : (gaps.length
-            ? "答えた " + answered + " 項目のうち、<b>" + gaps.length + " 項目は、まだ「はい」と言い切れません。</b>下に、業務ごとの次の一歩をまとめました。"
+            ? "答えた " + answered + " 項目のうち、<b>要確認は " + gaps.length + " 項目</b>（「いいえ」「分からない」）でした。下に、業務ごとの次の一歩をまとめました。"
             : "答えた " + answered + " 項目は、すべて「はい」でした。") +
           (answered < shown.length ? "（まだ答えていない項目が " + (shown.length - answered) + " 項目あります）" : "") +
           (unsure ? "<br><span class=\"ck-soft\">「分からない」があるのは普通のことです。社内で誰が知っているかが分かれば、それだけで一歩進みます。</span>" : "");
@@ -562,7 +563,7 @@ const CONSULT_EXAMPLES = [
         return b ? b.textContent : k;
       });
       $("[data-ck-attach]").textContent =
-        "フォームには、選んだ業務（" + opLabels.join("、") + "）と、言い切れない項目 " + gaps.length + " 件の番号を添えます。";
+        "フォームには、選んだ業務（" + opLabels.join("、") + "）と、要確認の項目 " + gaps.length + " 件の番号を添えます。";
       var gapIds = gaps.map(function (li) { return li.getAttribute("data-item"); }).join(",").slice(0, 900);
       $$("[data-ck-consult]").forEach(function (link) {
         var u = new URL(link.getAttribute("href"));
@@ -613,6 +614,15 @@ const CONSULT_EXAMPLES = [
         if (!started) {
           started = true;
           ev("self_check_start", { from_brief: from || undefined });
+        }
+        // リサーチ用：どの項目にどう答えたか（会社や個人は分からない形・GA4 の
+        // カスタムディメンション check_item / check_answer で集計）。
+        if (state.ans[id]) {
+          ev("self_check_answer", {
+            check_item: id,
+            check_answer: state.ans[id],
+            check_op: b.closest("[data-group]").getAttribute("data-group"),
+          });
         }
         save();
         render();
@@ -822,7 +832,6 @@ const CONSULT_EXAMPLES = [
     display: flex;
     gap: 12px;
     align-items: center;
-    justify-content: space-between;
     padding: 11px 0;
     border-bottom: 1px dashed #dcdfd6;
   }
@@ -831,11 +840,16 @@ const CONSULT_EXAMPLES = [
     font-size: 13px;
     line-height: 1.6;
   }
-  .lp-mock-r b {
+  .lp-mock-r i {
     flex: none;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 11.5px;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    font-style: normal;
+    font-size: 13px;
+    font-weight: 800;
     color: #fff;
   }
   .lp-mock-r .is-yes {
