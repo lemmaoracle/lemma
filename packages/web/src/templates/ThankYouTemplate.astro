@@ -273,12 +273,19 @@ const whitepaperFormId = locale === "ja" ? "xX0VYv" : "7RJXdR";
 </style>
 
 <script is:inline define:vars={{ whitepaperFormId, locale }}>
-  // GA4: whitepaper conversion. Tally redirects here on submit, so one page
-  // load == one whitepaper submission. The sessionStorage guard keeps a
-  // reload from double-counting. No-ops cleanly when gtag is not loaded
-  // (e.g. local dev without GOOGLE_ANALYTICS_ID).
+  // GA4: conversion. Tally redirects here on submit, so one page load == one
+  // submission. The sessionStorage guard keeps a reload from double-counting.
+  // No-ops cleanly when gtag is not loaded (e.g. local dev without
+  // GOOGLE_ANALYTICS_ID).
+  // The newsletter form (Critical Weekly) used to redirect here with
+  // ?form=newsletter and was counted as whitepaper_submit. Since 2026-10-24 it
+  // returns to the top page, and Layout counts it as generate_lead wherever
+  // ?form=newsletter appears; this page only keeps it out of the download count.
   (function () {
     if (typeof window.gtag !== "function") return;
+    var params = new URLSearchParams(location.search);
+    // メール登録は Layout が generate_lead で数える。ここでは資料の数に混ぜない。
+    if (params.get("form") === "newsletter") return;
     if (sessionStorage.getItem("cv_wp")) return;
     window.gtag("event", "whitepaper_submit", { form: whitepaperFormId, locale: locale });
     sessionStorage.setItem("cv_wp", "1");

@@ -35,6 +35,9 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/FooterRenewal.astro";
 import CiteBriefBox from "../components/CiteBriefBox.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
+import BriefNextRead from "../components/BriefNextRead.astro";
+import BriefWeeklyCta from "../components/BriefWeeklyCta.astro";
+import { briefFacetTiles, hasFacetTiles } from "../lib/briefNextRead";
 import { getTranslations, type Locale } from "../i18n/translations";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 import { threatBannerCopy } from "../config/briefThreatBanner";
@@ -175,6 +178,9 @@ addCandidates(byNewest.filter((b) => b.data.primary_category === primarySlug));
 addCandidates(byNewest.filter((b) => b.data.pillar === pillar));
 addCandidates(byNewest);
 const relatedBriefs = Array.from(relatedSet.values()).slice(0, 3);
+// 「似た事例を一覧で読む」の入口。組めたら、末尾の関連 Brief は出さない。
+const facetTiles = briefFacetTiles(locale, brief, allLocale);
+const hasNextRead = hasFacetTiles(facetTiles);
 
 const primaryCatLabel = categoryLabel(primarySlug, locale);
 const secondaryCats = (brief.data.secondary_categories as CategorySlug[]).map(
@@ -578,6 +584,14 @@ const labels = isJa
           <Content />
         </article>
 
+        {/* 似た事例を一覧で読む。本文の途中（5 章の直前）の 1 行と、Sources の直前の
+            ブロック。どちらもページを開いたときに本文の中の目印へ移す。 */}
+        <BriefNextRead locale={locale} briefId={brief.id} tiles={facetTiles} variant="inline" />
+        <BriefNextRead locale={locale} briefId={brief.id} tiles={facetTiles} variant="block" />
+        {/* メールの入口：チェックリストのあとの帯と、TL;DR のあとの 1 行（report だけ・目印へ移す）。 */}
+        {isReport && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="checklist" />}
+        {isReport && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="top" />}
+
         {/* 配布についての注記（旧 §9 の定型文）。6章化した md には定型文が
             無いので、ここで一律に描画する（文言の個体差が要る Brief —
             係争中注記など — は md 側に残す前提で、本文にあれば出さない）。
@@ -641,7 +655,7 @@ const labels = isJa
           briefSlug={brief.id}
         />
 
-        {relatedBriefs.length > 0 && (
+        {!hasNextRead && relatedBriefs.length > 0 && (
           <section class="bd-related">
             <div class="bd-label">
               <b>{labels.relatedHeading}</b><span>{labels.relatedHeadingEn}</span>
@@ -733,6 +747,9 @@ const labels = isJa
             ))}
           </ul>
         </div>
+
+        {/* 目次の下：似た事例を読む（sticky のレールで読む間ずっと見える）。 */}
+        <BriefNextRead locale={locale} briefId={brief.id} tiles={facetTiles} variant="rail" />
 
         {/* 2段目: 脅威タイプ別バナー（白＋ライム縁）。読んでいる事案に紐づく
             「自社はどうか」の問いかけ。CTA は相談で、デモ直行にはしない。 */}
@@ -2610,8 +2627,9 @@ const labels = isJa
   }
 
   /* 用語メモ（frontmatter glossary → rehype が差す） */
+  /* 下の余白：用語メモのあとに本文の段落が続くと、くっついて見えた（158）。 */
   .brief-body.is-report :global(.rx-note) {
-    margin: 18px 0 0;
+    margin: 18px 0 24px;
     padding: 10px 14px;
     border-left: 2px solid var(--line-2);
     font-size: 12.5px;

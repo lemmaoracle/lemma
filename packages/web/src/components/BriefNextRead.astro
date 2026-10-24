@@ -1,0 +1,525 @@
+---
+/**
+ * Brief の「似た事例を一覧で読む」（2026-10-24）。
+ *
+ * 対策を探して記事に来た人が、記事を読み終える前でも、似た事例の一覧へ移れる
+ * ようにする。記事のリンクではなく、アーカイブの絞り込みへの入口を出す。
+ * 選び方（主役・対策・ほかの手口）は lib/briefNextRead.ts。
+ *
+ * 置き場所は3つ（variant）:
+ *   - block：「対策するには」のあと（Sources の直前・どの幅でも）。主役を大きな
+ *     バナーで、対策とほかの手口を文字のリンクで出す。
+ *   - inline：本文の途中、2 章（何が起きたか）のあとの 1 行（report だけ）。
+ *   - rail：右レールの目次の下。目次と同じ線だけの見た目にし、block が画面に
+ *     入っている間は隠す（同じものが 2 か所に並ぶと広告に見えるため）。
+ * block と inline は記事の外で描画し、ページを開いたときに rehype が置く目印
+ * （`[data-brief-next-slot]` / `[data-brief-next-inline-slot]`）へ移す。JS が
+ * 無ければ block は本文の直後に残り、inline は出ない。
+ *
+ * 製品計画がサイトに出たら、対策をゲート（Proof Gate）の分類に差し替え、
+ * ゲートのページへの入口を足す。
+ */
+import { FACET_ICON_ATTRS, FACET_ICON_VIEWBOX } from "../config/briefFacets";
+import type { BriefFacetTiles } from "../lib/briefNextRead";
+
+export interface BriefNextReadProps {
+  locale: "ja" | "en";
+  briefId: string;
+  tiles: BriefFacetTiles;
+  variant: "block" | "inline" | "rail";
+}
+
+const { locale, briefId, tiles, variant } = Astro.props as BriefNextReadProps;
+const { hero, controls, methods } = tiles;
+const isJa = locale === "ja";
+
+const L = isJa
+  ? {
+      head: "似た事例を一覧で読む",
+      heroK: "この記事と同じ手口",
+      heroCta: (n: number) => `事例 ${n} 件を一覧で見る`,
+      controlsH: hero
+        ? `この事例で抜けていた対策ごとに見る（「${hero.label}」${hero.count} 件のうち）`
+        : "この事例で抜けていた対策ごとに見る",
+      methodsH: "ほかの手口から探す",
+      count: (n: number) => `${n} 件`,
+      part: (n: number, of: number) => `${of} 件中 ${n} 件`,
+      railHead: "似た事例を一覧で読む",
+      inline: (label: string, n: number) => ({
+        k: "ほかでも起きている同じ手口",
+        t: `「${label}」の事例 ${n} 件を一覧で見る`,
+      }),
+    }
+  : {
+      head: "Browse similar cases",
+      heroK: "Same method as this case",
+      heroCta: (n: number) => `See all ${n} cases`,
+      controlsH: hero
+        ? `By the countermeasure missing here (of the ${hero.count} "${hero.label}" cases)`
+        : "By the countermeasure missing here",
+      methodsH: "Browse by another method",
+      count: (n: number) => `${n}`,
+      part: (n: number, of: number) => `${n} of ${of}`,
+      railHead: "Browse similar cases",
+      inline: (label: string, n: number) => ({
+        k: "The same method elsewhere",
+        t: `See all ${n} "${label}" cases`,
+      }),
+    };
+
+const show =
+  variant === "inline" ? hero !== null : hero !== null || controls.length > 0 || methods.length > 0;
+const ev = (place: string, key: string, slug: string) => ({
+  "data-nr-ev": "brief_facet_click",
+  "data-place": place,
+  "data-key": key,
+  "data-slug": slug,
+});
+---
+
+{show && variant === "block" && (
+  <aside class="nr nr--block" data-brief-next="block" data-brief={briefId} aria-label={L.head}>
+    <p class="nr-h" role="heading" aria-level="2">{L.head}</p>
+    {hero && (
+      <a class="nr-hero" href={hero.href} {...ev("block", hero.key, hero.slug)}>
+        <span class="nr-hero-ic">
+          <svg viewBox={FACET_ICON_VIEWBOX} {...FACET_ICON_ATTRS} aria-hidden="true" set:html={hero.icon} />
+        </span>
+        <span class="nr-hero-tx">
+          <span class="nr-hero-k">{L.heroK}</span>
+          <b>{hero.label}</b>
+          {hero.desc && <span class="nr-hero-d">{hero.desc}</span>}
+        </span>
+        <span class="nr-hero-cta">{L.heroCta(hero.count)}<span aria-hidden="true"> →</span></span>
+      </a>
+    )}
+    {controls.length > 0 && (
+      <div class="nr-sub nr-sub--ctl">
+        <p class="nr-sh">{L.controlsH}</p>
+        <ul>
+          {controls.map((c) => (
+            <li>
+              <a href={c.href} {...ev("block", c.key, c.slug)}>
+                <span class="nr-li-ic">
+                  <svg viewBox={FACET_ICON_VIEWBOX} {...FACET_ICON_ATTRS} aria-hidden="true" set:html={c.icon} />
+                </span>
+                <span class="nr-li-t">{c.label}</span>
+                <span class="nr-li-n">{hero ? L.part(c.count, hero.count) : L.count(c.count)}<span aria-hidden="true"> →</span></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+    {methods.length > 0 && (
+      <div class="nr-sub">
+        <p class="nr-sh">{L.methodsH}</p>
+        <ul>
+          {methods.map((m) => (
+            <li>
+              <a href={m.href} {...ev("block", m.key, m.slug)}>
+                <span class="nr-li-ic">
+                  <svg viewBox={FACET_ICON_VIEWBOX} {...FACET_ICON_ATTRS} aria-hidden="true" set:html={m.icon} />
+                </span>
+                <span class="nr-li-t">{m.label}</span>
+                <span class="nr-li-n">{L.count(m.count)}<span aria-hidden="true"> →</span></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </aside>
+)}
+
+{show && variant === "inline" && hero && (
+  <a class="nr-inline" href={hero.href} data-brief-next="inline" data-brief={briefId} {...ev("inline", hero.key, hero.slug)}>
+    <span class="nr-hero-ic nr-hero-ic--s">
+      <svg viewBox={FACET_ICON_VIEWBOX} {...FACET_ICON_ATTRS} aria-hidden="true" set:html={hero.icon} />
+    </span>
+    <span class="nr-inline-tx">
+      <span class="nr-inline-k">{L.inline(hero.label, hero.count).k}</span>
+      <b>{L.inline(hero.label, hero.count).t}</b>
+    </span>
+    <span class="nr-inline-ar" aria-hidden="true">→</span>
+  </a>
+)}
+
+{show && variant === "rail" && (
+  <nav class="nr nr--rail" data-brief-next="rail" data-brief={briefId} aria-label={L.railHead}>
+    <div class="nr-rail-h">{L.railHead}</div>
+    <ul>
+      {hero && (
+        <li class="is-hero">
+          <a href={hero.href} {...ev("rail", hero.key, hero.slug)}>
+            <span>{hero.label}</span><i>{L.count(hero.count)}</i>
+          </a>
+        </li>
+      )}
+      {controls.map((c) => (
+        <li class="is-ctl">
+          <a href={c.href} {...ev("rail", c.key, c.slug)}>
+            <span>{c.label}</span><i>{hero ? L.part(c.count, hero.count) : L.count(c.count)}</i>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+{variant === "block" && (
+  <script is:inline>
+    (function () {
+      var box = document.querySelector('[data-brief-next="block"]');
+      var slot = document.querySelector("[data-brief-next-slot]");
+      if (box && slot) slot.replaceWith(box);
+      var line = document.querySelector('[data-brief-next="inline"]');
+      var lslot = document.querySelector("[data-brief-next-inline-slot]");
+      if (line) {
+        if (lslot) lslot.replaceWith(line);
+        else line.remove();
+      }
+      // ブロックが画面に入っている間は、レールの同じ入口を隠す。レールは
+      // このスクリプトより後ろにあるので、読み込みが済んでから探す。
+      var rail = null;
+      function watchRail() {
+        rail = document.querySelector('[data-brief-next="rail"]');
+        if (!box || !rail || !("IntersectionObserver" in window)) return;
+        new IntersectionObserver(function (es) {
+          rail.classList.toggle("is-hidden", es[0].isIntersecting);
+        }).observe(box);
+      }
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", watchRail);
+      else watchRail();
+      // 置き場所は data-place（block / inline / rail）。
+      document.addEventListener("click", function (e) {
+        var el = e.target instanceof Element ? e.target.closest("[data-nr-ev]") : null;
+        if (!el || typeof window.gtag !== "function") return;
+        window.gtag("event", el.getAttribute("data-nr-ev"), {
+          brief_id: (box || line || rail || el).getAttribute("data-brief") || undefined,
+          place: el.getAttribute("data-place"),
+          facet: el.getAttribute("data-key") + ":" + el.getAttribute("data-slug"),
+        });
+      });
+    })();
+  </script>
+)}
+
+<style>
+  /* ── block：「対策するには」のあと ──
+     本文は白地の表や淡い緑の図表が多く、線で区切った行では表に紛れて気づかれ
+     なかった（本人 2026-10-24）。表紙と同じ墨の地のカテゴリバナーにし、行は
+     押せるチップにする。ボタンはヘッダーの「始める」（ライム）と見分けがつく白。 */
+  .nr--block {
+    position: relative;
+    margin: 52px 0 8px;
+    padding: 28px 30px 26px;
+    border-radius: 16px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0) 0 0 / 18px 18px,
+      linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
+    color: #e9eee3;
+    box-shadow: var(--sh-m);
+  }
+  .nr-h {
+    margin: 0;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.5;
+    color: #fff;
+  }
+  .nr-hero {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 22px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+    text-decoration: none;
+    color: #fff;
+    transition: background 0.15s;
+  }
+  .nr-hero:hover,
+  .nr-hero:focus-visible {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .nr-hero-ic {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: #a8e010;
+    color: #1d231c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nr-hero-ic svg {
+    width: 30px;
+    height: 30px;
+  }
+  .nr-hero-tx {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .nr-hero-k {
+    font-size: 12px;
+    font-weight: 700;
+    color: #c9e57a;
+  }
+  .nr-hero-tx b {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.45;
+    color: #fff;
+  }
+  .nr-hero-d {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #c8cfc2;
+  }
+  .nr-hero-cta {
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1d231c;
+    background: #fff;
+    border-radius: 999px;
+    padding: 12px 20px;
+    transition: transform 0.15s;
+  }
+  .nr-hero:hover .nr-hero-cta {
+    transform: translateX(2px);
+  }
+  .nr-sub {
+    margin-top: 20px;
+  }
+  .nr-sh {
+    margin: 0 0 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #c8cfc2;
+  }
+  .nr-sub ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .nr-sub li {
+    margin: 0;
+    padding: 0;
+  }
+  .nr-sub li::before {
+    display: none;
+  }
+  .nr-sub a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 6px 14px 6px 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    text-decoration: none;
+    color: #fff;
+    transition: background 0.15s;
+  }
+  .nr-sub a:hover,
+  .nr-sub a:focus-visible {
+    background: rgba(255, 255, 255, 0.16);
+  }
+  .nr-li-ic {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nr-sub--ctl .nr-li-ic {
+    background: #a8e010;
+    color: #1d231c;
+  }
+  .nr-li-ic svg {
+    width: 17px;
+    height: 17px;
+  }
+  .nr-li-t {
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #fff;
+  }
+  /* 件数の緑は対策だけ。手口の件数は淡い白。 */
+  .nr-li-n {
+    white-space: nowrap;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #c8cfc2;
+  }
+  .nr-sub--ctl .nr-li-n {
+    color: #c9e57a;
+  }
+
+  /* ── inline：本文の途中（2 章のあと）の 1 本のバナー ──
+     さりげない淡いグレーでは気づかれにくかった（本人 2026-10-24）。下のブロックと
+     同じ墨の地にそろえる。 */
+  .nr-hero-ic--s {
+    width: 40px;
+    height: 40px;
+  }
+  .nr-hero-ic--s svg {
+    width: 22px;
+    height: 22px;
+  }
+  .nr-inline {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 36px 0 8px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0) 0 0 / 18px 18px,
+      linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
+    box-shadow: var(--sh-s);
+    text-decoration: none;
+    color: #fff;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .nr-inline:hover,
+  .nr-inline:focus-visible {
+    box-shadow: var(--sh-m);
+    transform: translateY(-1px);
+  }
+  .nr-inline-tx {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .nr-inline-k {
+    font-size: 12px;
+    font-weight: 700;
+    color: #c9e57a;
+  }
+  .nr-inline-tx b {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #fff;
+  }
+  .nr-inline-ar {
+    margin-left: auto;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: #fff;
+    color: #1d231c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  /* ── rail：目次と同じ線だけの見た目 ── */
+  .nr--rail {
+    margin-top: 18px;
+    padding: 14px 4px 0 12px;
+    border-top: 1px solid var(--line);
+    transition: opacity 0.2s;
+  }
+  .nr--rail.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .nr-rail-h {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--tx);
+  }
+  .nr--rail ul {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+  }
+  .nr--rail li {
+    margin: 0;
+  }
+  .nr--rail a {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 5px 0;
+    text-decoration: none;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--tx-soft);
+  }
+  .nr--rail a:hover span {
+    text-decoration: underline;
+  }
+  .nr--rail .is-hero a {
+    font-weight: 700;
+    color: var(--tx);
+  }
+  .nr--rail i {
+    margin-left: auto;
+    flex: none;
+    font-style: normal;
+    font-size: 11.5px;
+    color: var(--tx-soft);
+  }
+  .nr--rail .is-ctl i {
+    color: var(--ok-light);
+  }
+
+  @media (max-width: 760px) {
+    .nr--block {
+      padding: 22px 16px 20px;
+    }
+    .nr-h {
+      font-size: 18px;
+    }
+    .nr-hero {
+      grid-template-columns: auto minmax(0, 1fr);
+      padding: 16px;
+      gap: 14px;
+    }
+    .nr-hero-ic {
+      width: 46px;
+      height: 46px;
+    }
+    .nr-hero-tx b {
+      font-size: 17px;
+    }
+    .nr-hero-cta {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 12px 16px;
+    }
+    .nr-inline {
+      padding: 14px;
+      gap: 12px;
+    }
+    .nr-inline-tx b {
+      font-size: 14.5px;
+    }
+  }
+</style>

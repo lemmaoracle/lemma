@@ -2,9 +2,10 @@
  * Critical Brief の「探し方」用ファセット語彙（2026-10・report レイアウト導入時）。
  *
  * report レイアウトの Brief は frontmatter に `industries` / `operations` /
- * `controls` を持つ。**記事には描画しない**——一覧ページで「業界で探す／
- * 業務で探す／対策で探す」のチップを集計するための索引で、そのときのラベルと
- * アイコンをここ1か所に置く。記事中の「注意したい業界・業務」の表は md 側で
+ * `controls` を持つ。一覧ページで「業界で探す／業務で探す／対策で探す」の
+ * チップを集計するための索引で、そのときのラベルとアイコンをここ1か所に置く。
+ * 手口・業務・対策は、記事の「似た事例を一覧で読む」（lib/briefNextRead.ts・
+ * 2026-10-24）のタイルにも使う。記事中の「注意したい業界・業務」の表は md 側で
  * 説明文つきで書く（ラベルだけのチップより情報が多いため）。
  *
  * アイコンは承認済みモック（032_v8）の `<symbol>` をそのまま写した 22×22 の
@@ -206,13 +207,43 @@ export const BRIEF_ATTACK_SLUGS = [
 ] as const;
 export type BriefAttackSlug = (typeof BRIEF_ATTACK_SLUGS)[number];
 
-export const BRIEF_ATTACKS: Record<BriefAttackSlug, { slug: string; ja: string; en: string }> = {
-  "account-takeover": { slug: "account-takeover", ja: "アカウント乗っ取り", en: "Account takeover" },
-  impersonation: { slug: "impersonation", ja: "なりすまし", en: "Impersonation" },
-  "privilege-abuse": { slug: "privilege-abuse", ja: "権限の悪用", en: "Privilege abuse" },
-  "supply-chain": { slug: "supply-chain", ja: "サプライチェーン", en: "Supply chain" },
-  "human-error": { slug: "human-error", ja: "人の操作ミス", en: "Human error" },
-  "ai-misuse": { slug: "ai-misuse", ja: "AI の誤作動・悪用", en: "AI failure or misuse" },
+export const BRIEF_ATTACKS: Record<BriefAttackSlug, FacetEntry> = {
+  "account-takeover": {
+    slug: "account-takeover",
+    ja: "アカウント乗っ取り",
+    en: "Account takeover",
+    icon: '<circle cx="7.5" cy="11" r="3.5"/><path d="M11 11h8M16 11v3M18.5 11v2"/>',
+  },
+  impersonation: {
+    slug: "impersonation",
+    ja: "なりすまし",
+    en: "Impersonation",
+    icon: '<circle cx="11" cy="7.5" r="3.2"/><path d="M4.5 18.5c.6-3.3 3.2-5.3 6.5-5.3s5.9 2 6.5 5.3"/><path d="M7.2 7.2h7.6"/>',
+  },
+  "privilege-abuse": {
+    slug: "privilege-abuse",
+    ja: "権限の悪用",
+    en: "Privilege abuse",
+    icon: '<path d="M11 3.5l6.5 2.6v4.6c0 4-2.8 6.6-6.5 7.8-3.7-1.2-6.5-3.8-6.5-7.8V6.1z"/><path d="M11 14V8.5M8.6 10.8L11 8.4l2.4 2.4"/>',
+  },
+  "supply-chain": {
+    slug: "supply-chain",
+    ja: "サプライチェーン",
+    en: "Supply chain",
+    icon: '<rect x="2.8" y="8.2" width="8" height="5.6" rx="2.8"/><rect x="11.2" y="8.2" width="8" height="5.6" rx="2.8"/>',
+  },
+  "human-error": {
+    slug: "human-error",
+    ja: "人の操作ミス",
+    en: "Human error",
+    icon: '<path d="M11 3.8L19 17.8H3z"/><path d="M11 9v4.2M11 15.6v.4"/>',
+  },
+  "ai-misuse": {
+    slug: "ai-misuse",
+    ja: "AI の誤作動・悪用",
+    en: "AI failure or misuse",
+    icon: '<rect x="5.5" y="5.5" width="11" height="11" rx="2"/><path d="M9 9h4v4H9zM8.5 3v2.5M13.5 3v2.5M8.5 16.5V19M13.5 16.5V19M3 8.5h2.5M3 13.5h2.5M16.5 8.5H19M16.5 13.5H19"/>',
+  },
 };
 
 /**
@@ -233,6 +264,78 @@ export const BRIEF_INSIGHTS: Record<string, FacetEntry> = {
 export const BRIEF_FACET_EXTRA_ICONS: Record<string, string> = {
   exposure:
     '<circle cx="11" cy="11" r="7.6"/><circle cx="11" cy="11" r="4"/><circle cx="11" cy="11" r="0.9" fill="currentColor"/><path d="M11 1.8v3M11 17.2v3M1.8 11h3M17.2 11h3"/>',
+};
+
+/**
+ * 手口・業務・対策のひとこと説明（2026-10-24）。記事の「似た事例を一覧で読む」の
+ * 主役のバナーに、初めて読む人にも分かる言葉で添える。キーは
+ * `attack:<slug>` / `operation:<slug>` / `control:<slug>`。
+ */
+export const FACET_PLAIN: Readonly<Partial<Record<string, { readonly ja: string; readonly en: string }>>> = {
+  "attack:account-takeover": {
+    ja: "盗まれた ID・パスワードで、本物のアカウントから操作される",
+    en: "Someone uses stolen credentials to act from a real account",
+  },
+  "attack:impersonation": {
+    ja: "役員・取引先・警察などを装って、送金や変更を頼まれる",
+    en: "Someone poses as an executive, supplier or official to ask for a payment or change",
+  },
+  "attack:privilege-abuse": {
+    ja: "与えた権限が、想定していない操作に使われる",
+    en: "Access you granted gets used for something it was never meant for",
+  },
+  "attack:supply-chain": {
+    ja: "委託先や、使っている製品・サービスを経由して入られる",
+    en: "Attackers get in through a contractor, product or service you rely on",
+  },
+  "attack:human-error": {
+    ja: "宛先の違いや設定のミスなど、人の操作で情報が出る",
+    en: "A wrong recipient or a misconfiguration exposes information",
+  },
+  "attack:ai-misuse": {
+    ja: "AI が誤って動く、または悪用される",
+    en: "An AI system misbehaves or is misused",
+  },
+  "operation:payment-change": {
+    ja: "取引先の振込先や、自社の受取口座が書き換えられる",
+    en: "A supplier's or your own bank details get changed",
+  },
+  "operation:account-admin": {
+    ja: "アカウントの作成や、権限の付与・変更が狙われる",
+    en: "Creating accounts and changing permissions are targeted",
+  },
+  "operation:disclosure": {
+    ja: "情報の開示や提供の手続きが悪用される",
+    en: "Requests to disclose or hand over data are abused",
+  },
+  "operation:delivery": {
+    ja: "メール・通知・郵送などの送付で起きる",
+    en: "It happens in emails, notifications or mailings",
+  },
+  "operation:approval": {
+    ja: "承認や決裁を通って、そのまま実行される",
+    en: "It passes an approval step and is carried out",
+  },
+  "operation:data-access": {
+    ja: "データの照会や参照から、大量に持ち出される",
+    en: "Data lookups are used to pull out large volumes",
+  },
+  "control:separate-approval": {
+    ja: "依頼とは別の人が、別の経路で確認してから実行する",
+    en: "Someone else confirms through a separate channel before it is carried out",
+  },
+  "control:ownership-check": {
+    ja: "依頼や口座が本物かを、登録済みの連絡先などで照合する",
+    en: "Check the request or account against contacts you already have on file",
+  },
+  "control:hold-unverified": {
+    ja: "確認が取れるまで、送金や配信を実行しない",
+    en: "Do not pay or send until it is confirmed",
+  },
+  "control:audit-trail": {
+    ja: "誰が何を確認して通したかを、あとから示せる形で残す",
+    en: "Keep a record of who checked what, so you can show it later",
+  },
 };
 
 /**

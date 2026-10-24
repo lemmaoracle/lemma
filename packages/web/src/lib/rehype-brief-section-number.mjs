@@ -498,7 +498,34 @@ function deriveReportComponents(root, fm, isEn) {
   deriveTimeline(root);
   deriveCounter(root, isEn);
   deriveFacts(root, 5);
+  markWeeklySlot(root);
   deriveSources(root, isEn);
+}
+
+/**
+ * メールの入口の目印を置く（中身は BriefTemplate の BriefWeeklyCta・
+ * 2026-10-24）。TL;DR のあとの 1 行と、チェックリスト（とその「注：」）の直後。本文は登録なしで
+ * 全部読めるまま。対策の章の表を畳む案も試したが、SEO も読み手の得も変わらず、
+ * 対策を探しに来た人には表も答えの一部なので、開いたままにした。
+ */
+function markWeeklySlot(root) {
+  // TL;DR のあと（2 章の h2 の直前）の 1 行の入口。
+  const s2 = sectionHeadIndex(root, 2);
+  if (s2 >= 0) root.splice(s2, 0, { type: "element", tagName: "div", properties: { dataBriefWeeklyTopSlot: "" }, children: [] });
+  const r = sectionRange(root, 5);
+  if (!r) return;
+  for (let i = r[0]; i < root.length; i++) {
+    const node = root[i];
+    if (isEl(node, "h2")) break;
+    const cls = String(node.properties?.className ?? "");
+    if (isEl(node) && /\bbx-checklist\b/.test(cls)) {
+      // 直後の「注：」はチェックリストの続きなので、その後ろに置く。
+      const nx = nextEl(root, i);
+      const after = nx >= 0 && /\brx-aside\b/.test(String(root[nx].properties?.className ?? "")) ? nx : i;
+      root.splice(after + 1, 0, { type: "element", tagName: "div", properties: { dataBriefWeeklySlot: "" }, children: [] });
+      i = after + 1;
+    }
+  }
 }
 
 function applyReportLayout(tree, fm, isEn) {
@@ -609,5 +636,24 @@ export function rehypeBriefSectionNumber() {
     });
 
     if (isReport) applyReportLayout(tree, fm, isEn);
+    markNextReadSlot(tree, isReport);
   };
+}
+
+/**
+ * 「似た事例を一覧で読む」の差し込み口（2026-10-24）。中身は BriefTemplate が
+ * 組み立て（BriefNextRead）、ページを開いたときにここへ移す。
+ * - Sources の h2 の直前：対策を読み終えたところのブロック。
+ * - report の 3 章の h2 の直前（2 章「何が起きたか」を読み終えたところ）：本文の
+ *   途中の 1 行の入口。対策の章の直前だと「答えを読む前によそへ行け」と読まれた
+ *   （読み手のレビュー）。
+ */
+function markNextReadSlot(tree, isReport) {
+  const root = tree.children ?? [];
+  const slot = (name) => ({ type: "element", tagName: "div", properties: { [name]: "" }, children: [] });
+  const src = root.findIndex((n) => isEl(n, "h2") && textOf(n).trim() === "Sources");
+  if (src >= 0) root.splice(src, 0, slot("dataBriefNextSlot"));
+  if (!isReport) return;
+  const after2 = sectionHeadIndex(root, 3);
+  if (after2 >= 0) root.splice(after2, 0, slot("dataBriefNextInlineSlot"));
 }
