@@ -1,0 +1,154 @@
+<div class="hero-art" aria-hidden="true">
+  <div class="perspective">
+    <div class="silver-card">
+      <div class="card-back"></div>
+      <div class="card-edge"></div>
+      <div class="card-face">
+        <span class="maker">LEMMA</span>
+        <span class="engraving">Cyber</span>
+        <div class="card-mark"><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .hero-art {
+    --card-width: clamp(520px, 78vw, 800px);
+    position: absolute;
+    inset: 0;
+    overflow: clip;
+    pointer-events: none;
+    user-select: none;
+    mask-image: linear-gradient(transparent, #000 10%, #000 78%, transparent);
+  }
+  .hero-art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        ellipse 42% 55% at 50% 57%,
+        #12140ef5 5%,
+        #12140ed9 32%,
+        #12140e70 63%,
+        transparent 94%
+      ),
+      linear-gradient(0deg, #12140e, transparent 60%);
+  }
+  .perspective {
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    width: var(--card-width);
+    aspect-ratio: 1.586;
+    perspective: 1500px;
+    transform: translate(-50%, -50%);
+  }
+  .silver-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateZ(-18deg) rotateX(78deg) rotateY(-6deg);
+  }
+  .card-face,
+  .card-back,
+  .card-edge {
+    position: absolute;
+    inset: 0;
+    border-radius: 26px;
+    backface-visibility: hidden;
+  }
+  .card-face {
+    overflow: hidden;
+    border: 1px solid #f8fafcf0;
+    background:
+      repeating-linear-gradient(115deg, #2335490a 0 1px, transparent 1px 4px),
+      linear-gradient(142deg, #f8fafc, #b5bdc9 38%, #edf1f5 64%, #a0acb9);
+    transform: translateZ(1px);
+  }
+  .card-face::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      104deg,
+      transparent 18%,
+      #ffffff80 38%,
+      #fff 40%,
+      #ffffff26 44%,
+      transparent 66%
+    );
+  }
+  .card-back {
+    border: 1px solid #e9eef3;
+    background: linear-gradient(135deg, #bdc7d2, #f1f5f9 48%, #8d9aa8);
+    transform: translateZ(-1px) rotateY(180deg);
+  }
+  .card-edge {
+    border: 1px solid #9eacb9;
+  }
+  .maker,
+  .engraving,
+  .card-mark {
+    position: absolute;
+  }
+  .maker {
+    top: 36px;
+    left: 40px;
+    color: #5e6a77;
+    font-family: "Space Mono", monospace;
+    font-size: 15px;
+    letter-spacing: 0.12em;
+  }
+  .engraving {
+    bottom: 30px;
+    left: 36px;
+    color: #556371;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 56px;
+    line-height: 1;
+    letter-spacing: -0.06em;
+  }
+  .card-mark {
+    display: flex;
+    gap: 9px;
+    top: 38px;
+    right: 40px;
+  }
+  .card-mark i {
+    width: 6px;
+    height: 6px;
+    border: 1px solid #667482;
+    border-radius: 50%;
+  }
+  @keyframes silver-drift {
+    from {
+      transform: rotateZ(-18deg) rotateX(78deg) rotateY(-6deg);
+    }
+    to {
+      transform: rotateZ(-13deg) rotateX(83deg) rotateY(6deg);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .silver-card {
+      animation: silver-drift 24s ease-in-out infinite alternate;
+    }
+  }
+  @media (max-width: 600px) {
+    .hero-art {
+      --card-width: 470px;
+    }
+    .perspective {
+      top: 32%;
+      left: 50%;
+      perspective: 1100px;
+    }
+    .hero-art::after {
+      background:
+        radial-gradient(ellipse 65% 55% at 50% 58%, #12140ef5 15%, #12140ea3 62%, transparent),
+        linear-gradient(0deg, #12140e, transparent 72%);
+    }
+  }
+</style>
