@@ -609,24 +609,24 @@ export function rehypeBriefSectionNumber() {
     });
 
     if (isReport) applyReportLayout(tree, fm, isEn);
-    markNextReadSlot(tree);
+    markNextReadSlot(tree, isReport);
   };
 }
 
 /**
- * 「この手口・この対策で探す」の差し込み口（2026-10-24）。対策を読み終えた
- * ところで同じ手口・同じ対策の一覧へ渡すため、Sources の h2 の直前に空の目印を
- * 置く。中身は BriefTemplate が組み立て（BriefNextRead）、ページを開いたときに
- * ここへ移す。
+ * 「似た事例を一覧で読む」の差し込み口（2026-10-24）。中身は BriefTemplate が
+ * 組み立て（BriefNextRead）、ページを開いたときにここへ移す。
+ * - Sources の h2 の直前：対策を読み終えたところのブロック。
+ * - report の 3 章の h2 の直前（2 章「何が起きたか」を読み終えたところ）：本文の
+ *   途中の 1 行の入口。対策の章の直前だと「答えを読む前によそへ行け」と読まれた
+ *   （読み手のレビュー）。
  */
-function markNextReadSlot(tree) {
+function markNextReadSlot(tree, isReport) {
   const root = tree.children ?? [];
-  const i = root.findIndex((n) => isEl(n, "h2") && textOf(n).trim() === "Sources");
-  if (i < 0) return;
-  root.splice(i, 0, {
-    type: "element",
-    tagName: "div",
-    properties: { dataBriefNextSlot: "" },
-    children: [],
-  });
+  const slot = (name) => ({ type: "element", tagName: "div", properties: { [name]: "" }, children: [] });
+  const src = root.findIndex((n) => isEl(n, "h2") && textOf(n).trim() === "Sources");
+  if (src >= 0) root.splice(src, 0, slot("dataBriefNextSlot"));
+  if (!isReport) return;
+  const after2 = sectionHeadIndex(root, 3);
+  if (after2 >= 0) root.splice(after2, 0, slot("dataBriefNextInlineSlot"));
 }

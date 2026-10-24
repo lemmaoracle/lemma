@@ -177,7 +177,7 @@ addCandidates(byNewest.filter((b) => b.data.primary_category === primarySlug));
 addCandidates(byNewest.filter((b) => b.data.pillar === pillar));
 addCandidates(byNewest);
 const relatedBriefs = Array.from(relatedSet.values()).slice(0, 3);
-// 「この手口・この対策で探す」のタイル。組めたら、末尾の関連 Brief は出さない。
+// 「似た事例を一覧で読む」の入口。組めたら、末尾の関連 Brief は出さない。
 const facetTiles = briefFacetTiles(locale, brief, allLocale);
 const hasNextRead = hasFacetTiles(facetTiles);
 
@@ -528,7 +528,6 @@ const labels = isJa
                 ))}
               </ol>
             </details>
-            <BriefNextRead locale={locale} briefId={brief.id} tiles={facetTiles} variant="mobile" />
           </>
         ) : (
         <header class="bd-head">
@@ -584,7 +583,9 @@ const labels = isJa
           <Content />
         </article>
 
-        {/* この手口・この対策で探す。本文の Sources の直前へ移す。 */}
+        {/* 似た事例を一覧で読む。本文の途中（5 章の直前）の 1 行と、Sources の直前の
+            ブロック。どちらもページを開いたときに本文の中の目印へ移す。 */}
+        <BriefNextRead locale={locale} briefId={brief.id} tiles={facetTiles} variant="inline" />
         <BriefNextRead locale={locale} briefId={brief.id} tiles={facetTiles} variant="block" />
 
         {/* 配布についての注記（旧 §9 の定型文）。6章化した md には定型文が
@@ -743,7 +744,7 @@ const labels = isJa
           </ul>
         </div>
 
-        {/* 目次の下：この手口・この対策で探す（sticky のレールで読む間ずっと見える）。 */}
+        {/* 目次の下：似た事例を読む（sticky のレールで読む間ずっと見える）。 */}
         <BriefNextRead locale={locale} briefId={brief.id} tiles={facetTiles} variant="rail" />
 
         {/* 2段目: 脅威タイプ別バナー（白＋ライム縁）。読んでいる事案に紐づく

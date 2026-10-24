@@ -4,7 +4,7 @@
  * report レイアウトの Brief は frontmatter に `industries` / `operations` /
  * `controls` を持つ。一覧ページで「業界で探す／業務で探す／対策で探す」の
  * チップを集計するための索引で、そのときのラベルとアイコンをここ1か所に置く。
- * 手口・業務・対策は、記事の「この手口・この対策で探す」（lib/briefNextRead.ts・
+ * 手口・業務・対策は、記事の「似た事例を一覧で読む」（lib/briefNextRead.ts・
  * 2026-10-24）のタイルにも使う。記事中の「注意したい業界・業務」の表は md 側で
  * 説明文つきで書く（ラベルだけのチップより情報が多いため）。
  *
@@ -264,6 +264,78 @@ export const BRIEF_INSIGHTS: Record<string, FacetEntry> = {
 export const BRIEF_FACET_EXTRA_ICONS: Record<string, string> = {
   exposure:
     '<circle cx="11" cy="11" r="7.6"/><circle cx="11" cy="11" r="4"/><circle cx="11" cy="11" r="0.9" fill="currentColor"/><path d="M11 1.8v3M11 17.2v3M1.8 11h3M17.2 11h3"/>',
+};
+
+/**
+ * 手口・業務・対策のひとこと説明（2026-10-24）。記事の「似た事例を一覧で読む」の
+ * 主役のバナーに、初めて読む人にも分かる言葉で添える。キーは
+ * `attack:<slug>` / `operation:<slug>` / `control:<slug>`。
+ */
+export const FACET_PLAIN: Readonly<Partial<Record<string, { readonly ja: string; readonly en: string }>>> = {
+  "attack:account-takeover": {
+    ja: "盗まれた ID・パスワードで、本物のアカウントから操作される",
+    en: "Someone uses stolen credentials to act from a real account",
+  },
+  "attack:impersonation": {
+    ja: "役員・取引先・警察などを装って、送金や変更を頼まれる",
+    en: "Someone poses as an executive, supplier or official to ask for a payment or change",
+  },
+  "attack:privilege-abuse": {
+    ja: "与えた権限が、想定していない操作に使われる",
+    en: "Access you granted gets used for something it was never meant for",
+  },
+  "attack:supply-chain": {
+    ja: "委託先や、使っている製品・サービスを経由して入られる",
+    en: "Attackers get in through a contractor, product or service you rely on",
+  },
+  "attack:human-error": {
+    ja: "宛先の違いや設定のミスなど、人の操作で情報が出る",
+    en: "A wrong recipient or a misconfiguration exposes information",
+  },
+  "attack:ai-misuse": {
+    ja: "AI が誤って動く、または悪用される",
+    en: "An AI system misbehaves or is misused",
+  },
+  "operation:payment-change": {
+    ja: "取引先の振込先や、自社の受取口座が書き換えられる",
+    en: "A supplier's or your own bank details get changed",
+  },
+  "operation:account-admin": {
+    ja: "アカウントの作成や、権限の付与・変更が狙われる",
+    en: "Creating accounts and changing permissions are targeted",
+  },
+  "operation:disclosure": {
+    ja: "情報の開示や提供の手続きが悪用される",
+    en: "Requests to disclose or hand over data are abused",
+  },
+  "operation:delivery": {
+    ja: "メール・通知・郵送などの送付で起きる",
+    en: "It happens in emails, notifications or mailings",
+  },
+  "operation:approval": {
+    ja: "承認や決裁を通って、そのまま実行される",
+    en: "It passes an approval step and is carried out",
+  },
+  "operation:data-access": {
+    ja: "データの照会や参照から、大量に持ち出される",
+    en: "Data lookups are used to pull out large volumes",
+  },
+  "control:separate-approval": {
+    ja: "依頼とは別の人が、別の経路で確認してから実行する",
+    en: "Someone else confirms through a separate channel before it is carried out",
+  },
+  "control:ownership-check": {
+    ja: "依頼や口座が本物かを、登録済みの連絡先などで照合する",
+    en: "Check the request or account against contacts you already have on file",
+  },
+  "control:hold-unverified": {
+    ja: "確認が取れるまで、送金や配信を実行しない",
+    en: "Do not pay or send until it is confirmed",
+  },
+  "control:audit-trail": {
+    ja: "誰が何を確認して通したかを、あとから示せる形で残す",
+    en: "Keep a record of who checked what, so you can show it later",
+  },
 };
 
 /**
