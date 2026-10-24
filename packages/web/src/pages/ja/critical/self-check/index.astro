@@ -46,7 +46,8 @@ const PERSONAS = [
     tab: "経理・財務",
     who: "例：経理の担当・社員 80 人の製造業",
     msg: "振込先の口座が変わりました。今月分から、こちらにお願いします。",
-    from: "取引先の担当者を名乗るメール",
+    tag: "取引先のなりすまし",
+    from: "取引先の担当者を名乗る、偽のメール",
     real: "米国の市では、この形の連絡で、工事代金 670 万ドルが別の口座へ送られました。",
     slug: "158-portland-water-bureau-vendor-bank-change",
     checks: ["振込先の変更を、メールの中ではなく登録済みの連絡先で確認しているか", "変わった直後の支払いを、照合が済むまで保留にしているか"],
@@ -58,7 +59,8 @@ const PERSONAS = [
     tab: "経営・管理職",
     who: "例：経営企画の部長・社員 300 人のサービス業",
     msg: "至急、この口座に送金してください。社内にはまだ内密に。",
-    from: "社長や役員を名乗る、社内チャットやビデオ会議",
+    tag: "社長・役員のなりすまし",
+    from: "社長や役員を名乗る、偽のチャットやビデオ会議",
     real: "国内の上場企業では、チャットで役員を装った指示に従い、同じ日に 9,600 万円が振り込まれました。",
     slug: "159-zuu-business-chat-executive-impersonation-transfer",
     checks: ["送金の指示を、届いた経路とは別の手段で本人に照合しているか", "振込の作成と承認を、別の人が行っているか"],
@@ -70,7 +72,8 @@ const PERSONAS = [
     tab: "情報システム",
     who: "例：情シスの課長・社員 200 人の IT 企業",
     msg: "取引先の担当者を 1 名、追加しました。",
-    from: "取引先の登録や管理画面からの、気づかれにくい通知",
+    tag: "偽の担当者の登録",
+    from: "攻撃者が取引先の登録に入り込んだときの通知",
     real: "米国の市では、偽の担当者が取引先の登録に加えられ、振込先が書き換えられて 152 万ドルが送られました。",
     slug: "160-baltimore-workday-supplier-contact-bank-change",
     checks: ["管理者や担当者が追加されたとき、誰に知らせが届くか", "使っていない入口や広すぎる権限を、定期的に閉じているか"],
@@ -82,7 +85,8 @@ const PERSONAS = [
     tab: "総務・内部統制",
     who: "例：総務の担当・病院や自治体の委託の窓口",
     msg: "お預かりした機器は、作業のあと、すべて破砕しました。",
-    from: "委託先からの作業の報告",
+    tag: "不正な持ち出し",
+    from: "委託先からの作業の報告（実際には破砕されていなかった）",
     real: "国内の病院では、破砕したはずの電子カルテの HDD の一部が、ネットオークションで落札されました。",
     slug: "065-hokkaido-hospital-hdd-disposal",
     checks: ["委託先の「消した」という説明を、消去の記録や写真で確認しているか", "委託先の再委託や転売を、事前に知る取り決めがあるか"],
@@ -142,7 +146,7 @@ const CONSULT_EXAMPLES = [
   pagePath="/critical/self-check/"
   localesAvailable={["ja"]}
   title={`ビジネスメール詐欺・不正送金の対策チェックリスト（実例 ${total} 項目・無料）｜Lemma`}
-  ogTitle="実際に起きた不正の手口が、自社で通らないかをセルフチェック｜Lemma"
+  ogTitle="その連絡、なりすましかも。不正送金の手口で 5 分セルフチェック｜Lemma"
   jsonLd={jsonLd}
   description={`振込先の変更、社長や役員を装う送金の指示、偽のビデオ会議。国内外で実際に起きた ${briefCount} 件の事案から作った ${total} 項目で、自社の経理・承認・アカウント管理を業務ごとにセルフチェックできます。登録は不要です。`}
 >
@@ -152,8 +156,8 @@ const CONSULT_EXAMPLES = [
       <div class="lp-in lp-hero-in">
         <div class="lp-hero-tx">
           <p class="lp-kicker">ビジネスメール詐欺・不正送金の対策チェックリスト</p>
-          <h1>その連絡、<br /><mark>本物ですか。</mark></h1>
-          <p class="lp-lead">実際に起きた不正の手口で、自社の業務を 5 分でチェック。</p>
+          <h1>その連絡、<br /><mark>なりすましかも。</mark></h1>
+          <p class="lp-lead">実際に起きたなりすまし・不正送金・攻撃の手口で、自社の業務を 5 分でチェック。</p>
           <div class="lp-cta">
             <a class="lp-btn" href="#who">無料でチェックする</a>
           </div>
@@ -176,7 +180,7 @@ const CONSULT_EXAMPLES = [
     <section class="lp-who" id="who" aria-labelledby="lp-who-h">
       <div class="lp-in">
         <h2 id="lp-who-h">あなたの担当は？</h2>
-        <p class="lp-who-sub">選ぶと、その担当に届きそうな連絡に切り替わります。</p>
+        <p class="lp-who-sub">選ぶと、その担当を狙ったなりすましや攻撃の手口に切り替わります。</p>
         <div class="lp-tabs" role="tablist" aria-label="担当">
           {PERSONAS.map((p, i) => (
             <button type="button" role="tab" class="lp-tab" data-lp-tab={p.key} aria-selected={i === 0 ? "true" : "false"}>{p.tab}</button>
@@ -185,6 +189,7 @@ const CONSULT_EXAMPLES = [
         {PERSONAS.map((p, i) => (
           <div class="lp-panel" role="tabpanel" data-lp-panel={p.key} hidden={i !== 0}>
             <div class="lp-msg">
+              <span class="lp-tag">⚠ {p.tag}</span>
               <span class="lp-msg-from">{p.from}</span>
               <p class="lp-bubble">{p.msg}</p>
               <span class="lp-who-ex">{p.who}</span>
@@ -207,7 +212,7 @@ const CONSULT_EXAMPLES = [
 
     <section class="lp-figs" aria-label="実際に起きた事案">
       <div class="lp-in">
-        <p class="lp-figs-h">実際に、こうして送られました</p>
+        <p class="lp-figs-h">なりすまし・攻撃で、実際に送られた額</p>
         <div class="lp-figs-row">
           {CASES.map((c) => (
             <a class="lp-fig" href={`/ja/critical/briefs/${c.slug}/`}>
@@ -402,6 +407,7 @@ const CONSULT_EXAMPLES = [
     // 相談のフォームから戻ったとき（?form=consult）。
     if (params.get("form") === "consult") root.querySelector("[data-ck-done]").hidden = false;
     var started = false;
+    var toolInView = false;
     function save() {
       try {
         localStorage.setItem(KEY, JSON.stringify(state));
@@ -439,7 +445,8 @@ const CONSULT_EXAMPLES = [
       var any = state.ops.length > 0;
       $("[data-ck-items]").hidden = !any;
       $("[data-ck-result]").hidden = !any;
-      $("[data-ck-bar]").hidden = !any;
+      // 下の固定バーは、セルフチェックが画面に入っているときだけ（LP の上では出さない）。
+      $("[data-ck-bar]").hidden = !any || !toolInView;
       $("[data-ck-empty]").hidden = any;
       // 複数の業務に出る項目は、選んだ業務のうち最初の 1 か所にだけ出す。
       var seen = {};
@@ -613,6 +620,12 @@ const CONSULT_EXAMPLES = [
       }).observe($("[data-ck-result]"));
     }
 
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) {
+        toolInView = es[0].isIntersecting;
+        render();
+      }).observe($(".ck-tool"));
+    }
     render();
     if (from) {
       var target = $(".ck-item.is-from:not([hidden])");
@@ -886,7 +899,18 @@ const CONSULT_EXAMPLES = [
   .lp-panel[hidden] {
     display: none;
   }
+  .lp-tag {
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #8a4b38;
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 800;
+  }
   .lp-msg-from {
+    display: block;
     font-size: 12.5px;
     font-weight: 700;
     color: #6a7064;
