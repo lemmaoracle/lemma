@@ -512,7 +512,7 @@ importers:
         version: 1.29.0(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@3.25.76)
       agents:
         specifier: ^0.11.4
-        version: 0.11.9(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.10)(@cloudflare/workers-types@4.20260702.1)(@x402/core@2.28.0)(@x402/evm@2.28.0(typescript@5.8.3))(ai@6.0.312(zod@3.25.76))(react@19.3.1)(rolldown@1.2.15)(supports-color@10.2.2)(zod@3.25.76)
+        version: 0.11.9(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.10)(@cloudflare/workers-types@4.20260702.1)(@x402/core@2.28.0)(@x402/evm@2.28.0(typescript@5.8.3))(ai@6.0.314(zod@3.25.76))(react@19.3.1)(rolldown@1.2.15)(supports-color@10.2.2)(zod@3.25.76)
       ramda:
         specifier: ^0.30.1
         version: 0.30.1
@@ -1071,8 +1071,8 @@ packages:
   '@adraffy/ens-normalize@1.11.1':
     resolution: {integrity: sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ==}
 
-  '@ai-sdk/gateway@3.0.219':
-    resolution: {integrity: sha512-E5yCa/ccG1hdYlSLt62qIJID1EzD8n1S9rZAP4CwvXG1gQpGV0MvKQXbwggKz14d530kfA8lBrzP6QZL81p1WA==}
+  '@ai-sdk/gateway@3.0.220':
+    resolution: {integrity: sha512-1TZQgQ6Pz9hb5Ds/EQjrvkUp7wtmgZU9VWEyW/Re6gBwTeiHv4AqIEBjhK20x/nBI7uiQFz2dztIRdqp1cSZTA==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3752,8 +3752,8 @@ packages:
       vite:
         optional: true
 
-  ai@6.0.312:
-    resolution: {integrity: sha512-t5Qzz6EBS5SwdjXt+L72E4wA8AQ+2roS93sl4mBMgrKo1hxmTatrPHVL2aFkfVa8x/qg2WVNiqsM/KzgTZ3iZw==}
+  ai@6.0.314:
+    resolution: {integrity: sha512-tKC6SIrxkc2lFKRjKDVlqYCeO+uurMuaWxNQ3fgNnBl9KuabqJVlPGzO5RfZQuWM2ZrFkWRAKlxK7ymfn1ozpQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3881,8 +3881,8 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  baseline-browser-mapping@2.11.30:
-    resolution: {integrity: sha512-YJs6Pz17RMNv8HoyKREtCY38E3BV1nPkWVmIb+XN1uHC1Vqt3KZCH/uJH9ZKRoiKb/icZ6tvehyee6RZNbFfRA==}
+  baseline-browser-mapping@2.11.31:
+    resolution: {integrity: sha512-b0k7wXlWjpuL/Uxb/pYlpjY0ej5BjAmurtPUk3eRGuloI4yjK32m8TiKUQ81l1ptcLjKS/KH2+uqIolZti1x4Q==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -7163,7 +7163,7 @@ snapshots:
 
   '@adraffy/ens-normalize@1.11.1': {}
 
-  '@ai-sdk/gateway@3.0.219(zod@3.25.76)':
+  '@ai-sdk/gateway@3.0.220(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.19
       '@ai-sdk/provider-utils': 4.0.62(zod@3.25.76)
@@ -9380,13 +9380,13 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  agents@0.11.9(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.10)(@cloudflare/workers-types@4.20260702.1)(@x402/core@2.28.0)(@x402/evm@2.28.0(typescript@5.8.3))(ai@6.0.312(zod@3.25.76))(react@19.3.1)(rolldown@1.2.15)(supports-color@10.2.2)(zod@3.25.76):
+  agents@0.11.9(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.10)(@cloudflare/workers-types@4.20260702.1)(@x402/core@2.28.0)(@x402/evm@2.28.0(typescript@5.8.3))(ai@6.0.314(zod@3.25.76))(react@19.3.1)(rolldown@1.2.15)(supports-color@10.2.2)(zod@3.25.76):
     dependencies:
       '@babel/plugin-proposal-decorators': 7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)
       '@cfworker/json-schema': 4.1.1
       '@modelcontextprotocol/sdk': 1.29.0(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@3.25.76)
       '@rolldown/plugin-babel': 0.2.4(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.10)(rolldown@1.2.15)
-      ai: 6.0.312(zod@3.25.76)
+      ai: 6.0.314(zod@3.25.76)
       cron-schedule: 6.0.0
       mimetext: 3.0.28
       nanoid: 5.1.16
@@ -9406,9 +9406,9 @@ snapshots:
       - rolldown
       - supports-color
 
-  ai@6.0.312(zod@3.25.76):
+  ai@6.0.314(zod@3.25.76):
     dependencies:
-      '@ai-sdk/gateway': 3.0.219(zod@3.25.76)
+      '@ai-sdk/gateway': 3.0.220(zod@3.25.76)
       '@ai-sdk/provider': 3.0.19
       '@ai-sdk/provider-utils': 4.0.62(zod@3.25.76)
       '@opentelemetry/api': 1.10.0
@@ -9717,7 +9717,7 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  baseline-browser-mapping@2.11.30: {}
+  baseline-browser-mapping@2.11.31: {}
 
   better-ajv-errors@1.2.0(ajv@8.20.0):
     dependencies:
@@ -9788,7 +9788,7 @@ snapshots:
 
   browserslist@4.29.4:
     dependencies:
-      baseline-browser-mapping: 2.11.30
+      baseline-browser-mapping: 2.11.31
       caniuse-lite: 1.0.30001819
       electron-to-chromium: 1.5.463
       node-releases: 2.0.60
