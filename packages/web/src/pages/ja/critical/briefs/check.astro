@@ -31,7 +31,7 @@ const briefCount = new Set(groups.flatMap((g) => g.items.flatMap((i) => i.source
 const pad = (no: number) => String(no).padStart(3, "0");
 // 相談の例（サービスデザイン・営業の案・2026-10-24）。押すとフォームの「いちばん気になる点」に入る。
 const CONSULT_EXAMPLES = [
-  "「分からない」だった問いを、社内で誰に聞けばよいか知りたい",
+  "「分からない」だった項目を、社内で誰に聞けばよいか知りたい",
   "振込先の変更の照合を、少ない人数の経理で回す方法を知りたい",
   "委託先との取り決めに、何を足せばよいか知りたい",
 ];
@@ -43,23 +43,24 @@ const CONSULT_EXAMPLES = [
   pagePath="/critical/briefs/check/"
   localesAvailable={["ja"]}
   title="セルフチェック：実際に起きた手口が、自社で通らないか｜Lemma Critical Brief"
-  description={`実際に起きた ${briefCount} 件の事案から作った ${total} の問いで、振込先の変更・承認・アカウント管理などが自社で通らないかを、はい／いいえで点検できます。登録は不要です。`}
+  description={`実際に起きた ${briefCount} 件の事案から作った ${total} のチェック項目で、振込先の変更・承認・アカウント管理などが自社で通らないかを、はい／いいえで点検できます。登録は不要です。`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <main class="ck">
     <nav class="ck-crumb" aria-label="パンくず">
       <a href="/ja/">ホーム</a><span>/</span><a href="/ja/critical/briefs/">Critical Brief</a><span>/</span><span>セルフチェック</span>
     </nav>
+    <p class="ck-print-head" data-ck-print-head></p>
     <p class="ck-done" data-ck-done hidden>相談を受け付けました。ご記入のメールアドレスへ、メールでお返事します。</p>
     <header class="ck-head">
       <div class="ck-k">LEMMA CRITICAL BRIEF · SELF-CHECK</div>
       <h1>実際に起きた手口が、<br />自社で通らないか点検する</h1>
       <p>
-        Critical Brief で分析した {briefCount} 件の事案から、「同じことが自社で起きないか」を点検する {total} の問いにまとめました。担当の業務を選んで、はい／いいえ／分からない で答えてください。1 つの業務で 5 分ほどです。
+        Critical Brief で分析した {briefCount} 件の事案から、「同じことが自社で起きないか」を点検する {total} のチェック項目にまとめました。担当の業務を選んで、はい／いいえ／分からない で答えてください。1 つの業務で 5 分ほどです。
       </p>
       <ul class="ck-points">
-        <li><b>登録は要りません</b><span>答えはこのブラウザの中だけで扱い、どこにも送りません</span></li>
-        <li><b>事例から作った問い</b><span>どの問いにも元の事例が付き、記事で根拠を読めます</span></li>
+        <li><b>登録は要りません</b><span>答えはどこにも送りません。このブラウザに残るので、共用のパソコンでは最後に「答えを消す」を押してください</span></li>
+        <li><b>事例から作ったチェック項目</b><span>どの項目にも元の事例が付き、記事で根拠を読めます</span></li>
         <li><b>言い切れない所はメールで相談</b><span>結果をもとに、手当ての例と社内で確認する順番を、無料でお返事します</span></li>
       </ul>
     </header>
@@ -71,16 +72,20 @@ const CONSULT_EXAMPLES = [
           <button type="button" class="ck-op" data-op={g.key} aria-pressed="false">
             <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={g.icon} />
             <span class="ck-op-l">{g.label}</span>
-            <span class="ck-op-c">{g.items.length} 問</span>
+            <span class="ck-op-c">{g.items.length} 項目</span>
           </button>
         ))}
       </div>
-      <p class="ck-hint" data-ck-empty>まずは担当の業務を 1 つ選んでください。あとから足せます。</p>
+      <p class="ck-hint" data-ck-empty>まずは担当の業務を 1 つ選んでください。あとから足せます。外しても、答えは残ります。</p>
     </section>
 
     <section class="ck-step" aria-labelledby="ck-s2" data-ck-items hidden>
       <h2 id="ck-s2"><span class="ck-n">2</span>はい／いいえ／分からない で答える</h2>
-      <p class="ck-hint">規程や手順で決まっていて、そのとおりに回っていれば「はい」です。社内で確認できない問いは「分からない」で大丈夫です。</p>
+      <ul class="ck-hint ck-rules">
+        <li>規程や手順で決まっていて、そのとおりに回っていれば「はい」です。1 つの項目に 2 つのことが書いてあるときは、両方そろっているときだけ「はい」です。</li>
+        <li>担当外の言葉が出たり、社内で確認できなかったりする項目は「分からない」で大丈夫です。誰に聞けばよいかを結果に出します。</li>
+        <li>押した答えをもう一度押すと、答えを外せます。いくつかの業務に当てはまる項目は、1 か所にまとめて出しています。</li>
+      </ul>
       {groups.map((g) => (
         <div class="ck-group" data-group={g.key} hidden>
           <h3 class="ck-gh">{g.label}</h3>
@@ -90,7 +95,7 @@ const CONSULT_EXAMPLES = [
                 <div class="ck-q">
                   <p>{it.text}</p>
                   <div class="ck-src">
-                    <span class="ck-from">いま読んでいた記事の問い</span>
+                    <span class="ck-from">いま読んでいた記事の項目</span>
                     <span class="ck-src-l">事例</span>
                     {it.sources.map((x) => (
                       <a href={`/ja/critical/briefs/${x.id}/`} target="_blank" rel="noopener" title={x.title}>No.{pad(x.no)}</a>
@@ -115,8 +120,8 @@ const CONSULT_EXAMPLES = [
       <div data-ck-gaps></div>
       <div class="ck-consult">
         <div class="ck-consult-tx">
-          <b>言い切れなかった問いを、メールで相談する</b>
-          <span>「はい」と言い切れなかった問いについて、ほかの事例での手当ての例と、社内で確認する順番を、メールでお返事します。FRAME00 の担当者が AI も使って下書きし、目を通してからお送りします。</span>
+          <b>言い切れなかった項目を、メールで相談する</b>
+          <span>「はい」と言い切れなかった項目について、ほかの事例での手当ての例と、社内で確認する順番を、メールでお返事します。FRAME00 の担当者が AI も使って下書きし、目を通してからお送りします。</span>
           <ul class="ck-promise">
             <li>費用はかかりません</li>
             <li>製品のご案内はしません</li>
@@ -128,7 +133,7 @@ const CONSULT_EXAMPLES = [
               <a href={CONSULT_FORM_URL} target="_blank" rel="noopener" data-ck-consult data-q={q}>{q}</a>
             ))}
           </div>
-          <small>答えの中身は送られません。選んだ業務と、言い切れなかった問いの番号だけをフォームに添えます。</small>
+          <small data-ck-attach>答えの中身は送られません。選んだ業務と、言い切れない項目の番号だけをフォームに添えます。</small>
         </div>
         <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">無料でメール相談する<span aria-hidden="true"> →</span></a>
       </div>
@@ -138,8 +143,31 @@ const CONSULT_EXAMPLES = [
         <a class="ck-sub" href={BRIEF_WEEKLY_URL} target="_blank" rel="noopener">新しい事例をメールで受け取る</a>
       </div>
       <p class="ck-print-only">
-        相談・最新の問い：https://lemma.frame00.com/ja/critical/briefs/check/
+        相談・最新のチェック項目：https://lemma.frame00.com/ja/critical/briefs/check/
       </p>
+      <section class="ck-faq" aria-labelledby="ck-faq-h">
+        <h3 id="ck-faq-h">よくある質問</h3>
+        <details>
+          <summary>答えは、どこかに送られますか</summary>
+          <p>送られません。答えはこのブラウザに残るだけです。メールで相談するときだけ、選んだ業務と、言い切れない項目の番号をフォームに添えます。</p>
+        </details>
+        <details>
+          <summary>担当外の項目は、どう答えればよいですか</summary>
+          <p>「分からない」を選んでください。結果に、その業務について社内で誰に聞けばよいかを出します。</p>
+        </details>
+        <details>
+          <summary>結果は、診断や点数ですか</summary>
+          <p>いいえ。実際に起きた事例から作った、点検の目安です。点数やランクは付けません。</p>
+        </details>
+        <details>
+          <summary>相談は無料ですか。営業の連絡は来ますか</summary>
+          <p>無料です。お返事はメールだけで、お電話や製品のご案内はしません。</p>
+        </details>
+        <details>
+          <summary>答えを残したくないときは</summary>
+          <p>結果の下の「答えを消す」を押すと、このブラウザに残った答えをすべて消します。</p>
+        </details>
+      </section>
       <p class="ck-note">
         この点検は、公開情報をもとにした事案の構造分析から作ったもので、特定の組織への監査・診断・助言ではありません。網羅性・正確性や、不正を防ぐ効果は保証しません。© 2026 FRAME00株式会社
       </p>
@@ -165,7 +193,7 @@ const CONSULT_EXAMPLES = [
     } catch (e) {}
     var params = new URLSearchParams(location.search);
     var from = params.get("from");
-    // 分からなかった問いを、社内で誰に聞くか（業務ごと）。
+    // 分からなかった項目を、社内で誰に聞くか（業務ごと）。
     var ASK = {
       "payment-change": "経理・財務の責任者",
       approval: "経理・財務の責任者",
@@ -176,7 +204,7 @@ const CONSULT_EXAMPLES = [
       other: "委託先との契約の担当",
     };
     // 相談のフォームから戻ったとき（?form=consult）。
-    if (params.get("form") === "consult") $("[data-ck-done]").hidden = false;
+    if (params.get("form") === "consult") root.querySelector("[data-ck-done]").hidden = false;
     var started = false;
     function save() {
       try {
@@ -189,7 +217,7 @@ const CONSULT_EXAMPLES = [
     var $ = function (s, el) { return (el || root).querySelector(s); };
     var $$ = function (s, el) { return Array.prototype.slice.call((el || root).querySelectorAll(s)); };
 
-    // 記事から来たとき：その記事の問いに印を付けて各業務の先頭へ寄せ、
+    // 記事から来たとき：その記事の項目に印を付けて各業務の先頭へ寄せ、
     // その記事のいちばん近い業務を選ぶ。
     if (from) {
       var mine = $$(".ck-item").filter(function (li) {
@@ -217,7 +245,7 @@ const CONSULT_EXAMPLES = [
       $("[data-ck-result]").hidden = !any;
       $("[data-ck-bar]").hidden = !any;
       $("[data-ck-empty]").hidden = any;
-      // 複数の業務に出る問いは、選んだ業務のうち最初の 1 か所にだけ出す。
+      // 複数の業務に出る項目は、選んだ業務のうち最初の 1 か所にだけ出す。
       var seen = {};
       var shown = [];
       $$(".ck-item").forEach(function (li) {
@@ -242,14 +270,14 @@ const CONSULT_EXAMPLES = [
         if (v === "no" || v === "unsure") gaps.push(li);
       });
       $("[data-ck-progress]").textContent =
-        answered + " / " + shown.length + " 問 回答済み　・　見直したい問い " + gaps.length;
+        answered + " / " + shown.length + " 項目 回答済み　・　言い切れない項目 " + gaps.length;
       var unsure = gaps.filter(function (li) { return state.ans[li.getAttribute("data-item")] === "unsure"; }).length;
       $("[data-ck-sum]").innerHTML = !answered
-        ? "まだ答えていません。上の問いに答えると、ここに「はい」と言い切れない問いが、業務ごとの次の一歩とあわせてまとまります。"
+        ? "まだ答えていません。上の項目に答えると、ここに「はい」と言い切れない項目が、業務ごとの次の一歩とあわせてまとまります。"
         : (gaps.length
-            ? "答えた " + answered + " 問のうち、<b>" + gaps.length + " 問は、まだ「はい」と言い切れません。</b>下に、業務ごとの次の一歩をまとめました。"
-            : "答えた " + answered + " 問は、すべて「はい」でした。") +
-          (answered < shown.length ? "（まだ答えていない問いが " + (shown.length - answered) + " 問あります）" : "") +
+            ? "答えた " + answered + " 項目のうち、<b>" + gaps.length + " 項目は、まだ「はい」と言い切れません。</b>下に、業務ごとの次の一歩をまとめました。"
+            : "答えた " + answered + " 項目は、すべて「はい」でした。") +
+          (answered < shown.length ? "（まだ答えていない項目が " + (shown.length - answered) + " 項目あります）" : "") +
           (unsure ? "<br><span class=\"ck-soft\">「分からない」があるのは普通のことです。社内で誰が知っているかが分かれば、それだけで一歩進みます。</span>" : "");
       var box = $("[data-ck-gaps]");
       box.innerHTML = "";
@@ -271,7 +299,7 @@ const CONSULT_EXAMPLES = [
         }
         var v = state.ans[li.getAttribute("data-item")];
         var item = document.createElement("li");
-        item.innerHTML = '<span class="ck-tag ck-tag--' + v + '">' + (v === "no" ? "いいえ" : "確認したい") + "</span>";
+        item.innerHTML = '<span class="ck-tag ck-tag--' + v + '">' + (v === "no" ? "いいえ" : "分からない") + "</span>";
         item.appendChild(document.createTextNode(li.querySelector("p").textContent));
         var src = li.querySelector(".ck-src").cloneNode(true);
         var mark = src.querySelector(".ck-from");
@@ -286,8 +314,15 @@ const CONSULT_EXAMPLES = [
         var hasNo = byGroup[key].querySelector(".ck-tag--no");
         byGroup[key].querySelector(".ck-next").textContent = hasNo
           ? "次の一歩：元の事例を読み、自社で同じ手順になっていないかを確認しましょう。"
-          : "次の一歩：" + (ASK[key] || "担当の部署") + "に、この問いを聞いてみましょう。";
+          : "次の一歩：" + (ASK[key] || "担当の部署") + "に、この項目について聞いてみましょう。";
       });
+      var opLabels = state.ops.map(function (k) {
+        var b = $('.ck-op[data-op="' + k + '"] .ck-op-l');
+        return b ? b.textContent : k;
+      });
+      $("[data-ck-attach]").textContent =
+        "答えの中身は送られません。フォームに添えるのは、選んだ業務（" + opLabels.join("、") + "）と、言い切れない項目 " +
+        gaps.length + " 件の番号だけです。";
       var gapIds = gaps.map(function (li) { return li.getAttribute("data-item"); }).join(",").slice(0, 900);
       $$("[data-ck-consult]").forEach(function (link) {
         var u = new URL(link.getAttribute("href"));
@@ -326,10 +361,17 @@ const CONSULT_EXAMPLES = [
       }
       if (e.target.closest("[data-ck-print]")) {
         ev("self_check_print");
+        var labels = state.ops.map(function (k) {
+          var b = $('.ck-op[data-op="' + k + '"] .ck-op-l');
+          return b ? b.textContent : k;
+        });
+        $("[data-ck-print-head]").textContent =
+          "セルフチェックの結果（" + new Date().toLocaleDateString("ja-JP") + "）　業務：" + labels.join("、");
         window.print();
         return;
       }
       if (e.target.closest("[data-ck-reset]")) {
+        if (!window.confirm("このブラウザに残っている答えを、すべて消します。よろしいですか。")) return;
         state.ans = {};
         save();
         render();
@@ -753,8 +795,38 @@ const CONSULT_EXAMPLES = [
     font-size: 14px;
     font-weight: 700;
   }
-  .ck-print-only {
+  .ck-print-only,
+  .ck-print-head {
     display: none;
+  }
+  .ck-rules {
+    margin: 0 0 14px;
+    padding-left: 18px;
+    line-height: 1.8;
+  }
+  .ck-faq {
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid #dcdfd6;
+  }
+  .ck-faq h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+  }
+  .ck-faq details {
+    border-bottom: 1px solid #ebede6;
+  }
+  .ck-faq summary {
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .ck-faq details p {
+    margin: 0 0 12px;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #3c4237;
   }
   .ck-result :global(.ck-soft) {
     font-size: 13.5px;
@@ -872,9 +944,13 @@ const CONSULT_EXAMPLES = [
     .ck-points {
       display: none;
     }
-    .ck-print-only {
+    .ck-print-only,
+    .ck-print-head {
       display: block;
       font-size: 11px;
+    }
+    .ck-faq {
+      display: none !important;
     }
     .ck-item[data-state="yes"]::after {
       content: "はい";

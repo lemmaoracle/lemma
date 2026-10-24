@@ -1,13 +1,13 @@
 /**
- * セルフチェックの問い（2026-10-24・日本語だけ）。
+ * セルフチェックのチェック項目（2026-10-24・日本語だけ）。
  *
  * report の Brief の「### 点検チェックリスト」の箇条を、狙われた業務ごとに
- * まとめる。事例ごとに書いた同じ問いは data/selfCheckItems.ts で 1 問に
+ * まとめる。事例ごとに書いた同じチェック項目は data/selfCheckItems.ts で 1 項目に
  * まとめ、元の事例を並べる。そこに無い項目（新しい Brief の項目）は、記事の
  * 文のまま、その Brief の業務（operations の先頭・無ければ「そのほか」）に
  * 1 問として足す。
  *
- * Excel で配ると一気に出回るので、問いは /ja/critical/briefs/check/ の画面の
+ * Excel で配ると一気に出回るので、チェック項目は /ja/critical/briefs/check/ の画面の
  * 中で答えてもらい、回答はブラウザの外に出さない。
  */
 import {
@@ -28,7 +28,7 @@ export interface SelfCheckSource {
 }
 
 export interface SelfCheckItem {
-  /** まとめた問いは data/selfCheckItems.ts の id、記事のままの問いは「160-1」。 */
+  /** まとめたチェック項目は data/selfCheckItems.ts の id、記事のままのチェック項目は「160-1」。 */
   readonly id: string;
   readonly text: string;
   readonly sources: ReadonlyArray<SelfCheckSource>;
@@ -89,7 +89,7 @@ export const selfCheckGroups = (briefs: ReadonlyArray<BriefEntry>): SelfCheckGro
       const r = byId.get(f);
       return r ? [r] : [];
     });
-    // 元の項目が 1 つも無い（記事が下書きに戻った等）問いは出さない。
+    // 元の項目が 1 つも無い（記事が下書きに戻った等）チェック項目は出さない。
     if (!hits.length) continue;
     hits.forEach((h) => used.add(h.id));
     const sources = hits
@@ -103,7 +103,7 @@ export const selfCheckGroups = (briefs: ReadonlyArray<BriefEntry>): SelfCheckGro
   }
   const keys: SelfCheckGroupKey[] = [...BRIEF_OPERATION_SLUGS, "other"];
   return keys.flatMap((k) => {
-    // その業務がいちばん近い問いを先に、ほかの業務から来た問いをあとに。
+    // その業務がいちばん近いチェック項目を先に、ほかの業務から来たチェック項目をあとに。
     const own = placed.filter((p) => p.ops[0] === k).map((p) => p.item);
     const also = placed.filter((p) => p.ops[0] !== k && p.ops.includes(k)).map((p) => p.item);
     const items = [...own, ...also];
@@ -113,6 +113,6 @@ export const selfCheckGroups = (briefs: ReadonlyArray<BriefEntry>): SelfCheckGro
   });
 };
 
-/** 問いの数（同じ問いが複数の業務に出ても 1 と数える）。 */
+/** チェック項目の数（同じチェック項目が複数の業務に出ても 1 と数える）。 */
 export const selfCheckItemCount = (groups: ReadonlyArray<SelfCheckGroup>): number =>
   new Set(groups.flatMap((g) => g.items.map((i) => i.id))).size;
