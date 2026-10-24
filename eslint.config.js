@@ -15,6 +15,8 @@ export default tseslint.config(
       "**/dist/**",
       "**/.astro/**",
       "**/build/**",
+      "**/pkg/**",
+      "**/target/**",
       "**/vitest.config.ts",
       "**/scripts/**",
       "**/examples/**",
