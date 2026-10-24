@@ -246,12 +246,13 @@ const jsonLd = [
 
     <section class="lp-figs" aria-label="実際に起きた事案">
       <div class="lp-in">
-        <p class="lp-figs-h">なりすまし・攻撃で、実際に送られた額</p>
+        <p class="lp-figs-h">なりすましで実際に起きた送金事故</p>
         <div class="lp-figs-row">
           {CASES.map((c) => (
             <a class="lp-fig" href={`/ja/critical/briefs/${c.slug}/`}>
               <b>{c.fig}<small>{c.unit}</small></b>
               <span>{c.kind}</span>
+              <em>No.{c.slug.slice(0, 3)} を読む →</em>
             </a>
           ))}
         </div>
@@ -1110,6 +1111,14 @@ const jsonLd = [
   .lp-fig small {
     margin-left: 2px;
     font-size: 13px;
+  }
+  .lp-fig em {
+    display: block;
+    margin-top: 4px;
+    font-style: normal;
+    font-family: "Space Mono", monospace;
+    font-size: 11.5px;
+    color: #4e7a00;
   }
   .lp-fig span {
     font-size: 12.5px;
