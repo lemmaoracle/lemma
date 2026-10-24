@@ -1,0 +1,241 @@
+---
+/**
+ * Brief の「次に読む」（2026-10-24）。
+ *
+ * 対策を探して記事に来た人が、読み終えたところで同じ手口・同じ対策の事例へ
+ * 進めるようにする。日付や社内の13分類（primary_category）ではなく、
+ * frontmatter の `attack_method`（手口）と `controls`（対策）で選ぶ。
+ *
+ * 選び方は lib/briefNextRead.ts。
+ *
+ * 描画は記事の外（BriefTemplate）で、ページを開いたときに本文の Sources の
+ * 直前（rehype が置く `[data-brief-next-slot]`）へ移す。JS が無ければ本文の
+ * 直後に残る。どちらの行も組めなければ何も出さない（テンプレートは従来の
+ * 関連 Brief を出す）。
+ *
+ * 製品計画がサイトに出たら、対策の行をゲート（Proof Gate）の分類に差し替え、
+ * ゲートのページへの入口を足す。
+ */
+import type { CollectionEntry } from "astro:content";
+import {
+  BRIEF_INDUSTRIES,
+  briefCountryLabel,
+  type BriefIndustrySlug,
+} from "../config/briefFacets";
+import { nextReadRows } from "../lib/briefNextRead";
+
+type AnyBrief =
+  | CollectionEntry<"critical-briefs">
+  | CollectionEntry<"critical-briefs-en">;
+
+export interface BriefNextReadProps {
+  locale: "ja" | "en";
+  brief: AnyBrief;
+  /** ロケールで解決した全 Brief（EN 優先・JA で補う）。 */
+  all: ReadonlyArray<AnyBrief>;
+}
+
+const { locale, brief, all } = Astro.props as BriefNextReadProps;
+const isJa = locale === "ja";
+const base = isJa ? "/ja" : "";
+const rows = nextReadRows(locale, brief, all);
+
+const card = (b: AnyBrief) => {
+  const title = (isJa ? b.data.title : b.data.title_en).split(" — ")[0];
+  const ind = (b.data.industries as BriefIndustrySlug[] | undefined)?.[0];
+  const meta = [
+    ind ? BRIEF_INDUSTRIES[ind]?.[locale] : null,
+    briefCountryLabel(b.data.countries as string[] | undefined, locale),
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  return {
+    href: `${base}/critical/briefs/${b.id}/`,
+    no: String(b.data.brief_no).padStart(3, "0"),
+    title,
+    meta,
+  };
+};
+
+const L = isJa
+  ? {
+      kicker: "対策を探している方へ",
+      head: "同じ手口、同じ対策のほかの事例",
+      attack: "手口",
+      control: "対策",
+      more: (k: string, n: number) =>
+        k === "attack" ? `この手口の事例をすべて見る（${n} 本）` : `この対策の事例をすべて見る（${n} 本）`,
+    }
+  : {
+      kicker: "Looking for countermeasures",
+      head: "Other cases with the same method or the same countermeasure",
+      attack: "Method",
+      control: "Countermeasure",
+      more: (k: string, n: number) =>
+        k === "attack" ? `All cases with this method (${n})` : `All cases with this countermeasure (${n})`,
+    };
+---
+
+{rows.length > 0 && (
+  <aside class="nr" data-brief-next data-brief={brief.id} aria-label={L.head}>
+    <div class="nr-k">{L.kicker}</div>
+    <p class="nr-h" role="heading" aria-level="2">{L.head}</p>
+    {rows.map((r) => (
+      <div class="nr-row">
+        <div class="nr-rh">
+          <span class="nr-tag">{r.kind === "attack" ? L.attack : L.control}</span>
+          <b>{r.label}</b>
+        </div>
+        <div class="nr-cards">
+          {r.picks.map((b) => {
+            const c = card(b);
+            return (
+              <a class="nr-card" href={c.href} data-ev="brief_next_read" data-row={r.kind} data-to={b.id}>
+                <span class="n">No. {c.no}</span>
+                <span class="t">{c.title}</span>
+                {c.meta && <span class="g">{c.meta}</span>}
+              </a>
+            );
+          })}
+        </div>
+        <a class="nr-more" href={r.href} data-ev="brief_next_read_all" data-row={r.kind}>
+          {L.more(r.kind, r.total)}<span aria-hidden="true"> →</span>
+        </a>
+      </div>
+    ))}
+  </aside>
+)}
+
+<script is:inline>
+  (function () {
+    var box = document.querySelector("[data-brief-next]");
+    if (!box) return;
+    var slot = document.querySelector("[data-brief-next-slot]");
+    if (slot) slot.replaceWith(box);
+    var from = box.getAttribute("data-brief");
+    box.querySelectorAll("[data-ev]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (typeof window.gtag !== "function") return;
+        window.gtag("event", el.getAttribute("data-ev"), {
+          brief_id: from,
+          row: el.getAttribute("data-row"),
+          destination: el.getAttribute("data-to") || el.getAttribute("href"),
+        });
+      });
+    });
+  })();
+</script>
+
+<style>
+  .nr {
+    margin: 44px 0 8px;
+    padding: 24px 26px 26px;
+    background: #f3f5ec;
+    border: 1px solid #dfe3d2;
+    border-radius: 12px;
+  }
+  .nr-k {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--ok-ink);
+  }
+  .nr-h {
+    margin: 6px 0 0;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--tx);
+  }
+  .nr-row {
+    margin-top: 20px;
+  }
+  .nr-rh {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .nr-rh b {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--tx);
+  }
+  .nr-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #fff;
+    background: #3b4334;
+    border-radius: 3px;
+    padding: 2px 7px;
+    flex: none;
+  }
+  .nr-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .nr-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 15px 15px;
+    text-decoration: none;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+  }
+  .nr-card:hover {
+    border-color: rgba(124, 175, 0, 0.45);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-m);
+  }
+  .nr-card .n {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ok-ink);
+  }
+  .nr-card .t {
+    font-size: 13.2px;
+    font-weight: 600;
+    line-height: 1.65;
+    color: var(--tx);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .nr-card .g {
+    margin-top: auto;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .nr-more {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ok-light);
+    text-decoration: none;
+  }
+  .nr-more:hover {
+    text-decoration: underline;
+  }
+  @media (max-width: 760px) {
+    .nr {
+      padding: 18px 16px 20px;
+    }
+    .nr-cards {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    /* 縦に積むと長いので、スマホでは各行 2 枚まで。 */
+    .nr-card:nth-child(3) {
+      display: none;
+    }
+  }
+</style>

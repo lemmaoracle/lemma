@@ -214,7 +214,8 @@ og:description は `insight.quote` で始まる。
 ### 一覧の索引（2026-10・レイアウトを問わず書ける）
 
 一覧（`/critical/briefs/`）は「いま読む 3 本 → 対策から読む → そのほかの新着」で組む。
-各 Brief の frontmatter に次を書くと一覧に出る（記事には描画しない）。
+各 Brief の frontmatter に次を書くと一覧に出る。`attack_method` と `controls` は、記事の
+「次に読む」（下）にも使う。
 
 ```yaml
 industries: ["public-sector"]          # 業界（config/briefFacets.ts）
@@ -238,8 +239,15 @@ EN ファイルの `impact` / `takeaway` / `controls[].item` は英語で書く�
 `config/briefFacets.ts` の `BRIEF_COUNTRIES`。lemma_oracle の X 投稿でも、書き出しの
 ラベルに国を入れる（`A spoofing case in the UK:`）。
 
-`industries` / `operations` / `controls` は**一覧のファセット用の索引で、記事には描画
-しない**。語彙・ラベル・アイコンは `config/briefFacets.ts`。記事中の「注意したい
+`industries` / `operations` / `controls` はチップとしては記事に描画しない。語彙・ラベル・
+アイコンは `config/briefFacets.ts`。
+
+**次に読む（2026-10-24）**：記事の「対策するには」と Sources の間に、同じ手口
+（`attack_method`）と同じ対策（`controls`）のほかの事例を 3 本ずつ、テンプレートが出す
+（`components/BriefNextRead.astro`・選び方は `lib/briefNextRead.ts`）。対策を探して来た
+人が、読み終えたところで次の事例へ進めるようにするため。md には何も書かない。
+`controls` は §5 の「必要なこと」と同じ順に書く（先頭の対策が行に出る。「記録する」は
+最後に回る）。どちらも無い Brief は、末尾に従来の関連 Brief が出る。記事中の「注意したい
 業界・業務」は md 側で説明文つきの表として書く。EN ファイルの `key_figures` /
 `glossary` / `insight` は英語で書く。
 
@@ -353,8 +361,8 @@ HTML ブロックの中に**空行を入れない**（空行で markdown に戻�
 ### 書かないもの
 
 - **分析の本文に製品名・CTA を書かない。** 末尾 CTA はテンプレートが出す。
-- **ファセットのチップは一覧のためのもので、記事には置かない**（「この対策で探す」の
-  行なども書かない）。
+- **ファセットのチップや「この対策で探す」の行を md に書かない。** 同じ手口・対策への
+  入口は、テンプレートの「次に読む」が出す。
 
 ## 記事末尾の定型
 

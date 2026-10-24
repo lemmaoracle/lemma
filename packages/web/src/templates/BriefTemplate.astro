@@ -35,6 +35,8 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/FooterRenewal.astro";
 import CiteBriefBox from "../components/CiteBriefBox.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
+import BriefNextRead from "../components/BriefNextRead.astro";
+import { nextReadRows } from "../lib/briefNextRead";
 import { getTranslations, type Locale } from "../i18n/translations";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 import { threatBannerCopy } from "../config/briefThreatBanner";
@@ -175,6 +177,8 @@ addCandidates(byNewest.filter((b) => b.data.primary_category === primarySlug));
 addCandidates(byNewest.filter((b) => b.data.pillar === pillar));
 addCandidates(byNewest);
 const relatedBriefs = Array.from(relatedSet.values()).slice(0, 3);
+// 「次に読む」（手口・対策で選ぶ）が組めたら、末尾の関連 Brief は出さない。
+const hasNextRead = nextReadRows(locale, brief, allLocale).length > 0;
 
 const primaryCatLabel = categoryLabel(primarySlug, locale);
 const secondaryCats = (brief.data.secondary_categories as CategorySlug[]).map(
@@ -578,6 +582,9 @@ const labels = isJa
           <Content />
         </article>
 
+        {/* 次に読む（同じ手口・同じ対策）。本文の Sources の直前へ移す。 */}
+        <BriefNextRead locale={locale} brief={brief} all={allLocale} />
+
         {/* 配布についての注記（旧 §9 の定型文）。6章化した md には定型文が
             無いので、ここで一律に描画する（文言の個体差が要る Brief —
             係争中注記など — は md 側に残す前提で、本文にあれば出さない）。
@@ -641,7 +648,7 @@ const labels = isJa
           briefSlug={brief.id}
         />
 
-        {relatedBriefs.length > 0 && (
+        {!hasNextRead && relatedBriefs.length > 0 && (
           <section class="bd-related">
             <div class="bd-label">
               <b>{labels.relatedHeading}</b><span>{labels.relatedHeadingEn}</span>

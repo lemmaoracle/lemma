@@ -99,6 +99,12 @@ export interface BriefFrontmatter {
   readonly version: string;
   readonly cover?: string;
   readonly layout?: "report";
+  /** 「探し方」の索引（config/briefFacets.ts）。一覧と「次に読む」が使う。 */
+  readonly industries?: ReadonlyArray<string>;
+  readonly operations?: ReadonlyArray<string>;
+  readonly controls?: ReadonlyArray<{ readonly slug: string; readonly item: string }>;
+  readonly attack_method?: string;
+  readonly countries?: ReadonlyArray<string>;
   readonly og_kicker_ja?: string;
   readonly og_kicker_en?: string;
   readonly og_headline_ja?: string;
