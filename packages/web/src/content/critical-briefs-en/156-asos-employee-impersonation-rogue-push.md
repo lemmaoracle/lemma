@@ -73,12 +73,13 @@ ASOS said it immediately restricted access to the notification platforms, but th
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The sequence, as disclosed</span></div>
-<p class="rx-ex-cap">The stopping point is ②. Had mass customer notifications been checked against an approved send before going out, an unapproved one would not reach customers. Whether the login in ① was used for ②, and the order of ② and ③, have not been disclosed.</p>
+<p class="rx-ex-cap">The stopping point is ③. Had mass customer notifications been checked against an approved send before going out, an unapproved one would not reach customers. Whether the login in ① ② was used for ③, and the order of ③ and ④, have not been disclosed.</p>
 <div class="rx-chain">
-<div class="rx-step crit"><div class="who">Attacker</div><div class="no">1</div><b>Obtains an employee's login and accesses third-party platforms</b><p>By posing as a trusted contact (ASOS, October 8, per press). Whether these sent the notification is not disclosed.</p></div>
-<div class="rx-step crit"><div class="who">Attacker</div><div class="no">2</div><b>The attacker's message goes to customers as an official app notification</b><p>Around 10am, October 6.</p></div>
-<div class="rx-step"><div class="who">Attacker</div><div class="no">3</div><b>Accesses names, contact details and more</b><p>Payment cards and passwords said to be unaffected.</p></div>
-<div class="rx-step"><div class="who">ASOS</div><div class="no">4</div><b>Restricts access to the notification platforms</b><p>When it noticed is not disclosed.</p></div>
+<div class="rx-step crit"><div class="who">Attacker</div><div class="no">1</div><b>Impersonates a trusted contact and obtains an employee's login</b><p>ASOS's October 8 explanation (per press).</p></div>
+<div class="rx-step"><div class="who">Attacker</div><div class="no">2</div><b>Uses it to access information on third-party platforms</b><p>Whether these sent the notification is not disclosed.</p></div>
+<div class="rx-step crit"><div class="who">Attacker</div><div class="no">3</div><b>The attacker's message goes to customers as an official app notification</b><p>Around 10am, October 6.</p></div>
+<div class="rx-step"><div class="who">Attacker</div><div class="no">4</div><b>Accesses names, contact details and more</b><p>Payment cards and passwords said to be unaffected.</p></div>
+<div class="rx-step"><div class="who">ASOS</div><div class="no">5</div><b>Restricts access to the notification platforms</b><p>When it noticed is not disclosed.</p></div>
 </div>
 </figure>
 

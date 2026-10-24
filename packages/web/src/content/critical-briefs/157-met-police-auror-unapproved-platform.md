@@ -82,7 +82,8 @@ countries: ["gb"]
 <div class="rx-step"><div class="who">小売店・運営会社</div><div class="no">1</div><b>警官に Auror を勧め、登録の QR コードを送る</b><p>警視庁の説明では、サイトに警視庁のロゴがあった。</p></div>
 <div class="rx-step crit"><div class="who">警官・職員</div><div class="no">2</div><b>警視庁のメールアドレスで、自分でアカウントを作る</b><p>約 500。「承認済み」と誤って伝わっていた。</p></div>
 <div class="rx-step crit"><div class="who">警官・職員</div><div class="no">3</div><b>容疑者の氏名などを載せる</b><p>2024 年に 179 人分。</p></div>
-<div class="rx-step"><div class="who">警視庁</div><div class="no">4</div><b>社内でセキュリティ事故として報告され、アクセスを遮断する</b><p>報告は 2024 年 8 月 29 日、遮断は 9 月 26 日。</p></div>
+<div class="rx-step"><div class="who">警視庁</div><div class="no">4</div><b>社内でセキュリティ事故として報告される</b><p>2024 年 8 月 29 日。</p></div>
+<div class="rx-step"><div class="who">警視庁</div><div class="no">5</div><b>アクセスを遮断する</b><p>2024 年 9 月 26 日。</p></div>
 </div>
 </figure>
 
