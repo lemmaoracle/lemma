@@ -195,7 +195,7 @@ const jsonLd = [
           <div class="lp-mock-r"><i class="is-yes">✓</i><p>振込先の変更を、登録済みの連絡先で確認しているか。</p></div>
           <div class="lp-mock-r"><i class="is-no">✕</i><p>変わった直後の支払いを、照合が済むまで保留にしているか。</p></div>
           <div class="lp-mock-r"><i class="is-un">?</i><p>登録を変えてよい担当者の一覧があるか。</p></div>
-          <div class="lp-mock-f"><strong>33</strong> 点<span>抜けが目立ちます。担当と期限を決めて見直しましょう</span></div>
+          <div class="lp-mock-f"><strong>33</strong> 点<span>下の項目について、担当と期限を決めて見直しましょう</span></div>
         </div>
       </div>
     </section>
@@ -319,7 +319,6 @@ const jsonLd = [
       <div class="ck-score" data-ck-score hidden>
         <div class="ck-score-n"><b data-ck-score-n></b><span>点</span></div>
         <div class="ck-score-bar" aria-hidden="true"><i data-ck-score-bar></i></div>
-        <p class="ck-score-h" data-ck-score-h></p>
         <p class="ck-score-msg" data-ck-score-msg></p>
         <p class="ck-score-help">自社で確認や見直しが難しいときは、メールで相談できます（無料）。</p>
         <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">メールで相談する<span aria-hidden="true"> →</span></a>
@@ -501,19 +500,21 @@ const jsonLd = [
         var score = Math.round((yes / answered) * 100);
         $("[data-ck-score-n]").textContent = String(score);
         $("[data-ck-score-bar]").style.width = score + "%";
-        var B =
+        // 点数ごとの軽い説明（「備えができています」とは言わない：責任が持てないため）。
+        // 1 項目でも「いいえ」「分からない」があれば、警戒が要ると先に言う。
+        var msg =
           score === 100
-            ? ["しっかり備えができています", "チェックした範囲では、実際の事案で使われた手口への備えができています。規程や設定を、根拠として残しておきましょう。"]
-            : score >= 80
-              ? ["ほぼ備えができています", "残りの項目は、実際の事案で攻撃の入口になった所です。担当の方と、手順になっているかを確認しましょう。"]
-              : score >= 60
-                ? ["いくつか抜けがあります", "下の項目は、実際の事案で億単位の送金や情報の流出につながった所です。まず「いいえ」の項目から、手順を確認しましょう。"]
-                : score >= 40
-                  ? ["抜けが目立ちます", "同じ手口が来れば、通ってしまうおそれがあります。下の項目について、担当と期限を決めて見直しましょう。"]
-                  : ["早めの見直しをおすすめします", "実際に億単位の被害が出た手口が、自社でも通るおそれがあります。下の項目から、早めに見直しましょう。"];
-        $("[data-ck-score-h]").textContent = B[0];
+            ? "チェックした範囲の項目は、すべて「はい」でした。手口は増え続けるので、規程や設定を見直すときに、また点検しましょう。"
+            : "「いいえ」「分からない」の項目が 1 つでもあると、そこから同じ手口が通るおそれがあります。" +
+              (score >= 80
+                ? "下の項目は、実際の事案で攻撃の入口になった所です。担当の方と、早めに確認しましょう。"
+                : score >= 60
+                  ? "下の項目は、実際の事案で億単位の送金や情報の流出につながった所です。まず「いいえ」の項目から確認しましょう。"
+                  : score >= 40
+                    ? "下の項目について、担当と期限を決めて見直しましょう。"
+                    : "実際に億単位の被害が出た手口です。下の項目から、早めに見直しましょう。");
         $("[data-ck-score-msg]").textContent =
-          B[1] + (unsure * 2 >= answered ? "「分からない」が多いときは、まず担当の方に聞いてみましょう。" : "");
+          msg + (unsure * 2 >= answered ? "「分からない」が多いときは、まず担当の方に聞いてみましょう。" : "");
       }
       // 確認したい項目（いいえを先に）。業務ごとにまとめ、元の事例へのリンクを添える。
       gaps.sort(function (a, b) {
@@ -809,7 +810,6 @@ const jsonLd = [
     background: #fff;
     border: 1px solid #e3e6dc;
     box-shadow: 0 24px 60px rgba(47, 55, 47, 0.14);
-    transform: rotate(1.2deg);
   }
   .lp-mock-h {
     display: flex;
@@ -1419,11 +1419,7 @@ const jsonLd = [
     background: #8fc80c;
     transition: width 0.3s;
   }
-  .ck-score-h {
-    margin: 12px 0 0;
-    font-size: 20px;
-    font-weight: 800;
-  }
+
   .ck-score-help {
     margin: 14px 0 10px;
     font-size: 13.5px;
@@ -1612,9 +1608,6 @@ const jsonLd = [
     }
     .lp-figs-row {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .lp-mock {
-      transform: none;
     }
   }
   @media (max-width: 760px) {
