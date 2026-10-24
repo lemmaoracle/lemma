@@ -40,6 +40,12 @@ const CASES = [
 // ならう・2026-10-24）。担当を選ぶと、その担当に届きそうな連絡と、実際に起きたこと、
 // 先に見てほしい 2 項目が出て、ボタンでその業務（1 つ・5 分で終わる量）を選んだ
 // 状態のセルフチェックへ。
+const CH_ICON: Record<string, string> = {
+  mail: '<rect x="3" y="5" width="16" height="12" rx="2"/><path d="M3.5 6l7.5 6 7.5-6"/>',
+  chat: '<path d="M4 5h14v9H9l-4 3.5V14H4z"/>',
+  notice: '<path d="M6 15V10a5 5 0 0110 0v5l1.5 2h-13z"/><path d="M9.5 19a1.6 1.6 0 003 0"/>',
+  report: '<path d="M6 3.5h7l3.5 3.5v11.5H6z"/><path d="M13 3.5V7h3.5M8.5 11h5M8.5 14h5"/>',
+};
 const PERSONAS = [
   {
     key: "acct",
@@ -47,6 +53,12 @@ const PERSONAS = [
     who: "例：経理の担当・社員 80 人の製造業",
     msg: "振込先の口座が変わりました。今月分から、こちらにお願いします。",
     tag: "取引先のなりすまし",
+    ch: "mail",
+    chLabel: "メール",
+    av: "商",
+    sender: "株式会社〇〇商事 経理部",
+    addr: "keiri@oo-shoji.example",
+    subject: "【重要】お振込先変更のお願い",
     from: "取引先の担当者を名乗る、偽のメール",
     real: "米国の市では、この形の連絡で、工事代金 670 万ドルが別の口座へ送られました。",
     slug: "158-portland-water-bureau-vendor-bank-change",
@@ -60,6 +72,12 @@ const PERSONAS = [
     who: "例：経営企画の部長・社員 300 人のサービス業",
     msg: "至急、この口座に送金してください。社内にはまだ内密に。",
     tag: "社長・役員のなりすまし",
+    ch: "chat",
+    chLabel: "社内チャット",
+    av: "代",
+    sender: "代表取締役",
+    addr: "10:42",
+    subject: "",
     from: "社長や役員を名乗る、偽のチャットやビデオ会議",
     real: "国内の上場企業では、チャットで役員を装った指示に従い、同じ日に 9,600 万円が振り込まれました。",
     slug: "159-zuu-business-chat-executive-impersonation-transfer",
@@ -73,6 +91,12 @@ const PERSONAS = [
     who: "例：情シスの課長・社員 200 人の IT 企業",
     msg: "取引先の担当者を 1 名、追加しました。",
     tag: "偽の担当者の登録",
+    ch: "notice",
+    chLabel: "取引先管理システムの通知",
+    av: "通",
+    sender: "取引先ポータル",
+    addr: "自動送信",
+    subject: "担当者が追加されました",
     from: "攻撃者が取引先の登録に入り込んだときの通知",
     real: "米国の市では、偽の担当者が取引先の登録に加えられ、振込先が書き換えられて 152 万ドルが送られました。",
     slug: "160-baltimore-workday-supplier-contact-bank-change",
@@ -86,6 +110,12 @@ const PERSONAS = [
     who: "例：総務の担当・病院や自治体の委託の窓口",
     msg: "お預かりした機器は、作業のあと、すべて破砕しました。",
     tag: "不正な持ち出し",
+    ch: "report",
+    chLabel: "委託先の作業報告書",
+    av: "報",
+    sender: "〇〇リサイクル株式会社",
+    addr: "PDF・1 ページ",
+    subject: "データ消去・破砕 完了報告書",
     from: "委託先からの作業の報告（実際には破砕されていなかった）",
     real: "国内の病院では、破砕したはずの電子カルテの HDD の一部が、ネットオークションで落札されました。",
     slug: "065-hokkaido-hospital-hdd-disposal",
@@ -190,8 +220,19 @@ const CONSULT_EXAMPLES = [
           <div class="lp-panel" role="tabpanel" data-lp-panel={p.key} hidden={i !== 0}>
             <div class="lp-msg">
               <span class="lp-tag">⚠ {p.tag}</span>
+              <div class={`lp-win lp-win--${p.ch}`}>
+                <div class="lp-win-bar">
+                  <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={CH_ICON[p.ch]} />
+                  <span>{p.chLabel}</span>
+                </div>
+                <div class="lp-win-head">
+                  <span class="lp-win-av" aria-hidden="true">{p.av}</span>
+                  <span class="lp-win-who"><b>{p.sender}</b><small>{p.addr}</small></span>
+                </div>
+                {p.subject && <p class="lp-win-subj">{p.subject}</p>}
+                <p class="lp-bubble">「{p.msg}」</p>
+              </div>
               <span class="lp-msg-from">{p.from}</span>
-              <p class="lp-bubble">{p.msg}</p>
               <span class="lp-who-ex">{p.who}</span>
             </div>
             <div class="lp-real">
@@ -911,21 +952,86 @@ const CONSULT_EXAMPLES = [
   }
   .lp-msg-from {
     display: block;
+    margin-top: 10px;
     font-size: 12.5px;
     font-weight: 700;
     color: #6a7064;
   }
-  .lp-bubble {
-    position: relative;
-    margin: 10px 0 0;
-    padding: 20px 22px;
-    border-radius: 18px 18px 18px 4px;
+  .lp-win {
+    overflow: hidden;
+    border-radius: 16px;
     background: #fff;
     border: 1px solid #e3e6dc;
-    box-shadow: 0 10px 28px rgba(47, 55, 47, 0.08);
-    font-size: 20px;
+    box-shadow: 0 14px 34px rgba(47, 55, 47, 0.1);
+  }
+  .lp-win-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    background: #2f372f;
+    color: #e9eee3;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+  .lp-win-bar svg {
+    width: 18px;
+    height: 18px;
+    color: #c9e57a;
+  }
+  .lp-win-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px 0;
+  }
+  .lp-win-av {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #e4ead6;
+    color: #3c4237;
+    font-weight: 800;
+    font-size: 14px;
+  }
+  .lp-win--chat .lp-win-av {
+    background: #8a4b38;
+    color: #fff;
+  }
+  .lp-win-who b {
+    display: block;
+    font-size: 14px;
+  }
+  .lp-win-who small {
+    font-size: 12px;
+    color: #8a9084;
+  }
+  .lp-win-subj {
+    margin: 10px 18px 0;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .lp-bubble {
+    margin: 10px 18px 18px;
+    font-size: 19px;
     font-weight: 800;
     line-height: 1.6;
+  }
+  .lp-win--chat .lp-bubble {
+    display: inline-block;
+    margin-left: 62px;
+    padding: 12px 16px;
+    border-radius: 4px 16px 16px 16px;
+    background: #f1f3ec;
+  }
+  .lp-win--report .lp-bubble {
+    padding: 12px 14px;
+    border: 1px dashed #c9cfc0;
+    border-radius: 8px;
+    font-size: 17px;
   }
   .lp-who-ex {
     display: block;
