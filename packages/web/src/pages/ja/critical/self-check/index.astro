@@ -27,7 +27,6 @@ const t = getTranslations(locale);
 const briefs = (await getCollection("critical-briefs")) as BriefEntry[];
 const groups = selfCheckGroups(briefs);
 const total = selfCheckItemCount(groups);
-const briefCount = new Set(groups.flatMap((g) => g.items.flatMap((i) => i.sources.map((x) => x.id)))).size;
 const pad = (no: number) => String(no).padStart(3, "0");
 // LP の事例のカード（2026-10-24）。見出しや画像に被害組織の名前は出さず、記事へつなぐ。
 const CASES = [
@@ -178,7 +177,7 @@ const CONSULT_EXAMPLES = [
   title={`ビジネスメール詐欺・不正送金の対策チェックリスト（実例 ${total} 項目・無料）｜Lemma`}
   ogTitle="なりすましによる不正送金を、止められていますか。5 分セルフチェック｜Lemma"
   jsonLd={jsonLd}
-  description={`振込先の変更、社長や役員を装う送金の指示、偽のビデオ会議。国内外で実際に起きた ${briefCount} 件の事案から作った ${total} 項目で、自社の経理・承認・アカウント管理を業務ごとにセルフチェックできます。登録は不要です。`}
+  description={`振込先の変更、社長や役員を装う送金の指示、偽のビデオ会議。国内外で実際に起きた事案から作った ${total} 項目で、自社の経理・承認・アカウント管理を業務ごとにセルフチェックできます。登録は不要です。`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <main class="ck">
@@ -187,14 +186,13 @@ const CONSULT_EXAMPLES = [
         <div class="lp-hero-tx">
           <p class="lp-kicker">ビジネスメール詐欺・不正送金の対策チェックリスト</p>
           <h1>なりすましによる<br />不正送金を、<br /><mark>止められていますか。</mark></h1>
-          <p class="lp-lead">国内外で実際に起きた {briefCount} 件の事案から作ったチェック項目で、<br class="lp-br" />自社の業務を 5 分で点検できます。</p>
+          <p class="lp-lead">実際の事案から作ったチェック項目で、5 分で点検。</p>
           <div class="lp-cta">
             <a class="lp-btn" href="#who">無料でチェックする</a>
           </div>
           <ul class="lp-ticks">
             <li>登録不要</li>
             <li>1 つの業務で 5 分</li>
-            <li>実例 {briefCount} 件・{total} 項目</li>
           </ul>
         </div>
         <div class="lp-mock" aria-hidden="true">
@@ -1630,9 +1628,6 @@ const CONSULT_EXAMPLES = [
     }
     .lp-hero h1 {
       font-size: 34px;
-    }
-    .lp-br {
-      display: none;
     }
     .lp-who h2,
     .lp-lemma h2,
