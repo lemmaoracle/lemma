@@ -36,6 +36,44 @@ const CASES = [
   { slug: "084-hong-kong-deepfake-video-call-fraud", fig: "約 HK$2", unit: "億", kind: "偽のビデオ会議", text: "香港の拠点。本社の CFO を装った録画のビデオ会議の指示で、15 回に分けて送金された。" },
   { slug: "162-hatena-police-impersonation-remote-transfer", fig: "約 11.8", unit: "億円", kind: "警察を名乗る電話", text: "国内の上場企業。経理の責任者の PC が遠隔操作され、社内の資金移動を経て外部へ送られた。" },
 ];
+// よくある質問（画面と FAQPage の構造化データの両方に使う）。
+const FAQ = [
+  { q: "答えは、どこかに送られますか", a: "送られません。答えはこのブラウザに残るだけです。メールで相談するときだけ、選んだ業務と、言い切れない項目の番号をフォームに添えます。" },
+  { q: "担当外の項目は、どう答えればよいですか", a: "「分からない」を選んでください。結果に、その業務について社内で誰に聞けばよいかを出します。" },
+  { q: "結果は、診断や点数ですか", a: "いいえ。実際に起きた事例から作った、点検の目安です。点数やランクは付けません。" },
+  { q: "相談は無料ですか。製品の案内は来ますか", a: "無料です。お返事はメールだけで、お電話はしません。お返事に、Lemma（照合できたものだけを通す仕組み）のご案内を添えることがあります。" },
+  { q: "お返事はいつ届きますか", a: "3 営業日以内に、メールでお返事します。届かないときは、迷惑メールのフォルダもご確認ください。" },
+  { q: "答えを残したくないときは", a: "結果の下の「答えを消す」を押すと、このブラウザに残った答えをすべて消します。" },
+];
+const site = "https://lemma.frame00.com";
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ホーム", item: `${site}/ja/` },
+      { "@type": "ListItem", position: 2, name: "Critical Brief", item: `${site}/ja/critical/briefs/` },
+      { "@type": "ListItem", position: 3, name: "不正の手口セルフチェック", item: `${site}/ja/critical/self-check/` },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "不正の手口セルフチェック",
+    url: `${site}/ja/critical/self-check/`,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    inLanguage: "ja",
+    isAccessibleForFree: true,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
+    publisher: { "@type": "Organization", name: "FRAME00株式会社" },
+  },
+];
 // 相談の例（サービスデザイン・営業の案・2026-10-24）。押すとフォームの「いちばん気になる点」に入る。
 const CONSULT_EXAMPLES = [
   "「分からない」だった項目を、社内で誰に聞けばよいか知りたい",
@@ -47,17 +85,19 @@ const CONSULT_EXAMPLES = [
 <Layout
   locale={locale}
   metaType="page"
-  pagePath="/critical/briefs/check/"
+  pagePath="/critical/self-check/"
   localesAvailable={["ja"]}
-  title="不正の手口セルフチェック（無料・登録不要）｜Lemma"
-  description={`実際に起きた ${briefCount} 件の事案から作った ${total} のチェック項目で、振込先の変更・承認・アカウント管理などが自社で通らないかを、はい／いいえで点検できます。登録は不要です。`}
+  title={`ビジネスメール詐欺・不正送金の対策チェックリスト（実例 ${total} 項目・無料）｜Lemma`}
+  ogTitle="実際に起きた不正の手口が、自社で通らないかをセルフチェック｜Lemma"
+  jsonLd={jsonLd}
+  description={`振込先の変更、社長や役員を装う送金の指示、偽のビデオ会議。国内外で実際に起きた ${briefCount} 件の事案から作った ${total} 項目で、自社の経理・承認・アカウント管理を業務ごとにセルフチェックできます。登録は不要です。`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <main class="ck">
     <section class="lp-hero">
       <div class="lp-in lp-hero-in">
         <div class="lp-hero-tx">
-          <p class="lp-kicker">無料 ・ 登録不要 ・ 1 つの業務で 5 分</p>
+          <p class="lp-kicker">ビジネスメール詐欺・不正送金の対策チェックリスト ・ 無料 ・ 登録不要</p>
           <h1>実際に起きた不正の手口が、<br /><mark>自社で通らないか</mark>を<br />セルフチェック</h1>
           <p class="lp-lead">
             振込先の変更、上長を名乗る送金の指示、アカウントの追加。国内外で実際に起きた {briefCount} 件の事案から、{total} のチェック項目を作りました。担当の業務を選んで、はい／いいえで答えるだけです。
@@ -85,7 +125,7 @@ const CONSULT_EXAMPLES = [
     <section class="lp-cases" id="cases" aria-labelledby="lp-cases-h">
       <div class="lp-in">
         <p class="lp-sec-k">実際に起きた事案</p>
-        <h2 id="lp-cases-h">手口は、ふだんの業務の連絡の顔をして届きます</h2>
+        <h2 id="lp-cases-h">ビジネスメール詐欺・不正送金は、ふだんの業務連絡の顔をして届きます</h2>
         <div class="lp-case-grid">
           {CASES.map((c) => (
             <a class="lp-case" href={`/ja/critical/briefs/${c.slug}/`}>
@@ -103,7 +143,7 @@ const CONSULT_EXAMPLES = [
     <section class="lp-how" aria-labelledby="lp-how-h">
       <div class="lp-in">
         <p class="lp-sec-k">使い方</p>
-        <h2 id="lp-how-h">3 つの手順で、手当てが要る所が分かります</h2>
+        <h2 id="lp-how-h">業務別チェックリストの使い方（3 つの手順）</h2>
         <ol class="lp-steps">
           <li><b>担当の業務を選ぶ</b><span>振込先の変更、承認、アカウントの管理など 7 つから。いくつ選んでもかまいません。</span></li>
           <li><b>はい／いいえ／分からない で答える</b><span>規程や手順のとおりに回っていれば「はい」。担当外は「分からない」で大丈夫です。</span></li>
@@ -199,34 +239,16 @@ const CONSULT_EXAMPLES = [
         <a class="ck-sub" href={BRIEF_WEEKLY_URL} target="_blank" rel="noopener">新しい事例をメールで受け取る</a>
       </div>
       <p class="ck-print-only">
-        相談・最新のチェック項目：https://lemma.frame00.com/ja/critical/briefs/check/
+        相談・最新のチェック項目：https://lemma.frame00.com/ja/critical/self-check/
       </p>
       <section class="ck-faq" aria-labelledby="ck-faq-h">
         <h3 id="ck-faq-h">よくある質問</h3>
-        <details>
-          <summary>答えは、どこかに送られますか</summary>
-          <p>送られません。答えはこのブラウザに残るだけです。メールで相談するときだけ、選んだ業務と、言い切れない項目の番号をフォームに添えます。</p>
-        </details>
-        <details>
-          <summary>担当外の項目は、どう答えればよいですか</summary>
-          <p>「分からない」を選んでください。結果に、その業務について社内で誰に聞けばよいかを出します。</p>
-        </details>
-        <details>
-          <summary>結果は、診断や点数ですか</summary>
-          <p>いいえ。実際に起きた事例から作った、点検の目安です。点数やランクは付けません。</p>
-        </details>
-        <details>
-          <summary>相談は無料ですか。製品の案内は来ますか</summary>
-          <p>無料です。お返事はメールだけで、お電話はしません。お返事に、Lemma（照合できたものだけを通す仕組み）のご案内を添えることがあります。</p>
-        </details>
-        <details>
-          <summary>お返事はいつ届きますか</summary>
-          <p>3 営業日以内に、メールでお返事します。届かないときは、迷惑メールのフォルダもご確認ください。</p>
-        </details>
-        <details>
-          <summary>答えを残したくないときは</summary>
-          <p>結果の下の「答えを消す」を押すと、このブラウザに残った答えをすべて消します。</p>
-        </details>
+        {FAQ.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
       </section>
       <p class="ck-note">
         この点検は、公開情報をもとにした事案の構造分析から作ったもので、特定の組織への監査・診断・助言ではありません。網羅性・正確性や、不正を防ぐ効果は保証しません。© 2026 FRAME00株式会社
@@ -234,6 +256,26 @@ const CONSULT_EXAMPLES = [
     </section>
 
     </div>
+
+    <section class="lp-list" aria-labelledby="lp-list-h">
+      <div class="lp-in">
+        <p class="lp-sec-k">一覧</p>
+        <h2 id="lp-list-h">業務別 チェック項目の一覧</h2>
+        <p class="lp-list-lead">セルフチェックの {total} 項目を、業務ごとに並べました。答えるときは、上のセルフチェックで業務を選んでください。</p>
+        <div class="lp-list-grid">
+          {groups.map((g) => (
+            <section class="lp-list-g">
+              <h3>{g.label}の不正対策チェック<span>{g.items.length} 項目</span></h3>
+              <ul>
+                {g.items.map((it) => (
+                  <li>{it.text}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <section class="lp-lemma" aria-labelledby="lp-lemma-h">
       <div class="lp-in lp-lemma-in">
@@ -801,8 +843,54 @@ const CONSULT_EXAMPLES = [
     line-height: 1.8;
     color: #3c4237;
   }
+  .lp-list {
+    padding: 72px 0 0;
+  }
+  .lp-list h2 {
+    margin: 8px 0 0;
+    font-size: 24px;
+    font-weight: 800;
+  }
+  .lp-list-lead {
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: #3c4237;
+  }
+  .lp-list-grid {
+    columns: 2;
+    column-gap: 28px;
+    margin-top: 22px;
+  }
+  .lp-list-g {
+    break-inside: avoid;
+    margin: 0 0 22px;
+  }
+  .lp-list-g h3 {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 6px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #2f372f;
+    font-size: 15px;
+  }
+  .lp-list-g h3 span {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6a7064;
+  }
+  .lp-list-g ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+  .lp-list-g li {
+    padding: 3px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: #3c4237;
+  }
   .lp-lemma {
-    margin-top: 80px;
+    margin-top: 56px;
     padding: 64px 0;
     color: #e9eee3;
     background:
@@ -1284,6 +1372,9 @@ const CONSULT_EXAMPLES = [
     .lp-case-grid {
       grid-template-columns: 1fr;
     }
+    .lp-list-grid {
+      columns: 1;
+    }
     .ck-item {
       flex-direction: column;
       align-items: flex-start;
@@ -1305,6 +1396,7 @@ const CONSULT_EXAMPLES = [
     :global(nav),
     :global(footer),
     .lp-hero,
+    .lp-list,
     .lp-cases,
     .lp-how,
     .lp-lemma,

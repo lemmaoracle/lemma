@@ -48,7 +48,7 @@ export const BRIEF_RAIL_CTA_URL: Readonly<Record<Locale, string>> = {
 } as const;
 
 /**
- * セルフチェック（/ja/critical/briefs/check/）の結果から開く「メールで相談」の
+ * セルフチェック（/ja/critical/self-check/）の結果から開く「メールで相談」の
  * Tally のフォーム（2026-10-24・日本語だけ）。ページが ops（選んだ業務）・
  * gaps（「はい」と言い切れなかった項目の番号）・ref を足して開く。
  */
@@ -62,17 +62,18 @@ export const BRIEF_WEEKLY_URL =
 /**
  * 記事の対策の章、チェックリストのあとの入口（2026-10-24）。
  * 本文は登録なしで全部読めるまま。日本語はセルフチェックのページ（記事の
- * slug を ?from= で足す：BriefWeeklyCta）、英語は定期のメールの Tally の
+ * slug を ?from= で足す：BriefWeeklyCta・サイトの中のリンクなので utm は
+ * 付けない＝GA の流入元を上書きしない。どこから来たかはクリックのイベントで見る）、英語は定期のメールの Tally の
  * フォーム。`ref` で置き場所を分ける。
  */
 export const BRIEF_CHECKLIST_CTA_URL: Readonly<Record<Locale, string>> = {
-  ja: "/ja/critical/briefs/check/?ref=brief_checklist&utm_source=brief_checklist&utm_medium=cta&utm_campaign=brief_to_selfcheck",
+  ja: "/ja/critical/self-check/",
   en: "https://tally.so/r/rjvN2X?ref=brief_checklist&utm_source=brief_checklist&utm_medium=cta&utm_campaign=brief_to_weekly",
 } as const;
 
 /** 同じ入口の、記事の TL;DR のあとの 1 行（2026-10-24）。 */
 export const BRIEF_TLDR_CTA_URL: Readonly<Record<Locale, string>> = {
-  ja: "/ja/critical/briefs/check/?ref=brief_tldr&utm_source=brief_tldr&utm_medium=cta&utm_campaign=brief_to_selfcheck",
+  ja: "/ja/critical/self-check/",
   en: "https://tally.so/r/rjvN2X?ref=brief_tldr&utm_source=brief_tldr&utm_medium=cta&utm_campaign=brief_to_weekly",
 } as const;
 

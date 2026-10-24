@@ -26,7 +26,7 @@ const base = (variant === "top" ? BRIEF_TLDR_CTA_URL : BRIEF_CHECKLIST_CTA_URL)[
 // 日本語はサイトの中のセルフチェック（同じタブ・この記事を ?from= で渡す）、
 // 英語は Tally（新しいタブ）。
 const external = base.startsWith("http");
-const href = external ? base : `${base}&from=${encodeURIComponent(briefId)}`;
+const href = external ? base : `${base}?from=${encodeURIComponent(briefId)}`;
 // 日本語の帯にだけ、メールの相談への 1 行（セルフチェックを経ずに聞きたい人へ）。
 const consultHref = `${CONSULT_FORM_URL}&ref=brief_band&from=${encodeURIComponent(briefId)}`;
 const isJa = locale === "ja";

@@ -7,7 +7,7 @@
  * 文のまま、その Brief の業務（operations の先頭・無ければ「そのほか」）に
  * 1 問として足す。
  *
- * Excel で配ると一気に出回るので、チェック項目は /ja/critical/briefs/check/ の画面の
+ * Excel で配ると一気に出回るので、チェック項目は /ja/critical/self-check/ の画面の
  * 中で答えてもらい、回答はブラウザの外に出さない。
  */
 import {
