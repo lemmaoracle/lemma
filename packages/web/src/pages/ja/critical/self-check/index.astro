@@ -29,6 +29,8 @@ const t = getTranslations(locale);
 const briefs = (await getCollection("critical-briefs")) as BriefEntry[];
 const groups = selfCheckGroups(briefs);
 const total = selfCheckItemCount(groups);
+// ヒーローの「この会社は何か」：分析して公開している事案の数（公開済みの Brief）。
+const analyzed = briefs.filter((b) => b.data.status === "published").length;
 const pad = (no: number) => String(no).padStart(3, "0");
 // LP の事例のカード（2026-10-24）。見出しや画像に被害組織の名前は出さず、記事へつなぐ。
 const CASES = [
@@ -185,6 +187,15 @@ const jsonLd = [
             <li>無料</li>
             <li>登録不要</li>
           </ul>
+          <div class="lp-proof">
+            <div><b>{analyzed}<small>件</small></b><span>分析した<br />実際の事案</span></div>
+            <div><b>{total}<small>項目</small></b><span>事案から作った<br />チェック項目</span></div>
+            <div><b>毎週</b><span>新しい事案を<br />追加</span></div>
+          </div>
+          <p class="lp-by">
+            国内外のサイバー攻撃・不正の事案を分析し、手口と対策を公開している
+            <a href="/ja/critical/briefs/">Lemma Critical Brief</a> から作りました。
+          </p>
         </div>
         <div class="lp-mock" aria-hidden="true">
           <div class="lp-mock-h"><span>振込先・口座の変更</span><span>10 項目</span></div>
@@ -416,8 +427,9 @@ const jsonLd = [
     </section>
 
     <div class="ck-bar" data-ck-bar hidden>
-      <span data-ck-progress></span>
-      <a href="#ck-s3" class="ck-bar-btn">結果を見る</a>
+      <span class="ck-bar-tx" data-ck-progress></span>
+      <a href="#ck-s3" class="ck-bar-btn" data-ck-bar-btn>結果を見る</a>
+      <span class="ck-bar-meter" aria-hidden="true"><i data-ck-meter></i></span>
     </div>
   </main>
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
@@ -572,9 +584,17 @@ const jsonLd = [
         if (v) answered++;
         if (v === "no" || v === "unsure") gaps.push(li);
       });
-      $("[data-ck-progress]").textContent =
-        answered + " / " + shown.length + " 項目 回答済み" +
-        (answered ? "　・　" + Math.round(((answered - gaps.length) / answered) * 100) + " 点" : "");
+      // 下のバー：あと何項目か（答え終わったら結果へ誘う）。各項目に「n / 全体」。
+      var left = shown.length - answered;
+      $("[data-ck-progress]").innerHTML = left
+        ? "あと <b>" + left + "</b> 項目<small>" + answered + " / " + shown.length + "</small>"
+        : "<b>すべて回答しました</b>";
+      $("[data-ck-meter]").style.width = (shown.length ? (answered / shown.length) * 100 : 0) + "%";
+      $("[data-ck-bar]").classList.toggle("is-done", !left && shown.length > 0);
+      $("[data-ck-bar-btn]").textContent = left ? "結果を見る" : "結果を見る →";
+      shown.forEach(function (li, i) {
+        li.querySelector(".ck-q").setAttribute("data-n", i + 1 + " / " + shown.length);
+      });
       var unsure = gaps.filter(function (li) { return state.ans[li.getAttribute("data-item")] === "unsure"; }).length;
       $("[data-ck-sum]").textContent = !answered
         ? "上の項目に回答すると、ここに点数が表示されます。"
@@ -710,6 +730,7 @@ const jsonLd = [
       if (b) {
         var id = b.closest(".ck-item").getAttribute("data-item");
         var v = b.getAttribute("data-v");
+        var fresh = !state.ans[id];
         if (state.ans[id] === v) delete state.ans[id];
         else state.ans[id] = v;
         if (!started) {
@@ -727,6 +748,15 @@ const jsonLd = [
         }
         save();
         render();
+        // 初めて答えた項目なら、次の未回答の項目が画面の下にあるとき、そこまで送る。
+        if (fresh) {
+          var cur = b.closest(".ck-item");
+          var list = $$(".ck-item:not([hidden])");
+          var nxt = list.slice(list.indexOf(cur) + 1).filter(function (li) { return !state.ans[li.getAttribute("data-item")]; })[0];
+          if (nxt && nxt.getBoundingClientRect().top > window.innerHeight * 0.62) {
+            setTimeout(function () { nxt.scrollIntoView({ block: "center", behavior: "smooth" }); }, 180);
+          }
+        }
         return;
       }
       if (e.target.closest("[data-ck-print]")) {
@@ -1595,8 +1625,8 @@ const jsonLd = [
     overflow: hidden;
   }
   .ck-ans button {
-    min-height: 36px;
-    padding: 6px 14px;
+    min-height: 40px;
+    padding: 6px 16px;
     background: #fff;
     border: 0;
     border-left: 1px solid #dcdfd6;
@@ -1666,7 +1696,7 @@ const jsonLd = [
   }
 
   .ck-score-help {
-    margin: 14px 0 10px;
+    margin: 14px 0 14px;
     font-size: 13.5px;
     color: #3c4237;
   }
@@ -1743,9 +1773,10 @@ const jsonLd = [
     background: #c98a12;
   }
   .ck-btn {
+    display: inline-block;
     flex: none;
     white-space: nowrap;
-    padding: 12px 18px;
+    padding: 14px 26px;
     border-radius: 999px;
     background: #a8e010;
     color: #16190f;
@@ -1830,13 +1861,97 @@ const jsonLd = [
     z-index: 20;
     white-space: nowrap;
   }
-  .ck-bar-btn {
-    padding: 6px 14px;
-    border-radius: 999px;
+  .ck-bar {
+    overflow: hidden;
+  }
+  .ck-bar-tx :global(b) {
+    font-size: 15px;
+    color: #fff;
+  }
+  .ck-bar-tx :global(small) {
+    margin-left: 8px;
+    font-size: 11.5px;
+    color: #a9b2a3;
+  }
+  .ck-bar-meter {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .ck-bar-meter i {
+    display: block;
+    height: 100%;
     background: #a8e010;
-    color: #16190f;
+    transition: width 0.3s;
+  }
+  .ck-bar-btn {
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #e9eee3;
     font-weight: 700;
     text-decoration: none;
+  }
+  .ck-bar.is-done .ck-bar-btn {
+    background: #a8e010;
+    color: #16190f;
+  }
+  .ck-q[data-n]::before {
+    content: attr(data-n);
+    display: block;
+    margin-bottom: 2px;
+    font: 600 10.5px "Space Mono", monospace;
+    color: #9aa194;
+  }
+  .ck-item[data-state="yes"] .ck-q p,
+  .ck-item[data-state="no"] .ck-q p,
+  .ck-item[data-state="unsure"] .ck-q p {
+    color: #6a7064;
+  }
+  .lp-proof {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
+    gap: 0;
+    margin-top: 28px;
+  }
+  .lp-proof > div {
+    padding: 0 22px;
+    border-left: 1px solid #dcdfd6;
+  }
+  .lp-proof > div:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .lp-proof b {
+    display: block;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .lp-proof small {
+    margin-left: 2px;
+    font-size: 13px;
+  }
+  .lp-proof span {
+    display: block;
+    margin-top: 2px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #6a7064;
+  }
+  .lp-by {
+    margin: 14px 0 0;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #3c4237;
+  }
+  .lp-by a {
+    color: #4e7a00;
+    font-weight: 700;
   }
   @media (max-width: 900px) {
     .lp-hero-in,
@@ -1902,9 +2017,26 @@ const jsonLd = [
       transform: none;
       justify-content: space-between;
       gap: 8px;
-      padding-left: 14px;
-      font-size: 11.5px;
+      padding-left: 18px;
+      font-size: 12.5px;
       white-space: normal;
+    }
+    .ck-ans {
+      display: flex;
+      width: 100%;
+    }
+    .ck-ans button {
+      flex: 1;
+      min-height: 44px;
+      padding: 4px 6px;
+      font-size: 13.5px;
+      white-space: nowrap;
+    }
+    .lp-proof > div {
+      padding: 0 14px;
+    }
+    .lp-proof b {
+      font-size: 24px;
     }
   }
   @media print {
