@@ -4,8 +4,8 @@
  * report レイアウトの Brief は frontmatter に `industries` / `operations` /
  * `controls` を持つ。一覧ページで「業界で探す／業務で探す／対策で探す」の
  * チップを集計するための索引で、そのときのラベルとアイコンをここ1か所に置く。
- * 記事にはチップとしては描画しない。`attack_method` と `controls` は記事末の
- * 「次に読む」（lib/briefNextRead.ts・2026-10-24）にも使う。記事中の「注意したい業界・業務」の表は md 側で
+ * 手口・業務・対策は、記事の「この手口・この対策で探す」（lib/briefNextRead.ts・
+ * 2026-10-24）のタイルにも使う。記事中の「注意したい業界・業務」の表は md 側で
  * 説明文つきで書く（ラベルだけのチップより情報が多いため）。
  *
  * アイコンは承認済みモック（032_v8）の `<symbol>` をそのまま写した 22×22 の
@@ -207,13 +207,43 @@ export const BRIEF_ATTACK_SLUGS = [
 ] as const;
 export type BriefAttackSlug = (typeof BRIEF_ATTACK_SLUGS)[number];
 
-export const BRIEF_ATTACKS: Record<BriefAttackSlug, { slug: string; ja: string; en: string }> = {
-  "account-takeover": { slug: "account-takeover", ja: "アカウント乗っ取り", en: "Account takeover" },
-  impersonation: { slug: "impersonation", ja: "なりすまし", en: "Impersonation" },
-  "privilege-abuse": { slug: "privilege-abuse", ja: "権限の悪用", en: "Privilege abuse" },
-  "supply-chain": { slug: "supply-chain", ja: "サプライチェーン", en: "Supply chain" },
-  "human-error": { slug: "human-error", ja: "人の操作ミス", en: "Human error" },
-  "ai-misuse": { slug: "ai-misuse", ja: "AI の誤作動・悪用", en: "AI failure or misuse" },
+export const BRIEF_ATTACKS: Record<BriefAttackSlug, FacetEntry> = {
+  "account-takeover": {
+    slug: "account-takeover",
+    ja: "アカウント乗っ取り",
+    en: "Account takeover",
+    icon: '<circle cx="7.5" cy="11" r="3.5"/><path d="M11 11h8M16 11v3M18.5 11v2"/>',
+  },
+  impersonation: {
+    slug: "impersonation",
+    ja: "なりすまし",
+    en: "Impersonation",
+    icon: '<circle cx="11" cy="7.5" r="3.2"/><path d="M4.5 18.5c.6-3.3 3.2-5.3 6.5-5.3s5.9 2 6.5 5.3"/><path d="M7.2 7.2h7.6"/>',
+  },
+  "privilege-abuse": {
+    slug: "privilege-abuse",
+    ja: "権限の悪用",
+    en: "Privilege abuse",
+    icon: '<path d="M11 3.5l6.5 2.6v4.6c0 4-2.8 6.6-6.5 7.8-3.7-1.2-6.5-3.8-6.5-7.8V6.1z"/><path d="M11 14V8.5M8.6 10.8L11 8.4l2.4 2.4"/>',
+  },
+  "supply-chain": {
+    slug: "supply-chain",
+    ja: "サプライチェーン",
+    en: "Supply chain",
+    icon: '<rect x="2.8" y="8.2" width="8" height="5.6" rx="2.8"/><rect x="11.2" y="8.2" width="8" height="5.6" rx="2.8"/>',
+  },
+  "human-error": {
+    slug: "human-error",
+    ja: "人の操作ミス",
+    en: "Human error",
+    icon: '<path d="M11 3.8L19 17.8H3z"/><path d="M11 9v4.2M11 15.6v.4"/>',
+  },
+  "ai-misuse": {
+    slug: "ai-misuse",
+    ja: "AI の誤作動・悪用",
+    en: "AI failure or misuse",
+    icon: '<rect x="5.5" y="5.5" width="11" height="11" rx="2"/><path d="M9 9h4v4H9zM8.5 3v2.5M13.5 3v2.5M8.5 16.5V19M13.5 16.5V19M3 8.5h2.5M3 13.5h2.5M16.5 8.5H19M16.5 13.5H19"/>',
+  },
 };
 
 /**

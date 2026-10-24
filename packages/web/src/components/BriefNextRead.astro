@@ -1,241 +1,338 @@
 ---
 /**
- * Brief の「次に読む」（2026-10-24）。
+ * Brief の「この手口・この対策で探す」（2026-10-24）。
  *
- * 対策を探して記事に来た人が、読み終えたところで同じ手口・同じ対策の事例へ
- * 進めるようにする。日付や社内の13分類（primary_category）ではなく、
- * frontmatter の `attack_method`（手口）と `controls`（対策）で選ぶ。
+ * 対策を探して記事に来た人が、記事を読み終える前でも、同じ手口・同じ対策の
+ * 事例の一覧へ移れるようにする。記事のリンクではなく、アーカイブの絞り込み
+ * へのカテゴリの入口（タイル）を出す。選び方は lib/briefNextRead.ts。
  *
- * 選び方は lib/briefNextRead.ts。
+ * 置き場所は3つ（variant）:
+ *   - block：本文の「対策するには」のあと（右レールが消える 1060px 以下だけ）。
+ *     描画は記事の外で、ページを開いたときに Sources の直前（rehype が置く
+ *     `[data-brief-next-slot]`）へ移す。JS が無ければ本文の直後に残る。
+ *   - rail：右レールの目次の下（広い画面・レールは sticky なので読む間ずっと
+ *     見える）。
+ *   - mobile：表紙の下の畳んだ目次の下（右レールが消える幅だけ・report）。
  *
- * 描画は記事の外（BriefTemplate）で、ページを開いたときに本文の Sources の
- * 直前（rehype が置く `[data-brief-next-slot]`）へ移す。JS が無ければ本文の
- * 直後に残る。どちらの行も組めなければ何も出さない（テンプレートは従来の
- * 関連 Brief を出す）。
- *
- * 製品計画がサイトに出たら、対策の行をゲート（Proof Gate）の分類に差し替え、
+ * 製品計画がサイトに出たら、対策をゲート（Proof Gate）の分類に差し替え、
  * ゲートのページへの入口を足す。
  */
-import type { CollectionEntry } from "astro:content";
-import {
-  BRIEF_INDUSTRIES,
-  briefCountryLabel,
-  type BriefIndustrySlug,
-} from "../config/briefFacets";
-import { nextReadRows } from "../lib/briefNextRead";
-
-type AnyBrief =
-  | CollectionEntry<"critical-briefs">
-  | CollectionEntry<"critical-briefs-en">;
+import { FACET_ICON_ATTRS, FACET_ICON_VIEWBOX } from "../config/briefFacets";
+import type { BriefFacetTiles, FacetTile } from "../lib/briefNextRead";
 
 export interface BriefNextReadProps {
   locale: "ja" | "en";
-  brief: AnyBrief;
-  /** ロケールで解決した全 Brief（EN 優先・JA で補う）。 */
-  all: ReadonlyArray<AnyBrief>;
+  briefId: string;
+  tiles: BriefFacetTiles;
+  variant: "block" | "rail" | "mobile";
 }
 
-const { locale, brief, all } = Astro.props as BriefNextReadProps;
+const { locale, briefId, tiles, variant } = Astro.props as BriefNextReadProps;
 const isJa = locale === "ja";
-const base = isJa ? "/ja" : "";
-const rows = nextReadRows(locale, brief, all);
-
-const card = (b: AnyBrief) => {
-  const title = (isJa ? b.data.title : b.data.title_en).split(" — ")[0];
-  const ind = (b.data.industries as BriefIndustrySlug[] | undefined)?.[0];
-  const meta = [
-    ind ? BRIEF_INDUSTRIES[ind]?.[locale] : null,
-    briefCountryLabel(b.data.countries as string[] | undefined, locale),
-  ]
-    .filter(Boolean)
-    .join(" · ");
-  return {
-    href: `${base}/critical/briefs/${b.id}/`,
-    no: String(b.data.brief_no).padStart(3, "0"),
-    title,
-    meta,
-  };
-};
 
 const L = isJa
   ? {
       kicker: "対策を探している方へ",
-      head: "同じ手口、同じ対策のほかの事例",
-      attack: "手口",
-      control: "対策",
-      more: (k: string, n: number) =>
-        k === "attack" ? `この手口の事例をすべて見る（${n} 本）` : `この対策の事例をすべて見る（${n} 本）`,
+      head: "この手口・この対策の事例を一覧で見る",
+      railHead: "この手口・対策で探す",
+      methods: "手口",
+      controls: "対策",
+      count: (n: number) => `${n} 本`,
     }
   : {
       kicker: "Looking for countermeasures",
-      head: "Other cases with the same method or the same countermeasure",
-      attack: "Method",
-      control: "Countermeasure",
-      more: (k: string, n: number) =>
-        k === "attack" ? `All cases with this method (${n})` : `All cases with this countermeasure (${n})`,
+      head: "See all cases with this method or countermeasure",
+      railHead: "Browse by method or fix",
+      methods: "Method",
+      controls: "Countermeasure",
+      count: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
     };
+
+const groups: ReadonlyArray<{ kind: "methods" | "controls"; label: string; items: ReadonlyArray<FacetTile> }> = [
+  { kind: "methods" as const, label: L.methods, items: tiles.methods },
+  { kind: "controls" as const, label: L.controls, items: tiles.controls },
+].filter((g) => g.items.length > 0);
 ---
 
-{rows.length > 0 && (
-  <aside class="nr" data-brief-next data-brief={brief.id} aria-label={L.head}>
-    <div class="nr-k">{L.kicker}</div>
-    <p class="nr-h" role="heading" aria-level="2">{L.head}</p>
-    {rows.map((r) => (
-      <div class="nr-row">
-        <div class="nr-rh">
-          <span class="nr-tag">{r.kind === "attack" ? L.attack : L.control}</span>
-          <b>{r.label}</b>
+{groups.length > 0 && (
+  <aside
+    class:list={["nr", `nr--${variant}`]}
+    data-brief-next={variant}
+    data-brief={briefId}
+    aria-label={variant === "block" ? L.head : L.railHead}
+  >
+    {variant === "block" && <div class="nr-k">{L.kicker}</div>}
+    <p class="nr-h" role="heading" aria-level={variant === "block" ? 2 : 3}>
+      {variant === "block" ? L.head : L.railHead}
+    </p>
+    {groups.map((g) => (
+      <div class="nr-g">
+        <span class="nr-tag">{g.label}</span>
+        <div class="nr-tiles">
+          {g.items.map((t) => (
+            <a
+              class="nr-tile"
+              href={t.href}
+              data-nr-ev="brief_facet_click"
+              data-place={variant}
+              data-key={t.key}
+              data-slug={t.slug}
+            >
+              <span class="nr-ic">
+                <svg viewBox={FACET_ICON_VIEWBOX} {...FACET_ICON_ATTRS} aria-hidden="true" set:html={t.icon} />
+              </span>
+              <span class="nr-tx">
+                <b>{t.label}</b>
+                <span>{L.count(t.count)}</span>
+              </span>
+              <span class="nr-arrow" aria-hidden="true">→</span>
+            </a>
+          ))}
         </div>
-        <div class="nr-cards">
-          {r.picks.map((b) => {
-            const c = card(b);
-            return (
-              <a class="nr-card" href={c.href} data-ev="brief_next_read" data-row={r.kind} data-to={b.id}>
-                <span class="n">No. {c.no}</span>
-                <span class="t">{c.title}</span>
-                {c.meta && <span class="g">{c.meta}</span>}
-              </a>
-            );
-          })}
-        </div>
-        <a class="nr-more" href={r.href} data-ev="brief_next_read_all" data-row={r.kind}>
-          {L.more(r.kind, r.total)}<span aria-hidden="true"> →</span>
-        </a>
       </div>
     ))}
   </aside>
 )}
 
-<script is:inline>
-  (function () {
-    var box = document.querySelector("[data-brief-next]");
-    if (!box) return;
-    var slot = document.querySelector("[data-brief-next-slot]");
-    if (slot) slot.replaceWith(box);
-    var from = box.getAttribute("data-brief");
-    box.querySelectorAll("[data-ev]").forEach(function (el) {
-      el.addEventListener("click", function () {
-        if (typeof window.gtag !== "function") return;
-        window.gtag("event", el.getAttribute("data-ev"), {
-          brief_id: from,
-          row: el.getAttribute("data-row"),
-          destination: el.getAttribute("data-to") || el.getAttribute("href"),
+{variant === "block" && (
+  <script is:inline>
+    (function () {
+      var box = document.querySelector('[data-brief-next="block"]');
+      var slot = document.querySelector("[data-brief-next-slot]");
+      if (box && slot) slot.replaceWith(box);
+      // レールと表紙の下のタイルもここで拾う（委譲・置き場所は data-place）。
+      document.addEventListener("click", function (e) {
+        var el = e.target instanceof Element ? e.target.closest("[data-nr-ev]") : null;
+        if (!el || typeof window.gtag !== "function") return;
+        var host = el.closest("[data-brief]");
+        window.gtag("event", el.getAttribute("data-nr-ev"), {
+          brief_id: host ? host.getAttribute("data-brief") : undefined,
+          place: el.getAttribute("data-place"),
+          facet: el.getAttribute("data-key") + ":" + el.getAttribute("data-slug"),
         });
       });
-    });
-  })();
-</script>
+    })();
+  </script>
+)}
 
 <style>
-  .nr {
-    margin: 44px 0 8px;
-    padding: 24px 26px 26px;
-    background: #f3f5ec;
-    border: 1px solid #dfe3d2;
-    border-radius: 12px;
-  }
-  .nr-k {
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    color: var(--ok-ink);
-  }
-  .nr-h {
-    margin: 6px 0 0;
-    font-family: var(--font-serif-jp);
-    font-weight: 600;
-    font-size: 19px;
-    line-height: 1.5;
-    color: var(--tx);
-  }
-  .nr-row {
-    margin-top: 20px;
-  }
-  .nr-rh {
+  /* ── 共通：タイル（一覧の「対策から読む」と同じ形） ── */
+  .nr-tile {
     display: flex;
-    align-items: baseline;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .nr-rh b {
-    font-size: 15px;
-    line-height: 1.6;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-decoration: none;
     color: var(--tx);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .nr-tile:hover,
+  .nr-tile:focus-visible {
+    border-color: #b8cf7a;
+    box-shadow: var(--sh-s);
+  }
+  .nr-ic {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #eef7d2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2f372f;
+  }
+  .nr-ic svg {
+    width: 24px;
+    height: 24px;
+  }
+  .nr-tx {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .nr-tx b {
+    /* 本文の中（block）では本文のリンク色が効くので、色を明示する。 */
+    color: var(--tx);
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .nr-tx span {
+    font-size: 11.5px;
+    color: #8a9083;
+  }
+  .nr-arrow {
+    margin-left: auto;
+    color: #a3a99c;
+    transition: transform 0.15s, color 0.15s;
+  }
+  .nr-tile:hover .nr-arrow {
+    color: var(--ok-light);
+    transform: translateX(3px);
   }
   .nr-tag {
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.12em;
-    color: #fff;
-    background: #3b4334;
-    border-radius: 3px;
-    padding: 2px 7px;
-    flex: none;
+    color: var(--muted);
   }
-  .nr-cards {
+  .nr-h {
+    margin: 0;
+    color: var(--tx);
+  }
+
+  /* ── block：本文の「対策するには」のあと。広い画面ではレールが同じものを
+     読む間ずっと見せているので、レールが消える幅（1060px 以下）だけ出す。 ── */
+  @media (min-width: 1061px) {
+    .nr--block {
+      display: none;
+    }
+  }
+  .nr--block {
+    margin: 44px 0 8px;
+    padding: 22px 24px 24px;
+    background: #f3f5ec;
+    border: 1px solid #dfe3d2;
+    border-radius: 12px;
+  }
+  .nr--block .nr-k {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--ok-ink);
+  }
+  .nr--block .nr-h {
+    margin-top: 6px;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 1.5;
+  }
+  .nr--block .nr-g {
+    margin-top: 16px;
+  }
+  .nr--block .nr-tiles {
+    margin-top: 8px;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
-    margin-top: 10px;
   }
-  .nr-card {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+
+  /* ── rail：右レールの目次の下 ── */
+  .nr--rail {
+    margin-top: 14px;
+    padding: 16px 16px 14px;
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 14px 15px 15px;
-    text-decoration: none;
-    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+    border-radius: 12px;
   }
-  .nr-card:hover {
-    border-color: rgba(124, 175, 0, 0.45);
-    transform: translateY(-2px);
-    box-shadow: var(--sh-m);
-  }
-  .nr-card .n {
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    color: var(--ok-ink);
-  }
-  .nr-card .t {
-    font-size: 13.2px;
-    font-weight: 600;
-    line-height: 1.65;
-    color: var(--tx);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .nr-card .g {
-    margin-top: auto;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .nr-more {
-    display: inline-block;
-    margin-top: 10px;
+  .nr--rail .nr-h {
     font-size: 13px;
     font-weight: 600;
-    color: var(--ok-light);
-    text-decoration: none;
+    line-height: 1.5;
   }
-  .nr-more:hover {
-    text-decoration: underline;
+  .nr--rail .nr-g {
+    margin-top: 12px;
+  }
+  .nr--rail .nr-tiles {
+    margin-top: 6px;
+    display: grid;
+    gap: 6px;
+  }
+  /* レールは幅が狭いので、アイコンを落として文字を広く取る。 */
+  .nr--rail .nr-tile {
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 9px;
+  }
+  .nr--rail .nr-ic {
+    display: none;
+  }
+  .nr--rail .nr-tx b {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .nr--rail .nr-tx span {
+    font-size: 10.5px;
+  }
+
+  /* ── mobile：表紙の下の畳んだ目次の下（右レールが消える幅だけ） ── */
+  .nr--mobile {
+    display: none;
+  }
+  @media (max-width: 1060px) {
+    .nr--mobile {
+      display: block;
+      margin: 12px 0 0;
+    }
+    .nr--mobile .nr-h {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .nr--mobile .nr-g {
+      margin-top: 8px;
+    }
+    .nr--mobile .nr-tiles {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .nr--mobile .nr-tile {
+      flex: none;
+      max-width: 78%;
+      gap: 8px;
+      padding: 8px 12px 8px 8px;
+      border-radius: 999px;
+    }
+    .nr--mobile .nr-ic {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+    }
+    .nr--mobile .nr-ic svg {
+      width: 16px;
+      height: 16px;
+    }
+    .nr--mobile .nr-tile {
+      align-items: center;
+    }
+    .nr--mobile .nr-tx {
+      flex-direction: row;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+    }
+    .nr--mobile .nr-tx b {
+      min-width: 0;
+      font-size: 12.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nr--mobile .nr-tx span {
+      flex: none;
+      white-space: nowrap;
+    }
+    .nr--mobile .nr-arrow {
+      display: none;
+    }
   }
   @media (max-width: 760px) {
-    .nr {
+    .nr--block {
       padding: 18px 16px 20px;
     }
-    .nr-cards {
+    .nr--block .nr-tiles {
       grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    /* 縦に積むと長いので、スマホでは各行 2 枚まで。 */
-    .nr-card:nth-child(3) {
-      display: none;
+      gap: 8px;
     }
   }
 </style>

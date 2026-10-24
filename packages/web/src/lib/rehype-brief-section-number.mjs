@@ -614,9 +614,10 @@ export function rehypeBriefSectionNumber() {
 }
 
 /**
- * 「次に読む」の差し込み口（2026-10-24）。対策を読み終えたところで同じ手口・
- * 同じ対策の事例へ渡すため、Sources の h2 の直前に空の目印を置く。中身は
- * BriefTemplate が組み立て（BriefNextRead）、ページを開いたときにここへ移す。
+ * 「この手口・この対策で探す」の差し込み口（2026-10-24）。対策を読み終えた
+ * ところで同じ手口・同じ対策の一覧へ渡すため、Sources の h2 の直前に空の目印を
+ * 置く。中身は BriefTemplate が組み立て（BriefNextRead）、ページを開いたときに
+ * ここへ移す。
  */
 function markNextReadSlot(tree) {
   const root = tree.children ?? [];
