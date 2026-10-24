@@ -193,7 +193,7 @@ const CONSULT_EXAMPLES = [
           </div>
           <ul class="lp-ticks">
             <li>登録不要</li>
-            <li>答えは送信されません</li>
+            <li>1 つの業務で 5 分</li>
             <li>実例 {briefCount} 件・{total} 項目</li>
           </ul>
         </div>
@@ -270,7 +270,6 @@ const CONSULT_EXAMPLES = [
     <p class="ck-done" data-ck-done hidden>相談を受け付けました。3 営業日以内に、ご記入のメールアドレスへお返事します。届かないときは、迷惑メールのフォルダもご確認ください。</p>
     <p class="lp-sec-k">セルフチェック</p>
     <h2 class="ck-tool-h">業務を選んで、はい／いいえで答える</h2>
-    <p class="ck-privacy">答えは送信されません（このブラウザに残ります）。</p>
 
     <section class="ck-step" aria-labelledby="ck-s1">
       <h2 id="ck-s1"><span class="ck-n">1</span>点検する業務を選ぶ</h2>
@@ -342,7 +341,7 @@ const CONSULT_EXAMPLES = [
             ))}
           </div>
           <small>いま被害が起きている・振り込んでしまった、というときは、このフォームを待たずに、取引銀行と警察（最寄りの警察署か #9110）にすぐご連絡ください。</small>
-          <small data-ck-attach>答えの中身は送られません。選んだ業務と、言い切れない項目の番号だけをフォームに添えます。</small>
+          <small data-ck-attach>フォームには、選んだ業務と、言い切れない項目の番号を添えます。</small>
         </div>
         <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">無料でメール相談する<span aria-hidden="true"> →</span></a>
       </div>
@@ -565,8 +564,7 @@ const CONSULT_EXAMPLES = [
         return b ? b.textContent : k;
       });
       $("[data-ck-attach]").textContent =
-        "答えの中身は送られません。フォームに添えるのは、選んだ業務（" + opLabels.join("、") + "）と、言い切れない項目 " +
-        gaps.length + " 件の番号だけです。";
+        "フォームには、選んだ業務（" + opLabels.join("、") + "）と、言い切れない項目 " + gaps.length + " 件の番号を添えます。";
       var gapIds = gaps.map(function (li) { return li.getAttribute("data-item"); }).join(",").slice(0, 900);
       $$("[data-ck-consult]").forEach(function (link) {
         var u = new URL(link.getAttribute("href"));
@@ -697,11 +695,7 @@ const CONSULT_EXAMPLES = [
     font-weight: 800;
     line-height: 1.45;
   }
-  .ck-privacy {
-    margin: 6px 0 0;
-    font-size: 13px;
-    color: #6a7064;
-  }
+
   .lp-in {
     max-width: 1080px;
     margin: 0 auto;
@@ -1674,7 +1668,6 @@ const CONSULT_EXAMPLES = [
     .lp-figs,
     .lp-lemma,
     .lp-final,
-    .ck-privacy,
     .lp-sec-k,
     .ck-ops,
     .ck-bar,
