@@ -50,7 +50,6 @@ const PERSONAS = [
   {
     key: "acct",
     tab: "経理・財務",
-    who: "例：経理の担当・社員 80 人の製造業",
     msg: "振込先の口座が変わりました。今月分から、こちらにお願いします。",
     tag: "取引先のなりすまし",
     ch: "mail",
@@ -59,7 +58,6 @@ const PERSONAS = [
     sender: "株式会社〇〇商事 経理部",
     addr: "keiri@oo-shoji.example",
     subject: "【重要】お振込先変更のお願い",
-    from: "取引先の担当者を名乗る、偽のメール",
     real: "米国の市では、この形の連絡で、工事代金 670 万ドルが別の口座へ送られました。",
     slug: "158-portland-water-bureau-vendor-bank-change",
     checks: ["振込先の変更を、メールの中ではなく登録済みの連絡先で確認しているか", "変わった直後の支払いを、照合が済むまで保留にしているか"],
@@ -69,7 +67,6 @@ const PERSONAS = [
   {
     key: "exec",
     tab: "経営・管理職",
-    who: "例：経営企画の部長・社員 300 人のサービス業",
     msg: "至急、この口座に送金してください。社内にはまだ内密に。",
     tag: "社長・役員のなりすまし",
     ch: "chat",
@@ -78,7 +75,6 @@ const PERSONAS = [
     sender: "代表取締役",
     addr: "10:42",
     subject: "",
-    from: "社長や役員を名乗る、偽のチャットやビデオ会議",
     real: "国内の上場企業では、チャットで役員を装った指示に従い、同じ日に 9,600 万円が振り込まれました。",
     slug: "159-zuu-business-chat-executive-impersonation-transfer",
     checks: ["送金の指示を、届いた経路とは別の手段で本人に照合しているか", "振込の作成と承認を、別の人が行っているか"],
@@ -88,7 +84,6 @@ const PERSONAS = [
   {
     key: "it",
     tab: "情報システム",
-    who: "例：情シスの課長・社員 200 人の IT 企業",
     msg: "取引先の担当者を 1 名、追加しました。",
     tag: "偽の担当者の登録",
     ch: "notice",
@@ -97,7 +92,6 @@ const PERSONAS = [
     sender: "取引先ポータル",
     addr: "自動送信",
     subject: "担当者が追加されました",
-    from: "攻撃者が取引先の登録に入り込んだときの通知",
     real: "米国の市では、偽の担当者が取引先の登録に加えられ、振込先が書き換えられて 152 万ドルが送られました。",
     slug: "160-baltimore-workday-supplier-contact-bank-change",
     checks: ["管理者や担当者が追加されたとき、担当者に知らせが届くか", "使っていない入口や広すぎる権限を、定期的に閉じているか"],
@@ -107,7 +101,6 @@ const PERSONAS = [
   {
     key: "ga",
     tab: "総務・内部統制",
-    who: "例：総務の担当・病院や自治体の委託の窓口",
     msg: "お預かりした機器は、作業のあと、すべて破砕しました。",
     tag: "不正な持ち出し",
     ch: "report",
@@ -116,7 +109,6 @@ const PERSONAS = [
     sender: "〇〇リサイクル株式会社",
     addr: "PDF・1 ページ",
     subject: "データ消去・破砕 完了報告書",
-    from: "委託先からの作業の報告（実際には破砕されていなかった）",
     real: "国内の病院では、破砕したはずの電子カルテの HDD の一部が、ネットオークションで落札されました。",
     slug: "065-hokkaido-hospital-hdd-disposal",
     checks: ["委託先の「消した」という説明を、消去の記録や写真で確認しているか", "委託先の再委託や転売を、事前に知る取り決めがあるか"],
@@ -186,8 +178,8 @@ const jsonLd = [
             <a class="lp-btn" href="#who">無料でチェックする</a>
           </div>
           <ul class="lp-ticks">
+            <li>無料</li>
             <li>登録不要</li>
-            <li>1 つの業務で 5 分</li>
           </ul>
         </div>
         <div class="lp-mock" aria-hidden="true">
@@ -225,8 +217,6 @@ const jsonLd = [
                 {p.subject && <p class="lp-win-subj">{p.subject}</p>}
                 <p class="lp-bubble">「{p.msg}」</p>
               </div>
-              <span class="lp-msg-from">{p.from}</span>
-              <span class="lp-who-ex">{p.who}</span>
             </div>
             <div class="lp-real">
               <span class="lp-real-k">実際に起きたこと</span>
@@ -262,8 +252,7 @@ const jsonLd = [
     <div class="ck-tool" id="start">
     <p class="ck-print-head" data-ck-print-head></p>
     <p class="ck-done" data-ck-done hidden>相談を受け付けました。3 営業日以内に、ご記入のメールアドレスへお返事します。届かないときは、迷惑メールのフォルダもご確認ください。</p>
-    <p class="lp-sec-k">セルフチェック</p>
-    <h2 class="ck-tool-h">業務を選んで、はい／いいえで答える</h2>
+    <h2 class="ck-tool-h">セルフチェック</h2>
 
     <section class="ck-step" aria-labelledby="ck-s1">
       <h2 id="ck-s1"><span class="ck-n">1</span>点検する業務を選ぶ</h2>
@@ -276,7 +265,7 @@ const jsonLd = [
           </button>
         ))}
       </div>
-      <p class="ck-hint" data-ck-empty>まずは担当の業務を 1 つ選んでください。あとから足せます。外しても、答えは残ります。</p>
+      <p class="ck-hint" data-ck-empty>担当の業務を選んでください。あとから足せます。</p>
     </section>
 
     <section class="ck-step" aria-labelledby="ck-s2" data-ck-items hidden>
@@ -949,7 +938,7 @@ const jsonLd = [
   }
   .lp-tag {
     display: inline-block;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     padding: 4px 12px;
     border-radius: 999px;
     background: #8a4b38;
@@ -957,13 +946,7 @@ const jsonLd = [
     font-size: 12.5px;
     font-weight: 800;
   }
-  .lp-msg-from {
-    display: block;
-    margin-top: 10px;
-    font-size: 12.5px;
-    font-weight: 700;
-    color: #6a7064;
-  }
+
   .lp-win {
     overflow: hidden;
     border-radius: 16px;
@@ -1040,12 +1023,7 @@ const jsonLd = [
     border-radius: 8px;
     font-size: 17px;
   }
-  .lp-who-ex {
-    display: block;
-    margin-top: 10px;
-    font-size: 12px;
-    color: #8a9084;
-  }
+
   .lp-real-k {
     display: block;
     font-size: 12px;
