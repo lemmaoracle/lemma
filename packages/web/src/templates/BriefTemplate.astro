@@ -2522,52 +2522,6 @@ const labels = isJa
   .brief-body.is-report :global(h2 + h3) {
     margin-top: 24px;
   }
-  /* 対策の章の「詳しく見る」（2026-10-24）。表 2 つを見出しだけにして畳む。 */
-  .brief-body.is-report :global(details.rx-more) {
-    margin: 22px 0 0;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-  }
-  .brief-body.is-report :global(details.rx-more + details.rx-more) {
-    margin-top: 0;
-    border-top: 0;
-  }
-  .brief-body.is-report :global(.rx-more-s) {
-    list-style: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 2px;
-  }
-  .brief-body.is-report :global(.rx-more-s::-webkit-details-marker) {
-    display: none;
-  }
-  .brief-body.is-report :global(.rx-more-t) {
-    font-size: 16.5px;
-    font-weight: 700;
-    color: var(--tx);
-  }
-  .brief-body.is-report :global(.rx-more-a) {
-    margin-left: auto;
-    flex: none;
-    font-size: 12.5px;
-    font-weight: 700;
-    color: var(--tx-soft);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 4px 12px;
-    background: var(--card);
-  }
-  .brief-body.is-report :global(.rx-more-a::after) {
-    content: " ＋";
-  }
-  .brief-body.is-report :global(details.rx-more[open] .rx-more-a::after) {
-    content: " −";
-  }
-  .brief-body.is-report :global(details.rx-more[open]) {
-    padding-bottom: 18px;
-  }
   .brief-body.is-report :global(> ul:not([class]) > li) {
     padding-left: 22px;
     margin-bottom: 10px;

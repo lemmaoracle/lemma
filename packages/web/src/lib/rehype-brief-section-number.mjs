@@ -498,40 +498,22 @@ function deriveReportComponents(root, fm, isEn) {
   deriveTimeline(root);
   deriveCounter(root, isEn);
   deriveFacts(root, 5);
-  foldCounterDetails(root, isEn);
+  markWeeklySlot(root);
   deriveSources(root, isEn);
 }
 
 /**
- * 対策の章を短くする（2026-10-24）。「注意したい業界・業務」と「いまの対策で
- * 埋まるか」の 2 つの表は、見出しだけ見せて「詳しく見る」で開く（登録は求め
- * ない）。開いたままにするのは、リード・必要になるもの・チェックリスト。
- * チェックリスト（とその「注：」）の直後には、週 1 回のメールの入口の目印を
- * 置く（中身は BriefTemplate の BriefWeeklyCta）。
+ * チェックリスト（とその「注：」）の直後に、週 1 回のメールの入口の目印を
+ * 置く（中身は BriefTemplate の BriefWeeklyCta・2026-10-24）。本文は登録なしで
+ * 全部読めるまま。対策の章の表を畳む案も試したが、SEO も読み手の得も変わらず、
+ * 対策を探しに来た人には表も答えの一部なので、開いたままにした。
  */
-const FOLD_HEADS = /^(注意したい業界・業務|いまの対策で埋まるか|Industries and operations to watch|Do today['’]s controls close it\?)$/i;
-
-function foldCounterDetails(root, isEn) {
+function markWeeklySlot(root) {
   const r = sectionRange(root, 5);
   if (!r) return;
   for (let i = r[0]; i < root.length; i++) {
     const node = root[i];
     if (isEl(node, "h2")) break;
-    if (isEl(node, "h3") && FOLD_HEADS.test(textOf(node).trim())) {
-      let end = i + 1;
-      while (
-        end < root.length &&
-        !isEl(root[end], "h2") &&
-        !isEl(root[end], "h3") &&
-        !(isEl(root[end]) && /\b(rx-box|bx-checklist)\b/.test(String(root[end].properties?.className ?? "")))
-      ) end++;
-      const body = root.slice(i + 1, end);
-      const summary = h("summary", "rx-more-s", [
-        h("span", "rx-more-t", node.children),
-        h("span", "rx-more-a", [txt(isEn ? "Show details" : "詳しく見る")]),
-      ]);
-      root.splice(i, end - i, h("details", "rx-more", [summary, ...body]));
-    }
     const cls = String(node.properties?.className ?? "");
     if (isEl(node) && /\bbx-checklist\b/.test(cls)) {
       // 直後の「注：」はチェックリストの続きなので、その後ろに置く。
