@@ -50,7 +50,6 @@ const PERSONAS = [
   {
     key: "acct",
     tab: "経理・財務",
-    who: "例：経理の担当・社員 80 人の製造業",
     msg: "振込先の口座が変わりました。今月分から、こちらにお願いします。",
     tag: "取引先のなりすまし",
     ch: "mail",
@@ -59,7 +58,6 @@ const PERSONAS = [
     sender: "株式会社〇〇商事 経理部",
     addr: "keiri@oo-shoji.example",
     subject: "【重要】お振込先変更のお願い",
-    from: "取引先の担当者を名乗る、偽のメール",
     real: "米国の市では、この形の連絡で、工事代金 670 万ドルが別の口座へ送られました。",
     slug: "158-portland-water-bureau-vendor-bank-change",
     checks: ["振込先の変更を、メールの中ではなく登録済みの連絡先で確認しているか", "変わった直後の支払いを、照合が済むまで保留にしているか"],
@@ -69,7 +67,6 @@ const PERSONAS = [
   {
     key: "exec",
     tab: "経営・管理職",
-    who: "例：経営企画の部長・社員 300 人のサービス業",
     msg: "至急、この口座に送金してください。社内にはまだ内密に。",
     tag: "社長・役員のなりすまし",
     ch: "chat",
@@ -78,7 +75,6 @@ const PERSONAS = [
     sender: "代表取締役",
     addr: "10:42",
     subject: "",
-    from: "社長や役員を名乗る、偽のチャットやビデオ会議",
     real: "国内の上場企業では、チャットで役員を装った指示に従い、同じ日に 9,600 万円が振り込まれました。",
     slug: "159-zuu-business-chat-executive-impersonation-transfer",
     checks: ["送金の指示を、届いた経路とは別の手段で本人に照合しているか", "振込の作成と承認を、別の人が行っているか"],
@@ -88,7 +84,6 @@ const PERSONAS = [
   {
     key: "it",
     tab: "情報システム",
-    who: "例：情シスの課長・社員 200 人の IT 企業",
     msg: "取引先の担当者を 1 名、追加しました。",
     tag: "偽の担当者の登録",
     ch: "notice",
@@ -97,17 +92,15 @@ const PERSONAS = [
     sender: "取引先ポータル",
     addr: "自動送信",
     subject: "担当者が追加されました",
-    from: "攻撃者が取引先の登録に入り込んだときの通知",
     real: "米国の市では、偽の担当者が取引先の登録に加えられ、振込先が書き換えられて 152 万ドルが送られました。",
     slug: "160-baltimore-workday-supplier-contact-bank-change",
-    checks: ["管理者や担当者が追加されたとき、誰に知らせが届くか", "使っていない入口や広すぎる権限を、定期的に閉じているか"],
+    checks: ["管理者や担当者が追加されたとき、担当者に知らせが届くか", "使っていない入口や広すぎる権限を、定期的に閉じているか"],
     ops: ["account-admin"],
     btn: "アカウントの項目でチェックする",
   },
   {
     key: "ga",
     tab: "総務・内部統制",
-    who: "例：総務の担当・病院や自治体の委託の窓口",
     msg: "お預かりした機器は、作業のあと、すべて破砕しました。",
     tag: "不正な持ち出し",
     ch: "report",
@@ -116,22 +109,21 @@ const PERSONAS = [
     sender: "〇〇リサイクル株式会社",
     addr: "PDF・1 ページ",
     subject: "データ消去・破砕 完了報告書",
-    from: "委託先からの作業の報告（実際には破砕されていなかった）",
     real: "国内の病院では、破砕したはずの電子カルテの HDD の一部が、ネットオークションで落札されました。",
     slug: "065-hokkaido-hospital-hdd-disposal",
     checks: ["委託先の「消した」という説明を、消去の記録や写真で確認しているか", "委託先の再委託や転売を、事前に知る取り決めがあるか"],
-    ops: ["data-access"],
+    ops: ["other"],
     btn: "委託の項目でチェックする",
   },
 ];
 // よくある質問（画面と FAQPage の構造化データの両方に使う）。
 const FAQ = [
-  { q: "答えは、どう扱われますか", a: "どの項目に何と答えたかは、会社や個人が分からない形で集計し、事例の分析とチェック項目の改善に使います。会社名やメールアドレスを伺うのは、メールで相談するときだけです。" },
-  { q: "担当外の項目は、どう答えればよいですか", a: "「分からない」を選んでください。結果に、その業務について社内で誰に聞けばよいかを出します。" },
-  { q: "結果は、診断や点数ですか", a: "いいえ。実際に起きた事例から作った、点検の目安です。点数やランクは付けません。" },
-  { q: "相談は無料ですか。製品の案内は来ますか", a: "無料です。お返事はメールだけで、お電話はしません。お返事に、Lemma（照合できたものだけを通す仕組み）のご案内を添えることがあります。" },
+  { q: "回答は、どう扱われますか", a: "どの項目にどう回答したかは、会社や個人が特定されない形で集計し、事例の分析とチェック項目の改善に使います。会社名やメールアドレスを伺うのは、メールでご相談いただく場合だけです。" },
+  { q: "担当外の項目は、どう答えればよいですか", a: "「分からない」を選んでください。結果の「確認が必要な項目」に並ぶので、担当部署への確認にお使いください。" },
+  { q: "点数は、何を表しますか", a: "答えた項目のうち「はい」の割合を、100 点満点にしたものです。実際に起きた事例から作った点検の目安で、他社との比較ではありません。" },
+  { q: "相談は無料ですか。製品の案内は来ますか", a: "無料です。お返事はメールだけで、お電話はしません。お返事に、Lemma（本物だと確認できたものだけを通す仕組み）のご案内を添えることがあります。ご案内は、メールに返信して「停止」とお伝えいただければ止めます。" },
   { q: "お返事はいつ届きますか", a: "3 営業日以内に、メールでお返事します。届かないときは、迷惑メールのフォルダもご確認ください。" },
-  { q: "答えを残したくないときは", a: "結果の下の「答えを消す」を押すと、このブラウザに残った答えをすべて消します。" },
+  { q: "回答を残したくない場合は", a: "結果の下の「回答を消す」を押すと、このブラウザに残っている回答をすべて消去します。" },
 ];
 const site = "https://lemma.frame00.com";
 const jsonLd = [
@@ -162,12 +154,6 @@ const jsonLd = [
     publisher: { "@type": "Organization", name: "FRAME00株式会社" },
   },
 ];
-// 相談の例（サービスデザイン・営業の案・2026-10-24）。押すとフォームの「いちばん気になる点」に入る。
-const CONSULT_EXAMPLES = [
-  "「分からない」だった項目を、社内で誰に聞けばよいか知りたい",
-  "振込先の変更の照合を、少ない人数の経理で回す方法を知りたい",
-  "委託先との取り決めに、何を足せばよいか知りたい",
-];
 ---
 
 <Layout
@@ -192,8 +178,8 @@ const CONSULT_EXAMPLES = [
             <a class="lp-btn" href="#who">無料でチェックする</a>
           </div>
           <ul class="lp-ticks">
+            <li>無料</li>
             <li>登録不要</li>
-            <li>1 つの業務で 5 分</li>
           </ul>
         </div>
         <div class="lp-mock" aria-hidden="true">
@@ -201,7 +187,7 @@ const CONSULT_EXAMPLES = [
           <div class="lp-mock-r"><i class="is-yes">✓</i><p>振込先の変更を、登録済みの連絡先で確認しているか。</p></div>
           <div class="lp-mock-r"><i class="is-no">✕</i><p>変わった直後の支払いを、照合が済むまで保留にしているか。</p></div>
           <div class="lp-mock-r"><i class="is-un">?</i><p>登録を変えてよい担当者の一覧があるか。</p></div>
-          <div class="lp-mock-f">要確認 <strong>2</strong> 項目<span>次の一歩：経理・財務の責任者に聞いてみましょう</span></div>
+          <div class="lp-mock-f"><strong>33</strong> 点<span>システムや業務の抜け漏れを点検し、対策を進めることをおすすめします</span></div>
         </div>
       </div>
     </section>
@@ -231,8 +217,6 @@ const CONSULT_EXAMPLES = [
                 {p.subject && <p class="lp-win-subj">{p.subject}</p>}
                 <p class="lp-bubble">「{p.msg}」</p>
               </div>
-              <span class="lp-msg-from">{p.from}</span>
-              <span class="lp-who-ex">{p.who}</span>
             </div>
             <div class="lp-real">
               <span class="lp-real-k">実際に起きたこと</span>
@@ -252,12 +236,13 @@ const CONSULT_EXAMPLES = [
 
     <section class="lp-figs" aria-label="実際に起きた事案">
       <div class="lp-in">
-        <p class="lp-figs-h">なりすまし・攻撃で、実際に送られた額</p>
+        <p class="lp-figs-h">なりすましで実際に起きた送金事故</p>
         <div class="lp-figs-row">
           {CASES.map((c) => (
             <a class="lp-fig" href={`/ja/critical/briefs/${c.slug}/`}>
               <b>{c.fig}<small>{c.unit}</small></b>
               <span>{c.kind}</span>
+              <em>No.{c.slug.slice(0, 3)} を読む →</em>
             </a>
           ))}
         </div>
@@ -267,8 +252,7 @@ const CONSULT_EXAMPLES = [
     <div class="ck-tool" id="start">
     <p class="ck-print-head" data-ck-print-head></p>
     <p class="ck-done" data-ck-done hidden>相談を受け付けました。3 営業日以内に、ご記入のメールアドレスへお返事します。届かないときは、迷惑メールのフォルダもご確認ください。</p>
-    <p class="lp-sec-k">セルフチェック</p>
-    <h2 class="ck-tool-h">業務を選んで、はい／いいえで答える</h2>
+    <h2 class="ck-tool-h">セルフチェック</h2>
 
     <section class="ck-step" aria-labelledby="ck-s1">
       <h2 id="ck-s1"><span class="ck-n">1</span>点検する業務を選ぶ</h2>
@@ -281,15 +265,15 @@ const CONSULT_EXAMPLES = [
           </button>
         ))}
       </div>
-      <p class="ck-hint" data-ck-empty>まずは担当の業務を 1 つ選んでください。あとから足せます。外しても、答えは残ります。</p>
+      <p class="ck-hint" data-ck-empty>担当の業務を選んでください。あとから足せます。</p>
     </section>
 
     <section class="ck-step" aria-labelledby="ck-s2" data-ck-items hidden>
       <h2 id="ck-s2"><span class="ck-n">2</span>はい／いいえ／分からない で答える</h2>
       <ul class="ck-hint ck-rules">
-        <li>規程や手順で決まっていて、そのとおりに回っていれば「はい」です。1 つの項目に 2 つのことが書いてあるときは、両方そろっているときだけ「はい」です。</li>
-        <li>担当外の言葉が出たり、社内で確認できなかったりする項目は「分からない」で大丈夫です。誰に聞けばよいかを結果に出します。</li>
-        <li>押した答えをもう一度押すと、答えを外せます。いくつかの業務に当てはまる項目は、1 か所にまとめて出しています。</li>
+        <li>規程や手順で定められ、そのとおりに運用されていれば「はい」です。1 つの項目に 2 つの内容がある場合は、両方を満たすときだけ「はい」です。</li>
+        <li>担当外の内容や、社内で確認できない項目は「分からない」を選んでください。</li>
+        <li>選んだ回答をもう一度押すと、取り消せます。複数の業務に当てはまる項目は、1 か所にまとめて表示しています。</li>
       </ul>
       {groups.map((g) => (
         <div class="ck-group" data-group={g.key} hidden>
@@ -322,50 +306,39 @@ const CONSULT_EXAMPLES = [
     <section class="ck-step ck-result" aria-labelledby="ck-s3" data-ck-result hidden>
       <h2 id="ck-s3"><span class="ck-n">3</span>結果</h2>
       <p class="ck-sum" data-ck-sum></p>
-      <div data-ck-gaps></div>
-      <div class="ck-consult">
-        <div class="ck-consult-tx">
-          <b>要確認の項目を、メールで相談する</b>
-          <span>要確認の項目（「いいえ」「分からない」）について、ほかの事例での手当ての例と、社内で確認する順番を、メールでお返事します。FRAME00 の担当者が AI も使って下書きし、目を通してから、3 営業日以内にお送りします。</span>
-          <ul class="ck-promise">
-            <li>費用はかかりません</li>
-            <li>お返事に、Lemma のご案内を添えることがあります</li>
-            <li>お返事はメールだけで、お電話はしません</li>
-            <li>3 営業日以内にお返事します</li>
-          </ul>
-          <div class="ck-ex">
-            <span>相談の例（押すと、フォームに入った状態で開きます）</span>
-            {CONSULT_EXAMPLES.map((q) => (
-              <a href={CONSULT_FORM_URL} target="_blank" rel="noopener" data-ck-consult data-q={q}>{q}</a>
-            ))}
-          </div>
-          <small>いま被害が起きている・振り込んでしまった、というときは、このフォームを待たずに、取引銀行と警察（最寄りの警察署か #9110）にすぐご連絡ください。</small>
-          <small data-ck-attach>フォームには、選んだ業務と、要確認の項目の番号を添えます。</small>
-        </div>
-        <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">無料でメール相談する<span aria-hidden="true"> →</span></a>
+      <div class="ck-score" data-ck-score hidden>
+        <div class="ck-score-n"><b data-ck-score-n></b><span>点</span></div>
+        <div class="ck-score-bar" aria-hidden="true"><i data-ck-score-bar></i></div>
+        <p class="ck-score-msg" data-ck-score-msg></p>
+        <p class="ck-score-help">自社での確認や見直しが難しい場合は、メールでご相談いただけます（無料）。</p>
+        <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener">メールで相談する<span aria-hidden="true"> →</span></a>
       </div>
+      <div data-ck-gaps></div>
       <div class="ck-tools">
-        <button type="button" class="ck-sub" data-ck-print>結果を印刷する</button>
-        <button type="button" class="ck-sub" data-ck-reset>答えを消す</button>
+        <button type="button" class="ck-sub" data-ck-print>結果を PDF で保存</button>
+        <button type="button" class="ck-sub" data-ck-reset>回答を消す</button>
         <a class="ck-sub" href={BRIEF_WEEKLY_URL} target="_blank" rel="noopener">新しい事例をメールで受け取る</a>
       </div>
+      <p class="ck-fine">
+        相談のお返事は、FRAME00 の担当者からメールで 3 営業日以内にお送りします。お返事に Lemma のご案内を添えることがあります（返信で止められます）。被害が発生している場合は、取引銀行と警察（#9110）に直ちにご連絡ください。
+      </p>
       <p class="ck-print-only">
         相談・最新のチェック項目：https://lemma.frame00.com/ja/critical/self-check/
       </p>
-      <section class="ck-faq" aria-labelledby="ck-faq-h">
-        <h3 id="ck-faq-h">よくある質問</h3>
-        {FAQ.map((f) => (
-          <details>
-            <summary>{f.q}</summary>
-            <p>{f.a}</p>
-          </details>
-        ))}
-      </section>
-      <p class="ck-note">
-        この点検は、公開情報をもとにした事案の構造分析から作ったもので、特定の組織への監査・診断・助言ではありません。網羅性・正確性や、不正を防ぐ効果は保証しません。© 2026 FRAME00株式会社
-      </p>
     </section>
 
+    <section class="ck-faq" aria-labelledby="ck-faq-h">
+      <h3 id="ck-faq-h">よくある質問</h3>
+      {FAQ.map((f) => (
+        <details>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </section>
+    <p class="ck-note">
+      この点検と、メールでのお返事は、公開された事例にもとづく一般的な情報の提供で、特定の組織への監査・診断・助言ではありません。網羅性・正確性や、不正を防ぐ効果は保証しません。© 2026 FRAME00株式会社
+    </p>
     </div>
 
     <section class="lp-list" aria-labelledby="lp-list-h">
@@ -433,16 +406,6 @@ const CONSULT_EXAMPLES = [
     } catch (e) {}
     var params = new URLSearchParams(location.search);
     var from = params.get("from");
-    // 分からなかった項目を、社内で誰に聞くか（業務ごと）。
-    var ASK = {
-      "payment-change": "経理・財務の責任者",
-      approval: "経理・財務の責任者",
-      "account-admin": "情報システムの担当",
-      "data-access": "情報システムの担当",
-      delivery: "配信や発送を担う部署",
-      disclosure: "情報システムか法務の担当",
-      other: "委託先との契約の担当",
-    };
     // 相談のフォームから戻ったとき（?form=consult）。
     if (params.get("form") === "consult") root.querySelector("[data-ck-done]").hidden = false;
     var started = false;
@@ -512,17 +475,41 @@ const CONSULT_EXAMPLES = [
         if (v === "no" || v === "unsure") gaps.push(li);
       });
       $("[data-ck-progress]").textContent =
-        answered + " / " + shown.length + " 項目 回答済み　・　要確認 " + gaps.length;
+        answered + " / " + shown.length + " 項目 回答済み" +
+        (answered ? "　・　" + Math.round(((answered - gaps.length) / answered) * 100) + " 点" : "");
       var unsure = gaps.filter(function (li) { return state.ans[li.getAttribute("data-item")] === "unsure"; }).length;
-      $("[data-ck-sum]").innerHTML = !answered
-        ? "まだ答えていません。上の項目に答えると、ここに要確認の項目（「いいえ」「分からない」）が、業務ごとの次の一歩とあわせてまとまります。"
-        : (gaps.length
-            ? "答えた " + answered + " 項目のうち、<b>要確認は " + gaps.length + " 項目</b>（「いいえ」「分からない」）でした。下に、業務ごとの次の一歩をまとめました。"
-            : "答えた " + answered + " 項目は、すべて「はい」でした。") +
-          (answered < shown.length ? "（まだ答えていない項目が " + (shown.length - answered) + " 項目あります）" : "") +
-          (unsure ? "<br><span class=\"ck-soft\">「分からない」があるのは普通のことです。社内で誰が知っているかが分かれば、それだけで一歩進みます。</span>" : "");
+      $("[data-ck-sum]").textContent = !answered
+        ? "上の項目に回答すると、ここに点数が表示されます。"
+        : answered < shown.length
+          ? "未回答の項目が " + (shown.length - answered) + " 項目あります。回答済みの項目で点数を出しています。"
+          : "";
+      // 点数（答えた項目のうち「はい」の割合を 100 点満点で）と、点数ごとの軽い説明。
+      var yes = answered - gaps.length;
+      $("[data-ck-score]").hidden = !answered;
+      if (answered) {
+        var score = Math.round((yes / answered) * 100);
+        $("[data-ck-score-n]").textContent = String(score);
+        $("[data-ck-score-bar]").style.width = score + "%";
+        // 点数ごとの軽い説明（「備えができています」とは言わない：責任が持てないため）。
+        // 1 項目でも「いいえ」「分からない」があれば、警戒が要ると先に言う。
+        var msg =
+          score === 100
+            ? "チェックした範囲の項目は、すべて「はい」でした。手口は年々増えているため、システムや業務に新たな抜け漏れがないか、定期的な点検をおすすめします。"
+            : "「いいえ」「分からない」の項目が 1 つでもあると、実際の事案と同じ手口で、送金事故や情報の流出が起きるおそれがあります。" +
+              (score >= 40
+                ? "システムや業務の抜け漏れを点検し、対策を進めることをおすすめします。"
+                : "システムや業務の抜け漏れを点検し、早めに対策を進めることをおすすめします。");
+        $("[data-ck-score-msg]").textContent =
+          msg + (unsure * 2 >= answered ? "「分からない」が多い場合は、まず担当部署にご確認ください。" : "");
+      }
+      // 確認したい項目（いいえを先に）。業務ごとにまとめ、元の事例へのリンクを添える。
+      gaps.sort(function (a, b) {
+        var va = state.ans[a.getAttribute("data-item")] === "no" ? 0 : 1;
+        var vb = state.ans[b.getAttribute("data-item")] === "no" ? 0 : 1;
+        return va - vb;
+      });
       var box = $("[data-ck-gaps]");
-      box.innerHTML = "";
+      box.innerHTML = gaps.length ? '<p class="ck-gaps-h">確認が必要な項目</p>' : "";
       var byGroup = {};
       gaps.forEach(function (li) {
         var g = li.closest("[data-group]");
@@ -533,9 +520,6 @@ const CONSULT_EXAMPLES = [
           var h = document.createElement("b");
           h.textContent = g.querySelector(".ck-gh").textContent;
           byGroup[key].appendChild(h);
-          var next = document.createElement("p");
-          next.className = "ck-next";
-          byGroup[key].appendChild(next);
           byGroup[key].appendChild(document.createElement("ul"));
           box.appendChild(byGroup[key]);
         }
@@ -550,25 +534,24 @@ const CONSULT_EXAMPLES = [
         item.appendChild(src);
         byGroup[key].querySelector("ul").appendChild(item);
       });
-      // 業務ごとの次の一歩（1 業務に 1 行まで）。いいえがあれば事例を読む、
-      // 分からないだけなら社内で誰に聞くか。
-      Object.keys(byGroup).forEach(function (key) {
-        var hasNo = byGroup[key].querySelector(".ck-tag--no");
-        byGroup[key].querySelector(".ck-next").textContent = hasNo
-          ? "次の一歩：元の事例を読み、自社で同じ手順になっていないかを確認しましょう。"
-          : "次の一歩：" + (ASK[key] || "担当の部署") + "に、この項目について聞いてみましょう。";
-      });
-      var opLabels = state.ops.map(function (k) {
-        var b = $('.ck-op[data-op="' + k + '"] .ck-op-l');
-        return b ? b.textContent : k;
-      });
-      $("[data-ck-attach]").textContent =
-        "フォームには、選んだ業務（" + opLabels.join("、") + "）と、要確認の項目 " + gaps.length + " 件の番号を添えます。";
-      var gapIds = gaps.map(function (li) { return li.getAttribute("data-item"); }).join(",").slice(0, 900);
+      // 「いいえ」と「分からない」を分けて渡す（返事が変わるため）。長すぎるときは項目の境目で切る。
+      var idsOf = function (v) {
+        var out = "";
+        gaps.forEach(function (li) {
+          var id = li.getAttribute("data-item");
+          if (state.ans[id] !== v) return;
+          var next = out ? out + "," + id : id;
+          if (next.length <= 600) out = next;
+        });
+        return out;
+      };
+      var gapIds = idsOf("no") + (idsOf("unsure") ? "|" + idsOf("unsure") : "");
       $$("[data-ck-consult]").forEach(function (link) {
         var u = new URL(link.getAttribute("href"));
         u.searchParams.set("ops", state.ops.join(","));
         u.searchParams.set("gaps", gapIds);
+        u.searchParams.set("no", idsOf("no"));
+        u.searchParams.set("unsure", idsOf("unsure"));
         u.searchParams.set("ref", from ? "selfcheck_from_brief" : "selfcheck");
         if (link.getAttribute("data-q")) u.searchParams.set("q", link.getAttribute("data-q"));
         link.href = u.toString();
@@ -639,7 +622,7 @@ const CONSULT_EXAMPLES = [
         return;
       }
       if (e.target.closest("[data-ck-reset]")) {
-        if (!window.confirm("このブラウザに残っている答えを、すべて消します。よろしいですか。")) return;
+        if (!window.confirm("このブラウザに残っている回答を、すべて消去します。よろしいですか。")) return;
         state.ans = {};
         save();
         render();
@@ -813,7 +796,6 @@ const CONSULT_EXAMPLES = [
     background: #fff;
     border: 1px solid #e3e6dc;
     box-shadow: 0 24px 60px rgba(47, 55, 47, 0.14);
-    transform: rotate(1.2deg);
   }
   .lp-mock-h {
     display: flex;
@@ -956,7 +938,7 @@ const CONSULT_EXAMPLES = [
   }
   .lp-tag {
     display: inline-block;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     padding: 4px 12px;
     border-radius: 999px;
     background: #8a4b38;
@@ -964,13 +946,7 @@ const CONSULT_EXAMPLES = [
     font-size: 12.5px;
     font-weight: 800;
   }
-  .lp-msg-from {
-    display: block;
-    margin-top: 10px;
-    font-size: 12.5px;
-    font-weight: 700;
-    color: #6a7064;
-  }
+
   .lp-win {
     overflow: hidden;
     border-radius: 16px;
@@ -1047,12 +1023,7 @@ const CONSULT_EXAMPLES = [
     border-radius: 8px;
     font-size: 17px;
   }
-  .lp-who-ex {
-    display: block;
-    margin-top: 10px;
-    font-size: 12px;
-    color: #8a9084;
-  }
+
   .lp-real-k {
     display: block;
     font-size: 12px;
@@ -1114,6 +1085,14 @@ const CONSULT_EXAMPLES = [
   .lp-fig small {
     margin-left: 2px;
     font-size: 13px;
+  }
+  .lp-fig em {
+    display: block;
+    margin-top: 4px;
+    font-style: normal;
+    font-family: "Space Mono", monospace;
+    font-size: 11.5px;
+    color: #4e7a00;
   }
   .lp-fig span {
     font-size: 12.5px;
@@ -1354,7 +1333,8 @@ const CONSULT_EXAMPLES = [
     overflow: hidden;
   }
   .ck-ans button {
-    padding: 6px 12px;
+    min-height: 36px;
+    padding: 6px 14px;
     background: #fff;
     border: 0;
     border-left: 1px solid #dcdfd6;
@@ -1377,6 +1357,73 @@ const CONSULT_EXAMPLES = [
   .ck-ans [data-v="unsure"][aria-checked="true"] {
     background: #c98a12;
     color: #fff;
+  }
+  .ck-score {
+    margin: 0 0 16px;
+    padding: 20px 22px;
+    border-radius: 16px;
+    background: #f6f8ef;
+    border: 1px solid #e3e6dc;
+  }
+  .ck-score-n {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .ck-score-n span {
+    font-size: 14px;
+    font-weight: 700;
+    color: #3c4237;
+  }
+  .ck-score-n b {
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .ck-score-n small {
+    font-size: 16px;
+    font-weight: 700;
+    color: #6a7064;
+  }
+  .ck-score-bar {
+    height: 10px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: #e4e7de;
+    overflow: hidden;
+  }
+  .ck-score-bar {
+    display: flex;
+  }
+  .ck-score-bar i {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: #8fc80c;
+    transition: width 0.3s;
+  }
+
+  .ck-score-help {
+    margin: 14px 0 10px;
+    font-size: 13.5px;
+    color: #3c4237;
+  }
+  .ck-result :global(.ck-gaps-h) {
+    margin: 22px 0 8px;
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .ck-fine {
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #6a7064;
+  }
+  .ck-score-msg {
+    margin: 12px 0 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.8;
   }
   .ck-sum {
     margin: 0 0 14px;
@@ -1433,29 +1480,6 @@ const CONSULT_EXAMPLES = [
   .ck-result :global(.ck-tag--unsure) {
     background: #c98a12;
   }
-  .ck-consult {
-    display: flex;
-    gap: 18px;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 20px;
-    padding: 20px 22px;
-    border-radius: 14px;
-    color: #e9eee3;
-    background: linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
-  }
-  .ck-consult-tx > b {
-    display: block;
-    font-size: 16px;
-    color: #fff;
-  }
-  .ck-consult-tx > span {
-    display: block;
-    margin-top: 4px;
-    font-size: 12.5px;
-    line-height: 1.7;
-    color: #c8cfc2;
-  }
   .ck-btn {
     flex: none;
     white-space: nowrap;
@@ -1466,52 +1490,6 @@ const CONSULT_EXAMPLES = [
     font-weight: 700;
     font-size: 14px;
     text-decoration: none;
-  }
-  .ck-consult-tx {
-    min-width: 0;
-  }
-  .ck-promise {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 16px;
-    margin: 10px 0 0;
-    padding: 0;
-    list-style: none;
-    font-size: 12.5px;
-    color: #fff;
-  }
-  .ck-promise li::before {
-    content: "✓ ";
-    color: #c9e57a;
-  }
-  .ck-ex {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 12px;
-  }
-  .ck-ex span {
-    flex-basis: 100%;
-    font-size: 11.5px;
-    color: #aab3a4;
-  }
-  .ck-ex a {
-    padding: 5px 10px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    background: rgba(255, 255, 255, 0.06);
-    color: #e9eee3;
-    font-size: 12px;
-    text-decoration: none;
-  }
-  .ck-ex a:hover {
-    background: rgba(255, 255, 255, 0.14);
-  }
-  .ck-consult small {
-    display: block;
-    margin-top: 10px;
-    font-size: 11px;
-    color: #aab3a4;
   }
   .ck-done {
     margin: 16px 0 0;
@@ -1554,15 +1532,6 @@ const CONSULT_EXAMPLES = [
     font-size: 13.5px;
     line-height: 1.8;
     color: #3c4237;
-  }
-  .ck-result :global(.ck-soft) {
-    font-size: 13.5px;
-    color: #6a7064;
-  }
-  .ck-result :global(.ck-next) {
-    margin: 4px 0 2px;
-    font-size: 13px;
-    color: #4e7a00;
   }
   .ck-tools {
     display: flex;
@@ -1623,9 +1592,6 @@ const CONSULT_EXAMPLES = [
     .lp-figs-row {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .lp-mock {
-      transform: none;
-    }
   }
   @media (max-width: 760px) {
     .ck-tool {
@@ -1655,16 +1621,15 @@ const CONSULT_EXAMPLES = [
       align-items: flex-start;
       gap: 8px;
     }
-    .ck-consult {
-      flex-direction: column;
-      align-items: flex-start;
-    }
     .ck-bar {
-      left: 16px;
-      right: 16px;
+      left: 12px;
+      right: 12px;
       transform: none;
       justify-content: space-between;
-      font-size: 12px;
+      gap: 8px;
+      padding-left: 14px;
+      font-size: 11.5px;
+      white-space: normal;
     }
   }
   @media print {
@@ -1680,7 +1645,6 @@ const CONSULT_EXAMPLES = [
     .ck-ops,
     .ck-bar,
     .ck-tools,
-    .ck-consult,
     .ck-ans,
     .ck-hint {
       display: none !important;
