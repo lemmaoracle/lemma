@@ -48,18 +48,25 @@ export const BRIEF_RAIL_CTA_URL: Readonly<Record<Locale, string>> = {
 } as const;
 
 /**
+ * 点検表（Critical Brief の点検項目をまとめた Excel）を受け取る Tally の
+ * フォーム（2026-10-24・日本語だけ）。/ja/critical/briefs/checklist/ に埋め込む。
+ */
+export const CHECKLIST_FORM_ID = "2jE9dj" as const;
+
+/**
  * 記事の対策の章、チェックリストのあとのメールの入口（2026-10-24）。
- * 本文は登録なしで全部読めるまま、持ち帰る価値（新しい事例と点検の
- * 項目）で受ける。フォームは BRIEF_RAIL_CTA_URL と同じで、`ref` だけ分ける。
+ * 本文は登録なしで全部読めるまま、記事の外のおまけで受ける。日本語は点検表の
+ * ページ（フォームを埋め込み）、英語は定期のメールの Tally のフォーム。`ref` で
+ * 置き場所を分ける。
  */
 export const BRIEF_CHECKLIST_CTA_URL: Readonly<Record<Locale, string>> = {
-  ja: "https://tally.so/r/EkMj82?ref=brief_checklist&utm_source=brief_checklist&utm_medium=cta&utm_campaign=brief_to_weekly",
+  ja: "/ja/critical/briefs/checklist/?ref=brief_checklist&utm_source=brief_checklist&utm_medium=cta&utm_campaign=brief_to_checklist",
   en: "https://tally.so/r/rjvN2X?ref=brief_checklist&utm_source=brief_checklist&utm_medium=cta&utm_campaign=brief_to_weekly",
 } as const;
 
-/** 同じフォームの、記事の TL;DR のあとの 1 行の入口（2026-10-24）。 */
+/** 同じ入口の、記事の TL;DR のあとの 1 行（2026-10-24）。 */
 export const BRIEF_TLDR_CTA_URL: Readonly<Record<Locale, string>> = {
-  ja: "https://tally.so/r/EkMj82?ref=brief_tldr&utm_source=brief_tldr&utm_medium=cta&utm_campaign=brief_to_weekly",
+  ja: "/ja/critical/briefs/checklist/?ref=brief_tldr&utm_source=brief_tldr&utm_medium=cta&utm_campaign=brief_to_checklist",
   en: "https://tally.so/r/rjvN2X?ref=brief_tldr&utm_source=brief_tldr&utm_medium=cta&utm_campaign=brief_to_weekly",
 } as const;
 

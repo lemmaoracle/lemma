@@ -1,0 +1,199 @@
+---
+/**
+ * Critical Brief の点検表を受け取るページ（2026-10-24・日本語だけ）。
+ *
+ * 記事の「メールの入口」（TL;DR のあとの 1 行・チェックリストのあとの帯）から
+ * 来る。Tally のフォーム（2jE9dj）を埋め込み、メールアドレスと同意（必須）、
+ * 任意の 3 問（関心のある業務・不安な点・会社の規模）を受ける。点検表（Excel）は
+ * できあがり次第メールで送る（先にリストを取り、あとから送る）。
+ *
+ * 記事の本文は登録の先に置かない。このページは記事の外のおまけを受け取る入口。
+ * ページの ?ref= / ?utm_* はフォームの隠しフィールドへそのまま渡し、どの入口
+ * から来たかを Tally の回答で分ける。送信後はトップ（/ja/?form=checklist）へ
+ * 戻り、Layout が generate_lead を数える。
+ */
+import Layout from "../../../../layouts/Layout.astro";
+import Navigation from "../../../../components/Navigation.astro";
+import Footer from "../../../../components/FooterRenewal.astro";
+import { getTranslations } from "../../../../i18n/translations";
+import { CHECKLIST_FORM_ID } from "../../../../config/cta";
+
+const locale = "ja" as const;
+const base = "/ja";
+const t = getTranslations(locale);
+const formSrc = `https://tally.so/embed/${CHECKLIST_FORM_ID}?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1`;
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath="/critical/briefs/checklist/"
+  localesAvailable={["ja"]}
+  title="点検表を受け取る｜Lemma Critical Brief"
+  description="実際に起きた事案から作った、自社の点検表（Excel）を受け取れます。振込先の変更、承認、アカウント管理など、狙われた業務ごとに照合する項目をまとめています。"
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <main class="ck">
+    <nav class="ck-crumb" aria-label="パンくず">
+      <a href="/ja/">ホーム</a><span>/</span><a href="/ja/critical/briefs/">Critical Brief</a><span>/</span><span>点検表</span>
+    </nav>
+    <header class="ck-head">
+      <div class="ck-k">LEMMA CRITICAL BRIEF · CHECKLIST</div>
+      <h1>実際に起きた事案から作った、<br />自社の点検表を受け取る</h1>
+      <p>
+        Critical Brief で分析した事案ごとに、「同じことが自社で起きないか」を照合する項目をまとめた点検表（Excel）です。振込先の変更、承認、アカウント管理など、狙われた業務ごとに分けています。できあがり次第、メールでお送りします。
+      </p>
+      <ul class="ck-points">
+        <li><b>事例から作った項目</b><span>各項目に、元の事例の記事へのリンク付き</span></li>
+        <li><b>社内で配れる形</b><span>回答欄・メモ欄つきの Excel</span></li>
+        <li><b>記事は登録なしで読めます</b><span>点検表は記事の外のおまけです</span></li>
+      </ul>
+    </header>
+    <section class="ck-form" aria-label="点検表を受け取るフォーム">
+      <iframe
+        data-tally-src={formSrc}
+        loading="lazy"
+        width="100%"
+        height="760"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="Lemma Critical Brief 点検表を受け取る"
+        data-ck-form
+      ></iframe>
+      <p class="ck-note">
+        いただいたメールアドレスは、点検表と新しい事例のお知らせにだけ使います。配信の停止はいつでもできます。この点検表は、公開情報をもとにした事案の構造分析から作ったもので、特定の組織への監査・診断・推奨ではありません。
+      </p>
+    </section>
+  </main>
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<script is:inline>
+  (function () {
+    // ページの ?ref= / ?utm_* をフォームの隠しフィールドへ渡す。
+    var frame = document.querySelector("[data-ck-form]");
+    if (!frame) return;
+    var src = frame.getAttribute("data-tally-src");
+    var pass = new URLSearchParams();
+    new URLSearchParams(location.search).forEach(function (v, k) {
+      if (k === "ref" || k.indexOf("utm_") === 0) pass.set(k, v);
+    });
+    if (!pass.has("ref")) pass.set("ref", "checklist_page");
+    frame.setAttribute("data-tally-src", src + "&" + pass.toString());
+    var s = document.createElement("script");
+    s.src = "https://tally.so/widgets/embed.js";
+    s.async = true;
+    s.onload = function () {
+      if (window.Tally) window.Tally.loadEmbeds();
+    };
+    s.onerror = function () {
+      frame.src = frame.getAttribute("data-tally-src");
+    };
+    document.body.appendChild(s);
+  })();
+</script>
+
+<style>
+  .ck {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 112px 20px 72px;
+    color: #16190f;
+  }
+  .ck-crumb {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    color: #6a7064;
+  }
+  .ck-crumb a {
+    color: #3c4237;
+    text-decoration: none;
+  }
+  .ck-head {
+    margin-top: 18px;
+    padding: 30px 32px 28px;
+    border-radius: 16px;
+    color: #e9eee3;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0) 0 0 / 18px 18px,
+      linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
+  }
+  .ck-k {
+    font-family: "Space Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    color: #c9e57a;
+  }
+  .ck-head h1 {
+    margin: 12px 0 0;
+    font-family: "Space Grotesk", "Noto Serif JP", Georgia, serif;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.45;
+    color: #fff;
+  }
+  .ck-head p {
+    margin: 14px 0 0;
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: #d6dcd0;
+  }
+  .ck-points {
+    list-style: none;
+    margin: 20px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .ck-points li {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .ck-points b {
+    font-size: 13.5px;
+    color: #fff;
+  }
+  .ck-points span {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #c8cfc2;
+  }
+  .ck-form {
+    margin-top: 24px;
+    padding: 22px 24px;
+    background: #fff;
+    border: 1px solid #dcdfd6;
+    border-radius: 16px;
+  }
+  .ck-note {
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #6a7064;
+  }
+  @media (max-width: 760px) {
+    .ck {
+      padding-top: 92px;
+    }
+    .ck-head {
+      padding: 22px 18px;
+    }
+    .ck-head h1 {
+      font-size: 22px;
+    }
+    .ck-points {
+      grid-template-columns: 1fr;
+    }
+    .ck-form {
+      padding: 14px;
+    }
+  }
+</style>

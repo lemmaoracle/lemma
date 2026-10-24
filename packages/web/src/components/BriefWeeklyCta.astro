@@ -1,6 +1,7 @@
 ---
 /**
- * 定期的なメールの入口（2026-10-24）。チェックリストのあとの帯と、TL;DR の
+ * メールの入口（2026-10-24）。日本語は点検表（Excel）のページへ、英語は定期の
+ * メールの登録へ。チェックリストのあとの帯と、TL;DR の
  * あとの 1 行の 2 か所（variant）。
  *
  * 対策の章を「続きは登録で」にする案も検討したが、検索から対策を探しに来た
@@ -21,13 +22,15 @@ export interface BriefWeeklyCtaProps {
 
 const { locale, briefId, variant } = Astro.props as BriefWeeklyCtaProps;
 const href = (variant === "top" ? BRIEF_TLDR_CTA_URL : BRIEF_CHECKLIST_CTA_URL)[locale];
+// 日本語はサイトの中の点検表のページ（同じタブ）、英語は Tally（新しいタブ）。
+const external = href.startsWith("http");
 const isJa = locale === "ja";
 const L = isJa
   ? {
-      head: "この点検の項目と、新しい事例をメールで受け取る",
-      sub: "新しい Critical Brief と、自社で照合したい点を定期的にお届けします。",
-      btn: "メールで受け取る",
-      top: "新しい事例と点検の項目を、定期的にメールで受け取る",
+      head: "事例から作った点検表（Excel）を受け取る",
+      sub: "この記事のような事例ごとに、自社で照合する項目をまとめました。狙われた業務ごとに分けています。",
+      btn: "点検表を受け取る",
+      top: "事例から作った点検表（Excel）を受け取る",
     }
   : {
       head: "Get checks like these and new cases by email",
@@ -46,10 +49,10 @@ const L = isJa
       <b>{L.head}</b>
       <span>{L.sub}</span>
     </span>
-    <a class="wk-btn" href={href} target="_blank" rel="noopener" data-wk-ev="brief_checklist_weekly">{L.btn}<span aria-hidden="true"> →</span></a>
+    <a class="wk-btn" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} data-wk-ev="brief_checklist_weekly">{L.btn}<span aria-hidden="true"> →</span></a>
   </aside>
 ) : (
-  <a class="wk-top" href={href} target="_blank" rel="noopener" data-brief-weekly="top" data-brief={briefId} data-wk-ev="brief_tldr_weekly">
+  <a class="wk-top" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} data-brief-weekly="top" data-brief={briefId} data-wk-ev="brief_tldr_weekly">
     <span class="wk-ic wk-ic--s" aria-hidden="true">
       <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="12" rx="2" /><path d="M3.5 6l7.5 6 7.5-6" /></svg>
     </span>

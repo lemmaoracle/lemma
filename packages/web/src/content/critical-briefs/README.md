@@ -255,8 +255,10 @@ md には何も書かない。`controls` は §5 の「必要なこと」と同�
 回る）。分類の無い Brief は、末尾に従来の関連 Brief が出る。
 
 **メールの入口（2026-10-24）**：TL;DR のあとに 1 行、§5 のチェックリスト（とその「注：」）
-のあとに帯で、定期的なメールの入口を出す（`components/BriefWeeklyCta.astro`・行き先は `config/cta.ts` の
-`BRIEF_TLDR_CTA_URL` / `BRIEF_CHECKLIST_CTA_URL`・`ref` で置き場所を分ける）。本文は登録の先に置かず、表も畳まずに全部読めるままにする
+のあとに帯で、メールの入口を出す（`components/BriefWeeklyCta.astro`・行き先は `config/cta.ts`
+の `BRIEF_TLDR_CTA_URL` / `BRIEF_CHECKLIST_CTA_URL`・`ref` で置き場所を分ける）。日本語は
+点検表（Excel）を受け取るページ（`/ja/critical/briefs/checklist/`・Tally のフォームを埋め込み）、
+英語は定期のメールの登録。本文は登録の先に置かず、表も畳まずに全部読めるままにする
 （検索から対策を探しに来た人を答えの手前で止めないため。畳んでも SEO は変わらず、読み手に
 とっては表も答えの一部）。
 
