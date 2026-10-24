@@ -141,10 +141,10 @@ The same structure appears in [Polaris Holdings / Booking.com](/critical/briefs/
 
 | Control | This case | Why |
 | --- | --- | --- |
-| Check with the contact on file | Partial | Worked on the emailed request. Nothing says the reset link's destination was checked. |
-| Supplier self-service portal | Partial | Suppliers enter their own details, but an impostor with the login also looks like the supplier. |
-| Bank fraud detection | Partial | The receiving bank's alert and the seizure brought the money back. It does not stop the transfer. |
-| Staff training | Partial | Staff caught the first request. Training does not cover every other path in the process. |
+| Check with the contact on file | Partial | Worked: the emailed bank-change request went unanswered, so nothing was changed. Did not: nothing says the reset link's destination was checked, and the link reached the impostor. |
+| Supplier self-service portal | Ineffective | Did not: an impostor with the login looked like the supplier, and the bank-detail change went through. |
+| Bank fraud detection | Partial | Worked: four days after the transfer, the receiving bank flagged it, and the seizure brought the money back. Did not: the transfer itself was not stopped. |
+| Staff training | Partial | Worked: staff caught the first emailed request. Did not: the reset link, a different path, got through. |
 
 ### What is needed
 
