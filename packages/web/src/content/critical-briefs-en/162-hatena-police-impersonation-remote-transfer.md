@@ -83,7 +83,7 @@ Per the special investigation committee's report, the attack ran as follows.
 <div class="rx-step crit"><div class="who">Head of accounting</div><div class="no">2</div><b>Installs remote-desktop software on the work PC</b><p>10:39. The scammers operate the PC from then on.</p></div>
 <div class="rx-step crit"><div class="who">Scammers</div><div class="no">3</div><b>Send transfers out of the payment account</b><p>One account could create and approve, with no limit.</p></div>
 <div class="rx-step crit"><div class="who">Company</div><div class="no">4</div><b>Fund moves created, checked and approved</b><p>The director approved the first ¥300M as "payroll preparation." Six more followed without a stated reason: ¥940M in all.</p></div>
-<div class="rx-step good"><div class="who">Bank</div><div class="no">5</div><b>Queries suspicious transfers; halts withdrawals the next day</b><p>Query on the 20th after 16:00. The night restriction was lifted by a call at 19:52. A transfer at 10:53 on the 21st failed on the halt.</p></div>
+<div class="rx-step good"><div class="who">Bank</div><div class="no">5</div><b>Queries suspicious transfers; halts withdrawals the next day</b><p>Query on the 20th. The night restriction was lifted by phone. The next morning's transfer failed on the halt.</p></div>
 </div>
 </figure>
 

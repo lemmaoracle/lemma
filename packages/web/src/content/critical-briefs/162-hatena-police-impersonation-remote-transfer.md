@@ -85,7 +85,7 @@ countries: ["jp"]
 <div class="rx-step crit"><div class="who">経理部長</div><div class="no">2</div><b>業務用の PC にリモートデスクトップを入れる</b><p>10 時 39 分。以後、詐欺グループが PC を操作する。</p></div>
 <div class="rx-step crit"><div class="who">詐欺グループ</div><div class="no">3</div><b>送金用の口座から外部へ振り込む</b><p>1 人のアカウントで作成から承認まで済み、上限額も無かった。</p></div>
 <div class="rx-step crit"><div class="who">社内</div><div class="no">4</div><b>資金移動を作成・確認・承認する</b><p>最初の 3 億円は「給与出金の準備」として担当取締役が了承。以後 6 回は理由を示さずに続き、計 9 億 4,000 万円。</p></div>
-<div class="rx-step good"><div class="who">銀行</div><div class="no">5</div><b>不審な振込を照会し、翌日に出金を止める</b><p>照会は 20 日 16 時台。夜の利用制限は 19 時 52 分の電話で解除された。21 日 10 時 53 分の振込が出金停止で失敗。</p></div>
+<div class="rx-step good"><div class="who">銀行</div><div class="no">5</div><b>不審な振込を照会し、翌日に出金を止める</b><p>照会は 20 日。夜の利用制限は電話で解除された。翌朝の振込は出金停止で失敗。</p></div>
 </div>
 </figure>
 
