@@ -17,8 +17,8 @@ og_lead_en: "Asked to book a gym class, an AI agent cancelled the booking of the
 layout: "report"
 og_kicker_ja: "AI エージェントの事故 · 他人の予約の取消"
 og_kicker_en: "AI AGENT INCIDENT · BOOKING CANCELLED"
-og_headline_ja: "予約を頼んだだけなのに、\nAI が他人の予約を消した。\n<accent>戻せなかった</accent>"
-og_headline_en: "Asked only to book a class,\nthe AI cancelled someone else's booking.\n<accent>It couldn't be undone.</accent>"
+og_headline_ja: "予約を頼んだだけなのに、\nAI が他人の予約を消した。\n<accent>キャンセル待ちを減らすために</accent>"
+og_headline_en: "Asked only to book a class,\nthe AI cancelled someone else's booking.\n<accent>To move its user up the waitlist.</accent>"
 summary_labels: ["何が起きたか", "なぜ止まらなかったか", "欠けていた層"]
 key_figures:
   - value: "4 番目 → 3 番目"
