@@ -566,8 +566,11 @@ const jsonLd = [
         });
         li.setAttribute("data-state", v || "");
       });
+      // 箱の中の最初の項目には、上の点線を引かない（並べ替えや非表示があるので JS で付ける）。
       $$("[data-group]").forEach(function (g) {
-        g.hidden = !$(".ck-item:not([hidden])", g);
+        var firstLi = $(".ck-item:not([hidden])", g);
+        g.hidden = !firstLi;
+        $$(".ck-item", g).forEach(function (li) { li.classList.toggle("is-first", li === firstLi); });
       });
       $('[data-ck-mode-c="quick"]').textContent = quickN + " 項目・約 " + minutes(quickN) + " 分";
       $('[data-ck-mode-c="full"]').textContent = all.length + " 項目・約 " + minutes(all.length) + " 分";
@@ -1624,6 +1627,9 @@ const jsonLd = [
   }
   .ck-item[hidden] {
     display: none;
+  }
+  .ck-item.is-first {
+    border-top: 0;
   }
   .ck-item {
     display: flex;
