@@ -209,6 +209,21 @@ const jsonLd = [
       </div>
     </section>
 
+    <section class="lp-figs" aria-label="実際に起きた事案">
+      <div class="lp-in">
+        <p class="lp-figs-h">なりすましで実際に起きた送金事故<span>円は当時のレートによる目安</span></p>
+        <div class="lp-figs-row">
+          {CASES.map((c) => (
+            <div class="lp-fig">
+              <b>{c.fig}<small>{c.unit}</small></b>
+              {c.yen && <i class="lp-fig-yen">（{c.yen}）</i>}
+              <span>{c.kind}<em>Brief No.{c.slug.slice(0, 3)}</em></span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
     <section class="lp-who" id="who" aria-labelledby="lp-who-h">
       <div class="lp-in">
         <h2 id="lp-who-h">あなたの担当は？</h2>
@@ -251,20 +266,6 @@ const jsonLd = [
       </div>
     </section>
 
-    <section class="lp-figs" aria-label="実際に起きた事案">
-      <div class="lp-in">
-        <p class="lp-figs-h">なりすましで実際に起きた送金事故<span>円は当時のレートによる目安</span></p>
-        <div class="lp-figs-row">
-          {CASES.map((c) => (
-            <div class="lp-fig">
-              <b>{c.fig}<small>{c.unit}</small></b>
-              {c.yen && <i class="lp-fig-yen">（{c.yen}）</i>}
-              <span>{c.kind}<em>Brief No.{c.slug.slice(0, 3)}</em></span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
 
     <div class="ck-tool" id="start">
     <p class="ck-print-head" data-ck-print-head></p>
@@ -1215,8 +1216,33 @@ const jsonLd = [
     content: "□ ";
     color: #4e7a00;
   }
+  /* 送金事故は「あなたの担当は？」の手前の暗い帯（Lemma について と同じ地）。 */
   .lp-figs {
-    padding: 40px 0 8px;
+    padding: 36px 0 40px;
+    color: #e9eee3;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0) 0 0 / 18px 18px,
+      linear-gradient(168deg, #3c443d, #2f372f 58%, #272e28);
+  }
+  .lp-figs .lp-figs-h {
+    color: #c9e57a;
+  }
+  .lp-figs .lp-figs-h span {
+    color: #a9b2a3;
+  }
+  .lp-figs .lp-fig {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #fff;
+  }
+  .lp-figs .lp-fig-yen {
+    color: #d6dcd0;
+  }
+  .lp-figs .lp-fig span {
+    color: #c8cfc2;
+  }
+  .lp-figs .lp-fig em {
+    color: #9aa194;
   }
   .lp-figs-h {
     margin: 0;
