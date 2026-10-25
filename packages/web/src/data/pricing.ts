@@ -29,6 +29,8 @@ export type PricingIconName =
   | "doc-stack"
   | "agent-network";
 
+export type PricingFaqAudience = "common" | "enterprise" | "developer" | "agent";
+
 type CellSpec =
   | { kind: "yes" }
   | { kind: "no" }
@@ -134,7 +136,12 @@ export interface PricingContent {
     readonly eyebrow: Localized;
     readonly h2Head: Localized;
     readonly h2Accent: Localized;
-    readonly items: ReadonlyArray<{ readonly q: Localized; readonly a: Localized }>;
+    readonly tabs: ReadonlyArray<{ readonly key: PricingFaqAudience; readonly label: Localized }>;
+    readonly items: ReadonlyArray<{
+      readonly audience: PricingFaqAudience;
+      readonly q: Localized;
+      readonly a: Localized;
+    }>;
   };
 
   readonly visionClose: {
@@ -310,7 +317,7 @@ export const PRICING: PricingContent = {
         status: { ja: "近日公開", en: "Coming soon" },
       },
     ],
-    ctaPrimary: { label: { ja: "ウェイトリストに登録 →", en: "Join the waitlist →" }, href: TRUST402_WAITLIST },
+    ctaPrimary: { label: { ja: "ウェイトリストに登録 →", en: "Join the waitlist →" }, href: { ja: TRUST402_WAITLIST, en: TRUST402_WAITLIST } },
     ctaSecondary: { label: { ja: "製品ページを見る ↗", en: "Product page ↗" }, href: { ja: "/trust402/", en: "/trust402/" } },
     footerNote: {
       ja: "詳細な料金とドキュメントはリリース時に提供されます。",

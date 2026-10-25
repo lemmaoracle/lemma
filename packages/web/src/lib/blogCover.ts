@@ -172,7 +172,7 @@ export interface CoverPattern {
 
 /** カテゴリから、この記事の絵を決める（slug には依存しない）。 */
 export const coverPattern = (category: string): CoverPattern => {
-  const base = PATTERNS[isCoverCategory(category) ? category : FALLBACK_CATEGORY];
+  const base: CoverPatternDef = PATTERNS[isCoverCategory(category) ? category : FALLBACK_CATEGORY];
   return {
     bg: base.bg,
     glow: base.glow,
