@@ -141,7 +141,7 @@ const jsonLd = [
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "ホーム", item: `${site}/ja/` },
       { "@type": "ListItem", position: 2, name: "Critical Brief", item: `${site}/ja/critical/briefs/` },
-      { "@type": "ListItem", position: 3, name: "不正の手口セルフチェック", item: `${site}/ja/critical/self-check/` },
+      { "@type": "ListItem", position: 3, name: "不正送金の対策チェックツール", item: `${site}/ja/critical/self-check/` },
     ],
   },
   {
@@ -152,7 +152,8 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "不正の手口セルフチェック",
+    name: "ビジネスメール詐欺・不正送金の対策チェックツール",
+    description: `国内外で実際に起きたサイバー攻撃・なりすましの事案から作った ${total} 項目で、経理・経営・情報システム・総務の担当ごとに、不正送金の対策を点検する無料のツール。`,
     url: `${site}/ja/critical/self-check/`,
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
@@ -171,8 +172,10 @@ const jsonLd = [
   localesAvailable={["ja"]}
   title={`ビジネスメール詐欺・不正送金の対策チェックリスト（実例 ${total} 項目・無料）｜Lemma`}
   ogTitle="なりすましによる不正送金を、止められていますか。担当別セルフチェック｜Lemma"
+  ogImage="https://lemma.frame00.com/og/self-check/ja.png"
   jsonLd={jsonLd}
-  description={`振込先の変更、社長や役員を装う送金の指示、偽のビデオ会議。国内外で実際に起きた事案から作った ${total} 項目で、経理・経営・情報システム・総務の担当ごとにセルフチェックできます。登録は不要です。`}
+  description={`ビジネスメール詐欺（BEC）などのサイバー攻撃による不正送金の対策チェックツール。振込先の書き換え、社長や役員を装う送金の指示、偽のビデオ会議など、国内外で実際に起きた事案から作った ${total} 項目で、経理・経営・情報システム・総務の担当ごとに点検できます。登録不要・無料。`}
+  ogDescription={`実際に起きた ${analyzed} 件の事案から作った ${total} 項目で、担当ごとに点検。お急ぎなら 3 分。登録不要・無料。`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <main class="ck">
