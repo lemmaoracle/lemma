@@ -203,7 +203,7 @@ const jsonLd = [
           <div class="lp-mock-h"><span>振込先・口座の変更</span><span>10 項目</span></div>
           <div class="lp-mock-r"><i class="is-yes">✓</i><p>振込先の変更を、登録済みの連絡先で確認しているか。</p></div>
           <div class="lp-mock-r"><i class="is-no">✕</i><p>変わった直後の支払いを、確認が済むまで保留にしているか。</p></div>
-          <div class="lp-mock-r"><i class="is-un">?</i><p>登録を変えてよい担当者の一覧があるか。</p></div>
+          <div class="lp-mock-r lp-mock-r--more"><i class="is-un">?</i><p>登録を変えてよい担当者の一覧があるか。</p></div>
           <div class="lp-mock-f"><strong>33</strong> 点<span>システムや業務の抜け漏れを点検し、対策を進めることをおすすめします</span></div>
         </div>
       </div>
@@ -2185,11 +2185,46 @@ const jsonLd = [
     .ck-tool-h {
       font-size: 22px;
     }
+    /* スマホ：ファーストビューを詰める（見本は 2 項目＋点数・Critical Brief の 1 文は外す）。 */
     .lp-hero {
-      padding-top: 92px;
+      padding-top: 84px;
+      padding-bottom: 28px;
+    }
+    .lp-hero-in {
+      gap: 22px;
     }
     .lp-hero h1 {
-      font-size: 34px;
+      margin-top: 12px;
+      font-size: 31px;
+    }
+    .lp-lead {
+      margin-top: 12px;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .lp-cta {
+      margin-top: 18px;
+    }
+    .lp-proof {
+      margin-top: 16px;
+    }
+    .lp-by,
+    .lp-mock-r--more {
+      display: none;
+    }
+    .lp-mock {
+      padding: 14px 16px;
+    }
+    .lp-mock-r {
+      padding: 8px 0;
+    }
+    .lp-mock-f {
+      margin-top: 8px;
+      padding: 8px 12px;
+    }
+    .lp-mock-f span {
+      display: inline;
+      margin-left: 6px;
     }
     .lp-who h2,
     .lp-lemma h2,
