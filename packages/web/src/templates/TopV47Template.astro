@@ -209,20 +209,23 @@ const CASE = isJa
   ? {
       k: "導入事例",
       bar: "上下水道の住民参加の現場で、住民の活動記録を、個人情報を出さずに証明",
+      // スマホでは帯を1行に収めるため短い文に差し替える（CSS で出し分け）。
+      barShort: "住民の活動記録を、個人情報を出さずに証明",
       link: "公共インフラの現場で、住民の活動記録を、個人情報を出さずに証明しています",
     }
   : {
       k: "Case study",
       bar: "Proving residents' activity records in public infrastructure, without exposing personal data",
+      barShort: "Residents' activity records, proven without personal data",
       link: "In public infrastructure, residents' activity records are proven without exposing personal data",
     };
 const caseHref = caseStudy ? blogArticlePath(base, caseStudy.slug) : "";
 const caseDate = caseStudy ? caseStudy.date.replace(/\./g, "-").slice(0, 10) : "";
 const caseBarHtml = caseStudy
-  ? `<div class="casebar"><div class="in"><span class="k">${CASE.k}</span><time datetime="${caseDate}">${caseDate.replace(/-/g, ".")}</time><a href="${caseHref}" data-top-ev="top_case_bar">${esc(CASE.bar)} →</a></div></div>`
+  ? `<div class="casebar"><div class="in"><span class="k">${CASE.k}</span><time datetime="${caseDate}">${caseDate.replace(/-/g, ".")}</time><a href="${caseHref}" data-top-ev="top_case_bar"><span class="full">${esc(CASE.bar)}</span><span class="short">${esc(CASE.barShort)}</span> →</a></div></div>`
   : "";
 const caseLinkHtml = caseStudy
-  ? `<a class="kcase" href="${caseHref}"><span>${CASE.k}</span>${esc(CASE.link)} →</a>`
+  ? `<a class="kcase" href="${caseHref}"><span>${CASE.k}</span>${esc(CASE.link)}&nbsp;→</a>`
   : "";
 
 /* ── Critical Brief の紹介（2026-10-25）──────────────────────────────
@@ -337,6 +340,13 @@ const ogDescription = isJa
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
   <main class="topx" set:html={body} />
+  {/* スマホだけの相談のバー（2026-10-25）。ヒーローを過ぎたら出し、下へ読む間は隠す。
+      業界の段より下では出したまま、締めの CTA が見えている間は隠す。 */}
+  <div class="topbar" id="topbar" aria-hidden="true">
+    <a href={isJa ? "https://tally.so/r/EkBqDX?source=top_bar" : "https://tally.so/r/Pd2Rl5?source=top_bar"} data-top-ev="top_bar_enterprise" tabindex="-1">
+      {isJa ? "エンタープライズ相談" : "Enterprise consultation"}
+    </a>
+  </div>
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 
   <script is:inline define:vars={{ API_BASE, VERIFY_PATH, REG }}>
@@ -353,9 +363,53 @@ const ogDescription = isJa
         window.matchMedia &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+      /* ---- スマホの相談のバー（表示は CSS で 700px 以下だけ） ---- */
+      (function () {
+        var bar = document.getElementById("topbar");
+        var hero = document.querySelector(".topx .herodark");
+        var cta = document.querySelector(".topx .cta");
+        var late = document.querySelector(".topx .ucgrid");
+        if (!bar || !hero || !("IntersectionObserver" in window)) return;
+        var heroIn = true,
+          ctaIn = false,
+          lastY = window.scrollY,
+          down = false;
+        function update() {
+          var pastLate = late && late.getBoundingClientRect().top < window.innerHeight;
+          var on = !heroIn && !ctaIn && (!down || pastLate);
+          bar.classList.toggle("on", on);
+          bar.setAttribute("aria-hidden", String(!on));
+          bar.firstElementChild.tabIndex = on ? 0 : -1;
+        }
+        new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (e.target === hero) heroIn = e.isIntersecting;
+            else ctaIn = e.isIntersecting;
+          });
+          update();
+        }).observe(hero);
+        if (cta)
+          new IntersectionObserver(function (es) {
+            ctaIn = es[0].isIntersecting;
+            update();
+          }).observe(cta);
+        window.addEventListener(
+          "scroll",
+          function () {
+            var y = window.scrollY;
+            down = y > lastY;
+            lastY = y;
+            update();
+          },
+          { passive: true },
+        );
+      })();
+
       /* ---- レジストリ実数（/verify/ と同じ GET /v1/counters・同じ数え方の宣言） ---- */
       (function () {
         var V = document.getElementById("vcount"),
+          /* スマホのヒーローに出す1行（パネルはスマホでは隠す） */
+          VL = document.getElementById("vcl"),
           I = document.getElementById("icount"),
           S = document.getElementById("vsub"),
           U = document.getElementById("vup");
@@ -433,6 +487,7 @@ const ogDescription = isJa
               if (!v || typeof v.count !== "number") throw 0;
               V.classList.remove("off");
               var hasIssued = s && typeof s.count === "number";
+              if (VL) VL.textContent = num(v.count);
               if (first) {
                 countUp(V, v.count);
                 if (hasIssued) countUp(I, s.count);

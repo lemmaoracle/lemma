@@ -136,7 +136,11 @@ const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
     <div class="rfooter-cols">
       {columns.map((col) => (
         <div class="rfooter-col">
-          <h4>{col.heading}</h4>
+          <h4>
+            {col.heading}
+            {/* スマホだけで見せる開閉のボタン（PC では隠す）。 */}
+            <button class="rfooter-toggle" type="button" aria-expanded="false" aria-label={col.heading}></button>
+          </h4>
           {col.links.map((link) => (
             <a
               href={link.href}
@@ -358,13 +362,61 @@ const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
       gap: 28px;
     }
   }
+  .rfooter-toggle {
+    display: none;
+  }
   @media (max-width: 520px) {
     .rfooter {
       padding: 44px 0 26px;
     }
+    /* スマホは列を見出しだけにして、押すと開く（2026-10-25・約2画面あったため）。 */
     .rfooter-cols {
       grid-template-columns: 1fr;
-      gap: 26px;
+      gap: 0;
+    }
+    .rfooter-col h4 {
+      position: relative;
+      margin: 0;
+      padding: 14px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .rfooter-toggle {
+      display: block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      color: #8b9285;
+      text-align: right;
+      font-size: 16px;
+    }
+    .rfooter-toggle::after {
+      content: "+";
+    }
+    .rfooter-col.open .rfooter-toggle::after {
+      content: "−";
+    }
+    .rfooter-col a {
+      display: none;
+    }
+    .rfooter-col.open a {
+      display: block;
+    }
+    .rfooter-col.open {
+      padding-bottom: 10px;
     }
   }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".rfooter-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const col = btn.closest(".rfooter-col");
+      if (!col) return;
+      const open = col.classList.toggle("open");
+      btn.setAttribute("aria-expanded", String(open));
+    });
+  });
+</script>

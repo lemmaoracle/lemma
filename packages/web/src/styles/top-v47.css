@@ -425,3 +425,80 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 .topx a.ucc .ops i{font-style:normal;font-size:12.5px;color:var(--tx-soft);background:rgba(22,25,15,.05);border-radius:3px;padding:3px 8px}
 .topx a.ucc .go{font-size:12.5px;font-weight:700;color:var(--ok-light);margin-top:auto}
 @media(max-width:860px){.topx .ucgrid{grid-template-columns:1fr}}
+
+/* ================= スマホ（2026-10-25） =================
+   縦に同じ形の箱が続いて読みにくかったので、700px 以下だけで組み直す。PC は変えない。
+   - 同じ形のカードの列（場面・なぜ、いま・業界・はじめ方・最新の動向）は横にめくる
+   - 5つの証明は図を外して2列、強みの図は縦に、数字のパネルは2列の小さな枠に
+   - 段の頭に英字のラベル（見出しと組で置く）、地は白と淡いオリーブを交互に
+   - ヒーローを過ぎたら下に相談のバー（#topbar・テンプレートの script が出し入れする） */
+.topx .slab,.topx .swipe-hint,.topx .regline,.topx .casebar .short,.topbar{display:none}
+@media(max-width:700px){
+  .topx p,.topx .lead{line-height:1.7}
+  .topx .sec:not(.alt){background:#eef1e4;box-shadow:0 0 0 100vmax #eef1e4;clip-path:inset(0 -100vmax)}
+  .topx .sec{padding-top:44px;padding-bottom:44px}
+  .topx .isec-h h2{font-size:24px}
+  .topx .slab{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--ok-light);margin-bottom:8px}
+  .topx .slab::before{content:"";display:inline-block;width:14px;height:2px;background:var(--ok);vertical-align:middle;margin-right:8px}
+
+  /* ファーストビュー */
+  .topx .casebar .in{padding:8px 20px;gap:8px;flex-wrap:nowrap;font-size:12px}
+  .topx .casebar time,.topx .casebar .full{display:none}
+  .topx .casebar .short{display:inline}
+  .topx .casebar a{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .topx .herodark .hin{padding-top:34px;padding-bottom:30px;gap:0}
+  .topx .herodark h1{font-size:30px;line-height:1.38;margin:0 0 14px}
+  .topx .herodark h1 .nb{display:block}
+  .topx .herodark .sublead{font-size:14px;line-height:1.75;margin-bottom:20px}
+  .topx .herodark .btnrow{display:grid;grid-template-columns:1.25fr 1fr;gap:8px}
+  .topx .herodark .btnrow .btn{padding:13px 8px;font-size:14px;text-align:center;justify-content:center}
+  .topx .herodark .btn .sl{display:none}
+  .topx .ticker:not(.ticker--sc){display:none}
+  .topx .ticker--sc{margin-top:14px;font-size:12px}
+  .topx .ticker--sc a span{display:inline}
+  .topx .rpanel{display:none}
+  .topx .regline{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;margin-top:16px;padding:12px 14px;border:1px solid rgba(255,255,255,.14);border-radius:6px;color:#b9c4ad;text-decoration:none}
+  .topx .regline small{display:block;font-size:10.5px;color:#8f9a86}
+  .topx .regline b{font-family:var(--num);font-weight:300;font-size:20px;color:#f4f7ef}
+  .topx .regline .v{grid-column:1/-1;margin-top:6px;font-size:12px;color:var(--ok)}
+
+  /* 横にめくる列 */
+  .topx .scenes,.topx .wn,.topx .ucgrid,.topx .st3,.topx .lat3{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;
+    margin-left:-20px;margin-right:-20px;padding:2px 20px 6px;scrollbar-width:none;border-top:0}
+  .topx .scenes::-webkit-scrollbar,.topx .wn::-webkit-scrollbar,.topx .ucgrid::-webkit-scrollbar,.topx .st3::-webkit-scrollbar,.topx .lat3::-webkit-scrollbar{display:none}
+  .topx .scenes > *,.topx .wn > *,.topx .ucgrid > *,.topx .st3 > *,.topx .lat3 > *{flex:0 0 80%;scroll-snap-align:start}
+  .topx .swipe-hint{display:block;font-size:11.5px;color:var(--muted);margin:6px 0 0;text-align:right}
+  .topx .scn{border:1px solid var(--dline);background:var(--card,#fff);padding:14px 16px}
+  .topx .scn + .scn{border-left:1px solid var(--dline)}
+  .topx .scn .bar{display:none}
+  .topx .scn .n{display:inline;font-size:20px;margin-right:8px}
+  .topx .scn h4{display:inline;font-size:16px}
+  .topx .scn p{margin-top:8px;font-size:13.5px}
+  .topx .scn .back{font-size:12.5px}
+  .topx .wn .cbody{padding:18px}
+  .topx .wn svg{display:none}
+  /* はじめ方は相談（03）を先頭に */
+  .topx .st3 > :nth-child(3){order:-1}
+
+  /* 5つの証明 */
+  .topx .fieldpanel{display:none}
+  .topx .p5{grid-template-columns:1fr 1fr;gap:0}
+  .topx .p5i,.topx .p5i:first-child{padding:12px 10px;border:0;border-top:1px solid var(--dline)}
+  .topx .p5n{display:inline;font-size:14px;margin:0 6px 0 0}
+  .topx .p5i b{display:inline;font-size:15px}
+  .topx .p5d{font-size:11.5px;line-height:1.6;margin-top:4px}
+
+  /* 強みの図を縦に */
+  .topx .keep2 .kd{flex-direction:column;align-items:stretch}
+  .topx .keep2 .karr{flex:0 0 46px;width:2px;height:46px;margin:0 auto;background:linear-gradient(180deg,rgba(168,224,16,.2),var(--ok))}
+  .topx .keep2 .karr::after{right:auto;left:-5px;top:auto;bottom:-2px;border:6px solid transparent;border-top:8px solid var(--ok);border-bottom:0}
+  .topx .keep2 .karr span{left:16px;top:50%;transform:translateY(-50%)}
+
+  /* 相談のバー */
+  .topbar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:50;padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+    background:rgba(22,25,15,.94);backdrop-filter:blur(6px);transform:translateY(110%);transition:transform .25s ease}
+  .topbar.on{transform:none}
+  .topbar a{display:block;text-align:center;font-size:14px;font-weight:800;border-radius:4px;padding:11px 8px;text-decoration:none;background:var(--ok);color:#16190f}
+  body:has(.topbar){padding-bottom:64px}
+}
+@media(max-width:700px) and (prefers-reduced-motion:reduce){.topbar{transition:none}}
