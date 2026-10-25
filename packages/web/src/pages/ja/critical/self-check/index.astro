@@ -4,7 +4,7 @@
  *
  * 記事の点検チェックリストを、狙われた場面（業務の分け方）ごとにまとめて、画面の中で
  * はい／いいえ／分からない で答えてもらう。担当を選ぶと場面がまとめて選ばれ、
- * 「まず要点だけ」か「じっくり点検する」かを選んでから答える。Excel で配ると一気に出回るので
+ * 「お急ぎ点検」か「じっくり点検」かを選んでから答える。Excel で配ると一気に出回るので
  * ファイルは渡さず、登録も求めない。回答は localStorage に下書きとして残し、
  * リサーチ用に「どの項目にどう答えたか」だけを GA4 のイベント（self_check_answer）で
  * 集計する（会社や個人は分からない形）。
@@ -44,7 +44,7 @@ const CASES = [
 // 先に見てほしい 2 項目が出る。
 // お客さまから見た「業務」は担当（経理など）なので、狙われた業務の分け方は「場面」と
 // 呼ぶ（2026-10-25）。担当を選ぶと、その担当で起こりうる場面（ops）をまとめて選び、
-// 進め方を「まず要点だけ」（quick・場面をまたいで大事な項目）か「じっくり点検する」
+// 進め方を「お急ぎ点検」（quick・場面をまたいで大事な項目）か「じっくり点検」
 // （場面の全項目）から選んでもらう。
 const CH_ICON: Record<string, string> = {
   mail: '<rect x="3" y="5" width="16" height="12" rx="2"/><path d="M3.5 6l7.5 6 7.5-6"/>',
@@ -67,7 +67,7 @@ const PERSONAS = [
     real: "米国の市では、この形の連絡で、工事代金 670 万ドルが別の口座へ送られました。",
     slug: "158-portland-water-bureau-vendor-bank-change",
     checks: ["振込先の変更を、メールの中ではなく登録済みの連絡先で確認しているか", "変わった直後の支払いを、照合が済むまで保留にしているか"],
-    ops: ["payment-change", "approval"],
+    ops: ["payment-change", "approval", "delivery"],
     quick: ["p1", "p2", "a1", "a4", "p3", "p8", "a5"],
   },
   {
@@ -179,7 +179,7 @@ const jsonLd = [
         <div class="lp-hero-tx">
           <p class="lp-kicker">ビジネスメール詐欺・不正送金の対策チェックリスト</p>
           <h1>なりすましによる<br />不正送金を、<br /><mark>止められていますか。</mark></h1>
-          <p class="lp-lead">実際の事案から作ったチェック項目で、担当ごとに点検。<br />要点だけなら 3 分。</p>
+          <p class="lp-lead">実際の事案から作ったチェック項目で、担当ごとに点検。<br />お急ぎなら 3 分。</p>
           <div class="lp-cta">
             <a class="lp-btn" href="#who">無料でチェックする</a>
           </div>
@@ -296,11 +296,11 @@ const jsonLd = [
       <h2 id="ck-s2m"><span class="ck-n">2</span>進め方を選ぶ</h2>
       <div class="ck-modes" role="group" aria-label="進め方">
         <button type="button" class="ck-mode" data-mode="quick" aria-pressed="false">
-          <b>まず要点だけ</b>
+          <b>お急ぎ点検</b>
           <span data-ck-mode-c="quick"></span>
         </button>
         <button type="button" class="ck-mode" data-mode="full" aria-pressed="false">
-          <b>じっくり点検する</b>
+          <b>じっくり点検</b>
           <span data-ck-mode-c="full"></span>
         </button>
       </div>
@@ -421,7 +421,7 @@ const jsonLd = [
 
     <section class="lp-final">
       <div class="lp-in">
-        <h2>まずは、あなたの担当の要点 3 分から。</h2>
+        <h2>まずは、あなたの担当の 3 分から。</h2>
         <a class="lp-btn" href="#who">無料でチェックする</a>
       </div>
     </section>
@@ -441,7 +441,7 @@ const jsonLd = [
     var root = document.querySelector(".ck");
     if (!root) return;
     // persona：選んだ担当（無ければ場面を手で選んだか記事から来た＝全項目）。
-    // mode：quick（まず要点だけ）／full（じっくり点検する）。
+    // mode：quick（お急ぎ点検）／full（じっくり点検）。
     var state = { ops: [], ans: {}, persona: null, mode: null };
     try {
       var saved = JSON.parse(localStorage.getItem(KEY) || "null");
@@ -542,7 +542,7 @@ const jsonLd = [
       // 下の固定バーは、セルフチェックが画面に入っているときだけ（LP の上では出さない）。
       $("[data-ck-bar]").hidden = !ready || !toolInView;
       // 複数の場面に出る項目は、選んだ場面のうち最初の 1 か所にだけ出す。
-      // 要点だけのときは、その担当の要点の項目だけを出す。
+      // お急ぎ点検のときは、その担当の quick の項目だけを出す。
       var seen = {};
       var shown = [];
       var all = [];
@@ -598,7 +598,7 @@ const jsonLd = [
       var unsure = gaps.filter(function (li) { return state.ans[li.getAttribute("data-item")] === "unsure"; }).length;
       $("[data-ck-sum]").textContent = !answered
         ? "上の項目に回答すると、ここに点数が表示されます。"
-        : (quick ? "要点 " + shown.length + " 項目での結果です。" : "") +
+        : (quick ? "お急ぎ点検（" + shown.length + " 項目）の結果です。" : "") +
           (answered < shown.length
             ? "未回答の項目が " + (shown.length - answered) + " 項目あります。回答済みの項目で点数を出しています。"
             : "");
