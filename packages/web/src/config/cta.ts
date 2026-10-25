@@ -82,9 +82,13 @@ export const SELF_CHECK_PAGES = {
 
 export type SelfCheckPageKey = keyof typeof SELF_CHECK_PAGES;
 
-/** 記事の業務（operations）から、飛ばすセルフチェックのページを決める。 */
-export function selfCheckPageFor(_operations: ReadonlyArray<string> = []): SelfCheckPageKey {
-  return "remittance";
+/**
+ * 記事の業務（operations）から、飛ばすセルフチェックのページを決める。当たるページが
+ * 無ければ null（記事の入口はメールの相談が主になる・2026-10-25）。不正送金のページに
+ * 情報の流出やアカウントの事件から飛ばすと、題材がずれる。
+ */
+export function selfCheckPageFor(operations: ReadonlyArray<string> = []): SelfCheckPageKey | null {
+  return operations.includes("payment-change") ? "remittance" : null;
 }
 
 /** 同じ入口の、記事の TL;DR のあとの 1 行（2026-10-24）。 */
