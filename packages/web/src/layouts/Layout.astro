@@ -288,7 +288,17 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${googleAnalyticsId}');
+              // 自動で開くブラウザ（ヘッドレス）に traffic_type=bot の印を付ける（2026-10-25）。
+              // GA のデータフィルタ（値 bot）で除く。印だけなので、テストの状態で差を見てから有効にできる。
+              // 画面の大きさは、28 日で目立った機械のもの（1280×1200・800×600・正方形）。
+              var isBot = (function () {
+                try {
+                  if (navigator.webdriver || /HeadlessChrome/.test(navigator.userAgent)) return true;
+                  var w = screen.width, h = screen.height;
+                  return (w === 1280 && h === 1200) || (w === 800 && h === 600) || (w === h && w >= 1000);
+                } catch (e) { return false; }
+              })();
+              gtag('config', '${googleAnalyticsId}', isBot ? { traffic_type: 'bot' } : {});
               // メール登録の完了。Tally のフォームは完了後にトップへ ?form= で
               // 戻す（2026-10-24）：newsletter＝定期のメール、consult＝セルフチェックからのメール相談。
               // 再読み込みで二重に数えないよう、タブの中で 1 回だけ。

@@ -71,6 +71,22 @@ export const BRIEF_CHECKLIST_CTA_URL: Readonly<Record<Locale, string>> = {
   en: "https://tally.so/r/rjvN2X?ref=brief_checklist&utm_source=brief_checklist&utm_medium=cta&utm_campaign=brief_to_weekly",
 } as const;
 
+/**
+ * 訴求ごとのセルフチェックのページ（2026-10-25・日本語だけ）。今は不正送金の
+ * 1 ページだけ。アカウントの乗っ取り・情報の流出のページができたら、ここに足して
+ * `selfCheckPathFor` の振り分けを直す（記事の入口はこの 1 か所で付け替わる）。
+ */
+export const SELF_CHECK_PAGES = {
+  remittance: { path: "/ja/critical/self-check/", label: "不正送金の対策チェックツール" },
+} as const;
+
+export type SelfCheckPageKey = keyof typeof SELF_CHECK_PAGES;
+
+/** 記事の業務（operations）から、飛ばすセルフチェックのページを決める。 */
+export function selfCheckPageFor(_operations: ReadonlyArray<string> = []): SelfCheckPageKey {
+  return "remittance";
+}
+
 /** 同じ入口の、記事の TL;DR のあとの 1 行（2026-10-24）。 */
 export const BRIEF_TLDR_CTA_URL: Readonly<Record<Locale, string>> = {
   ja: "/ja/critical/self-check/",
