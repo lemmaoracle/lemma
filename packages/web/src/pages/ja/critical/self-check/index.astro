@@ -259,8 +259,7 @@ const jsonLd = [
             <div class="lp-fig">
               <b>{c.fig}<small>{c.unit}</small></b>
               {c.yen && <i class="lp-fig-yen">（{c.yen}）</i>}
-              <span>{c.kind}</span>
-              <em>Brief No.{c.slug.slice(0, 3)}</em>
+              <span>{c.kind}<em>Brief No.{c.slug.slice(0, 3)}</em></span>
             </div>
           ))}
         </div>
@@ -2027,6 +2026,27 @@ const jsonLd = [
     }
     .lp-figs-row {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  /* PC：送金事故のカードは横が空くので、金額と円相当、手口と番号をそれぞれ1行にまとめる。 */
+  @media (min-width: 901px) {
+    .lp-fig {
+      padding: 12px 16px;
+    }
+    .lp-fig b {
+      display: inline;
+    }
+    .lp-fig-yen {
+      display: inline;
+      margin-left: 0;
+    }
+    .lp-fig span {
+      display: block;
+      margin-top: 2px;
+    }
+    .lp-fig em {
+      display: inline;
+      margin-left: 8px;
     }
   }
   /* PC：パネルが広く文字が小さく見えるので、幅を絞って文字とボタンを大きくする。 */
