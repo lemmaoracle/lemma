@@ -849,7 +849,7 @@ const jsonLd = [
     padding: 0 20px;
   }
   .lp-hero {
-    padding: 128px 0 72px;
+    padding: 108px 0 44px;
     background:
       radial-gradient(60% 70% at 85% 30%, rgba(168, 224, 16, 0.22), transparent 70%),
       radial-gradient(40% 60% at 0% 100%, rgba(168, 224, 16, 0.1), transparent 70%),
@@ -857,8 +857,8 @@ const jsonLd = [
   }
   .lp-hero-in {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    gap: 48px;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 44px;
     align-items: center;
   }
   .lp-kicker {
@@ -949,12 +949,13 @@ const jsonLd = [
     color: #4e7a00;
     font-weight: 800;
   }
+  /* 右のチェックリストの見本：枠をはっきりさせ、PC では文字も気持ち大きく。 */
   .lp-mock {
-    padding: 20px;
+    padding: 22px 24px;
     border-radius: 18px;
     background: #fff;
-    border: 1px solid #e3e6dc;
-    box-shadow: 0 24px 60px rgba(47, 55, 47, 0.14);
+    border: 1.5px solid #2f372f;
+    box-shadow: 0 20px 48px rgba(47, 55, 47, 0.18);
   }
   .lp-mock-h {
     display: flex;
@@ -2005,7 +2006,7 @@ const jsonLd = [
     grid-template-columns: repeat(3, auto);
     justify-content: start;
     gap: 0;
-    margin-top: 28px;
+    margin-top: 22px;
   }
   .lp-proof > div {
     padding: 0 22px;
@@ -2052,6 +2053,31 @@ const jsonLd = [
     }
     .lp-figs-row {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 901px) {
+    .lp-mock-h {
+      font-size: 16px;
+    }
+    .lp-mock-r {
+      padding: 13px 0;
+    }
+    .lp-mock-r p {
+      font-size: 14.5px;
+    }
+    .lp-mock-r i {
+      width: 26px;
+      height: 26px;
+      font-size: 15px;
+    }
+    .lp-mock-f {
+      font-size: 14px;
+    }
+    .lp-mock-f strong {
+      font-size: 24px;
+    }
+    .lp-mock-f span {
+      font-size: 13.5px;
     }
   }
   /* PC：送金事故のカードは横が空くので、金額と円相当、手口と番号をそれぞれ1行にまとめる。 */
@@ -2160,7 +2186,7 @@ const jsonLd = [
       font-size: 22px;
     }
     .lp-hero {
-      padding-top: 104px;
+      padding-top: 92px;
     }
     .lp-hero h1 {
       font-size: 34px;
