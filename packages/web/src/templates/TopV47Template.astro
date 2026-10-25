@@ -76,7 +76,7 @@ const latestAnnouncement = postsDesc.find(
   (p) => postInCategory(p, "Announcements") && p.slug !== caseStudy?.slug,
 );
 const tickerHtml = latestAnnouncement
-  ? `<div class="ticker"><span class="tk">NEW</span><a href="${blogArticlePath(base, latestAnnouncement.slug)}">${esc(latestAnnouncement.title)} →</a></div>`
+  ? `<div class="ticker"><span class="tk">NEW</span><a href="${blogArticlePath(base, latestAnnouncement.slug)}" data-top-ev="top_hero_news">${esc(latestAnnouncement.title)} →</a></div>`
   : "";
 
 // ヒーローの NEW の下に、無料のセルフチェックへの 1 行（2026-10-25・日本語だけ）。
@@ -256,7 +256,7 @@ const ogDescription = isJa
 
   <script is:inline define:vars={{ API_BASE, VERIFY_PATH, REG }}>
     (function () {
-      /* ---- ヒーローのセルフチェックの 1 行（押された数を GA へ） ---- */
+      /* ---- ファーストビューの入口（押された数を GA へ・DESIGN.md「トップのファーストビュー」） ---- */
       document.querySelectorAll("[data-top-ev]").forEach(function (a) {
         a.addEventListener("click", function () {
           if (typeof window.gtag !== "function") return;
