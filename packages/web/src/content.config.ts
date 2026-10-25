@@ -250,6 +250,15 @@ const briefSchema = z
      * 読者への問い（1文・「〜か。」）と §5 へのボタン。無ければカードは出ない。
      */
     self_check: z.string().min(1).optional(),
+    /**
+     * 検索結果に出す題名と説明（2026-10-25・日本語だけ・任意）。<title> と
+     * meta description にだけ使い、表紙の見出し・OG は変えない。検索する人は
+     * 事件の名前で調べ、「何が起きたか・どこか・安全か」を知りたいので、
+     * 会社名＋事象を先に置く（題名は 32 字まで・説明は 120 字まで）。
+     * 無ければ従来の title / insight.quote から作る。書き方は critical-briefs/README.md。
+     */
+    search_title: z.string().min(1).max(32).optional(),
+    search_description: z.string().min(1).max(120).optional(),
   })
   .refine(
     (data) => {

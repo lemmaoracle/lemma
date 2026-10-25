@@ -252,16 +252,25 @@ const pageTitle = `${ogLead}${seriesSep}Lemma Critical Brief No.${briefNoPad}`;
 // SERP-visible width, so a long generic tail ("Structural Analysis of a
 // Critical AI-Era Incident …") only gets truncated and invites Google to
 // rewrite the title. Use the same compact series suffix as og:title.
-const seoTitle = isJa
-  ? `${mainTitle}｜Lemma Critical Brief No.${briefNoPad}`
-  : `${mainTitle} | Lemma Critical Brief No.${briefNoPad}`;
+// 日本語は frontmatter の search_title があればそれを使う（会社名＋事象を先に・
+// 2026-10-25）。長い見出しは検索結果で途中までしか見えず、何の事件かが切れていた。
+const searchTitle = isJa ? (brief.data as { search_title?: string }).search_title : undefined;
+const seoTitle = searchTitle
+  ? `${searchTitle}｜Lemma Critical Brief`
+  : isJa
+    ? `${mainTitle}｜Lemma Critical Brief No.${briefNoPad}`
+    : `${mainTitle} | Lemma Critical Brief No.${briefNoPad}`;
 
 // 章数はうたわない（9章→6章の移行中で、どちらの本文も通る）。
 // report Brief は「この事案の核心」の一文で始める（2026-10-17）。共通の
 // 「構造分析…何が証明されている必要があったか」は検証技術の話に寄り、
 // 共有先で何の事件かが伝わらなかった。
 const reportQuote = isReport ? brief.data.insight?.quote : undefined;
-const metaDescription = reportQuote
+const searchDescription = isJa
+  ? (brief.data as { search_description?: string }).search_description
+  : undefined;
+// SNS のカードは従来の文のまま（検索向けの文は検索結果にだけ出す）。
+const shareDescription = reportQuote
   ? isJa
     ? `${reportQuote}何が起きたか、なぜ普通の操作に見えたか、どう対策するか — Lemma Critical Brief。`
     : `${reportQuote} What happened, why it looked like a normal action, and how to counter it — Lemma Critical Brief.`
@@ -272,6 +281,7 @@ const metaDescription = reportQuote
   // ので、JA を EN に揃える。
   ? `${publishedStr}公開の${mainTitle}を構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何が証明されている必要があったか。AI のための、信頼インフラ — Lemma Critical Brief。`
   : `Structural analysis of ${mainTitle}: what happened, why better detection doesn't close the gap, and what should have been provable beforehand. The Trust Layer for AI — Lemma Critical Brief.`;
+const metaDescription = searchDescription ?? shareDescription;
 
 /**
  * 記事の構造化データ（2026-09-07）。
@@ -437,6 +447,7 @@ const labels = isJa
   title={seoTitle}
   ogTitle={pageTitle}
   description={metaDescription}
+  ogDescription={searchDescription ? shareDescription : undefined}
   ogImage={ogImage}
   jsonLd={[briefSchema]}
 >
