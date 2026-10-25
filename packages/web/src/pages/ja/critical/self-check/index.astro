@@ -814,6 +814,8 @@ const jsonLd = [
 
 <style>
   .ck {
+    /* ボタンの角（DESIGN.md のボタン）。ラベルは丸のまま。 */
+    --btn-r: 4px;
     padding: 0 0 120px;
     color: #16190f;
     background: #fbfaf5;
@@ -902,7 +904,7 @@ const jsonLd = [
   .lp-btn {
     display: inline-block;
     padding: 15px 26px;
-    border-radius: 999px;
+    border-radius: var(--btn-r);
     background: #a8e010;
     color: #16190f;
     font-size: 15.5px;
@@ -984,13 +986,14 @@ const jsonLd = [
     color: #fff;
   }
   .lp-mock-r .is-yes {
-    background: #2f372f;
+    background: #a8e010;
+    color: #12140e;
   }
   .lp-mock-r .is-no {
-    background: #8a4b38;
+    background: #c25438;
   }
   .lp-mock-r .is-un {
-    background: #c98a12;
+    background: #5c6156;
   }
   .lp-mock-f {
     margin-top: 12px;
@@ -1060,7 +1063,7 @@ const jsonLd = [
   }
   .lp-tab {
     padding: 11px 20px;
-    border-radius: 999px;
+    border-radius: var(--btn-r);
     border: 1px solid #dcdfd6;
     background: #fff;
     font: inherit;
@@ -1091,7 +1094,7 @@ const jsonLd = [
     margin-bottom: 10px;
     padding: 4px 12px;
     border-radius: 999px;
-    background: #8a4b38;
+    background: #c25438;
     color: #fff;
     font-size: 12.5px;
     font-weight: 800;
@@ -1138,7 +1141,7 @@ const jsonLd = [
     font-size: 14px;
   }
   .lp-win--chat .lp-win-av {
-    background: #8a4b38;
+    background: #c25438;
     color: #fff;
   }
   .lp-win-who b {
@@ -1368,7 +1371,7 @@ const jsonLd = [
   }
   .ck-who-b {
     padding: 10px 18px;
-    border-radius: 999px;
+    border-radius: var(--btn-r);
     border: 1px solid #dcdfd6;
     background: #fff;
     font: inherit;
@@ -1419,7 +1422,7 @@ const jsonLd = [
     text-align: center;
     background: #fff;
     border: 1.5px solid #2f372f;
-    border-radius: 999px;
+    border-radius: var(--btn-r);
     font: inherit;
     color: #16190f;
     cursor: pointer;
@@ -1469,13 +1472,14 @@ const jsonLd = [
     color: #fff;
   }
   .ck-legend .is-yes {
-    background: #2f372f;
+    background: #a8e010;
+    color: #12140e;
   }
   .ck-legend .is-no {
-    background: #8a4b38;
+    background: #c25438;
   }
   .ck-legend .is-un {
-    background: #c98a12;
+    background: #5c6156;
   }
   .ck-legend dd {
     margin: 6px 0 0;
@@ -1493,7 +1497,7 @@ const jsonLd = [
     padding: 14px 18px;
     border: 0;
     /* トップの .btn.ghostd（薄いライム地・濃い緑の字）に合わせる。形はこのページのボタンと同じ丸。 */
-    border-radius: 999px;
+    border-radius: var(--btn-r);
     background: rgba(168, 224, 16, 0.16);
     font: inherit;
     font-size: 15px;
@@ -1626,7 +1630,7 @@ const jsonLd = [
     flex: none;
     display: inline-flex;
     border: 1px solid #dcdfd6;
-    border-radius: 999px;
+    border-radius: var(--btn-r);
     overflow: hidden;
   }
   .ck-ans button {
@@ -1644,15 +1648,16 @@ const jsonLd = [
     border-left: 0;
   }
   .ck-ans [data-v="yes"][aria-checked="true"] {
-    background: #2f372f;
-    color: #fff;
+    background: #a8e010;
+    color: #12140e;
+    font-weight: 700;
   }
   .ck-ans [data-v="no"][aria-checked="true"] {
-    background: #8a4b38;
+    background: #c25438;
     color: #fff;
   }
   .ck-ans [data-v="unsure"][aria-checked="true"] {
-    background: #c98a12;
+    background: #5c6156;
     color: #fff;
   }
   .ck-score {
@@ -1772,10 +1777,10 @@ const jsonLd = [
     color: #fff;
   }
   .ck-result :global(.ck-tag--no) {
-    background: #8a4b38;
+    background: #c25438;
   }
   .ck-result :global(.ck-tag--unsure) {
-    background: #c98a12;
+    background: #5c6156;
   }
   /* 結果でいちばん押してほしいボタン。ほかの緑と並ばないよう、トップの .btn.solid
      （墨の地・白い字）にして、メールの印だけライムにする。 */
@@ -1787,7 +1792,7 @@ const jsonLd = [
     min-width: 280px;
     white-space: nowrap;
     padding: 16px 28px;
-    border-radius: 999px;
+    border-radius: var(--btn-r);
     background: #16190f;
     color: #fff;
     font-weight: 800;
@@ -1851,7 +1856,7 @@ const jsonLd = [
     padding: 8px 14px;
     background: #fff;
     border: 1px solid #dcdfd6;
-    border-radius: 999px;
+    border-radius: var(--btn-r);
     font: inherit;
     font-size: 13px;
     color: #3c4237;
@@ -1873,7 +1878,7 @@ const jsonLd = [
     gap: 14px;
     align-items: center;
     padding: 10px 12px 10px 18px;
-    border-radius: 999px;
+    border-radius: calc(var(--btn-r) + 6px);
     background: #2f372f;
     color: #e9eee3;
     font-size: 13px;
@@ -1909,7 +1914,7 @@ const jsonLd = [
   }
   .ck-bar-btn {
     padding: 8px 16px;
-    border-radius: 999px;
+    border-radius: var(--btn-r);
     background: rgba(255, 255, 255, 0.12);
     color: #e9eee3;
     font-weight: 700;
