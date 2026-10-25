@@ -15,8 +15,11 @@
  * を優先して一式を揃える。Trust402 は独自のダーク（#B6F500）を維持する。
  */
 import type { Locale } from "../i18n/translations";
+import { LEMMA_LOGO_PATHS } from "./lemmaWordmark";
 import {
+  LIME,
   SLATE_BACKDROP,
+  SLATE_TITLE,
   buildOgArtboard,
   makeBottomTagline,
   makeTopRightLabel,
@@ -263,15 +266,61 @@ export async function renderAiGyomuAnshinOg(locale: Locale): Promise<Buffer> {
 
 /* ─────────────── Self-check (/ja/critical/self-check/) ─────────────── */
 
-/** セルフチェックの OG（日本語だけ）。項目数は記事から数えるので引数で受ける。 */
+/**
+ * セルフチェックの OG（日本語だけ・2026-10-25）。営業用 LP なので、記事の明朝の型
+ * ではなくゴシックで、問いを大きく、下のライムの帯に「対策チェックツール」を置く
+ * （小さく表示されると見出ししか読めない・X はカードにタイトル文が出ないため、
+ * 自分向けか＝不正送金 と 何ができるか＝対策チェックツール を画像の中で言い切る）。
+ * 項目数は記事から数えるので引数で受ける。
+ */
 export async function renderSelfCheckOg(total: number): Promise<Buffer> {
-  const node = slateArtboard({
-    // 小さく表示されると見出ししか読めないので、「自分向けか」（不正送金）と
-    // 「何ができるか」（対策チェックツール）を両方見出しに入れる（2026-10-25 レビュー）。
-    title: "なりすましの不正送金、\n止められますか？\n対策チェックツール",
-    label: "ビジネスメール詐欺 · 無料",
-    tagline: `担当別 ${String(total)} 項目 · 3 分から · 登録不要`,
+  const h = (type: string, style: Record<string, unknown>, children?: unknown) => ({
+    type,
+    props: { style, children },
   });
+  const SANS = "Mono"; // SATORI_FONTS の Noto Sans JP（700 は Bold）
+  const logo = {
+    type: "svg",
+    props: {
+      width: 120,
+      height: 55,
+      viewBox: "0 0 142 65",
+      xmlns: "http://www.w3.org/2000/svg",
+      children: LEMMA_LOGO_PATHS.map((d) => ({ type: "path", props: { d, fill: SLATE_TITLE } })),
+    },
+  };
+  const line = (t: string) => h("div", { display: "flex", fontSize: 76, lineHeight: 1.22 }, t);
+  const node = h("div", { display: "flex", flexDirection: "column", width: 1200, height: 630 }, [
+    h("div", { display: "flex", flexDirection: "column", padding: "48px 64px 0", flexGrow: 1 }, [
+      h("div", { display: "flex", justifyContent: "space-between", alignItems: "flex-start" }, [
+        logo,
+        h("div", { display: "flex", color: LIME, fontSize: 24, fontWeight: 700, fontFamily: SANS }, "ビジネスメール詐欺"),
+      ]),
+      h(
+        "div",
+        { display: "flex", flexDirection: "column", marginTop: 50, fontFamily: SANS, fontWeight: 700, color: SLATE_TITLE },
+        [line("なりすましの不正送金、"), line("止められますか？")],
+      ),
+    ]),
+    h(
+      "div",
+      {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        height: 130,
+        padding: "0 64px",
+        background: LIME,
+        fontFamily: SANS,
+        fontWeight: 700,
+        color: "#12140e",
+      },
+      [
+        h("div", { display: "flex", fontSize: 50 }, "対策チェックツール"),
+        h("div", { display: "flex", fontSize: 28 }, `担当別 ${String(total)} 項目・3 分から・無料`),
+      ],
+    ),
+  ]);
   return renderOgPng(node, SLATE_BACKDROP);
 }
 
