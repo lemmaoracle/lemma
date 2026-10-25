@@ -266,9 +266,11 @@ export async function renderAiGyomuAnshinOg(locale: Locale): Promise<Buffer> {
 /** セルフチェックの OG（日本語だけ）。項目数は記事から数えるので引数で受ける。 */
 export async function renderSelfCheckOg(total: number): Promise<Buffer> {
   const node = slateArtboard({
-    title: "なりすましによる\n不正送金を、\n止められていますか。",
-    label: "対策チェックツール · 無料",
-    tagline: `実例 ${String(total)} 項目 · 担当別 · お急ぎなら 3 分`,
+    // 小さく表示されると見出ししか読めないので、「自分向けか」（不正送金）と
+    // 「何ができるか」（対策チェックツール）を両方見出しに入れる（2026-10-25 レビュー）。
+    title: "なりすましの不正送金、\n止められますか？\n対策チェックツール",
+    label: "ビジネスメール詐欺 · 無料",
+    tagline: `担当別 ${String(total)} 項目 · 3 分から · 登録不要`,
   });
   return renderOgPng(node, SLATE_BACKDROP);
 }
