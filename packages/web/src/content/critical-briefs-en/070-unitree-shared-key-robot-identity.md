@@ -1,7 +1,7 @@
 ---
 brief_no: 70
-title: "全機が同じ鍵を共有していたため、1 台の乗っ取りが機体群ごと崩せた（Unitree ロボット） — 実体エージェントに per-device の identity がなく、共有された 1 つの秘密が機体群全体の信頼を兼ねていた構造（Alias Robotics / UniPwn）"
-title_en: "Unitree (UniPwn): one shared key across the fleet — per-device identity absent, so one compromise broke the whole fleet (Alias Robotics)"
+title: "Unitree：人型・四足ロボットを、Bluetooth の初期設定から最上位の権限で乗っ取れると示された(研究者の公表・NVD) — 接続してきた相手を、機体ごとの鍵で照合する層が無い"
+title_en: "Unitree: Researchers showed its humanoid and quadruped robots could be taken over with root access via Bluetooth setup (researchers, NVD) — No layer checks a connecting party against a per-unit key"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["agent-infrastructure", "attribute-proof-bypass"]
@@ -10,100 +10,159 @@ published: 2026-06-19
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["068-universal-robots-polyscope-command-injection", "033-f5-bigip-edge-pivot", "003-starlette-badhost", "006-google-api-key-revocation-lag", "025-mcp-stdio-config-to-command-rce"]
-status: draft
-version: "1.0"
-og_lead_ja: "全機共通の鍵で 1 台の乗っ取りが機体群ごと崩せた — Unitree / UniPwn"
-og_lead_en: "One shared key let a single takeover collapse the whole fleet — Unitree / UniPwn"
-gap_detected: "Responsible disclosure by researchers, firmware updates and a review of key management, and network segmentation were all communicated and put in place."
-gap_missing: "There was no layer to check before operation whether the connecting party was legitimate against each device's own unique identity, so a passphrase shared across the whole fleet passed straight through."
-gap_fix: "Before operation, independently verify with Lemma that this device faces a uniquely legitimate party and this operation stays within the bounds of its authorization, and prevent it up front."
-industries: ["manufacturing"]
+status: published
+version: "2.0"
+og_lead_ja: "Unitree のロボット、全機共通の鍵で Bluetooth から乗っ取れた"
+og_lead_en: "Every Unitree robot shared one encryption key, letting attackers take them over via Bluetooth — crack one, and the rest fall too"
+layout: "report"
+og_kicker_ja: "脆弱性の公表 · ロボット"
+og_kicker_en: "VULNERABILITY · ROBOTS"
+og_headline_ja: "全機が同じ鍵を使っていた。\n1 台の手口が全機に通じる\n<accent>人型と四足の 4 機種</accent>"
+og_headline_en: "Every robot used the same key.\nCrack one, crack them all.\n<accent>Across four robot models.</accent>"
+summary_labels: ["What happened", "Why nothing stopped it", "The missing layer"]
+key_figures:
+  - value: "1"
+    unit: "key"
+    label: "One encryption key shared by every unit. Extracted from one robot, it worked on the others (NVD, researchers)"
+    tone: "alert"
+  - value: "4"
+    unit: "models"
+    label: "Affected models: the G1 and H1 humanoids and the Go2 and B2 quadrupeds (NVD)"
+  - value: "2025-05 → 09-20"
+    label: "From the researchers contacting Unitree to public disclosure. The researchers say Unitree stopped replying in July (IEEE Spectrum)"
+glossary:
+  - term: "Bluetooth setup"
+    desc: "The entry point used to connect a robot to Wi-Fi, by sending settings over Bluetooth from a nearby phone."
+  - term: "Root (root access)"
+    desc: "The administrator level that can do anything on a device. Whoever holds it can control the device at will."
+  - term: "Firmware"
+    desc: "The software that runs inside a device. Updates come from the vendor."
+insight:
+  slug: "one-key-for-all"
+  label: "One key for every unit"
+  quote: "The key was the same on every robot. Extract it from one, and it opened the entry point of every other unit too."
+industries: ["manufacturing", "public-sector"]
 controls:
   - slug: "ownership-check"
-    item: "Authenticate each connection with a key unique to that unit"
+    item: "Check a connecting party against a key unique to each unit"
+  - slug: "hold-unverified"
+    item: "Validate input from setup and other entry points before using it"
+self_check: "Do the robots and connected devices you deploy check whoever connects against a key unique to each unit?"
 countries: ["global"]
 ---
 
+> **Revision (v2.0 / 2026-10-25)**: Restructured for general readers, with §5 rewritten as "How to counter this". Facts re-checked against the arXiv paper, IEEE Spectrum and the NVD CVE records. The paper's authors are now listed as Mayoral-Vilches, Makris and Finisterre. The location of the outside servers was removed, as the paper's abstract does not state it. Added that, according to the researchers, Unitree stopped replying in July, and that on 29 September Unitree said most fixes were done. Source titles and dates were corrected. The description of Lemma's design was removed, and the status set to published.
+
 ## 1. TL;DR
 
-Alias Robotics researchers disclosed "UniPwn," a takeover of Unitree's humanoid and quadruped robots via their Bluetooth setup. Every unit shipped with the same hardcoded key: an attacker in range passes authentication with a fixed passphrase, then the robot runs the supplied payload as root without validation. Because the key is fleet-wide, one takeover works on any unit and can self-propagate to nearby robots. The embodied agents had no per-device identity; one shared secret stood in for the whole fleet's trust.
+On 20 September 2025, researchers Andreas Makris and Kevin Finisterre disclosed an exploit, dubbed UniPwn, for taking over Unitree's humanoid (G1, H1) and quadruped (Go2, B2) robots through their Bluetooth setup entry point. Every unit used the same encryption key, and a handshake containing the string "unitree" was enough to pass authentication.
 
----
+Commands disguised as a Wi-Fi network name or password were then executed with root privileges. The researchers say a compromised robot could spread the attack automatically to nearby robots.
+
+Unitree said on 29 September that most fixes were complete, but until updates arrive, the same key opens every unit. What was missing was a layer that checks a connecting party against a key unique to each unit.
 
 ## 2. What happened
 
-- **Target**: Unitree's G1 and H1 humanoid robots and Go2 and B2 quadrupeds — including consumer-priced units sold in the US.
-- **Disclosing party**: independent researchers Andreas Makris (Bin4ry), Kevin Finisterre, and Konstantin Severov found and published it (exploit name "UniPwn"). Alias Robotics (Víctor Mayoral-Vilches) published the analysis paper (arXiv:2509.14139).
-- **Core of the technique**: the BLE Wi-Fi provisioning interface does not validate the input it receives. **Every unit shares the same hardcoded AES key**, so sending the string `unitree` encrypted with it is treated as an "authenticated user." Code disguised as the Wi-Fi SSID/password is then **executed as root, without validation**, when the robot attempts to connect.
-- **CVEs**: chiefly CVE-2025-35027 (command injection via the spoofed SSID/password → root execution), CVE-2025-60250 (hardcoded, fleet-wide BLE key/IV), and CVE-2025-60251 (the handshake accepts any payload whose decryption contains the `unitree` substring); CVE-2025-60017 is also part of the set.
-- **What it required**: BLE proximity and the "same-for-every-unit" key extractable from a device. There was no per-unit identity check.
-- **Fleet-scale spread**: because the key is fleet-wide, one unit's technique works on the rest. The attacker can keep control by changing credentials or adding remote accounts, and it can self-propagate to nearby robots (a wormable-botnet concern — a demonstrated capability, not observed in-the-wild spread).
-- **Weak config encryption**: config-file protection also relied on a single 128-bit key shared across units (recoverable from software) — an outer Blowfish layer in a weak repeating mode, an inner layer on a predictable generator — so cracking one unit cracks all.
-- **Context**: network analysis found the robots periodically transmit to external servers (reported as China-based) without user notice/consent, and some paths disabled TLS certificate validation. This Brief's concern is not the destination's geography but the structure in which **transmission/connection happens without independent verification or consent**.
+- **Researchers**: Andreas Makris and Kevin Finisterre found and disclosed the flaws. With Víctor Mayoral-Vilches of Alias Robotics, they posted a paper on the G1's security to arXiv (2025-09).
+- **Affected models**: The G1, H1, Go2 and B2, which share common firmware (NVD).
+- **Entry point**: The Bluetooth setup used to connect the robot to Wi-Fi.
+- **Why authentication passed**: The same encryption key and initialization vector (IV) were built into every unit (CVE-2025-60250), and any handshake containing the substring "unitree" was accepted (CVE-2025-60251).
+- **Root execution**: Commands slipped into strings sent as the Wi-Fi network name or password were executed as root when the Wi-Fi settings were applied (CVE-2025-35027, CVE-2025-60017).
+- **Spread to other units**: The researchers say a compromised robot could look for other Unitree robots within Bluetooth range and take them over automatically.
+- **Weak configuration encryption**: The paper says the encryption protecting settings also relied on a fixed scheme and predictable values.
+- **Outbound data**: The paper says the robot sent sensor and status data to two outside servers every 300 seconds without telling the operator.
 
-This incident shows a structure in which, with no per-unit selfhood and one fleet-wide secret doubling as the provisioning authentication, one unit's compromise technique spreads to the whole fleet. The path is as follows.
+From the researchers' disclosures, a takeover unfolds in this chain.
 
-1. **BLE proximity**: the attacker approaches and connects to the target robot's BLE provisioning interface.
-2. **Passing auth with the shared key**: sending the string `unitree` encrypted with the fleet-wide hardcoded key is accepted as an "authenticated user." No per-unit selfhood check applies.
-3. **Unvalidated root execution**: code injected disguised as the Wi-Fi SSID/password is executed by the robot as root, without validation, on the connection attempt.
-4. **Maintaining control**: the attacker keeps control by changing credentials or adding remote accounts.
-5. **Spread to the fleet**: because the key is fleet-wide, the same technique works on other units and can self-propagate to nearby robots (wormable). The config encryption also uses one fleet-wide key, so cracking one unit cracks all.
-
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The takeover chain, from the researchers' disclosures</span></div>
+<p class="rx-ex-cap">The stopping point is ②. Had the connecting party been checked against a per-unit key, a key extracted from another robot would not have worked.</p>
+<div class="rx-chain">
+<div class="rx-step crit"><div class="who">Attacker</div><div class="no">1</div><b>Connects to the setup entry point within Bluetooth range</b><p>Being nearby is enough.</p></div>
+<div class="rx-step crit"><div class="who">Robot</div><div class="no">2</div><b>Accepts a handshake made with the shared key</b><p>No per-unit check.</p></div>
+<div class="rx-step crit"><div class="who">Robot</div><div class="no">3</div><b>Runs commands hidden in Wi-Fi settings as root</b><p>Input is not validated.</p></div>
+<div class="rx-step crit"><div class="who">Robot</div><div class="no">4</div><b>Could spread to nearby units</b><p>The key is the same on all.</p></div>
+</div>
+</figure>
 
 ## 3. Timeline — disclosure and response
 
-- 2025-05: researchers begin responsible disclosure to Unitree (the response is reported as limited thereafter).
-- 2025-09-20: researchers publicly release UniPwn (root via BLE proximity + the shared key; fleet spread and wormability noted).
-- 2025-09–10: Alias Robotics publishes the analysis paper (arXiv:2509.14139) with two case studies (surveillance and attack). Established media report on it.
-- After: per-unit keys / per-device identity, input validation on the provisioning path, and consent/verification for telemetry become industry talking points.
+- **2025-05**: The researchers contact Unitree.
+- **2025-07**: Makris publishes the keys on X. The researchers say Unitree stopped replying from this month (IEEE Spectrum).
+- **2025-09-17**: The paper is posted to arXiv.
+- **2025-09-20**: The researchers disclose UniPwn.
+- **2025-09-26**: The CVEs are published in the NVD.
+- **2025-09-29**: Unitree says on LinkedIn that most fixes are done.
 
-> Note: This Brief covers the vulnerability and structure UniPwn revealed, not a condemnation of any actor or nationality. The destination geography is mentioned in one line as context; the analysis is confined to the absence of per-device identity and input validation. Unverifiable claims are not adopted.
+> The facts rely on the researchers' paper (primary), the NVD CVE records and IEEE Spectrum's reporting. This is a research demonstration, and the reports we consulted describe no real-world exploitation. This Brief does not assign blame to the manufacturer; its subject is the shared key and the missing input validation.
 
-The response and industry movement after disclosure:
+### After disclosure
 
-- **Researchers / Alias Robotics**: published the UniPwn technique with its fleet spread and wormability, and the analysis paper (arXiv:2509.14139) with two case studies (surveillance, attack), surfacing the embodied-agent design problem across the industry.
-- **The call for per-device identity**: not a fleet-wide hardcoded key, but a per-unit, independently verifiable identity (keys/certificates) and input validation on the provisioning path became the talking points.
-- **Telemetry consent/verification**: because external transmission happened without user notice/consent and some paths disabled TLS certificate validation, independent verification and consent for transmission/connection entered the discussion (the structure of verification/consent, not the destination's geography).
-- **A cross-industry issue**: as autonomous machines enter homes, factories, and public space, how to independently verify an embodied agent's selfhood and command authorization per unit is being shared as a safety requirement. With [Brief 068](/critical/briefs/068-universal-robots-polyscope-command-injection/), the recognition is spreading that agent authority proof is needed whether software or physical.
-
-The absence of a design that treats an embodied agent's selfhood not as "a fleet-wide secret" but as "a per-unit, independently verified proof" is not a problem of a specific manufacturer; it is increasingly shared as a cross-industry challenge for welcoming autonomous machines into society.
-
----
+- **Unitree**: On 29 September it said on LinkedIn that it had begun addressing the concerns immediately, had completed most fixes, and would roll out updates soon (IEEE Spectrum). Whether updates had shipped was not confirmed as of IEEE Spectrum's article (updated 2025-11).
+- **Researchers**: Argued in the paper that defenses are needed as humanoid robots move into critical infrastructure.
 
 ## 4. Why it wasn't stopped
 
-The central **failure primitive is "the embodied agent had no per-device identity (a per-unit, independently verifiable selfhood), and one shared hardcoded secret doubled as the whole fleet's authentication."** "Every unit holds the same key" means one unit's trust and the fleet's trust are not separated, so one unit's compromise *is* the fleet's compromise. The provisioning path then root-executed, without validation, the input of whoever that shared secret declared "authenticated."
+The failure was not a lack of encryption. **The key was the same on every unit, and nothing checked a connecting party against each unit's own key.**
 
-It is the sister case to [Brief 068](/critical/briefs/068-universal-robots-polyscope-command-injection/) (Universal Robots PolyScope — an industrial robot that never verifies a command sender's authority before physical motion), forming a physical cluster of agent-authority cases. Where 068 was "no authorization check on the path at all," this incident differs in that **authentication exists, but it is a single fleet-wide secret that lacks per-unit uniqueness and independent verification.** It shares a root with [Brief 033](/critical/briefs/033-f5-bigip-edge-pivot/) (the compromise of an implicitly trusted single point cascading, with stored credentials, to the whole) in that breaching a trusted single point (the shared key) chains to the entire fleet. It connects to [Brief 006](/critical/briefs/006-google-api-key-revocation-lag/) (a credential's revocation attribute never independently verified, valid even after deletion) in that a credential attribute — here, "is it per-unit?" — is not independently verified, and to [Brief 003](/critical/briefs/003-starlette-badhost/) (authentication bypassed via Host-header manipulation) and [Brief 025](/critical/briefs/025-mcp-stdio-config-to-command-rce/) (a config → command-execution path becoming a broad RCE route) in that authentication/config-path input passes to the privileged side without validation.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The gap between detection and proof</span></div>
+<p class="rx-ex-cap">Proof here means accepting a connecting party only after checking it against a key unique to that unit. Detection means noticing a takeover or outbound data afterwards.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Proof layer · missing</b>Check the connecting party against a per-unit key</div>
+<div class="rx-zone gapz"><b>Gap</b><span>One method<br>works on all</span></div>
+<div class="rx-zone det"><b>Detection layer · partial</b>Researchers found it; fixes in progress</div>
+<div class="rx-g g1"><div class="t">STEP 1</div><b>Bluetooth connection</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>Shared key passes</b></div>
+<div class="rx-g g3"><div class="t">STEP 3</div><b>Root execution</b></div>
+<div class="rx-g g4"><div class="t">STEP 4</div><b>Other units</b></div>
+</div>
+</figure>
 
-What this incident throws into relief is the question of **how to independently verify an embodied agent's "selfhood."** The more autonomous machines enter homes, factories, and public space, the more each unit is not just a product but an actor (an agent). If that actor's selfhood is not per-unit but collapsed into a shared secret, one unit's flaw breaks the whole fleet's trust. Only once a per-unit, independently verifiable identity is in place can autonomous machines be safely welcomed into living and working spaces.
+Researchers found and reported it, and Unitree worked on fixes. But fixes come after discovery, and units without the update still open with the same key. That distance is the **gap between detection and proof**, and it is structural.
 
-Responsible disclosure by the researchers, firmware updates and key-management review, and network segmentation are indispensable for deterring exposure, and this Brief does not negate that role. Surfacing the vulnerability and driving fixes are an important check on the damage.
+The same structure appears in [Universal Robots PolyScope](/critical/briefs/068-universal-robots-polyscope-command-injection/) (outside commands could be run through an industrial robot's control screen).
 
-At the same time, firmware updates and network monitoring are no material for the unit to independently verify — **before acting** — against its own per-unit selfhood, "is the party that just connected to the provisioning path a legitimate subject to set up and operate *this* unit?" The core of this incident is that authentication depended on a single fleet-wide secret, with no per-unit uniqueness or independent verification. Once the shared key is extracted, any unit can be passed by the same technique, spreading to nearby units. After-the-fact traffic analysis reconstructs "which unit sent what," but is no material to independently verify, before the action, "is this setup/command based on legitimate authority over *this* unit."
+## 5. How to counter this
 
----
+**Accept a connecting party only after checking it against a key or certificate unique to that unit.** With a different key on each unit, a key taken from one robot does not open the others. Validate input arriving through entry points such as setup before using it. This layer sits in front of detection, not in place of it.
 
-## 5. What proof would have changed
+### Industries and operations to watch
 
-Pre-execution attestation treats a unit's selfhood, and the authorization of commands against it, not as "the presentation of a fleet-wide secret" but as "a per-unit, independently verifiable proof." If privileged operations — provisioning, operation, updates — are verified at the moment of the act against the unit's own identity and the grantor's authorization, then extracting the shared secret alone no longer passes authentication, and the path by which one unit's flaw spreads to the fleet is severed. Detecting exposure (the detection-style "which unit did what") and proving selfhood/authorization ("is this based on legitimate authority over this unit") are **complements**, not substitutes; only where the two overlap can autonomous machines be safely welcomed into living and working spaces (for verifying authorization independently at the moment of the act, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+- **Industry · Manufacturing & core infrastructure**: Organizations that build robots or connected devices, and those that deploy them in factories and facilities.
+- **Industry · Government & public sector**: Organizations trialing robots for security or inspection (IEEE Spectrum noted UK police testing a Go2).
 
-Against the detection–proof gap this incident exposed (embodied agents with no per-device identity, one shared secret doubling as the fleet's trust), Lemma proposes a design that backs an agent's selfhood and actions — software or physical — not with "the presentation of a shared secret or token" but with "a unique, independently verifiable proof."
+### Do today's controls close it?
 
-- **Per-device identity**: give each unit a unique, independently verifiable selfhood, separating one unit's trust from the fleet's. Sever the structure where extracting one shared secret directly breaches the whole fleet.
-- **Per-action scoped authorization (proof-as-auth)**: independently verify privileged operations (provisioning, operation, updates) at the moment of the act against the unit's own identity and the grantor's authorization. Replace presentation of a shared secret with a per-operation proof (connecting to the physical-command authorization of [Brief 068](/critical/briefs/068-universal-robots-polyscope-command-injection/)).
-- **Integrity of input and path**: make the provenance of input/connections on the provisioning and telemetry paths independently verifiable, rejecting unvalidated root execution and certificate-less connections before they execute or are established.
-- **Selective disclosure**: without exposing internal data, disclose only the minimum — that "this unit is a unique legitimate subject and this operation is within authorization" — reconciling independent verification with protection of unit/user information.
+| Control | This case | Why |
+| --- | --- | --- |
+| Encrypting communications | Ineffective | The key was the same on every unit. |
+| Handshake authentication | Ineffective | Anything containing "unitree" passed. |
+| Network segmentation | Partial | Can restrict Wi-Fi traffic, but anyone nearby can reach the Bluetooth entry point. |
+| Firmware updates | Partial | Unitree said most fixes were done, but no shipped update had been confirmed as of the 2025-11 report. |
 
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this unit is uniquely legitimate, and this operation is within authorization," without depending on after-the-fact traffic analysis. Detection (after-the-fact analysis, updates, segmentation) works on correcting exposure; pre-execution attestation (independent verification of per-unit selfhood and authorization) works on establishing trust in embodied agents — each complementary to the other. For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/#authority) and [Trust402](https://lemma.frame00.com/trust402/).
+### What is needed
 
----
+1. **Give each unit its own key or certificate, and check connecting parties against it.** Do not build the same secret into every unit.
+2. **Validate input from setup and other entry points before using it.** Do not pass strings received as a Wi-Fi name or password straight into execution.
+3. **Disclose what devices send to outside servers, and let users turn it off.** Let deploying organizations see where data goes and what it contains.
+
+### Checklist
+
+Three things to confirm for organizations that build or deploy robots and connected devices
+
+- Have you confirmed with the vendor that strings arriving through device setup are never executed as-is?
+- Do you know what your deployed devices send to outside servers?
+- Do you have a procedure for receiving and installing firmware updates from the vendor?
+
+Note: this attack requires being within Bluetooth range. We will revise this Brief if Unitree announces that updates have shipped.
 
 ## 6. Sources
 
-- **Alias Robotics / researchers (primary, analysis paper)**: "Cybersecurity AI: Humanoid Robots as Attack Vectors" (UniPwn, shared hardcoded key, BLE root, fleet spread, arXiv:2509.14139) — <https://arxiv.org/abs/2509.14139>
-- **NVD (CVE)**: CVE-2025-35027 (command injection → root execution; related: CVE-2025-60250 / 60251 / 60017) — <https://nvd.nist.gov/vuln/detail/CVE-2025-35027>
-- **Help Net Security**: "Humanoid robot found vulnerable to Bluetooth hack" (2025-10-16, overview of method and impact) — <https://www.helpnetsecurity.com/2025/10/16/unitree-g1-humanoid-robot-vulnerability/>
-- **IEEE Spectrum**: "Unitree Robot Hack: What You Need to Know" — <https://spectrum.ieee.org/unitree-robot-exploit>
-- **Hackaday**: "Unitree Humanoid Robot Exploit Looks Like A Bad One" (2025-09-30) — <https://hackaday.com/2025/09/30/unitree-humanoid-robot-exploit-looks-like-a-bad-one/>
+- **arXiv (Research, primary)**: Mayoral-Vilches, Makris, Finisterre, "Cybersecurity AI: Humanoid Robots as Attack Vectors" (2025-09-17) — <https://arxiv.org/abs/2509.14139>
+- **NVD (Primary, CVE)**: "CVE-2025-35027" (2025-09-26) — related: CVE-2025-60250, CVE-2025-60251, CVE-2025-60017 — <https://nvd.nist.gov/vuln/detail/CVE-2025-35027>
+- **IEEE Spectrum (Press)**: "Exploit Allows for Takeover of Fleets of Unitree Robots" (2025-09-25) — <https://spectrum.ieee.org/unitree-robot-exploit>
+- **Help Net Security (Press)**: "Humanoid robot found vulnerable to Bluetooth hack, data leaks to China" (2025-10-16) — <https://www.helpnetsecurity.com/2025/10/16/unitree-g1-humanoid-robot-vulnerability/>
+- **Hackaday (Press)**: "Unitree Humanoid Robot Exploit Looks Like A Bad One" (2025-09-30) — <https://hackaday.com/2025/09/30/unitree-humanoid-robot-exploit-looks-like-a-bad-one/>
+
+References: ["The last layer left in AI-era cyber defense"](https://lemma.frame00.com/blog/detection-is-not-proof/)
