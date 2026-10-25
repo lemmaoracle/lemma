@@ -30,23 +30,34 @@ export interface BriefWeeklyCtaProps {
 }
 
 const { locale, briefId, variant, operations = [] } = Astro.props as BriefWeeklyCtaProps;
-// 日本語は業務ごとのセルフチェックのページ、英語は Tally。
-const base =
-  locale === "ja"
-    ? SELF_CHECK_PAGES[selfCheckPageFor(operations)].path
+const isJa = locale === "ja";
+// 日本語は、題材の合うセルフチェックのページがあればそこへ（いまは振込先の書き換え・
+// 送金の事案だけ）。無ければメールの相談が主（2026-10-25）。英語は Tally。
+const pageKey = isJa ? selfCheckPageFor(operations) : null;
+const isConsult = isJa && pageKey === null;
+const consultFor = (ref: string) =>
+  `${CONSULT_FORM_URL}&ref=${ref}&from=${encodeURIComponent(briefId)}`;
+const base = pageKey
+  ? SELF_CHECK_PAGES[pageKey].path
+  : isConsult
+    ? consultFor(variant === "top" ? "brief_tldr" : "brief_band")
     : (variant === "top" ? BRIEF_TLDR_CTA_URL : BRIEF_CHECKLIST_CTA_URL)[locale];
-// 振込先の書き換え・送金の事案は、ツールの題材とそのまま重なるので言い方を寄せる
-// （approval だけの記事は暗号資産・AI の承認も含むので、payment-change で分ける）。
-const isRemittance = operations.includes("payment-change");
-// 日本語はサイトの中のセルフチェック（同じタブ・この記事を ?from= で渡す）、
-// 英語は Tally（新しいタブ）。
+const isRemittance = pageKey === "remittance";
+// サイトの中のセルフチェックは同じタブ・この記事を ?from= で渡す。Tally は新しいタブ。
 const external = base.startsWith("http");
 const href = external ? base : `${base}?from=${encodeURIComponent(briefId)}`;
-// 日本語の帯にだけ、メールの相談への 1 行（セルフチェックを経ずに聞きたい人へ）。
-const consultHref = `${CONSULT_FORM_URL}&ref=brief_band&from=${encodeURIComponent(briefId)}`;
-const isJa = locale === "ja";
-// 日本語はセルフチェック（チェックの印）、英語はメール（封筒）。
-const icon = isJa
+// セルフチェックの帯にだけ、メールの相談への 1 行（セルフチェックを経ずに聞きたい人へ）。
+const consultHref = consultFor("brief_band");
+// 押した数を分けて見る（セルフチェックへ／相談へ）。
+const ev = isConsult
+  ? variant === "top"
+    ? "brief_tldr_consult"
+    : "brief_checklist_consult"
+  : variant === "top"
+    ? "brief_tldr_weekly"
+    : "brief_checklist_weekly";
+// セルフチェックはチェックの印、メール（相談・英語の定期のメール）は封筒。
+const icon = isJa && !isConsult
   ? '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="15" height="15" rx="3" /><path d="M7.5 11.2l2.4 2.4 4.8-5" /></svg>'
   : '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="12" rx="2" /><path d="M3.5 6l7.5 6 7.5-6" /></svg>';
 const L = isJa && isRemittance
@@ -58,10 +69,10 @@ const L = isJa && isRemittance
     }
   : isJa
   ? {
-      head: "この手口が自社で通らないか、セルフチェックする",
-      sub: "この記事と、同じ業務を狙ったほかの事例の項目に、はい／いいえで答えるだけ。登録は要りません。",
-      btn: "セルフチェックする",
-      top: "この手口が自社で通らないか、セルフチェックする（登録不要）",
+      head: "この手口が自社で起きないか、メールで相談する",
+      sub: "この記事の手口について、自社の場合はどうかを、メールで無料で相談できます。",
+      btn: "メールで相談する（無料）",
+      top: "この手口について、自社の場合をメールで相談する（無料）",
     }
   : {
       head: "Get checks like these and new cases by email",
@@ -79,14 +90,14 @@ const L = isJa && isRemittance
     <span class="wk-tx">
       <b>{L.head}</b>
       <span>{L.sub}</span>
-      {isJa && (
+      {isJa && !isConsult && (
         <a class="wk-consult" href={consultHref} target="_blank" rel="noopener" data-wk-ev="brief_band_consult">この手口について、メールで相談する（無料）</a>
       )}
     </span>
-    <a class="wk-btn" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} data-wk-ev="brief_checklist_weekly">{L.btn}<span aria-hidden="true"> →</span></a>
+    <a class="wk-btn" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} data-wk-ev={ev}>{L.btn}<span aria-hidden="true"> →</span></a>
   </aside>
 ) : (
-  <a class="wk-top" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} data-brief-weekly="top" data-brief={briefId} data-wk-ev="brief_tldr_weekly">
+  <a class="wk-top" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined} data-brief-weekly="top" data-brief={briefId} data-wk-ev={ev}>
     <span class="wk-ic wk-ic--s" aria-hidden="true">
       <Fragment set:html={icon} />
     </span>

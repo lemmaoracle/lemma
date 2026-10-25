@@ -257,7 +257,7 @@ md には何も書かない。`controls` は §5 の「必要なこと」と同�
 **記事の入口（2026-10-24）**：TL;DR のあとに 1 行、§5 のチェックリスト（とその「注：」）
 のあとに帯で、入口を出す（`components/BriefWeeklyCta.astro`・行き先は `config/cta.ts`
 の、英語は `BRIEF_TLDR_CTA_URL` / `BRIEF_CHECKLIST_CTA_URL`・`ref` で置き場所を分ける。日本語は記事の `operations`
-から `selfCheckPageFor` で訴求ごとのページを選ぶ・`payment-change` の記事は不正送金の言い方になる・2026-10-25）。日本語は
+から `selfCheckPageFor` で訴求ごとのページを選ぶ・`payment-change` の記事は不正送金のページへ、当たるページが無い記事はメールの相談が主になる・2026-10-25）。日本語は
 セルフチェック（`/ja/critical/self-check/?from=<slug>`：全 report の点検チェックリストを場面ごとに
 まとめ、担当（経理など）を選ぶと場面がまとめて選ばれ、お急ぎ点検かじっくり点検かを選んで、画面で はい／いいえ／分からない で答える・会社や個人は分からない形で、どの項目にどう答えたかだけを GA4 で集計する（リサーチ用）・不安な人は結果から
 メールで相談（Tally 2jE9dj））、英語は定期のメールの登録。点検表を Excel で配ると一気に出回るので、
