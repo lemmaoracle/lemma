@@ -201,8 +201,90 @@ const latestHtml = [
   .filter(Boolean)
   .join("\n      ");
 
+/* ── 導入事例（2026-10-25）──────────────────────────────────────────
+ * ファーストビューの上の帯と、強みの枠の下の1行。CLUBS for PUBLIC の LP と同じ置き方。
+ * 相手先の社名は先方の許可が要るので出さず、自社の事例記事へ送る（記事からプレスリリースへ）。
+ * 記事が無い言語では、どちらも出さない。 */
+const CASE = isJa
+  ? {
+      k: "導入事例",
+      bar: "上下水道の住民参加の現場で、住民の活動記録を、個人情報を出さずに証明",
+      link: "公共インフラの現場で、住民の活動記録を、個人情報を出さずに証明しています",
+    }
+  : {
+      k: "Case study",
+      bar: "Proving residents' activity records in public infrastructure, without exposing personal data",
+      link: "In public infrastructure, residents' activity records are proven without exposing personal data",
+    };
+const caseHref = caseStudy ? blogArticlePath(base, caseStudy.slug) : "";
+const caseDate = caseStudy ? caseStudy.date.replace(/\./g, "-").slice(0, 10) : "";
+const caseBarHtml = caseStudy
+  ? `<div class="casebar"><div class="in"><span class="k">${CASE.k}</span><time datetime="${caseDate}">${caseDate.replace(/-/g, ".")}</time><a href="${caseHref}" data-top-ev="top_case_bar">${esc(CASE.bar)} →</a></div></div>`
+  : "";
+const caseLinkHtml = caseStudy
+  ? `<a class="kcase" href="${caseHref}"><span>${CASE.k}</span>${esc(CASE.link)} →</a>`
+  : "";
+
+/* ── Critical Brief の紹介（2026-10-25）──────────────────────────────
+ * 「なぜ、いま」の下。事例として小さく見せるだけにし、詳しくは Brief で読んでもらう。
+ * 3本は「なぜ、いま」の3枚と、5つの証明のどれで照合するかが分かるものを選んだ（手動）。
+ * 件数・国の数・開始月はコレクションから数える（一覧ページと同じ数え方）。 */
+const allBriefs = await getCollection("critical-briefs");
+const briefCount = allBriefs.length;
+const briefCountries = new Set(
+  allBriefs.flatMap((b) => (b.data.countries as string[] | undefined) ?? []).filter((c) => c !== "global"),
+).size;
+const briefSince = allBriefs.reduce(
+  (min, b) => (b.data.published < min ? b.data.published : min),
+  allBriefs[0]?.data.published ?? new Date(),
+);
+const BRIEF_PICKS = [
+  {
+    id: "044-arcadia-speecan-raiden-disaster-mail-spoofing",
+    ja: ["なりすまし · 日本", "防災メールと同じ送信元で、<br>偽メールが届いた", "02 認証"],
+    en: ["Impersonation · Japan", "A fake email arrived from the same sender as disaster alerts", "02 Authentication"],
+  },
+  {
+    id: "130-atlassian-rovo-instruction-provenance",
+    ja: ["AI の悪用 · 世界", "文書に隠した一文を、<br>AI が指示として実行しうる", "03 権限"],
+    en: ["AI misuse · Global", "A line hidden in a document could be run by AI as an instruction", "03 Authority"],
+  },
+  {
+    id: "035-boeing-787-inspection-records",
+    ja: ["記録 · 米国", "検査は「完了」と記録されたが、<br>実施されていなかった", "01 来歴"],
+    en: ["Records · US", "Inspections were recorded as complete but never performed", "01 Provenance"],
+  },
+] as const;
+const BR = isJa
+  ? {
+      h: "サイバー攻撃と、AI・記録の事故を、毎週分析しています。",
+      p: "公開された発表や一次資料から、何が起きたか、何を確認していれば気づけたかをまとめています。",
+      st: `${briefCount} 本 ・ ${briefCountries} の国・地域 ・ ${briefSince.getFullYear()} 年 ${briefSince.getMonth() + 1} 月から毎週`,
+      go: "Critical Brief を読む →",
+      pf: "照合に使う証明",
+    }
+  : {
+      h: "Cyber attacks, and AI and record failures, analyzed every week.",
+      p: "From public disclosures and primary sources, we set out what happened and what check would have caught it.",
+      st: `${briefCount} cases · ${briefCountries} countries and regions · weekly since ${briefSince.toLocaleString("en-US", { month: "long", year: "numeric" })}`,
+      go: "Read Critical Brief →",
+      pf: "Proof to match with",
+    };
+const briefsHtml = `<div class="bintro">
+      <div class="bh"><div><span class="eyb">LEMMA CRITICAL BRIEF</span><h3>${BR.h}</h3><p>${BR.p}<span class="bst">${BR.st}</span></p></div><a class="go" href="${base}/critical/briefs/">${BR.go}</a></div>
+      <div class="bcs">${BRIEF_PICKS.filter((p) => allBriefs.some((b) => b.id === p.id))
+        .map((p) => {
+          const [tag, title, proof] = isJa ? p.ja : p.en;
+          return `<a class="bc" href="${base}/critical/briefs/${p.id}/"><span class="bt">${tag}</span><b>${title}</b><span class="bp">${BR.pf}<i>${proof}</i></span></a>`;
+        })
+        .join("")}</div>
+    </div>`;
+
 const body = (isJa ? bodyJa : bodyEn)
+  .replace("<!--CASEBAR-->", caseBarHtml)
   .replace("<!--TICKER-->", tickerHtml + selfCheckTickerHtml)
+  .replace("<!--BRIEFS-->", briefsHtml)
+  .replace("<!--CASELINK-->", caseLinkHtml)
   .replace("<!--LATEST-->", latestHtml);
 
 const API_BASE = "https://workers.lemma.workers.dev/v1";
@@ -225,12 +307,15 @@ const REG = isJa
       offline: "OFFLINE",
     };
 
+/* 検索結果の見出しと説明（2026-10-25）。見出しはプレスリリースと強みの枠の言葉
+   「データを渡さずに、本物を証明する」にそろえる。説明は何を・誰が検証できるかを先に置き、
+   5つの証明と Critical Brief の名前を入れる（JA は 120 字以内）。 */
 const metaTitle = isJa
-  ? "Lemma — 真正性のある AI データ基盤｜検証可能 AI の信頼インフラ"
-  : "Lemma — An authentic data foundation for AI | verifiable-AI trust infrastructure";
+  ? "Lemma｜データを渡さずに、本物を証明する基盤"
+  : "Lemma | Prove what's real, without handing over the data";
 const metaDescription = isJa
-  ? "データを渡さずに来歴・属性・実績の真正性を暗号的に証明する、AI のための信頼インフラ（データ基盤）。生データを開示せず第三者が独立検証。検証可能AI・エージェント決済・規制対応。Trusted Web 準拠。"
-  : "Lemma is trust infrastructure for AI: prove the provenance, attributes, and track record of data cryptographically — without sharing raw data — verifiable by any third party. Verifiable AI, agent payments, regulatory attributes. Trusted Web–aligned.";
+  ? "記録・データ・AI の実行に暗号技術で証明を付け、受け取った側が自分で検証できるようにする基盤です。来歴・認証・権限・推論・属性の5つの証明を、データを渡さずに。攻撃と事故の事案分析 Critical Brief も毎週公開。"
+  : "Lemma attaches cryptographic proofs to records, data, and AI runs so the receiver can verify them on its own: provenance, authentication, authority, inference, and attributes, without handing over the data. Plus Critical Brief, a weekly analysis of real incidents.";
 
 /* カードに出る文。`metaDescription` は検索向けに語彙を積んであるので、SNS では
    硬く読める（しかもこの画像は専用 OG を持たない全ページの既定でもある）。
@@ -267,29 +352,6 @@ const ogDescription = isJa
       var reduced =
         window.matchMedia &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-      /* ---- 業界タブ（プリレンダー済みのボタンに切替だけ付ける） ---- */
-      (function () {
-        var N = 9;
-        function sel(n) {
-          for (var i = 0; i < N; i++) {
-            var t = document.getElementById("it-" + i);
-            var p = document.getElementById("ip-" + i);
-            if (!t || !p) return;
-            t.setAttribute("aria-selected", String(i === n));
-            p.hidden = i !== n;
-          }
-        }
-        for (var i = 0; i < N; i++) {
-          (function (n) {
-            var t = document.getElementById("it-" + n);
-            if (t)
-              t.addEventListener("click", function () {
-                sel(n);
-              });
-          })(i);
-        }
-      })();
 
       /* ---- レジストリ実数（/verify/ と同じ GET /v1/counters・同じ数え方の宣言） ---- */
       (function () {
