@@ -2002,6 +2002,81 @@ const jsonLd = [
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
+  /* PC：パネルが広く文字が小さく見えるので、幅を絞って文字とボタンを大きくする。 */
+  @media (min-width: 761px) {
+    .ck-tool {
+      max-width: 880px;
+    }
+    .ck-step h2 {
+      font-size: 21px;
+    }
+    .ck-who-b {
+      padding: 11px 20px;
+      font-size: 15.5px;
+    }
+    .ck-scenes,
+    .ck-scenes :global(.ck-chip) {
+      font-size: 13.5px;
+    }
+    .ck-modes {
+      max-width: 640px;
+      gap: 12px;
+    }
+    .ck-mode {
+      padding: 16px 14px;
+    }
+    .ck-mode b {
+      font-size: 17px;
+    }
+    .ck-mode b svg {
+      width: 19px;
+      height: 19px;
+    }
+    .ck-mode span {
+      font-size: 14px;
+    }
+    .ck-legend dd {
+      font-size: 14px;
+    }
+    .ck-legend-note {
+      font-size: 13px;
+    }
+    .ck-gh {
+      font-size: 17px;
+    }
+    .ck-item {
+      padding: 14px 0;
+    }
+    .ck-item p {
+      font-size: 16px;
+      line-height: 1.75;
+    }
+    .ck-src {
+      font-size: 12.5px;
+    }
+    .ck-ans button {
+      min-height: 44px;
+      padding: 8px 20px;
+      font-size: 14.5px;
+    }
+    .ck-sum,
+    .ck-score-msg {
+      font-size: 16.5px;
+    }
+    .ck-score-help {
+      font-size: 14.5px;
+    }
+    .ck-more {
+      max-width: 640px;
+      font-size: 16px;
+    }
+    .ck-result :global(.ck-gap li) {
+      font-size: 15px;
+    }
+    .ck-bar {
+      font-size: 14px;
+    }
+  }
   @media (max-width: 760px) {
     .ck-tool {
       margin: 16px 12px 0;
