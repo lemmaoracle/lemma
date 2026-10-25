@@ -261,6 +261,18 @@ export async function renderAiGyomuAnshinOg(locale: Locale): Promise<Buffer> {
   return renderOgPng(node, SLATE_BACKDROP);
 }
 
+/* ─────────────── Self-check (/ja/critical/self-check/) ─────────────── */
+
+/** セルフチェックの OG（日本語だけ）。項目数は記事から数えるので引数で受ける。 */
+export async function renderSelfCheckOg(total: number): Promise<Buffer> {
+  const node = slateArtboard({
+    title: "なりすましによる\n不正送金を、\n止められていますか。",
+    label: "対策チェックツール · 無料",
+    tagline: `実例 ${String(total)} 項目 · 担当別 · お急ぎなら 3 分`,
+  });
+  return renderOgPng(node, SLATE_BACKDROP);
+}
+
 /* ─────────────── Model comparison LPs (/compare/...) ─────────────── */
 
 const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> = {
