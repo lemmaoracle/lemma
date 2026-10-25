@@ -33,10 +33,11 @@ const total = selfCheckItemCount(groups);
 const analyzed = briefs.filter((b) => b.data.status === "published").length;
 const pad = (no: number) => String(no).padStart(3, "0");
 // LP の事例のカード（2026-10-24）。見出しや画像に被害組織の名前は出さず、記事へつなぐ。
+// 日本円以外の金額には円相当（yen）を添える（当時のレートの目安・記事や報道の換算に合わせる）。
 const CASES = [
-  { slug: "158-portland-water-bureau-vendor-bank-change", fig: "670", unit: "万ドル", kind: "振込先の変更", text: "米国の市。取引先を装う相手に取引先登録の振込先を変えられ、工事代金が別の口座へ送られた。" },
+  { slug: "158-portland-water-bureau-vendor-bank-change", fig: "670", unit: "万ドル", yen: "約 10 億円", kind: "振込先の変更", text: "米国の市。取引先を装う相手に取引先登録の振込先を変えられ、工事代金が別の口座へ送られた。" },
   { slug: "159-zuu-business-chat-executive-impersonation-transfer", fig: "9,600", unit: "万円", kind: "役員を装う指示", text: "国内の上場企業。社内のチャットで役員を装った送金の指示が届き、同じ日のうちに外部の口座へ振り込まれた。" },
-  { slug: "084-hong-kong-deepfake-video-call-fraud", fig: "約 HK$2", unit: "億", kind: "偽のビデオ会議", text: "香港の拠点。本社の CFO を装った録画のビデオ会議の指示で、15 回に分けて送金された。" },
+  { slug: "084-hong-kong-deepfake-video-call-fraud", fig: "約 HK$2", unit: "億", yen: "約 38 億円", kind: "偽のビデオ会議", text: "香港の拠点。本社の CFO を装った録画のビデオ会議の指示で、15 回に分けて送金された。" },
   { slug: "162-hatena-police-impersonation-remote-transfer", fig: "約 11.8", unit: "億円", kind: "警察を名乗る電話", text: "国内の上場企業。経理の責任者の PC が遠隔操作され、社内の資金移動を経て外部へ送られた。" },
 ];
 // 「あなたの担当は？」（CLUBS の LP の「例を選ぶと、その人の1週間に切り替わる」に
@@ -64,7 +65,7 @@ const PERSONAS = [
     sender: "株式会社〇〇商事 経理部",
     addr: "keiri@oo-shoji.example",
     subject: "【重要】お振込先変更のお願い",
-    real: "米国の市では、この形の連絡で、工事代金 670 万ドルが別の口座へ送られました。",
+    real: "米国の市では、この形の連絡で、工事代金 670 万ドル（約 10 億円）が別の口座へ送られました。",
     slug: "158-portland-water-bureau-vendor-bank-change",
     checks: ["振込先の変更を、メールの中ではなく登録済みの連絡先で確認しているか", "変わった直後の支払いを、確認が済むまで保留にしているか"],
     ops: ["payment-change", "approval", "delivery"],
@@ -98,7 +99,7 @@ const PERSONAS = [
     sender: "取引先ポータル",
     addr: "自動送信",
     subject: "担当者が追加されました",
-    real: "米国の市では、偽の担当者が取引先の登録に加えられ、振込先が書き換えられて 152 万ドルが送られました。",
+    real: "米国の市では、偽の担当者が取引先の登録に加えられ、振込先が書き換えられて 152 万ドル（約 2.3 億円）が送られました。",
     slug: "160-baltimore-workday-supplier-contact-bank-change",
     checks: ["管理者や担当者が追加されたとき、担当者に知らせが届くか", "使っていない入口や広すぎる権限を、定期的に閉じているか"],
     ops: ["account-admin", "data-access", "disclosure"],
@@ -251,11 +252,12 @@ const jsonLd = [
 
     <section class="lp-figs" aria-label="実際に起きた事案">
       <div class="lp-in">
-        <p class="lp-figs-h">なりすましで実際に起きた送金事故</p>
+        <p class="lp-figs-h">なりすましで実際に起きた送金事故<span>円は当時のレートによる目安</span></p>
         <div class="lp-figs-row">
           {CASES.map((c) => (
             <a class="lp-fig" href={`/ja/critical/briefs/${c.slug}/`}>
               <b>{c.fig}<small>{c.unit}</small></b>
+              {c.yen && <i class="lp-fig-yen">（{c.yen}）</i>}
               <span>{c.kind}</span>
               <em>No.{c.slug.slice(0, 3)} を読む →</em>
             </a>
@@ -1238,6 +1240,21 @@ const jsonLd = [
     display: block;
     font-size: 24px;
     font-weight: 800;
+  }
+  .lp-fig-yen {
+    display: block;
+    font-style: normal;
+    font-size: 12px;
+    font-weight: 700;
+    color: #3c4237;
+  }
+  .lp-figs-h span {
+    display: inline-block;
+    white-space: nowrap;
+    margin-left: 10px;
+    font-weight: 500;
+    font-size: 11.5px;
+    color: #8a9084;
   }
   .lp-fig small {
     margin-left: 2px;
