@@ -1,7 +1,7 @@
 ---
 brief_no: 70
-title: "Unitree：全機で同じ暗号の鍵を使っていたため、Bluetooth の初期設定から最上位の権限で乗っ取れることが示された(研究者の公表・NVD) — 接続してきた相手を、機体ごとの鍵で照合する層が無い"
-title_en: "Unitree: Robots shared one encryption key across every unit, so they could be taken over with root access through Bluetooth setup (researchers, NVD) — No layer checks a connecting party against a per-unit key"
+title: "Unitree：人型・四足ロボットを、Bluetooth の初期設定から最上位の権限で乗っ取れると示された(研究者の公表・NVD) — 接続してきた相手を、機体ごとの鍵で照合する層が無い"
+title_en: "Unitree: Researchers showed its humanoid and quadruped robots could be taken over with root access via Bluetooth setup (researchers, NVD) — No layer checks a connecting party against a per-unit key"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["agent-infrastructure", "attribute-proof-bypass"]
@@ -12,13 +12,13 @@ related_pack: ["A-incident-response"]
 related_briefs: ["068-universal-robots-polyscope-command-injection", "033-f5-bigip-edge-pivot", "003-starlette-badhost", "006-google-api-key-revocation-lag", "025-mcp-stdio-config-to-command-rce"]
 status: published
 version: "2.0"
-og_lead_ja: "Unitree のロボット、全機共通の鍵で Bluetooth から乗っ取れた — 1 台の手口がほかの機体にも通じる"
-og_lead_en: "Unitree robots could be taken over via Bluetooth with one key shared by every unit — one method works on all"
+og_lead_ja: "Unitree のロボット、全機共通の鍵で Bluetooth から乗っ取れた"
+og_lead_en: "Every Unitree robot shared one encryption key, letting attackers take them over via Bluetooth — crack one, and the rest fall too"
 layout: "report"
 og_kicker_ja: "脆弱性の公表 · ロボット"
 og_kicker_en: "VULNERABILITY · ROBOTS"
-og_headline_ja: "全機が同じ鍵を使っていた。\n1 台の手口が全機に通じる。\n<accent>人型と四足の 4 機種</accent>"
-og_headline_en: "Every robot used the same key.\nOne method works on all.\n<accent>Four humanoid and quadruped models.</accent>"
+og_headline_ja: "全機が同じ鍵を使っていた。\n1 台の手口が全機に通じる\n<accent>人型と四足の 4 機種</accent>"
+og_headline_en: "Every robot used the same key.\nCrack one, crack them all.\n<accent>Across four robot models.</accent>"
 summary_labels: ["何が起きたか", "なぜ止まらなかったか", "欠けていた層"]
 key_figures:
   - value: "1"
@@ -29,12 +29,14 @@ key_figures:
     unit: "機種"
     label: "影響を受けた機種。人型の G1・H1、四足の Go2・B2（NVD）"
   - value: "2025-05 → 09-20"
-    label: "研究者が Unitree に連絡してから公開まで。7 月に Unitree の返信が途絶えた（IEEE Spectrum）"
+    label: "研究者が Unitree に連絡してから公開まで。研究者によると、7 月以降は返信が無かった（IEEE Spectrum）"
 glossary:
-  - term: "Bluetooth の初期設定（BLE プロビジョニング）"
+  - term: "Bluetooth の初期設定"
     desc: "ロボットを Wi-Fi につなぐために、近くのスマートフォンなどから Bluetooth で設定を送る入口。"
   - term: "root（最上位の権限）"
     desc: "機器の中で何でもできる管理者の権限。ここを取られると、機器を思いどおりに操作される。"
+  - term: "ファームウェア"
+    desc: "機器の中で動くソフト。更新は提供元から配られる。"
 insight:
   slug: "one-key-for-all"
   label: "全機共通の 1 本の鍵"
@@ -47,23 +49,23 @@ controls:
     item: "初期設定などの入口から届く入力は、検証してから使う"
 search_title: "Unitree のロボットの脆弱性 UniPwn：手口と対策"
 search_description: "Unitree の人型・四足ロボット（G1・H1・Go2・B2）が、全機共通の暗号の鍵のために、Bluetooth の初期設定から最上位の権限で乗っ取れることが示された（UniPwn）。手口、なぜ止まらないか、対策を整理。"
-self_check: "導入するロボットや IoT 機器が、機体ごとに別の鍵で接続相手を照合しているかを、導入の前に確認しているか。"
+self_check: "導入するロボットやネットにつながる機器が、機体ごとに別の鍵で、つないでくる相手を照合しているか。"
 countries: ["global"]
 ---
 
-> **改訂（v2.0 / 2026-10-25）**: 一般の読者が読める構成に組み直し、§5 を「対策するには」にした。arXiv の論文、IEEE Spectrum、NVD の CVE の記載で事実を取り直した。論文の著者を Mayoral-Vilches・Makris・Finisterre の 3 名に直した。論文の要旨は外部の送信先の所在を書いていないため、所在の記述を外した。Unitree が 7 月に返信を止めたことと、9 月 29 日に修正の大半を終えたとしたことを足した。Lemma の設計の説明は外し、状態を published にした。
+> **改訂（v2.0 / 2026-10-25）**: 一般の読者が読める構成に組み直し、§5 を「対策するには」にした。arXiv の論文、IEEE Spectrum、NVD の CVE の記載で事実を取り直した。論文の著者を Mayoral-Vilches・Makris・Finisterre の 3 名に直した。論文の要旨は外部の送信先の所在を書いていないため、所在の記述を外した。研究者によると 7 月以降は Unitree の返信が無かったことと、Unitree が 9 月 29 日に修正の大半を終えたとしたことを足した。出典の題名と日付を直した。Lemma の設計の説明は外し、状態を published にした。
 
 ## 1. TL;DR
 
 研究者の Andreas Makris 氏と Kevin Finisterre 氏は 2025 年 9 月 20 日、Unitree の人型ロボット（G1・H1）と四足ロボット（Go2・B2）を、Bluetooth の初期設定の入口から乗っ取る手法（UniPwn）を公開した。全機が同じ暗号の鍵を使っており、「unitree」という文字列を含む合言葉を送れば、認証を通った。
 
-続けて Wi-Fi の名前やパスワードのふりをしてコマンドを送ると、ロボットはそれを最上位の権限（root）で実行した。鍵が全機で同じなので、1 台の手口がそのままほかの機体にも通じ、近くの機体へ自動で広がりうると研究者は指摘している。
+続けて Wi-Fi の名前やパスワードのふりをしてコマンドを送ると、ロボットはそれを最上位の権限（root）で実行した。研究者は、乗っ取った機体から近くのほかの機体へ自動で広がりうると指摘している。
 
-Unitree は 9 月 29 日に修正の大半を終えたとしたが、それは公開の後だった。効かなかったのは、接続してきた相手を、機体ごとの鍵で照合する層である。
+Unitree は 9 月 29 日に修正の大半を終えたとしたが、更新が届くまでは、どの機体も同じ鍵で入口が開く。効かなかったのは、接続してきた相手を、機体ごとの鍵で照合する層である。
 
 ## 2. 何が起きたか
 
-- **研究者**: Andreas Makris 氏と Kevin Finisterre 氏が見つけて公開した。Alias Robotics の Víctor Mayoral-Vilches 氏を含む 3 名が、G1 の安全性を調べた論文を arXiv に出した（2025-09）。
+- **研究者**: Andreas Makris 氏と Kevin Finisterre 氏が欠陥を見つけて公開した。Alias Robotics の Víctor Mayoral-Vilches 氏を含む 3 名が、G1 の安全性を調べた論文を arXiv に出した（2025-09）。
 - **影響を受けた機種**: 共通のファームウェアを使う G1・H1・Go2・B2（NVD）。
 - **入口**: ロボットを Wi-Fi につなぐための、Bluetooth の初期設定の入口。
 - **認証を通った理由**: 全機で同じ暗号の鍵と初期値が、機体の中に書き込まれていた（CVE-2025-60250）。合言葉に「unitree」という文字列が含まれていれば受け付けた（CVE-2025-60251）。
@@ -88,17 +90,17 @@ Unitree は 9 月 29 日に修正の大半を終えたとしたが、それは�
 ## 3. 時系列 — 公表と対応
 
 - **2025-05**: 研究者が Unitree に連絡する。
-- **2025-07**: Makris 氏が X で鍵を公開する。Unitree からの返信が途絶える。
+- **2025-07**: Makris 氏が X で鍵を公開する。研究者によると、この月以降、Unitree から返信が無かった（IEEE Spectrum）。
 - **2025-09-17**: 論文を arXiv に出す。
 - **2025-09-20**: 研究者が UniPwn を公開する。
 - **2025-09-26**: NVD に CVE が公開される。
 - **2025-09-29**: Unitree が LinkedIn で、修正の大半を終えたとする。
 
-> 本件の事実は、研究者の論文（一次）、NVD の CVE の記載、IEEE Spectrum の報道に拠る。本 Brief は、製造者や国を責めるものではなく、全機共通の鍵と入力の検証の欠けを論点とする。実際の悪用は報じられていない。
+> 本件の事実は、研究者の論文（一次）、NVD の CVE の記載、IEEE Spectrum の報道に拠る。本件は研究者による実証で、参照した報道では実際の悪用は報じられていない。本 Brief は製造者を責めるものではなく、全機共通の鍵と入力の検証の欠けを論点とする。
 
 ### 公表後の対応
 
-- **Unitree**: 9 月 29 日に LinkedIn で、すぐに対応を始め、修正の大半を終えた、更新は近く届けるとした（IEEE Spectrum）。報道の時点で、更新が配られたかは確認されていない。
+- **Unitree**: 9 月 29 日に LinkedIn で、すぐに対応を始め、修正の大半を終えた、更新は近く届けるとした（IEEE Spectrum）。IEEE Spectrum の記事（2025-11 更新）の時点では、更新が配られたかは確認されていない。
 - **研究者**: 論文で、人型ロボットが重要なインフラに入っていくなかで、守りの仕組みが要ると論じた。
 
 ## 4. なぜ止まらなかったか
@@ -119,7 +121,7 @@ Unitree は 9 月 29 日に修正の大半を終えたとしたが、それは�
 </div>
 </figure>
 
-研究者が見つけて公開し、Unitree は修正を進めた。だが鍵が全機で同じであるかぎり、1 台から取り出した鍵が、修正の届いていないすべての機体の入口を開ける。この隔たりが**検出と証明の落差**であり、構造的な欠落である。
+研究者が見つけて知らせ、Unitree は修正を進めた。だが修正は見つかった後の対応で、更新が届いていない機体は、同じ鍵のまま入口が開く。この隔たりが**検出と証明の落差**であり、構造的な欠落である。
 
 同じ構造は、[Universal Robots の PolyScope](https://lemma.frame00.com/ja/critical/briefs/068-universal-robots-polyscope-command-injection/)（産業用ロボットの操作画面から、外のコマンドを実行できた）にも現れている。
 
@@ -129,17 +131,17 @@ Unitree は 9 月 29 日に修正の大半を終えたとしたが、それは�
 
 ### 注意したい業界・業務
 
-- **業界 · 製造・基幹インフラ**: ロボットや IoT 機器を作る組織と、工場や施設に導入する組織。
-- **業界 · 行政・公共**: 警備や点検にロボットを試している組織（IEEE Spectrum は、英国の警察が Go2 を試していると伝えた）。
+- **業界 · 製造・基幹インフラ**: ロボットやネットにつながる機器を作る組織と、工場や施設に導入する組織。
+- **業界 · 自治体・公共**: 警備や点検にロボットを試している組織（IEEE Spectrum は、英国の警察が Go2 を試していると伝えた）。
 
 ### いまの対策で防げるか
 
 | 対策 | 今回 | 理由 |
 | --- | --- | --- |
-| 通信の暗号化 | 効かない | 鍵が全機で同じで、1 台から取り出せた。 |
+| 通信の暗号化 | 効かない | 鍵が全機で同じだった。 |
 | 合言葉による認証 | 効かない | 「unitree」という文字列を含めば通った。 |
-| ネットワークの分離 | 一部 | Wi-Fi の外の Bluetooth の入口は、近くにいれば届く。 |
-| ファームウェアの更新 | 一部 | 修正の大半を終えたとしたが、報道の時点で配布は確認されていない。 |
+| ネットワークの分離 | 一部 | Wi-Fi 側の通信は絞れるが、Bluetooth の入口は近くにいれば届く。 |
+| ファームウェアの更新 | 一部 | 修正の大半を終えたとしたが、2025-11 の報道の時点で配布は確認されていない。 |
 
 ### 必要になるもの
 
@@ -149,11 +151,11 @@ Unitree は 9 月 29 日に修正の大半を終えたとしたが、それは�
 
 ### 点検チェックリスト
 
-ロボットや IoT 機器を作る・導入する組織で確認する 3 項目
+ロボットやネットにつながる機器を作る・導入する組織で確認する 3 項目
 
-- 自社の機器は、機体ごとに別の鍵やパスワードを使っているか。
+- 機器の初期設定の入口から届く文字列を、そのまま実行しない作りかを、提供元に確認しているか。
 - 導入した機器が外部のサーバーへ何を送っているかを、把握しているか。
-- 機器のファームウェアの更新を、提供元から受け取って当てる手順があるか。
+- 機器のソフトの更新を、提供元から受け取って入れる手順があるか。
 
 注：この手口は Bluetooth の届く近さが要る。Unitree が更新の配布を発表すれば、この Brief を改訂する。
 
@@ -161,8 +163,8 @@ Unitree は 9 月 29 日に修正の大半を終えたとしたが、それは�
 
 - **arXiv（研究・一次）**: Mayoral-Vilches, Makris, Finisterre, "Cybersecurity AI: Humanoid Robots as Attack Vectors"（2025-09-17） — <https://arxiv.org/abs/2509.14139>
 - **NVD（一次・CVE）**: "CVE-2025-35027"（2025-09-26） — 関連：CVE-2025-60250・CVE-2025-60251・CVE-2025-60017 — <https://nvd.nist.gov/vuln/detail/CVE-2025-35027>
-- **IEEE Spectrum（報道）**: "Unitree Robot Hack: What You Need to Know" — <https://spectrum.ieee.org/unitree-robot-exploit>
-- **Help Net Security（報道）**: "Humanoid robot found vulnerable to Bluetooth hack"（2025-10-16） — <https://www.helpnetsecurity.com/2025/10/16/unitree-g1-humanoid-robot-vulnerability/>
+- **IEEE Spectrum（報道）**: "Exploit Allows for Takeover of Fleets of Unitree Robots"（2025-09-25） — <https://spectrum.ieee.org/unitree-robot-exploit>
+- **Help Net Security（報道）**: "Humanoid robot found vulnerable to Bluetooth hack, data leaks to China"（2025-10-16） — <https://www.helpnetsecurity.com/2025/10/16/unitree-g1-humanoid-robot-vulnerability/>
 - **Hackaday（報道）**: "Unitree Humanoid Robot Exploit Looks Like A Bad One"（2025-09-30） — <https://hackaday.com/2025/09/30/unitree-humanoid-robot-exploit-looks-like-a-bad-one/>
 
 参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)
