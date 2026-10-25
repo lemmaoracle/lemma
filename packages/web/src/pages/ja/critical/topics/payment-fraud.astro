@@ -1,0 +1,441 @@
+---
+/**
+ * 題材ごとの事例のページ：振込先の書き換え・ニセ社長の送金指示（2026-10-25・日本語だけ・試し）。
+ *
+ * Brief の「似た事例を一覧で読む」は一覧ページの絞り込み（?operation=…）で、検索エンジンには
+ * 別のページとして載りにくい。「ビジネスメール詐欺 事例」のように、事件の名前でなく一般の言葉で
+ * 探す人の入口として、題材ごとに独立したページを置く。効けば、情報の流出・アカウントの
+ * 乗っ取りにも広げる。
+ *
+ * 事例は手で選んで並べる（型ごとにまとめるため）。見出しやカードの文に被害組織の名前は出さず、
+ * 記事の番号でつなぐ。日本円以外の金額には円相当を添える（当時のレートによる目安）。
+ */
+import { getCollection } from "astro:content";
+import Layout from "../../../../layouts/Layout.astro";
+import Navigation from "../../../../components/Navigation.astro";
+import Footer from "../../../../components/FooterRenewal.astro";
+import { getTranslations } from "../../../../i18n/translations";
+import { CONSULT_FORM_URL, SELF_CHECK_PAGES } from "../../../../config/cta";
+import type { BriefEntry } from "../../../../data/criticalBriefs";
+
+const locale = "ja" as const;
+const base = "/ja";
+const t = getTranslations(locale);
+const site = "https://lemma.frame00.com";
+const briefs = (await getCollection("critical-briefs")) as BriefEntry[];
+const byId = new Map(briefs.map((b) => [b.id, b]));
+const pad = (no: number) => String(no).padStart(3, "0");
+
+interface Case {
+  slug: string;
+  who: string;
+  fig: string;
+  unit: string;
+  yen?: string;
+  text: string;
+}
+const GROUPS: ReadonlyArray<{ key: string; title: string; lead: string; cases: ReadonlyArray<Case> }> = [
+  {
+    key: "account",
+    title: "取引先の振込先を書き換えられた",
+    lead: "取引先を装う相手が、登録してある振込先を自分の口座に変えさせる。支払いはいつもの手順のまま通る。",
+    cases: [
+      { slug: "158-portland-water-bureau-vendor-bank-change", who: "米国の市・2025 年", fig: "670", unit: "万ドル", yen: "約 10 億円", text: "取引先を装う相手に取引先登録の振込先を変えられ、浄水場の工事代金が別の口座へ送られた（のちに全額回収）。" },
+      { slug: "160-baltimore-workday-supplier-contact-bank-change", who: "米国の市・2025 年", fig: "152", unit: "万ドル", yen: "約 2.3 億円", text: "偽の担当者が取引先の登録に加わり、振込先を書き換えた。2 回の支払いが別の口座へ送られた。" },
+      { slug: "032-booking-payout-account-tampering", who: "国内のホテル運営会社・2026 年", fig: "約 900", unit: "万円", text: "予約サイトの正規の管理画面で、売上金を受け取る口座が第三者の口座に書き換えられた。" },
+    ],
+  },
+  {
+    key: "boss",
+    title: "社長・役員・上長を装う送金の指示（ニセ社長詐欺）",
+    lead: "経営者や上長を名乗って、社員に急ぎの送金をさせる。チャット・ビデオ会議・電話と、届く経路はさまざま。",
+    cases: [
+      { slug: "159-zuu-business-chat-executive-impersonation-transfer", who: "国内の上場企業・2026 年", fig: "9,600", unit: "万円", text: "社内のビジネスチャットで役員を装った送金の指示が届き、同じ日のうちに外部の口座へ振り込まれた。" },
+      { slug: "084-hong-kong-deepfake-video-call-fraud", who: "香港の拠点・2024 年", fig: "約 HK$2", unit: "億", yen: "約 38 億円", text: "本社の CFO と同僚を装った録画のビデオ会議を信じ、財務担当者が 15 回に分けて送金した。" },
+      { slug: "162-hatena-police-impersonation-remote-transfer", who: "国内の上場企業・2026 年", fig: "約 11.8", unit: "億円", text: "警察を名乗る電話のあと、経理の責任者の PC が遠隔操作され、社内の資金移動を経て外部へ送られた。" },
+    ],
+  },
+  {
+    key: "invoice",
+    title: "本物そっくりの請求・送金の依頼",
+    lead: "取引先に似せたドメインからの請求や、社員を狙った依頼で送金させる。額や中身は本物と見分けがつかない。",
+    cases: [
+      { slug: "163-liberty-lookalike-domain-vendor-payment", who: "米国の市・2026 年", fig: "約 60", unit: "万ドル", yen: "約 9,500 万円", text: "取引先に似せたドメインから届いた請求に応じて送金した。請求の額は本物の債務と同じだった。" },
+      { slug: "161-orion-manual-wire-transfer-fraud", who: "米国の化学メーカー・2024 年", fig: "5,920", unit: "万ドル", yen: "約 87 億円", text: "社員を狙った詐欺で、手作業の送金が複数回、第三者の口座へ出た。未回収の損失として計上した。" },
+    ],
+  },
+];
+const cases = GROUPS.flatMap((g) => g.cases);
+const missing = cases.filter((c) => !byId.has(c.slug)).map((c) => c.slug);
+if (missing.length) throw new Error(`payment-fraud: Brief not found: ${missing.join(", ")}`);
+const total = cases.length;
+
+// 8 件に共通して抜けていた確認（各記事の「対策」を、担当者の言葉にまとめたもの）。
+const CHECKS = [
+  "振込先の変更や送金の指示は、届いたのとは別の経路で、登録済みの連絡先に確認する",
+  "確認できない変更・指示では、送金しない（急ぎ・内密と言われても）",
+  "変更した本人・指示を受けた本人とは別の人が確認する",
+  "誰が、何で確認して送金したかを残す",
+];
+
+const selfCheckHref = `${SELF_CHECK_PAGES.remittance.path}?from=topic-payment-fraud`;
+const consultHref = `${CONSULT_FORM_URL}&ref=topic_payment_fraud`;
+const NPA_URL =
+  "https://www.npa.go.jp/publications/statistics/cybersecurity/data/R8kami/R08_kami_cyber_jousei.pdf";
+
+const pagePath = "/critical/topics/payment-fraud/";
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ホーム", item: `${site}/ja/` },
+      { "@type": "ListItem", position: 2, name: "Critical Brief", item: `${site}/ja/critical/briefs/` },
+      { "@type": "ListItem", position: 3, name: "振込先の書き換え・ニセ社長詐欺の事例", item: `${site}/ja${pagePath}` },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "振込先の書き換え・ニセ社長の送金指示の事例",
+    numberOfItems: total,
+    itemListElement: cases.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${site}/ja/critical/briefs/${c.slug}/`,
+      name: byId.get(c.slug)!.data.title.split(" — ")[0],
+    })),
+  },
+];
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath={pagePath}
+  localesAvailable={["ja"]}
+  title={`振込先の書き換え・ニセ社長詐欺の事例（${total}件）｜手口と対策｜Lemma`}
+  description={`ビジネスメール詐欺（BEC）の事例。取引先を装う振込先の書き換え、社長・役員を装う送金の指示、本物そっくりの請求など、国内外で実際に起きた ${total} 件の手口と、送金の前に確認することをまとめました。`}
+  jsonLd={jsonLd}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <main class="tp">
+    <div class="tp-in">
+      <nav class="tp-crumb" aria-label="パンくず">
+        <a href={`${base}/`}>ホーム</a><span>/</span><a href={`${base}/critical/briefs/`}>Critical Brief</a><span>/</span><span>事例：不正送金</span>
+      </nav>
+      <p class="tp-kicker">ビジネスメール詐欺・不正送金の事例</p>
+      <h1>振込先の書き換え・<br class="tp-br" />ニセ社長の送金指示の事例</h1>
+      <p class="tp-lead">国内外で実際に起きた {total} 件から、どう送金させられたかと、送金の前に何を確認すればよかったか。</p>
+
+      <aside class="tp-stat">
+        <div class="tp-stat-n"><b>127</b><span>件</span></div>
+        <div class="tp-stat-n"><b>約 38.8</b><span>億円</span></div>
+        <p>2026 年 1〜6 月に警察が把握した、経営者を装うニセ社長詐欺の件数と被害額。2026 年 1 月ごろから出ている（<a href={NPA_URL} target="_blank" rel="noopener">警察庁</a>）。</p>
+      </aside>
+
+      {GROUPS.map((g, gi) => (
+        <section class="tp-group" id={g.key}>
+          <h2><span class="tp-gno">{gi + 1}</span>{g.title}</h2>
+          <p class="tp-glead">{g.lead}</p>
+          <ul class="tp-cases">
+            {g.cases.map((c) => {
+              const b = byId.get(c.slug)!;
+              return (
+                <li class="tp-case">
+                  <div class="tp-case-who">{c.who}</div>
+                  <div class="tp-case-fig"><b>{c.fig}</b><span>{c.unit}</span>{c.yen && <i>（{c.yen}）</i>}</div>
+                  <p>{c.text}</p>
+                  <a href={`${base}/critical/briefs/${c.slug}/`}>Brief No.{pad(b.data.brief_no)} を読む →</a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
+      <p class="tp-note">円は当時のレートによる目安。</p>
+
+      <section class="tp-checks">
+        <h2>送金の前に確認すること</h2>
+        <p class="tp-glead">{total} 件に共通して抜けていたのは、送金の前の確認でした。</p>
+        <ol>
+          {CHECKS.map((c) => <li>{c}</li>)}
+        </ol>
+      </section>
+
+      <section class="tp-cta">
+        <div>
+          <b>自社で通らないか、担当ごとに点検する</b>
+          <span>実際の事案から作ったチェック項目に、はい／いいえで答えるだけ。お急ぎなら 3 分。登録は要りません。</span>
+        </div>
+        <a class="tp-btn" href={selfCheckHref} data-tp-ev="topic_self_check">不正送金の対策をチェックする →</a>
+        <a class="tp-sub" href={consultHref} target="_blank" rel="noopener" data-tp-ev="topic_consult">自社の場合を、メールで相談する（無料）</a>
+      </section>
+    </div>
+  </main>
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+
+  <script is:inline>
+    document.querySelectorAll("[data-tp-ev]").forEach(function (a) {
+      a.addEventListener("click", function () {
+        if (typeof window.gtag !== "function") return;
+        window.gtag("event", a.getAttribute("data-tp-ev"), { destination: a.getAttribute("href") });
+      });
+    });
+  </script>
+</Layout>
+
+<style>
+  .tp {
+    --ink: #16190f;
+    --ok: #a8e010;
+    --okd: #4e7a00;
+    --tx: #12140e;
+    --soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    background: #f3f4f1;
+    color: var(--tx);
+    padding: 96px 16px 72px;
+  }
+  .tp-in {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .tp-crumb {
+    display: flex;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 26px;
+  }
+  .tp-crumb a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .tp-kicker {
+    display: inline-block;
+    margin: 0 0 14px;
+    padding: 4px 12px;
+    border: 1px solid #cfe39a;
+    border-radius: 999px;
+    background: #f6fbe8;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--okd);
+  }
+  h1 {
+    margin: 0 0 14px;
+    font-size: clamp(28px, 4.2vw, 40px);
+    line-height: 1.35;
+    font-weight: 800;
+  }
+  .tp-lead {
+    margin: 0 0 26px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--soft);
+  }
+  .tp-stat {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 18px 20px;
+    margin-bottom: 44px;
+    background: #22281f;
+    color: #e8ece5;
+    border-radius: 4px;
+  }
+  .tp-stat-n b {
+    font-family: "Inter", sans-serif;
+    font-size: 30px;
+    color: var(--ok);
+  }
+  .tp-stat-n span {
+    margin-left: 3px;
+    font-size: 14px;
+  }
+  .tp-stat p {
+    flex: 1 1 320px;
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .tp-stat a {
+    color: #e8ece5;
+  }
+  .tp-group,
+  .tp-checks {
+    margin-bottom: 40px;
+  }
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 8px;
+    font-size: 22px;
+    line-height: 1.45;
+    font-weight: 800;
+  }
+  .tp-gno {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--ok);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tp-glead {
+    margin: 0 0 16px;
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--soft);
+  }
+  .tp-cases {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+  }
+  .tp-case {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  .tp-case-who {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .tp-case-fig b {
+    font-family: "Inter", sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .tp-case-fig span {
+    margin-left: 2px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .tp-case-fig i {
+    font-style: normal;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .tp-case p {
+    flex: 1;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .tp-case a {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--okd);
+    text-decoration: none;
+  }
+  .tp-case a:hover {
+    text-decoration: underline;
+  }
+  .tp-note {
+    margin: -24px 0 40px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .tp-checks ol {
+    margin: 0;
+    padding: 6px 18px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    list-style: none;
+    counter-reset: c;
+  }
+  .tp-checks li {
+    counter-increment: c;
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px dotted rgba(22, 25, 15, 0.2);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .tp-checks li:first-child {
+    border-top: 0;
+  }
+  .tp-checks li::before {
+    content: counter(c);
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    color: var(--okd);
+  }
+  .tp-cta {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px 20px;
+    align-items: center;
+    padding: 20px;
+    background: #eef7d2;
+    border: 1px solid #d4e6a6;
+    border-radius: 4px;
+  }
+  .tp-cta b {
+    display: block;
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+  .tp-cta span {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--soft);
+  }
+  .tp-btn {
+    padding: 13px 20px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .tp-btn:hover {
+    background: #000;
+  }
+  .tp-sub {
+    grid-column: 1 / -1;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--okd);
+  }
+  .tp-br {
+    display: none;
+  }
+  @media (max-width: 760px) {
+    .tp {
+      padding-top: 84px;
+    }
+    .tp-br {
+      display: inline;
+    }
+    .tp-cta {
+      grid-template-columns: 1fr;
+    }
+    .tp-btn {
+      text-align: center;
+      white-space: normal;
+    }
+  }
+</style>
