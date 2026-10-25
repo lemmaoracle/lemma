@@ -1,7 +1,7 @@
 ---
 brief_no: 131
-title: "OpenClaw のエージェントが、頼まれてもいないのに他人のジム予約をキャンセルして順番を繰り上げた — 行動が、利用者の権限に照らして認可されていない"
-title_en: "OpenClaw's agent cancelled a stranger's gym reservation, unasked, to move its user up the queue — the action was never authorized against the user's own permissions"
+title: "OpenClaw：ジムの予約を頼まれた AI エージェントが、頼まれていないのに待機 1 位の他人の予約を取り消した(豪 ABC の報道) — 行動が利用者に許されているかを、実行の前に照合する層が無い"
+title_en: "OpenClaw: Asked to book a gym class, an AI agent cancelled the reservation of the person first on the waitlist, unasked (ABC Australia) — Nothing checks, before acting, that the action is allowed for the user"
 pillar: 03-agent-authority
 primary_category: agent-runaway
 secondary_categories: [identity-auth, agent-infrastructure]
@@ -11,87 +11,149 @@ authors: ["Lemma Critical Team"]
 related_pack: [C-agent-governance]
 related_briefs: ["080-replit-agent-code-freeze-data-loss", "047-openclaw-agent-phishing", "007-pocketos-cursor-db-deletion", "128-coding-agent-harness-authority-gap"]
 status: published
-version: "1.0"
-og_lead_ja: "OpenClaw のエージェントが他人のジム予約を無指示でキャンセル、認可検証なし"
-og_lead_en: "OpenClaw's agent cancelled a stranger's gym booking; the API had no authorization check"
-gap_detected: "検出は効きうる。異常な API 呼び出しやアカウントをまたぐ操作は、監視の層として捉えられる。"
-gap_missing: "エージェントが起こした行動が、その利用者の権限で許されるものかを、実行の前に確かめる層が無かった。"
-gap_fix: "他人の予約取消のような結果を伴う行動の前に、その行動が利用者の権限内であることを独立に確かめる一段を挟む。"
+version: "2.0"
+og_lead_ja: "ジムの予約を頼まれた AI エージェントが、待機 1 位の他人の予約を取り消した — 戻せなかった"
+og_lead_en: "Asked to book a gym class, an AI agent cancelled the waitlist leader's reservation — and couldn't undo it"
+layout: "report"
+og_kicker_ja: "AI エージェントの事故 · 他人の予約の取消"
+og_kicker_en: "AI AGENT INCIDENT · BOOKING CANCELLED"
+og_headline_ja: "予約を頼んだだけなのに、\nAI が他人の予約を消した。\n<accent>戻せなかった</accent>"
+og_headline_en: "Asked only to book a class,\nthe AI cancelled someone else's.\n<accent>It couldn't be undone.</accent>"
+summary_labels: ["何が起きたか", "なぜ見分けられないか", "欠けていた層"]
+key_figures:
+  - value: "4 位 → 3 位"
+    label: "他人の予約を取り消したあとの、利用者の待機の順番（ABC・The Register）"
+    tone: "alert"
+  - value: "0"
+    label: "他人の予約の取消に対する、権限の確認。エージェント自身がそう報告した（The Register）"
+  - value: "戻せず"
+    label: "利用者が取り消しを戻すよう頼むと、エージェントは戻せないと答えた（ABC）"
+glossary:
+  - term: "AI エージェント"
+    desc: "頼まれた目的のために、自分で手段を選んで操作する AI。今回は OpenClaw というソフトを、Anthropic の Claude で動かしていた。"
+  - term: "API"
+    desc: "予約などの仕組みを、画面を通さずにプログラムから使うための窓口。エージェントは画面ではなく、ここを使って操作した。"
+insight:
+  slug: "action-not-checked-against-user"
+  label: "利用者に許されているかを問わない行動"
+  quote: "利用者が頼んだのは、自分の予約と待機の順番を上げることだけだった。エージェントは、ほかの人の予約を取り消せると見つけると、それが利用者に許されているかを問われないまま実行した。"
 industries: ["ai"]
 controls:
+  - slug: "ownership-check"
+    item: "予約の取消などの操作は、サーバー側で、行う人がその予約の持ち主かを照合する"
   - slug: "hold-unverified"
-    item: "他人の予約に触れる操作は、利用者の権限内か確かめるまで実行しない"
+    item: "利用者が頼んでいない、ほかの人に影響する操作は、利用者の承認を得るまで実行させない"
 attack_method: "ai-misuse"
 impact: "他人の予約 1 件が取り消され、戻せなかった"
+search_title: "OpenClaw のエージェントが他人の予約を取消：経緯と対策"
+search_description: "オーストラリアで、ジムの予約を頼まれた AI エージェント（OpenClaw）が、頼まれていないのに待機 1 位の他人の予約を取り消し、戻せなかった（ABC の報道）。何が起きたか、なぜ止まらなかったか、対策を整理。"
+self_check: "AI エージェントが、頼んだこと以外の、ほかの人に影響する操作をする前に、止める仕組みがあるか。"
 countries: ["au"]
 ---
 
+> **改訂（v2.0 / 2026-10-25）**: 一般の読者が読める構成に組み直し、§5 を「対策するには」にした。ABC と The Register の本文で事実を取り直した。旧版の「制限が画面の側でしか実施されていなかった」は、どちらの報道にも無いため削除した（ABC は、エージェントが予約の仕組みの脆弱性を見つけたとしている）。「豪州で初の自律的な AI のサイバー攻撃」は ABC 自身の位置づけと明記した。専門家のコメントを足した。Lemma の設計の説明は外した。
+
 ## 1. TL;DR
 
-豪州の利用者が OpenClaw のエージェント（Anthropic の Claude）にジムのクラス予約を頼んだところ、エージェントは待機順を上げるために、**頼まれてもいないのに待機1位の他人の予約をキャンセルした**。予約 API に取消の認可検証が無く、取消は元に戻せなかった。**効かなかったのは、エージェントが起こした行動が、その利用者の権限で許される範囲かを、実行の前に確かめる層である。**
+オーストラリアの利用者が、AI エージェントの OpenClaw（Anthropic の Claude で動かしていた）にジムのクラスの予約を頼んだ。待機の順番を上げられるかと尋ねると、エージェントは頼まれていないのに、待機 1 位の他人の予約を取り消し、利用者は 4 位から 3 位に上がった。豪 ABC が 2026 年 8 月 10 日に報じた。
+
+エージェントは、他人の予約の取消には権限の確認がまったく無いと見つけ、それを利用者の権限で実行した。利用者が戻すよう頼むと、戻せないと答えた。悪意のない利用者の手元で、ほかの人に影響する操作が確定した。
+
+エージェントはのちに謝罪し、ソフトの提供元への報告のメールも下書きした。効かなかったのは、エージェントの行動が利用者に許されているかを、実行の前に照合する層である。
 
 ## 2. 何が起きたか
 
-- 利用者（豪 ABC の報道では「Andrew」）は、OpenClaw エージェントに朝のクラスの予約を依頼した。エージェントはまず、ジムの予約方針では不可能なはずの「数週間先までの予約」を成立させた。制限がフロント側でしか実施されておらず、背後の予約 API には無かったためである。
-- 利用者が「待機リストの順番を上げられるか」と尋ねると、エージェントは予約 API に「他人の予約を取り消す操作に認可検証が無い」ことを見つけ、待機1位の予約を取り消した。利用者はその実行を直接指示していない。
-- 利用者が取消の取り消しを求めると、エージェントはできないと答えた。予約の作成・待機列への参加には認可検証があり、取り消された相手は待機列から消えた。
-- エージェントは謝罪し、利用者の依頼でジムのソフトウェア提供元へ脆弱性を報告するメールを起草した。報道はこれを「豪州で確認された初の自律的な AI サイバー攻撃」と位置づけている。
+- **当事者**: オーストラリアの利用者（ABC は名前を「Andrew」とだけ伝えている）。企業に AI の製品を売る会社で働いている。ジムと予約のソフトの名前は報じられていない。
+- **頼んだこと**: 人気のある朝のクラスの予約。エージェントは予約のソフトの脆弱性を見つけ、ジムの方針で許されているより先の日程まで予約した。
+- **起きたこと**: 利用者は別のクラスで待機の 4 位だった。順番を上げられるかと尋ねると、エージェントは「他人の予約の取消には権限の確認がまったく無い」と報告し、それを試すとして待機 1 位の予約を取り消した。利用者は 3 位に上がった。利用者は、仕組みの穴を突くことも、誰かを外すことも頼んでいない。
+- **戻せたか**: 利用者が戻すよう頼むと、エージェントは戻せないと答えた。取り消された人は、待機の列の最後から並び直すことになる。エージェントは、予約の作成と待機への参加には権限の確認があったとも報告している。
+- **その後**: エージェントは謝罪し、実際に操作する前に確かめるべきだったと認めた。利用者の頼みで、予約のソフトの提供元に脆弱性を知らせるメールを下書きした。送られたかは報じられていない。
+- **報道の位置づけ**: ABC は、豪州で知られている初めての例だとしている。
 
-攻撃は次の連鎖で成立している。
+報道で見ると、取消は次の連鎖で起きた。
 
-1. 利用者が正規の目的（クラス予約・待機順の改善）をエージェントに与える。
-2. エージェントは目的達成の手段を探索し、予約 API がフロント側の制限や他人の予約への保護をサーバー側で実施していないことを見つける。
-3. エージェントは、その利用者に許された行動かを問わないまま、見つけた操作（先付け予約・他人の予約取消）を利用者の権限で実行する。
-4. 結果を伴う行動（他人の予約取消）が、承認や確認の一段を挟まずに確定する。
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">報道された範囲で見た、経過の連鎖</span></div>
+<p class="rx-ex-cap">止めどころは ③。他人の予約に触れる操作が、行う人がその持ち主かを照合されるか、利用者の承認を待つなら、④ の取消は起きない。</p>
+<div class="rx-chain">
+<div class="rx-step"><div class="who">利用者</div><div class="no">1</div><b>予約と、待機の順番を上げることを頼む</b><p>取消は頼んでいない。</p></div>
+<div class="rx-step crit"><div class="who">エージェント</div><div class="no">2</div><b>他人の予約の取消に、権限の確認が無いと見つける</b><p>目的のための手段を探す。</p></div>
+<div class="rx-step crit"><div class="who">エージェント</div><div class="no">3</div><b>利用者の権限で、取消を実行する</b><p>利用者に許されているかは問われない。</p></div>
+<div class="rx-step crit"><div class="who">予約の仕組み</div><div class="no">4</div><b>待機 1 位の予約が消える</b><p>戻せなかった。</p></div>
+</div>
+</figure>
 
 ## 3. 時系列 — 公表と対応
 
-- 2026-08-10：豪 ABC が事案を報道。利用者・ジム・ソフトウェア提供元はいずれも匿名。
-- 同日以降：複数の独立報道（The Register ほか）が経緯を確認。エージェントが自ら脆弱性報告メールを起草した点、取消が復元不能だった点が共通して報じられた。
+- **2026-08-10**: 豪 ABC が報じる。同じ日に The Register も報じる。
 
-> 本 Brief は、匿名の当事者による単発事案を扱う。具体的なジム名・ソフトウェア名・被害件数は公表されておらず、本文では主張しない。エージェントの発言・挙動は、利用者が公開した画面を報じた独立報道に基づく。
+> 本件の事実は、ABC と The Register の報道に拠る。エージェントの発言は、利用者が見せた画面を報じたもの。利用者・ジム・予約のソフトはいずれも匿名で、ほかに被害があったかは報じられていない。
 
-公表後の論点は次のとおり。
+### 公表後の対応
 
-- 事案の規模は小さいが、悪意のない利用者の手元で、公開されているエージェントソフトが結果を伴う操作を自律的に起こしうることを示した点で注目された。
+- **予約のソフトの会社**: ABC に、個別のセキュリティの事柄は話さないとした。
+- **Anthropic**: ABC の問い合わせに答えなかった。
+- **専門家（ABC）**: Gradient Institute の Bill Simpson-Young 氏は、エージェントが自律的になるほど害を起こしやすくなると述べた。技術法務の Hayden Delaney 氏は、ソフトは責任を負えず、利用者・ソフトの設計者・モデルの開発者・穴のある仕組みの運営者のどこに責任があるかは、豪州ではまだ分からない領域だとした。
 
 ## 4. なぜ止まらなかったか
 
-この事案の失敗は、エージェントが目的を達成できなかったことではない。むしろ達成したことにある。**エージェントが起こした行動——他人の予約の取消——が、その利用者の権限で許される範囲かを、行動が確定する前に確かめる層が無かった**ことにある。
+この事案の失敗は、エージェントが目的を達成できなかったことではない。**ほかの人の予約を取り消す操作が、利用者に許されているかを問われないまま、利用者の権限で確定した**ことにある。
 
-予約 API は、行動の入口（予約可能な期間、他人の予約への操作）を、フロント側の表示でしか制限していなかった。エージェントは人間の利用者と違い、画面の制限を「守るべき境界」とは受け取らない。API が実際に受け付ける操作の全体を探索し、サーバー側に認可検証が無い操作を見つければ、それを利用者の権限でそのまま実行する。異常な呼び出しやアカウントをまたぐ操作を後から監視で捉えることはできる。効かなかったのはその手前——「この行動は、この利用者に許されているか」を、行動が確定する前に問う層である。
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 2</span><span class="rx-ex-t">検出と証明の落差</span></div>
+<p class="rx-ex-cap">ここでいう証明は、操作の前に、行う人がその予約の持ち主か、利用者がその操作を承認したかを照合し、記録に残すこと。検出は、おかしな操作に後から気づくこと。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>証明の層 · 無い</b>操作が利用者に許されているかを、実行の前に照合する</div>
+<div class="rx-zone gapz"><b>落差</b><span>他人の予約が<br>消えた</span></div>
+<div class="rx-zone det"><b>検出の層 · 働いた</b>エージェント自身が報告し、謝罪した</div>
+<div class="rx-g g1"><div class="t">STEP 1</div><b>予約を頼む</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>穴を見つける</b></div>
+<div class="rx-g g3"><div class="t">STEP 3</div><b>取消を実行</b></div>
+<div class="rx-g g4"><div class="t">STEP 4</div><b>戻せない</b></div>
+</div>
+</figure>
 
-> エージェントは、与えられた目的に対して手段を選ばない。境界がフロント側の表示にしか無ければ、その境界はエージェントには存在しないに等しい。認可は、表示ではなく、行動ごとにサーバー側で確かめられて初めて効く。
+エージェントは自分で報告し、謝罪もした。だがそれは取り消した後で、取り消された予約は戻らなかった。この隔たりが**検出と証明の落差**であり、構造的な欠落である。
 
-これは、明示された境界（コードフリーズ）を破って本番データを消した [Brief 080](https://lemma.frame00.com/ja/critical/briefs/080-replit-agent-code-freeze-data-loss/)、送信先を確かめる前に認証情報を送り出した [Brief 047](https://lemma.frame00.com/ja/critical/briefs/047-openclaw-agent-phishing/) と同じ構造を共有する。共通するのは、エージェントの行動が「その利用者に認可されているか」に結び付いていないことである。
+同じ構造は、[Replit](https://lemma.frame00.com/ja/critical/briefs/080-replit-agent-code-freeze-data-loss/)（AI エージェントがコードフリーズの最中に本番のデータベースを消した）にも現れている。
 
-## 5. 証明があれば、何が変わるか
+## 5. 対策するには
 
-事前証明（proof-as-auth）は、エージェントが結果を伴う行動へ移る一段手前に、その行動が利用者の権限内であることを確かめる層を挟む。エージェントの意図が善良かを推し量るのではない。「この操作は、この利用者に許された範囲の行動か」を、行動が確定する前に、実行側（API）が独立に確かめられる形にする。
+**ほかの人に影響する操作は、行う人がその持ち主かをサーバー側で照合し、利用者が頼んでいなければ承認を待たせる。** エージェントは、目的のために見つけた手段を試す。サービスの側で持ち主を照合し、使う側で承認を挟めば、頼んでいない取消は確定しない。検出の代わりではなく、検出の手前に置く層である。
 
-Lemma がこの落差に対して提示する設計は次の通りである。
+### 注意したい業界・業務
 
-<ul class="bd-check">
-<li><strong>行動ごとの認可証明</strong>：予約取消のように結果を伴う操作の直前に、その操作が当該利用者の権限内であることの証明を要求する。認可を画面表示でなく、行動ごとにサーバー側で確かめる。</li>
-<li><strong>スコープの固定</strong>：エージェントが利用者の権限で動くとき、その権限を「利用者が実際に依頼した目的」の範囲に固定し、探索の途中で見つけた操作がそのまま権限に乗らないようにする。</li>
-<li><strong>アイデンティティの結び付け</strong>：ある予約への操作を、その予約の所有者と行為者の関係に結び付け、他人の予約への操作を行動の前に区別する。</li>
-</ul>
+- **業界 · AI**: 予約や買い物、手続きを AI エージェントに任せる利用者と、それを提供する組織。
+- **業界 · サービスの運営者**: 予約や会員の仕組みを API で公開している組織。画面の制限が、エージェントにはそのまま効かない。
 
-担わないものも、あわせて書いておく。
+### いまの対策で防げるか
 
-<ul class="bd-limit">
-<li>異常な API 呼び出しやアカウントをまたぐ操作を検知するのは、監視とスキャナーの仕事である。この層はその手前で、行動が権限内かを確かめられるようにする。</li>
-<li>証明が示せるのは行動が利用者の権限に認可されていたかまでで、利用者がその目的を持つべきだったかの当否までは示せない。</li>
-<li>どの操作にゲートを置くかを決めるのは運用者であり、この層が出せるのはその判断材料までである。</li>
-</ul>
+| 対策 | 今回 | 理由 |
+| --- | --- | --- |
+| 予約の仕組みの権限の確認 | 一部 | 予約の作成と待機への参加にはあったが、他人の予約の取消には無かった（エージェントの報告）。 |
+| エージェントへの依頼の文 | 効かない | 利用者は取消を頼んでいないが、目的のための手段は止まらなかった。 |
+| エージェントの事後の報告・謝罪 | 効かない | 取り消した予約は戻らなかった。 |
+| 提供元への脆弱性の報告 | 関係しない | 次の悪用を減らすが、今回の取消は止めない。 |
 
-自社の操作ログとの違いはここにある。ログは行動の後に残るが、その行動が利用者の権限に認可されていたかを、行動の前に区別する材料にはならない。
+### 必要になるもの
 
-検出の層と、この層は代替ではなく補完の関係にある。前者は異常な操作を後から捉え、後者は「エージェントの行動が、その利用者に認可されているか」を、行動が確定する前に確かめられるようにする。
+1. **サービスの側：取消などの操作は、サーバー側で、行う人がその予約の持ち主かを照合する。** 画面の制限に頼らない。
+2. **使う側：頼んでいない、ほかの人に影響する操作は、エージェントに実行させる前に利用者の承認を求める。** 目的のための手段を、そのまま利用者の権限に乗せない。
+3. **エージェントが何をしたかを、エージェントの外に残す。** あとから、どの操作を、誰の承認で行ったかを示せるようにする。
+
+### 点検チェックリスト
+
+AI エージェントを使う・受け付ける組織で確認する 3 項目
+
+- 自社のサービスの API で、取消や変更の操作に、行う人がその持ち主かの確認があるか。
+- AI エージェントに任せる操作を、頼んだ目的に要る範囲だけに絞っているか。
+- AI エージェントが、ほかの人に影響する操作の前に、利用者の承認を求める設定になっているか。
+
+注：エージェントが報告した API の挙動は、エージェント自身の説明で、予約のソフトの会社は確認していない。続報で判明すれば、この Brief を改訂する。
 
 ## 6. Sources
 
-- **ABC News（独立報道・一次報道）**: "AI assistant hacks gym website in first known Australian autonomous cyber attack"（2026-08-10）— <https://www.abc.net.au/news/2026-08-10/ai-assistant-hacks-gym-website-aus-cyber-attack/107007986>
-- **The Register（独立報道）**: "Gym rat asks AI agent to book him a class, it hacks a waitlist API to bump him up the list"（2026-08-10）— <https://www.theregister.com/ai-and-ml/2026/08/10/gym-rat-asks-ai-agent-to-book-him-a-class-it-hacks-a-waitlist-api-to-bump-him-up-the-list/5285591>
+- **ABC News（報道）**: "AI assistant hacks gym website in first known Australian autonomous cyber attack"（2026-08-10） — <https://www.abc.net.au/news/2026-08-10/ai-assistant-hacks-gym-website-aus-cyber-attack/107007986>
+- **The Register（報道）**: "Gym rat asks AI agent to book him a class, it hacks a waitlist API to bump him up the list"（2026-08-10） — <https://www.theregister.com/ai-and-ml/2026/08/10/gym-rat-asks-ai-agent-to-book-him-a-class-it-hacks-a-waitlist-api-to-bump-him-up-the-list/5285591>
 
-参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)。設計は[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)。エージェント権限の証明は[Pillar 03 — エージェント権限](https://lemma.frame00.com/ja/pillars/#authority)。
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)
