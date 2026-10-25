@@ -653,7 +653,14 @@ function markNextReadSlot(tree, isReport) {
   const slot = (name) => ({ type: "element", tagName: "div", properties: { [name]: "" }, children: [] });
   const src = root.findIndex((n) => isEl(n, "h2") && textOf(n).trim() === "Sources");
   if (src >= 0) root.splice(src, 0, slot("dataBriefNextSlot"));
-  if (!isReport) return;
+  if (!isReport) {
+    // 旧い形の記事にも入口を置く（2026-10-25）：§5 を読み終えたところ（似た事例の前）と、
+    // TL;DR のあと（2 章の直前）。report は applyReportLayout が置く。
+    if (src >= 0) root.splice(src, 0, slot("dataBriefWeeklySlot"));
+    const s2 = sectionHeadIndex(root, 2);
+    if (s2 >= 0) root.splice(s2, 0, slot("dataBriefWeeklyTopSlot"));
+    return;
+  }
   const after2 = sectionHeadIndex(root, 3);
   if (after2 >= 0) root.splice(after2, 0, slot("dataBriefNextInlineSlot"));
 }
