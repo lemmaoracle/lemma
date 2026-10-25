@@ -80,7 +80,7 @@ const L = isJa
       read: "読む・確かめる",
       company: "会社",
       lang: "EN",
-      cta: "始める ↗",
+      cta: "ダッシュボード ↗",
       burger: "メニューを開く",
       productsFoot: { label: "▸ 5つの証明と API ドキュメント", href: "/ja/pillars/", note: "発行は一度。検証は、無料で何度でも。" },
       ucFoot: { label: "▸ 業界別ソリューション索引を見る", href: "/ja/solutions/use-cases/", note: "9つの業界ごとに、いま何で止まっているかが違います。" },
@@ -94,7 +94,7 @@ const L = isJa
       read: "Read & verify",
       company: "Company",
       lang: "JA",
-      cta: "Get Started ↗",
+      cta: "Dashboard ↗",
       burger: "Open menu",
       productsFoot: { label: "▸ The five proofs & API docs", href: "/pillars/", note: "Issue once. Verify free, as many times as you need." },
       ucFoot: { label: "▸ Browse the use-case index", href: "/solutions/use-cases/", note: "What blocks you differs across the nine industries." },
@@ -261,11 +261,13 @@ const pricingHref = localePath(base, "/pricing/");
   }
   .logo { display: flex; align-items: center; color: var(--tx); }
   .logo svg { height: 30px; width: auto; display: block; }
+  /* 行き先は開発者向けのダッシュボード。各ページの主のボタン（トップのエンタープライズ相談など）と
+     競わないよう、DESIGN.md の「次の一歩」（薄いライム地・濃い緑の字）にする（2026-10-25）。 */
   .navcta { font-family: var(--font-body); font-size: 12.5px; font-weight: 600;
-    background: var(--ok); color: var(--ink); border: none; border-radius: 6px; padding: 10px 20px;
-    cursor: pointer; letter-spacing: .04em; transition: .18s; box-shadow: 0 4px 14px rgba(168, 224, 16, .35);
+    background: rgba(168, 224, 16, .16); color: #4e7a00; border: none; border-radius: 4px; padding: 10px 20px;
+    cursor: pointer; letter-spacing: .04em; transition: .18s;
     text-decoration: none; }
-  .navcta:hover { filter: brightness(1.06); }
+  .navcta:hover { background: rgba(168, 224, 16, .26); }
   .mm { display: flex; gap: 6px; margin-left: auto; }
   .mm-item { position: relative; display: flex; }
   .mm-btn { background: none; border: none; cursor: pointer; font-family: var(--font-body);
@@ -349,8 +351,8 @@ const pricingHref = localePath(base, "/pricing/");
     .nv2-drawer-link { display: block; padding: 16px 4px; font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
       font-size: 15px; font-weight: 600; color: #12140e; text-decoration: none; border-bottom: 1px solid #e7eae5; }
     .nv2-drawer-cta { display: flex; align-items: center; gap: 18px; padding: 20px 4px; }
-    .nv2-drawer-cta a:first-child { background: #a8e010; color: #0f1412; font-size: 13px; font-weight: 600;
-      border-radius: 6px; padding: 11px 22px; text-decoration: none; }
+    .nv2-drawer-cta a:first-child { background: rgba(168, 224, 16, .16); color: #4e7a00; font-size: 13px; font-weight: 600;
+      border-radius: 4px; padding: 11px 22px; text-decoration: none; }
     .nv2-drawer-en { font-family: "Space Mono", monospace; font-size: 12px; letter-spacing: .1em;
       color: #5c6156; text-decoration: none; }
     .mm-grid, .mm-grid.g3, .mm-grid.g2, .mm-two { grid-template-columns: 1fr; }
