@@ -34,6 +34,7 @@ import { categoryLabel } from "../data/criticalBriefs";
 import type { CategorySlug } from "../data/criticalBriefs";
 import "../styles/top-v47.css";
 import { blogArticlePath } from "../lib/urls";
+import { SELF_CHECK_PAGES } from "../config/cta";
 
 export interface TopV47TemplateProps {
   locale: Locale;
@@ -76,6 +77,13 @@ const latestAnnouncement = postsDesc.find(
 );
 const tickerHtml = latestAnnouncement
   ? `<div class="ticker"><span class="tk">NEW</span><a href="${blogArticlePath(base, latestAnnouncement.slug)}">${esc(latestAnnouncement.title)} →</a></div>`
+  : "";
+
+// ヒーローの NEW の下に、無料のセルフチェックへの 1 行（2026-10-25・日本語だけ）。
+// 日本の読者がいちばん開くのがトップなのに、入口がフッターだけだった。
+// 訴求ごとのページが増えたら、ここに 1 行ずつ足す（まとめのページは 3 つそろってから）。
+const selfCheckTickerHtml = isJa
+  ? `<div class="ticker ticker--sc"><span class="tk">無料</span><a href="${SELF_CHECK_PAGES.remittance.path}" data-top-ev="top_self_check"><span>なりすましの不正送金、自社で通らないか。</span><span>対策チェックツール →</span></a></div>`
   : "";
 
 /* ── 最近の動き（Latest news 出し分け設計 v1 §4.1）────────────────────
@@ -194,7 +202,7 @@ const latestHtml = [
   .join("\n      ");
 
 const body = (isJa ? bodyJa : bodyEn)
-  .replace("<!--TICKER-->", tickerHtml)
+  .replace("<!--TICKER-->", tickerHtml + selfCheckTickerHtml)
   .replace("<!--LATEST-->", latestHtml);
 
 const API_BASE = "https://workers.lemma.workers.dev/v1";
@@ -248,6 +256,14 @@ const ogDescription = isJa
 
   <script is:inline define:vars={{ API_BASE, VERIFY_PATH, REG }}>
     (function () {
+      /* ---- ヒーローのセルフチェックの 1 行（押された数を GA へ） ---- */
+      document.querySelectorAll("[data-top-ev]").forEach(function (a) {
+        a.addEventListener("click", function () {
+          if (typeof window.gtag !== "function") return;
+          window.gtag("event", a.getAttribute("data-top-ev"), { destination: a.getAttribute("href") });
+        });
+      });
+
       var reduced =
         window.matchMedia &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;

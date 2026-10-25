@@ -12,17 +12,32 @@
  * （`[data-brief-weekly-slot]` / `[data-brief-weekly-top-slot]`）へ移す。目印が
  * 無ければ出さない。行き先は config/cta.ts（`ref` で置き場所を分ける）。
  */
-import { BRIEF_CHECKLIST_CTA_URL, BRIEF_TLDR_CTA_URL, CONSULT_FORM_URL } from "../config/cta";
+import {
+  BRIEF_CHECKLIST_CTA_URL,
+  BRIEF_TLDR_CTA_URL,
+  CONSULT_FORM_URL,
+  SELF_CHECK_PAGES,
+  selfCheckPageFor,
+} from "../config/cta";
 
 export interface BriefWeeklyCtaProps {
   locale: "ja" | "en";
   briefId: string;
   /** checklist：チェックリストのあと（帯）。top：TL;DR のあと（1 行の小さな入口）。 */
   variant: "checklist" | "top";
+  /** 記事の業務（frontmatter の operations）。飛ばすページと言い方を決める。 */
+  operations?: ReadonlyArray<string>;
 }
 
-const { locale, briefId, variant } = Astro.props as BriefWeeklyCtaProps;
-const base = (variant === "top" ? BRIEF_TLDR_CTA_URL : BRIEF_CHECKLIST_CTA_URL)[locale];
+const { locale, briefId, variant, operations = [] } = Astro.props as BriefWeeklyCtaProps;
+// 日本語は業務ごとのセルフチェックのページ、英語は Tally。
+const base =
+  locale === "ja"
+    ? SELF_CHECK_PAGES[selfCheckPageFor(operations)].path
+    : (variant === "top" ? BRIEF_TLDR_CTA_URL : BRIEF_CHECKLIST_CTA_URL)[locale];
+// 振込先の書き換え・送金の事案は、ツールの題材とそのまま重なるので言い方を寄せる
+// （approval だけの記事は暗号資産・AI の承認も含むので、payment-change で分ける）。
+const isRemittance = operations.includes("payment-change");
 // 日本語はサイトの中のセルフチェック（同じタブ・この記事を ?from= で渡す）、
 // 英語は Tally（新しいタブ）。
 const external = base.startsWith("http");
@@ -34,7 +49,14 @@ const isJa = locale === "ja";
 const icon = isJa
   ? '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="15" height="15" rx="3" /><path d="M7.5 11.2l2.4 2.4 4.8-5" /></svg>'
   : '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="12" rx="2" /><path d="M3.5 6l7.5 6 7.5-6" /></svg>';
-const L = isJa
+const L = isJa && isRemittance
+  ? {
+      head: "なりすましの不正送金が自社で通らないか、チェックする",
+      sub: "振込先の書き換えや送金の指示について、実際の事案から作った項目に、はい／いいえで答えるだけ。お急ぎなら 3 分。登録は要りません。",
+      btn: "不正送金の対策をチェックする",
+      top: "なりすましの不正送金が自社で通らないか、チェックする（登録不要・3 分から）",
+    }
+  : isJa
   ? {
       head: "この手口が自社で通らないか、セルフチェックする",
       sub: "この記事と、同じ業務を狙ったほかの事例の項目に、はい／いいえで答えるだけ。登録は要りません。",

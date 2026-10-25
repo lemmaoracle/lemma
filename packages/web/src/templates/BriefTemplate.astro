@@ -589,8 +589,8 @@ const labels = isJa
         <BriefNextRead locale={locale} briefId={brief.id} tiles={facetTiles} variant="inline" />
         <BriefNextRead locale={locale} briefId={brief.id} tiles={facetTiles} variant="block" />
         {/* メールの入口：チェックリストのあとの帯と、TL;DR のあとの 1 行（report だけ・目印へ移す）。 */}
-        {isReport && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="checklist" />}
-        {isReport && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="top" />}
+        {isReport && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="checklist" operations={brief.data.operations} />}
+        {isReport && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="top" operations={brief.data.operations} />}
 
         {/* 配布についての注記（旧 §9 の定型文）。6章化した md には定型文が
             無いので、ここで一律に描画する（文言の個体差が要る Brief —
