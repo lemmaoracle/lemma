@@ -91,6 +91,28 @@ const analysisLead = isJa
 
 const showRevisionHistory = brief.data.version !== "1.0";
 
+// 旧い形の記事の、見出しの下の要点の箱（2026-10-25・日本語だけ）。書き直さずに読める
+// ように、今ある controls（抜けていた対策）と本文の長さ（読む時間）から作る。
+// 「何が起きたか」は見出しとほぼ同じになるので出さない。
+const legacyControls =
+  isJa && brief.data.layout !== "report"
+    ? ((brief.data.controls ?? []) as ReadonlyArray<{ item: string }>).map((c) => c.item)
+    : [];
+const readMinutes =
+  isJa && brief.data.layout !== "report"
+    ? Math.max(
+        1,
+        Math.round(
+          // 出典の章は数えない。
+          (brief.body ?? "")
+            .split(/^## (?:\d+\.\s*)?Sources/m)[0]
+            .replace(/<[^>]+>/g, "")
+            .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+            .replace(/[#>*`|_-]/g, "").length / 600,
+        ),
+      )
+    : 0;
+
 /**
  * report レイアウト（2026-10・opt-in）。frontmatter に `layout: "report"` を
  * 書いた Brief だけが、表紙（スレート＋生成グラフィック＋主要数値）・
@@ -545,16 +567,20 @@ const labels = isJa
         <header class="bd-head">
           <div class="bd-meta">
             <span class="bd-no">No. {briefNoPad}</span>
-            <a class="bd-pillar" href={pillarHref}>{pillarLabel}</a>
+            {/* 日本語では「Pillar 04 · 規制属性証明」などの分類の語を、記事の頭に出さない
+                （最初に専門の語が目に入る・2026-10-25）。英語は今のまま。 */}
+            {!isJa && <a class="bd-pillar" href={pillarHref}>{pillarLabel}</a>}
           </div>
           <h1 class="bd-h1">{mainTitle}</h1>
           {subtitle && <p class="bd-sub">{subtitle}</p>}
-          <div class="bd-tags">
-            <a href={categoryHref(primarySlug)}>{primaryCatLabel}</a>
-            {secondaryCats.map((c) => (
-              <a href={categoryHref(c.slug)}>{c.label}</a>
-            ))}
-          </div>
+          {!isJa && (
+            <div class="bd-tags">
+              <a href={categoryHref(primarySlug)}>{primaryCatLabel}</a>
+              {secondaryCats.map((c) => (
+                <a href={categoryHref(c.slug)}>{c.label}</a>
+              ))}
+            </div>
+          )}
           {/* メタ4項目は flex の1行並び。上下の罫線のみで縦罫は使わない（§5.2）。 */}
           <div class="bd-facts">
             {countryStr && (
@@ -582,6 +608,26 @@ const labels = isJa
               </div>
             )}
           </div>
+          {readMinutes > 0 && (
+            <dl class="bd-sum">
+              {legacyControls.length > 0 && (
+                <div>
+                  <dt>抜けていた対策</dt>
+                  <dd>
+                    {legacyControls.length === 1 ? (
+                      legacyControls[0]
+                    ) : (
+                      <ul>{legacyControls.map((c) => <li>{c}</li>)}</ul>
+                    )}
+                  </dd>
+                </div>
+              )}
+              <div>
+                <dt>読む時間</dt>
+                <dd>約 {readMinutes} 分（要点だけなら、すぐ下の TL;DR）</dd>
+              </div>
+            </dl>
+          )}
           {analysisLead && (
             <aside class="bd-analysis">
               <div class="bd-analysis-k">{labels.analysisLabel}</div>
@@ -1107,6 +1153,46 @@ const labels = isJa
   .bd-tags a:hover {
     color: var(--ok-ink);
     border-color: rgba(124, 175, 0, 0.45);
+  }
+  /* 旧い形の記事の要点の箱（日本語）。 */
+  .bd-sum {
+    margin: 18px 0 6px;
+    padding: 4px 18px;
+    background: #fff;
+    border: 1px solid rgba(22, 25, 15, 0.14);
+    border-radius: 4px;
+  }
+  .bd-sum > div {
+    display: grid;
+    grid-template-columns: 7.5em 1fr;
+    gap: 12px;
+    padding: 11px 0;
+    border-top: 1px dotted rgba(22, 25, 15, 0.2);
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .bd-sum > div:first-child {
+    border-top: 0;
+  }
+  .bd-sum dt {
+    padding-top: 3px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #4e7a00;
+  }
+  .bd-sum dd {
+    margin: 0;
+    color: var(--tx);
+  }
+  .bd-sum ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  @media (max-width: 760px) {
+    .bd-sum > div {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
   }
   .bd-facts {
     display: flex;
