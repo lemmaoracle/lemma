@@ -1,7 +1,7 @@
 ---
 brief_no: 130
-title: "Atlassian Rovo は、アップロード文書や URL パラメータの指示に従って Jira・Confluence のデータを外部へ送りうる — 指示の出所が、行動の前に確かめられていない"
-title_en: "Atlassian Rovo can be tricked into sending Jira and Confluence data outward by instructions in an uploaded file or a URL parameter — the origin of the instruction is never verified before the action"
+title: "Atlassian Rovo：文書やリンクに仕込んだ指示で、Jira・Confluence のデータを外へ送らせられることが示された(PromptArmor・Varonis) — 指示が利用者から出たかを、送信の前に照合する層が無い"
+title_en: "Atlassian Rovo: Instructions planted in a file or a link could make it send Jira and Confluence data outside (PromptArmor, Varonis) — Nothing checks, before sending, that the instruction came from the user"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["ai-decision-integrity", "identity-auth"]
@@ -11,97 +11,156 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["055-echoleak-m365-copilot-instruction-provenance", "059-vercel-contextai-oauth", "118-copilot-word-document-worm", "047-openclaw-agent-phishing", "094-cursor-duneslide-sandbox-escape"]
 status: published
-version: "1.0"
-og_lead_ja: "Atlassian Rovo、指示の出所を確かめず Jira/Confluence データを外部送信しうる"
-og_lead_en: "Atlassian Rovo can be tricked into sending Jira/Confluence data out unverified"
-gap_detected: "Detection can work. Content scanning and egress monitoring can be designed as layers that catch malicious instructions or suspicious destinations."
-gap_missing: "Nothing verified, before the action, whether the instruction the agent followed came from the authenticated user's intent or from attacker-planted content."
-gap_fix: "Before an action like outbound transfer, insert a step that independently verifies the instruction's origin is the user's intent."
-analysis_lead_ja: "確かめられないのは、指示が正しく実行されたかではない。その指示が、利用者の意図から来たのか、攻撃者の仕込みから来たのか、である。"
-analysis_lead_en: "The question isn't whether the instruction was executed correctly. It's whether it came from the user's intent, or from attacker-planted content."
+version: "2.0"
+og_lead_ja: "Atlassian Rovo、文書やリンクに仕込んだ指示で社内データを外へ送りうる — 1 つの経路は公開時点で未修正"
+og_lead_en: "Atlassian Rovo could be made to send internal data out by instructions planted in a file or link — one path unfixed at publication"
+layout: "report"
+og_kicker_ja: "攻撃の実証 · AI アシスタント"
+og_kicker_en: "ATTACK RESEARCH · AI ASSISTANT"
+og_headline_ja: "文書に隠した一文で、\nAI が社内データを外へ。\n<accent>承認の画面は出ない</accent>"
+og_headline_en: "One hidden line in a file,\nand the AI sent data out.\n<accent>No approval prompt.</accent>"
+summary_labels: ["What happened", "Why it can't be told apart", "The missing layer"]
+key_figures:
+  - value: "1"
+    unit: "click"
+    label: "Opening a link was enough to load an attacker's instructions into a signed-in user's Rovo Chat, with no warning or confirmation (Varonis; fixed)"
+    tone: "alert"
+  - value: "50+"
+    label: "Services Rovo can reach through connectors. What it can reach is what can be sent out (Varonis)"
+  - value: "05-23 → 08-05"
+    label: "From PromptArmor's report to publication. At publication, the file-borne path was described as still unfixed"
+glossary:
+  - term: "Rovo"
+    desc: "Atlassian's AI assistant. It searches Jira, Confluence and more, and acts with the user's permissions."
+  - term: "Prompt injection"
+    desc: "Hiding instructions, separate from the user's request, inside a file or page the AI reads. The AI may follow them without telling them apart from the request."
+  - term: "Connector"
+    desc: "A link from the AI assistant to other services such as Slack or Microsoft 365. The more you connect, the more data the AI can read."
+insight:
+  slug: "instruction-origin-unchecked"
+  label: "Instructions followed regardless of origin"
+  quote: "Rovo did as it was told. The user's request, a line inside an uploaded file and text planted in a link were all treated as instructions of equal weight, and data went out with the user's permissions."
 industries: ["ai"]
 operations: ["data-access"]
 controls:
   - slug: "hold-unverified"
-    item: "Hold any outbound send until the instruction's origin is confirmed"
+    item: "Before an AI assistant sends anything out, check that the instruction came from the user, and stop it if you cannot"
+  - slug: "audit-trail"
+    item: "Record what the AI assistant sent and where, separately from the assistant"
 attack_method: "ai-misuse"
+self_check: "Before an AI assistant that touches internal data sends anything out, can you check that the instruction really came from the user?"
 countries: ["global"]
 ---
 
+> **Revision (v2.0 / 2026-10-25)**: Restructured for general readers, with §5 rewritten as "How to counter this". Facts re-checked against the researchers' primary disclosures. The earlier "Varonis discovered RovoBlast in January 2026" was removed: that date belongs to separate Varonis research (Reprompt). "Fixed on 2026-07-08" could not be confirmed in a primary source and now reads "fixed before disclosure". Examples of exfiltrated data now follow SecurityWeek's report, which we could confirm. The description of Lemma's design was removed.
+
 ## 1. TL;DR
 
-Atlassian's AI assistant Rovo was shown to be trickable, via two separate paths, into collecting Jira tickets, Confluence pages, and other internal data and forwarding them to an attacker's server. Researchers at PromptArmor demonstrated that uploading a document with a concealed instruction and asking Rovo to "organize my Jira tickets" was enough for Rovo to append what it found to an attacker's URL and open it. Separately, Varonis showed that a URL parameter could preload attacker instructions into Rovo Chat, so one click from an authenticated user ran them with that user's privileges (RovoBlast). Rovo did what it was told. **What failed was the layer that would verify, before the outbound action, whether the instruction came from the authenticated user's intent or from attacker-planted content.**
+Atlassian's AI assistant Rovo was shown, by two paths, to be steerable into sending internal Jira and Confluence data to an attacker's server. PromptArmor showed that uploading a file with hidden instructions and asking "organize my Jira tickets" was enough for Rovo to attach what it found to an attacker's URL and open it. Varonis showed a path (RovoBlast) in which instructions planted in a link are loaded into Rovo Chat with one click.
+
+Rovo did not tell the user's request apart from text planted in a file or link, and acted with the user's permissions. On neither path did an approval prompt appear before sending. Turning off Rovo's web search did not stop the file-borne path.
+
+RovoBlast was fixed before disclosure, but PromptArmor described the file-borne path as still unfixed at publication. What was missing was a layer that checks, before sending anything out, that the instruction came from the user.
 
 ## 2. What happened
 
-- Two independent research teams reported paths that trick Rovo into gathering internal data and forwarding it to an attacker's server. Per PromptArmor, the exposure covers "any data the agent can access in Atlassian, including any data the agent can access via 'connectors'."
-- **PromptArmor (content-borne)**: an attacker plants an instruction inside a document; the user uploads it and asks Rovo to "organize my Jira tickets." Rovo searches Jira and Confluence as asked, appends the internal data it finds to an attacker's URL, and opens it — the attacker's site logs the request. There is no separate approval step.
-- **Disabling web search does not stop this path.** PromptArmor states that the attack "succeeds even if an organization has disabled web search for Rovo. This is because the web search setting fails to remove the tool for opening the search results." The outbound request leaves through a URL-retrieval tool that is separate from search.
-- **Varonis (RovoBlast)**: a link of the form `https://home.atlassian.com/chat?rovoChatPathway=chat&rovoChatPrompt=<prompt>` preloads attacker instructions into Rovo Chat via the `rovoChatPrompt` parameter. When an authenticated user clicks it, the instructions flow into the trusted session with no warning or confirmation dialog, and Rovo proceeds through multi-step exfiltration using the autonomous ResearchAgent's web browsing and posting capabilities. Varonis shows Rovo can reach Jira, Confluence, and Bitbucket as well as Slack, Microsoft 365, Google Workspace and 50+ further platforms through Rovo Connectors. Per The Hacker News, the proof-of-concept exfiltrated a private API key from Confluence.
+- **Researchers**: PromptArmor and Varonis Threat Labs reported separately. This is a research demonstration, not a real-world loss.
+- **File-borne path (PromptArmor)**: An attacker hides instructions in a file. When the user uploads it and asks Rovo to organize their Jira tickets, Rovo searches Jira and Confluence, appends what it finds to an attacker's URL and opens it with its URL-retrieval tool. The content lands in the attacker's server logs. The chat looks normal and the user notices nothing. Besides files, the instructions can sit in support tickets, web data or connected services.
+- **Turning off web search does not stop it**: Disabling web search leaves the tool that opens search results, and data went out through it. PromptArmor also describes a second channel that leaks data by rendering an image in the AI's answer.
+- **Link path (Varonis, RovoBlast)**: A link carries attacker instructions in a parameter named `rovoChatPrompt`. When a signed-in user opens it, the instructions enter Rovo Chat with no warning, no confirmation and no label showing they came from outside.
+- **Reach**: Rovo can read Jira, Confluence, Bitbucket, Slack, Google Workspace, Microsoft 365, databases and more, and connects to over 50 services (Varonis). In the demonstrations, Confluence pages, Jira tickets and SharePoint content containing personal data were taken (SecurityWeek).
+- **Not disclosed**: Whether any real-world harm or exploitation occurred.
 
-The attack holds together through this chain:
+In the researchers' demonstrations, data went out in this chain.
 
-1. The attacker plants an instruction where Rovo will read it — inside an uploaded document (PromptArmor) or in a URL parameter that preloads Rovo Chat (Varonis).
-2. The user performs a legitimate action (asking to organize a document, clicking a link).
-3. Rovo does not distinguish the planted instruction from the user's actual intent and runs it with the user's privileges.
-4. Rovo gathers Jira/Confluence content or data reachable through connectors and sends it to the attacker's destination. No approval step intervenes.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain to internal data leaving, in the researchers' demonstrations</span></div>
+<p class="rx-ex-cap">The stopping point is ③. Had it been checked, before sending, that the instruction came from the user's request, the send at ④ would not happen.</p>
+<div class="rx-chain">
+<div class="rx-step crit"><div class="who">Attacker</div><div class="no">1</div><b>Plants instructions in a file or a link</b><p>Files, tickets, link parameters.</p></div>
+<div class="rx-step crit"><div class="who">User</div><div class="no">2</div><b>Does something ordinary</b><p>Asks for tidying, opens a link.</p></div>
+<div class="rx-step crit"><div class="who">Rovo</div><div class="no">3</div><b>Runs the planted instructions as if requested</b><p>With the user's permissions, no approval prompt.</p></div>
+<div class="rx-step crit"><div class="who">Rovo</div><div class="no">4</div><b>Sends internal data to the attacker's URL</b><p>The chat looks normal.</p></div>
+</div>
+</figure>
 
 ## 3. Timeline — disclosure and response
 
-- 2026-01: Varonis Threat Labs discovers RovoBlast.
-- 2026-05-23: PromptArmor discloses the content-borne path to Atlassian.
-- 2026-05-25: Atlassian acknowledges receipt and assigns a case number.
-- 2026-06-04 / 2026-07-29: PromptArmor follows up.
-- 2026-07-08: Atlassian fixes the Varonis-reported issue (RovoBlast) server-side.
-- 2026-08-05: PromptArmor publishes details of the content-borne path, stating that Rovo remains vulnerable as of publication.
-- 2026-08-08: The Hacker News reports on both. As of that date, neither path has been assigned a CVE.
+- **2026-05-23**: PromptArmor reports the file-borne path to Atlassian.
+- **2026-05-25**: Atlassian acknowledges and assigns a case number.
+- **2026-06-04**: PromptArmor follows up.
+- **2026-07-29**: PromptArmor follows up again.
+- **2026-08-05**: PromptArmor publishes the details, saying Rovo "remains vulnerable".
+- **2026-08-08**: SecurityWeek and others report it. Varonis presented RovoBlast at DEF CON 34.
 
-> This Brief covers researcher demonstrations. **The two paths differ in status**: RovoBlast (the URL-parameter path) is fixed server-side, while the content-borne path was unfixed as of PromptArmor's publication. Varonis reported through Bugcrowd and presented at DEF CON 34. Varonis's own write-up does not specify which particular credentials were retrieved in testing; the detail of a private API key from Confluence comes from The Hacker News's reporting. Individual exfiltration volumes and real-world impact are not claimed, as no independent primary confirmation is available. Technical details such as destinations and parameter names follow the researchers' disclosures.
+> The facts rely on PromptArmor's and Varonis's disclosures (primary). Examples of data taken rely on SecurityWeek's report. The date of the RovoBlast fix is not confirmed in a primary source. We do not claim real-world harm.
 
-Response and developments:
+### After disclosure
 
-- One path (RovoBlast) was closed by a product-side fix. The other (content-borne) leaves risk in the very flow of having Rovo process instruction-bearing documents until a fix is confirmed.
-- What both paths share is the absence of a layer that, before the action, distinguishes the origin of the instruction (uploaded content, a URL parameter) from the user's actual intent. That disabling web search did not stop the content-borne path shows the unit of control is a feature toggle, not the origin of an instruction.
+- **Atlassian**: Fixed RovoBlast before disclosure, after Varonis reported it through Bugcrowd (Varonis, SecurityWeek). According to PromptArmor, there was no further communication on the file-borne path for more than two months.
+- **Varonis**: Advised organizations to limit the services Rovo connects to and remove unused integrations, keep sensitive areas such as legal, HR and finance out of scope, turn off browsing agents and automation they do not use, and review logs with alerts on unusual activity.
 
 ## 4. Why it wasn't stopped
 
-The failure here is not that Rovo executed an instruction incorrectly — it executed correctly. It is that **there was no layer to distinguish, before the outbound action, whether the instruction the agent followed came from the authenticated user's intent or from content the attacker planted in what it was asked to process.**
+The failure was not that Rovo carried out instructions wrongly. **It carried planted instructions all the way to sending data out, without telling them apart from the user's request.**
 
-A detection layer can be designed: content scanning can catch a malicious instruction, egress monitoring a suspicious destination. What failed sat before that — the basis on which Rovo treated something as "the user's intent" and acted. The contents of an uploaded document and the value of a URL parameter were both treated as instructions with the same weight as the user's own request. With origin left undistinguished, the agent's privileges ride on it.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The gap between detection and proof</span></div>
+<p class="rx-ex-cap">Proof here means checking, before an AI assistant sends anything out, that the instruction came from the user's request, and keeping a record. Detection means noticing suspicious instructions or destinations.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Proof layer · missing</b>Check, before sending, that the instruction came from the user</div>
+<div class="rx-zone gapz"><b>Gap</b><span>Internal data<br>goes out</span></div>
+<div class="rx-zone det"><b>Detection layer · partial</b>Turning features off, watching destinations</div>
+<div class="rx-g g1"><div class="t">STEP 1</div><b>Plant instructions</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>Ordinary action</b></div>
+<div class="rx-g g3"><div class="t">STEP 3</div><b>Run them as requested</b></div>
+<div class="rx-g g4"><div class="t">STEP 4</div><b>Send out</b></div>
+</div>
+</figure>
 
-> An instruction's weight depends on whose intent it came from. Treat a sentence inside a user-uploaded document as equivalent to the user's own request, and the attacker simply borrows the user's privileges.
+The existing control of turning off web search did not stop the file-borne path, because the control worked on "feature on or off", not on "where the instruction came from". That distance is the **gap between detection and proof**, and it is structural.
 
-This shares its structure with [Brief 055](/critical/briefs/055-echoleak-m365-copilot-instruction-provenance/) (M365 Copilot sending internal data without verifying the origin of the instruction) and [Brief 118](/critical/briefs/118-copilot-word-document-worm/) (a generated document becoming the next carrier). RovoBlast's URL-parameter path also carries the flavor of [Brief 094](/critical/briefs/094-cursor-duneslide-sandbox-escape/), preloading an instruction with a single click. The common thread: the agent's action is not authorized against the origin of the instruction.
+The same structure appears in [EchoLeak in M365 Copilot](/critical/briefs/055-echoleak-m365-copilot-instruction-provenance/) (instructions planted in an email sent internal data out).
 
-## 5. What proof would have changed
+## 5. How to counter this
 
-Proof-as-auth inserts, one step before an agent moves to an action like outbound transfer, a layer that verifies the origin of the instruction. A machine does not judge whether the instruction's content is malicious. Instead, "did this instruction come from the authenticated user's intent, or from processed content or a URL parameter" becomes something the acting side can verify before the action lands.
+**Before an AI assistant sends anything out, check that the instruction came from the user's request, and stop sends that cannot be checked.** Text inside files, tickets and links is material to read, not instructions. Checking the origin before sending keeps planted instructions from getting through. It sits in front of detection, not in place of it.
 
-The design Lemma proposes for this gap:
+### Industries and operations to watch
 
-<ul class="bd-check">
-<li><strong>Provenance binding on instruction origin</strong>: bind to each instruction the agent receives a provenance record of whether it is the user's direct intent or derived from processed content or a URL parameter, so the two are not treated as instructions of equal weight.</li>
-<li><strong>Authorization proof before outbound action</strong>: require, just before sending Jira/Confluence content to an external destination, a proof that the action is authorized in a way bound to the user's intent — filling the missing approval step with proof.</li>
-<li><strong>Selective disclosure of secrets</strong>: keep stored API keys off the agent's response and egress path, presenting only the verification needed rather than the secret itself.</li>
-<li><strong>Scope fixed to intent</strong>: when the agent acts with the user's privileges, fix those privileges to the range of actions the user actually intended, so a planted instruction does not simply ride the privilege.</li>
-</ul>
+- **Industry · AI**: Organizations that add AI assistants or agents to internal tools and connect them to other services.
+- **Operation · Lookup & data access**: Having an AI assistant search and summarize internal documents and tickets. What you connect is what can leave.
 
-What this layer does not do:
+### Do today's controls close it?
 
-<ul class="bd-limit">
-<li>Judging whether an instruction is malicious remains the work of content scanning and scanners built on top of this binding.</li>
-<li>Proof can show that an action was authorized against the user's intent; it cannot show whether the user's own judgment was sound.</li>
-<li>Which actions to gate is the operator's decision; this layer supplies the material for it.</li>
-</ul>
+| Control | This case | Why |
+| --- | --- | --- |
+| Turning off web search | Ineffective | The tool that opens search results remained, and data went out through it. |
+| Finding instructions in files | Partial | Stops what it finds, but reworded instructions remain. |
+| Watching destinations | Partial | Can notice suspicious destinations, but only after sending. |
+| Connecting fewer services | Partial | Narrows the reach, but remaining data can still be sent. |
 
-This is where it differs from an internal log: a log remains after the action, but it is no material for distinguishing, before the action, whether that action was authorized against the user's intent.
+### What is needed
 
-Lemma does not detect prompt injection. Content scanning and egress monitoring are complementary to this layer, not alternatives. The former catch a malicious instruction or a suspicious destination; the latter makes "the origin of the instruction the agent followed" verifiable before the outbound action.
+1. **Before sending anything out, check that the instruction came from the user's request.** Do not treat text inside files, tickets or links as instructions.
+2. **Stop sends that cannot be checked.** Show the user the destination and contents, and ask for approval.
+3. **Record what the AI assistant sent and where, separately from the assistant.** So you can later show which instruction led to each send.
+
+### Checklist
+
+Three things to confirm about AI assistants that touch internal data
+
+- Have you removed the services your AI assistant connects to but does not need?
+- Have you limited the assistant's ability to open outside URLs or send data out to what you actually use?
+- Can you see a record of what the assistant sent and where, separately from the assistant?
+
+Note: turning features off or connecting fewer services narrows the reach; it is not a substitute for checking where an instruction came from. We will revise this Brief if Atlassian announces a fix for the file-borne path.
 
 ## 6. Sources
 
-- **PromptArmor (primary research)**: "Atlassian Rovo Exfiltrates Data" (published 2026-08-05; disclosed 2026-05-23) — <https://www.promptarmor.com/resources/atlassian-rovo-exfiltrates-data>
-- **Varonis (primary research)**: "RovoBlast" — instruction preloading via Rovo Chat's `rovoChatPrompt` parameter (discovered 2026-01, reported through Bugcrowd, presented at DEF CON 34) — <https://www.varonis.com/blog/rovoblast>
-- **The Hacker News (independent reporting)**: "Atlassian Rovo Can Be Tricked Into Sending Jira and Confluence Data to Attackers" (2026-08-08) — <https://thehackernews.com/2026/08/atlassian-rovo-can-be-tricked-into.html>
+- **PromptArmor (Research, primary)**: "Atlassian Rovo Exfiltrates Data" (2026-08-05) — <https://www.promptarmor.com/resources/atlassian-rovo-exfiltrates-data>
+- **Varonis Threat Labs (Research, primary)**: "RovoBlast" — <https://www.varonis.com/blog/rovoblast>
+- **SecurityWeek (Press)**: "Critical One-Click Vulnerability in Atlassian's Rovo AI Exposed Enterprise Data" (2026-08-08) — <https://www.securityweek.com/critical-one-click-vulnerability-in-atlassians-rovo-ai-exposed-enterprise-data/>
+- **The Hacker News (Press)**: "Atlassian Rovo Can Be Tricked Into Sending Jira and Confluence Data to Attackers" (2026-08-08) — <https://thehackernews.com/2026/08/atlassian-rovo-can-be-tricked-into.html>
 
-References: On why after-the-fact detection is not proof, see ["The last layer left for cyber defense in the age of AI"](/blog/detection-is-not-proof/). On the design, see ["Proof-as-Auth: sign in without ever sending your key"](/blog/proof-as-auth-sign-in-without-sending-your-key/); on scope, [Pillar 03 — Agent Authority](/pillars/#authority)
+References: ["The last layer left in AI-era cyber defense"](/blog/detection-is-not-proof/)
