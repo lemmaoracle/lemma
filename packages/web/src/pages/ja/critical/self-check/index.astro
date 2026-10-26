@@ -730,7 +730,7 @@ const jsonLd = [
         unsure: idsOf("unsure"),
         persona: state.persona || "",
         mode: quick ? "quick" : "full",
-        score: answered ? String(Math.round((yes / answered) * 100)) : "",
+        score: answered && !left ? String(Math.round((yes / answered) * 100)) : "",
         ref: from ? "selfcheck_from_brief" : "selfcheck",
       };
       // フォームを開いたあとに答えを変えたら、書きかけでなければ新しい値で入れ直す。
