@@ -610,11 +610,14 @@ const jsonLd = [
         ? "上の項目に回答すると、ここに点数が表示されます。"
         : (quick ? "お急ぎ点検（" + shown.length + " 項目）の結果です。" : "") +
           (answered < shown.length
-            ? "未回答の項目が " + (shown.length - answered) + " 項目あります。回答済みの項目で点数を出しています。"
+            ? "未回答の項目が " + (shown.length - answered) + " 項目あります。すべてに回答すると、点数が表示されます。"
             : "");
       // 点数（答えた項目のうち「はい」の割合を 100 点満点で）と、点数ごとの軽い説明。
+      // 点数はすべてに回答してから出す（1 項目だけ「はい」で 100 点と出ていた）。
+      // 回答の途中も、相談のボタンと「いいえ」「分からない」への注意は出す。
       var yes = answered - gaps.length;
       $("[data-ck-score]").hidden = !answered;
+      $("[data-ck-score]").classList.toggle("is-partial", left > 0);
       if (answered) {
         var score = Math.round((yes / answered) * 100);
         $("[data-ck-score-n]").textContent = String(score);
@@ -622,7 +625,11 @@ const jsonLd = [
         // 点数ごとの軽い説明（「備えができています」とは言わない：責任が持てないため）。
         // 1 項目でも「いいえ」「分からない」があれば、警戒が要ると先に言う。
         var msg =
-          score === 100
+          left && !gaps.length
+            ? ""
+            : left
+            ? "「いいえ」「分からない」の項目が 1 つでもあると、実際の事案と同じ手口で、送金事故や情報の流出が起きるおそれがあります。システムや業務の抜け漏れを点検し、対策を進めることをおすすめします。"
+            : score === 100
             ? "チェックした範囲の項目は、すべて「はい」でした。手口は年々増えているため、システムや業務に新たな抜け漏れがないか、定期的な点検をおすすめします。"
             : "「いいえ」「分からない」の項目が 1 つでもあると、実際の事案と同じ手口で、送金事故や情報の流出が起きるおそれがあります。" +
               (score >= 40
@@ -630,6 +637,7 @@ const jsonLd = [
                 : "システムや業務の抜け漏れを点検し、早めに対策を進めることをおすすめします。");
         $("[data-ck-score-msg]").textContent =
           msg + (unsure * 2 >= answered ? "「分からない」が多い場合は、まず担当部署にご確認ください。" : "");
+        $("[data-ck-score-msg]").hidden = !$("[data-ck-score-msg]").textContent;
       }
       // 確認したい項目（いいえを先に）。業務ごとにまとめ、元の事例へのリンクを添える。
       gaps.sort(function (a, b) {
@@ -1735,6 +1743,10 @@ const jsonLd = [
     border-radius: 16px;
     background: #f6f8ef;
     border: 1px solid #e3e6dc;
+  }
+  .ck-score.is-partial .ck-score-n,
+  .ck-score.is-partial .ck-score-bar {
+    display: none;
   }
   .ck-score-n {
     display: flex;
