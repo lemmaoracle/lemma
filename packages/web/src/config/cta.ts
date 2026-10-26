@@ -62,7 +62,7 @@ export const CONSULT_FORM_URL =
  * 鍵を入れるとプライバシーポリシー（/ja/privacy・/privacy）の委託先と保存先も CLUBS の
  * 文に替わる。鍵を入れる PR で、両ページの最終更新日も直す。
  */
-export const CONSULT_CLUBS_FORM_KEY: string = "";
+export const CONSULT_CLUBS_FORM_KEY: string = "IpXNlCAuqK8retnycFtVN_Y-";
 
 /** 定期のメールの登録（日本語）。セルフチェックの結果の下の小さな入口。 */
 export const BRIEF_WEEKLY_URL =
