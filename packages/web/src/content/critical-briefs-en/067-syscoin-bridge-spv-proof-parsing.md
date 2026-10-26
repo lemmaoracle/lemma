@@ -10,7 +10,7 @@ published: 2026-06-19
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["016-verus-ethereum-bridge", "023-alephium-tokenbridge", "002-stakedao-vsdcrv", "001-kelpdao-rseth"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "偽 proof のパース欠陥で burn なく 50 億 SYS 発行 — Syscoin ブリッジ"
 og_lead_en: "An invalid SPV proof minted 5B SYS with no burn — Syscoin bridge"

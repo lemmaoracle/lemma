@@ -1,4 +1,5 @@
 import { getCollection } from "astro:content";
+import { isVisibleBrief } from "../lib/briefDrafts";
 import { extractTldr } from "../data/extractTldr.ts";
 import { getAllPosts } from "../data/blog.ts";
 import { DISCOVERY_CALL_URL } from "../config/cta.ts";
@@ -35,7 +36,7 @@ export async function GET() {
   // 同日公開が普通にあるので brief_no で tie-break する（BriefTemplate の
   // `byNewest` と同じ比較にして2つの面の並びを一致させる）。これが無いと
   // No.138 / 139 / 140 がコレクション順で出る。
-  const briefs = [...(await getCollection("critical-briefs-en"))].sort((a, b) => {
+  const briefs = [...(await getCollection("critical-briefs-en", isVisibleBrief))].sort((a, b) => {
     const diff = b.data.published.getTime() - a.data.published.getTime();
     return diff !== 0 ? diff : b.data.brief_no - a.data.brief_no;
   });

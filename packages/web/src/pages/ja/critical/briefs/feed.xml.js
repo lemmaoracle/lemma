@@ -1,5 +1,6 @@
 import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
+import { isVisibleBrief } from "../../../../lib/briefDrafts";
 import {
   pillarLabel,
   categoryLabel,
@@ -11,7 +12,7 @@ import { extractTldr } from "../../../../data/extractTldr.ts";
  * Mirror: /critical/briefs/feed.xml for the English channel.
  */
 export async function GET(context) {
-  const all = await getCollection("critical-briefs");
+  const all = await getCollection("critical-briefs", isVisibleBrief);
   const items = [...all]
     .sort((a, b) => b.data.published.getTime() - a.data.published.getTime())
     .map((brief) => {

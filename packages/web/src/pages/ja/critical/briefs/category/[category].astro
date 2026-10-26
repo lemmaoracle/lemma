@@ -1,5 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
+import { isVisibleBrief } from "../../../../../lib/briefDrafts";
 import BriefArchiveTemplate, {
   type ArchiveCard,
 } from "../../../../../templates/BriefArchiveTemplate.astro";
@@ -10,7 +11,7 @@ import {
 } from "../../../../../data/criticalBriefs";
 
 export async function getStaticPaths() {
-  const all = await getCollection("critical-briefs");
+  const all = await getCollection("critical-briefs", isVisibleBrief);
   const used = new Set<CategorySlug>();
   for (const b of all) {
     used.add(b.data.primary_category as CategorySlug);

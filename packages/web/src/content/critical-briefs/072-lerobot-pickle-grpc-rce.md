@@ -10,7 +10,7 @@ published: 2026-06-19
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["058-langgraph-checkpoint-rce", "068-universal-robots-polyscope-command-injection", "070-unitree-shared-key-robot-identity", "025-mcp-stdio-config-to-command-rce", "003-starlette-badhost"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "未認証 gRPC で受けた pickle が即コード実行 — Hugging Face LeRobot"
 og_lead_en: "Pickle over an unauthenticated gRPC channel = instant RCE — LeRobot"

@@ -39,6 +39,7 @@
  * 日付順が主というのが仕様。
  */
 import { getCollection, type CollectionEntry } from "astro:content";
+import { isVisibleBrief } from "../lib/briefDrafts";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/FooterRenewal.astro";
@@ -100,7 +101,7 @@ type AnyBrief =
   | CollectionEntry<"critical-briefs">
   | CollectionEntry<"critical-briefs-en">;
 
-const allJaBriefs = await getCollection("critical-briefs");
+const allJaBriefs = await getCollection("critical-briefs", isVisibleBrief);
 const enById = isJa ? null : await getEnBriefMap();
 
 const allBriefs: ReadonlyArray<AnyBrief> = allJaBriefs.map((ja) =>

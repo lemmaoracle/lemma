@@ -15,6 +15,7 @@
  * その記事の場面を選んだ状態で開き（担当は選ばず全項目）、その記事の項目に印を付ける。
  */
 import { getCollection } from "astro:content";
+import { isVisibleBrief } from "../../../../lib/briefDrafts";
 import Layout from "../../../../layouts/Layout.astro";
 import Navigation from "../../../../components/Navigation.astro";
 import Footer from "../../../../components/FooterRenewal.astro";
@@ -26,7 +27,7 @@ import { selfCheckGroups, selfCheckItemCount } from "../../../../lib/briefSelfCh
 const locale = "ja" as const;
 const base = "/ja";
 const t = getTranslations(locale);
-const briefs = (await getCollection("critical-briefs")) as BriefEntry[];
+const briefs = (await getCollection("critical-briefs", isVisibleBrief)) as BriefEntry[];
 const groups = selfCheckGroups(briefs);
 const total = selfCheckItemCount(groups);
 // ヒーローの「この会社は何か」：分析して公開している事案の数（公開済みの Brief）。

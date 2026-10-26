@@ -15,6 +15,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import { getCollection } from "astro:content";
+import { isVisibleBrief } from "../lib/briefDrafts";
 import { byDateDesc, getAllPosts } from "../data/blog";
 import { resolveCoverImage } from "../lib/coverPhoto";
 import { coverArtwork, COVER_WIDTH, COVER_HEIGHT } from "../lib/blogCover";
@@ -110,7 +111,7 @@ const industryThreatKeys = new Set(
 
 // 新しい順＝公開日の降順（同日は番号の降順）。番号は欠番を再利用するので、
 // 番号の大きさは新しさを表さない。
-const briefsDesc = (await getCollection("critical-briefs")).sort((a, b) => {
+const briefsDesc = (await getCollection("critical-briefs", isVisibleBrief)).sort((a, b) => {
   const diff = b.data.published.getTime() - a.data.published.getTime();
   return diff !== 0 ? diff : (b.data.brief_no ?? 0) - (a.data.brief_no ?? 0);
 });

@@ -10,7 +10,7 @@ published: 2026-06-05
 authors: ["Lemma Critical Team"]
 related_briefs: ["003-starlette-badhost", "006-google-api-key-revocation-lag", "024-invisible-unicode-instruction-injection"]
 version: "1.0"
-status: draft
+status: published
 og_lead_ja: "エージェント基盤の信頼境界が、リファレンス実装の設計段階で検証されない構造"
 og_lead_en: "Agent infrastructure trust boundaries, unverified at the reference implementation design level"
 gap_detected: "Investigations by security firms and CVE reporters could identify the scope of impact and make the problem visible."

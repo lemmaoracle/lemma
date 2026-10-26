@@ -11,6 +11,7 @@
  * 記事の番号でつなぐ。日本円以外の金額には円相当を添える（当時のレートによる目安）。
  */
 import { getCollection } from "astro:content";
+import { isVisibleBrief } from "../../../../lib/briefDrafts";
 import Layout from "../../../../layouts/Layout.astro";
 import Navigation from "../../../../components/Navigation.astro";
 import Footer from "../../../../components/FooterRenewal.astro";
@@ -22,7 +23,7 @@ const locale = "ja" as const;
 const base = "/ja";
 const t = getTranslations(locale);
 const site = "https://lemma.frame00.com";
-const briefs = (await getCollection("critical-briefs")) as BriefEntry[];
+const briefs = (await getCollection("critical-briefs", isVisibleBrief)) as BriefEntry[];
 const byId = new Map(briefs.map((b) => [b.id, b]));
 const pad = (no: number) => String(no).padStart(3, "0");
 

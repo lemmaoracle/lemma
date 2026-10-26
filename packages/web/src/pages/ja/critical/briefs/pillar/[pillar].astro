@@ -1,5 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
+import { isVisibleBrief } from "../../../../../lib/briefDrafts";
 import BriefArchiveTemplate, {
   type ArchiveCard,
 } from "../../../../../templates/BriefArchiveTemplate.astro";
@@ -11,7 +12,7 @@ import {
 } from "../../../../../data/criticalBriefs";
 
 export async function getStaticPaths() {
-  const all = await getCollection("critical-briefs");
+  const all = await getCollection("critical-briefs", isVisibleBrief);
   return PILLAR_SLUGS.map((pillar) => ({
     params: { pillar },
     props: {

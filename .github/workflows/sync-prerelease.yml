@@ -1,0 +1,32 @@
+# main が進んだら prerelease ブランチを main と同じにする（2026-10-26）。
+#
+# Cloudflare Pages は main 以外のブランチをプレビューとして作り、そこでは下書きの
+# Brief（status が published 以外）も出る（packages/web/src/lib/briefDrafts.ts）。
+# prerelease は「main に入った下書きを回覧する」決まった URL のためのブランチ：
+#   https://prerelease.web-zgj.pages.dev/ja/critical/drafts/
+# 手で push しない（次の main の push で上書きされる）。
+name: Sync prerelease
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-prerelease
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push main to prerelease
+        run: git push --force origin HEAD:refs/heads/prerelease

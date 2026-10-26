@@ -1,4 +1,5 @@
 import { getCollection } from "astro:content";
+import { isVisibleBrief } from "../lib/briefDrafts";
 import type { BriefEntry } from "./criticalBriefs";
 
 /**
@@ -20,6 +21,6 @@ export async function getEnBriefMap(): Promise<Map<string, BriefEntry>> {
   // `astro:content` types resolve to `any` outside the generated
   // `.astro/types.d.ts` (not in this package's tsconfig include) — assert
   // the real entry shape mirrored in `BriefEntry` (content.config.ts schema).
-  const enBriefs = (await getCollection("critical-briefs-en")) as BriefEntry[];
+  const enBriefs = (await getCollection("critical-briefs-en", isVisibleBrief)) as BriefEntry[];
   return new Map(enBriefs.map((b) => [b.id, b]));
 }

@@ -10,7 +10,7 @@ published: 2026-06-19
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["070-unitree-shared-key-robot-identity", "068-universal-robots-polyscope-command-injection", "057-deepseek-clickhouse-exposed-db", "006-google-api-key-revocation-lag", "052-discord-age-verification-id-leak"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "1 つの認証で 7,000 台のロボット掃除機のカメラ・マイクに到達 — DJI ROMO"
 og_lead_en: "One authenticated client reached 7,000 robot vacuums' cameras — DJI ROMO"

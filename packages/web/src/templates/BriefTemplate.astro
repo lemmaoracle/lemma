@@ -29,6 +29,7 @@
  * truth である点は変わらない（番号の剥がしは rehype-brief-section-number）。
  */
 import { getCollection, type CollectionEntry } from "astro:content";
+import { isDraftBrief, isVisibleBrief } from "../lib/briefDrafts";
 import { render } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
@@ -164,7 +165,7 @@ const pillarShort = pillarLabel.split(" · ").slice(1).join(" · ") || pillarLab
 
 // Locale-resolved full collection (EN preferred, JA fallback) for prev/next
 // and auto-derived related.
-const allJaBriefs = await getCollection("critical-briefs");
+const allJaBriefs = await getCollection("critical-briefs", isVisibleBrief);
 const enById = isJa ? null : await getEnBriefMap();
 const allLocale: ReadonlyArray<AnyBrief> = allJaBriefs.map(
   (ja) => enById?.get(ja.id) ?? ja,
@@ -486,6 +487,8 @@ const labels = isJa
           <a href={`${base}/critical/briefs/`}>{labels.breadcrumbBriefs}</a>
           <span class="brief-breadcrumb-sep">/</span>
           <span>{labels.briefNoPrefix} {briefNoPad}</span>
+          {/* 下書きはプレビューにだけ出る（本番では絞り込みで外れる）。lib/briefDrafts.ts */}
+          {isDraftBrief(brief) && <span class="brief-draft">{isJa ? "下書き" : "Draft"}</span>}
         </div>
 
         {isReport && coverArt ? (
@@ -1070,6 +1073,16 @@ const labels = isJa
     padding: 34px 0 0;
     font-size: 12px;
     color: var(--muted);
+  }
+  /* 下書きのラベル（プレビューだけ） */
+  .brief-draft {
+    padding: 1px 8px;
+    border: 1px dashed #4a90b8;
+    border-radius: 999px;
+    color: #2f6f93;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
   }
   .brief-breadcrumb a {
     color: var(--muted);

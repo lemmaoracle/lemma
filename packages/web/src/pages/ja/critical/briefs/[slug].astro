@@ -1,9 +1,10 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
+import { isVisibleBrief } from "../../../../lib/briefDrafts";
 import BriefTemplate from "../../../../templates/BriefTemplate.astro";
 
 export async function getStaticPaths() {
-  const briefs = await getCollection("critical-briefs");
+  const briefs = await getCollection("critical-briefs", isVisibleBrief);
   return briefs.map((brief) => ({
     params: { slug: brief.id },
     props: { brief },
