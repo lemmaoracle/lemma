@@ -10,7 +10,7 @@ published: 2026-10-26
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["032-booking-payout-account-tampering", "051-instagram-ai-support-takeover", "154-yumirlink-cuenote-support-credential-db-export"]
-status: published
+status: draft
 version: "1.0"
 og_lead_ja: "カプコンの CAPCOM ID に不正アクセス、メールアドレスなど 1,177 万件 — 196 件でパスワードを不正に変更"
 og_lead_en: "CAPCOM ID breached: 11.77 million email records, and 196 passwords changed without authorization"
