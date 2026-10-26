@@ -1,10 +1,16 @@
 ---
 import LegalTemplate, { type LegalSection } from "../../templates/LegalTemplate.astro";
 import { getTranslations } from "../../i18n/translations";
+import { CONSULT_CLUBS_FORM_KEY } from "../../config/cta";
 
 const locale = "ja";
 const t = getTranslations(locale);
 const base = "/ja";
+// セルフチェックの相談を CLUBS のフォームに替えたら（鍵が入ったら）、委託先と保存先に足す。
+// 保存先は CLUBS 担当が 2026-10-23 に測ったもの。
+const formsJa = CONSULT_CLUBS_FORM_KEY
+  ? "セルフチェックからのご相談は、当社が運営する CLUBS のフォームで受け付け、入力された情報は日本（東京）に保存されます。送信の処理には米国のサーバー（Vercel Inc.）を使います。届いたことの社内への通知には Slack（Slack Technologies, LLC・米国）を使い、フォームの題名と送り主のお名前だけを送ります。そのほかのフォームは Tally（Tally BV・ベルギー）を利用しており、入力された情報は EU 域内に保存されます。"
+  : "フォームは Tally（Tally BV・ベルギー）を利用しており、入力された情報は EU 域内に保存されます。";
 
 const sections: LegalSection[] = [
   {
@@ -61,7 +67,7 @@ const sections: LegalSection[] = [
 <li>メールの配信に登録した方への、新しい事例などのお知らせ</li>
 <li>ウェブサイトとサービスの改善のための集計（個人を特定しない形）</li>
 </ul>
-<p><strong>委託先と保存先</strong>：フォームは Tally（Tally BV・ベルギー）を利用しており、入力された情報は EU 域内に保存されます。ウェブサイトのアクセスの集計には Google Analytics（Google LLC・米国）を利用します。</p>
+<p><strong>委託先と保存先</strong>：${formsJa}ウェブサイトのアクセスの集計には Google Analytics（Google LLC・米国）を利用します。</p>
 <p><strong>メールの停止</strong>：当社からのご案内やお知らせは、各メールにある停止の方法、または末尾の窓口へのご連絡で、いつでも止められます。</p>`,
   },
   {
