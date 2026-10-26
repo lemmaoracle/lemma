@@ -1,5 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
+import { isVisibleBrief } from "../../../../lib/briefDrafts";
 import BriefArchiveTemplate, {
   type ArchiveCard,
 } from "../../../../templates/BriefArchiveTemplate.astro";
@@ -18,7 +19,7 @@ import { getEnBriefMap } from "../../../../data/getEnBriefMap";
  * 404 until content lands.
  */
 export async function getStaticPaths() {
-  const all = await getCollection("critical-briefs");
+  const all = await getCollection("critical-briefs", isVisibleBrief);
   const enById = await getEnBriefMap();
   const used = new Set<CategorySlug>();
   for (const b of all) {

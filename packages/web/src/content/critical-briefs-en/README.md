@@ -25,6 +25,21 @@ EN-specific rules:
   kept on existing Briefs but render nowhere. `og_lead_*` is still
   written in English in this collection.
 
+### Drafts and publishing (2026-10-26)
+
+Write new Briefs with `status: draft` and merge them as drafts. Anything other than `published` stays off
+production; it only appears on Cloudflare Pages previews of non-`main` branches and in local dev
+(or a build with `LEMMA_SHOW_DRAFTS=1`) — see `lib/briefDrafts.ts`. Previews show a "Draft" label in the
+breadcrumb.
+
+1. Open the PR as a draft, check the build and preview, and merge.
+2. Each push to `main` resets the `prerelease` branch to `main` (`.github/workflows/sync-prerelease.yml`).
+   Reviewers get one link: <https://prerelease.web-zgj.pages.dev/ja/critical/drafts/>
+3. Approval happens once per round at the approval point of the CLUBS routine "Critical Brief 作成ルール".
+   Briefs that need fixes drop out to the next round.
+4. A PR that sets approved Briefs to `status: published` puts them on production. Also set the
+   `published` date to the day they go live.
+
 ### Title
 
 Rules every recent Brief follows that were missing here (checked against the

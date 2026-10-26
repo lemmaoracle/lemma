@@ -1,5 +1,6 @@
 import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
+import { isVisibleBrief } from "../../../lib/briefDrafts";
 import {
   pillarLabel,
   categoryLabel,
@@ -16,7 +17,7 @@ import { getEnBriefMap } from "../../../data/getEnBriefMap.ts";
  * the Brief subtitle if the body has no TL;DR section.
  */
 export async function GET(context) {
-  const all = await getCollection("critical-briefs");
+  const all = await getCollection("critical-briefs", isVisibleBrief);
   const enById = await getEnBriefMap();
   const items = [...all]
     .sort((a, b) => b.data.published.getTime() - a.data.published.getTime())

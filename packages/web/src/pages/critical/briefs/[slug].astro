@@ -1,5 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
+import { isVisibleBrief } from "../../../lib/briefDrafts";
 import BriefTemplate from "../../../templates/BriefTemplate.astro";
 import { getEnBriefMap } from "../../../data/getEnBriefMap";
 
@@ -8,7 +9,7 @@ import { getEnBriefMap } from "../../../data/getEnBriefMap";
 // never 404s for an untranslated Brief. Slug enumeration is driven by the
 // JA collection (the source of truth for which Brief numbers exist).
 export async function getStaticPaths() {
-  const jaBriefs = await getCollection("critical-briefs");
+  const jaBriefs = await getCollection("critical-briefs", isVisibleBrief);
   const enById = await getEnBriefMap();
   return jaBriefs.map((ja) => ({
     params: { slug: ja.id },

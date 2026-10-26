@@ -10,7 +10,7 @@ published: 2026-06-19
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["033-f5-bigip-edge-pivot", "064-salesloft-drift-oauth-salesforce", "046-servicenow-unauthenticated-api", "056-mchire-paradox-recruiting-auth", "027-librechat-mcp-url-secrets", "062-claude-code-github-action-bot-trust"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "一般ユーザーが管理者権限と RCE に到達 — LiteLLM ゲートウェイの連鎖"
 og_lead_en: "Low-priv user to admin and RCE — the LiteLLM gateway chain"

@@ -10,7 +10,7 @@ published: 2026-06-19
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["003-starlette-badhost", "046-servicenow-unauthenticated-api", "007-pocketos-cursor-db-deletion", "033-f5-bigip-edge-pivot", "025-mcp-stdio-config-to-command-rce", "066-litellm-ai-gateway-privilege-escalation"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "未認証のネット到達だけで産業用ロボットに RCE — UR PolyScope"
 og_lead_en: "Unauthenticated network access yields RCE on cobots — UR PolyScope"

@@ -14,6 +14,7 @@
  * any brief that has not yet been translated.
  */
 import { getCollection } from "astro:content";
+import { isVisibleBrief } from "../../../../lib/briefDrafts";
 import type { APIRoute } from "astro";
 import { renderCriticalBriefOg } from "../../../../og/criticalBriefImage";
 import { getEnBriefMap } from "../../../../data/getEnBriefMap";
@@ -22,7 +23,7 @@ import type { Locale } from "../../../../i18n/translations";
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const jaBriefs = await getCollection("critical-briefs");
+  const jaBriefs = await getCollection("critical-briefs", isVisibleBrief);
   const enById = await getEnBriefMap();
   const paths: Array<{
     params: { lang: Locale; slug: string };

@@ -1,0 +1,143 @@
+---
+/**
+ * 回覧する下書きの Brief（/ja/critical/drafts/・2026-10-26）。
+ *
+ * プレビュー（prerelease など main 以外のブランチ）と手元だけで作るページ。本番のビルドでは
+ * getStaticPaths が空を返すので、ページそのものが無い。回覧する人にはこのリンク1本を渡し、
+ * 承認は CLUBS のいつもの仕事「Critical Brief 作成ルール」の承認ポイントで1回にまとめる。
+ * 承認された Brief を status: published にする PR で、本番に出る。lib/briefDrafts.ts
+ */
+import { getCollection } from "astro:content";
+import Layout from "../../../../layouts/Layout.astro";
+import Navigation from "../../../../components/Navigation.astro";
+import Footer from "../../../../components/FooterRenewal.astro";
+import { getTranslations } from "../../../../i18n/translations";
+import { isDraftBrief, showDrafts } from "../../../../lib/briefDrafts";
+import type { BriefEntry } from "../../../../data/criticalBriefs";
+
+export function getStaticPaths() {
+  return showDrafts ? [{ params: { p: undefined } }] : [];
+}
+
+const locale = "ja" as const;
+const base = "/ja";
+const t = getTranslations(locale);
+const drafts = ((await getCollection("critical-briefs", isDraftBrief)) as BriefEntry[]).sort(
+  (a, b) => b.data.published.getTime() - a.data.published.getTime() || b.data.brief_no - a.data.brief_no,
+);
+const enIds = new Set(
+  ((await getCollection("critical-briefs-en", isDraftBrief)) as BriefEntry[]).map((b) => b.id),
+);
+const pad = (no: number) => String(no).padStart(3, "0");
+const day = (d: Date) => d.toISOString().slice(0, 10);
+const head = (title: string) => title.split(" — ")[0];
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath="/critical/drafts/"
+  localesAvailable={["ja"]}
+  title="回覧する下書きの Brief｜Lemma"
+  description="プレビューだけのページです。本番には出ません。"
+  noindex
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <main class="dr">
+    <div class="dr-in">
+      <div class="dr-band">
+        <b>回覧用</b>
+        <span>プレビューだけのページです。本番には出ません。</span>
+      </div>
+      <h1>回覧する下書きの Brief</h1>
+      <p class="dr-lead">
+        {drafts.length > 0 ? `${drafts.length} 本` : "いま回覧する下書きはありません。"}
+      </p>
+      <ul class="dr-list">
+        {
+          drafts.map((b) => (
+            <li>
+              <a href={`${base}/critical/briefs/${b.id}/`}>
+                <small>No. {pad(b.data.brief_no)} · 公開予定 {day(b.data.published)}</small>
+                <b>{head(b.data.title)}</b>
+              </a>
+              <span class="dr-en">
+                {enIds.has(b.id) ? <a href={`/critical/briefs/${b.id}/`}>EN</a> : "EN なし"}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </main>
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .dr {
+    --tx: #12140e;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    background: #f3f4f1;
+    color: var(--tx);
+    padding: 96px 16px 72px;
+  }
+  .dr-in {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .dr-band {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 14px;
+    border: 1px dashed #4a90b8;
+    border-radius: 8px;
+    color: #2f6f93;
+    font-size: 13px;
+  }
+  .dr h1 {
+    margin: 28px 0 6px;
+    font-size: 26px;
+  }
+  .dr-lead {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .dr-list {
+    list-style: none;
+    margin: 20px 0 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .dr-list li {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .dr-list li > a {
+    display: grid;
+    gap: 4px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .dr-list li > a:hover b {
+    text-decoration: underline;
+  }
+  .dr-list small {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .dr-list b {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .dr-en {
+    flex: none;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+</style>

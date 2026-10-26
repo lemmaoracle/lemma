@@ -24,7 +24,7 @@ published: 2026-06-12
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]   # A-incident-response / B-regulatory / C-agent-governance
 related_briefs: ["018-hackerbot-claw-ai-vs-ai"]
-status: published                     # draft | review | published
+status: draft                         # 下書きで書く。承認のあと published にする（下の「下書きと公開」）
 version: "1.0"                        # 1.0 以外でテンプレートが改訂履歴を描画
 og_lead_ja: "<og:title の先頭 30–45 字。検索語を前方に>"
 og_lead_en: "<same, EN>"
@@ -78,6 +78,23 @@ H1 の長い一文は、検索結果では頭の 30 字ほどしか見えない�
 続報（第 N 報）で経路・件数・原因が出たら改訂する（攻撃・侵入経路は未公表なら未公表と書いて出し、判明したら直す）。
 早く出しても、一次の公表に拠る・断定しない・落ち度を書かない、は変えない。X の国内の比率（直近 3 本に 1 本まで）は
 出し方の決まりで、Brief を早く出すこととは別。
+
+### 下書きと公開（2026-10-26）
+
+新しい Brief は `status: draft` で書き、下書きのまま PR を出してマージする。下書き（`published` 以外）は
+本番に出ない。出るのは Cloudflare Pages の main 以外のブランチのプレビューと、手元の dev
+（`LEMMA_SHOW_DRAFTS=1` を付けたビルド）だけ（`lib/briefDrafts.ts`）。プレビューでは記事のパンくずに
+「下書き」のラベルが付く。
+
+1. 下書きで PR を出し、ビルドとプレビューで見た目を確認してマージする。
+2. main に入ると prerelease ブランチが main と同じになる（`.github/workflows/sync-prerelease.yml`）。
+   回覧はリンク 1 本：<https://prerelease.web-zgj.pages.dev/ja/critical/drafts/>
+3. 承認は CLUBS のいつもの仕事「Critical Brief 作成ルール」の承認ポイントで、回ごとに 1 回にまとめる。
+   直しのある Brief は外して次の回に回す。
+4. 承認された Brief を `status: published` にする PR を出し、マージすると本番に出る。
+   frontmatter の `published`（公開日）も本番に出す日に直す。
+
+国内の大きな事案を 3 日以内に出す決まり（上）は、承認までを含めて 3 日で数える。
 
 ### Pillar とカテゴリの許容値
 

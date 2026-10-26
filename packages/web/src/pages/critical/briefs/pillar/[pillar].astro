@@ -1,5 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
+import { isVisibleBrief } from "../../../../lib/briefDrafts";
 import BriefArchiveTemplate, {
   type ArchiveCard,
 } from "../../../../templates/BriefArchiveTemplate.astro";
@@ -12,7 +13,7 @@ import {
 import { getEnBriefMap } from "../../../../data/getEnBriefMap";
 
 export async function getStaticPaths() {
-  const all = await getCollection("critical-briefs");
+  const all = await getCollection("critical-briefs", isVisibleBrief);
   const enById = await getEnBriefMap();
   return PILLAR_SLUGS.map((pillar) => ({
     params: { pillar },

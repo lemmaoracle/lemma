@@ -24,6 +24,7 @@ import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import bodyJa from "../config/top-v47.ja.html?raw";
 import bodyEn from "../config/top-v47.en.html?raw";
 import { getCollection } from "astro:content";
+import { isVisibleBrief } from "../lib/briefDrafts";
 import { byDateDesc, getAllPosts, postInCategory, type BlogPost } from "../data/blog";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 import { resolveCoverImage } from "../lib/coverPhoto";
@@ -116,7 +117,7 @@ const pickedPost =
 // 枠2: Brief は JA コレクションを軸に、EN では訳がある分だけ差し替える
 // （/critical/briefs/ の一覧と同じ選び方・同じ並び）。
 const enBriefById = isJa ? null : await getEnBriefMap();
-const latestBrief = [...(await getCollection("critical-briefs"))]
+const latestBrief = [...(await getCollection("critical-briefs", isVisibleBrief))]
   .map((ja) => enBriefById?.get(ja.id) ?? ja)
   .sort((a, b) => {
     const diff = b.data.published.getTime() - a.data.published.getTime();
@@ -232,7 +233,7 @@ const caseLinkHtml = caseStudy
  * 「なぜ、いま」の下。事例として小さく見せるだけにし、詳しくは Brief で読んでもらう。
  * 3本は「なぜ、いま」の3枚と、5つの証明のどれで照合するかが分かるものを選んだ（手動）。
  * 件数・国の数・開始月はコレクションから数える（一覧ページと同じ数え方）。 */
-const allBriefs = await getCollection("critical-briefs");
+const allBriefs = await getCollection("critical-briefs", isVisibleBrief);
 const briefCount = allBriefs.length;
 const briefCountries = new Set(
   allBriefs.flatMap((b) => (b.data.countries as string[] | undefined) ?? []).filter((c) => c !== "global"),
