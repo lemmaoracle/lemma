@@ -13,6 +13,8 @@
  * （Tally 2jE9dj を新しいタブで開き、選んだ場面と要確認（いいえ・分からない）の
  * 項目の id だけを隠しフィールドで渡す）。記事から来たとき（?from=slug）は、
  * その記事の場面を選んだ状態で開き（担当は選ばず全項目）、その記事の項目に印を付ける。
+ * CLUBS のフォームの鍵（config/cta.ts の CONSULT_CLUBS_FORM_KEY）を入れると、相談は
+ * 結果の下にフォームを開く形に替わる（2026-10-26）。
  */
 import { getCollection } from "astro:content";
 import { isVisibleBrief } from "../../../../lib/briefDrafts";
@@ -20,7 +22,7 @@ import Layout from "../../../../layouts/Layout.astro";
 import Navigation from "../../../../components/Navigation.astro";
 import Footer from "../../../../components/FooterRenewal.astro";
 import { getTranslations } from "../../../../i18n/translations";
-import { CONSULT_FORM_URL, BRIEF_WEEKLY_URL } from "../../../../config/cta";
+import { CONSULT_FORM_URL, CONSULT_CLUBS_FORM_KEY, BRIEF_WEEKLY_URL } from "../../../../config/cta";
 import type { BriefEntry } from "../../../../data/criticalBriefs";
 import { selfCheckGroups, selfCheckItemCount } from "../../../../lib/briefSelfCheck";
 
@@ -179,7 +181,7 @@ const jsonLd = [
   ogDescription={`実際に起きた ${analyzed} 件の事案から作った ${total} 項目で、担当ごとに点検。お急ぎなら 3 分。登録不要・無料。`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
-  <main class="ck">
+  <main class="ck" data-clubs-form-key={CONSULT_CLUBS_FORM_KEY}>
     <section class="lp-hero">
       <div class="lp-in lp-hero-in">
         <div class="lp-hero-tx">
@@ -358,6 +360,7 @@ const jsonLd = [
         <p class="ck-score-msg" data-ck-score-msg></p>
         <p class="ck-score-help">自社での確認や見直しが難しい場合は、メールでご相談いただけます。</p>
         <a class="ck-btn" data-ck-consult href={CONSULT_FORM_URL} target="_blank" rel="noopener"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="16" height="12" rx="2"/><path d="M3.5 6l7.5 6 7.5-6"/></svg>メールで相談する（無料）<span aria-hidden="true">→</span></a>
+        <div class="ck-form" data-ck-form hidden></div>
       </div>
       <button type="button" class="ck-more" data-ck-more hidden></button>
       <div data-ck-gaps></div>
@@ -420,7 +423,7 @@ const jsonLd = [
           </p>
         </div>
         <div class="lp-lemma-cta">
-          <a class="lp-btn" href={CONSULT_FORM_URL} target="_blank" rel="noopener" data-ck-consult>無料でメール相談する</a>
+          <a class="lp-btn" href={CONSULT_CLUBS_FORM_KEY ? `https://clubs.place/f/${CONSULT_CLUBS_FORM_KEY}` : CONSULT_FORM_URL} target="_blank" rel="noopener" data-ck-consult>無料でメール相談する</a>
           <a class="lp-btn lp-btn--light" href="/ja/">Lemma を見る</a>
         </div>
       </div>
@@ -473,6 +476,44 @@ const jsonLd = [
     }
     var $ = function (s, el) { return (el || root).querySelector(s); };
     var $$ = function (s, el) { return Array.prototype.slice.call((el || root).querySelectorAll(s)); };
+    // CLUBS のフォーム（鍵があるときだけ）。フォームは表示したときのページの URL から
+    // 値を読み、まだ表示していない div だけを表示する。なので毎回、前の div を外す→
+    // URL に値を付け直す→新しい div→新しい script 要素、の順（innerHTML の script は動かない）。
+    // q は「ご相談の内容」に最初から入る文（送る人が直せる）。
+    var FORM_KEY = root.getAttribute("data-clubs-form-key") || "";
+    var consult = {};
+    var formShown = "";
+    function typed() {
+      return $$("[data-ck-form] .clubs-input").some(function (el) {
+        return el.type === "checkbox" || el.type === "radio" ? el.checked : el.value;
+      });
+    }
+    function showForm(q) {
+      var box = $("[data-ck-form]");
+      box.replaceChildren();
+      var u = new URL(location.href);
+      Object.keys(consult).forEach(function (k) {
+        if (consult[k]) u.searchParams.set(k, consult[k]);
+        else u.searchParams.delete(k);
+      });
+      if (q) u.searchParams.set("q", q);
+      else if (q === "") u.searchParams.delete("q");
+      history.replaceState(history.state, "", u.toString());
+      formShown = JSON.stringify(consult);
+      var d = document.createElement("div");
+      d.setAttribute("data-clubs-form", FORM_KEY);
+      var a = document.createElement("a");
+      a.href = "https://clubs.place/f/" + FORM_KEY;
+      a.textContent = "フォームを開く";
+      d.appendChild(a);
+      box.appendChild(d);
+      var sc = document.createElement("script");
+      sc.src = "https://clubs.place/embed/form.js";
+      sc.async = true;
+      box.appendChild(sc);
+      box.hidden = false;
+      $(".ck-score [data-ck-consult]").hidden = true;
+    }
 
     // 記事から来たとき：その記事の項目に印を付けて各場面の先頭へ寄せ、
     // その記事のいちばん近い場面を選ぶ。
@@ -678,11 +719,22 @@ const jsonLd = [
           var id = li.getAttribute("data-item");
           if (state.ans[id] !== v) return;
           var next = out ? out + "," + id : id;
-          if (next.length <= 600) out = next;
+          if (next.length <= 500) out = next;
         });
         return out;
       };
       var gapIds = idsOf("no") + (idsOf("unsure") ? "|" + idsOf("unsure") : "");
+      consult = {
+        ops: state.ops.join(","),
+        gaps: idsOf("no"),
+        unsure: idsOf("unsure"),
+        persona: state.persona || "",
+        mode: quick ? "quick" : "full",
+        score: answered && !left ? String(Math.round((yes / answered) * 100)) : "",
+        ref: from ? "selfcheck_from_brief" : "selfcheck",
+      };
+      // フォームを開いたあとに答えを変えたら、書きかけでなければ新しい値で入れ直す。
+      if (formShown && formShown !== JSON.stringify(consult) && !typed()) showForm();
       $$("[data-ck-consult]").forEach(function (link) {
         var u = new URL(link.getAttribute("href"));
         u.searchParams.set("ops", state.ops.join(","));
@@ -797,6 +849,11 @@ const jsonLd = [
       }
       if (e.target.closest("[data-ck-consult]")) {
         ev("self_check_consult", { ops: state.ops.join(","), gaps: $$(".ck-gap li").length, example: !!e.target.closest("[data-q]") });
+        if (FORM_KEY && e.target.closest("[data-ck-result]")) {
+          e.preventDefault();
+          showForm(e.target.closest("[data-ck-consult]").getAttribute("data-q") || "");
+          $("[data-ck-form]").scrollIntoView({ block: "start", behavior: "smooth" });
+        }
       }
     });
 
@@ -1890,6 +1947,163 @@ const jsonLd = [
     height: 20px;
     color: #a8e010;
   }
+  /* CLUBS のフォーム（色や文字の指定が無いので、ここで .ck-btn・.ck-done に合わせる）。 */
+  .ck-form {
+    margin: 4px 0 0;
+    padding: 24px;
+    border: 1px solid #e3e6dc;
+    border-radius: 16px;
+    background: #fff;
+    scroll-margin-top: 96px;
+  }
+  .ck-form :global(.clubs-form) {
+    display: grid;
+    gap: 18px;
+  }
+  .ck-form :global(.clubs-title) {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .ck-form :global(.clubs-lead),
+  .ck-form :global(.clubs-intro) {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #3c4237;
+  }
+  .ck-form :global(.clubs-q) {
+    display: grid;
+    gap: 6px;
+  }
+  .ck-form :global(.clubs-label) {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .ck-form :global(.clubs-req) {
+    display: inline-block;
+    white-space: nowrap;
+    margin-left: 6px;
+    font-size: 12px;
+    color: #b42318;
+  }
+  .ck-form :global(.clubs-input:not([type="checkbox"]):not([type="radio"])) {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cfd4c6;
+    border-radius: var(--btn-r);
+    background: #fff;
+    color: inherit;
+    font: inherit;
+    font-size: 15px;
+  }
+  .ck-form :global(textarea.clubs-input) {
+    min-height: 120px;
+    resize: vertical;
+  }
+  .ck-form :global(.clubs-input:focus) {
+    outline: none;
+    border-color: #16190f;
+    box-shadow: 0 0 0 3px rgba(143, 200, 12, 0.35);
+  }
+  .ck-form :global(.clubs-choices) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .ck-form :global(.clubs-choices > legend) {
+    width: 100%;
+    margin-bottom: 6px;
+    padding: 0;
+  }
+  .ck-form :global(.clubs-choice:has(:checked)) {
+    border-color: #16190f;
+    background: #f3f9e4;
+  }
+  .ck-form :global(.clubs-choice) {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #cfd4c6;
+    border-radius: var(--btn-r);
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .ck-form :global(.clubs-check) {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .ck-form :global(.clubs-check input),
+  .ck-form :global(.clubs-choice input) {
+    flex: none;
+    margin: 4px 0 0;
+    accent-color: #16190f;
+  }
+  .ck-form :global(.clubs-choice input) {
+    margin: 0;
+  }
+  .ck-form :global(.clubs-consent .clubs-label) {
+    font-weight: 400;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #3c4237;
+  }
+  .ck-form :global(.clubs-link) {
+    color: inherit;
+    text-decoration: underline;
+  }
+  .ck-form :global(.clubs-error) {
+    font-size: 13px;
+    color: #b42318;
+  }
+  .ck-form :global(.clubs-submit) {
+    justify-self: start;
+    min-width: 280px;
+    padding: 16px 28px;
+    border: 0;
+    border-radius: var(--btn-r);
+    background: #16190f;
+    color: #fff;
+    font: inherit;
+    font-weight: 800;
+    font-size: 15.5px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(22, 25, 15, 0.22);
+  }
+  .ck-form :global(.clubs-submit:hover) {
+    background: #000;
+  }
+  .ck-form :global(.clubs-by) {
+    margin: 0;
+    font-size: 11.5px;
+    color: #6a7064;
+  }
+  .ck-form :global(.clubs-thanks .clubs-title) {
+    font-size: 15px;
+  }
+  .ck-form :global(.clubs-thanks .clubs-lead) {
+    color: inherit;
+    font-weight: 400;
+  }
+  .ck-form :global(.clubs-thanks) {
+    gap: 4px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #eef7d2;
+    color: #3c5a00;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .ck-form :global(.clubs-hp) {
+    display: none !important;
+  }
   .ck-done {
     margin: 16px 0 0;
     padding: 12px 16px;
@@ -2250,10 +2464,15 @@ const jsonLd = [
     .lp-list-grid {
       columns: 1;
     }
-    .ck-btn {
+    .ck-btn,
+    .ck-form :global(.clubs-submit) {
       display: flex;
+      justify-content: center;
       min-width: 0;
       width: 100%;
+    }
+    .ck-form {
+      padding: 18px 16px;
     }
     .ck-legend {
       grid-template-columns: 1fr;
@@ -2324,6 +2543,7 @@ const jsonLd = [
     .ck-legend,
     .ck-bar,
     .ck-tools,
+    .ck-form,
     .ck-ans,
     .ck-hint {
       display: none !important;

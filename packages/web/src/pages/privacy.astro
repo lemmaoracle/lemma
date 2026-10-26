@@ -1,10 +1,15 @@
 ---
 import LegalTemplate, { type LegalSection } from "../templates/LegalTemplate.astro";
 import { getTranslations } from "../i18n/translations";
+import { CONSULT_CLUBS_FORM_KEY } from "../config/cta";
 
 const locale = "en";
 const t = getTranslations(locale);
 const base = "";
+// Mirrors /ja/privacy: once the self-check consult moves to the CLUBS form (key set), name it here.
+const formsEn = CONSULT_CLUBS_FORM_KEY
+  ? "Consultations from the self-check are received through a CLUBS form operated by us, and responses are stored in Japan (Tokyo). Submissions are processed on servers in the United States (Vercel Inc.). Internal notifications of new submissions use Slack (Slack Technologies, LLC, United States) and include only the form title and the sender's name. Other forms are provided by Tally (Tally BV, Belgium) and responses are stored in the EU."
+  : "Forms are provided by Tally (Tally BV, Belgium) and responses are stored in the EU.";
 
 const sections: LegalSection[] = [
   {
@@ -54,7 +59,7 @@ const sections: LegalSection[] = [
 </ul>
 <p>Answers to the self-check are aggregated through Google Analytics in a form that does not identify you or your organization, and are used to analyze cases and improve the checklist.</p>
 <p><strong>Purposes</strong>: replying to your inquiry; information about Lemma and our other products and services; updates such as new case analyses for newsletter subscribers; and aggregate, non-identifying analysis to improve the website and Service.</p>
-<p><strong>Processors and storage</strong>: Forms are provided by Tally (Tally BV, Belgium) and responses are stored in the EU. Website analytics use Google Analytics (Google LLC, United States).</p>
+<p><strong>Processors and storage</strong>: ${formsEn} Website analytics use Google Analytics (Google LLC, United States).</p>
 <p><strong>Unsubscribing</strong>: You can stop our emails at any time using the link in each email or by contacting us below.</p>`,
   },
   {
@@ -104,7 +109,7 @@ const description =
   base={base}
   tag="Privacy Policy"
   title="Privacy Policy"
-  lastUpdated="Last updated: October 24, 2026"
+  lastUpdated="Last updated: October 26, 2026"
   intro={`FRAME00 Inc. (&ldquo;we&rdquo;) provides Lemma (the &ldquo;Service&rdquo;) and its website. This policy describes the data we receive, store, and process, given the cryptographic design of the Service.`}
   sections={sections}
   description={description}

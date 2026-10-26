@@ -55,6 +55,15 @@ export const BRIEF_RAIL_CTA_URL: Readonly<Record<Locale, string>> = {
 export const CONSULT_FORM_URL =
   "https://tally.so/r/2jE9dj?utm_source=selfcheck&utm_medium=cta&utm_campaign=selfcheck_to_consult" as const;
 
+/**
+ * 同じ相談を CLUBS のフォームに替えるときの鍵（2026-10-26）。入れると、結果の
+ * 「メールで相談する」がページの中にフォームを開く（ops・gaps＝「いいえ」の項目・
+ * unsure＝「分からない」の項目を URL に付けてから入れる）。空のあいだは上の Tally のまま。
+ * 鍵を入れるとプライバシーポリシー（/ja/privacy・/privacy）の委託先と保存先も CLUBS の
+ * 文に替わる。鍵を入れる PR で、両ページの最終更新日も直す。
+ */
+export const CONSULT_CLUBS_FORM_KEY: string = "IpXNlCAuqK8retnycFtVN_Y-";
+
 /** 定期のメールの登録（日本語）。セルフチェックの結果の下の小さな入口。 */
 export const BRIEF_WEEKLY_URL =
   "https://tally.so/r/EkMj82?ref=selfcheck&utm_source=selfcheck&utm_medium=cta&utm_campaign=selfcheck_to_weekly" as const;
