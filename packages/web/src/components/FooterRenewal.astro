@@ -64,6 +64,10 @@ const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
       { label: "Trust402", href: L("/trust402/") },
       { label: "Seal", href: L("/seal/") },
       { label: "CLUBS", href: "https://clubs.place", external: true },
+      // 紹介ページは日本語だけ（clubs.place/public）。
+      ...(isJa
+        ? [{ label: "CLUBS for PUBLIC", href: "https://clubs.place/public/", external: true }]
+        : []),
       { label: isJa ? "料金" : "Pricing", href: L("/pricing") },
     ],
   },
