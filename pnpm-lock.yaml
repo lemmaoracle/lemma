@@ -886,12 +886,18 @@ importers:
       '@types/ramda':
         specifier: ^0.30.0
         version: 0.30.1
+      '@types/snarkjs':
+        specifier: ^0.7.9
+        version: 0.7.9
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.56.1
         version: 8.72.0(@typescript-eslint/parser@8.72.0(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.8.3))(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.8.3)
       '@typescript-eslint/parser':
         specifier: ^8.56.1
         version: 8.72.0(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.8.3)
+      circomlib:
+        specifier: ^2.0.5
+        version: 2.0.5
       eslint:
         specifier: ^9.39.3
         version: 9.39.5(jiti@2.7.0)(supports-color@10.2.2)
@@ -901,6 +907,9 @@ importers:
       eslint-plugin-functional:
         specifier: ^9.0.4
         version: 9.0.5(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.8.3)
+      snarkjs:
+        specifier: ^0.7.6
+        version: 0.7.6
       typescript:
         specifier: ^5.5.0
         version: 5.8.3
