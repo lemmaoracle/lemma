@@ -225,8 +225,15 @@ export interface Translations {
       readonly items: ReadonlyArray<{
         readonly q: string;
         readonly a: string;
-        /** Optional pillar tag for chip coloring. */
-        readonly pillar?: "p1" | "p2" | "p3" | "p4";
+        /**
+         * Optional pillar tag for chip coloring (`p1`–`p4`).
+         * The values live in `ja.json` / `en.json`, which TypeScript widens to
+         * `string` on import, so a literal union here cannot be enforced at the
+         * data boundary and only blocks the assignment. Same posture as the
+         * other JSON-backed pillar fields, which narrow at the consumer.
+         * `FaqTemplate.astro` interpolates this into `fq-chip-${pillar}`.
+         */
+        readonly pillar?: string;
         /**
          * Optional "Related" links shown below the answer.
          * Used when the answer text references other pages.
