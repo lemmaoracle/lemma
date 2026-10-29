@@ -30,3 +30,7 @@ _tmp_*
 **/.archives/
 
 # Note: broadcast/ directories are NOT ignored - they contain important deployment history
+
+# Python bytecode caches (scripts run locally and under vitest)
+__pycache__/
+*.py[cod]
