@@ -1,0 +1,272 @@
+---
+import type { Locale } from "../i18n/translations";
+
+interface Props {
+  workflow: string;
+  step: number;
+  locale: Locale;
+}
+
+const { workflow, step, locale } = Astro.props;
+const bank = workflow === "bank-change";
+const customers = workflow === "customer-export";
+const server = step === 1 && !bank;
+const ja = locale === "ja";
+const screenLabel = ja ? "検証ページ" : "VERIFY";
+const executionLabel = customers ? (ja ? "出力へ" : "TO EXPORT") : ja ? "発行へ" : "TO ISSUE";
+---
+
+<!-- Original outline illustrations. The QR pattern and screen are illustrative. -->
+<div
+  class="workflow-visual"
+  aria-hidden="true"
+  data-workflow-visual={`${workflow}-${step}`}
+  data-workflow-check={server
+    ? "server-guardrail"
+    : step === 1
+      ? "staff-verification"
+      : "requester"}
+>
+  <svg viewBox="0 0 280 144" fill="none" focusable="false">
+    {
+      !server && (
+        <>
+          <g class="person">
+            <circle cx="29" cy="49" r="10" />
+            <path d="M12 100V83a17 17 0 0 1 34 0v17M21 84v16m16-16v16" />
+            <path class="person-base" d="M7 108h44" />
+          </g>
+          <path class="connector" d="M56 77h21m-5-4 5 4-5 4" />
+        </>
+      )
+    }
+    {
+      server ? (
+        <g data-server-guardrail>
+          <rect class="request-card" x="10" y="51" width="48" height="62" rx="4" />
+          <text class="mini-brand" x="18" y="69">
+            Cyber
+          </text>
+          <path class="fine" d="M18 81h32m-32 10h23" />
+          <text class="request-kind" x="18" y="104">
+            {customers ? "CSV" : "5,000 pt"}
+          </text>
+          <text class="diagram-label" x="34" y="128" text-anchor="middle">
+            {ja ? "依頼" : "REQUEST"}
+          </text>
+
+          <rect class="server" x="80" y="18" width="126" height="108" rx="6" />
+          <path class="fine" d="M80 45h126m-104-12h3m5 0h3m5 0h3" />
+          <text class="caption" x="166" y="35" text-anchor="middle">
+            {ja ? "サーバ" : "SERVER"}
+          </text>
+          <rect class="guardrail" x="96" y="55" width="94" height="51" rx="4" />
+          <text class="guardrail-label" x="143" y="69" text-anchor="middle">
+            guardrail
+          </text>
+          <path class="connector" d="M59 85h68m-5-4 5 4-5 4" />
+          <circle class="gate-disc" cx="143" cy="86" r="11" />
+          <path class="gate-check" d="m137 86 4 4 8-9" />
+          <path class="passed-route" d="M159 85h64m-5-4 5 4-5 4" />
+          <circle class="check-disc" cx="245" cy="85" r="17" />
+          <path class="check" d="m237 85 5 5 11-12" />
+          <text class="diagram-label passed-label" x="245" y="119" text-anchor="middle">
+            {executionLabel}
+          </text>
+        </g>
+      ) : step === 0 ? (
+        bank ? (
+          <>
+            <rect class="artifact" x="86" y="17" width="114" height="87" rx="7" />
+            <text class="brand" x="98" y="39">
+              Cyber
+            </text>
+            <path class="fine" d="M99 51h63m-63 13h85m-85 12h70m-70 12h45" />
+            <path class="connector" d="M207 35h25v17m-4-5 4 5 4-5" />
+            <path class="document" d="M190 61h50l15 15v55h-65V61Z" />
+            <path class="fine" d="M240 61v15h15m-53-4h24" />
+            <g class="qr">
+              <path d="M202 86h10v10h-10zm28 0h10v10h-10zm-28 28h10v10h-10z" />
+              <path
+                class="qr-pixels"
+                d="M205 89h4v4h-4zm28 0h4v4h-4zm-28 28h4v4h-4zm13-31h5v7h-5zm-1 13h6v5h-6zm10 3h5v8h-5zm8 0h5v5h-5zm-18 13h6v9h-6zm12 1h11v4h-11zm-26-14h9v5h-9z"
+              />
+            </g>
+            <text class="caption" x="160" y="126">
+              QR
+            </text>
+          </>
+        ) : customers ? (
+          <>
+            <rect class="artifact" x="86" y="18" width="155" height="102" rx="6" />
+            <path class="fine" d="M86 42h155m-136 12v52m41-52v52m45-52v52m-86-35h117m-117 18h117" />
+            <text class="caption" x="99" y="34">
+              CSV / 100
+            </text>
+            <rect class="selected" x="99" y="50" width="126" height="39" rx="3" />
+            <path class="fine" d="M108 61h25m21 0h27m16 0h18m-107 19h25m21 0h27m16 0h18" />
+            <rect class="request-card" x="198" y="85" width="64" height="45" rx="4" />
+            <text class="mini-brand" x="207" y="102">
+              Cyber
+            </text>
+            <path class="fine" d="M207 111h45m-45 8h29" />
+          </>
+        ) : (
+          <>
+            <rect class="artifact" x="86" y="18" width="155" height="102" rx="6" />
+            <text class="caption" x="100" y="36">
+              POINTS
+            </text>
+            <text class="amount" x="100" y="66">
+              5,000
+            </text>
+            <text class="caption" x="177" y="65">
+              pt
+            </text>
+            <path class="fine" d="M100 79h121m-121 14h82m-82 13h58" />
+            <rect class="request-card" x="198" y="85" width="64" height="45" rx="4" />
+            <text class="mini-brand" x="207" y="102">
+              Cyber
+            </text>
+            <path class="fine" d="M207 111h45m-45 8h29" />
+          </>
+        )
+      ) : (
+        <>
+          <rect class="screen" x="87" y="16" width="172" height="101" rx="6" />
+          <path class="fine" d="M87 38h172m-161-11h3m6 0h3m6 0h3M164 117v13m-20 0h58" />
+          <text class="screen-label" x="102" y="55">
+            {screenLabel}
+          </text>
+          <rect class="request-card" x="102" y="65" width="42" height="37" rx="3" />
+          <text class="mini-brand" x="108" y="78">
+            Cyber
+          </text>
+          <path class="fine" d="M109 86h27m-27 8h18m28-18h45m-45 12h34m-34 12h43" />
+          <circle class="check-disc" cx="230" cy="84" r="19" />
+          <path class="check" d="m221 84 6 6 12-13" />
+        </>
+      )
+    }
+  </svg>
+</div>
+
+<style>
+  .workflow-visual {
+    width: 100%;
+    max-width: 280px;
+    margin: 7px auto 18px;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    stroke: #9eac91;
+    stroke-width: 1.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .person {
+    stroke: #c8d0be;
+    stroke-width: 1.4;
+  }
+  .person-base,
+  .connector {
+    stroke: #647454;
+  }
+  .connector {
+    stroke-width: 1;
+  }
+  .artifact,
+  .screen,
+  .server {
+    fill: #1b2116;
+    stroke: #9eac91;
+  }
+  .document,
+  .request-card {
+    fill: #20291a;
+    stroke: #b3c69a;
+  }
+  .fine {
+    stroke: #657655;
+    stroke-width: 1;
+  }
+  .selected,
+  .guardrail {
+    stroke: #9ab86d;
+  }
+  .selected {
+    fill: #a8e01006;
+  }
+  text {
+    stroke: none;
+    fill: #bcc9ad;
+    font-family: "Space Mono", monospace;
+  }
+  .brand,
+  .mini-brand {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 500;
+  }
+  .brand {
+    font-size: 17px;
+  }
+  .mini-brand {
+    font-size: 10px;
+  }
+  .caption {
+    font-size: 9px;
+    letter-spacing: 0.05em;
+  }
+  .amount {
+    font-size: 25px;
+    letter-spacing: -0.05em;
+  }
+  .screen-label {
+    font-family: "Noto Sans JP", sans-serif;
+    font-size: 10px;
+  }
+  .guardrail {
+    fill: #233119;
+  }
+  .guardrail-label {
+    font-size: 9px;
+    fill: #c5df9a;
+  }
+  .request-kind {
+    font-size: 6px;
+  }
+  .diagram-label {
+    font-family: "Noto Sans JP", sans-serif;
+    font-size: 8px;
+  }
+  .passed-route,
+  .gate-check {
+    stroke: #a8e010;
+    stroke-width: 1.5;
+  }
+  .gate-disc {
+    fill: #24351b;
+    stroke: #8da96b;
+  }
+  .passed-label {
+    fill: #c5df9a;
+  }
+  .qr {
+    stroke: #c8d5b7;
+    stroke-width: 1.4;
+  }
+  .qr-pixels {
+    fill: #c8d5b7;
+    stroke: none;
+  }
+  .check-disc {
+    fill: #24351b;
+    stroke: #a8e010;
+  }
+  .check {
+    stroke: #b7e663;
+    stroke-width: 2.2;
+  }
+</style>
