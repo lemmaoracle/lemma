@@ -1,7 +1,7 @@
 ---
 brief_no: 168
-title: "グッドスマイルカンパニー：公式ショップの決済ページに不正なプログラムが置かれ、カード番号とセキュリティコードまで漏えいした可能性が示された — 決済ページで動くコードが承認した版かを、カード情報の入力の前に照合する層は公表からは見えない"
-title_en: "Good Smile Company: An unauthorised program was placed on its official shop's payment page, and card numbers and security codes may have been exposed — No layer is visible that checks, before card entry, that the code running on the payment page was approved"
+title: "グッドスマイルカンパニー：公式ショップの決済ページに不正なプログラムが置かれ、カード番号とセキュリティコードまで漏えいした可能性が示された — 決済ページが改ざんされていないかを、カード情報の入力の前に確認する仕組みは公表からは見えない"
+title_en: "Good Smile Company: An unauthorised program was placed on its official shop's payment page, and card numbers and security codes may have been exposed — No check is visible that the payment page had not been tampered with before card details were entered"
 pillar: 01-verifiable-origin
 primary_category: code-provenance
 secondary_categories: []
@@ -33,7 +33,7 @@ key_figures:
     label: "サイトを閉鎖してから、決済ページのプログラムが判明するまで"
 insight:
   slug: "payment-page-code-not-verified"
-  label: "決済ページのコードが、承認した版と照合されない"
+  label: "決済ページの改ざんを、入力の前に確認しない"
   quote: "カードの全桁を保存していなくても、決済ページを書き換えられれば、カード番号は入力した瞬間に読み取られる。"
 industries: ["retail"]
 controls:
@@ -45,14 +45,14 @@ controls:
     item: "どの版の決済ページで、誰が決済の操作をしたかを記録する"
 attack_method: "privilege-abuse"
 impact: "2,800 人のカード全桁とセキュリティコード、402,466 枚の下 4 桁と有効期限が漏えいした可能性がある"
-takeaway: "サイトはカードの全桁を保存していなかったが、決済ページに置かれたプログラムが入力を傍受した可能性がある。ページ上のコードが承認した版かを、入力の前に照合する層は、公表からは見えない。"
-self_check: "決済ページで動くスクリプトが、承認した版と一致しているかを照合しているか。"
+takeaway: "サイトはカードの全桁を保存していなかったが、決済ページに置かれたプログラムが入力を傍受した可能性がある。決済ページが改ざんされていないかを、入力の前に確認する仕組みは、公表からは見えない。"
+self_check: "決済ページが改ざんされていないかを、カード情報が入力される前に確認しているか。"
 countries: ["jp"]
 ---
 
 ## 1. TL;DR
 
-グッドスマイルカンパニーの公式ショップ（グッスマ）で、決済ページに不正なプログラムが約 41 時間置かれ、2,800 人のカード番号の全桁とセキュリティコードが漏えいした可能性がある。同社は不正アクセスに気づいて 1 時間後にサイトを閉じたが、プログラムが見つかったのはその 5 日後だった。<strong>決済ページで動くコードが承認した版のままかを、入力の前に照合する層は、公表からは見えない。</strong>
+グッドスマイルカンパニーの公式ショップ（グッスマ）で、決済ページに不正なプログラムが約 41 時間置かれ、2,800 人のカード番号の全桁とセキュリティコードが漏えいした可能性がある。同社は不正アクセスに気づいて 1 時間後にサイトを閉じたが、プログラムが見つかったのはその 5 日後だった。<strong>決済ページが改ざんされていないかを、カード情報の入力の前に確認する仕組みは、公表からは見えない。</strong>
 
 ## 2. 何が起きたか
 
@@ -88,7 +88,7 @@ countries: ["jp"]
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">検出と証明の落差</span></div>
 <p class="rx-ex-cap">ここでいう証明は、決済ページを開くたびに、動いているコードが承認した版と一致するかを照合し、記録に残すこと。検出は、不正アクセスが起きた後に気づくこと。</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>証明の層 · 今回見えない</b>入力の前に、決済ページのコードを承認した版と照合する</div>
+<div class="rx-zone proof"><b>証明の層 · 今回見えない</b>入力の前に、決済ページが改ざんされていないかを確認する</div>
 <div class="rx-zone gapz"><b>落差</b><span>正規のサイトから届いた<br>いつもの画面で入力された</span></div>
 <div class="rx-zone det"><b>検出の層 · 気づいた</b>委託先の連絡で不正アクセスに気づき、閉鎖する</div>
 <div class="rx-g g1"><div class="t">10-21</div><b>決済ページにプログラムが置かれる</b></div>

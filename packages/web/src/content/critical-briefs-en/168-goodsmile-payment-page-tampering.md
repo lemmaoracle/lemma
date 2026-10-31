@@ -1,7 +1,7 @@
 ---
 brief_no: 168
-title: "グッドスマイルカンパニー：公式ショップの決済ページに不正なプログラムが置かれ、カード番号とセキュリティコードまで漏えいした可能性が示された — 決済ページで動くコードが承認した版かを、カード情報の入力の前に照合する層は公表からは見えない"
-title_en: "Good Smile Company: An unauthorised program was placed on its official shop's payment page, and card numbers and security codes may have been exposed — No layer is visible that checks, before card entry, that the code running on the payment page was approved"
+title: "グッドスマイルカンパニー：公式ショップの決済ページに不正なプログラムが置かれ、カード番号とセキュリティコードまで漏えいした可能性が示された — 決済ページが改ざんされていないかを、カード情報の入力の前に確認する仕組みは公表からは見えない"
+title_en: "Good Smile Company: An unauthorised program was placed on its official shop's payment page, and card numbers and security codes may have been exposed — No check is visible that the payment page had not been tampered with before card details were entered"
 pillar: 01-verifiable-origin
 primary_category: code-provenance
 secondary_categories: []
@@ -30,7 +30,7 @@ key_figures:
     label: "From closing the site to finding the payment-page program"
 insight:
   slug: "payment-page-code-not-verified"
-  label: "Payment-page code not matched to an approved version"
+  label: "Payment page not checked for tampering before entry"
   quote: "Not storing full card numbers does not help once the payment page is rewritten: the number is read the moment it is typed."
 industries: ["retail"]
 controls:
@@ -42,14 +42,14 @@ controls:
     item: "Record which version of the payment page each payment action ran on, and who performed it"
 attack_method: "privilege-abuse"
 impact: "Full card data and security codes of 2,800 people, and the last four digits and expiry of 402,466 cards, may have been exposed"
-takeaway: "The site did not store full card numbers, but a program placed on the payment page may have intercepted what customers typed. No layer that checks, before entry, that the page's code is still the approved version is visible in the disclosures."
-self_check: "Do you check that the scripts running on your payment page match the version you approved?"
+takeaway: "The site did not store full card numbers, but a program placed on the payment page may have intercepted what customers typed. No check is visible in the disclosures that the payment page had not been tampered with before entry."
+self_check: "Do you check that your payment page has not been tampered with before customers enter card details?"
 countries: ["jp"]
 ---
 
 ## 1. TL;DR
 
-An unauthorised program sat on the payment page of Good Smile Company's official online shop for about 41 hours, and 2,800 people's full card numbers and security codes may have been exposed. The company closed the site an hour after learning of the intrusion, but the program was found five days later. <strong>No layer is visible in the disclosures that checks, before card entry, that the code on the payment page is still the approved version.</strong>
+An unauthorised program sat on the payment page of Good Smile Company's official online shop for about 41 hours, and 2,800 people's full card numbers and security codes may have been exposed. The company closed the site an hour after learning of the intrusion, but the program was found five days later. <strong>No check is visible in the disclosures that the payment page had not been tampered with before card details were entered.</strong>
 
 ## 2. What happened
 
@@ -85,7 +85,7 @@ Customers typed into the usual payment screen, delivered by the genuine site. Ne
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The gap between detection and proof</span></div>
 <p class="rx-ex-cap">Proof here means matching, each time the payment page opens, that the code running matches the approved version, and keeping a record. Detection means noticing unauthorised access after it happens.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Proof layer · not visible here</b>Match the payment page's code to the approved version before entry</div>
+<div class="rx-zone proof"><b>Proof layer · not visible here</b>Check the payment page has not been tampered with before entry</div>
 <div class="rx-zone gapz"><b>Gap</b><span>Customers typed into the usual<br>screen from the genuine site</span></div>
 <div class="rx-zone det"><b>Detection layer · noticed</b>Learn of the access from the contractor and close the site</div>
 <div class="rx-g g1"><div class="t">10-21</div><b>Program placed on the payment page</b></div>
