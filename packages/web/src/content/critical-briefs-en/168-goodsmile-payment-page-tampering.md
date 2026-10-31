@@ -1,7 +1,7 @@
 ---
 brief_no: 168
-title: "グッドスマイルカンパニー：公式ショップの決済ページに不正なプログラムが置かれ、カード番号とセキュリティコードまで漏えいした可能性が示された — 決済ページが改ざんされていないかを、カード情報の入力の前に確認する仕組みは公表からは見えない"
-title_en: "Good Smile Company: An unauthorised program was placed on its official shop's payment page, and card numbers and security codes may have been exposed — No check is visible that the payment page had not been tampered with before card details were entered"
+title: "グッドスマイルカンパニー：決済ページに不正なプログラム、カード番号とセキュリティコードが漏えいした可能性"
+title_en: "Good Smile Company: A rogue program on the payment page, and card numbers and security codes may have been exposed"
 pillar: 01-verifiable-origin
 primary_category: code-provenance
 secondary_categories: []
@@ -26,8 +26,9 @@ key_figures:
   - value: "About 41"
     unit: "hours"
     label: "How long the rogue program sat on the payment page (13:55 on 21 Oct to 07:00 on 23 Oct)"
-  - value: "10-23 → 10-28"
-    label: "From closing the site to finding the payment-page program"
+  - value: "402,466"
+    unit: "cards"
+    label: "Cards whose last four digits and expiry date may have been exposed (excluding duplicates)"
 insight:
   slug: "payment-page-code-not-verified"
   label: "Payment page not checked for tampering before entry"
@@ -43,13 +44,13 @@ controls:
 attack_method: "privilege-abuse"
 impact: "Full card data and security codes of 2,800 people, and the last four digits and expiry of 402,466 cards, may have been exposed"
 takeaway: "The site did not store full card numbers, but a program placed on the payment page may have intercepted what customers typed. No check is visible in the disclosures that the payment page had not been tampered with before entry."
-self_check: "Do you check that your payment page has not been tampered with before customers enter card details?"
+self_check: "Does your organisation have a list of the scripts its payment page loads?"
 countries: ["jp"]
 ---
 
 ## 1. TL;DR
 
-An unauthorised program sat on the payment page of Good Smile Company's official online shop for about 41 hours, and 2,800 people's full card numbers and security codes may have been exposed. The company closed the site an hour after learning of the intrusion, but the program was found five days later. <strong>No check is visible in the disclosures that the payment page had not been tampered with before card details were entered.</strong>
+The company did not store card numbers, but a program placed on its payment page may have read them the moment they were typed. It closed the site an hour after learning of the intrusion, but did not find this program until five days later. <strong>No check is visible in the disclosures that the payment page had not been tampered with before card details were entered.</strong>
 
 ## 2. What happened
 

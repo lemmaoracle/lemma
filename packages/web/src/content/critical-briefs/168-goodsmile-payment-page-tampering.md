@@ -1,7 +1,7 @@
 ---
 brief_no: 168
-title: "グッドスマイルカンパニー：公式ショップの決済ページに不正なプログラムが置かれ、カード番号とセキュリティコードまで漏えいした可能性が示された — 決済ページが改ざんされていないかを、カード情報の入力の前に確認する仕組みは公表からは見えない"
-title_en: "Good Smile Company: An unauthorised program was placed on its official shop's payment page, and card numbers and security codes may have been exposed — No check is visible that the payment page had not been tampered with before card details were entered"
+title: "グッドスマイルカンパニー：決済ページに不正なプログラム、カード番号とセキュリティコードが漏えいした可能性"
+title_en: "Good Smile Company: A rogue program on the payment page, and card numbers and security codes may have been exposed"
 pillar: 01-verifiable-origin
 primary_category: code-provenance
 secondary_categories: []
@@ -29,8 +29,9 @@ key_figures:
   - value: "約 41"
     unit: "時間"
     label: "決済ページに不正なプログラムが置かれていた時間（10 月 21 日 13 時 55 分〜23 日 7 時）"
-  - value: "10-23 → 10-28"
-    label: "サイトを閉鎖してから、決済ページのプログラムが判明するまで"
+  - value: "402,466"
+    unit: "枚"
+    label: "カード番号の下 4 桁と有効期限が漏えいした可能性のあるカード（重複を除く）"
 insight:
   slug: "payment-page-code-not-verified"
   label: "決済ページの改ざんを、入力の前に確認しない"
@@ -46,13 +47,13 @@ controls:
 attack_method: "privilege-abuse"
 impact: "2,800 人のカード全桁とセキュリティコード、402,466 枚の下 4 桁と有効期限が漏えいした可能性がある"
 takeaway: "サイトはカードの全桁を保存していなかったが、決済ページに置かれたプログラムが入力を傍受した可能性がある。決済ページが改ざんされていないかを、入力の前に確認する仕組みは、公表からは見えない。"
-self_check: "決済ページが改ざんされていないかを、カード情報が入力される前に確認しているか。"
+self_check: "自社の決済ページで読み込んでいるスクリプトを、一覧で把握しているか。"
 countries: ["jp"]
 ---
 
 ## 1. TL;DR
 
-グッドスマイルカンパニーの公式ショップ（グッスマ）で、決済ページに不正なプログラムが約 41 時間置かれ、2,800 人のカード番号の全桁とセキュリティコードが漏えいした可能性がある。同社は不正アクセスに気づいて 1 時間後にサイトを閉じたが、プログラムが見つかったのはその 5 日後だった。<strong>決済ページが改ざんされていないかを、カード情報の入力の前に確認する仕組みは、公表からは見えない。</strong>
+同社はカード番号を保存していなかったが、決済ページに置かれたプログラムが、入力された瞬間に読み取った可能性がある。不正アクセスには気づいて 1 時間後にサイトを閉じたが、このプログラムに気づいたのは 5 日後だった。<strong>決済ページが改ざんされていないかを、カード情報の入力の前に確認する仕組みは、公表からは見えない。</strong>
 
 ## 2. 何が起きたか
 
