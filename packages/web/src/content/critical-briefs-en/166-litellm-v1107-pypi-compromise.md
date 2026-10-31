@@ -12,8 +12,8 @@ related_pack: [A-incident-response]
 related_briefs: ["145-litellm-mcp-oauth2-fallback-empty-auth", "066-litellm-ai-gateway-privilege-escalation", "148-openai-agent-swarm-rubygems-rubydoc-rce", "125-keyv-cacheable-npm-account-takeover"]
 status: draft
 version: "1.0"
-og_lead_ja: "LiteLLM：正規名の v1.107.0 が攻撃者管理のリポジトリでビルドされ、PyPI に約 1 時間 40 分残った"
-og_lead_en: "LiteLLM: v1.107.0 under the official name was built from an attacker-controlled repo and stayed on PyPI for about 100 minutes"
+og_lead_ja: "LiteLLM：v1.107.0 が攻撃者のリポジトリでビルドされ、署名つきで配布"
+og_lead_en: "LiteLLM: v1.107.0 was built from an attacker repo and shipped signed"
 industries: ["ai", "developers"]
 operations: ["delivery"]
 attack_method: "supply-chain"
@@ -24,7 +24,7 @@ countries: ["global"]
 
 On 21 October 2026, `litellm==1.107.0`, a release of the AI gateway LiteLLM, appeared on PyPI (seven wheels) and on Docker Hub and GHCR under the official name and standard tags. By LiteLLM's own account, the official `v1.107.0` tag on GitHub contains no malicious files; the artifacts were built from an attacker-controlled repository. LiteLLM describes the release as containing compiled malicious code that steals credentials and loads remote-code-execution tooling. It was live on PyPI from 11:39 UTC for about 1 hour 44 minutes, and on Docker Hub from 11:46 UTC until 14:20 UTC.
 
-Detection worked. An outside researcher flagged it in an issue at 12:06 UTC, and PyPI quarantined the release by 13:23 UTC. The poisoned release carried a valid signature applied by the genuine pipeline with the genuine key. <strong>What did not work was a layer that lets a consumer check, before pulling a signed artifact, that it was built from an approved source with approval from an independent approver.</strong>
+Detection worked. An outside researcher flagged it in an issue at 12:06 UTC, and PyPI quarantined the release by 13:23 UTC. The poisoned Docker images carried a valid signature applied by the genuine pipeline with the genuine key. <strong>What did not work was a layer that lets a consumer check, before pulling a signed artifact, that it was built from an approved source with approval from an independent approver.</strong>
 
 ## 2. What happened
 
@@ -32,7 +32,7 @@ Detection worked. An outside researcher flagged it in an issue at 12:06 UTC, and
 - **Provenance of the artifacts**: the official GitHub `v1.107.0` tag has no malicious files. The artifacts were built from an attacker-controlled repository, `Berri-AI/litellm`, which imitates the genuine `BerriAI/litellm`, then signed and published by the genuine pipeline (LiteLLM).
 - **Signing**: after an incident in March, LiteLLM moved releases to a private repository and Trusted Publishers workflows and signed its Docker images. The compromised v1.107.0 images also carry a valid signature from the then-current key. LiteLLM rotated the signing key on 23 October and advises trusting old-key signatures only on images published before v1.107.0.
 - **Content**: LiteLLM describes compiled malicious code that steals credentials and loads remote-code-execution tools. Wiz, in an independent analysis, reports that AWS, GCP and Azure credentials, AI-provider API keys and SSH keys were targeted, and that stolen data was sent to a lookalike domain.
-- **Scope**: LiteLLM says enterprise customers on the private registry were not affected and earlier versions are safe. Wiz cites roughly 49,000 downloads from ClickPy data (an independent figure). The actual amount of data taken has not been published.
+- **Scope**: LiteLLM says enterprise customers on the private registry were not affected and earlier versions are safe. Wiz cites roughly 49,000 downloads from ClickPy data (an independent figure). The actual amount of data taken has not been published. Wiz observed stolen AWS role credentials being used from about 4.5 hours after exfiltration (16:20–17:01 UTC; independent analysis).
 
 The chain was as follows.
 
@@ -65,15 +65,15 @@ The irreversible actions were steps 4 to 6. Protection and approval were both pa
 Response and industry reaction:
 
 - **Guidance to consumers**: pin to 1.106.2 or another pre-incident version. In affected environments, delete `cook*` and `sitecustomize*` files and stop the resident process. Rebuilding environments and images is preferred. If 1.107.0 ran on a host with outbound access, assume data left it and rotate every credential the host could reach (IAM role, provider keys in the database, master key and so on).
-- **LiteLLM's own actions**: it is revoking all internal-system and vendor tokens, removed all members from its GitHub organisation and rotated its image signing key. On 23 October it said process improvements would be shared "next week"; none had been published by 31 October.
+- **LiteLLM's own actions**: it is revoking all internal-system and vendor tokens, removed all members from its GitHub organisation and rotated its image signing key. On 23 October it said process improvements would be shared "next week"; none had been published at the time of writing.
 
 ## 4. Why it wasn't stopped
 
 The failure is not that nobody noticed, nor only that one key went unmanaged. It is that no layer let consumers independently check the origin of an artifact before pulling it.
 
-That is the **gap between detection and proof**. Detection worked: an outside researcher flagged the release about 27 minutes after publication, and PyPI quarantined it in about 1 hour 44 minutes. What failed sits before that. Branch protection rejected the change and was overridden with the owner's credentials. The production approval gate was passed with another maintainer's credentials. The run records were deleted. All a consumer sees is the official name, the standard tag and the built artifact; nothing attached to the artifact says it was built from an approved source, through an approved pipeline, and approved by an independent party.
+That is the **gap between detection and proof**. Detection worked: an outside researcher flagged the release about 27 minutes after publication, and PyPI quarantined it in about 1 hour 44 minutes. What failed sits before that. Branch protection rejected the change and was overridden with the owner's credentials. The production approval gate was passed with another maintainer's credentials. The run records were deleted. All a consumer sees is the official name, the standard tag and a signature from the genuine key. The signature shows the artifact passed through the genuine pipeline, but not which repository it was built from, nor that the approver was independent of whoever triggered it.
 
-According to LiteLLM, the attacker used separate tokens to trigger and approve the release under a recently relaxed rule that let two engineers do so, though LiteLLM also notes that an owner's token could have relaxed that rule anyway. That an approval was given and that the approver was an independent party are different facts.
+According to LiteLLM, a release normally had to be triggered by an authorised engineer and approved by a special account locked to a physical device in its office; that week the restriction had been temporarily relaxed so that any two engineers could trigger and approve. The attacker used separate tokens to trigger and approve the release under that relaxed rule, though LiteLLM also notes that an owner's token could have relaxed that rule anyway. That an approval was given and that the approver was an independent party are different facts.
 
 The same structure appears in earlier Briefs. [LiteLLM's MCP authentication fallback](/critical/briefs/145-litellm-mcp-oauth2-fallback-empty-auth/) and [its privilege-escalation chain](/critical/briefs/066-litellm-ai-gateway-privilege-escalation/) are other incidents in the same product. In the [keyv/cacheable npm takeover](/critical/briefs/125-keyv-cacheable-npm-account-takeover/) and the [RubyGems malicious packages](/critical/briefs/148-openai-agent-swarm-rubygems-rubydoc-rce/), no published account shows consumers a way to check the origin of an artifact distributed under a genuine name.
 
@@ -91,7 +91,7 @@ A single step could sit just before a consumer pulls an artifact: confirming tha
 
 </ul>
 
-> Note: the proof shows only that an artifact matches its registered provenance and approval. It passes if a registered approver's own credentials are stolen or if the provenance registry itself is compromised. Judging what the code does is outside the proof.
+> Note: the proof shows only that an artifact matches its registered provenance and approval. Here the approvers' own credentials were stolen, so unless approval is bound to something other than a device token, the approval-independence proof would pass too. It passes if a registered approver's own credentials are stolen or if the provenance registry itself is compromised. Judging what the code does is outside the proof.
 
 This differs from after-the-fact detection, quarantine and key rotation. The detection layer and this layer are complementary, not substitutes: the former notices a malicious release and has it withdrawn, the latter lets an artifact whose origin cannot be confirmed be stopped before it is pulled.
 
