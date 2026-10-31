@@ -314,15 +314,16 @@ function deriveCounter(root, isEn, roles = sectionRoles({})) {
   }
 
   for (const { node } of sectionBlocks(root, roles.counter)) {
-    // 対策の表: 2列目の状態語をチップに。
+    // 対策の表: 状態語だけのセルをチップに（1列目は対策の名前なので除く）。操作の種類ごとに
+    // 列を分けた表（proof の章立て・2026-10-31）でも、どの列の状態語もチップになる。
     if (isEl(node, "table")) {
       visitElements(node, (row) => {
         if (row.tagName !== "tr") return;
-        const cell = row.children.filter((c) => isEl(c, "td"))[1];
-        if (!cell) return;
-        const word = textOf(cell).trim();
-        const cls = STATUS.get(word.toLowerCase());
-        if (cls) cell.children = [h("span", `bx-st ${cls}`, [txt(word)])];
+        for (const cell of row.children.filter((c) => isEl(c, "td")).slice(1)) {
+          const word = textOf(cell).trim();
+          const cls = STATUS.get(word.toLowerCase());
+          if (cls) cell.children = [h("span", `bx-st ${cls}`, [txt(word)])];
+        }
       });
       continue;
     }
