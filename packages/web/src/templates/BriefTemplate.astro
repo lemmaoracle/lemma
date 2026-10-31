@@ -247,7 +247,7 @@ const tocSections = headings
 
 // 表紙の下の「自社で確かめる」カード（report・frontmatter self_check）。
 const selfCheck = isReport ? (brief.data.self_check as string | undefined) : undefined;
-const counterSlug = tocSections.find((s) => s.num === 5)?.slug;
+const counterSlug = tocSections.find((s) => s.num === (brief.data.sections === "proof" ? 4 : 5))?.slug;
 
 // 配布定型文（旧 §9）が本文に残っていない Brief には、テンプレート側で
 // 短い注記を描画する（6章化で md から定型文を落とすため。移行中の旧本文
@@ -547,7 +547,7 @@ const labels = isJa
                 </div>
                 <p class="rx-check-q">{selfCheck}</p>
                 {counterSlug && (
-                  <a class="rx-check-a" href={`#${counterSlug}`}>{isJa ? "対策を見る" : "How to counter this"}<span aria-hidden="true">→</span></a>
+                  <a class="rx-check-a" href={`#${counterSlug}`}>{brief.data.sections === "proof" ? (isJa ? "Lemma でできることを見る" : "What Lemma does") : isJa ? "対策を見る" : "How to counter this"}<span aria-hidden="true">→</span></a>
                 )}
               </aside>
             )}

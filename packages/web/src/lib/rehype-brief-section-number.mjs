@@ -241,13 +241,16 @@ function deriveFacts(root, num, skip = () => false) {
 
 /** §3: 小見出しより前の `**日付**: 本文` の ul → 時系列（rx-tl）、引用 → 注（rx-aside）。 */
 const DATE_LIKE_RE = /^\d{4}(?:[-/.]\d{1,2})?/;
-function deriveTimeline(root) {
+function deriveTimeline(root, num = 3, datesOnly = false) {
   let done = false;
-  for (const { node, h3 } of sectionBlocks(root, 3)) {
-    if (h3) break;
+  for (const { node, h3 } of sectionBlocks(root, num)) {
+    if (h3 && !datesOnly) break;
+    if (h3 && AFTER_DISCLOSURE_RE.test(h3)) break;
     if (!done && isEl(node, "ul")) {
       const parts = labelledItems(node);
       if (!parts) continue;
+      // proof の章立てでは、事実の表と同じ章にあるので、日付だけの箇条を時系列にする。
+      if (datesOnly && !parts.every((p) => DATE_LIKE_RE.test(p.labelText))) continue;
       const lis = parts.map((p) =>
         h("li", null, [
           h("time", DATE_LIKE_RE.test(p.labelText) ? null : "nd", p.label),
@@ -298,8 +301,8 @@ const STATUS = new Map([
   ["effective", "ok"],
 ]);
 
-function deriveCounter(root, isEn) {
-  const r = sectionRange(root, 5);
+function deriveCounter(root, isEn, roles = sectionRoles({})) {
+  const r = sectionRange(root, roles.counter);
   if (!r) return;
 
   // 冒頭の段落 → リード。
@@ -309,16 +312,17 @@ function deriveCounter(root, isEn) {
     p.properties = { ...(p.properties ?? {}), className: ["rx-lead"] };
   }
 
-  for (const { node } of sectionBlocks(root, 5)) {
-    // 対策の表: 2列目の状態語をチップに。
+  for (const { node } of sectionBlocks(root, roles.counter)) {
+    // 対策の表: 状態語だけのセルをチップに（1列目は対策の名前なので除く）。操作の種類ごとに
+    // 列を分けた表（proof の章立て・2026-10-31）でも、どの列の状態語もチップになる。
     if (isEl(node, "table")) {
       visitElements(node, (row) => {
         if (row.tagName !== "tr") return;
-        const cell = row.children.filter((c) => isEl(c, "td"))[1];
-        if (!cell) return;
-        const word = textOf(cell).trim();
-        const cls = STATUS.get(word.toLowerCase());
-        if (cls) cell.children = [h("span", `bx-st ${cls}`, [txt(word)])];
+        for (const cell of row.children.filter((c) => isEl(c, "td")).slice(1)) {
+          const word = textOf(cell).trim();
+          const cls = STATUS.get(word.toLowerCase());
+          if (cls) cell.children = [h("span", `bx-st ${cls}`, [txt(word)])];
+        }
       });
       continue;
     }
@@ -355,7 +359,7 @@ function deriveCounter(root, isEn) {
   }
 
   // 注：の段落 → 小さな注（§3〜§5）。
-  for (const num of [3, 4, 5]) {
+  for (const num of roles.notes) {
     for (const { node } of sectionBlocks(root, num)) {
       if (isEl(node, "p") && !node.properties?.className && NOTE_RE.test(textOf(node).trim())) {
         node.properties = { ...(node.properties ?? {}), className: ["rx-aside"] };
@@ -491,14 +495,29 @@ function tightenCjkStrong(tree) {
   });
 }
 
+/**
+ * 章の番号と役目（2026-10-31）。`sections: "proof"` の Brief は、事実の章を後ろに回し、
+ * 「通った操作 → 実行の前に確かめられること → 対策」を前に置く（README「proof の章立て」）。
+ * 01 要点／02 通った操作／03 実行の前に確かめられること／04 対策するには／05 事実と時系列／06 出典。
+ */
+export function sectionRoles(fm) {
+  return fm?.sections === "proof"
+    ? { facts: [2, 3, 5], timeline: 5, counter: 4, insight: 3, glossary: 5, notes: [2, 3, 4, 5] }
+    : { facts: [2], timeline: 3, counter: 5, insight: 4, glossary: 2, notes: [3, 4, 5] };
+}
+
+const AFTER_DISCLOSURE_RE = /^(公表後の対応|After disclosure)$/i;
+
 function deriveReportComponents(root, fm, isEn) {
+  const roles = sectionRoles(fm);
+  const proof = fm?.sections === "proof";
   tightenCjkStrong({ children: root });
   deriveExecSummary(root, fm, isEn);
-  deriveFacts(root, 2);
-  deriveTimeline(root);
-  deriveCounter(root, isEn);
-  deriveFacts(root, 5);
-  markWeeklySlot(root);
+  deriveTimeline(root, roles.timeline, proof);
+  for (const n of roles.facts) deriveFacts(root, n, proof && n === roles.timeline ? (h3) => AFTER_DISCLOSURE_RE.test(h3) : undefined);
+  deriveCounter(root, isEn, roles);
+  deriveFacts(root, roles.counter);
+  markWeeklySlot(root, roles.counter);
   deriveSources(root, isEn);
 }
 
@@ -508,11 +527,11 @@ function deriveReportComponents(root, fm, isEn) {
  * 全部読めるまま。対策の章の表を畳む案も試したが、SEO も読み手の得も変わらず、
  * 対策を探しに来た人には表も答えの一部なので、開いたままにした。
  */
-function markWeeklySlot(root) {
+function markWeeklySlot(root, counterNum = 5) {
   // TL;DR のあと（2 章の h2 の直前）の 1 行の入口。
   const s2 = sectionHeadIndex(root, 2);
   if (s2 >= 0) root.splice(s2, 0, { type: "element", tagName: "div", properties: { dataBriefWeeklyTopSlot: "" }, children: [] });
-  const r = sectionRange(root, 5);
+  const r = sectionRange(root, counterNum);
   if (!r) return;
   for (let i = r[0]; i < root.length; i++) {
     const node = root[i];
@@ -547,9 +566,10 @@ function applyReportLayout(tree, fm, isEn) {
   }
 
   // 2) 用語メモ（§2 の最初のブロックの後）。
+  const roles = sectionRoles(fm);
   const glossary = Array.isArray(fm.glossary) ? fm.glossary : [];
   if (glossary.length) {
-    const hi = sectionHeadIndex(root, 2);
+    const hi = sectionHeadIndex(root, roles.glossary);
     if (hi >= 0) {
       let j = hi + 1;
       while (j < root.length && isBlank(root[j])) j++;
@@ -566,7 +586,7 @@ function applyReportLayout(tree, fm, isEn) {
   // 3) この事案の核心（§4 の最初の段落の後）。
   const quote = fm.insight?.quote;
   if (quote) {
-    const hi = sectionHeadIndex(root, 4);
+    const hi = sectionHeadIndex(root, roles.insight);
     if (hi >= 0) {
       let j = hi + 1;
       while (
