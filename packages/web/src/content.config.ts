@@ -176,6 +176,20 @@ const briefSchema = z
      */
     layout: z.enum(["report"]).optional(),
     /**
+     * report の章立て（2026-10-31・opt-in）。`"proof"` は 01 要点／02 通った操作／
+     * 03 実行の前に確かめられること／04 対策するには／05 事実と時系列／06 出典。
+     * 事実の章を後ろに回し、受け付けた側に何が通ったかと、実行の前に何を照合すれば
+     * 区別できるかを前に置く（README「proof の章立て」）。
+     */
+    sections: z.enum(["proof"]).optional(),
+    /**
+     * 当たる Proof Gate のゲート（内部の分類・記事には出さない）。製品のページが出たら
+     * ゲートのページへの入口に使う（components/BriefNextRead.astro の注）。
+     */
+    gate: z
+      .enum(["payment-instruction", "account-change", "signing", "delivery", "disclosure", "identity", "intake", "agent-operation", "permission-change", "none"])
+      .optional(),
+    /**
      * report レイアウトの表紙に並べる主要数値（最大3つ）。`value` に `→` を
      * 含めると矢印をライムで描く（例: `05-23 → 05-28`）。`tone: "alert"` は
      * 損失額など、読者に赤で立たせたい1つだけに使う。
