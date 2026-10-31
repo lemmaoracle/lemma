@@ -232,7 +232,6 @@ function factsTable(parts) {
 }
 
 function deriveFacts(root, num, skip = () => false) {
-  skip = skip ?? (() => false);
   for (const { node, h3 } of sectionBlocks(root, num)) {
     if (!isEl(node, "ul") || skip(h3)) continue;
     const parts = labelledItems(node);

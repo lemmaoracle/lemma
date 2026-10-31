@@ -184,7 +184,7 @@ const briefSchema = z
     sections: z.enum(["proof"]).optional(),
     /**
      * 当たる Proof Gate のゲート（内部の分類・記事には出さない）。製品のページが出たら
-     * ゲートのページへの入口に使う（components/BriefNextRead.astro の注）。
+     * ゲートのページへの入口に使う（Proof Gate への差し替えの予定は components/BriefNextRead.astro の冒頭の注）。
      */
     gate: z
       .enum(["payment-instruction", "account-change", "signing", "delivery", "disclosure", "identity", "intake", "agent-operation", "permission-change", "none"])
