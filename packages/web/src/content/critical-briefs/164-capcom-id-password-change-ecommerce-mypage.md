@@ -19,7 +19,7 @@ search_description: "CAPCOM ID に不正アクセスがあり、メールアド�
 layout: "report"
 og_kicker_ja: "サイバー攻撃事例 · アカウント乗っ取り"
 og_kicker_en: "CYBERATTACK · ACCOUNT TAKEOVER"
-og_headline_ja: "共通アカウントのパスワードが\n変えられ、通販のマイページにも\n入られた。\n<accent>メールアドレスなど 1,177 万件が漏えい</accent>"
+og_headline_ja: "パスワードを変えられ、\n通販のマイページにも\n入られた。\n<accent>1,177 万件が漏えい</accent>"
 og_headline_en: "Passwords on a shared account were changed,\nand the online store was entered too.\n<accent>11.77 million email records exposed.</accent>"
 summary_labels: ["何が起きたか", "なぜ見分けられないか", "欠けていた層"]
 key_figures:
