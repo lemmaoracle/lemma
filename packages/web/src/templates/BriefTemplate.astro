@@ -547,7 +547,7 @@ const labels = isJa
                 </div>
                 <p class="rx-check-q">{selfCheck}</p>
                 {counterSlug && (
-                  <a class="rx-check-a" href={`#${counterSlug}`}>{isJa ? "対策を見る" : "How to counter this"}<span aria-hidden="true">→</span></a>
+                  <a class="rx-check-a" href={`#${counterSlug}`}>{brief.data.sections === "proof" ? (isJa ? "Lemma でできることを見る" : "What Lemma does") : isJa ? "対策を見る" : "How to counter this"}<span aria-hidden="true">→</span></a>
                 )}
               </aside>
             )}
