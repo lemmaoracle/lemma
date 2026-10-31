@@ -19,7 +19,6 @@ og_kicker_ja: "サイバー攻撃事例 · 決済ページの改ざん"
 og_kicker_en: "CYBERATTACK · PAYMENT PAGE TAMPERING"
 og_headline_ja: "決済ページに\n不正なプログラム。\n判明は閉鎖の5日後。\n<accent>2,800 人のカード全桁</accent>"
 og_headline_en: "Payment page tampered;\nfound 5 days after shutdown.\n<accent>Full card data of 2,800 people.</accent>"
-summary_labels: ["What happened", "Why it wasn't stopped", "What was missing"]
 key_figures:
   - value: "2,800"
     label: "People whose cardholder name, full 16-digit number, expiry date and security code may have been exposed"
@@ -50,11 +49,7 @@ countries: ["jp"]
 
 ## 1. TL;DR
 
-For about 41 hours from 21 to 23 October 2026, an unauthorised program sat on the credit-card payment page of Good Smile Company's official online shop, and 2,800 people's full card numbers and security codes may have been exposed (fourth notice). The company does not store full card numbers and believes the data was intercepted as customers typed it into the payment page.
-
-The intrusion came to light through the site's contractor, and the site was closed an hour later. The program on the payment page was found five days after the closure.
-
-No layer is visible in the disclosures that checks, before card details are entered, that the code running on the payment page is still the approved version.
+An unauthorised program sat on the payment page of Good Smile Company's official online shop for about 41 hours, and 2,800 people's full card numbers and security codes may have been exposed. The company closed the site an hour after learning of the intrusion, but the program was found five days later. <strong>No layer is visible in the disclosures that checks, before card entry, that the code on the payment page is still the approved version.</strong>
 
 ## 2. What happened
 
@@ -71,10 +66,9 @@ No layer is visible in the disclosures that checks, before card details are ente
 - **2026-10-19**: Around 15:00, unauthorised access begins (until just before 23:00 on the 22nd).
 - **2026-10-21**: At 13:55, the program is placed on the payment page.
 - **2026-10-23**: Shortly after 06:00, the contractor's report reveals the access; the site is closed at 07:00. First notice (only the last four digits and expiry).
-- **2026-10-26**: Second notice: card data for external payments and the Rakuten store are outside the scope.
+- **2026-10-26**: Second notice (addendum to the first).
 - **2026-10-28**: Shortly after 18:30, the program on the payment page is found.
-- **2026-10-29**: Third notice discloses possible exposure of full card data and security codes; Q&As for each group published.
-- **2026-10-30**: Fourth notice corrects the order-information scope.
+- **2026-10-29**: Third notice discloses possible exposure of full card data and security codes (order-information scope corrected in the fourth notice on the 30th).
 
 > Facts rest on the company's official notices (first to fourth) and Q&As; "may have been exposed" is its wording. As of 31 October, no fifth notice has been published.
 
