@@ -124,9 +124,8 @@ What detection caught was the unauthorised access, not the change to the payment
 
 ### Checklist
 
-Four points for your organisation to check about payment-page tampering on your online store
+Three points for your organisation to check about payment-page tampering on your online store
 
-- Does your organisation know the full list of scripts loaded on its payment page?
 - Are changes to the payment page kept from going live on site-admin rights alone?
 - If the payment page changes from the approved version, are you alerted the same day?
 - Can your records tell customers who tried to pay from those who only added items to the cart?
