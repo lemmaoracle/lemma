@@ -172,6 +172,8 @@ body:has(main.topx) .lemma-brand-bar{display:none}
   .topx{word-break:normal}
   .topx .nb{display:inline}
   .topx .isec-h b .nb,.topx .isec-h h2 .nb,.topx .herodark h1 .nb{display:inline;word-break:normal}
+  /* 本文幅に収まる短いかたまり（13字まで）は、かたまりのまま折り返す（「証明す／る。」を防ぐ・2026-11-01） */
+  .topx .isec-h h2 .nbk{display:inline-block}
   /* ヒーロー右カラム: パネル頭の GET /v1/counters は狭幅では独立行に
      (旧 .rep はレジストリのパネル化で .phead .ep に置き換わった) */
   .topx .phead .ep{flex-basis:100%;margin-left:0}
