@@ -417,11 +417,11 @@ const labels = isJa
       ctaHead1: "確かめられないものを、",
       ctaHead2: "業務に入れない。",
       ctaBody:
-        "Lemma は、データや AI の実行に暗号技術で証明を付け、受け取った側が発行者に問い合わせることなく真正性を確認できるようにします。検出はそのままに、その前段へ一層を足す構成です。",
+        "Lemma は、本物に見えるログインや支払い、記録、配信を、実行する前に照合する「実行前照合」の基盤です。暗号技術の証明で、受け取った側が発行者に問い合わせずに確かめられます。検知はそのままに、その手前に置きます。",
       bannerLabel: "AI×信頼の最前線",
       bannerBtn: "知見を受け取る",
-      brandLine1: "AI時代に、",
-      brandLine2: "何が本物かを証明する。",
+      brandLine1: "本物に見えても、",
+      brandLine2: "通す前に照合する。",
       brandSub: "発行は一度。検証は、無料で何度でも。",
       brandMore: "Lemma とは →",
       ctaMain: "エンタープライズ相談",
@@ -451,11 +451,11 @@ const labels = isJa
       ctaHead1: "If it can't be verified,",
       ctaHead2: "it doesn't enter your operation.",
       ctaBody:
-        "Lemma attaches cryptographic proofs to data and AI execution, so the receiving side can confirm authenticity without asking the issuer. Detection stays; a proof layer is added in front of it.",
+        "Lemma is a pre-execution check: logins, payments, records and publishing that look genuine are checked before they run, with cryptographic proofs the receiving side verifies without asking the issuer. Detection stays; the check sits in front of it.",
       bannerLabel: "The frontier of AI × trust",
       bannerBtn: "Get the insights",
-      brandLine1: "Prove what's real",
-      brandLine2: "in the age of AI.",
+      brandLine1: "Looks genuine?",
+      brandLine2: "Check before it runs.",
       brandSub: "Issue once. Verify free, any number of times.",
       brandMore: "About Lemma →",
       ctaMain: "Talk to enterprise",
@@ -652,7 +652,7 @@ const labels = isJa
         {/* 旧い形の記事にも同じ入口（2026-10-25・目印は rehype が置く）。 */}
         {/* proof の記事は、表のあとの導入相談・デモの帯を主の 1 本にし、チェックリストのあとの帯は出さない（2026-11-01）。 */}
         {brief.data.sections !== "proof" && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="checklist" operations={brief.data.operations} />}
-        <BriefWeeklyCta locale={locale} briefId={brief.id} variant="top" victimDesk={brief.data.victim_desk} operations={brief.data.operations} />
+        <BriefWeeklyCta locale={locale} briefId={brief.id} variant="top" proof={brief.data.sections === "proof"} operations={brief.data.operations} />
         {brief.data.sections === "proof" && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="demo" />}
 
         {/* 配布についての注記（旧 §9 の定型文）。6章化した md には定型文が

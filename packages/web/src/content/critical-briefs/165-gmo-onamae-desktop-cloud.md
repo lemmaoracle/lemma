@@ -19,10 +19,6 @@ search_description: "お名前.com デスクトップクラウドの一部の顧
 layout: "report"
 sections: "proof"
 gate: "agent-operation"
-victim_desk:
-  ja: "お名前.com デスクトップクラウドの利用者の方へ：被害や補償、ご自身が対象かのご相談は、GMO インターネットの窓口へ（お問い合わせフォーム、電話 03-5456-2560・24 時間）。当サイトは GMO インターネットとは関係がありません。"
-  en: "Onamae.com Desktop Cloud users: for losses, compensation or whether you are affected, contact GMO Internet's support desk. This site is not affiliated with GMO Internet."
-  url: "https://help.onamae.com/contact/"
 og_kicker_ja: "サイバー攻撃事例 · 不正アクセス"
 og_kicker_en: "CYBERATTACK · UNAUTHORISED ACCESS"
 og_headline_ja: "借りたデスクトップに\n不正プログラム。\n身に覚えのない取引の報告\n<accent>26,739 件に影響の可能性</accent>"
@@ -112,7 +108,7 @@ countries: ["jp"]
 | 損失の補償 | 関係しない | 関係しない | 関係しない |
 | **Lemma（実行の前の照合）** | 効く | 効く | 効かない |
 
-ログイン情報を盗まれたときを比べた。パスワードは盗まれた時点で通り、二段階認証はログインの時だけを、遮断と監視はいつもと違う動きを見る。Lemma だけが、ログインではなく操作そのものを照合する。
+ログイン情報を盗まれたときを比べた。パスワードは盗まれた時点で通り、二段階認証はログインの時だけを、遮断と監視はいつもと違う動きを見る。Lemma は、ログインではなく操作そのものを照合する。
 
 注：Lemma の照合が働くのは、証券・FX 会社が注文や出金の実行の前に照合を組み込み、本人の鍵が取引ツールの環境の外にある場合に限る。自動売買の範囲の内の注文は通り、承認する端末ごと乗っ取られた場合も通る。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入や情報の持ち出しを検出・防止するものではない。
 

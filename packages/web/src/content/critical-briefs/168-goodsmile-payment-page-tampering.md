@@ -19,10 +19,6 @@ search_description: "グッドスマイルカンパニー公式ショップの�
 layout: "report"
 sections: "proof"
 gate: "intake"
-victim_desk:
-  ja: "グッドスマイルカンパニー公式ショップの利用者の方へ：カード情報の漏えいや、ご自身が対象かのご相談は、同社のカスタマーサポートへ。身に覚えのない請求は、カードの発行会社へ。当サイトはグッドスマイルカンパニーとは関係がありません。"
-  en: "Good Smile Company shop customers: for card exposure or whether you are affected, contact the company's customer support; report unfamiliar charges to your card issuer. This site is not affiliated with Good Smile Company."
-  url: "https://support.goodsmile.com/hc/ja/requests/new?ticket_form_id=48452039907097"
 og_kicker_ja: "サイバー攻撃事例 · 決済ページの改ざん"
 og_kicker_en: "CYBERATTACK · PAYMENT PAGE TAMPERING"
 og_headline_ja: "決済ページに\n不正なプログラム。\n判明は閉鎖の5日後。\n<accent>2,800 人のカード全桁</accent>"
@@ -110,7 +106,7 @@ countries: ["jp"]
 | 決済画面を外部の決済代行に任せる | 一部 | 一部 | 関係しない |
 | **Lemma（実行の前の照合）** | 効く | 効く | 効かない |
 
-カードの全桁を保存しないことは保存した情報を守り、検知と閉鎖は気づいた後に効く。Lemma だけが、ページで動くコードそのものを、入力の前に照合する。カード業界の基準 PCI DSS v4.0.1 の要件 6.4.3 と 11.6.1 も、2025 年 3 月から決済ページのスクリプトの承認と改ざんの検知を求めている。
+カードの全桁を保存しないことは保存した情報を守り、検知と閉鎖は気づいた後に効く。Lemma は、ページで動くコードそのものを、入力の前に照合する。カード業界の基準 PCI DSS v4.0.1 の要件 6.4.3 と 11.6.1 も、2025 年 3 月から決済ページのスクリプトの承認と改ざんの検知を求めている。
 
 注：Lemma の照合が働くのは、決済ページを配る仕組みに照合を組み込み、承認の鍵がサイトの管理者権限とは別にある場合に限る。承認の権限ごと奪われた場合や、照合の仕組みごと書き換えられた場合は通る。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入を検出・防止するものではない。
 

@@ -4,8 +4,8 @@ import BriefMethodologyTemplate, {
 } from "../../../templates/BriefMethodologyTemplate.astro";
 import { DISCOVERY_CALL_URL } from "../../../config/cta";
 
-const discoveryCall = DISCOVERY_CALL_URL.en;
-const whitepaperUrl = "https://tally.so/r/xX0VYv";
+// 連絡先はナビの「お問い合わせ」と同じ（2026-11-01）。フォームは CLUBS に移す予定。
+const contactUrl = DISCOVERY_CALL_URL.en;
 
 // Inline-style fragment for citation code samples. v24 cream page so the
 // code block uses cream-deep bg rather than gray-50.
@@ -18,53 +18,54 @@ const codeBlockStyle =
 const sections: MethodologySection[] = [
   {
     heading: "What Lemma Critical Brief is",
-    body: `<p>Lemma Critical Brief is a <strong>structured incident-analysis reference collection</strong> published by Lemma. It archives individual incidents in the AI, cryptographic infrastructure, supply chain, and regulatory-attribute domains in a one-incident-per-Brief format, structurally analyzing each event's <strong>failure primitive</strong> and <strong>the gap that strengthening detection alone cannot close</strong>. Briefs are written for CSOs, analysts, and regulatory practitioners to reference as citation sources.</p>
-<p>The structure this series examines — assertions of trust decoupled from the layer that verifies them — extends beyond cyber-attack damage cases to the broader category of trust-layer risk events in the age of AI.</p>
-<p>Concretely, this includes (a) attack incidents (e.g., provenance manipulation, credential misuse, framework authentication bypass), and (b) trust-layer risk events in the age of AI (e.g., training data provenance, AI input integrity, credential lifecycle attributes, independent verification of agent authority). The surface taxonomy differs, but the common structural failure — absence of an independent verification layer — runs through both.</p>`,
+    body: `<p>Lemma Critical Brief analyses real cyber attacks and AI and record failures, one incident at a time, from primary sources. Each Brief sets out what got through as a legitimate operation, and what could be checked before execution to tell it apart — in a form any organisation can apply regardless of the attack route. It is written for executives, IT and operations staff who need to check and explain their own position.</p>
+<p>It covers attack incidents (impersonation, account takeover, tampering, abuse of authority) and AI-era trust failures (inputs to AI decisions, integrity of records, agent authority). Both happen where nothing checks, apart from appearance, whether what arrived or what was recorded is genuine.</p>`,
   },
   {
-    heading: "Detection ≠ Proof thesis",
-    body: `<p>Lemma's core thesis is the recognition that <strong>detection is not proof (Detection ≠ Proof)</strong>.</p>
-<p>Confidence scores returned by detection tools — for example, "99.7% probability of anomaly" — do not constitute evidence in regulatory reporting, administrative procedures, or litigation that "an unauthorized exercise of authority occurred." Detection is a layer that narrows the blast window once damage is already in flight; it does not change what a bridge / system / agent will accept in the first place.</p>
-<p>Pre-execution attestation closes this detection–proof gap. By cryptographically committing "what / to whom / up to where authority was granted" before a transaction, the defense line shifts from reliance on detection to reliance on verification. Detection and pre-execution attestation are not competing approaches but complementary ones: detection narrows the blast window after an event; pre-execution attestation independently verifies the trust boundary before the event.</p>
-<p>Each Brief applies this thesis to the context of its target incident in §4 "Why it wasn't stopped" and §5 "What proof would have changed."</p>`,
+    heading: "Detection and the pre-execution check",
+    body: `<p>Most organisations defend with <strong>detection</strong>: noticing intrusions and anomalies after they happen. Detection is essential. But operations that look genuine — a valid login, a valid signature, a page served by the real site — can go through before anyone notices.</p>
+<p>Lemma's approach sits in front of that: a <strong>pre-execution check</strong>. Before a payment, withdrawal or publication runs, it checks that it came from an issuer with authority, stays within the delegated scope, and has not been altered. It complements detection rather than replacing it.</p>
+<p>Briefs never treat what was not disclosed as what was missing. Instead of saying what a company lacked, they set out what any organisation in the same position can check, whatever the route. They never say "Lemma would have prevented this".</p>`,
   },
   {
     heading: "Brief structure",
-    body: `<p>Each Brief consists of the following 6 chapters:</p>
+    body: `<p>From November 2026, Briefs use six chapters:</p>
 <ul>
-<li><strong>§1 TL;DR</strong> — the incident and the layer that did not work, in a few sentences, closing by naming the layer that was missing and stopping there</li>
-<li><strong>§2 What happened</strong> — facts only: scale, parties, and method of investigation, followed by the chain by which the failure holds</li>
-<li><strong>§3 Timeline — disclosure and response</strong> — discovery, disclosure, and remediation in sequence, with a note on the limits of the primary sources or on research-environment caveats, then the response and industry movement that followed</li>
-<li><strong>§4 Why it wasn't stopped</strong> — the structural argument: detection worked, proof did not exist. The <strong>detection–proof gap</strong> is carried in the prose</li>
-<li><strong>§5 What proof would have changed</strong> — where proof up front inserts one step into the path, then the Lemma design bullets that fit the case, closing on complementarity with detection</li>
-<li><strong>§6 Sources</strong> — primary sources first, each line labelled with its standing (primary / independent reporting, etc.)</li>
+<li><strong>01 Summary</strong> — what happened and what holds regardless of the route, in one paragraph</li>
+<li><strong>02 What got through</strong> — the operation that went through as legitimate, what reached the receiving side, and what was not disclosed</li>
+<li><strong>03 What to check</strong> — who issues the approval, where it is checked, and what record remains, with an exhibit on detection vs the pre-execution check</li>
+<li><strong>04 What Lemma does</strong> — current controls compared with Lemma in a table split by operation type, including where Lemma does not help, plus a checklist</li>
+<li><strong>05 Facts and timeline</strong> — disclosed facts, timeline and the response after disclosure</li>
+<li><strong>06 Sources</strong> — primary sources first, each labelled with its standing (primary, reporting, etc.)</li>
 </ul>
-<p>Until July 2026 the series used a TL;DR plus §1–§9 structure. Every Brief, including the back catalogue, now uses the six numbered chapter headings above. The conventions within each chapter have been applied progressively to Briefs written from 2026-07-30 onward; for part of the back catalogue the migration reached the headings only. The distribution note is no longer a chapter of the body; it is rendered as a single line at the foot of each Brief.</p>
-<p>Cross-links to neighbouring Briefs in the same or adjacent categories are auto-generated from the frontmatter <code>related_briefs</code> field as navigation cards rendered below the body, alongside discovery via the Category and Pillar archives.</p>
-<p>The voice is sober. Industry terminology is used without annotation. Detection tools and existing vendors (Blockaid, PeckShield, Mandiant, etc.) are not framed as adversaries but as complementary roles.</p>`,
+<p>Earlier Briefs keep the previous order, which starts from the incident (TL;DR / What happened / Timeline / Why it wasn't stopped / How to counter this / Sources).</p>
+<p>The voice is plain. Detection products and existing vendors are not framed as adversaries but as complementary roles. Links to related Briefs are generated from each Brief's classification.</p>`,
   },
   {
-    heading: "Pillar / Category framework",
-    body: `<p>Briefs are classified according to Lemma's <strong>4 Pillars</strong>:</p>
+    heading: "Classification and browsing",
+    body: `<p>Each Brief carries reader-facing classifications. The index can be filtered by:</p>
 <ul>
-<li><strong>Pillar 01 — Verifiable Origin</strong>: the layer that independently verifies the origin of messages, data, and code</li>
-<li><strong>Pillar 02 — Verifiable AI</strong>: the layer that ZK-commits the process of AI judgment</li>
-<li><strong>Pillar 03 — Agent Authority Proof</strong>: the layer that records and proves the delegation relationships of agents</li>
-<li><strong>Pillar 04 — Regulatory Attribute Proof</strong>: the layer that proves KYC / AML / regulatory attributes via selective disclosure</li>
+<li><strong>Industry</strong>: finance, services and retail, public sector, developers, and more</li>
+<li><strong>Operation</strong>: payment or account changes, account and permission management, publishing, approval, data access, and more</li>
+<li><strong>Attack method</strong>: account takeover, impersonation, abuse of authority, supply chain, and more</li>
+<li><strong>Control</strong>: confirm changes through another person and channel, hold until confirmed, record who confirmed what, and more</li>
+<li><strong>Country or region</strong>: where the incident happened (the affected organisation or the disclosing authority)</li>
 </ul>
-<p>Each Brief carries a <code>primary_category</code> (main category) and <code>secondary_categories</code> (cross-cutting categories), making it accessible from both the Pillar archive and the Category archive.</p>
-<p>Category names are defined independently by Lemma. Crossover with external classifications (AIID, OECD AIID, etc.) is expressed through <code>secondary_categories</code>.</p>`,
+<p>Each Brief is also mapped internally to which of Lemma's five proofs it concerns (provenance, authentication, authority, inference, attributes).</p>`,
   },
   {
-    heading: "Citation conventions",
-    body: `<p>Each Brief has a Permanent URL (the slug never changes). The number of a withdrawn Brief may be reused by the next Brief published, so cite the URL, not the number alone.</p>
-<p>Citation is recommended in the following formats. <strong>Plain text</strong> uses Brief 001 as a concrete example; <strong>BibTeX</strong> and <strong>APA</strong> are shown in template form.</p>
+    heading: "Sourcing",
+    body: `<p>Facts rest on primary sources first: the affected party's official statements and authorities' disclosures. When press reports or third-party analyses are used, each source is labelled with its standing (primary, reporting, analysis, etc.), and assessments are attributed to whoever made them.</p>
+<p>The affected party's own wording (such as "may have been exposed") is kept, and what was not disclosed is described only as not disclosed. Nothing rests on social-media posts alone.</p>`,
+  },
+  {
+    heading: "How to cite",
+    body: `<p>Each Brief keeps a permanent URL. A withdrawn Brief's number may be reused later, so please cite with the URL, not the number alone. Each Brief has a "Cite this Brief" box with the three formats below.</p>
 <p><strong>Plain text</strong></p>
 <pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
-"KelpDAO / rsETH Unauthorized Unlock — RPC Manipulation Attack on the DVN Observation Layer".
-Lemma Critical Brief No.001. Lemma / FRAME00, Inc.
-https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
+"City of Liberty, Texas: A lookalike vendor domain sent a request for the exact amount owed, and the city paid it (city statement)".
+Lemma Critical Brief No.163. Lemma / FRAME00, Inc.
+https://lemma.frame00.com/critical/briefs/163-liberty-lookalike-domain-vendor-payment/</code></pre>
 <p><strong>BibTeX</strong></p>
 <pre style="${codeBlockStyle}"><code>@techreport{lemma_critical_&lt;NN&gt;,
   author      = {{Lemma Critical Team}},
@@ -76,45 +77,37 @@ https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
 }</code></pre>
 <p><strong>APA</strong></p>
 <pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
-&lt;Title&gt; (Lemma Critical Brief No.&lt;Number&gt;). Lemma / FRAME00, Inc.
-&lt;Brief URL&gt;</code></pre>
-<p>Each Brief page provides a "Cite this Brief" box with the three formats selectable via tabs.</p>`,
+&lt;Title&gt; (Lemma Critical Brief No.&lt;NN&gt;). Lemma / FRAME00, Inc.
+&lt;Brief URL&gt;</code></pre>`,
   },
   {
-    heading: "Updates and corrections policy",
-    body: `<p>After publication, each Brief is maintained according to the following policy:</p>
-<ul>
-<li><strong>Typos / minor corrections</strong> (misspellings, broken links, notation inconsistencies): overwritten in place, no version change</li>
-<li><strong>Content revisions</strong> (factual additions, interpretive changes, incorporation of new facts): retained via version numbering. The frontmatter <code>version</code> increments from 1.0 → 1.1 (minor) or 2.0 (major). The template renders a "Revision History" (current version) at the foot of the Brief. Where a summary of the changes is needed, a revision blockquote sits at the top of the body</li>
-<li><strong>Retraction</strong> (when misinformation or misclassification is identified): a retraction notice is left at the original URL and the content is withdrawn. Per the Permanent URL policy, the URL itself is not deleted</li>
+    heading: "Revisions and corrections",
+    body: `<ul>
+<li><strong>Small fixes</strong> (typos, broken links): corrected in place; the version number stays.</li>
+<li><strong>Follow-ups and new facts</strong>: the version number goes up (1.0 → 1.1; 2.0 for a major revision) and a revision history appears under the Brief.</li>
+<li><strong>Withdrawal</strong>: if a Brief turns out to be wrong, the URL stays with a withdrawal notice.</li>
 </ul>`,
   },
   {
-    heading: "Distribution and contact",
-    body: `<p>Lemma Critical Brief is a structured analysis of public information. The series is:</p>
+    heading: "Use and contact",
+    body: `<p>Lemma Critical Brief is incident analysis based on public information. It is not an audit, assessment or recommendation for any specific organisation. If you use it for your own decisions, please talk to us.</p>
+<p>For tips, corrections, adoption or press enquiries, and commercial use or translation, please use the contact form.</p>
 <ul>
-<li><strong>Public analysis, not an audit, assessment, or recommendation for any specific organization</strong></li>
-<li>For use in decision-making, direct consultation with your organization's Lemma Critical contact is recommended</li>
-<li>For commercial use or translation inquiries, please contact the Lemma editorial team</li>
-</ul>
-<p>Contact:</p>
-<ul>
-<li><strong>Discovery Call</strong>: <a href="${discoveryCall}" target="_blank" rel="noopener">${discoveryCall.replace("https://", "")}</a> — for tips, corrections, or commercial-use inquiries</li>
-<li><strong>Whitepaper request</strong>: <a href="${whitepaperUrl}" target="_blank" rel="noopener">${whitepaperUrl.replace("https://", "")}</a></li>
+<li><strong>Contact</strong>: <a href="${contactUrl}" target="_blank" rel="noopener">Open the contact form →</a></li>
 </ul>`,
   },
 ];
 
 const description =
-  "Methodology, thesis, and citation conventions of the Lemma Critical Brief series. The production and publication of each Brief, as well as citations by readers, follow the principles on this page.";
+  "How Lemma Critical Brief is written: incident analysis from primary sources on what got through as a legitimate operation and what to check before it runs — structure, classification, sourcing, citation and revisions.";
 ---
 
 <BriefMethodologyTemplate
   locale="en"
   tag="Lemma Critical Brief"
   title="Methodology"
-  lastUpdated="Last updated: 2026-08-28"
-  intro="This page documents the methodology, thesis, and citation conventions for the Lemma Critical Brief series. The production and publication of each Brief, as well as citations by readers, follow the principles below."
+  lastUpdated="Last updated: 2026-11-01"
+  intro="How Lemma Critical Brief is written and published. The production and publication of each Brief, and citations by readers, follow the principles on this page."
   sections={sections}
   description={description}
 />

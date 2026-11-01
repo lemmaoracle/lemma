@@ -17,10 +17,6 @@ og_lead_en: "Good Smile Company: a payment-page program may have exposed full ca
 layout: "report"
 sections: "proof"
 gate: "intake"
-victim_desk:
-  ja: "グッドスマイルカンパニー公式ショップの利用者の方へ：カード情報の漏えいや、ご自身が対象かのご相談は、同社のカスタマーサポートへ。身に覚えのない請求は、カードの発行会社へ。当サイトはグッドスマイルカンパニーとは関係がありません。"
-  en: "Good Smile Company shop customers: for card exposure or whether you are affected, contact the company's customer support; report unfamiliar charges to your card issuer. This site is not affiliated with Good Smile Company."
-  url: "https://support.goodsmile.com/hc/ja/requests/new?ticket_form_id=48452039907097"
 og_kicker_ja: "サイバー攻撃事例 · 決済ページの改ざん"
 og_kicker_en: "CYBERATTACK · PAYMENT PAGE TAMPERING"
 og_headline_ja: "決済ページに\n不正なプログラム。\n判明は閉鎖の5日後。\n<accent>2,800 人のカード全桁</accent>"
@@ -107,7 +103,7 @@ Closing the site also stopped the program, but what was noticed was the unauthor
 | Leaving the payment screen to an external processor | Partial | Partial | Not relevant |
 | **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-Not storing full card numbers protects stored data, and detection and closure work after the fact. Only Lemma checks the code running on the page itself, before card details are entered. PCI DSS v4.0.1 Requirements 6.4.3 and 11.6.1 have also required authorisation of payment-page scripts and tamper detection since March 2025.
+Not storing full card numbers protects stored data, and detection and closure work after the fact. Lemma checks the code running on the page itself, before card details are entered. PCI DSS v4.0.1 Requirements 6.4.3 and 11.6.1 have also required authorisation of payment-page scripts and tamper detection since March 2025.
 
 Note: Lemma's check works only when it is built into the system that serves the payment page and the approval key is held separately from site administrator rights. It passes if the approval rights themselves are taken or the checking system itself is rewritten. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
