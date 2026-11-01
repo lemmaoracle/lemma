@@ -101,6 +101,7 @@ export interface BriefFrontmatter {
   readonly layout?: "report";
   readonly sections?: "proof";
   readonly gate?: string;
+  readonly victim_desk?: { readonly ja: string; readonly en: string; readonly url: string };
   /** 「探し方」の索引（config/briefFacets.ts）。一覧と記事の「似た事例を一覧で読む」が使う。 */
   readonly industries?: ReadonlyArray<string>;
   readonly operations?: ReadonlyArray<string>;

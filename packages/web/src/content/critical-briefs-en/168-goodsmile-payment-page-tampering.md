@@ -15,6 +15,12 @@ version: "1.0"
 og_lead_ja: "グッスマ公式ショップ：決済ページの不正プログラムで、カード全桁が漏えいの可能性"
 og_lead_en: "Good Smile Company: a payment-page program may have exposed full card data"
 layout: "report"
+sections: "proof"
+gate: "intake"
+victim_desk:
+  ja: "グッドスマイルカンパニー公式ショップの利用者の方へ：カード情報の漏えいや、ご自身が対象かのご相談は、同社のカスタマーサポートへ。身に覚えのない請求は、カードの発行会社へ。当サイトはグッドスマイルカンパニーとは関係がありません。"
+  en: "Good Smile Company shop customers: for card exposure or whether you are affected, contact the company's customer support; report unfamiliar charges to your card issuer. This site is not affiliated with Good Smile Company."
+  url: "https://support.goodsmile.com/hc/ja/requests/new?ticket_form_id=48452039907097"
 og_kicker_ja: "サイバー攻撃事例 · 決済ページの改ざん"
 og_kicker_en: "CYBERATTACK · PAYMENT PAGE TAMPERING"
 og_headline_ja: "決済ページに\n不正なプログラム。\n判明は閉鎖の5日後。\n<accent>2,800 人のカード全桁</accent>"
@@ -32,7 +38,7 @@ key_figures:
 insight:
   slug: "payment-page-code-not-verified"
   label: "Payment page not checked for tampering before entry"
-  quote: "Not storing full card numbers does not help once the payment page is rewritten: the number is read the moment it is typed."
+  quote: "What needs protecting is not the stored card number but the code of the page that receives the input."
 industries: ["retail"]
 controls:
   - slug: "ownership-check"
@@ -48,47 +54,31 @@ self_check: "Does your organisation have a list of the scripts its payment page 
 countries: ["jp"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-The company did not store card numbers, but a program placed on its payment page may have read them the moment they were typed. It closed the site an hour after learning of the intrusion, but did not find this program until five days later. <strong>No check is visible in the disclosures that the payment page had not been tampered with before card details were entered.</strong>
+The company did not store card numbers, but a program placed on its payment page may have read them the moment they were typed. It closed the site an hour after learning of the intrusion, but did not find this program until five days later. <strong>If a payment page is rewritten, card numbers can be read the moment they are typed, even when they are not stored.</strong>
 
-## 2. What happened
+## 2. What got through
 
-- **Site**: Good Smile Company's official online shop. Its Rakuten store is outside the scope. Card data for external payments such as Amazon Pay and PayPal is also outside it, but order information is in scope whatever the payment method.
-- **Cause**: The company believes a vulnerability in part of its system was exploited and administrator privileges were taken. It says this was not the recently reported PHP vulnerability.
-- **Why data that was not stored still leaked**: Card-industry rules say security codes must not be stored after payment, and the company did not store them or full card numbers. It believes the planted program read them the moment they were typed into the payment page. Attacks of this type are commonly called e-skimming.
-- **Full card data possibly exposed**: 2,800 people — 384 who ordered by card, 185 who changed the card for a pre-order, those who tried to pay but did not complete, and those who only added items to the cart. With no record of operations, the last two cannot be told apart, so cart-only customers, who likely had no card data exposed, were contacted too.
-- **Partial card data**: The last four digits and expiry of 402,466 cards (excluding duplicates) registered by customers.
-- **Order information**: Up to 202 viewed orders out of 7,774 orders from 5,356 people.
-- **Not disclosed**: The type of vulnerability, whether the program ran in the browser or was a server-side change, where intercepted data was sent, and any fraudulent card use.
+- **What got through**: A rogue program running on the payment page. It sat there from 13:55 on 21 October to 07:00 on 23 October, and the company believes information entered on the payment page during that time was intercepted.
+- **What reached the receiving side**: Customers' browsers received the usual payment screen from the genuine site. In general, neither the appearance nor the connection to the site shows that the code inside the page has been changed.
+- **Not disclosed**: The type of vulnerability used to get in, whether the program ran in the browser or was a server-side change, where intercepted data was sent, and any fraudulent card use.
 
-## 3. Timeline — disclosure and response
+## 3. What to check
 
-- **2026-10-19**: Around 15:00, unauthorised access begins (until just before 23:00 on the 22nd).
-- **2026-10-21**: At 13:55, the program is placed on the payment page.
-- **2026-10-23**: Shortly after 06:00, the contractor's report reveals the access; the site is closed at 07:00. First notice (only the last four digits and expiry).
-- **2026-10-26**: Second notice (addendum to the first).
-- **2026-10-28**: Shortly after 18:30, the program on the payment page is found.
-- **2026-10-29**: Third notice discloses possible exposure of full card data and security codes (order-information scope corrected in the fourth notice on the 30th).
+Whatever the route, the condition for telling them apart is that whoever serves the payment page matches the code running on it against the approved version before card details are entered.
 
-> Facts rest on the company's official notices (first to fourth) and Q&As; "may have been exposed" is its wording. As of 31 October, no fifth notice has been published.
-
-### After disclosure
-
-- **Fix**: Patched the suspected vulnerability and revoked and renewed all connection credentials between the system's components. No reopening date.
-- **Notices and reporting**: Emailed affected customers individually and reported to the Personal Information Protection Commission. Says it is asking card companies not to charge customers reissue fees.
-
-## 4. Why it wasn't stopped
-
-Customers typed into the usual payment screen, delivered by the genuine site. Neither its appearance nor the connection to the site shows that the code inside the page has been changed.
+- **Who approves**: The owner of the payment page (the online store). At release, it approves the scripts the payment page loads, and hashes of their content, with a key separate from site administrator rights.
+- **Where it is checked**: The server that serves the payment page, and the customer's browser (CSP and Subresource Integrity). Code that does not match the approved version is not loaded.
+- **What is recorded**: Which version of the payment page each payment action (starting entry, completing, changing the card) ran on. The customers affected can be narrowed down afterwards.
 
 <figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The gap between detection and proof</span></div>
-<p class="rx-ex-cap">Proof here means matching, each time the payment page opens, that the code running matches the approved version, and keeping a record. Detection means noticing unauthorised access after it happens.</p>
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means matching, each time the payment page opens, whether the code running matches the approved version, and keeping a record. Detection means noticing unauthorised access after it happens.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Proof layer · not visible here</b>Check the payment page has not been tampered with before entry</div>
-<div class="rx-zone gapz"><b>Gap</b><span>Customers typed into the usual<br>screen from the genuine site</span></div>
-<div class="rx-zone det"><b>Detection layer · noticed</b>Learn of the access from the contractor and close the site</div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Match the payment page's code to the approved version before entry</div>
+<div class="rx-zone gapz"><b>In between</b><span>Customers typed into the usual<br>screen from the genuine site</span></div>
+<div class="rx-zone det"><b>Detection · worked</b>Learn of the access from the contractor and close the site</div>
 <div class="rx-g g1"><div class="t">10-21</div><b>Program placed on the payment page</b></div>
 <div class="rx-g g2"><div class="t">10-21 to 10-23</div><b>About 41 hours of possible interception</b></div>
 <div class="rx-g g3"><div class="t">10-23</div><b>Site closed</b></div>
@@ -96,31 +86,30 @@ Customers typed into the usual payment screen, delivered by the genuine site. Ne
 </div>
 </figure>
 
-What detection caught was the unauthorised access, not the change to the payment page. That separation is the **gap between detection and proof**. The same structure appears in [Polymarket](/critical/briefs/087-polymarket-frontend-supply-chain/) (JavaScript injected into the interface through a third party) and in [Stripe's repurposed API](/critical/briefs/030-stripe-trusted-channel-skimmer/) (a trusted API used to deliver card-skimming code).
+Closing the site also stopped the program, but what was noticed was the unauthorised access, not the change to the payment page. Code that reaches the screen being rewritten is an issue shared with [Polymarket](/critical/briefs/087-polymarket-frontend-supply-chain/) (JavaScript injected into the interface through a third party) and [Stripe's repurposed API](/critical/briefs/030-stripe-trusted-channel-skimmer/) (a trusted API used to deliver card-skimming code).
 
-## 5. How to counter this
+## 4. What Lemma does
 
-**To prevent payment-page tampering (e-skimming), load the code on a payment page only after matching it to the version you approved.** Start by asking your contractor or web agency for a list of the scripts your payment page loads.
+**Lemma builds the check in section 03 into the system that serves the payment page.** It does not look for intrusions; it confirms that the page code being served now is the approved version.
 
 ### Industries and operations to watch
 
 - **Industry · Services & retail**: Online stores with card fields on their own pages. Tampering with the page becomes interception of the input.
 - **Operation · Outsourced site development and maintenance**: When changes to the payment page and admin rights are left to a contractor.
 
-### Do today's controls close it?
+### Current controls vs Lemma
 
-| Control | Here | Why |
-| --- | --- | --- |
-| Not storing full card numbers | Not relevant | Input may have been intercepted as it was typed. |
-| Detecting access and closing the site | Partial | It works after the intrusion, not before card entry. |
-| Patching the vulnerability | Partial | Admin rights taken another way would allow the same. |
-| Leaving the payment screen to an external processor | Partial | External-payment card data was outside the scope here. But the buttons and links that lead to the external screen sit on your own page and can be rewritten. |
+| Control | Scripts swapped or added | Page rewritten on the server | A flaw in the approved version itself |
+| --- | --- | --- | --- |
+| Not storing full card numbers | Not relevant | Not relevant | Not relevant |
+| Detecting access and closing the site | Partial | Partial | Not relevant |
+| Patching the vulnerability | Partial | Partial | Not relevant |
+| Leaving the payment screen to an external processor | Partial | Partial | Not relevant |
+| **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-### What is needed
+Not storing full card numbers protects stored data, and detection and closure work after the fact. Only Lemma checks the code running on the page itself, before card details are entered. PCI DSS v4.0.1 Requirements 6.4.3 and 11.6.1 have also required authorisation of payment-page scripts and tamper detection since March 2025.
 
-1. **Match the code you load against an approved list.** List the scripts and hashes of their content, and do not load anything missing from the list or changed. CSP and Subresource Integrity can cover part of this.
-2. **Apply payment-page changes through an approval separate from admin rights, and detect tampering.** Be alerted if the page or its files in production differ from the approved version. PCI DSS v4.0.1 Requirements 6.4.3 and 11.6.1 have required authorisation of payment-page scripts and tamper detection since March 2025, so these numbers are a shared reference with contractors and processors.
-3. **Record which page version each payment ran on, and who made it.** Record starting entry, completing and changing the card, so affected customers can be narrowed down later.
+Note: Lemma's check works only when it is built into the system that serves the payment page and the approval key is held separately from site administrator rights. It passes if the approval rights themselves are taken or the checking system itself is rewritten. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -130,7 +119,30 @@ Three points for your organisation to check about payment-page tampering on your
 - If the payment page changes from the approved version, are you alerted the same day?
 - Can your records tell customers who tried to pay from those who only added items to the cart?
 
-Note: the check shows only that the running code matches the approved version. If the approval rights themselves are taken, a rogue version also passes, and order information viewed through the admin screens is not protected.
+## 5. Facts and timeline
+
+- **Site**: Good Smile Company's official online shop. Its Rakuten store is outside the scope. Card data for external payments such as Amazon Pay and PayPal is also outside it, but order information is in scope whatever the payment method.
+- **Cause**: The company believes a vulnerability in part of its system was exploited and administrator privileges were taken. It says this was not the recently reported PHP vulnerability.
+- **Why data that was not stored still leaked**: Card-industry rules say security codes must not be stored after payment, and the company did not store them or full card numbers. It believes the exposure came from information entered on the payment page being intercepted. Attacks of this type are commonly called e-skimming.
+- **Full card data possibly exposed**: 2,800 people — 384 who ordered by card, 185 who changed the card for a pre-order, those who tried to pay but did not complete, and those who only added items to the cart. With no record of operations, the last two cannot be told apart, so cart-only customers, who likely had no card data exposed, were contacted too.
+- **Partial card data**: The last four digits and expiry of 402,466 cards (excluding duplicates) registered by customers.
+- **Order information**: Up to 202 viewed orders out of 7,774 orders from 5,356 people.
+
+### Timeline
+
+- **2026-10-19**: Around 15:00, unauthorised access begins (until just before 23:00 on the 22nd).
+- **2026-10-21**: At 13:55, the program is placed on the payment page.
+- **2026-10-23**: Shortly after 06:00, the contractor's report reveals the unauthorised access; the site is closed at 07:00. First notice (only the last four digits and expiry).
+- **2026-10-26**: Second notice (addendum to the first).
+- **2026-10-28**: Shortly after 18:30, the program on the payment page is found.
+- **2026-10-29**: Third notice discloses possible exposure of full card data and security codes (order-information scope corrected in the fourth notice on the 30th).
+
+> Facts rest on the company's official notices (first to fourth) and Q&As; "may have been exposed" is its wording. What has not been disclosed does not mean no measure was in place. As of 1 November, no fifth notice has been published.
+
+### After disclosure
+
+- **Fix**: Patched the suspected vulnerability and revoked and renewed all connection credentials between the system's components. No reopening date.
+- **Notices and reporting**: Emailed affected customers individually and reported to the Personal Information Protection Commission. Says it is asking card companies not to charge customers reissue fees.
 
 ## 6. Sources
 

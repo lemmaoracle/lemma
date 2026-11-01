@@ -650,8 +650,10 @@ const labels = isJa
         <BriefNextRead locale={locale} briefId={brief.id} tiles={facetTiles} variant="block" />
         {/* メールの入口：チェックリストのあとの帯と、TL;DR のあとの 1 行（目印へ移す）。 */}
         {/* 旧い形の記事にも同じ入口（2026-10-25・目印は rehype が置く）。 */}
-        <BriefWeeklyCta locale={locale} briefId={brief.id} variant="checklist" operations={brief.data.operations} />
-        <BriefWeeklyCta locale={locale} briefId={brief.id} variant="top" operations={brief.data.operations} />
+        {/* proof の記事は、表のあとの導入相談・デモの帯を主の 1 本にし、チェックリストのあとの帯は出さない（2026-11-01）。 */}
+        {brief.data.sections !== "proof" && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="checklist" operations={brief.data.operations} />}
+        <BriefWeeklyCta locale={locale} briefId={brief.id} variant="top" victimDesk={brief.data.victim_desk} operations={brief.data.operations} />
+        {brief.data.sections === "proof" && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="demo" />}
 
         {/* 配布についての注記（旧 §9 の定型文）。6章化した md には定型文が
             無いので、ここで一律に描画する（文言の個体差が要る Brief —
@@ -776,7 +778,7 @@ const labels = isJa
           <div class="row">
             <a
               class="btn primary"
-              href={DISCOVERY_CALL_URL[locale]}
+              href={`${DISCOVERY_CALL_URL[locale]}?ref=brief_tail&utm_source=brief_tail&utm_medium=cta&utm_campaign=brief_to_call&from=${encodeURIComponent(brief.id)}`}
               target="_blank"
               rel="noopener"
               data-brief-cta-ev="brief_detail_call_click"

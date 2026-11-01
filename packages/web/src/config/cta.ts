@@ -64,6 +64,16 @@ export const CONSULT_FORM_URL =
  */
 export const CONSULT_CLUBS_FORM_KEY: string = "IpXNlCAuqK8retnycFtVN_Y-";
 
+/**
+ * proof の章立ての記事で、「いまの対策と Lemma の違い」の表のあとに出す導入の相談・デモ
+ * （2026-11-01）。行き先は Discovery Call と同じ Tally。`ref` で置き場所を分け、記事は
+ * BriefWeeklyCta が `&from=` で足す。
+ */
+export const BRIEF_DEMO_CTA_URL: Readonly<Record<Locale, string>> = {
+  ja: `${DISCOVERY_CALL_URL.ja}?ref=brief_demo&utm_source=brief_demo&utm_medium=cta&utm_campaign=brief_to_demo`,
+  en: `${DISCOVERY_CALL_URL.en}?ref=brief_demo&utm_source=brief_demo&utm_medium=cta&utm_campaign=brief_to_demo`,
+} as const;
+
 /** 定期のメールの登録（日本語）。セルフチェックの結果の下の小さな入口。 */
 export const BRIEF_WEEKLY_URL =
   "https://tally.so/r/EkMj82?ref=selfcheck&utm_source=selfcheck&utm_medium=cta&utm_campaign=selfcheck_to_weekly" as const;
