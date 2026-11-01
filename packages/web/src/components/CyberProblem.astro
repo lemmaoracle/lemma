@@ -1,0 +1,522 @@
+---
+import type { Locale } from "../i18n/translations";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+// Reported losses, not global crime totals or AI-attributed losses.
+// All seven observations use the same series in the 2025 IC3 report, p. 4.
+const losses = [
+  { year: 2015, billions: 1.0 },
+  { year: 2020, billions: 4.2 },
+  { year: 2021, billions: 6.9 },
+  { year: 2022, billions: 10.3 },
+  { year: 2023, billions: 12.5 },
+  { year: 2024, billions: 16.6 },
+  { year: 2025, billions: 20.877 },
+] as const;
+const firstYear = losses[0].year;
+const yearSpan = losses[losses.length - 1]!.year - firstYear;
+const points = losses.map((loss) => ({
+  ...loss,
+  x: 56 + ((loss.year - firstYear) / yearSpan) * 360,
+  y: 216 - (loss.billions / 25) * 176,
+}));
+const slopes = points.slice(1).map((point, index) => {
+  const previous = points[index]!;
+  return {
+    width: point.x - previous.x,
+    slope: (point.y - previous.y) / (point.x - previous.x),
+  };
+});
+// Weighted monotone interpolation preserves the values across unequal year gaps.
+const tangents = points.map((_, index) => {
+  const before = slopes[index - 1];
+  const after = slopes[index];
+  if (!before) return after!.slope;
+  if (!after) return before.slope;
+  if (before.slope * after.slope <= 0) return 0;
+  const beforeWeight = 2 * after.width + before.width;
+  const afterWeight = after.width + 2 * before.width;
+  return (beforeWeight + afterWeight) / (beforeWeight / before.slope + afterWeight / after.slope);
+});
+const curve = points.slice(1).reduce(
+  (path, point, index) => {
+    const previous = points[index]!;
+    const third = (point.x - previous.x) / 3;
+    return (
+      path +
+      " C" +
+      [
+        previous.x + third,
+        previous.y + tangents[index]! * third,
+        point.x - third,
+        point.y - tangents[index + 1]! * third,
+        point.x,
+        point.y,
+      ].join(" ")
+    );
+  },
+  "M" + points[0]!.x + " " + points[0]!.y,
+);
+const valueFormat = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
+const displayValue = (billions: number) =>
+  valueFormat.format(billions * (locale === "ja" ? 10 : 1));
+const C =
+  locale === "ja"
+    ? {
+        title: "鍵だけでは、守りきれない",
+        intro:
+          "AIで文章や声をまねる、なりすましが巧妙化。盗まれたログイン情報が、正規の利用者になりすます手段になります。",
+        keyLabel: "ログインの確認",
+        keyNote: "盗まれた鍵でも、本人のふりで使われる",
+        aiSource: "AIによるなりすまし：FBIの注意喚起",
+        chartTitle: "ネット犯罪の申告被害額",
+        chartUnit: "億米ドル",
+        growth: "約20倍",
+        growthPeriod: "2015–2025年",
+        chartDescription:
+          "FBI IC3に報告されたネット犯罪の被害額。2015年10億、2020年42億、2021年69億、2022年103億、2023年125億、2024年166億、2025年208.77億米ドル。縦軸は0から250億米ドル。横軸は年数に比例。10年間で約20倍。曲線は観測値をつないだもの。",
+        chartScope:
+          "FBI IC3への申告額（詐欺等を含む）。世界全体やAI起因だけの被害額ではありません。",
+        source: "出典：FBI Internet Crime Report 2025, p.4",
+        bridge: "ログインが通った後も、操作の内容を確かめる必要があります。",
+      }
+    : {
+        title: "A key alone cannot protect every action",
+        intro:
+          "AI makes impersonation through text and voice more convincing. Stolen login credentials can let an attacker act as a legitimate user.",
+        keyLabel: "Login check",
+        keyNote: "A stolen key can be used to impersonate its owner",
+        aiSource: "AI impersonation: FBI advisory",
+        chartTitle: "Reported internet crime losses",
+        chartUnit: "US$ billions",
+        growth: "~20×",
+        growthPeriod: "2015–2025",
+        chartDescription:
+          "Internet crime losses reported to FBI IC3, in billions of US dollars: 1.0 in 2015, 4.2 in 2020, 6.9 in 2021, 10.3 in 2022, 12.5 in 2023, 16.6 in 2024 and 20.877 in 2025. The vertical axis starts at zero and ends at 25 billion US dollars. The horizontal axis is proportional to elapsed years. About twenty times the 2015 value. The curve connects observations.",
+        chartScope:
+          "Losses reported to FBI IC3, including fraud. Not a global total or limited to AI-related crime.",
+        source: "Source: FBI Internet Crime Report 2025, p.4",
+        bridge: "Even after login, the action itself still needs to be checked.",
+      };
+---
+
+<section id="cy-difference" class="problem" aria-labelledby="cy-difference-title">
+  <h2 id="cy-difference-title">{C.title}</h2>
+  <p class="intro">{C.intro}</p>
+  <div class="problem-visual">
+    <div class="key-side">
+      <div class="key-stage" aria-hidden="true">
+        <svg
+          class="key-shape"
+          width="98"
+          height="126"
+          viewBox="0 0 112 144"
+          fill="none"
+          focusable="false"
+        >
+          <defs>
+            <linearGradient
+              id="cy-key-outline"
+              x1="24"
+              y1="5"
+              x2="84"
+              y2="132"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="#788795"></stop>
+              <stop offset=".16" stop-color="#f1f5f9"></stop>
+              <stop offset=".34" stop-color="#8b9aa9"></stop>
+              <stop offset=".45" stop-color="#556575"></stop>
+              <stop offset=".49" stop-color="#f8fafc"></stop>
+              <stop offset=".57" stop-color="#cbd5e1"></stop>
+              <stop offset=".73" stop-color="#657685"></stop>
+              <stop offset=".88" stop-color="#e2e8f0"></stop>
+              <stop offset="1" stop-color="#8b9aa9"></stop>
+            </linearGradient>
+            <linearGradient
+              id="cy-key-face"
+              x1="28"
+              y1="5"
+              x2="84"
+              y2="132"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="#e2e8f0" stop-opacity=".19"></stop>
+              <stop offset=".32" stop-color="#94a3b8" stop-opacity=".05"></stop>
+              <stop offset=".48" stop-color="#f8fafc" stop-opacity=".16"></stop>
+              <stop offset=".62" stop-color="#94a3b8" stop-opacity=".04"></stop>
+              <stop offset="1" stop-color="#cbd5e1" stop-opacity=".12"></stop>
+            </linearGradient>
+            <linearGradient id="cy-key-highlight" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#fff" stop-opacity=".85"></stop>
+              <stop offset=".38" stop-color="#fff" stop-opacity=".08"></stop>
+              <stop offset=".5" stop-color="#fff" stop-opacity=".7"></stop>
+              <stop offset=".65" stop-color="#fff" stop-opacity="0"></stop>
+              <stop offset="1" stop-color="#fff" stop-opacity=".2"></stop>
+            </linearGradient>
+            <pattern
+              id="cy-key-brush"
+              width="2"
+              height="2"
+              patternUnits="userSpaceOnUse"
+              patternTransform="rotate(25)"
+            >
+              <path d="M0 0v2" stroke="#e2e8f0" stroke-opacity=".035" stroke-width=".5"></path>
+            </pattern>
+            <path
+              id="cy-key-profile"
+              d="M44 58a28 28 0 1 1 24 0v58l-12 16-12-16v-6l8-8-8-8 8-8-8-8Z"></path>
+            <linearGradient
+              id="cy-key-fade"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="144"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="#fff" stop-opacity=".78"></stop>
+              <stop offset=".4" stop-color="#fff" stop-opacity=".62"></stop>
+              <stop offset=".75" stop-color="#fff" stop-opacity=".27"></stop>
+              <stop offset="1" stop-color="#fff" stop-opacity=".08"></stop>
+            </linearGradient>
+            <mask id="cy-key-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="112" height="144">
+              <rect width="112" height="144" fill="url(#cy-key-fade)"></rect>
+            </mask>
+          </defs>
+          <g mask="url(#cy-key-mask)">
+            <g
+              transform="translate(0 144) scale(1 -1)"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <use
+                href="#cy-key-profile"
+                transform="translate(.7 1)"
+                stroke="#070b0d"
+                stroke-width="3"></use>
+              <use
+                href="#cy-key-profile"
+                fill="url(#cy-key-face)"
+                stroke="url(#cy-key-outline)"
+                stroke-width="2.4"></use>
+              <use href="#cy-key-profile" fill="url(#cy-key-brush)"></use>
+              <use
+                href="#cy-key-profile"
+                transform="translate(-.35 -.35)"
+                stroke="url(#cy-key-highlight)"
+                stroke-width=".6"></use>
+              <circle
+                cx="56"
+                cy="22"
+                r="4.5"
+                fill="#12140e"
+                stroke="url(#cy-key-outline)"
+                stroke-width="1.4"></circle>
+              <path d="M62 62v53m-5-51v49" stroke="#070b0d" stroke-width="1.4" stroke-opacity=".8"
+              ></path>
+              <path
+                d="M61.4 62v53m-5-51v49"
+                stroke="url(#cy-key-outline)"
+                stroke-width=".6"
+                stroke-opacity=".8"></path>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <strong>{C.keyLabel}</strong>
+      <p>{C.keyNote}</p>
+      <a
+        class="ai-source"
+        href="https://www.ic3.gov/PSA/2025/PSA250515"
+        target="_blank"
+        rel="noopener"
+      >
+        {C.aiSource}
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+    <figure class="losses" aria-labelledby="cy-loss-chart-heading">
+      <svg
+        class="chart"
+        viewBox="0 0 460 264"
+        role="img"
+        aria-labelledby="cy-loss-chart-title cy-loss-chart-description"
+      >
+        <title id="cy-loss-chart-title">{C.chartTitle}</title>
+        <desc id="cy-loss-chart-description">{C.chartDescription}</desc>
+        <text class="unit" x="24" y="20">{C.chartUnit}</text>
+        {
+          [0, 10, 20].map((tick) => (
+            <g class="axis" aria-hidden="true">
+              <line x1="48" y1={216 - (tick / 25) * 176} x2="438" y2={216 - (tick / 25) * 176} />
+              <text x="36" y={220 - (tick / 25) * 176} text-anchor="end">
+                {displayValue(tick)}
+              </text>
+            </g>
+          ))
+        }
+        <path class="trend" d={curve}></path>
+        {
+          points.map((point, index) => (
+            <g
+              class:list={{ latest: index === points.length - 1 }}
+              aria-hidden="true"
+              data-loss-year={point.year}
+              data-loss-billions={point.billions}
+            >
+              {(index === 0 || index === points.length - 1) && (
+                <text class="value" x={point.x} y={point.y - 14} text-anchor="middle">
+                  {displayValue(point.billions)}
+                </text>
+              )}
+              {(index === 0 || point.year === 2020 || index === points.length - 1) && (
+                <text class="year" x={point.x} y="246" text-anchor="middle">
+                  {point.year}
+                </text>
+              )}
+            </g>
+          ))
+        }
+      </svg>
+      <div class="chart-heading">
+        <h3 id="cy-loss-chart-heading">{C.chartTitle}</h3>
+        <p class="growth"><strong>{C.growth}</strong><span>{C.growthPeriod}</span></p>
+      </div>
+      <figcaption>
+        <p>{C.chartScope}</p>
+        <a
+          class="source"
+          href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf#page=4"
+          target="_blank"
+          rel="noopener">{C.source} <span aria-hidden="true">↗</span></a
+        >
+      </figcaption>
+    </figure>
+  </div>
+  <p class="bridge">{C.bridge}</p>
+</section>
+
+<style>
+  .problem {
+    margin-top: 112px;
+    scroll-margin-top: 100px;
+  }
+  .problem *,
+  .problem *::before,
+  .problem *::after {
+    box-sizing: border-box;
+  }
+  h2 {
+    margin: 0 0 24px;
+    font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
+    font-size: clamp(23px, 3vw, 32px);
+    font-weight: 500;
+    line-height: 1.6;
+    text-wrap: balance;
+    word-break: auto-phrase;
+  }
+  .intro {
+    max-width: 680px;
+    margin: 0 auto;
+    color: #bac1af;
+    font-size: 14px;
+    line-height: 2;
+    text-wrap: pretty;
+  }
+  .problem-visual {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    gap: 48px;
+    margin: 46px auto 0;
+    max-width: 760px;
+  }
+  .key-side {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    text-align: center;
+  }
+  .key-stage {
+    display: grid;
+    place-items: center;
+    height: 170px;
+    width: 100%;
+  }
+  .key-shape {
+    display: block;
+    width: 120px;
+    height: auto;
+    max-width: 100%;
+  }
+  .key-side > strong {
+    font-size: 14px;
+    font-weight: 500;
+    color: #dce6cf;
+  }
+  .key-side > p {
+    margin: 0;
+    font-size: 12px;
+    color: #929c85;
+    line-height: 1.8;
+    text-wrap: balance;
+  }
+  a {
+    color: #929c85;
+    text-decoration: none;
+  }
+  a:hover {
+    color: #c5e987;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  a:focus-visible {
+    outline: 2px solid #a8e010;
+    outline-offset: 4px;
+  }
+  .ai-source {
+    font-size: 9px;
+    line-height: 1.8;
+  }
+  .losses {
+    min-width: 0;
+    width: 100%;
+    max-width: 360px;
+    justify-self: center;
+    margin: 0;
+    text-align: left;
+  }
+  h3 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.8;
+    color: #dce6cf;
+  }
+  .chart-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .growth {
+    display: grid;
+    flex-shrink: 0;
+    gap: 2px;
+    margin: 0;
+    text-align: right;
+  }
+  .growth strong {
+    color: #ee6e60;
+    font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .growth span {
+    color: #929c85;
+    font-size: 9px;
+  }
+  .chart {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    margin-bottom: 14px;
+    font-family: "Space Mono", monospace;
+  }
+  .unit {
+    fill: #929c85;
+    font-size: 12px;
+  }
+  .axis line {
+    stroke: #3e4435;
+    stroke-width: 1;
+  }
+  .axis text {
+    fill: #929c85;
+    font-size: 13px;
+  }
+  .trend {
+    fill: none;
+    stroke: #ee6e60;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .value {
+    fill: #dce6cf;
+    font-size: 15px;
+  }
+  .latest .value {
+    fill: #ee6e60;
+  }
+  .year {
+    fill: #929c85;
+    font-size: 13px;
+  }
+  figcaption {
+    margin-top: 12px;
+    font-size: 9px;
+    line-height: 1.8;
+    color: #929c85;
+  }
+  figcaption p {
+    margin: 0;
+  }
+  .source {
+    display: inline-block;
+    margin-top: 6px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .bridge {
+    max-width: 660px;
+    margin: 42px auto 0;
+    font-size: 14px;
+    line-height: 1.9;
+    color: #dce6cf;
+    text-wrap: balance;
+  }
+  @media (max-width: 600px) {
+    .problem {
+      margin-top: 84px;
+    }
+    .intro {
+      font-size: 13px;
+    }
+    .problem-visual {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 36px;
+      margin-top: 30px;
+    }
+    .key-side {
+      gap: 10px;
+    }
+    .key-stage {
+      height: 140px;
+    }
+    .key-shape {
+      width: 98px;
+    }
+    .key-side > strong {
+      font-size: 13px;
+    }
+    .key-side > p {
+      font-size: 11px;
+    }
+    .losses {
+      width: 100%;
+      max-width: 340px;
+      margin-inline: auto;
+    }
+    .bridge {
+      font-size: 13px;
+      margin-top: 30px;
+    }
+  }
+</style>

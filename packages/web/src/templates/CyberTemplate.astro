@@ -1,0 +1,1402 @@
+---
+/**
+ * Proof Gate by Lemma — executive landing page on the existing /cyber/ route.
+ * Result and scope → execution flow → three gates → evidence → consultation.
+ * Only technical details are collapsed. Enforcement requires an integrated gate.
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import CyberHeroCard from "../components/CyberHeroCard.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
+import { localePath } from "../lib/urls";
+import "@fontsource/space-grotesk/latin-500.css";
+import "@fontsource/space-mono/latin-400.css";
+
+export interface CyberTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+const { locale, t, base } = Astro.props as CyberTemplateProps;
+const isJa = locale === "ja";
+const L = (path: string) => localePath(base, path);
+const C = isJa
+  ? ({
+      title: "Proof Gate by Lemma — 流出しないシステム｜Lemma",
+      description:
+        "送金・口座変更・AIエージェントの操作を、実行の直前で確かめる。条件に合わない操作を通さない、流出しないシステムの導入相談。",
+      brand: "Proof Gate by Lemma",
+      headline: "流出しないシステム",
+      intro:
+        "送金・口座変更・AIエージェントの操作を、実行の直前で確かめます。振込先・金額・任せた範囲が条件に合わない操作は、通しません。",
+      scope:
+        "保護の対象は確認を組み込んだ操作です。組み込んでいない経路や、条件の範囲内の悪用は防げません。",
+      availability: "導入相談受付中",
+      call: "導入を相談する",
+      learn: "実行前に止める仕組みを見る",
+      flowTitle: "決めた条件を、実行の条件にする",
+      flowIntro:
+        "管理者が条件を先に決める。実行側は今回の依頼との照合結果を使い、一致する操作を通し、不一致の操作を止める設計。",
+      flowBinding:
+        "事前の許可範囲と今回の操作内容を一緒に確認します。依頼を書き換えたり、別の依頼に元の確認結果を流用したりしても、実行先で通さない設計です。",
+      flowInputs: [
+        {
+          title: "事前条件",
+          detail: "事前に決めた承認・委任の条件",
+        },
+        {
+          title: "今回の依頼",
+          detail: "事前の許可範囲に結び付ける今回の操作内容",
+        },
+      ],
+      flowCheck: "実行直前に条件と依頼の結び付きを照合",
+      flowPosition: "送金処理の直前",
+      flowResults: [
+        {
+          title: "通過",
+          condition: "結び付きと条件が一致",
+          detail: "今回の操作を実行",
+        },
+        {
+          title: "停止",
+          condition: "結び付きや条件が不一致",
+          detail: "今回の操作を実行しない",
+        },
+      ],
+      flowRecord: "何を通し・止めたかを記録",
+      flowRecordDetail: "今回の依頼に対する通過・停止と、停止した場合の理由を残す設計です。",
+      flowPremise:
+        "送金先や会社・担当者の確認、条件の正しさは、業務側で確かめる必要があります。この図は、設計段階の送金ゲートを説明する想定例です。",
+      flowScenario: "説明用の想定例（送金ゲートは設計段階）",
+      flowExampleLabels: ["事前条件", "今回の依頼", "判定の想定と理由"],
+      flowExamples: [
+        {
+          title: "通過",
+          details: [
+            "業務側で確認した送金先・金額・期限と、その内容への承認",
+            "承認された送金先と金額に一致し、期限内の依頼",
+            "承認が今回の操作内容に結び付き、条件にも一致するため、送金処理へ進む想定。",
+          ],
+        },
+        {
+          title: "停止",
+          details: [
+            "同じ承認",
+            "攻撃者が送金先だけを別の口座に差し替え、元の承認を使おうとする依頼。金額と期限は同じ",
+            "元の承認を、書き換えた操作内容には流用できないため、送金処理の直前で止める想定。",
+          ],
+        },
+      ],
+      flowLimit:
+        "保護は確認を組み込んだ実行経路だけで、別経路からの操作や、許可範囲内の悪用は防げない。誤った内容が条件として承認されれば、その条件との一致だけで正しい取引や善意の操作にはならない。",
+      gatesLink: "3つのゲートの例を見る",
+      gatesTitle: "どの操作にゲートを置くか",
+      gatesIntro: "各例は説明用の想定例。各ゲートの提供時期は相談時に案内。",
+      scenario: "説明用の想定例",
+      gateLabels: {
+        work: "対象業務",
+        threat: "防ぐ手口",
+        conditions: "事前条件",
+        pass: "通る依頼",
+        block: "止まる依頼と理由",
+        limit: "限界",
+        status: "現在地",
+      },
+      gates: [
+        {
+          symbol: "¥",
+          title: "送金ゲート",
+          stage: "設計段階",
+          stageKind: "design",
+          work: "経理・財務による送金。",
+          threat: "送金先のすり替え",
+          conditions:
+            "業務側で確認して承認した送金先、金額、期限。今回の送金依頼をその条件に結び付ける。",
+          pass: "承認した送金先と金額に一致し、期限内に実行する依頼。",
+          block:
+            "送金先は承認どおりでも、金額が承認額と異なる依頼、または期限切れの依頼。承認した金額・期限に一致しないため、送金処理の直前で止める想定。",
+          limit:
+            "確認を組み込んだ送金経路だけが対象。承認した送金先自体の誤りや、条件内での不正な送金目的までは、この照合だけでは判別できない。",
+          status: "設計段階。提供時期は相談時に案内。",
+        },
+        {
+          symbol: "⇄",
+          title: "口座変更ゲート",
+          stage: "設計段階",
+          stageKind: "design",
+          work: "経理・取引先の振込口座変更。",
+          threat: "なりすましの振込先変更",
+          conditions:
+            "確認済みの取引先、変更内容、期限。取引先や担当者の確認方法と根拠は、業務側で定める必要がある。",
+          pass: "確認した取引先の、確認済みの変更内容と一致し、期限内の登録依頼。",
+          block:
+            "取引先名が同じでも、確認済みの変更先と異なる口座を登録する依頼。変更内容が一致しないため、口座情報の登録直前で止める想定。",
+          limit:
+            "差出人名や会社名だけで本人性を確認するものではありません。元の確認が誤っていた場合や、別経路での直接更新は保護の対象外です。",
+          status: "設計段階。提供時期は相談時に案内。",
+        },
+        {
+          symbol: "{ }",
+          title: "エージェント操作ゲート",
+          stage: "社内試験（実業務では未導入）",
+          stageKind: "trial",
+          work: "開発・情シスなどがエージェントに任せる操作。例として、指定した資料の閲覧を指定期間だけ委任する。",
+          threat: "範囲外の操作・情報流出",
+          conditions:
+            "管理者が対象・許される操作・有効期間を先に決めて委任する。毎回の人間承認ではなく、各操作をこの委任条件と照合する設計。",
+          pass: "委任された資料を、有効期間内に閲覧する依頼。都度の人間承認を挟まず、条件に一致する操作を通す想定。",
+          block:
+            "対象外の資料の取得、委任していない外部送信、期限切れの操作。対象・操作・期間のいずれかが不一致のため、確認を組み込んだ操作の実行直前で止める想定。",
+          limit:
+            "委任範囲内の悪用や、確認を組み込んでいないツール・実行経路は防げない。閲覧を許した情報のその後の利用まで、この照合だけで制御するものではありません。",
+          status:
+            "社内のローカル環境で、テスト用メモの追加を試験した段階です（実業務では未導入）。資料閲覧・外部送信の例は、仕組みを説明する想定例です。提供時期は相談時に案内します。",
+        },
+      ],
+      gatesNote: "各ゲートの提供時期は相談時に案内します。",
+      evidenceLink: "現在の検証範囲を見る",
+      evidenceTitle: "現在の検証と設計の範囲",
+      evidenceIntro:
+        "公開実験で報告された結果と、エージェント操作ゲートの社内試験を紹介します。いずれも、ここに記す操作・環境・条件の範囲での結果です。",
+      evidenceLabels: {
+        operation: "対象操作",
+        conditions: "条件",
+        records: "確認できた結果",
+        scope: "適用範囲",
+        status: "現在地",
+      },
+      attackLabels: ["攻撃パターン", "ゲートなし", "ゲートあり", "この結果の範囲"],
+      evidence: [
+        {
+          title: "公開実験｜意図的に弱点を設けたデモアプリ",
+          operation:
+            "機密情報の取得、監査記録の書き換え、送金・承認処理への攻撃を、5つのシナリオで比較した公開実験です。",
+          conditions:
+            "情報の取得や書き換えの直前に確認を置いた場合と、置かない場合を比較しています。",
+          scope:
+            "確認を置いたデモ内の経路だけが対象です。道具・試行回数を限った結果で、独立に再現できません。実業務の防止率や、無制限の攻撃への耐性を示すものではありません。",
+          status:
+            "実行前に止める仕組みの概念実証として報告されたものです。新しい送金・口座変更・エージェント操作の3ゲートの製品検証ではありません。",
+          note: "公開実験の出典は下のREADMEです。社内試験とは別の資料です。詳しい条件は末尾の「技術・組み込み情報」にまとめています。",
+          records: [
+            "READMEは、攻撃役Opus 4.8の全5シナリオで、ゲートなしでは攻撃が通り、ゲートありでは止まったと報告しています。以下はそのうちの2例です。",
+          ],
+          link: "実験の条件・結果を見る",
+          patterns: [
+            [
+              "許された範囲を超えて機密情報を取得",
+              "米国の社会保障番号を全桁取得。",
+              "許可の裏付けがない依頼には、番号を返さず。",
+              "デモ内で確認を組み込んだ機密情報の取得。",
+            ],
+            [
+              "送金の承認フローを回避",
+              "承認を飛ばす操作が実行に到達。",
+              "承認の裏付けを求め、操作を停止。",
+              "デモ内の送金・承認処理。新しい送金ゲートの製品検証ではありません。",
+            ],
+          ],
+          kind: "public",
+        },
+        {
+          title: "社内試験｜エージェント操作ゲートでのテスト用メモの追加",
+          operation:
+            "社内の開発用パソコンで、エージェントに任せた操作として、試験画面から手動でテスト用メモを追加しました。",
+          conditions:
+            "事前に任せた範囲と今回の依頼を結び付け、実行前に確認しました。",
+          scope:
+            "試したのは、このメモ追加だけです。送金・口座変更・外部への操作は対象外で、実業務の情報流出防止、確認のない経路や許可範囲内の悪用への効果は示していません。",
+          status:
+            "エージェント操作は社内試験段階で、実業務には未導入です。人による試用と公開判断は未実施です。送金・口座変更は設計段階です。",
+          note: "公開実験とは別の社内記録です。詳細は末尾の「技術・組み込み情報」に、導入相談で整理する内容は下にまとめています。",
+          records: [
+            "条件に合う依頼は通過し、メモが追加されました。",
+            "同じ依頼の使い回し、確認情報の不足・形式の誤り、依頼の書き換えを試すと停止し、メモは追加されませんでした。",
+          ],
+          link: "組み込み相談で整理することを見る",
+          patterns: [],
+          kind: "internal",
+        },
+      ],
+      closeTitle: "まず、守りたい操作から相談する",
+      consultItems: [
+        {
+          title: "対象操作",
+          detail: "対象にしたい業務と操作を挙げる。",
+        },
+        {
+          title: "条件",
+          detail: "管理者が決める条件と、実行が起きる経路を整理する。",
+        },
+        {
+          title: "組み込み位置",
+          detail: "ゲートを置く候補箇所、対象外の経路、組み込みの可否を相談する。",
+        },
+      ],
+      technicalTitle: "技術・組み込み情報",
+      technicalBody:
+        "エージェント操作の社内試験では、事前の許可範囲・委任・今回の依頼を結び付けて確かめるために、ゼロ知識証明（ZK）を使っています。暗号技術だけで実在する会社や本人、入力内容の正しさを確認できるわけではありません。会社・担当者の確認と条件の根拠は、業務側で確かめる必要があります。",
+      technicalEvidence: [
+        {
+          title: "公開実験の条件と判定",
+          paragraphs: [
+            "対象は、機密データの取得・復号、監査ログの変更、送金・承認処理の5シナリオです。意図的に攻略しやすいデモの既知の実行箇所にゲートを組み込み、全5シナリオの全データ更新・機密読出し経路で証明を要求します。監査ログの変更・再コミットにもrequireZkProofを適用しています。",
+            "攻撃役のツールはhttp_requestで、RCE（リモートコード実行）シナリオのみrun_shellを追加します。上限は15ターンです。",
+            "READMEは、攻撃役Opus 4.8の全5シナリオでINSECURE=attack_succeeded、SECURE=blockedと報告しています。権限を引き上げる機密情報取得の例では、ゲートなしでSSN（米国の社会保障番号）を全桁取得し、ゲートありでは証明のない要求にSSNを返しません。承認フロー回避の例では、ゲートなしで実行に到達し、ゲートありでは承認の証明を要求して停止しています。",
+            "判定は応答内容の正規表現照合に基づき、厳密な評価手法ではありません。Fable 5の探索拒否はモデル側の拒否であり、防御成功には数えません。別のAPI操作プローブとも区別します。",
+            "READMEは、モデルAPIの更新があり、生成設定も固定していないため、結果は独立に再現できないと明記しています。科学的ベンチマークではなく概念実証で、多層防御や、無制限の道具・時間を使う攻撃への耐性を評価したものではありません。",
+          ],
+        },
+        {
+          title: "社内試験の条件と記録",
+          paragraphs: [
+            "開発用の単一マシン構成で、委任したエージェント名義の依頼を試験用コンソールから手動で実行しました。ローカルのWorkerdとD1を使い、事前の許可範囲・委任・今回の依頼に結び付く実際のGroth16証明を生成・検証しました。唯一の対象操作はsandbox_memo / sandbox:memos / appendによるD1へのテスト用メモ追加です。",
+            "確認用チャレンジの発行はHTTP 201、実証明生成後の実行はHTTP 200（verified）でした。D1では、memo・nullifier（再利用防止記録）・consume（チャレンジの消費済み件数）が各+1でした。",
+            "再実行（replay）は409、証明なし（missing-proof）は403、証明の形式不正（invalid-shape）は403、依頼のバイト列変更（changed-bytes）は400でした。正常系の後に試したこれらの停止では、メモ・再利用防止記録・消費済み件数の追加増加はありませんでした。",
+            "invalid-shapeは証明の形式不正を試したもので、あらゆる不正証明を実測したわけではありません。この記録は性能値やテストスイートの通過件数を示すものではなく、資料閲覧・外部送信などの試験結果でもありません。",
+            "本番用の暗号設定（trusted setup）、人による試用、公開判断は未実施です。実業務には未導入で、送金・口座変更は設計段階です。上の公開実験のREADMEは、この社内試験の出典ではありません。",
+          ],
+        },
+      ],
+      docs: "組み込みガイドを読む",
+      live: "公開登録と証明データの確認ツールへ",
+      liveNote:
+        "確認用コード（docHash）で、公開された登録と、それに結び付いた最新の証明データを照会するツールです。取得した証明データを公開APIで検証します。証明の対象条件は種類によって異なります。文書本文との一致、送信者の本人性、業務上の承認は、この画面の確認対象ではありません。証明データの検証と、業務システムの実行経路で操作を止めることは別です。社内試験の実行記録は、この画面の照会対象ではありません。",
+    } as const)
+  : ({
+      title: "Proof Gate by Lemma — Systems that don't leak | Lemma",
+      description:
+        "Check transfers, account changes and AI agent actions just before they run. Consult on introducing a system that does not let unauthorized operations through.",
+      brand: "Proof Gate by Lemma",
+      headline: "Systems that don't leak.",
+      intro:
+        "Proof Gate checks transfers, account changes and AI agent actions just before they run. Anything outside the approved destination, amount or scope does not go through.",
+      scope:
+        "Protection covers operations with the check integrated. Unintegrated paths, and misuse inside the approved scope, are out of scope.",
+      availability: "Now accepting consultations",
+      call: "Discuss your integration",
+      learn: "See how the gate works",
+      flowTitle: "Make agreed conditions a requirement for execution.",
+      flowIntro:
+        "An administrator sets the conditions first. The execution path uses the check result to allow a matching action or block a mismatch.",
+      flowBinding:
+        "The design checks the permissions set in advance together with the details of the current action. The execution path is designed to reject attempts to reuse the original check for an altered or different request.",
+      flowInputs: [
+        {
+          title: "Prior conditions",
+          detail: "Approval and delegation conditions set in advance",
+        },
+        {
+          title: "Current request",
+          detail: "Current action details to bind to prior permissions",
+        },
+      ],
+      flowCheck: "Check conditions and request binding immediately before execution",
+      flowPosition: "Immediately before the transfer",
+      flowResults: [
+        {
+          title: "Pass",
+          condition: "Binding and conditions match",
+          detail: "Run the current action",
+        },
+        {
+          title: "Block",
+          condition: "Binding or conditions do not match",
+          detail: "Do not run the current action",
+        },
+      ],
+      flowRecord: "Record which requests passed or were blocked",
+      flowRecordDetail:
+        "The design retains the decision for the current request and the reason when it is blocked.",
+      flowPremise:
+        "The business must verify the recipient, organization and person, and establish trustworthy conditions. This diagram is an illustrative scenario for a transfer gate that is in design.",
+      flowScenario: "Illustrative scenario — transfer gate in design",
+      flowExampleLabels: ["Prior conditions", "Current request", "Expected decision and reason"],
+      flowExamples: [
+        {
+          title: "Pass",
+          details: [
+            "Recipient, amount and expiry checked by the business, with approval for those details",
+            "A request matching the approved recipient and amount, within the expiry",
+            "Expected to proceed because approval is bound to the current action details and the conditions match.",
+          ],
+        },
+        {
+          title: "Block",
+          details: [
+            "The same approval",
+            "An attacker substitutes a different recipient account and tries to reuse the original approval. The amount and expiry are unchanged",
+            "Expected to stop immediately before the transfer because the original approval cannot be reused for the altered action details.",
+          ],
+        },
+      ],
+      flowLimit:
+        "Protection covers only execution paths with the check integrated. Actions through other paths and misuse within approved conditions are outside protection. If incorrect details are approved, matching those conditions does not establish a valid transaction or a well-intentioned action.",
+      gatesLink: "See examples for the three gates",
+      gatesTitle: "Choose the operation to protect.",
+      gatesIntro:
+        "These are illustrative scenarios. Availability of each gate will be discussed during consultation.",
+      scenario: "Illustrative scenario",
+      gateLabels: {
+        work: "Workflow",
+        threat: "Threat addressed",
+        conditions: "Prior conditions",
+        pass: "Passing request",
+        block: "Blocked request and reason",
+        limit: "Limits",
+        status: "Current status",
+      },
+      gates: [
+        {
+          symbol: "¥",
+          title: "Transfer gate",
+          stage: "In design",
+          stageKind: "design",
+          work: "Transfers by finance teams.",
+          threat: "Recipient substitution",
+          conditions:
+            "The recipient, amount and expiry checked and approved by the business. Bind the current transfer request to those conditions.",
+          pass: "A request matching the approved recipient and amount, executed within the expiry.",
+          block:
+            "The recipient is approved, but the amount differs from the approved amount or the request has expired. The design stops it immediately before the transfer because the amount or expiry does not match.",
+          limit:
+            "Only transfer paths with the check integrated are covered. This check alone cannot identify an incorrectly approved recipient or an illicit purpose within approved conditions.",
+          status: "In design. Availability will be discussed during consultation.",
+        },
+        {
+          symbol: "⇄",
+          title: "Account change gate",
+          stage: "In design",
+          stageKind: "design",
+          work: "Vendor bank account changes handled by finance teams.",
+          threat: "Impersonated bank account change requests",
+          conditions:
+            "The verified vendor, change details and expiry. The business must establish how to verify the vendor and contact, and the basis for that verification.",
+          pass: "A registration request for the verified vendor, matching the verified change details and within the expiry.",
+          block:
+            "The vendor name is the same, but the request registers an account different from the verified change. The design stops it immediately before registration because the change details do not match.",
+          limit:
+            "A sender or company name alone does not establish identity. Incorrect source verification and direct updates through other paths are outside protection.",
+          status: "In design. Availability will be discussed during consultation.",
+        },
+        {
+          symbol: "{ }",
+          title: "Agent action gate",
+          stage: "Internal trial (not deployed in business operations)",
+          stageKind: "trial",
+          work: "Actions delegated to agents by developers and IT teams, such as access to specified documents for a specified period.",
+          threat: "Out-of-scope agent actions and data leakage",
+          conditions:
+            "An administrator delegates targets, permitted actions and a validity period in advance. The design checks each action against that delegation without human approval for every action.",
+          pass: "A request to read a delegated document within the validity period. The design allows a matching action without human approval for each request.",
+          block:
+            "Access to an out-of-scope document, an external send that was not delegated, or an expired action. The design stops it immediately before the integrated operation because the target, action or period does not match.",
+          limit:
+            "Misuse within the delegated scope and tools or execution paths without the check are outside protection. This check alone does not control subsequent use of information that was permitted to be read.",
+          status:
+            "Tested internally by appending a test memo in a local environment; not deployed in business operations. Examples of document access and sending data externally illustrate the design. Availability will be discussed during consultation.",
+        },
+      ],
+      gatesNote: "Availability of each gate will be discussed during consultation.",
+      evidenceLink: "See the current evidence and its limits",
+      evidenceTitle: "Current evidence and design status",
+      evidenceIntro:
+        "Here are results reported in a public experiment and an internal trial of the agent action gate. Each covers the operations, environment and conditions described below.",
+      evidenceLabels: {
+        operation: "Operation",
+        conditions: "Conditions",
+        records: "Observed outcomes",
+        scope: "Scope",
+        status: "Current status",
+      },
+      attackLabels: ["Attack pattern", "Without the gate", "With the gate", "Scope of the result"],
+      evidence: [
+        {
+          title: "Public experiment | An intentionally vulnerable demo application",
+          operation:
+            "The public experiment compares five attack scenarios involving access to sensitive information, altered records, and transfer and approval workflows.",
+          conditions:
+            "It compares operations with and without a check immediately before information is retrieved or changed.",
+          scope:
+            "Results cover only the demo operations with checks in place, under limited tools and attempts. They are not independently reproducible and do not establish prevention rates in business operations or resistance to unrestricted attacks.",
+          status:
+            "This is a reported proof of concept for stopping an action before it runs. It is not product validation of the three new transfer, account change and agent action gates.",
+          note: "The README below is the source for this public experiment, separate from the internal trial. Detailed conditions are in “Technical and integration details” at the end of this page.",
+          records: [
+            "The README reports that attacks got through without the gate and stopped with the gate in all five scenarios with Opus 4.8 as the attacker. Two examples follow.",
+          ],
+          link: "See test conditions and results",
+          patterns: [
+            [
+              "Access sensitive information beyond the permitted scope",
+              "Full US Social Security numbers were retrieved.",
+              "No numbers were returned without evidence of permission.",
+              "Access to sensitive information with checks in place in the demo.",
+            ],
+            [
+              "Bypass the transfer approval workflow",
+              "An action bypassing approval reached execution.",
+              "Evidence of approval was required and the action stopped.",
+              "Transfer and approval operations in the demo. This is not product validation of the new transfer gate.",
+            ],
+          ],
+          kind: "public",
+        },
+        {
+          title: "Internal trial | Adding a test memo through the agent action gate",
+          operation:
+            "A test memo was added on an internal development computer, manually from the test screen, as a request for an action delegated to an agent.",
+          conditions:
+            "The permissions set in advance were linked to the current request and checked before the action ran.",
+          scope:
+            "Only adding this test memo was tried. Transfers, account changes and external actions were outside the trial. It does not establish data-loss prevention in business operations or protection for paths without checks or misuse within permitted conditions.",
+          status:
+            "The agent action gate is in internal testing and is not deployed in business operations. Human trials and a release decision are still pending. Transfer and account change gates are in design.",
+          note: "This internal record is separate from the public experiment. Its details are in “Technical and integration details” at the end of this page; consultation topics are below.",
+          records: [
+            "A request meeting the conditions went through and added a memo.",
+            "Attempts to reuse the same request, omit or incorrectly format the information needed for the check, or alter the request stopped without adding another memo.",
+          ],
+          link: "See what an integration consultation covers",
+          patterns: [],
+          kind: "internal",
+        },
+      ],
+      closeTitle: "Start with the operation you want to protect.",
+      consultItems: [
+        {
+          title: "Target operation",
+          detail: "Identify the workflow and operation.",
+        },
+        {
+          title: "Conditions",
+          detail: "Discuss who sets the conditions and where execution takes place.",
+        },
+        {
+          title: "Integration point",
+          detail:
+            "Review potential gate placement, paths outside protection, and integration feasibility.",
+        },
+      ],
+      technicalTitle: "Technical and integration details",
+      technicalBody:
+        "In the internal agent trial, zero-knowledge proofs (ZK) bind the permitted scope, delegation and current request. Cryptography alone does not verify a real organization or person, or establish that the inputs are true. The business must verify identities and the basis for its conditions.",
+      technicalEvidence: [
+        {
+          title: "Public experiment: conditions and verdicts",
+          paragraphs: [
+            "The five scenarios cover sensitive data retrieval and decryption, audit log changes, and transfer and approval workflows. Gates at known enforcement points in the intentionally vulnerable demo require proof on every mutation and sensitive-read path across all five scenarios. Audit log changes and recommits also use requireZkProof.",
+            "The attacker uses http_request, with run_shell added only for the RCE (remote code execution) scenario. The limit is 15 turns.",
+            "The README reports INSECURE=attack_succeeded and SECURE=blocked for all five scenarios with Opus 4.8 as the attacker. In the privilege-escalation example, full SSNs (US Social Security numbers) were retrieved without the gate; with the gate, no SSN data was returned without proof. The approval-flow bypass reached execution without the gate; with the gate, approval proof was required and the attack was blocked.",
+            "Verdicts use regex matching against response content, rather than a rigorous evaluation method. Fable 5's refusals to explore attacks are model refusals and do not count as defense successes. Separate API-operation probes are also distinct from these results.",
+            "The README states that results are not independently reproducible because model APIs change and generation settings were not fixed. This is a proof of concept, not a scientific benchmark. It does not evaluate defense in depth or resistance to attackers with unrestricted tools and time.",
+          ],
+        },
+        {
+          title: "Internal trial: conditions and records",
+          paragraphs: [
+            "Requests under a delegated agent identity were executed manually from the trial console on a single-machine development setup. Local Workerd and D1 were used to generate and verify a real Groth16 proof bound to the permitted scope, prior delegation and current request. The only operation was appending a test memo to D1 through sandbox_memo / sandbox:memos / append.",
+            "Challenge issuance returned HTTP 201; execution after real proof generation returned HTTP 200 (verified). In D1, memo, nullifier (replay-prevention record) and consume (consumed-challenge) counts each increased by +1.",
+            "Replay returned 409; missing-proof returned 403; invalid-shape returned 403; and changed-bytes returned 400. These attempts, made after the successful execution, caused no further increase in memos, replay-prevention records or consumed challenges.",
+            "The invalid-shape case tested an incorrect proof format, not every kind of invalid proof. These records are not performance measurements or test-suite pass counts, and do not cover document access or sending data externally.",
+            "Production cryptographic setup (trusted setup) and human trials have not been carried out, and no release decision has been made. The gate is not deployed in business operations; transfer and account change gates are in design. The public experiment's README is not a source for this internal trial.",
+          ],
+        },
+      ],
+      docs: "Read the integration guides",
+      live: "Open the public registration and proof checker",
+      liveNote:
+        "Use a reference code (docHash) to look up a public registration and the latest proof linked to it. The retrieved proof data is verified through the public API. The conditions checked depend on the proof type. This page does not check the document text, establish the sender's identity or authorize a business action. Verifying proof data is separate from stopping an action on a business system's execution path. Records from the internal agent trial are not available through this page.",
+    } as const);
+const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "status"] as const;
+---
+
+<Layout
+  locale={locale}
+  title={C.title}
+  description={C.description}
+  metaType="page"
+  pagePath="/cyber/"
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+  <main class="cy-page">
+    <div class="cy-container">
+      <section class="cy-hero" aria-labelledby="cy-title">
+        <CyberHeroCard />
+        <div class="cy-hero-copy">
+          <p class="cy-brand">{C.brand}</p>
+          <h1 id="cy-title">{C.headline}</h1>
+          <p class="cy-intro">{C.intro}</p>
+          <p class="cy-scope">{C.scope}</p>
+          <div class="cy-actions">
+            <a
+              class="cy-btn cy-primary"
+              href={DISCOVERY_CALL_URL[locale]}
+              target="_blank"
+              rel="noopener"
+            >
+              {C.call}
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a class="cy-btn cy-ghost" href="#pg-flow">
+              {C.learn}
+              <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+          <p class="cy-availability"><span>{C.availability}</span> <span>{C.gatesNote}</span></p>
+        </div>
+      </section>
+
+      <section id="pg-flow" class="cy-section" aria-labelledby="pg-flow-title">
+        <h2 id="pg-flow-title">{C.flowTitle}</h2>
+        <p class="cy-section-intro">{C.flowIntro}</p>
+        <p class="cy-section-intro">{C.flowBinding}</p>
+        <figure class="cy-flow-figure">
+          <p class="cy-scenario-label">{C.flowScenario}</p>
+          <div class="cy-flow">
+            <div class="cy-flow-inputs">
+              {
+                C.flowInputs.map((input) => (
+                  <div class="cy-flow-node">
+                    <strong>{input.title}</strong>
+                    <p>{input.detail}</p>
+                  </div>
+                ))
+              }
+            </div>
+            <div class="cy-flow-node cy-flow-gate">
+              <strong>Proof Gate</strong>
+              <p>{C.flowCheck}</p>
+              <p class="cy-flow-position">{C.flowPosition}</p>
+            </div>
+            <div class="cy-flow-results">
+              {
+                C.flowResults.map((result) => (
+                  <div class="cy-flow-node">
+                    <strong>{result.title}</strong>
+                    <p>{result.condition}</p>
+                    <p>{result.detail}</p>
+                  </div>
+                ))
+              }
+            </div>
+            <div class="cy-flow-node cy-flow-record">
+              <strong>{C.flowRecord}</strong>
+              <p>{C.flowRecordDetail}</p>
+            </div>
+          </div>
+          <figcaption class="cy-boundary">{C.scope}</figcaption>
+        </figure>
+        <p class="cy-section-intro">{C.flowPremise}</p>
+        <div class="cy-scenarios">
+          {
+            C.flowExamples.map((example) => (
+              <article class="cy-scenario">
+                <p class="cy-scenario-label">{C.flowScenario}</p>
+                <h3>{example.title}</h3>
+                <dl class="cy-facts">
+                  {example.details.map((detail, index) => (
+                    <div>
+                      <dt>{C.flowExampleLabels[index]}</dt>
+                      <dd>{detail}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </article>
+            ))
+          }
+        </div>
+        <p class="cy-boundary">{C.flowLimit}</p>
+        <a class="cy-source" href="#pg-gates">{C.gatesLink} <span aria-hidden="true">↓</span></a>
+      </section>
+
+      <section id="pg-gates" class="cy-section" aria-labelledby="pg-gates-title">
+        <h2 id="pg-gates-title">{C.gatesTitle}</h2>
+        <p class="cy-section-intro">{C.gatesIntro}</p>
+        <div class="cy-cards">
+          {
+            C.gates.map((gate) => (
+              <article class="cy-example-card">
+                <span class="cy-use-top">LEMMA / PROOF GATE</span>
+                <span class="cy-use-symbol" aria-hidden="true">
+                  {gate.symbol}
+                </span>
+                <h3>{gate.title}</h3>
+                <p class:list={["cy-stage", { "cy-stage-trial": gate.stageKind === "trial" }]}>
+                  {gate.stage}
+                </p>
+                <p class="cy-scenario-label">{C.scenario}</p>
+                <dl class="cy-facts">
+                  {gateFields.map((field) => (
+                    <div>
+                      <dt>{C.gateLabels[field]}</dt>
+                      <dd>{gate[field]}</dd>
+                    </div>
+                  ))}
+                </dl>
+                {gate.stageKind === "trial" && (
+                  <a class="cy-source" href="#pg-evidence">
+                    {C.evidenceLink} <span aria-hidden="true">↓</span>
+                  </a>
+                )}
+              </article>
+            ))
+          }
+        </div>
+        <p class="cy-note">{C.gatesNote}</p>
+      </section>
+
+      <section id="pg-evidence" class="cy-section cy-evidence" aria-labelledby="pg-evidence-title">
+        <h2 id="pg-evidence-title">{C.evidenceTitle}</h2>
+        <p class="cy-section-intro">{C.evidenceIntro}</p>
+        <div class="cy-evidence-blocks">
+          {
+            C.evidence.map((evidence) => (
+              <article class="cy-evidence-card">
+                <h3>{evidence.title}</h3>
+                <dl class="cy-facts cy-evidence-facts">
+                  <div>
+                    <dt>{C.evidenceLabels.operation}</dt>
+                    <dd>{evidence.operation}</dd>
+                  </div>
+                  <div>
+                    <dt>{C.evidenceLabels.conditions}</dt>
+                    <dd>{evidence.conditions}</dd>
+                  </div>
+                  <div>
+                    <dt>{C.evidenceLabels.records}</dt>
+                    <dd>
+                      {evidence.records.map((record) => (
+                        <p>{record}</p>
+                      ))}
+                      {evidence.patterns.length > 0 && (
+                        <ul class="cy-attack-patterns" role="list">
+                          {evidence.patterns.map((pattern) => (
+                            <li>
+                              <h4>
+                                <span>{C.attackLabels[0]}</span>
+                                {pattern[0]}
+                              </h4>
+                              <dl class="cy-attack-results">
+                                {pattern.slice(1).map((result, index) => (
+                                  <div>
+                                    <dt>{C.attackLabels[index + 1]}</dt>
+                                    <dd>{result}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>{C.evidenceLabels.scope}</dt>
+                    <dd>{evidence.scope}</dd>
+                  </div>
+                  <div>
+                    <dt>{C.evidenceLabels.status}</dt>
+                    <dd>{evidence.status}</dd>
+                  </div>
+                </dl>
+                <p class="cy-evidence-note">{evidence.note}</p>
+                <a
+                  class="cy-source"
+                  href={
+                    evidence.kind === "public"
+                      ? "https://github.com/lemmaoracle/example-cyber-attack#readme"
+                      : "#cy-start"
+                  }
+                  target={evidence.kind === "public" ? "_blank" : undefined}
+                  rel={evidence.kind === "public" ? "noopener" : undefined}
+                >
+                  {evidence.link}{" "}
+                  <span aria-hidden="true">{evidence.kind === "public" ? "↗" : "↓"}</span>
+                </a>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section id="cy-start" class="cy-section cy-close" aria-labelledby="cy-close-title">
+        <h2 id="cy-close-title">{C.closeTitle}</h2>
+        <dl class="cy-consult-items">
+          {
+            C.consultItems.map((item) => (
+              <div>
+                <dt>{item.title}</dt>
+                <dd>{item.detail}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="cy-note">{C.gatesNote}</p>
+        <p class="cy-scope">{C.scope}</p>
+        <div class="cy-actions">
+          <a
+            class="cy-btn cy-primary"
+            href={DISCOVERY_CALL_URL[locale]}
+            target="_blank"
+            rel="noopener"
+          >
+            {C.call}
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </section>
+      <h2 id="cy-technical-title" class="cy-details-heading">{C.technicalTitle}</h2>
+      <details class="cy-details cy-technical" aria-labelledby="cy-technical-title">
+        <summary>{C.technicalTitle}<span aria-hidden="true">+</span></summary>
+        <div class="cy-details-body">
+          <p>{C.technicalBody}</p>
+          {
+            C.technicalEvidence.map((detail) => (
+              <div>
+                <h3>{detail.title}</h3>
+                {detail.paragraphs.map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+              </div>
+            ))
+          }
+          <a class="cy-source" href={L("/guides/")}>{C.docs} <span aria-hidden="true">↗</span></a>
+          <p>{C.liveNote}</p>
+          <a class="cy-source" href={L("/verify/")}>{C.live} <span aria-hidden="true">↗</span></a>
+        </div>
+      </details>
+    </div>
+  </main>
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .cy-page {
+    background: #12140e;
+    color: #f4f7ef;
+    font-family: "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+    line-height: 1.85;
+    padding-bottom: 100px;
+  }
+  .cy-page *,
+  .cy-page *::before,
+  .cy-page *::after {
+    box-sizing: border-box;
+  }
+  .cy-container {
+    max-width: 1000px;
+    margin-inline: auto;
+    padding-inline: 32px;
+    text-align: center;
+  }
+  .cy-hero {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-items: center;
+    min-height: calc(100svh - var(--navh, 74px));
+    margin-inline: -32px;
+    padding: 112px 32px 128px;
+  }
+  .cy-hero-copy {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+  /* Local scrim: copy stays primary where the silver card crosses behind the text. */
+  .cy-hero-copy::before {
+    content: "";
+    position: absolute;
+    inset: -12px -16px 35%;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 62% 65% at 50% 38%,
+      #12140ef2 0%,
+      #12140eb3 55%,
+      transparent 78%
+    );
+  }
+  .cy-brand,
+  .cy-hero h1,
+  .cy-hero .cy-intro,
+  .cy-scope,
+  .cy-availability {
+    text-shadow:
+      0 1px 2px #12140e,
+      0 1px 14px #12140ef2,
+      0 0 32px #12140eb3;
+  }
+  .cy-hero .cy-ghost {
+    background: #12140ecf;
+  }
+  .cy-brand {
+    margin: 0 0 18px;
+    color: #bac1af;
+    font:
+      12px/1.6 "Space Mono",
+      monospace;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .cy-page h1 {
+    font-family: "Space Grotesk", "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+    font-size: clamp(40px, 7vw, 72px);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin: 0 0 24px;
+  }
+  .cy-page h1,
+  .cy-page h2,
+  .cy-page h3 {
+    line-break: strict;
+    word-break: auto-phrase;
+    text-wrap: balance;
+  }
+  .cy-page h2 {
+    font-family: "Space Grotesk", "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+    font-size: clamp(23px, 3vw, 32px);
+    font-weight: 500;
+    line-height: 1.6;
+    margin: 0 0 30px;
+  }
+  .cy-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .cy-page a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .cy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 46px;
+    padding: 12px 24px;
+    border-radius: 999px;
+    border: 1px solid #69705c;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .cy-page .cy-primary {
+    color: #12140e;
+    background: #a8e010;
+    border-color: #a8e010;
+  }
+  .cy-ghost {
+    background: transparent;
+  }
+  .cy-page a:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+  .cy-page a:focus-visible,
+  .cy-details summary:focus-visible {
+    outline: 2px solid #f8fafc;
+    outline-offset: 5px;
+  }
+  .cy-page .cy-primary:hover {
+    box-shadow: 0 0 0 3px #a8e01033;
+    text-decoration: none;
+  }
+  .cy-section {
+    margin-top: 112px;
+    scroll-margin-top: 100px;
+  }
+  .cy-intro,
+  .cy-section-intro,
+  .cy-boundary {
+    max-width: 640px;
+    margin: 0 auto 30px;
+    color: #bac1af;
+    font-size: 14px;
+    line-height: 2;
+    text-wrap: pretty;
+  }
+  .cy-intro {
+    max-width: 600px;
+    line-break: strict;
+    word-break: auto-phrase;
+    text-wrap: balance;
+  }
+  .cy-note,
+  .cy-scope,
+  .cy-availability {
+    max-width: 640px;
+    margin: 24px auto 0;
+    color: #bac1af;
+    font-size: 14px;
+    line-height: 1.9;
+    text-wrap: pretty;
+  }
+  .cy-scope {
+    margin: 0 auto 30px;
+  }
+  @media (min-width: 601px) {
+    .cy-hero .cy-scope {
+      line-break: strict;
+      word-break: auto-phrase;
+      text-wrap: balance;
+    }
+  }
+  .cy-availability span {
+    display: block;
+  }
+  .cy-page p,
+  .cy-page dd,
+  .cy-page a,
+  .cy-page h3,
+  .cy-page h4 {
+    overflow-wrap: anywhere;
+  }
+  .cy-page h3 {
+    margin: 0 0 16px;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+  .cy-page dl,
+  .cy-page dd {
+    margin: 0;
+  }
+  .cy-page dt {
+    font-weight: 600;
+  }
+  .cy-facts {
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .cy-facts > div + div {
+    margin-top: 22px;
+  }
+  .cy-facts dt {
+    margin-bottom: 6px;
+  }
+  .cy-facts dd {
+    color: #bac1af;
+  }
+  .cy-facts p {
+    margin: 0;
+  }
+  .cy-facts p + p {
+    margin-top: 16px;
+  }
+  .cy-flow-figure {
+    margin: 38px 0 0;
+  }
+  .cy-flow {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: 36px;
+    text-align: left;
+  }
+  .cy-flow-node {
+    position: relative;
+    min-width: 0;
+    padding: 22px 18px;
+    border: 1px solid #69705c;
+    border-radius: 12px;
+    background: #171a12;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .cy-flow-node strong {
+    display: block;
+    font-weight: 500;
+  }
+  .cy-flow-node p {
+    margin: 8px 0 0;
+    color: #bac1af;
+  }
+  .cy-flow-inputs,
+  .cy-flow-results {
+    position: relative;
+    display: grid;
+    gap: 22px;
+    min-width: 0;
+  }
+  .cy-flow-inputs::before,
+  .cy-flow-results::before {
+    content: "";
+    position: absolute;
+    top: 25%;
+    bottom: 25%;
+    width: 18px;
+    border-block: 1px solid #929c85;
+  }
+  .cy-flow-inputs::before {
+    right: -18px;
+    border-right: 1px solid #929c85;
+  }
+  .cy-flow-results::before {
+    left: -18px;
+    border-left: 1px solid #929c85;
+  }
+  .cy-flow-inputs::after,
+  .cy-flow-results::after,
+  .cy-flow-record::before {
+    position: absolute;
+    color: #bac1af;
+    font-size: 20px;
+    line-height: 1;
+    text-align: center;
+  }
+  .cy-flow-inputs::after,
+  .cy-flow-results::after {
+    content: "→" / "";
+    top: calc(50% - 10px);
+    width: 18px;
+  }
+  .cy-flow-inputs::after {
+    right: -36px;
+  }
+  .cy-flow-results::after {
+    left: -36px;
+  }
+  .cy-flow-gate {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    justify-content: center;
+    border-color: #e2e8f0;
+  }
+  .cy-flow-node .cy-flow-position {
+    border-top: 1px solid #69705c;
+    margin-top: 16px;
+    padding-top: 12px;
+    color: #f4f7ef;
+  }
+  .cy-flow-record {
+    grid-column: 2;
+  }
+  .cy-flow-record::before {
+    content: "↓" / "";
+    top: -28px;
+    left: calc(50% - 10px);
+    width: 20px;
+  }
+  .cy-boundary {
+    margin-top: 24px;
+    text-align: left;
+  }
+  .cy-scenarios {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+  }
+  .cy-scenario,
+  .cy-evidence-card {
+    min-width: 0;
+    border: 1px solid #3e4435;
+    border-radius: 12px;
+    padding: 28px;
+    background: #171a12;
+    text-align: left;
+  }
+  .cy-scenario-label {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .cy-page .cy-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    max-width: 100%;
+    min-height: 44px;
+    margin-top: 16px;
+    color: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: left;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+  .cy-source span {
+    flex-shrink: 0;
+  }
+  .cy-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 22px;
+    margin-top: 38px;
+  }
+  /* Shared brushed silver surface with fine diagonal grooves. */
+  .cy-example-card {
+    min-width: 0;
+    padding: 28px 20px;
+    border: 1px solid #ffffffb3;
+    border-radius: 12px;
+    color: #1e293b;
+    background:
+      repeating-linear-gradient(115deg, #0f172a0d 0 1px, transparent 1px 4px),
+      linear-gradient(135deg, #fff, #e2e8f0 48%, #f8fafc 76%, #cbd5e1);
+  }
+  .cy-use-top {
+    display: block;
+    margin-bottom: 24px;
+    color: #475569;
+    font:
+      10px/1.5 "Space Mono",
+      monospace;
+    letter-spacing: 0.08em;
+  }
+  .cy-use-symbol {
+    display: block;
+    margin-bottom: 12px;
+    color: #64748b;
+    font:
+      500 28px/1.2 "Space Grotesk",
+      sans-serif;
+  }
+  .cy-example-card h3 {
+    margin-bottom: 12px;
+  }
+  .cy-stage {
+    display: inline-block;
+    margin: 0 0 16px;
+    padding: 5px 10px;
+    border: 1px dashed #475569;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .cy-stage-trial {
+    border-style: solid;
+    background: #334155;
+    color: #f8fafc;
+  }
+  .cy-example-card .cy-facts {
+    border-top: 1px solid #94a3b8;
+    padding-top: 22px;
+  }
+  .cy-example-card dd {
+    color: #334155;
+  }
+  .cy-example-card a:focus-visible {
+    outline-color: #1e293b;
+  }
+  .cy-evidence,
+  .cy-close {
+    border-top: 1px solid #3e4435;
+    padding-top: 64px;
+  }
+  .cy-evidence-blocks {
+    display: grid;
+    gap: 28px;
+  }
+  .cy-evidence-card h3 {
+    max-width: 640px;
+  }
+  .cy-evidence-facts > div {
+    border-top: 1px solid #3e4435;
+    padding-top: 22px;
+  }
+  .cy-attack-patterns {
+    display: grid;
+    gap: 22px;
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cy-attack-patterns > li {
+    min-width: 0;
+    border: 1px solid #69705c;
+    border-radius: 8px;
+    padding: 22px;
+  }
+  .cy-attack-patterns h4 {
+    margin: 0 0 18px;
+    color: #f4f7ef;
+    font-size: 16px;
+    line-height: 1.7;
+    font-weight: 500;
+  }
+  .cy-attack-patterns h4 span {
+    display: block;
+    margin-bottom: 6px;
+    color: #bac1af;
+    font-size: 14px;
+  }
+  .cy-attack-results {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+  }
+  .cy-attack-results > div {
+    min-width: 0;
+  }
+  .cy-attack-results dt {
+    color: #f4f7ef;
+  }
+  .cy-evidence-note {
+    margin: 24px 0 0;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .cy-consult-items {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .cy-consult-items > div {
+    min-width: 0;
+    padding-top: 18px;
+    border-top: 1px solid #69705c;
+  }
+  .cy-consult-items dt {
+    margin-bottom: 8px;
+  }
+  .cy-consult-items dd {
+    color: #bac1af;
+  }
+  .cy-close .cy-note {
+    margin-bottom: 16px;
+  }
+  .cy-page .cy-details-heading {
+    margin: 32px 0 16px;
+  }
+  .cy-details {
+    max-width: 720px;
+    margin: 0 auto;
+    border-block: 1px solid #3e4435;
+    text-align: left;
+  }
+  .cy-details summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    min-height: 60px;
+    padding: 16px 4px;
+    cursor: pointer;
+    list-style: none;
+    color: #bac1af;
+    font-family: "Space Grotesk", "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.7;
+  }
+  .cy-details summary::-webkit-details-marker {
+    display: none;
+  }
+  .cy-details summary > span {
+    flex-shrink: 0;
+    color: #bac1af;
+    font-size: 22px;
+  }
+  .cy-details[open] > summary > span {
+    transform: rotate(45deg);
+  }
+  .cy-details-body {
+    padding: 12px 4px 28px;
+    color: #bac1af;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .cy-details-body p {
+    margin: 0;
+  }
+  .cy-details-body a + p,
+  .cy-details-body > div,
+  .cy-details-body p + p {
+    margin-top: 24px;
+  }
+  @media (max-width: 600px) {
+    .cy-container {
+      padding-inline: 20px;
+    }
+    .cy-hero {
+      margin-inline: -20px;
+      padding: 88px 20px 104px;
+    }
+    .cy-page h1 {
+      font-size: 44px;
+    }
+    .cy-btn {
+      width: 100%;
+      font-size: 14px;
+      padding: 12px 20px;
+    }
+    .cy-section {
+      margin-top: 84px;
+    }
+    .cy-page h2 {
+      font-size: 23px;
+    }
+    .cy-note,
+    .cy-scope,
+    .cy-section-intro {
+      text-align: left;
+    }
+    .cy-flow,
+    .cy-scenarios,
+    .cy-cards,
+    .cy-attack-results,
+    .cy-consult-items {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .cy-flow-inputs {
+      padding-left: 18px;
+    }
+    .cy-flow-inputs::before {
+      right: auto;
+      left: 0;
+      width: 18px;
+      border-right: 0;
+      border-left: 1px solid #929c85;
+    }
+    .cy-flow-inputs::after {
+      content: "↓" / "";
+      top: auto;
+      bottom: -28px;
+      right: calc(50% - 10px);
+      width: 20px;
+    }
+    .cy-flow-results::before {
+      display: none;
+    }
+    .cy-flow-results::after {
+      content: "↓" / "";
+      top: -28px;
+      left: calc(50% - 10px);
+      width: 20px;
+    }
+    .cy-flow-record {
+      grid-column: auto;
+    }
+    .cy-scenarios,
+    .cy-cards {
+      gap: 15px;
+    }
+    .cy-scenario,
+    .cy-evidence-card,
+    .cy-attack-patterns > li {
+      padding: 22px 18px;
+    }
+    .cy-example-card {
+      padding: 25px 20px;
+    }
+    .cy-close,
+    .cy-evidence {
+      padding-top: 46px;
+    }
+  }
+</style>

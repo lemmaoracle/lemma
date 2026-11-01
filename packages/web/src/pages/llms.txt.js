@@ -79,7 +79,7 @@ the same path under \`/ja/\` (e.g. \`${SITE_ORIGIN}/ja/critical/briefs/\`).
 - [Lemma API](${SITE_ORIGIN}/pillars/): the issuance and verification platform, and its five proofs.
 - [Trust402](${SITE_ORIGIN}/trust402/): delegate to an agent and let it transact, without handing over keys.
 - [Seal](${SITE_ORIGIN}/seal/): sign-in for the agent era.
-- [Verification center](${SITE_ORIGIN}/verify/): live counts of proofs issued and verified.
+- [Verification center](${SITE_ORIGIN}/verify/counters/): live counts of proofs issued and verified.
 - [Pricing](${SITE_ORIGIN}/pricing/) · [Glossary](${SITE_ORIGIN}/glossary/) · [FAQ](${SITE_ORIGIN}/faq/) · [Docs](${SITE_ORIGIN}/guides/)
 - [FRAME00, Inc.](${SITE_ORIGIN}/authenticity/): the company and the authenticity thesis.
 
