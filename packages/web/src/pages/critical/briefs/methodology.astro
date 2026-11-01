@@ -4,8 +4,8 @@ import BriefMethodologyTemplate, {
 } from "../../../templates/BriefMethodologyTemplate.astro";
 import { DISCOVERY_CALL_URL } from "../../../config/cta";
 
-const discoveryCall = DISCOVERY_CALL_URL.en;
-const whitepaperUrl = "https://tally.so/r/xX0VYv";
+// 連絡先はナビの「お問い合わせ」と同じ（2026-11-01）。フォームは CLUBS に移す予定。
+const contactUrl = DISCOVERY_CALL_URL.en;
 
 // Inline-style fragment for citation code samples. v24 cream page so the
 // code block uses cream-deep bg rather than gray-50.
@@ -42,26 +42,30 @@ const sections: MethodologySection[] = [
 <p>The voice is plain. Detection products and existing vendors are not framed as adversaries but as complementary roles. Links to related Briefs are generated from each Brief's classification.</p>`,
   },
   {
-    heading: "Pillar / Category framework",
-    body: `<p>Briefs are classified according to Lemma's <strong>4 Pillars</strong>:</p>
+    heading: "Classification and browsing",
+    body: `<p>Each Brief carries reader-facing classifications. The index can be filtered by:</p>
 <ul>
-<li><strong>Pillar 01 — Verifiable Origin</strong>: the layer that independently verifies the origin of messages, data, and code</li>
-<li><strong>Pillar 02 — Verifiable AI</strong>: the layer that ZK-commits the process of AI judgment</li>
-<li><strong>Pillar 03 — Agent Authority Proof</strong>: the layer that records and proves the delegation relationships of agents</li>
-<li><strong>Pillar 04 — Regulatory Attribute Proof</strong>: the layer that proves KYC / AML / regulatory attributes via selective disclosure</li>
+<li><strong>Industry</strong>: finance, services and retail, public sector, developers, and more</li>
+<li><strong>Operation</strong>: payment or account changes, account and permission management, publishing, approval, data access, and more</li>
+<li><strong>Attack method</strong>: account takeover, impersonation, abuse of authority, supply chain, and more</li>
+<li><strong>Control</strong>: confirm changes through another person and channel, hold until confirmed, record who confirmed what, and more</li>
+<li><strong>Country or region</strong>: where the incident happened (the affected organisation or the disclosing authority)</li>
 </ul>
-<p>Each Brief carries a <code>primary_category</code> (main category) and <code>secondary_categories</code> (cross-cutting categories), making it accessible from both the Pillar archive and the Category archive.</p>
-<p>Category names are defined independently by Lemma. Crossover with external classifications (AIID, OECD AIID, etc.) is expressed through <code>secondary_categories</code>.</p>`,
+<p>Each Brief is also mapped internally to which of Lemma's five proofs it concerns (provenance, authentication, authority, inference, attributes).</p>`,
   },
   {
-    heading: "Citation conventions",
-    body: `<p>Each Brief has a Permanent URL (the slug never changes). The number of a withdrawn Brief may be reused by the next Brief published, so cite the URL, not the number alone.</p>
-<p>Citation is recommended in the following formats. <strong>Plain text</strong> uses Brief 001 as a concrete example; <strong>BibTeX</strong> and <strong>APA</strong> are shown in template form.</p>
+    heading: "Sourcing",
+    body: `<p>Facts rest on primary sources first: the affected party's official statements and authorities' disclosures. When press reports or third-party analyses are used, each source is labelled with its standing (primary, reporting, analysis, etc.), and assessments are attributed to whoever made them.</p>
+<p>The affected party's own wording (such as "may have been exposed") is kept, and what was not disclosed is described only as not disclosed. Nothing rests on social-media posts alone.</p>`,
+  },
+  {
+    heading: "How to cite",
+    body: `<p>Each Brief keeps a permanent URL. A withdrawn Brief's number may be reused later, so please cite with the URL, not the number alone. Each Brief has a "Cite this Brief" box with the three formats below.</p>
 <p><strong>Plain text</strong></p>
 <pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
-"KelpDAO / rsETH Unauthorized Unlock — RPC Manipulation Attack on the DVN Observation Layer".
-Lemma Critical Brief No.001. Lemma / FRAME00, Inc.
-https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
+"City of Liberty, Texas: A lookalike vendor domain sent a request for the exact amount owed, and the city paid it (city statement)".
+Lemma Critical Brief No.163. Lemma / FRAME00, Inc.
+https://lemma.frame00.com/critical/briefs/163-liberty-lookalike-domain-vendor-payment/</code></pre>
 <p><strong>BibTeX</strong></p>
 <pre style="${codeBlockStyle}"><code>@techreport{lemma_critical_&lt;NN&gt;,
   author      = {{Lemma Critical Team}},
@@ -73,45 +77,37 @@ https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
 }</code></pre>
 <p><strong>APA</strong></p>
 <pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
-&lt;Title&gt; (Lemma Critical Brief No.&lt;Number&gt;). Lemma / FRAME00, Inc.
-&lt;Brief URL&gt;</code></pre>
-<p>Each Brief page provides a "Cite this Brief" box with the three formats selectable via tabs.</p>`,
+&lt;Title&gt; (Lemma Critical Brief No.&lt;NN&gt;). Lemma / FRAME00, Inc.
+&lt;Brief URL&gt;</code></pre>`,
   },
   {
-    heading: "Updates and corrections policy",
-    body: `<p>After publication, each Brief is maintained according to the following policy:</p>
-<ul>
-<li><strong>Typos / minor corrections</strong> (misspellings, broken links, notation inconsistencies): overwritten in place, no version change</li>
-<li><strong>Content revisions</strong> (factual additions, interpretive changes, incorporation of new facts): retained via version numbering. The frontmatter <code>version</code> increments from 1.0 → 1.1 (minor) or 2.0 (major). The template renders a "Revision History" (current version) at the foot of the Brief. Where a summary of the changes is needed, a revision blockquote sits at the top of the body</li>
-<li><strong>Retraction</strong> (when misinformation or misclassification is identified): a retraction notice is left at the original URL and the content is withdrawn. Per the Permanent URL policy, the URL itself is not deleted</li>
+    heading: "Revisions and corrections",
+    body: `<ul>
+<li><strong>Small fixes</strong> (typos, broken links): corrected in place; the version number stays.</li>
+<li><strong>Follow-ups and new facts</strong>: the version number goes up (1.0 → 1.1; 2.0 for a major revision) and a revision history appears under the Brief.</li>
+<li><strong>Withdrawal</strong>: if a Brief turns out to be wrong, the URL stays with a withdrawal notice.</li>
 </ul>`,
   },
   {
-    heading: "Distribution and contact",
-    body: `<p>Lemma Critical Brief is a structured analysis of public information. The series is:</p>
+    heading: "Use and contact",
+    body: `<p>Lemma Critical Brief is incident analysis based on public information. It is not an audit, assessment or recommendation for any specific organisation. If you use it for your own decisions, please talk to us.</p>
+<p>For tips, corrections, adoption or press enquiries, and commercial use or translation, please use the contact form.</p>
 <ul>
-<li><strong>Public analysis, not an audit, assessment, or recommendation for any specific organization</strong></li>
-<li>For use in decision-making, direct consultation with your organization's Lemma Critical contact is recommended</li>
-<li>For commercial use or translation inquiries, please contact the Lemma editorial team</li>
-</ul>
-<p>Contact:</p>
-<ul>
-<li><strong>Discovery Call</strong>: <a href="${discoveryCall}" target="_blank" rel="noopener">${discoveryCall.replace("https://", "")}</a> — for tips, corrections, or commercial-use inquiries</li>
-<li><strong>Whitepaper request</strong>: <a href="${whitepaperUrl}" target="_blank" rel="noopener">${whitepaperUrl.replace("https://", "")}</a></li>
+<li><strong>Contact</strong>: <a href="${contactUrl}" target="_blank" rel="noopener">Open the contact form →</a></li>
 </ul>`,
   },
 ];
 
 const description =
-  "Methodology, thesis, and citation conventions of the Lemma Critical Brief series. The production and publication of each Brief, as well as citations by readers, follow the principles on this page.";
+  "How Lemma Critical Brief is written: incident analysis from primary sources on what got through as a legitimate operation and what to check before it runs — structure, classification, sourcing, citation and revisions.";
 ---
 
 <BriefMethodologyTemplate
   locale="en"
   tag="Lemma Critical Brief"
   title="Methodology"
-  lastUpdated="Last updated: 2026-08-28"
-  intro="This page documents the methodology, thesis, and citation conventions for the Lemma Critical Brief series. The production and publication of each Brief, as well as citations by readers, follow the principles below."
+  lastUpdated="Last updated: 2026-11-01"
+  intro="How Lemma Critical Brief is written and published. The production and publication of each Brief, and citations by readers, follow the principles on this page."
   sections={sections}
   description={description}
 />
