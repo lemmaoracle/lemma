@@ -60,7 +60,7 @@ Binance は初期の調査で、侵害された DevOps 技術者のノート PC 
 
 ## 2. 通った操作
 
-- **通った操作**: Binance のホットウォレット（常に接続されていて、出金に使う財布）からの出金。Binance は「不正な出金の取引が出された」と説明している。TRM Labs は、攻撃者がチェーンをまたいで「Binance のホットウォレットの署名の仕組みに、任意の取引を署名させられるようになった」ことを、最も可能性が高い説明としている。Ethereum では、ホットウォレットの操作を攻撃者のプログラムに任せる署名（EIP-7702 の委任）が使われた。ウォレットの取引には通し番号があり、署名はその番号のときにしか使えない。攻撃者は、番号を 1 つずつずらした 50 件の署名をまとめて用意し、1 件の取引で出した。番号が合った 1 件が通り、その後は攻撃者の指示で残高が攻撃者のアドレスへ送られた。任せた状態は残り、数時間のあいだ、入ってきた資金も繰り返し送られた。ほかの 9 チェーンは、通常の署名済みの送金だった（TRM Labs）。
+- **通った操作**: Binance のホットウォレット（常に接続されていて、出金に使う財布）からの出金。Binance は「不正な出金の取引が出された」と説明している。TRM Labs は、攻撃者がチェーンをまたいで「Binance のホットウォレットの署名の仕組みに、任意の取引を署名させられるようになった」ことを、最も可能性が高い説明としている。Ethereum では、ホットウォレットの操作を攻撃者のプログラムに任せる署名（EIP-7702 の委任）が使われた。ウォレットの取引には通し番号があり、署名はその番号のときにしか使えない。攻撃者は、番号を 1 つずつずらした 50 件の署名をまとめて用意し、1 件の取引で出した（TRM Labs）。番号は誰でも読めるが、取引の多いウォレットでは取り込まれるまでに進むため、連続した番号を並べればどれか 1 件が合う。仕様では、番号の合わない署名は飛ばされるだけで、取引は止まらない（EIP-7702）。番号が合った 1 件が通り、その後は攻撃者の指示で残高が攻撃者のアドレスへ送られた。任せた状態は、取引の実行が失敗しても巻き戻らない仕様で（EIP-7702）、数時間のあいだ、入ってきた資金も繰り返し送られた。ほかの 9 チェーンは、通常の署名済みの送金だった（TRM Labs）。
 - **受け付けた側に届くもの**: 一般に、ブロックチェーンは、正しい鍵で署名された取引をそのまま実行する。署名が正しいことは、その出金が顧客の申請や社内の承認に基づくことを示さない。
 - **公表されていないこと**: 根本原因、侵入の手口、追加で見つかった侵入口の中身、署名の仕組みのどこに依頼が届いたか。
 
@@ -150,6 +150,7 @@ Binance は初期の調査で、侵害された DevOps 技術者のノート PC 
 - **Binance（一次・当事者の公表）**: "Security Incident Update #2"（2026-10-30） — <https://www.binance.com/en/support/announcement/detail/d3306d9dca5243548c813b605e1d1751>
 - **Binance（一次・当事者の公表）**: "Security Incident | Recovery Update #3"（2026-10-31） — <https://www.binance.com/en/support/announcement/detail/1fdf1f61559c401da0435895ffcccb62>
 - **FBI（一次・捜査機関の警報）**: "North Korea Responsible for $6 Billion+ Binance Attack"（2026-10-31） — <https://www.fbi.gov/investigate/cyber/alerts/2026/north-korea-responsible-for-6-billion-binance-attack>
+- **Ethereum Improvement Proposals（一次・仕様）**: "EIP-7702: Set Code for EOAs" — 委任の署名は 1 件ずつ判定し、無効なものは飛ばす・実行が失敗しても委任は巻き戻らない · <https://eips.ethereum.org/EIPS/eip-7702>
 - **TRM Labs（独立解析）**: "North Korea Steals USD 6.36 Billion From Binance in the Largest Hack in History"（2026-10-29） — <https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history>
 - **Chainalysis（独立解析）**: "The $6.4 Billion Binance Hack: Tracing the North Korea Link"（2026-10-30） — <https://www.chainalysis.com/blog/binance-exploit-latest-findings-and-response/>
 - **BleepingComputer（報道）**: "Binance links $6.3 billion crypto theft to compromised DevOps laptop"（2026-10-30。共同 CEO の X への投稿を引用） — <https://www.bleepingcomputer.com/news/security/binance-links-63-billion-crypto-theft-to-compromised-devops-laptop/>
