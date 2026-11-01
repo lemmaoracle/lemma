@@ -14,6 +14,7 @@
  */
 import {
   BRIEF_CHECKLIST_CTA_URL,
+  BRIEF_DEMO_CTA_URL,
   BRIEF_TLDR_CTA_URL,
   CONSULT_FORM_URL,
   SELF_CHECK_PAGES,
@@ -23,13 +24,18 @@ import {
 export interface BriefWeeklyCtaProps {
   locale: "ja" | "en";
   briefId: string;
-  /** checklist：チェックリストのあと（帯）。top：TL;DR のあと（1 行の小さな入口）。 */
-  variant: "checklist" | "top";
+  /**
+   * checklist：チェックリストのあと（帯）。top：TL;DR のあと（1 行の小さな入口）。
+   * demo：proof の章立ての「いまの対策と Lemma の違い」の表のあと（導入の相談・デモ・2026-11-01）。
+   */
+  variant: "checklist" | "top" | "demo";
+  /** 被害を受けた個人向けの窓口（frontmatter victim_desk）。あると top は相談でなく窓口の案内になる。 */
+  victimDesk?: { ja: string; en: string; url: string };
   /** 記事の業務（frontmatter の operations）。飛ばすページと言い方を決める。 */
   operations?: ReadonlyArray<string>;
 }
 
-const { locale, briefId, variant, operations = [] } = Astro.props as BriefWeeklyCtaProps;
+const { locale, briefId, variant, victimDesk, operations = [] } = Astro.props as BriefWeeklyCtaProps;
 const isJa = locale === "ja";
 // 日本語は、題材の合うセルフチェックのページがあればそこへ（いまは振込先の書き換え・
 // 送金の事案だけ）。無ければメールの相談が主（2026-10-25）。英語は Tally。
@@ -60,6 +66,22 @@ const ev = isConsult
 const icon = isJa && !isConsult
   ? '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="15" height="15" rx="3" /><path d="M7.5 11.2l2.4 2.4 4.8-5" /></svg>'
   : '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="12" rx="2" /><path d="M3.5 6l7.5 6 7.5-6" /></svg>';
+const isDemo = variant === "demo";
+const demoHref = isDemo ? BRIEF_DEMO_CTA_URL[locale] + `&from=${encodeURIComponent(briefId)}` : "";
+// 誰向けかは本文の「注意したい業界・業務」が持つ（2026-11-01）。Proof Gate の製品ページが出たら、行き先をゲートのページにする。
+const D = isJa
+  ? {
+      head: "Lemma の照合を、自社の業務で試す",
+      sub: "どの操作の前に何を照合するかを、導入の相談やデモで具体的にご説明します。",
+      btn: "導入相談・デモを依頼する",
+    }
+  : {
+      head: "See Lemma's pre-execution check on your own workflow",
+      sub: "We walk through which operations to check, and how, in an adoption call or demo.",
+      btn: "Request a demo or adoption call",
+    };
+// 被害を受けた個人の読者が多い事案では、要点のあとの 1 行を当事者の窓口の案内にする。
+const desk = variant === "top" && victimDesk ? { text: isJa ? victimDesk.ja : victimDesk.en, url: victimDesk.url } : null;
 const L = isJa && isRemittance
   ? {
       head: "なりすましの不正送金が自社で通らないか、チェックする",
@@ -82,7 +104,22 @@ const L = isJa && isRemittance
     };
 ---
 
-{variant === "checklist" ? (
+{desk ? (
+  <p class="wk-desk" data-brief-weekly="top" data-brief={briefId}>
+    <a href={desk.url} target="_blank" rel="noopener">{desk.text}</a>
+  </p>
+) : isDemo ? (
+  <aside class="wk wk--demo" data-brief-weekly="demo" data-brief={briefId} aria-label={D.head}>
+    <span class="wk-ic" aria-hidden="true">
+      <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.2l6.3 2.4v5c0 3.9-2.6 6.6-6.3 8.2-3.7-1.6-6.3-4.3-6.3-8.2v-5z" /><path d="M8 11.2l2.2 2.2 4-4.2" /></svg>
+    </span>
+    <span class="wk-tx">
+      <b>{D.head}</b>
+      <span>{D.sub}</span>
+    </span>
+    <a class="wk-btn" href={demoHref} target="_blank" rel="noopener" data-wk-ev="brief_table_demo">{D.btn}<span aria-hidden="true"> →</span></a>
+  </aside>
+) : variant === "checklist" ? (
   <aside class="wk" data-brief-weekly="checklist" data-brief={briefId} aria-label={L.head}>
     <span class="wk-ic" aria-hidden="true">
       <Fragment set:html={icon} />
@@ -110,7 +147,11 @@ const L = isJa && isRemittance
     var box = document.querySelector('[data-brief-weekly="' + variant + '"]');
     if (!box) return;
     var slot = document.querySelector(
-      variant === "top" ? "[data-brief-weekly-top-slot]" : "[data-brief-weekly-slot]",
+      variant === "top"
+        ? "[data-brief-weekly-top-slot]"
+        : variant === "demo"
+          ? "[data-brief-demo-slot]"
+          : "[data-brief-weekly-slot]",
     );
     if (!slot) {
       box.remove();
@@ -140,6 +181,29 @@ const L = isJa && isRemittance
     background: #eef7d2;
     border: 1px solid #d4e6a6;
     border-radius: 14px;
+  }
+  /* 被害を受けた個人向けの窓口の案内（相談の入口ではない・小さく静かに）。 */
+  .wk-desk {
+    margin: 4px 0 8px;
+    padding: 10px 2px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--tx-soft);
+  }
+  .wk-desk a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  /* 導入の相談・デモ：表のすぐ下なので、メールの相談の帯（淡い緑）と見分けがつく白地。 */
+  .wk--demo {
+    background: #fff;
+    border-color: #c9de8f;
+  }
+  .wk--demo .wk-ic {
+    background: #eef7d2;
   }
   .wk-ic {
     flex: none;

@@ -517,7 +517,7 @@ function deriveReportComponents(root, fm, isEn) {
   for (const n of roles.facts) deriveFacts(root, n, proof && n === roles.timeline ? (h3) => AFTER_DISCLOSURE_RE.test(h3) : undefined);
   deriveCounter(root, isEn, roles);
   deriveFacts(root, roles.counter);
-  markWeeklySlot(root, roles.counter);
+  markWeeklySlot(root, roles.counter, proof);
   deriveSources(root, isEn);
 }
 
@@ -527,24 +527,33 @@ function deriveReportComponents(root, fm, isEn) {
  * 全部読めるまま。対策の章の表を畳む案も試したが、SEO も読み手の得も変わらず、
  * 対策を探しに来た人には表も答えの一部なので、開いたままにした。
  */
-function markWeeklySlot(root, counterNum = 5) {
+function markWeeklySlot(root, counterNum = 5, proof = false) {
+  const slot = (name) => ({ type: "element", tagName: "div", properties: { [name]: "" }, children: [] });
   // TL;DR のあと（2 章の h2 の直前）の 1 行の入口。
   const s2 = sectionHeadIndex(root, 2);
-  if (s2 >= 0) root.splice(s2, 0, { type: "element", tagName: "div", properties: { dataBriefWeeklyTopSlot: "" }, children: [] });
+  if (s2 >= 0) root.splice(s2, 0, slot("dataBriefWeeklyTopSlot"));
   const r = sectionRange(root, counterNum);
   if (!r) return;
-  for (let i = r[0]; i < root.length; i++) {
+  let i = r[0];
+  for (; i < root.length; i++) {
     const node = root[i];
     if (isEl(node, "h2")) break;
     const cls = String(node.properties?.className ?? "");
-    if (isEl(node) && /\bbx-checklist\b/.test(cls)) {
-      // 直後の「注：」はチェックリストの続きなので、その後ろに置く。
-      const nx = nextEl(root, i);
-      const after = nx >= 0 && /\brx-aside\b/.test(String(root[nx].properties?.className ?? "")) ? nx : i;
-      root.splice(after + 1, 0, { type: "element", tagName: "div", properties: { dataBriefWeeklySlot: "" }, children: [] });
-      i = after + 1;
+    if (!(isEl(node) && /\bbx-checklist\b/.test(cls))) continue;
+    if (proof) {
+      // proof：表（とその注）を読み終えたところ＝最初のチェックリストの直前に、導入の相談・デモの帯
+      // （2026-11-01）。チェックリストのあとの帯は proof では出さない。
+      root.splice(i, 0, slot("dataBriefDemoSlot"));
+      return;
     }
+    // 直後の「注：」はチェックリストの続きなので、その後ろに置く。
+    const nx = nextEl(root, i);
+    const after = nx >= 0 && /\brx-aside\b/.test(String(root[nx].properties?.className ?? "")) ? nx : i;
+    root.splice(after + 1, 0, slot("dataBriefWeeklySlot"));
+    return;
   }
+  // チェックリストの無い proof の記事は、章の終わりに帯を置く（黙って消えないように）。
+  if (proof) root.splice(i, 0, slot("dataBriefDemoSlot"));
 }
 
 function applyReportLayout(tree, fm, isEn) {

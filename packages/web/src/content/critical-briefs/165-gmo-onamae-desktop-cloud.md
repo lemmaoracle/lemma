@@ -19,6 +19,10 @@ search_description: "お名前.com デスクトップクラウドの一部の顧
 layout: "report"
 sections: "proof"
 gate: "agent-operation"
+victim_desk:
+  ja: "お名前.com デスクトップクラウドの利用者の方へ：被害や補償、ご自身が対象かのご相談は、GMO インターネットの窓口へ（お問い合わせフォーム、電話 03-5456-2560・24 時間）。当サイトは GMO インターネットとは関係がありません。"
+  en: "Onamae.com Desktop Cloud users: for losses, compensation or whether you are affected, contact GMO Internet's support desk. This site is not affiliated with GMO Internet."
+  url: "https://help.onamae.com/contact/"
 og_kicker_ja: "サイバー攻撃事例 · 不正アクセス"
 og_kicker_en: "CYBERATTACK · UNAUTHORISED ACCESS"
 og_headline_ja: "借りたデスクトップに\n不正プログラム。\n身に覚えのない取引の報告\n<accent>26,739 件に影響の可能性</accent>"
@@ -63,7 +67,7 @@ countries: ["jp"]
 - **受け付けた側に届くもの**: 一般に、取引ツールは保存された口座のログイン情報で証券・FX 会社に接続し、その注文は正しいログイン情報による操作として届く。同社は、保存されたログイン情報が取得され、不正に利用された可能性があるとしている（第 2 報）。
 - **公表されていないこと**: 侵入経路、身に覚えのない取引がどの経路で行われたか、証券・FX 会社の側の認証の仕組み。
 
-## 3. 何を照合すれば区別できるか
+## 3. 何を照合するか
 
 経路を問わず区別できる条件は、注文を受け付ける側が、ログイン情報とは別に、本人が決めた範囲や本人の承認を、実行の前に照合することである。
 
@@ -72,12 +76,12 @@ countries: ["jp"]
 - **何が残るか**: どの取引が、どの範囲とどの承認で実行されたかの記録。侵入された環境の外に残り、不正取引の認定や補償の突き合わせに使える。
 
 <figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">検出と証明の落差</span></div>
-<p class="rx-ex-cap">ここでいう証明は、注文や出金を実行する前に、本人が決めた範囲の内か、本人が承認したかを照合し、記録に残すこと。検出は、侵入が起きた後に気づくこと。</p>
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
+<p class="rx-ex-cap">実行の前の照合＝注文や出金を実行する前に、本人が決めた範囲の内か、本人が承認したかを照合し、記録に残すこと。検知＝侵入が起きた後に気づくこと。</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>証明の層 · 公表からは分からない</b>実行の前に、本人の範囲と承認を照合する</div>
-<div class="rx-zone gapz"><b>落差</b><span>気づく前の注文を<br>区別できたかは分からない</span></div>
-<div class="rx-zone det"><b>検出の層 · 気づいた</b>問い合わせから調べ、全サーバーを止める</div>
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>実行の前に、本人の範囲と承認を照合する</div>
+<div class="rx-zone gapz"><b>その間</b><span>気づく前の注文を<br>区別できたかは分からない</span></div>
+<div class="rx-zone det"><b>検知 · 働いた</b>問い合わせから調べ、全サーバーを止める</div>
 <div class="rx-g g1"><div class="t">時期は非公表</div><b>顧客の情報が持ち出される</b></div>
 <div class="rx-g g2"><div class="t">報告は 10-21 以降</div><b>身に覚えのない取引</b></div>
 <div class="rx-g g3"><div class="t">10-20</div><b>不正プログラムを確認</b></div>
@@ -85,7 +89,7 @@ countries: ["jp"]
 </div>
 </figure>
 
-全サーバーの停止と、証券・FX 会社への遮断の要請は、気づいた後の手当てである。気づく前の注文を、受け付ける側で区別できたかは、公表からは分からない。この隔たりが**検出と証明の落差**である。正しい認証情報が悪用されうる点は、[Klue](https://lemma.frame00.com/ja/critical/briefs/075-klue-oauth-salesforce-credential-lifecycle/)（失効していないテスト用の認証情報を起点に、Salesforce の情報が抜き出された）の件とも共通する論点である。
+全サーバーの停止と、証券・FX 会社への遮断の要請は、気づいた後の手当てである。気づく前の注文を、受け付ける側で区別できたかは、公表からは分からない。正しい認証情報が悪用されうる点は、[Klue](https://lemma.frame00.com/ja/critical/briefs/075-klue-oauth-salesforce-credential-lifecycle/)（失効していないテスト用の認証情報を起点に、Salesforce の情報が抜き出された）の件とも共通する論点である。
 
 ## 4. Lemma でできること
 

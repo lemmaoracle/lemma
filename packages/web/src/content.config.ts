@@ -186,6 +186,12 @@ const briefSchema = z
      * 当たる Proof Gate のゲート（内部の分類・記事には出さない）。製品のページが出たら
      * ゲートのページへの入口に使う（Proof Gate への差し替えの予定は components/BriefNextRead.astro の冒頭の注）。
      */
+    /**
+     * 被害を受けた個人の読者が多い事案の窓口（2026-11-01）。あると、要点のあとの相談の 1 行の
+     * 代わりに「被害・補償のご相談は当事者の窓口へ。当サイトは関係がない」の案内を出す
+     * （BriefWeeklyCta）。url は当事者の公式の窓口だけ。
+     */
+    victim_desk: z.object({ ja: z.string().min(1), en: z.string().min(1), url: z.string().url() }).optional(),
     gate: z
       .enum(["payment-instruction", "account-change", "signing", "delivery", "disclosure", "identity", "intake", "agent-operation", "permission-change", "none"])
       .optional(),
