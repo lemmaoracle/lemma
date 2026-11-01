@@ -17,10 +17,6 @@ og_lead_en: "About US$6.3 billion taken from Binance, with no sign the private k
 layout: "report"
 sections: "proof"
 gate: "signing"
-victim_desk:
-  ja: "Binance の利用者の方へ：ご自身の資産や出金の再開についての確認は、Binance の公式の告知とサポートへ。当サイトは Binance とは関係がありません。"
-  en: "Binance users: for your own assets or when withdrawals resume, check Binance's official announcements and support. This site is not affiliated with Binance."
-  url: "https://www.binance.com/en/support/announcement"
 og_kicker_ja: "サイバー攻撃事例 · 不正な出金"
 og_kicker_en: "CYBERATTACK · UNAUTHORISED WITHDRAWALS"
 og_headline_ja: "鍵の漏えいは\n見つかっていない。\n出金は通った。\n<accent>約 63 億ドルが流出</accent>"

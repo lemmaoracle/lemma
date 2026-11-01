@@ -652,7 +652,7 @@ const labels = isJa
         {/* 旧い形の記事にも同じ入口（2026-10-25・目印は rehype が置く）。 */}
         {/* proof の記事は、表のあとの導入相談・デモの帯を主の 1 本にし、チェックリストのあとの帯は出さない（2026-11-01）。 */}
         {brief.data.sections !== "proof" && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="checklist" operations={brief.data.operations} />}
-        <BriefWeeklyCta locale={locale} briefId={brief.id} variant="top" victimDesk={brief.data.victim_desk} operations={brief.data.operations} />
+        <BriefWeeklyCta locale={locale} briefId={brief.id} variant="top" proof={brief.data.sections === "proof"} operations={brief.data.operations} />
         {brief.data.sections === "proof" && <BriefWeeklyCta locale={locale} briefId={brief.id} variant="demo" />}
 
         {/* 配布についての注記（旧 §9 の定型文）。6章化した md には定型文が

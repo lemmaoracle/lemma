@@ -19,10 +19,6 @@ search_description: "開発プラットフォーム Zeabur が 2 か月で 2 度
 layout: "report"
 sections: "proof"
 gate: "disclosure"
-victim_desk:
-  ja: "Zeabur の利用者の方へ：損害の申し出（11 月 30 日まで）や移行のご相談は、Zeabur の案内とサポートへ。当サイトは Zeabur とは関係がありません。"
-  en: "Zeabur users: for incident claims (by 30 November) or migration, see Zeabur's notice and contact its support. This site is not affiliated with Zeabur."
-  url: "https://zeabur.com/blogs/migration-refunds-and-security-claims"
 og_kicker_ja: "サイバー攻撃事例 · 権限の悪用"
 og_kicker_en: "CYBERATTACK · PRIVILEGE ABUSE"
 og_headline_ja: "「入れ替え済み」の後も、\n期限なしの管理者\nトークンが通った。\n<accent>環境変数 321 万件</accent>"

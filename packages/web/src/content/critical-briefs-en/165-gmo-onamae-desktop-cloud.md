@@ -17,10 +17,6 @@ og_lead_en: "Onamae.com Desktop Cloud breach: customer data taken, unauthorised 
 layout: "report"
 sections: "proof"
 gate: "agent-operation"
-victim_desk:
-  ja: "お名前.com デスクトップクラウドの利用者の方へ：被害や補償、ご自身が対象かのご相談は、GMO インターネットの窓口へ（お問い合わせフォーム、電話 03-5456-2560・24 時間）。当サイトは GMO インターネットとは関係がありません。"
-  en: "Onamae.com Desktop Cloud users: for losses, compensation or whether you are affected, contact GMO Internet's support desk. This site is not affiliated with GMO Internet."
-  url: "https://help.onamae.com/contact/"
 og_kicker_ja: "サイバー攻撃事例 · 不正アクセス"
 og_kicker_en: "CYBERATTACK · UNAUTHORISED ACCESS"
 og_headline_ja: "借りたデスクトップに\n不正プログラム。\n身に覚えのない取引の報告\n<accent>26,739 件に影響の可能性</accent>"

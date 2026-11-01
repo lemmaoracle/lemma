@@ -19,10 +19,6 @@ search_description: "グッドスマイルカンパニー公式ショップの�
 layout: "report"
 sections: "proof"
 gate: "intake"
-victim_desk:
-  ja: "グッドスマイルカンパニー公式ショップの利用者の方へ：カード情報の漏えいや、ご自身が対象かのご相談は、同社のカスタマーサポートへ。身に覚えのない請求は、カードの発行会社へ。当サイトはグッドスマイルカンパニーとは関係がありません。"
-  en: "Good Smile Company shop customers: for card exposure or whether you are affected, contact the company's customer support; report unfamiliar charges to your card issuer. This site is not affiliated with Good Smile Company."
-  url: "https://support.goodsmile.com/hc/ja/requests/new?ticket_form_id=48452039907097"
 og_kicker_ja: "サイバー攻撃事例 · 決済ページの改ざん"
 og_kicker_en: "CYBERATTACK · PAYMENT PAGE TAMPERING"
 og_headline_ja: "決済ページに\n不正なプログラム。\n判明は閉鎖の5日後。\n<accent>2,800 人のカード全桁</accent>"

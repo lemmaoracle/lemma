@@ -29,13 +29,16 @@ export interface BriefWeeklyCtaProps {
    * demo：proof の章立ての「いまの対策と Lemma の違い」の表のあと（導入の相談・デモ・2026-11-01）。
    */
   variant: "checklist" | "top" | "demo";
-  /** 被害を受けた個人向けの窓口（frontmatter victim_desk）。あると top は相談でなく窓口の案内になる。 */
-  victimDesk?: { ja: string; en: string; url: string };
+  /**
+   * proof の章立ての記事（2026-11-01）。top は相談の入口でなく、Brief の範囲の注意書きになる
+   * （読者向けの案内を書かず、扱う範囲だけを示す）。
+   */
+  proof?: boolean;
   /** 記事の業務（frontmatter の operations）。飛ばすページと言い方を決める。 */
   operations?: ReadonlyArray<string>;
 }
 
-const { locale, briefId, variant, victimDesk, operations = [] } = Astro.props as BriefWeeklyCtaProps;
+const { locale, briefId, variant, proof = false, operations = [] } = Astro.props as BriefWeeklyCtaProps;
 const isJa = locale === "ja";
 // 日本語は、題材の合うセルフチェックのページがあればそこへ（いまは振込先の書き換え・
 // 送金の事案だけ）。無ければメールの相談が主（2026-10-25）。英語は Tally。
@@ -80,8 +83,12 @@ const D = isJa
       sub: "We walk through which operations to check, and how, in an adoption call or demo.",
       btn: "Request a demo or adoption call",
     };
-// 被害を受けた個人の読者が多い事案では、要点のあとの 1 行を当事者の窓口の案内にする。
-const desk = variant === "top" && victimDesk ? { text: isJa ? victimDesk.ja : victimDesk.en, url: victimDesk.url } : null;
+// proof の記事は、要点のあとに Brief の範囲の注意書きを置く（相談の入口は表のあとの帯 1 本）。
+const scopeNote = variant === "top" && proof
+  ? isJa
+    ? "この Brief は、公表された事実から、同じ立場の組織が点検できることを整理したものです。個別の被害や手続きの案内ではありません。"
+    : "This Brief sets out, from disclosed facts, what organisations in a similar position can check. It is not guidance on individual losses or procedures."
+  : null;
 const L = isJa && isRemittance
   ? {
       head: "なりすましの不正送金が自社で通らないか、チェックする",
@@ -104,10 +111,8 @@ const L = isJa && isRemittance
     };
 ---
 
-{desk ? (
-  <p class="wk-desk" data-brief-weekly="top" data-brief={briefId}>
-    <a href={desk.url} target="_blank" rel="noopener">{desk.text}</a>
-  </p>
+{scopeNote ? (
+  <p class="wk-desk" data-brief-weekly="top" data-brief={briefId}>{scopeNote}</p>
 ) : isDemo ? (
   <aside class="wk wk--demo" data-brief-weekly="demo" data-brief={briefId} aria-label={D.head}>
     <span class="wk-ic" aria-hidden="true">
@@ -182,7 +187,7 @@ const L = isJa && isRemittance
     border: 1px solid #d4e6a6;
     border-radius: 14px;
   }
-  /* 被害を受けた個人向けの窓口の案内（相談の入口ではない・小さく静かに）。 */
+  /* proof の記事の、Brief の範囲の注意書き（相談の入口ではない・小さく静かに）。 */
   .wk-desk {
     margin: 4px 0 8px;
     padding: 10px 2px;
