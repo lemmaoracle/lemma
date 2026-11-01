@@ -109,7 +109,7 @@ Shutting down all servers and asking securities and FX firms to block access wer
 | Compensation for losses | Not relevant | Not relevant | Not relevant |
 | **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-This compares what happens once a login is stolen. A password lets the operation through as soon as it is stolen; two-step verification looks only at login; blocking and monitoring look for unusual behaviour. Only Lemma checks the operation itself rather than the login.
+This compares what happens once a login is stolen. A password lets the operation through as soon as it is stolen; two-step verification looks only at login; blocking and monitoring look for unusual behaviour. Lemma checks the operation itself rather than the login.
 
 Note: Lemma's check works only where the securities or FX firm builds it in before executing orders and withdrawals, and the holder's key is outside the trading tool's environment. Orders within an automated-trading scope go through, as do operations when the approving device itself is taken over. The table compares what each control checks; it does not show whether anything would have stopped this case. Lemma does not detect or prevent intrusion or data exfiltration.
 

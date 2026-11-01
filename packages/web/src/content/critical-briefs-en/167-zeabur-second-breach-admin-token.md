@@ -107,7 +107,7 @@ The token was revoked on the day the investigation began, but in the meantime th
 | Revocation and rotation after the investigation starts | Partial | Partial | Partial |
 | **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-Rotation does not reach credentials missing from the inventory, and detection struggles to tell apart requests with valid credentials over legitimate paths. Only Lemma checks the expiry, scope and revocation status of a credential each time it is used.
+Rotation does not reach credentials missing from the inventory, and detection struggles to tell apart requests with valid credentials over legitimate paths. Lemma checks the expiry, scope and revocation status of a credential each time it is used.
 
 Note: Lemma's check works only where it is built into the admin API and data-export boundary and credential issuance and revocation are kept in one register. It passes if a credential within its expiry is stolen and used within scope, or if the checking system itself is taken over. Server logins with a password are outside this check. The table compares what each control checks; it does not show whether anything would have stopped this case. Lemma does not detect or prevent intrusion.
 

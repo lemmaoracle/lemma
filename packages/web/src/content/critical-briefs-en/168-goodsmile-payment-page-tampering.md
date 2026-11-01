@@ -107,7 +107,7 @@ Closing the site also stopped the program, but what was noticed was the unauthor
 | Leaving the payment screen to an external processor | Partial | Partial | Not relevant |
 | **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-Not storing full card numbers protects stored data, and detection and closure work after the fact. Only Lemma checks the code running on the page itself, before card details are entered. PCI DSS v4.0.1 Requirements 6.4.3 and 11.6.1 have also required authorisation of payment-page scripts and tamper detection since March 2025.
+Not storing full card numbers protects stored data, and detection and closure work after the fact. Lemma checks the code running on the page itself, before card details are entered. PCI DSS v4.0.1 Requirements 6.4.3 and 11.6.1 have also required authorisation of payment-page scripts and tamper detection since March 2025.
 
 Note: Lemma's check works only when it is built into the system that serves the payment page and the approval key is held separately from site administrator rights. It passes if the approval rights themselves are taken or the checking system itself is rewritten. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
