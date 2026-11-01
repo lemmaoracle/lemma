@@ -8,7 +8,7 @@
   --serif:"Noto Serif JP",serif; --sans:"Noto Sans JP",system-ui,sans-serif;
   --grot:"Space Grotesk",sans-serif; --mono:"Space Mono",monospace; --num:"Inter",sans-serif;
   --page:1120px;
-  --pad:clamp(52px,5.4vw,78px);}
+  --pad:clamp(44px,4.4vw,62px);}
 .topx{-webkit-text-size-adjust:100%}
 /* EN 旧ナビ（NavigationLegacy）が nav の外に出す旧DSサドルブラウンの装飾レール。
    新トップの配色に合わないため、この面では出さない（PreviewTop と同じ扱い）。 */
@@ -113,7 +113,7 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 .topx .filmbleed{position:relative;background:var(--card);border-radius:4px;padding:clamp(12px,1.4vw,20px);margin:20px 0 0;overflow:hidden;box-shadow:0 1px 2px rgba(24,36,26,.05)}
 .topx .filmbleed::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(18,20,14,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(18,20,14,.028) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
 .topx .filmbleed::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 76% at 94% -16%,rgba(168,224,16,.10),transparent 62%);pointer-events:none}
-.topx .filmwrap{position:relative;z-index:1;width:100%;max-width:940px;margin:0 auto;aspect-ratio:16/9;border:0;border-radius:0;box-shadow:none;background:transparent;overflow:hidden}
+.topx .filmwrap{position:relative;z-index:1;width:100%;max-width:700px;margin:0 auto;aspect-ratio:16/9;border:0;border-radius:0;box-shadow:none;background:transparent;overflow:hidden}
 .topx .filmwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:transparent}
 .topx .scenes{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:20px -20px 0;border-top:1px solid var(--dline)}
 .topx .scn{padding:15px 20px 17px;transition:background .3s ease;border-radius:4px}
@@ -172,6 +172,8 @@ body:has(main.topx) .lemma-brand-bar{display:none}
   .topx{word-break:normal}
   .topx .nb{display:inline}
   .topx .isec-h b .nb,.topx .isec-h h2 .nb,.topx .herodark h1 .nb{display:inline;word-break:normal}
+  /* 本文幅に収まる短いかたまり（13字まで）は、かたまりのまま折り返す（「証明す／る。」を防ぐ・2026-11-01） */
+  .topx .isec-h h2 .nbk{display:inline-block}
   /* ヒーロー右カラム: パネル頭の GET /v1/counters は狭幅では独立行に
      (旧 .rep はレジストリのパネル化で .phead .ep に置き換わった) */
   .topx .phead .ep{flex-basis:100%;margin-left:0}
@@ -249,7 +251,7 @@ body:has(main.topx) .lemma-brand-bar{display:none}
 
 /* ---------- フィールドスイープ（v5.9 の再現・左→右のみ） ---------- */
 .topx .fieldpanel .cbody{padding:22px!important}
-.topx .fieldstage{position:relative;height:clamp(280px,30vw,380px);overflow:hidden;z-index:2}
+.topx .fieldstage{position:relative;height:clamp(220px,22vw,290px);overflow:hidden;z-index:2}
 /* ブロックは固定 48px でなく画面幅に追随させる（狭幅では列間隔 < ブロック幅に
    なり重なって見えるため。9列×4%起点・90%/8 間隔が前提） */
 .topx .fitem{position:absolute;width:clamp(26px,7vw,48px);height:clamp(26px,7vw,48px);border-radius:clamp(6px,1.6vw,10px);background:#ECEEE9;
