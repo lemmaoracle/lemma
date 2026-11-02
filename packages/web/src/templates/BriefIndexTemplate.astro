@@ -207,6 +207,7 @@ const controlIntro = BRIEF_CONTROL_SLUGS.map((slug) => {
   const picks = [...withFig, ...has.filter((b) => !withFig.includes(b))].slice(0, 3);
   return {
     slug,
+    label: BRIEF_CONTROLS[slug][loc],
     desc: FACET_PLAIN[`control:${slug}`]?.[loc] ?? "",
     cases: picks.map((b) => ({
       href: `${base}/critical/briefs/${b.id}/`,
@@ -349,6 +350,8 @@ const labels = isJa
       newest: "新着",
       impactK: "影響",
       casesK: "この対策が関わった事例",
+      selectedK: "選んでいる対策",
+      selectedMark: "選択中",
       pinned: "注目",
       controlsH: "対策から読む",
       controlCount: (n: number) => `解説 ${n} 本`,
@@ -402,6 +405,8 @@ const labels = isJa
       newest: "Latest",
       impactK: "Impact",
       casesK: "Cases where this applies",
+      selectedK: "Selected control",
+      selectedMark: "Selected",
       pinned: "Featured",
       controlsH: "Browse by control",
       controlCount: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
@@ -626,12 +631,17 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
                   <b>{c.label}</b>
                   <span>{labels.controlCount(c.count)}</span>
                 </span>
+                <span class="ix-ctl-sel" aria-hidden="true">✓ {labels.selectedMark}</span>
               </a>
             ))}
           </div>
           {controlIntro.map((ci) => (
             <div class="ix-cintro" data-control-intro={ci.slug} hidden>
-              <p class="ix-cintro-desc">{ci.desc}</p>
+              <div class="ix-cintro-head">
+                <span class="ix-cintro-k">{labels.selectedK}</span>
+                <b class="ix-cintro-name">{ci.label}</b>
+                <p class="ix-cintro-desc">{ci.desc}</p>
+              </div>
               {ci.cases.length > 0 && (
                 <div class="ix-cintro-cases">
                   <span class="ix-cintro-k">{labels.casesK}</span>
@@ -2367,17 +2377,60 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   .ix-cnav {
     margin: 26px 0 28px;
   }
+  /* 選んでいる対策：黒い面・白い文字・「✓ 選択中」。ほかは薄くして、どれを選んでいるかを一目で分かるようにする。 */
+  .ix-cnav .ix-ctl {
+    position: relative;
+    transition: opacity 0.15s, background 0.15s, border-color 0.15s;
+  }
+  .ix-cnav.has-active .ix-ctl:not(.is-active) {
+    opacity: 0.55;
+  }
+  .ix-cnav.has-active .ix-ctl:not(.is-active):hover {
+    opacity: 1;
+  }
   .ix-cnav .ix-ctl.is-active {
-    border: 2px solid var(--tx);
-    padding: 15px;
-    box-shadow: var(--sh-s);
+    background: var(--tx);
+    border-color: var(--tx);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(31, 42, 34, 0.22);
   }
   .ix-cnav .ix-ctl.is-active .ix-ctl-ic {
-    background: var(--tx);
+    background: #c9ef5a;
+    color: var(--tx);
+  }
+  .ix-cnav .ix-ctl.is-active .ix-ctl-tx b {
     color: #fff;
+  }
+  .ix-cnav .ix-ctl.is-active .ix-ctl-tx span {
+    color: #cfd8c4;
+  }
+  .ix-ctl-sel {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    right: 14px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #c9ef5a;
+  }
+  .ix-cnav .ix-ctl.is-active .ix-ctl-sel {
+    display: block;
+  }
+  .ix-cintro-head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ix-cintro-name {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--tx);
   }
   .ix-cintro {
     margin-top: 14px;
+    border-color: var(--tx);
     display: grid;
     grid-template-columns: 1fr 1.4fr;
     gap: 24px;
@@ -2392,7 +2445,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   .ix-cintro-desc {
     margin: 0;
     font-family: var(--font-serif-jp);
-    font-size: 19px;
+    font-size: 17px;
     font-weight: 600;
     line-height: 1.6;
     color: var(--tx);
@@ -2610,9 +2663,11 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     const ctlNav = Array.from(root.querySelectorAll<HTMLElement>("[data-control-pick]"));
     const ctlIntros = Array.from(root.querySelectorAll<HTMLElement>("[data-control-intro]"));
     function syncControlNav() {
-      ctlNav.forEach((a) =>
-        a.classList.toggle("is-active", a.dataset.controlPick === facets.control),
-      );
+      ctlNav.forEach((a) => {
+        a.classList.toggle("is-active", a.dataset.controlPick === facets.control);
+        a.setAttribute("aria-current", a.dataset.controlPick === facets.control ? "true" : "false");
+      });
+      root.querySelector<HTMLElement>("[data-control-nav]")?.classList.toggle("has-active", !!facets.control);
       ctlIntros.forEach((d) => {
         d.hidden = d.dataset.controlIntro !== facets.control;
       });
