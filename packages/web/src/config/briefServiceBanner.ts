@@ -131,10 +131,10 @@ export function indexBannerFor(locale: Locale): IndexBanner {
   const href = `${DISCOVERY_CALL_URL[locale]}?${params}`;
   return locale === "ja"
     ? {
-        label: "Lemma の点検サービス",
-        head: "この手口が自社に通るか、点検で確かめる",
-        body: "事案から論点を洗い出し、攻撃シミュレーションで確かめ、報告にまとめます。",
-        button: "点検を相談する →",
+        label: "点検チェックの相談",
+        head: "チェックで見つかった抜けを、一緒に整理する",
+        body: "点検チェックリストの結果をもとに、止めたい操作と、その前に照合することを、一緒に整理します。",
+        button: "点検チェックを相談する →",
         href,
       }
     : {
