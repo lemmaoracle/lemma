@@ -6,11 +6,11 @@ pillar: 03-agent-authority
 primary_category: agent-infrastructure
 secondary_categories: [identity-auth]
 incident_date: 2026-10-29
-published: 2026-11-01
+published: 2026-11-02
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["081-bybit-safe-wallet-ui-injection", "155-tving-developer-key-hardcoded-production-keys"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "Binance から約 63 億ドルが流出、秘密鍵の漏えいは見つかっていない"
 og_lead_en: "About US$6.3 billion taken from Binance, with no sign the private keys leaked"
@@ -58,7 +58,13 @@ Binance's initial investigation said a compromised DevOps engineer's laptop may 
 
 ## 2. What got through
 
-- **What got through**: Withdrawals from Binance's hot wallet (the always-online wallet used for withdrawals). Binance says unauthorised withdrawal transactions were submitted. TRM Labs gives as the most likely explanation that the attacker "gained the ability to make Binance's hot wallet signing system sign transactions of its choosing across chains". On Ethereum, the attacker used a signature that hands control of the hot wallet to an attacker's program (an EIP-7702 delegation). Each wallet transaction carries a running number, and such a signature works only at one number. The attacker had the wallet sign 50 of them in advance, one for each of 50 consecutive numbers, and sent them in a single transaction (TRM Labs). The number is public, but on a busy wallet it moves on before a transaction is included, so a run of consecutive numbers makes one of them match. Under the specification, signatures with the wrong number are simply skipped and the transaction carries on (EIP-7702). The one that matched took effect, and the attacker's program then sent the balance to an attacker address. The delegation is not rolled back even if the transaction's execution fails (EIP-7702), and it stayed in place: funds arriving over the next few hours were swept again. On the other nine chains the funds left through ordinary signed transfers (TRM Labs).
+- **What got through**: Withdrawals from Binance's hot wallet (the always-online wallet used for withdrawals). Binance says unauthorised withdrawal transactions were submitted. TRM Labs gives as the most likely explanation that the attacker "gained the ability to make Binance's hot wallet signing system sign transactions of its choosing across chains".
+- **How it ran on Ethereum** (TRM Labs; the specification points are EIP-7702):
+  1. The attacker used a signature that hands control of the hot wallet to an attacker's program (an EIP-7702 delegation).
+  2. Each wallet transaction carries a running number, and such a signature works only at one number. The number is public, but on a busy wallet it moves on before a transaction is included. So the attacker had the wallet sign 50 of them in advance, one for each of 50 consecutive numbers, and sent them in a single transaction.
+  3. Under the specification, signatures with the wrong number are simply skipped and the transaction carries on. The one that matched took effect.
+  4. The attacker's program then sent the balance to an attacker address. The delegation is not rolled back even if the transaction's execution fails, so it stayed in place: funds arriving over the next few hours were swept again.
+- **Other chains**: On the other nine chains the funds left through ordinary signed transfers (TRM Labs).
 - **What reaches the receiving side**: In general, a blockchain executes any transaction signed with the right key. A valid signature does not show that the withdrawal was based on a customer request or an internal approval.
 - **Not disclosed**: The root cause, how the intrusion happened, what the additional points of breach were, and where in the signing system the requests arrived.
 
@@ -134,18 +140,20 @@ Four points for crypto exchanges, custodians and payment firms to check
 - **2026-10-29**: Most of the outflow in about 20 minutes from around 20:05 UTC; the Ethereum delegation transaction at 20:20 UTC (TRM Labs). A second wave hit Avalanche and Polygon around 23:05 UTC; on Ethereum the delegation stayed in place and sweeps continued until 23:56 UTC (TRM Labs). Binance pauses withdrawals on some chains, then all withdrawals (deposits remain operational, Binance says). TRM Labs attributes the theft to TraderTraitor.
 - **2026-10-30**: Binance sets out its initial findings (compromised laptop, service container, unauthorised withdrawal transactions) in official announcements, and in a follow-up says it found additional points of breach. Chainalysis attributes the theft to TraderTraitor.
 - **2026-10-31**: Binance says about 90% of the impact is covered, publishes a Proof of Reserves snapshot, and aims to reopen withdrawals on Sunday 1 November. The FBI attributes the theft to North Korea (TraderTraitor).
+- **2026-11-01**: In Recovery Update #4, Binance says about 95% is covered and withdrawals reopen in phases. Phase 1 started between 06:00 and 09:00 UTC on 15 networks (BTC, ETH, BNB, XRP, SOL and others). The remaining ~5% is tokens outside the top ten with thin market liquidity. Deposits were not affected.
 
-> Facts rest on Binance's official announcements, TRM Labs' and Chainalysis' analyses and the FBI alert; the co-CEO's remarks are as quoted by the press from his X post. The root cause has not been disclosed. What is not disclosed does not mean no measure was in place. As of 1 November, Binance's announcements list showed no notice that withdrawals had reopened.
+> Facts rest on Binance's official announcements, TRM Labs' and Chainalysis' analyses and the FBI alert; the co-CEO's remarks are as quoted by the press from his X post. The root cause has not been disclosed. What is not disclosed does not mean no measure was in place. Written as of 2 November.
 
 ### After disclosure
 
 - **Stopping and revoking**: Stopped withdrawals and revoked the affected address authorisation; working with blockchain-intelligence firms and law enforcement.
-- **Covering and reporting**: Published a Proof of Reserves snapshot on 31 October, with a full attestation expected around 3 November, and says it will publish a post-mortem on the root cause.
+- **Covering and reporting**: Published a Proof of Reserves snapshot on 31 October, with a full attestation expected around 3 November. On 1 November it said the top ten assets are 100% backed, and that it will publish a post-mortem once the investigation is complete, with no date given.
 
 ## 6. Sources
 
 - **Binance (Primary, company announcement)**: "Security Incident Update" (2026-10-30) — <https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7>
 - **Binance (Primary, company announcement)**: "Security Incident Update #2" (2026-10-30) — <https://www.binance.com/en/support/announcement/detail/d3306d9dca5243548c813b605e1d1751>
+- **Binance (Primary, company announcement)**: "Security Incident | Recovery Update #4: Withdrawals Resume in Phases" (2026-11-01) — <https://www.binance.com/en/support/announcement/detail/73911fb819b240f88b88256bdd318eda>
 - **Binance (Primary, company announcement)**: "Security Incident | Recovery Update #3" (2026-10-31) — <https://www.binance.com/en/support/announcement/detail/1fdf1f61559c401da0435895ffcccb62>
 - **FBI (Primary, law-enforcement alert)**: "North Korea Responsible for $6 Billion+ Binance Attack" (2026-10-31) — <https://www.fbi.gov/investigate/cyber/alerts/2026/north-korea-responsible-for-6-billion-binance-attack>
 - **Ethereum Improvement Proposals (Primary, specification)**: "EIP-7702: Set Code for EOAs" — each authorisation is checked on its own and invalid ones are skipped; a failed execution does not roll back the delegation · <https://eips.ethereum.org/EIPS/eip-7702>
