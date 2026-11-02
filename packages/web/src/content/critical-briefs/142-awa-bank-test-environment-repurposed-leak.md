@@ -45,6 +45,8 @@ operations: ["data-access"]
 controls:
   - slug: "hold-unverified"
     item: "用途が変わった環境は、データと入口を確認し直すまで使わせない"
+  - slug: "minimize-data"
+    item: "役目を終えた環境に残っている顧客・株主の情報を洗い出し、使わないものは消す"
   - slug: "audit-trail"
     item: "どの環境にどの顧客データがあり、いつ消したかを記録する"
 attack_method: "account-takeover"

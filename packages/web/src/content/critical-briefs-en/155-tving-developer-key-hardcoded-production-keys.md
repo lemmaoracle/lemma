@@ -51,6 +51,8 @@ operations: ["account-admin", "data-access"]
 controls:
   - slug: "hold-unverified"
     item: "Hold high-impact production operations until they are checked against whose work they are for"
+  - slug: "minimize-data"
+    item: "Remove dormant and closed accounts' data from the production database once it no longer serves a purpose"
   - slug: "audit-trail"
     item: "Record key issuance and use, with whose work it was, separately from the user"
 attack_method: "account-takeover"

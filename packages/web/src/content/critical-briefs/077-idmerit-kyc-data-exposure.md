@@ -44,6 +44,8 @@ insight:
 industries: ["finance"]
 operations: ["data-access"]
 controls:
+  - slug: "minimize-data"
+    item: "委託先が本人確認のデータを保存するか、どこにどれだけの期間置くかを契約で決め、台帳と照合する"
   - slug: "audit-trail"
     item: "どのデータを、誰の管理下で、どこに置いているかを記録する"
 impact: "約 10 億件の露出が報じられ、帰属は係争（件数は未検証）"
