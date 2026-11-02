@@ -15,7 +15,7 @@ version: "1.0"
 og_lead_ja: "IDScan.net、運転免許証 1.5 億件超がダークウェブで検索可能に"
 og_lead_en: "IDScan.net: 153M+ scanned driver's licenses sold on the dark web"
 controls:
-  - slug: "limit-and-revoke"
+  - slug: "minimize-data"
     item: "Hand over a scoped, expiring proof of the attribute instead of the original ID image"
   - slug: "ownership-check"
     item: "Make it possible to check that whoever receives the proof is still a legitimate recipient"

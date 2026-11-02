@@ -18,6 +18,9 @@ gap_detected: "Discord detected the breach, notified affected users, and could s
 gap_missing: "There was no mechanism to show that age met the requirement without handing over the raw ID, so to prove a single fact of age the entire ID was passed to a third party and kept accumulating."
 gap_fix: "Before authorizing an age-restricted feature, independently verify with Lemma that you can show only that the user is 18 or older without handing over the raw ID, and prevent it up front."
 operations: ["disclosure"]
+controls:
+  - slug: "minimize-data"
+    item: "Do not keep the government ID images; receive only that the age condition is met"
 attack_method: "supply-chain"
 impact: "70,000 government ID images stolen"
 countries: ["global"]

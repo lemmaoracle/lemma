@@ -165,14 +165,15 @@ export const BRIEF_CONTROL_SLUGS = [
   "verify-entry",
   "limit-and-revoke",
   "check-origin",
+  "minimize-data",
 ] as const;
 export type BriefControlSlug = (typeof BRIEF_CONTROL_SLUGS)[number];
 
 export const BRIEF_CONTROLS: Record<BriefControlSlug, FacetEntry> = {
   "separate-approval": {
     slug: "separate-approval",
-    ja: "変更は、別の人が別の方法で確認する",
-    en: "Changes confirmed by someone else, another way",
+    ja: "大事な変更は、別の人が別の連絡手段で確認する",
+    en: "Important changes confirmed by someone else, over another channel",
     icon: '<circle cx="7" cy="8" r="2.6"/><circle cx="15" cy="8" r="2.6"/><path d="M2.8 17c0-2.6 1.9-4.3 4.2-4.3S11 14.4 11 17M11 17c0-2.6 1.8-4.3 4-4.3s4.2 1.7 4.2 4.3"/>',
   },
   "ownership-check": {
@@ -211,6 +212,12 @@ export const BRIEF_CONTROLS: Record<BriefControlSlug, FacetEntry> = {
     ja: "届いたもの（コード・データ・画像）の出どころを確認する",
     en: "Check where code, data and media came from",
     icon: '<path d="M5 3.5h7.5l4 4V18.5H5z"/><circle cx="10.5" cy="12.5" r="2.4"/><path d="M12.3 14.3l2.5 2.5"/>',
+  },
+  "minimize-data": {
+    slug: "minimize-data",
+    ja: "個人情報は、必要な分だけ預かり、持たない形にする",
+    en: "Hold only the personal data you need",
+    icon: '<path d="M11 3l6.5 2.5v5.2c0 4-2.8 6.7-6.5 8.3-3.7-1.6-6.5-4.3-6.5-8.3V5.5z"/><path d="M8.3 11.2l2 2 3.5-3.8"/>',
   },
 };
 

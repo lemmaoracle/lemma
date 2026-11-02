@@ -300,7 +300,7 @@ og:description は `insight.quote` で始まる。
 ```yaml
 industries: ["public-sector"]          # 業界（config/briefFacets.ts）
 operations: ["delivery"]               # 業務
-controls:                              # 対策（7 つ・増やすのは、今ある 7 つに当てはまらない Brief が 3 本たまったとき）
+controls:                              # 対策（8 つ・増やすのは、今ある 7 つに当てはまらない Brief が 3 本たまったとき）
   - { slug: "ownership-check", item: "…" }
 attack_method: "impersonation"         # 手口：account-takeover / impersonation / privilege-abuse / supply-chain / human-error / ai-misuse
 countries: ["jp"]                      # 国・地域（必須・2 つまで）。事案が起きた国。国に結びつかないものは "global"
