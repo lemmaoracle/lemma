@@ -271,3 +271,7 @@ References: ["The last layer left for cyber defense in the age of AI"](https://l
 - Company names OK; Japanese municipality names need clearance before naming.
 - Research demonstrations (no real-world breach) must say so in the §3 caveat
   and must not inflate impact.
+
+### Controls and Gates (internal, 2026-11-02)
+
+The eight "Browse by control" entries on the index describe what was missing for a reader. They do not map one-to-one to Gates (the kind of operation a pre-execution check applies to). Rough correspondence: ownership-check → payment-instruction / account-change / identity; verify-entry → identity / intake / agent-operation; limit-and-revoke → permission-change / agent-operation; check-origin → intake; minimize-data → disclosure; bound-automation → agent-operation; hold-unverified and audit-trail → shared actions across all Gates. When the Proof Gate product page is published, the index switches from controls to Gate entries and `?control=` redirects to them. Until then, do not name Gates on the site.
