@@ -1,7 +1,7 @@
 ---
 brief_no: 119
-title: "性的ディープフェイクの把握件数が半年で 123 件、前年通年を超えた — 実在の人物から作られた画像に、来歴を確かめる層がない（警察庁）"
-title_en: "Japanese police identified 123 sexual-deepfake cases in six months, passing all of last year — no layer verifies the provenance of images made from real people"
+title: "警察庁：未成年の性的ディープフェイクの把握件数が、半年で昨年 1 年間を上回った(2026 年上半期の統計)"
+title_en: "Japan's National Police Agency: Sexual-deepfake cases involving minors identified in six months passed all of last year (H1 2026 statistics)"
 pillar: "01-verifiable-origin"
 primary_category: "data-provenance"
 secondary_categories: ["attribute-proof-bypass", "identity-auth"]
@@ -13,81 +13,138 @@ related_briefs: ["105-japro-likeness-voice-ai-provenance", "053-youtube-deepfake
 status: published
 gate: "none"
 version: "1.0"
-og_lead_ja: "性的ディープフェイク、2026年上半期の把握123件で前年通年超え — 警察庁"
-og_lead_en: "Japanese police identified 123 sexual-deepfake cases in H1 2026, passing all of last year — NPA"
-gap_detected: "Statistics collection, case identification, and investigation made the harm visible and brought charges — including against the person who commissioned the images."
-gap_missing: "A layer that lets a recipient independently verify, at generation and at publication, whether use of a real person's likeness was authorized by that person."
-gap_fix: "Require the subject's authorization as independently verifiable proof before likeness-based generation, and refuse generation and publication that carry no proof."
+og_lead_ja: "未成年の性的ディープフェイク、2026 年上半期に全国の警察が把握した事案は 123 件で、昨年 1 年間を上回った（警察庁）"
+og_lead_en: "Police in Japan identified 123 sexual-deepfake cases involving minors in H1 2026, more than in all of last year (NPA)"
+layout: "report"
+sections: "proof"
+og_kicker_ja: "AI の事例 · 性的ディープフェイク"
+og_kicker_en: "AI CASE · SEXUAL DEEPFAKES"
+og_headline_ja: "未成年の性的偽画像、\n半年で昨年 1 年を超す。\n<accent>警察庁が把握 123 件</accent>"
+og_headline_en: "Japan's sexual deepfakes\nof minors pass last year.\n<accent>NPA: 123 cases in H1</accent>"
+key_figures:
+  - value: "123"
+    unit: "cases"
+    label: "Cases involving sexual deepfake images and videos of minors identified by police nationwide in January–June 2026, against 60 a year earlier (NPA)"
+    tone: "alert"
+  - value: "114"
+    unit: "cases"
+    label: "Cases identified across all of last year, passed in half the time (NPA)"
+  - value: "83"
+    unit: "cases"
+    label: "Cases where the perpetrator was a classmate or a student at the same school, close to 70% (NPA)"
+glossary:
+  - term: "Sexual deepfake"
+    desc: "A photo or video of a real person altered into sexual imagery, for example with generative AI."
+  - term: "Public display"
+    desc: "Placing material where an unspecified number of people can view it. Punishable under Japan's Act on Child Pornography."
+  - term: "Referral to prosecutors"
+    desc: "Police sending their case files to prosecutors. It does not mean guilt has been established."
+insight:
+  slug: "available-photo-is-not-consent"
+  label: "An available photo is not authorization to generate"
+  quote: "That a real person's photograph can be obtained does not authorize generating from it; unless the subject's authorization is checked before generation and publication, recipients cannot tell from the image whether it was made without permission."
 industries: ["ai"]
+operations: ["disclosure"]
 controls:
   - slug: "check-origin"
     item: "Bind the source material and the person's consent to each generated image so recipients can check it"
   - slug: "hold-unverified"
     item: "Hold generation and publication until the person's consent is confirmed"
 attack_method: "ai-misuse"
-impact: "123 sexual deepfake cases of minors in six months"
+impact: "Police in Japan identified 123 sexual deepfake cases involving minors in six months (NPA)"
+takeaway: "In the NPA's figures, close to 70% of perpetrators were students at the same school. Check the subject's own authorization before generating from, or publishing, a real person's photograph."
+self_check: "Before generating from a real person's photograph, do you check that the person pictured authorized the use?"
 countries: ["jp"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-On August 3, 2026, Japan's National Police Agency reported that police nationwide had identified 123 cases involving sexual deepfake images and videos of minors in January–June 2026 — double the 60 recorded in the same period last year, and past the 114 recorded across all of last year in half the time. Nine in ten victims are junior- and senior-high students, and close to 70% of perpetrators were classmates or students at the same school. Reported the same day: police had arrested a 32-year-old man for using generative AI to turn photographs of real women into sexual images and posting them, and a 17-year-old who commissioned the images is to be referred to prosecutors. Detection — statistics and investigation — worked. **What was missing is the layer that verifies, at generation and at publication, whether use of a real person's likeness was authorized by that person.**
+According to the National Police Agency, nine in ten victims are junior- or senior-high students, and only 7 cases involved someone met through social media. The same day, it was reported that the Metropolitan Police Department had arrested a company employee for posting to a social-media message board sexual images made by altering photographs of real women with generative AI, and that a high-school student who commissioned the images would be referred to prosecutors. Statistics and investigation grasp harm after publication. <strong>That a real person's photograph can be obtained does not authorize generating from it; unless the subject's authorization is checked before generation and publication, recipients cannot tell from the image whether it was made without permission.</strong>
 
-## 2. What happened
+## 2. What got through
 
-- Per the NPA's August 3, 2026 announcement, police nationwide identified 123 cases involving sexual deepfake images and videos of minors in January–June 2026, against 60 in the same period a year earlier — and past the 114 for all of last year.
-- By victim: 79 junior-high students (the largest group), 38 senior-high students, 3 elementary students, 3 unknown. Nine in ten are junior- or senior-high students.
-- By perpetrator: 83 cases involved a classmate or a student at the same school — close to 70% — against 7 involving someone met through social media.
-- Around the same time, it was reported on August 3 that the Metropolitan Police Department had arrested — by August 2 — a 32-year-old company employee, for using generative AI to turn photographs of real women into sexual images and posting them to a social-media message board where anyone could view them. The charges are violation of the Act on Child Pornography (public display) and defamation.
-- In interrogation the suspect said he had altered roughly 300 images and actually posted between 100 and 200 of them, and that half of those had been commissioned by the high-school student.
-- The victims are three women in their twenties and a woman in her forties. For the woman in her forties, a photograph taken when she was a junior-high student was used as source material — which is why the Act on Child Pornography applied. The source images existed on the internet and on social media; how they were obtained is still under investigation. The suspect was not acquainted with the women, and some images are reported to have been taken from material third parties had uploaded illegally.
-- The suspect had a paid subscription to a generative AI site at roughly ¥3,000 a month.
-- A 17-year-old high-school student is reported to have posted a woman's photograph on social media and commissioned the images; police said he would be referred to prosecutors on the same two charges.
+- **What got through**: Generating sexual images and videos from photographs of real people, and posting or sharing them. The NPA's statistics give the number of such cases police identified nationwide and the breakdown of victims and perpetrators. In the Metropolitan Police case reported the same day, images altered with generative AI were posted to a social-media message board where anyone could view them.
+- **What the receiving side gets**: In general, a generation service receives the source photograph and the instruction, but not whether the person pictured agreed to the use. The place it is posted to receives only the image, and a recipient cannot tell from the image itself whether it was made from a real person's photograph without permission.
+- **Relationship to the perpetrator**: Close to 70% of perpetrators were classmates or students at the same school as the victim (NPA). The source photographs are close at hand, and the places they are posted to are in everyday use.
+- **Not disclosed**: For the cases in the statistics, the breakdown of generation tools and of posting and sharing venues. How the source photographs in the Metropolitan Police case were obtained is reported to be under investigation.
 
-The harm arises through the following chain.
+## 3. What to check
 
-1. Photographs of a real person exist online in some other context — a competition record, a school event, a social-media post, or a copy reposted by a third party without permission.
-2. Those photographs are acquired as source material. At acquisition, no step verifies the subject's authorization.
-3. They are altered into sexual images using a commercial generative AI service. At generation, again, no step verifies the subject's authorization.
-4. The result is posted to a social-media message board where anyone can view it. The recipient cannot tell from the image itself whether it was made without authorization from a real person's photograph.
-5. Awareness of the harm begins only when the subject or someone around them notices and comes forward, or when an investigation uncovers it. That is the stage at which the statistics register it.
+The condition that holds whatever the route is this: before generating from a real person's photograph, and before the output is published, check that the person pictured authorized the use, separately from whether the material can be obtained.
 
-## 3. Timeline — disclosure and response
+- **Who approves**: The person pictured. A photograph being on the internet or social media does not stand in for agreement to its use in generation.
+- **Where the check happens**: Just before generation, and just before posting or sharing. Generation and publication that cannot be matched to the subject's authorization are held before they succeed.
+- **What remains**: A record of which source material and which authorization each output rests on, in a form that shows authorization exists without handing over the subject's identity or contact details, so that checking authorization does not mean collecting data on people who may be harmed.
 
-- 2025-12-18: The NPA publishes statistics on sexual deepfake harm to those under 18 for the first time (79 consultations for January–September 2025), showing that more than half of perpetrators were connected to the same school, and releases awareness material on preventing both victimization and offending.
-- 2026-08-03: The NPA reports 123 identified cases for January–June 2026 — double the 60 in the same period last year, and past the 114 for all of last year in half the time.
-- By 2026-08-02: The Metropolitan Police Department arrests a 32-year-old company employee on suspicion of violating the Act on Child Pornography (public display) and of defamation (reported August 3), and indicates that the 17-year-old who commissioned the images will be referred to prosecutors.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Figure 1</span><span class="rx-ex-t">"Detection" versus a "pre-execution check"</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking the subject's authorization before generating from, or publishing, a real person's photograph, and keeping a record. Detection means grasping the harm after publication; here, the NPA's statistics and police investigation did that.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check the pictured person's authorization before generation and publication</div>
+<div class="rx-zone gapz"><b>What the NPA reported</b><span>Cases identified in six months<br>passed all of last year</span></div>
+<div class="rx-zone det"><b>Detection · statistics and investigation worked</b>Cases identified; creator and commissioner charged</div>
+<div class="rx-g g1"><div class="t">SOURCE</div><b>Photos of a real person exist online or on social media</b></div>
+<div class="rx-g g2"><div class="t">GENERATE</div><b>Altered into sexual images with a generative AI service</b></div>
+<div class="rx-g g3"><div class="t">POST</div><b>Placed on a message board where anyone can view them</b></div>
+<div class="rx-g g4"><div class="t">08-03</div><b>NPA publishes the first-half statistics</b></div>
+</div>
+</figure>
 
-> Note: the facts here come from wire-service and national-newspaper reporting of the NPA's announcement. The person arrested is, as of writing, a suspect and not a convicted party. Individual names, places of residence, and details that could identify victims are omitted, as they are not needed for the structural analysis. This Brief is not a condemnation of an individual case but an examination of a structure in which the provenance of material generated from a real person is never verified at generation or at publication.
+The NPA's statistics and the Metropolitan Police investigation made visible the breakdown of victims, the relationship of perpetrators to them, and even who commissioned the images, but all of it was grasped after generation and publication had happened. Other cases where authorization for a likeness or its provenance was not checked before generation or publication are [JAPRO's likeness and voice survey](https://lemma.frame00.com/critical/briefs/105-japro-likeness-voice-ai-provenance/), [YouTube's fake celebrities](https://lemma.frame00.com/critical/briefs/053-youtube-deepfake-likeness-provenance/) and [Grok's deepfake consent](https://lemma.frame00.com/critical/briefs/050-grok-deepfake-consent-provenance/). That a provenance mark embedded in the output could be removed echoes [SynthID watermark removal](https://lemma.frame00.com/critical/briefs/011-synthid-watermark-reverse-engineering/).
 
-The response and industry movement after disclosure:
+## 4. What Lemma does
 
-- Japan has no standalone statute directly punishing sexual deepfakes; this case, like others, is charged through a combination of existing law — the Act on Child Pornography (public display) and defamation. A gap remains between the shape of the harm and the shape of the statutes.
-- Handling the commissioning party's liability in parallel signals an emerging practice of extending responsibility beyond whoever executed the generation. But this too is after-the-fact attribution, not a mechanism that prevents the generation from succeeding.
-- Since December 2025 the NPA has published awareness material aimed at both potential victims and potential offenders — a response calibrated to the statistical finding that most perpetrators are students at the same school.
+**Lemma builds the check in section 3 into the point just before generating from a real person's photograph, and just before the output is posted or shared.** It does not judge whether an image is fake or file takedown requests on anyone's behalf; it checks, before they succeed, that generation and publication carry the pictured person's own authorization.
 
-## 4. Why it wasn't stopped
+### Industries and operations to watch
 
-The failure here is not only a gap in the law, nor slowness in investigation. It is that at neither point — when a real person's photograph becomes source material, nor when the generated image reaches a recipient — was there **a layer that independently verified whether the use was authorized by the subject**.
+- **Industry · AI**: Services that generate images or videos depicting real people from their photos or videos.
+- **Operation · Disclosure & data release**: Venues that accept posts and shares of user-made images and videos and show them to an unspecified audience.
 
-Detection worked. The NPA built the statistics, identified the cases, and made visible both the breakdown of victims and the relationship of perpetrators to them. Investigators arrested the creator and extended liability to the person who commissioned the work. What was missing came earlier: nothing verified that the use was authorized — not when a competition or school-event photograph was taken up as source material, and not when the altered image was posted.
+### Current controls vs Lemma
 
-> That nine in ten victims are junior- and senior-high students, and close to 70% of perpetrators are students at the same school, shows this is not remote offending by anonymous attackers. The source photographs are close at hand, the generative capability costs a few thousand yen a month, and the destination is a space in everyday use. There is a limit to how far after-the-fact enforcement reaches.
+The pattern in this case is column 1 (generating from a real person's photograph) and column 2 (posting or publishing the output).
 
-The same structure runs through [Brief 105 (JAPRO's likeness and voice survey)](/critical/briefs/105-japro-likeness-voice-ai-provenance/), where a 100% takedown rate still did not stop the same person's models from reappearing; [Brief 053 (YouTube's fake celebrities)](/critical/briefs/053-youtube-deepfake-likeness-provenance/), where likeness provenance was never fixed before generation and publication; and [Brief 050 (Grok's deepfake consent)](/critical/briefs/050-grok-deepfake-consent-provenance/), where a default permission state passed as proof of consent. [Brief 011 (SynthID watermarking)](/critical/briefs/011-synthid-watermark-reverse-engineering/) shows that a provenance mark embedded in the artifact can be both removed and forged. In each, whether output *looks authentic* and whether use of its source material *is authorized now* are different questions.
+| Control | Generating from a real person's photograph | Posting or publishing the output |
+| --- | --- | --- |
+| NPA awareness material on preventing victimization and offending | Partial | Partial |
+| **Lemma (pre-execution check)** | Effective | Partial |
 
-## 5. What proof would have changed
+The awareness material targets the statistical finding that most perpetrators are students at the same school, and is not built into the act of generating or posting itself. Lemma checks the pictured person's authorization before generation. A check before posting can hold images that carry no authorization record, but it does not judge whether an image without a record was made from a real person. Nor does Lemma find or remove images already published.
 
-Proof-as-auth inserts one layer into the path ahead of each act of generating from a real person: an independent verification of the subject's authorization. Instead of leaving takedown requests and after-the-fact enforcement as the only remedy, it asks — before generation succeeds — whether this person's likeness may be used for this purpose. If the answer is "no proof of authorization," both generation and publication are refused before they succeed.
+Note: Lemma's check works only when it is built into the generation service or the posting venue and the subject's authorization is issued and managed separately from the person requesting generation. It does not act on images made by a service without the check and posted to a venue without it. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-Lemma's design against this primitive:
+### Checklist
 
-- **Verify authorization before generation.** Bind likeness-based generation to a verifiable authorization issued by the subject rather than to the mere availability of source material. Requests carrying no proof are separated out before generation succeeds.
-- **Bind provenance to the output.** Attach the source material's origin and the authorization's provenance to the output itself, in tamper-evident form, so a recipient can independently check whether the image was made from authorized material.
-- **Selective disclosure of the attribute.** Make "this use is authorized" provable on its own, without handing over the subject's identity or contact details, so that verifying authorization does not require accumulating the victim's data.
-- **Verify along the distribution path.** Build provenance verification into the posting and sharing path, stopping output that lacks proof of authorization before it reaches a public surface — putting the check at the point of publication rather than at removal after the fact.
+Three items to confirm for generating from and publishing real people's photographs
 
-Lemma is not a product that judges whether output is fake, nor one that files takedown requests. Its scope is to verify the subject's authorization independently before likeness-based generation and publication succeed, and to exclude output lacking proof. Detection (statistics, case identification, investigation and charges, takedown requests) and pre-execution proof (an audit trail that independently verifies authorization before generation and publication) are complementary, not alternatives. The first grasps and remedies harm that has occurred; the second establishes trust before harm can occur. For design detail see ["Proof-as-Auth: sign in without ever sending your key"](/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for scope, [Pillar 01 — Verifiable Origin](/pillars/#provenance).
+- Do you bind to each output a record of which source material and which authorization it was made from?
+- Can you hold publication of output whose subject's authorization cannot be matched, before it is published?
+- When a report comes in, can you trace the source material and authorization record for the output concerned?
+
+## 5. Facts and timeline
+
+- **Announcement**: Published by the NPA on 2026-08-03. Police nationwide identified 123 cases involving sexual deepfake images and videos of minors in January–June 2026, double the 60 in the same period a year earlier and past the 114 for all of last year.
+- **Victims**: 79 junior-high students (the largest group), 38 senior-high students, 3 elementary students, 3 unknown. Nine in ten are junior- or senior-high students (NPA).
+- **Perpetrators**: 83 cases involved a classmate or a student at the same school, close to 70%, against 7 involving someone met through social media (NPA).
+- **Case reported the same day**: The Metropolitan Police Department had arrested a company employee (32) on suspicion of violating the Act on Child Pornography (public display) and of defamation, for using generative AI to turn photographs of real women into sexual images and posting them to a social-media message board where anyone could view them. The suspect reportedly said he had altered roughly 300 images, posted between 100 and 200 of them, and that half had been commissioned by a high-school student.
+- **Source material and the law applied**: The source images were real photographs that existed on the internet and social media, some reportedly taken from material third parties had uploaded illegally. For one victim, a photograph from her junior-high years was used, which is why the Act on Child Pornography applied. How the images were obtained is reported to be under investigation.
+- **Generation tool**: The suspect reportedly had a paid subscription to a generative AI site at roughly ¥3,000 a month.
+- **Commissioning**: Police said a 17-year-old high-school student, who is reported to have posted a woman's photograph on social media and commissioned the images, would be referred to prosecutors on the same two charges.
+
+### Timeline
+
+- **2025-12-18**: The NPA publishes statistics on sexual deepfake harm to those under 18 for the first time (79 consultations for January–September 2025), showing that more than half of perpetrators were connected to the same school, and releases awareness material on preventing both victimization and offending.
+- **2026-08-02**: The Metropolitan Police Department has arrested the company employee (32) by this date (reported August 3).
+- **2026-08-03**: The NPA reports 123 identified cases for January–June 2026.
+
+> The facts here rest on the NPA's announcement and on wire-service and national-newspaper reporting of it. Case counts and breakdowns are the NPA's. The person arrested is, as of writing, a suspect and not a convicted party. Individual names, places of residence, details that could identify people who were harmed, and how the images were made are omitted. This Brief does not blame any particular person or organization. What has not been disclosed does not mean there were no controls.
+
+### After disclosure
+
+- **The law applied**: Japan has no standalone statute directly punishing sexual deepfakes; the Metropolitan Police case, too, is charged through a combination of existing law, the Act on Child Pornography (public display) and defamation.
+- **Liability for the commissioning party**: The high-school student who commissioned the images is also to be referred to prosecutors, showing responsibility being extended beyond whoever executed the generation. Both are after-the-fact attributions of responsibility.
+- **Awareness**: Since December 2025 the NPA has published awareness material aimed at both potential victims and potential offenders, a response to the statistical finding that most perpetrators are students at the same school.
 
 ## 6. Sources
 
@@ -99,4 +156,4 @@ Lemma is not a product that judges whether output is fake, nor one that files ta
 - **National Police Agency (primary, awareness material)**: "Awareness material for preventing sexual deepfake harm to children" (2025-12-18, in Japanese) — <https://www.npa.go.jp/newlyarrived/2025/20251218001.html>
 - **Jiji Press (first release of the 2025 statistics)**: "79 consultations involving under-18s over sexual fake imagery; more than half within schools — NPA discloses for the first time" (2025-12-18, in Japanese) — <https://www.jiji.com/jc/article?k=2025121800120&g=soc>
 
-References: ["The last layer left for cyber defense in the age of AI"](/blog/detection-is-not-proof/) (Lemma, 2026-05) · [Pillar 01 — Verifiable Origin](/pillars/#provenance) · [Brief 105 (JAPRO's likeness and voice survey)](/critical/briefs/105-japro-likeness-voice-ai-provenance/) · [Brief 011 (SynthID watermarking)](/critical/briefs/011-synthid-watermark-reverse-engineering/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
