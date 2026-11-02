@@ -1,7 +1,7 @@
 ---
 brief_no: 61
-title: "Hyundai：AI の自動ブレーキが、危険がないのに勝手に作動し追突を招いた — 人間の運転に割り込む AI 判断が、行動の前に独立検証されない構造（NHTSA）"
-title_en: "Hyundai: driver-assist AI braked on a threat that wasn't there — an AI decision overriding the driver, not independently verified before acting (NHTSA)"
+title: "Hyundai: Driver-assist AI braked with no real danger, and cars were rear-ended (NHTSA recall report)"
+title_en: "Hyundai: Driver-assist AI braked with no real danger, and cars were rear-ended (NHTSA recall report)"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["data-provenance", "ai-bias-harm"]
@@ -11,98 +11,142 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["049-tesla-robotaxi-control-attribution", "043-tesla-fsd-self-reported-safety", "012-williams-frt-wrongful-arrest"]
 status: published
-gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "AI の自動ブレーキが危険なく誤作動し追突を招く — Hyundai"
 og_lead_en: "Driver-assist AI braked with no real threat, causing rear-end crashes — Hyundai"
-gap_detected: "Owner reports and NHTSA complaints were aggregated to grasp how many malfunctions occurred, leading to a recall."
-gap_missing: "There was no layer to independently check before braking whether the automatic braking was truly a necessary decision, so an erroneous judgment was executed directly as a hard stop."
-gap_fix: "Before an AI decision that overrides human operation, independently verify with Lemma that this action is warranted right now, and prevent it up front."
+layout: "report"
+sections: "proof"
+gate: "agent-operation"
+og_kicker_ja: "AI の安全機能の誤作動 · 自動ブレーキ"
+og_kicker_en: "AI SAFETY FEATURE MALFUNCTION · AUTOMATIC BRAKING"
+og_headline_ja: "危険がないのに、\nAI の自動ブレーキが作動した。\n<accent>人の運転に割り込む判断が、そのまま実行された</accent>"
+og_headline_en: "With no real danger,\nthe AI's automatic braking activated.\n<accent>A decision cutting into human driving was executed as is.</accent>"
+key_figures:
+  - value: "421,078"
+    unit: "vehicles"
+    label: "Covered by the recall (NHTSA 26V316)"
+    tone: "alert"
+  - value: "376"
+    unit: "reports"
+    label: "Reports about Forward Collision-Avoidance (FCA) activation (2024-10-28 to 2026-04-27)"
+  - value: "4"
+    unit: "crashes"
+    label: "Cases where a Hyundai was rear-ended; four injuries were also alleged (NHTSA recall report)"
+glossary:
+  - term: "Forward Collision-Avoidance (FCA)"
+    desc: "A safety feature that perceives a lead vehicle or obstacle with a front camera and, when it judges a crash is imminent, brakes automatically."
+  - term: "Phantom braking"
+    desc: "Automatic braking that applies unintentionally when there is no danger."
+  - term: "ODI (Office of Defects Investigation)"
+    desc: "The part of the US NHTSA (the road safety agency of the Department of Transportation) that investigates vehicle defects."
+insight:
+  slug: "braking-without-check"
+  label: "Braking with no danger"
+  quote: "Without a check, before it runs, that an AI decision cutting into human driving is needed, a wrong decision executes as a legitimate safety feature."
 industries: ["manufacturing"]
 controls:
   - slug: "hold-unverified"
-    item: "Run an automatic braking action that overrides the driver only when its validity has been independently confirmed"
+    item: "Run an automatic braking action that cuts into human driving only when its necessity has been checked before it runs"
   - slug: "audit-trail"
     item: "Record each braking decision and its telemetry in a form that cannot be rewritten afterwards"
 attack_method: "ai-misuse"
 impact: "4 rear-end crashes and 4 injuries alleged"
+search_title: "Hyundai phantom braking recall"
+search_description: "Hyundai recalled 421,078 vehicles for braking with no danger (NHTSA 26V316): what happened and what to do."
+self_check: "Before an AI decision cuts into human driving, is there a mechanism that checks the action is needed?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-In May 2026, Hyundai recalled vehicles (NHTSA 26V316) because a software fault could make Forward Collision-Avoidance (FCA) brake earlier than the driver expects — phantom braking that hits with no danger and gets the car rear-ended. Aggregating owner reports into a recall cannot establish, before the braking, whether it is genuinely needed; a malfunction executes as a legitimate safety feature, indistinguishable from normal activation. What is structurally missing is a layer that verifies, before the action, the validity of an AI decision cutting into human driving.
+A software fault could make the Forward Collision-Avoidance (FCA) automatic braking activate too early, even when there is no danger, and the vehicles were recalled. Detection, by gathering owner reports and complaints that lead to a recall, works after the activation. <strong>Without a check, before it runs, that an AI decision cutting into human driving is needed, a wrong decision executes as a legitimate safety feature.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Automatic braking with no danger present. A software fault in the front (multi-function) camera can make FCA activate earlier than appropriate (NHTSA recall report). In four cases a Hyundai was rear-ended, and four injuries were alleged.
+- **What reached the receiving side**: In general, the braking control executes the braking command FCA issues without knowing whether danger is actually imminent. A malfunction executes as a legitimate safety feature, and from the vehicle's side it cannot be told apart from a normal activation.
+- **Detection route**: Owner reports, complaints to NHTSA, the ODI inquiry and the recall. All of them act after the harm and the reports.
+- **Not disclosed**: The sources reviewed do not give the details of the conditions under which the fault occurs, whether the vehicle had another mechanism that could stop the activation, or a breakdown of the reports beyond the four rear-end crashes.
 
-- **Subject**: Model-year 2025–2026 Hyundai Santa Cruz, Tucson, Tucson Hybrid, and Tucson Plug-In Hybrid. 421,078 vehicles recalled.
+## 3. What to check
+
+Whatever the route, the condition for telling them apart is that whoever executes an automatic braking action that cuts into human driving checks, before it runs and outside the camera and software that perceived and judged, that the activation is needed.
+
+- **Who approves**: The side that sets the conditions for activating automatic braking (the design of the vehicle's safety function). An activation goes through when a condition showing it is needed is met, separate from the camera's own judgment.
+- **Where it is checked**: Just before the automatic braking executes. Where perception and judgment complete inside the camera and software, check not only that internal judgment but a condition that can be checked from outside. An activation that cannot be checked is held and stopped until it can be.
+- **What is recorded**: Which activation was taken (or held), on which condition, and the telemetry at that time. Kept outside the process that made the decision, in a form that cannot be rewritten afterwards.
+
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before the automatic braking runs and outside the camera's own judgment, that the activation is needed, and keeping a record. Detection means noticing after the activation, from reports and complaints. Dates are those each company or authority confirmed or published.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before braking, check that the activation is needed, outside the camera's judgment</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Hard braking can apply with no danger<br>4 rear-end crashes and 4 injuries alleged</span></div>
+<div class="rx-zone det"><b>Detection · worked after the activation</b>Owner reports and complaints were gathered and led to the recall</div>
+<div class="rx-g g1"><div class="t">2025-01</div><b>Owner survey surfaces a possible fault</b></div>
+<div class="rx-g g2"><div class="t">2025-09</div><b>ODI opens an inquiry</b></div>
+<div class="rx-g g3"><div class="t">2026-04-27</div><b>Reports reach 376</b></div>
+<div class="rx-g g4"><div class="t">2026-05</div><b>Recall of 421,078 vehicles</b></div>
+</div>
+</figure>
+
+Detection made visible how many occurred and led to the recall and the camera reflash. It works separately from a check before each activation. Another case where an AI decision led directly to an action that could not be undone, without an independent check, is [Brief 012](/critical/briefs/012-williams-frt-wrongful-arrest/) (a facial-recognition match led directly to a compulsory administrative action).
+
+## 4. What Lemma does
+
+**Lemma builds the check in section 03 into the side that executes an AI decision cutting into human driving (automatic braking and the like).** It does not judge whether the perception or decision itself was right; before the action runs, it checks, outside the process that made the decision, whether the activation meets a condition set in advance, and keeps a record.
+
+### Industries and operations to watch
+
+- **Industry · Manufacturing**: Organizations that build automatic control functions that cut into human operation into vehicles or machinery.
+- **Operations · Teams that build AI decisions into their work**: Work in which an AI decision cuts into an action while a human remains ultimately responsible.
+
+### Current controls vs Lemma
+
+The route in this case is an automatic braking activation that cuts into human driving.
+
+| Control | Automatic braking that cuts into human driving | Understanding afterwards, from records |
+| --- | --- | --- |
+| Gathering owner reports and NHTSA complaints, and the recall | Not effective | Effective |
+| Software update (camera reflash, retuning activation timing) | Partial | Not relevant |
+| **Lemma (pre-execution check)** | Partial | Effective |
+
+Gathering reports and the recall are indispensable for grasping how many occurred, evaluating safety and preventing recurrence, but they act after the activation. A software update retunes activation timing and improves the distribution of decisions; it does not check each activation as needed before it runs. Lemma checks, before the activation and outside the process that made the decision, that a condition set in advance is met, and binds the decision and telemetry to a record at the moment of issuance. After the fact, the authenticity of the record can be confirmed.
+
+Note: Lemma's check works only when it is built into the mechanism that executes automatic braking and the condition showing an activation is needed can be defined and managed outside the process that made the decision. If the condition itself is wrong, a wrong activation also goes through. Lemma does not fix errors in the camera's perception. How the necessity of braking could be checked in the short time before it runs is not clear from the sources reviewed. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+
+### Checklist
+
+Three things to confirm for organizations whose products let an AI decision cut into human operation
+
+- Before an automatic control action cuts into human driving or operation, do you check that it is needed?
+- Do you record each automatic control decision and its telemetry in a form that cannot be rewritten afterwards?
+- Beyond gathering malfunction reports, can you confirm afterwards whether each activation was warranted?
+
+## 5. Facts and timeline
+
+- **Subject**: Model-year 2025–2026 Hyundai Santa Cruz, Tucson, Tucson Hybrid and Tucson Plug-In Hybrid. 421,078 vehicles are covered by the recall.
 - **Identifier**: NHTSA Recall 26V316 (Hyundai Motor America; Hyundai internal recall 302).
-- **The fault**: A multi-function (front) camera software fault can make the Forward Collision-Avoidance (FCA) system activate earlier than appropriate, causing unintended automatic braking when no danger is present (so-called phantom braking).
+- **The fault**: A software fault in the front (multi-function) camera can make FCA activate earlier than appropriate, causing unintended automatic braking when no danger is present (so-called phantom braking).
 - **Reports and harm**: 376 FCA-activation reports from 2024-10-28 to 2026-04-27. In four of them a Hyundai was rear-ended, and four injuries were alleged.
-- **Remedy**: A reflash of the multi-function (front) camera, updating activation timing and the distance judgment to the lead vehicle to better match driver expectation. Dealer/owner notification is set for 2026-07-17.
-- **The core**: Finding, reporting, and recalling the fault is after-the-fact remediation. The issue is that **FCA's AI perception→braking decision is not independently verified before it takes the physical action of braking.** Even when the judgment is wrong, the action executes, overriding human control.
+- **Remedy**: A reflash of the front camera, updating activation timing and the distance judgment to the lead vehicle to better match driver expectation. Dealer and owner notification is set for 2026-07-17.
+- **How it came to light**: Hyundai first became aware of the potential fault through an owner survey in 2025-01. ODI opened an inquiry in 2025-09 into complaints about the Tucson's FCA, and Hyundai briefed ODI five times through 2026-05.
 
-This incident stems from an AI decision that cuts into human driving (automatic braking) not being independently verified before the action. The path by which the failure propagates into physical harm is as follows.
+### Timeline
 
-1. **Perception and judgment**: The front camera perceives the lead vehicle/obstacle and FCA judges "a crash is imminent." Perception and judgment complete inside the camera and software.
-2. **Cutting into human control**: FCA brakes automatically in priority over the human driver's operation. Whether and when to cut in is left to the AI's judgment, not independently verified from outside before the action.
-3. **Action from a wrong judgment**: Due to the software fault, premature activation occurs even with no danger. A wrong judgment executes as the physical action of hard braking.
-4. **Secondary harm**: The unexpected hard braking causes a following car to rear-end it. The AI's error spreads to the safety not only of its own car but of those around it.
-5. **After-the-fact detection and remediation**: Through owner reports, complaints to NHTSA, and the ODI inquiry, it is remediated with a recall and camera reflash. This is an after-the-fact chain that acts after the harm and the reports.
+- **2024-10-28**: FCA-activation reports begin to accumulate (the start of the NHTSA reporting window).
+- **2025-01**: Hyundai first becomes aware of the potential fault through an owner survey.
+- **2025-09**: ODI opens an inquiry into complaints about the Tucson's FCA.
+- **2026-04-27**: FCA-activation reports reach 376 (including 4 rear-end crashes and 4 injuries).
+- **2026-05**: Hyundai recalls 421,078 vehicles (26V316).
+- **2026-07-17**: Planned date for dealer and owner notification.
 
----
+> The vehicle count (421,078), report count (376), rear-end crashes and injuries (four each), recall number (26V316) and affected models rest on the NHTSA recall report. This Brief does not blame Hyundai. What was not disclosed does not mean controls were absent.
 
-## 3. Timeline — disclosure and response
+### After disclosure
 
-- 2024-10-28: From this date, FCA-activation reports begin to accumulate (the start of the NHTSA reporting window).
-- 2025-01: Hyundai first becomes aware of the potential fault through an owner survey.
-- 2025-09: NHTSA's Office of Defects Investigation opens an inquiry into FCA complaints on the Tucson; Hyundai briefs ODI five times through 2026-05.
-- 2026-04-27: FCA-activation reports reach 376 in total (including 4 rear-end crashes and 4 injuries).
-- 2026-05: Hyundai issues the 421,078-vehicle recall (26V316).
-- 2026-07-17: Planned dealer/owner notification date.
-
-> Note: The count (421,078), the number of reports (376), the crashes/injuries (4 each), the recall number (26V316), and the affected models are based on the NHTSA recall document.
-
-The response and industry movement after disclosure:
-
-- **Hyundai / NHTSA**: Hyundai is remediating via a front-camera reflash, with owner notification planned for 2026-07-17. NHTSA ODI confirmed the path to the recall through inquiries from September 2025.
-- **The limits-of-remediation question**: Because the remedy is a "retuning of activation timing," there is a need to distinguish improving the decision distribution from independent verification before each activation.
-- **A cross-industry issue**: ADAS, unlike full autonomy, has AI judgment cut into human driving. The same structure — "an AI judgment that cuts into human work is not independently verified before the action" — is emerging as a design challenge across every domain that embeds AI judgment into human decisions and operations, not just automobiles.
-
-Operating with AI judgment cutting into action while a human bears ultimate responsibility is close to the standard posture of enterprises adopting AI. The absence of a layer that fixes that judgment to an independently verifiable trail at the moment of the act is not a problem of a specific model; it remains a trust-design challenge for embedding AI into operations broadly.
-
----
-
-## 4. Why it wasn't stopped
-
-The central **failure primitive is "an AI decision that cuts into human driving (FCA's automatic braking) is not independently verified before the physical action, and the correctness of the judgment depends on processing inside the camera and software and its after-the-fact detection."**
-
-The implication of this incident lies precisely in its **not being full autonomy.** Unlike the full-autonomy control attribution of [Brief 049](/critical/briefs/049-tesla-robotaxi-control-attribution/) (Tesla Robotaxi), here a human keeps driving and the AI's safety judgment cuts in on top. This mirrors where enterprises are now embedding AI into human work: with a human bearing ultimate responsibility, the AI perceives, judges, and sometimes overrides human operation to act. If that AI judgment is not independently verified before the action, a wrong judgment executes as a physical/operational action and the harm spreads to those around. Phantom braking is a microcosm of this.
-
-It is the same shape as [Brief 012](/critical/briefs/012-williams-frt-wrongful-arrest/) (a facial-recognition determination led directly to a coercive administrative disposition without independent verification), moving "an AI decision leads directly to an irreversible action without independent verification" into production-car driver assistance. It connects to [Brief 043](/critical/briefs/043-tesla-fsd-self-reported-safety/) (a safety attribute left as self-attestation, unverified) in that the AI's safety judgment sits outside independent verification. That the remedy is a "retuning of activation timing" also indicates the point: timing tuning improves the decision distribution, but is a separate chain from a layer that independently verifies, before each activation, whether "braking is really needed now."
-
-Owner reports, NHTSA ODI's inquiry, and Hyundai's recall and camera reflash are indispensable for grasping the harm, evaluating safety, and preventing recurrence, and this Brief does not negate that role. The reporting system and recalls are the basis on which society remediates the safety of AI features in production cars.
-
-At the same time, detection provides no material to independently establish — **before the action** — whether the automatic braking about to occur is a genuinely needed judgment. Phantom braking is an action FCA executed as a legitimate safety feature, indistinguishable on the vehicle side from normal activation. After-the-fact telemetry analysis and report aggregation make "how many occurred" visible, but not "was that activation independently verified, before the action, for the necessity of braking." A recall and a software update also retune activation timing after the fact, not independently before each activation.
-
----
-
-## 5. What proof would have changed
-
-Pre-execution attestation flips an AI decision that cuts into human driving from "verify it by telemetry after the fact" to "fix the validity of the judgment to an independently verifiable trail before the action." Bind "this automatic braking executed having met an independently verifiable condition" to a tamper-resistant provenance at the moment of the act, so each activation's validity can be independently verified without depending on after-the-fact record-keeping or retuning. Detecting the malfunction (the detection-style "what happened") and proving the AI decision ("was that action independently verified for validity before the action") are not substitutes but **complements**.
-
-Against the gap this incident exposed (an AI decision that cuts into human driving is not independently verified before the action), Lemma proposes a design that fixes, at the moment of the decision/act, its validity and authorization as an independently verifiable cryptographic proof.
-
-- **Provenance binding of the decision**: Tie an AI decision that cuts into human control (automatic braking, etc.) to a tamper-resistant provenance at the moment of the act, making "was this action independently verified for validity" verifiable after the fact.
-- **Record authenticity proof**: Bind decisions and telemetry at the moment of issuance via a docHash, making authenticity verifiable without depending on after-the-fact record-keeping or retuning.
-- **Independent-verification gate on decisions**: Aim for a design in which an action that overrides human control executes not on internal judgment alone, but only when an independently verifiable proof of validity is met.
-- **Selective disclosure**: Without exposing the internal perception model or implementation, disclose only the minimum — that "this action met the verification condition" — reconciling independent verification with the protection of sensitive information.
-
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this AI judgment was independently verified for validity before the action," without depending on after-the-fact remediation. Detection (after-the-fact reports, recalls, retuning) works on social evaluation and remediation; attestation (independent verification of the judgment at the moment of the act) works on proving the validity of the AI judgment — each complementary to the other.
-
----
+- **Hyundai / NHTSA**: Hyundai is remedying the fault with a front-camera reflash and plans to notify owners on 2026-07-17. ODI has reviewed the path to the recall through inquiries since 2025-09.
+- **Scope of the remedy**: The remedy retunes activation timing and improves the distribution of decisions. It works separately from a check, before each activation, that the activation is needed.
 
 ## 6. Sources
 
@@ -110,4 +154,4 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 - **Fox Business**: "Hyundai recalls over 421,000 vehicles to fix software bug causing unexpected braking" — <https://www.foxbusiness.com/lifestyle/hyundai-recalls-over-421000-vehicles-fix-software-bug-causing-unexpected-braking>
 - **The Brake Report**: "Hyundai Recalls 421,078 Vehicles for Phantom Braking" (376 reports, the remedy, 26V316) — <https://thebrakereport.com/hyundai-tucson-santa-cruz-fca-recall-26v316/>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/#inference), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left in AI-era cyber defense"](https://lemma.frame00.com/blog/detection-is-not-proof/)

@@ -1,7 +1,7 @@
 ---
 brief_no: 103
-title: "Ostium：オラクル署名鍵1本の侵害で、「未来の価格」が有効な署名付きで受理され $18M が払い出された"
-title_en: "Ostium — one compromised oracle signer key let \"future prices\" be accepted as validly signed, draining $18M"
+title: "Ostium：オラクルの署名鍵が侵害され、未来日付の価格が有効な署名つきで受理された(CoinDesk ほかの報道)"
+title_en: "Ostium: A compromised oracle signer key let future-dated prices be accepted with valid signatures (CoinDesk and others)"
 pillar: "01-verifiable-origin"
 primary_category: "data-provenance"
 secondary_categories: ["identity-auth", "bridge-config-trust"]
@@ -15,87 +15,131 @@ gate: "payment-instruction"
 version: "1.0"
 og_lead_ja: "Ostium — オラクル署名鍵1本の侵害で「未来の価格」が有効署名で受理され $18M 流出"
 og_lead_en: "Ostium — one compromised oracle signer key let \"future prices\" be accepted as validly signed, draining $18M"
-gap_detected: "The detection chain worked — Blockaid detected the attack in progress, Ostium grasped it within minutes and halted trading within an hour, and it is coordinating with law enforcement, SEAL 911, and third-party experts — containing the spread of harm; on-chain anomaly monitoring also helped confine the loss to about five minutes."
-gap_missing: "There is no layer that, at the moment a price report is reflected in a payout, independently establishes — decoupled from the validity of the signature — whether that signer is legitimate and uncompromised right now and whether the data is authentic and plausible (not future-dated, consistent with the market); a fake report carrying a valid signature passes signature verification correctly."
-gap_fix: "Before a price report is reflected in a payout, verify — decoupled from the validity of the signature, and independently through Lemma — that the signer is legitimate, uncompromised, and authorized for this scope, and that the data is authentic and satisfies its plausibility bounds (timestamp consistency, acceptable price range), and prevent it up front."
+layout: "report"
+sections: "proof"
+og_kicker_ja: "サイバー攻撃事例 · 署名鍵の侵害"
+og_kicker_en: "CYBERATTACK · SIGNER KEY COMPROMISE"
+og_headline_ja: "オラクルの署名鍵が侵害され、\n未来の価格が有効な署名で通った。\n<accent>最大約 1,800 万ドルが流出</accent>"
+og_headline_en: "A compromised oracle signer key\nlet future prices pass with valid signatures.\n<accent>Up to ~$18M drained.</accent>"
+key_figures:
+  - value: "18"
+    unit: "M USD"
+    label: "USDC drained from the public liquidity vault (OLP), as confirmed by a co-founder. Some reports say up to about $24 million"
+    tone: "alert"
+  - value: "~5"
+    unit: "min"
+    label: "How long the attack lasted: 14:18 to 14:23 UTC (confirmed by a co-founder)"
+  - value: "Within 1 hr"
+    label: "From Ostium grasping the attack within minutes to halting all trading"
+glossary:
+  - term: "Oracle and signer key"
+    desc: "An oracle brings information from outside the blockchain, such as prices, to programs on it. Each price report it delivers is signed with a signer key, and the receiving side verifies that the signature is correct."
+  - term: "OLP vault"
+    desc: "Ostium's public liquidity vault (the Ostium Liquidity Provider vault). Payouts for trades are drawn from it."
+  - term: "Perpetual futures on real-world assets (RWA)"
+    desc: "Futures with no expiry that track the price of real-world assets such as equities or commodities. Ostium offers them on Arbitrum."
+insight:
+  slug: "valid-signature-compromised-signer"
+  label: "A valid signature, a compromised signer"
+  quote: "An action that finalizes a payout on outside data goes through on a compromised key's signature unless, before it is finalized, it is checked not only that the signature is valid but also that the signer is legitimate right now and the data plausible."
 industries: ["finance"]
 controls:
   - slug: "hold-unverified"
     item: "Don't finalize payouts until the signer and the price data are confirmed legitimate"
 attack_method: "account-takeover"
 impact: "Up to roughly $18 million (USDC) drained"
+takeaway: "One oracle signer key was compromised, and future-dated prices were accepted with valid signatures. Before outside prices are reflected in a payout, check the signer's legitimacy and the data's plausibility separately from the validity of the signature."
+self_check: "Before a payout is finalized on a price from outside, do you have a mechanism that checks, separately from the signature, that the signer is still legitimate?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-On 2026-07-15, Ostium — a decentralized exchange offering real-world-asset (RWA) perpetual futures on Arbitrum — lost up to roughly $18 million (USDC) in an attack that turned its own price-feed infrastructure against it. The attacker compromised a single oracle signer key and submitted price reports carrying future-dated timestamps. The protocol verified those signatures correctly — the signatures were valid — but what it verified was "is the signature correct," not "is that signer legitimate and uncompromised" or "is that price data authentic and plausible." Through delegated actions the attacker ran roughly 20 loop trades, manufacturing fictitious profits without ever taking on real market risk, and drew payouts from the public liquidity vault (the OLP vault). The amount drained ranges from the roughly $18 million confirmed by a co-founder to as much as roughly $24 million in some reports. The event lasted about five minutes, from 14:18 to 14:23 UTC; the security firm Blockaid detected it while it was in progress, and Ostium grasped what was happening within minutes and halted trading within an hour. What was missing is a layer that, decoupled from the validity of the signature, independently establishes the legitimacy of the signer and the authenticity and plausibility of the data before a payout is finalized.
+The attacker compromised an oracle signer key and submitted price reports carrying future-dated timestamps, signed with it. The signatures were valid and passed the protocol's signature verification. What the verification answered was "is this signature correct," not "is that signer legitimate and uncompromised right now" or "is that price data authentic and plausible." <strong>The validity of a signature is a different question from the legitimacy of the signer and the plausibility of the data; unless both are checked separately from the signature before a payout is finalized, a signature from a compromised key goes through.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Payouts from the OLP vault based on future-dated price reports. The attacker made losing trades appear to be winning trades and, through delegated actions, ran roughly 20 loop trades, manufacturing fictitious profits without taking on real market exposure.
+- **Signature verification**: It worked. The reports' signatures were valid, so they passed correctly.
+- **What reached the receiving side**: In general, signature verification answers whether a report comes from a registered signer. Whether the signer is still legitimate and uncompromised, and whether the timestamp and price are plausible (not future-dated, consistent with the market), are different questions from the validity of the signature, and cannot be told from the signature.
+- **Detection**: The security firm Blockaid detected the attack while it was in progress. Ostium grasped it within minutes and halted trading within an hour. On-chain anomaly monitoring also helped confine the loss to about five minutes.
+- **Not disclosed**: How the signer key was compromised (leak, theft, custody failure, etc.). The confirmed total loss, the root cause, the final post-mortem and any compensation plan.
 
-- **Subject**: Ostium, a decentralized exchange offering RWA-linked perpetual futures on Arbitrum. What was affected was the public liquidity vault (the Ostium Liquidity Provider vault, OLP).
-- **Date and time**: 2026-07-15, roughly five minutes from 14:18 to 14:23 UTC. Co-founder Kaledora Kiernan-Linn confirmed the time window and the impact on the OLP.
-- **Method**: the attacker compromised an oracle signer key. They submitted price reports with future-dated timestamps, making losing trades appear to be winning trades. Through delegated actions they ran roughly 20 loop trades, manufacturing fictitious profits without taking on real market exposure, and drew payouts from the vault.
-- **Scale of the drain**: figures range by source, from the roughly $18 million (USDC) confirmed by a co-founder to as much as roughly $24 million in some reports. The roughly $18 million corresponds to about 28% of the protocol's TVL (roughly $63 million).
-- **Detection and response**: the blockchain security firm Blockaid detected the attack while it was in progress. Ostium grasped what was happening within minutes and halted trading within an hour. It is coordinating with law enforcement, SEAL 911, and third-party security experts.
+## 3. What to check
 
-The incident came together as the following chain.
+Whatever the route, the condition for telling them apart is that, before outside data is reflected in a payout, it is checked, separately from the validity of the signature, not only that the signature is valid but also that the signer is legitimate, uncompromised and authorized for this scope right now, and that the data is authentic and within its plausibility bounds (timestamp consistency, acceptable price range).
 
-1. **Compromise of the oracle signer key**: the attacker compromises the signer key of the oracle used to supply Ostium's prices. How the key was compromised (leak, theft, custody failure, etc.) is not officially established.
-2. **Submission of future-dated data**: with the compromised key, the attacker signs and submits price reports carrying future-dated timestamps. The signatures are valid and pass the protocol's signature verification.
-3. **Generation of fictitious profits**: by getting ahead of future prices, the attacker makes losing trades appear to be winning trades. Through delegated actions they run roughly 20 loop trades, piling up fictitious profits without taking on real market risk.
-4. **Payout from the vault**: payouts against the fictitious profits are drawn from the public liquidity vault (OLP). In about five minutes, up to roughly $18–24 million is drained.
+- **Who approves**: The party that authorizes the price-report signers (the protocol's operations). Don't rest the signer's legitimacy only on holding a single key; make the authorization something that can be confirmed independently, so a compromised key alone does not finalize a payout.
+- **Where it is checked**: Just before a price report is reflected in a payout. Don't make "it is signed with a registered key" the end point of acceptance. Before reflecting it, confirm the signer's authorization and the data's plausibility bounds. A report that cannot be confirmed is held and not reflected in a payout.
+- **What is recorded**: Which signer's data was confirmed against which plausibility bounds, and whether the payout was finalized (or held). Internal signer keys and credentials stay outside the environment; only "this input meets the provenance and plausibility requirements" is shown.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking the signer's legitimacy and the data's plausibility, separately from the validity of the signature, before a price report is reflected in a payout, and keeping a record. Detection means noticing after trading has progressed. The reports carry one date (2026-07-15); the attack lasted about five minutes, 14:18 to 14:23 UTC.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check the signer and the data, separately from the signature, before a price report is reflected in a payout</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>In about five minutes, up to ~$18–24M<br>left the OLP vault</span></div>
+<div class="rx-zone det"><b>Detection · worked while it was under way</b>Blockaid detected it and Ostium halted trading</div>
+<div class="rx-g g1"><div class="t">COMPROMISE</div><b>The oracle signer key is compromised (route undisclosed)</b></div>
+<div class="rx-g g2"><div class="t">SUBMIT</div><b>A future-dated price carries a valid signature</b></div>
+<div class="rx-g g3"><div class="t">PAYOUT</div><b>About 20 loop trades draw payouts from the vault</b></div>
+<div class="rx-g g4"><div class="t">DETECT</div><b>Blockaid detects it; halted within an hour</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+Detection worked while the attack was under way and helped confine the loss to about five minutes. A case where the signature was valid but the signing side had been compromised is the [Taiko bridge](/critical/briefs/074-taiko-bridge-prover-key-leak/) (a leaked prover key let a fake withdrawal pass as valid).
 
-- 2026-07-15 14:18–14:23 UTC: the attack occurs. Within a roughly five-minute window, some 20 loop trades using future-dated price reports are executed, and payouts are drawn from the OLP vault.
-- 2026-07-15: Blockaid detects and flags the in-progress attack. Ostium grasps it within minutes and halts all trading within an hour.
-- 2026-07-15 to 16: a co-founder confirms the time window and the OLP impact, and states that it is coordinating with law enforcement, SEAL 911, and third-party experts. However, the confirmed total loss, the root cause (how the key was compromised), the final post-mortem, and any compensation plan are unpublished as of this point.
+## 4. What Lemma does
 
-> Note: the technical facts are based on Blockaid's detection, confirmation by an Ostium co-founder, and reporting by established media (CoinDesk, Decrypt, and others). The loss figure ranges by source from roughly $18 million to as much as roughly $24 million, and the root cause — including how the signer key was compromised — awaits the official post-mortem as of this writing. Consult the latest primary sources.
+**Lemma builds the check in section 03 into the step that reflects outside data in a payout.** It is not a replacement for signature verification; after it, and before the payout, it checks, separately from the validity of the signature, whether the signer is legitimate, uncompromised and authorized right now and whether the data is within its plausibility bounds.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **Ostium's response**: grasped the attack within minutes and halted all trading within an hour. A co-founder confirmed the time window of the event (14:18–14:23 UTC) and the impact on the OLP vault, and stated that it is coordinating with law enforcement, SEAL 911, and third-party security experts. However, the confirmed total loss, the root cause of the key compromise, the final post-mortem, and any compensation plan are unpublished as of this writing.
-- **Detection (Blockaid)**: the blockchain security firm Blockaid detected and flagged the attack while it was in progress, leading to the halt of trading.
-- **Cross-industry point**: this case sits within the continuing 2026 line of DeFi attacks originating from oracles and signer keys. Even when the cryptographic verification (signature, proof) itself functions, unless the legitimacy of the signer and the authenticity of the external data that the verification presupposes are independently confirmed, a fake input carrying a valid signature can connect directly to the payout of assets. The need for a layer that, in addition to verifying the signature, independently verifies the legitimacy of the signer and the plausibility of the data before payout is coming to be shared across the industry.
+- **Industry · Finance**: Protocols and exchanges that finalize payouts or settlements on oracle prices and signatures. Setups where a valid signature is the end point of acceptance.
 
-The absence of a layer that verifies, at the moment of payout, the legitimacy of the signer and the authenticity of external data — independently of the validity of the signature — is not a problem of a specific protocol, but remains a cross-protocol operational challenge for protocols that rely on external oracles.
+### Current controls vs Lemma
 
----
+The route in this case is column 1 (accepting a signed price report). Column 2 covers the spread of harm while trading proceeds after acceptance; here Blockaid's detection and the halt of trading worked.
 
-## 4. Why it wasn't stopped
+| Control | Accepting a signed price report | Spread of harm while under way |
+| --- | --- | --- |
+| Signature verification | Not effective | Not relevant |
+| On-chain anomaly monitoring and halting trading | Not effective | Partial |
+| **Lemma (pre-execution check)** | Effective | Partial |
 
-The central failure primitive is that **the protocol's trust was established by "is the price report correctly signed," not by "is that signer legitimate and uncompromised" or "is that data authentic and plausible."** The signatures were valid. What went unverified was the layer one step above the signature — the legitimacy of the signer and the authenticity of the data.
+Signature verification correctly passed reports with valid signatures. Whether the signer was compromised or the data was future-dated fakery cannot be told from the signature. On-chain anomaly monitoring and the halt of trading worked after the trades began producing anomalous results and helped confine the loss to about five minutes, but they do not work before the data is connected to a payout. Before a price report is reflected in a payout, Lemma checks, separately from the validity of the signature, that the signer is legitimate, uncompromised and authorized right now and that the data meets its plausibility bounds. A record is kept per payout, so which signer's data a payout was made on can be confirmed afterwards.
 
-This incident is a direct descendant of [Brief No.074](/critical/briefs/074-taiko-bridge-prover-key-leak/) ([Taiko bridge](/critical/briefs/074-taiko-bridge-prover-key-leak/), where the proof was verified correctly but the leak of a signer key let a fake withdrawal pass as "valid"). In both, cryptographic verification (signature, proof) functioned correctly, but the "legitimacy of the signer or prover" that the verification presupposes was not independently confirmed. This case repeats that on the price-oracle surface. It connects to [Brief No.067](/critical/briefs/067-syscoin-bridge-spv-proof-parsing/) ([Syscoin bridge](/critical/briefs/067-syscoin-bridge-spv-proof-parsing/), where a fake proof was interpreted as "valid") and [Brief No.001](/critical/briefs/001-kelpdao-rseth/) ([KelpDAO / rsETH](/critical/briefs/001-kelpdao-rseth/), where the RPC of the observation layer was tampered with and a trusted input was faked) through the structure in which the authenticity of the external input a protocol relies on is not independently verified. It shares with [Brief No.045](/critical/briefs/045-humanity-protocol-multisig-key-custody/) ([Humanity Protocol](/critical/briefs/045-humanity-protocol-multisig-key-custody/), where the keys on a single laptop alone exceeded the threshold) the point that the custody and legitimacy of keys becomes a single point of failure for asset movement. It is adjacent to [Brief No.023](/critical/briefs/023-alephium-tokenbridge/) ([Alephium](/critical/briefs/023-alephium-tokenbridge/)) and [Brief No.016](/critical/briefs/016-verus-ethereum-bridge/) ([Verus-Ethereum](/critical/briefs/016-verus-ethereum-bridge/)) in that inputs that passed valid verification were faked on the surface of input-output consistency.
+Note: Lemma's check works only when it is built into the mechanism that reflects price reports in payouts and the signer's authorization and the plausibility bounds are managed outside the signing key. If the authorization is managed in the same place as the compromised key or environment, the check can be passed. Fake data that stays within the plausibility bounds is not stopped by the bounds. How the signer key was compromised has not been disclosed. For the spread of harm while under way, Lemma checks each payout, so later payouts would not pass on the validity of the signature alone; whether that would have happened here has not been disclosed. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-What is specific to this incident is that the attack **turned the protocol's own price-feed infrastructure against it, and moreover the verification layer never asked about the plausibility of "future prices" — data that should not exist even when the signature is valid.** Signature verification answered "is this report from a registered signer," but it did not answer "is this signer legitimate and uncompromised right now" or "are this timestamp and price plausible." The shared primitive is the same: **the validity of a signature is independent of the legitimacy of the signer and the authenticity of the data.**
+### Checklist
 
-The detection-and-response sequence — Blockaid's in-progress detection, Ostium's rapid halt of trading (grasped within minutes, halted within an hour), and coordination with law enforcement, SEAL 911, and third-party experts — is indispensable to containing the spread of harm, and this Brief does not deny that role. On-chain anomaly monitoring played a part here too in confining the loss to about five minutes. Detection does play its part.
+Three things to confirm for organizations that finalize payouts on outside data
 
-At the same time, detection does not provide material to independently establish — **at the moment that payout is finalized** — whether the price report about to be accepted is authentic data from a legitimate, uncompromised signer, or future-dated fake data signed with a compromised key. The fake report carries a valid signature and passes signature verification correctly. On-chain monitoring detected the trades only after they began producing anomalous results; it did not prove the authenticity of the input before that input was connected to a payout. As material for an audit to establish "was this payout from the vault based on authentic price data whose provenance was verified?", the single fact "it is a report from a registered signer that passed signature verification" is not an independent trail of the data's authenticity and the signer's legitimacy. This is a gap in a structurally independent layer, outside the reach of the detection layer.
+- Before reflecting it, do you confirm that the data you accept is within its plausibility bounds (timestamp consistency, acceptable price range)?
+- Is authorization something you can confirm separately from holding a key, so that one compromised signer key does not finalize a payout on the signature alone?
+- Do you keep a record, checkable afterwards, of which signer's data a payout was finalized on?
 
----
+## 5. Facts and timeline
 
-## 5. What proof would have changed
+- **Service**: Ostium, a decentralized exchange offering RWA-linked perpetual futures on Arbitrum. What was affected was the public liquidity vault (the Ostium Liquidity Provider vault, OLP).
+- **Confirmed**: 2026-07-15, roughly five minutes from 14:18 to 14:23 UTC. Co-founder Kaledora Kiernan-Linn confirmed the time window and the impact on the OLP.
+- **Method**: The attacker compromised an oracle signer key. They submitted price reports with future-dated timestamps, making losing trades appear to be winning trades. Through delegated actions they ran roughly 20 loop trades, manufacturing fictitious profits without taking on real market exposure, and drew payouts from the vault.
+- **Scale of the drain**: Figures range by source, from the roughly $18 million (USDC) confirmed by a co-founder to as much as roughly $24 million in some reports. The roughly $18 million corresponds to about 28% of the protocol's TVL (roughly $63 million).
+- **Detection and response**: The blockchain security firm Blockaid detected the attack while it was in progress. Ostium grasped it within minutes and halted trading within an hour. It said it is coordinating with law enforcement, SEAL 911 and third-party security experts.
+- **Key compromise**: How the key was compromised (leak, theft, custody failure, etc.) is not officially established.
 
-Pre-action attestation fills this gap by inserting a proof of provenance and signer legitimacy one step into the path by which external data is connected to a payout. Before a price report is reflected in a payout, it verifies — decoupled from the validity of the signature — "is this signer legitimate and uncompromised right now, and authorized for this scope?" and "is this data authentic and does it satisfy the plausibility bounds (timestamp consistency, acceptable price range)?", and it blocks the payout up front when no proof accompanies it. Pre-action attestation is a **complement** to detection, not a substitute, and the combination of the two layers establishes the trust boundary of an oracle-dependent protocol.
+### Timeline
 
-Against the detection–proof gap this event exposed (a valid signature accompanying a compromised signer and future-dated fake data), Lemma proposes a design that requires the legitimacy of the signer and the authenticity of the data — verifiable as cryptographic proof independent of the validity of the signature — before external data is connected to a payout.
+- **2026-07-15**: The attack occurs from 14:18 to 14:23 UTC. Within roughly five minutes, some 20 loop trades using future-dated price reports are executed and payouts are drawn from the OLP vault. Blockaid detects the in-progress attack; Ostium grasps it within minutes and halts all trading within an hour.
+- **2026-07-15 to 16**: A co-founder confirms the time window and the OLP impact, and states that it is coordinating with law enforcement, SEAL 911 and third-party experts. The confirmed total loss, the root cause, the final post-mortem and any compensation plan are unpublished as of this point.
 
-- **Pre-action proof of signer legitimacy (proof-as-auth)**: before a price report is reflected in a payout, prove — decoupled from the validity of the signature — that "this signer is legitimate and uncompromised right now, and authorized for this scope." Do not make "it is signed with a registered key" the terminus of acceptance.
-- **Verification of data provenance and plausibility bounds**: before reflecting the data being accepted, verify that it has authentic provenance and satisfies the plausibility bounds (timestamp consistency, acceptable price range). Exclude up front inputs that should not exist even when the signature is valid, such as future-dated ones or those diverging from the market.
-- **Eliminating single-key dependence**: do not reduce the legitimacy of the signer to the possession of a single key; replace authorization with an independently verifiable proof so that a key compromise does not translate straight into the forgery of a valid signature.
-- **Selective disclosure**: disclose at minimum only "this input satisfies the provenance and plausibility requirements," keeping internal signer keys and credentials out of the environment.
+> The technical facts rely on Blockaid's detection, confirmation by an Ostium co-founder, and reporting by media (CoinDesk, Decrypt and others). The loss figure ranges by source from roughly $18 million to as much as roughly $24 million, and the root cause, including how the signer key was compromised, awaits the official post-mortem. Consult the latest primary sources. What was not disclosed does not mean controls were absent.
 
-With this, a proof fixed at the moment of payout serves as an independently verifiable trail of "is this signer legitimate?" and "is this data authentic and plausible?", before an external input is reflected in asset movement. Detection (after-the-fact on-chain anomaly monitoring and halting of trading) works on containment after discovery; pre-action attestation (pre-reflection verification of the signer and the data) works on the independent verification of oracle inputs — the two work complementarily.
+### After disclosure
 
----
+- **Ostium**: Grasped the attack within minutes and halted all trading within an hour. A co-founder confirmed the time window (14:18 to 14:23 UTC) and the impact on the OLP vault, and stated that it is coordinating with law enforcement, SEAL 911 and third-party security experts. The confirmed total loss, the root cause of the key compromise, the final post-mortem and any compensation plan are unpublished as of this writing.
+- **Blockaid**: The blockchain security firm detected and flagged the attack while it was in progress, leading to the halt of trading.
+- **Context**: This case sits within the continuing 2026 line of DeFi attacks originating from oracles and signer keys.
 
 ## 6. Sources
 
