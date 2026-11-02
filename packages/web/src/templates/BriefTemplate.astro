@@ -201,6 +201,26 @@ addCandidates(byNewest.filter((b) => b.data.primary_category === primarySlug));
 addCandidates(byNewest.filter((b) => b.data.pillar === pillar));
 addCandidates(byNewest);
 const relatedBriefs = Array.from(relatedSet.values()).slice(0, 3);
+// 「次に読む」（2026-11-02）：同じ対策の Brief 2 本＋新着 1 本。記事の終わりで、次に読む 1 本を
+// 具体的に選べるようにする。同じ対策（controls）の重なりが多い順、次に同じ手口、次に新しい順。
+const ownControls = new Set(
+  ((brief.data.controls as { slug: string }[] | undefined) ?? []).map((c) => c.slug),
+);
+const ownAttack = brief.data.attack_method as string | undefined;
+const sameControlScore = (b: AnyBrief) =>
+  ((b.data.controls as { slug: string }[] | undefined) ?? []).filter((c) =>
+    ownControls.has(c.slug),
+  ).length * 2 + (ownAttack && b.data.attack_method === ownAttack ? 1 : 0);
+const nextSame = byNewest
+  .filter((b) => b.id !== brief.id && sameControlScore(b) > 0)
+  .sort((a, b) => sameControlScore(b) - sameControlScore(a))
+  .slice(0, 2);
+const nextSameIds = new Set(nextSame.map((b) => b.id));
+const nextNewest = byNewest.find((b) => b.id !== brief.id && !nextSameIds.has(b.id));
+const nextReads: { b: AnyBrief; tag: "same" | "new" }[] = [
+  ...nextSame.map((b) => ({ b, tag: "same" as const })),
+  ...(nextNewest ? [{ b: nextNewest, tag: "new" as const }] : []),
+];
 // 「似た事例を一覧で読む」の入口。組めたら、末尾の関連 Brief は出さない。
 const facetTiles = briefFacetTiles(locale, brief, allLocale);
 const hasNextRead = hasFacetTiles(facetTiles);
@@ -404,6 +424,11 @@ const labels = isJa
       tocLabel: "Contents",
       progress: "読了",
       analysisLabel: "Lemma の照合分析",
+      nextReadHeading: "次に読む",
+      nextReadHeadingEn: "Next",
+      nextTagSame: "同じ対策",
+      nextTagNew: "新着",
+      nextReadAll: "Brief 一覧へ",
       relatedHeading: "関連する Brief",
       relatedHeadingEn: "Related",
       revisionHeading: "改訂履歴",
@@ -438,6 +463,11 @@ const labels = isJa
       tocLabel: "Contents",
       progress: "Read",
       analysisLabel: "Lemma's cross-check analysis",
+      nextReadHeading: "Read next",
+      nextReadHeadingEn: "Next",
+      nextTagSame: "Same control",
+      nextTagNew: "Latest",
+      nextReadAll: "All Briefs",
       relatedHeading: "Related Briefs",
       relatedHeadingEn: "Related",
       revisionHeading: "Revision History",
@@ -717,6 +747,27 @@ const labels = isJa
           briefUrl={briefUrl}
           briefSlug={brief.id}
         />
+
+        {nextReads.length > 0 && (
+          <section class="bd-nextread" aria-label={labels.nextReadHeading}>
+            <div class="bd-label">
+              <b>{labels.nextReadHeading}</b><span>{labels.nextReadHeadingEn}</span>
+            </div>
+            <div class="bd-rcards">
+              {nextReads.map(({ b, tag }) => {
+                const c = relatedCardData(b);
+                return (
+                  <a class="bd-rcard" href={c.href}>
+                    <span class={`tag tag--${tag}`}>{tag === "same" ? labels.nextTagSame : labels.nextTagNew}</span>
+                    <span class="t">{c.title}</span>
+                    <span class="g">{c.catLabel}</span>
+                  </a>
+                );
+              })}
+            </div>
+            <a class="bd-nextall" href={`${base}/critical/briefs/`}>{labels.nextReadAll} →</a>
+          </section>
+        )}
 
         {!hasNextRead && relatedBriefs.length > 0 && (
           <section class="bd-related">
@@ -1711,6 +1762,31 @@ const labels = isJa
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  .bd-rcard .tag {
+    align-self: flex-start;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 20px;
+    background: var(--lite-2, #eef2e6);
+    color: var(--ok-ink);
+  }
+  .bd-rcard .tag--new {
+    background: #1f2a22;
+    color: #c9ef5a;
+  }
+  .bd-nextall {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ok-ink);
+    text-decoration: none;
+  }
+  .bd-nextall:hover {
+    text-decoration: underline;
   }
   .bd-rcard .g {
     margin-top: auto;

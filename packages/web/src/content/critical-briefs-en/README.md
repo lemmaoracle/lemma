@@ -169,14 +169,14 @@ with `insight.quote`.
 
 ### Index fields (2026-10, any layout)
 
-The index (`/critical/briefs/`) is built as "Read now (3) → Browse by control → More recent briefs".
+The index (`/critical/briefs/`) is built as "Latest (4, automatic by publication date; same-day ties go to the higher number) → Featured (1–2 pinned) → Browse by control → More recent briefs".
 These frontmatter fields feed it and are not rendered in the article: `industries`, `operations`,
 `controls` (four controls; add one only when three briefs don't fit any), `attack_method`
 (`account-takeover` / `impersonation` / `privilege-abuse` / `supply-chain` / `human-error` /
 `ai-misuse`), `impact` (a short phrase that says what the number counts; omit if nothing was
-disclosed) and `takeaway` (one sentence shown when the brief is picked). Write `impact`,
-`takeaway` and `controls[].item` in English in the EN file. The three picks live in
-`config/briefPicks.ts` and change weekly (no two share an industry or attack method). The threat
+disclosed) and `takeaway` (one sentence shown on the Latest and Featured cards; always write it, since Latest fills automatically). Write `impact`,
+`takeaway` and `controls[].item` in English in the EN file. The Featured pins live in
+`config/briefPicks.ts`: one or two briefs, either widely read or in the global news. They are not rotated weekly, and a pinned brief is left out of Latest. The threat
 type (`primary_category`) stays as an internal classification and is not an index entry point.
 
 ### Components derived from plain markdown

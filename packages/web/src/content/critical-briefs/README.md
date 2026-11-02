@@ -292,7 +292,7 @@ og:description は `insight.quote` で始まる。
 
 ### 一覧の索引（2026-10・レイアウトを問わず書ける）
 
-一覧（`/critical/briefs/`）は「いま読む 3 本 → 対策から読む → そのほかの新着」で組む。
+一覧（`/critical/briefs/`）は「新着 4 本（公開日順・自動。同じ日は番号の大きい順）→ 注目（ピン 1〜2 本）→ 対策から読む → そのほかの新着」で組む。
 各 Brief の frontmatter に次を書くと一覧に出る。`attack_method` / `operations` / `controls` は、
 記事の「似た事例を一覧で読む」（下）にも使う。
 
@@ -304,11 +304,11 @@ controls:                              # 対策（4 つ・増やすのは 4 つ�
 attack_method: "impersonation"         # 手口：account-takeover / impersonation / privilege-abuse / supply-chain / human-error / ai-misuse
 countries: ["jp"]                      # 国・地域（必須・2 つまで）。事案が起きた国。国に結びつかないものは "global"
 impact: "36 自治体が配信を停止"          # 影響。数字だけにせず何の数かを書く。公表が無ければ書かない
-takeaway: "届いた通知が自治体のものかを、送信元の表示とは別に確かめる手順が無かった。"  # いま読むに選んだときの一文
+takeaway: "届いた通知が自治体のものかを、送信元の表示とは別に確かめる手順が無かった。"  # 新着・注目のカードに出す一文（新着は自動で出るので、公開する Brief には必ず書く）
 ```
 
-EN ファイルの `impact` / `takeaway` / `controls[].item` は英語で書く。「いま読む 3 本」は
-`config/briefPicks.ts` で週に一度選ぶ（業界と手口が 3 本で重ならないように）。脅威タイプ
+EN ファイルの `impact` / `takeaway` / `controls[].item` は英語で書く。「注目」のピンは
+`config/briefPicks.ts` で、読まれているものや世界的に注目された事案を 1〜2 本だけ選ぶ（毎週は変えない。ピンの Brief は新着から外れる）。脅威タイプ
 （`primary_category`）は内部分類として残し、一覧の入口には使わない。
 
 `countries` だけは記事にも出す（表紙の下の段の「国・地域」）。一覧では行の先頭のラベルと

@@ -48,7 +48,7 @@ controls:
   - slug: "audit-trail"
     item: "どの出金が、どの申請や承認に基づいて署名されたかを、依頼を出すサービスの外に記録する"
 attack_method: "privilege-abuse"
-impact: "約 63 億ドルの暗号資産が流出した（Binance の見積もり。TRM Labs の解析では 10 のチェーンから約 63.6 億ドル）。約 27 億ドルが凍結され、Binance は損失を補うとしている"
+impact: "約 63 億ドルが流出（Binance の見積もり）。約 27 億ドルは凍結された"
 takeaway: "鍵が漏れていなくても、署名を依頼できる場所に入られれば、正しい署名で資金は動かせる。"
 self_check: "出金の署名の前に、その依頼に対応する顧客の申請か社内の承認があるかを照合しているか。"
 countries: ["global"]
