@@ -1,7 +1,7 @@
 ---
 brief_no: 82
-title: "xz utils バックドア（CVE-2024-3094）：2 年かけて「信頼された開発者」になりすまし、コード署名済みの正規リリースにバックドアを埋め込んだ — アイデンティティの来歴を独立検証する層がなければ、コード署名は「この鍵が使われた」ことしか証明しない（Andres Freund / CISA）"
-title_en: "xz utils backdoor (CVE-2024-3094): a two-year impersonation of a \"trusted developer\" planted a backdoor in a code-signed official release — without a layer that independently verifies identity provenance, code signing only proves \"this key was used\" (Andres Freund / CISA)"
+title: "xz utils：メンテナーの権限を得た「Jia Tan」が、署名済みの正規リリースにバックドアを埋め込んだ(CVE-2024-3094、Andres Freund / CISA)"
+title_en: "xz utils: \"Jia Tan,\" after gaining maintainer authority, planted a backdoor in signed official releases (CVE-2024-3094, Andres Freund / CISA)"
 pillar: "01-verifiable-origin"
 primary_category: "code-provenance"
 secondary_categories: ["identity-auth"]
@@ -13,100 +13,144 @@ related_briefs: ["004-megalodon-github-supply-chain", "014-tanstack-oidc-trusted
 status: published
 gate: "intake"
 version: "1.0"
-og_lead_ja: "2 年かけた「信頼された開発者」なりすまし — xz utils バックドア"
-og_lead_en: "A two-year \"trusted developer\" impersonation — xz utils backdoor"
-gap_detected: "Andres Freund noticed an extraordinarily incidental anomaly — a slight delay in SSH logins — and discovered the liblzma backdoor just before it reached stable releases."
-gap_missing: "The release was correctly signed with \"Jia Tan\"'s PGP key, but there was no layer to independently verify whether the key-holder's identity was a real, project-trusted developer, so an identity fabricated over two years passed as legitimate."
-gap_fix: "Before granting contributor or maintainer authority, independently verify with Lemma the provenance of \"whether this developer's identity corresponds to a real person,\" and prevent it up front."
+og_lead_ja: "xz utils：約 2 年の貢献で権限を得た「Jia Tan」が、署名済みのリリース 5.6.0／5.6.1 にバックドアを埋め込んだ（CVE-2024-3094）"
+og_lead_en: "xz utils: \"Jia Tan,\" who gained authority over about two years of contributions, planted a backdoor in signed releases 5.6.0 / 5.6.1 (CVE-2024-3094)"
+search_title: "xz utils backdoor CVE-2024-3094"
+search_description: "A backdoor in signed xz utils releases 5.6.0 / 5.6.1 (CVE-2024-3094, CVSS 10.0): what happened and what to check."
+layout: "report"
+sections: "proof"
+og_kicker_ja: "サプライチェーン攻撃 · OSS のバックドア"
+og_kicker_en: "SUPPLY CHAIN · OSS BACKDOOR"
+og_headline_ja: "権限を得た開発者が、\n署名済みの版に仕込んだ。\n<accent>CVSS 10.0</accent>"
+og_headline_en: "Signed releases\ncarried a backdoor.\n<accent>CVSS 10.0</accent>"
+key_figures:
+  - value: "10.0"
+    unit: "CVSS"
+    label: "Severity of CVE-2024-3094 (NIST NVD)"
+    tone: "alert"
+  - value: "~2"
+    unit: "years"
+    label: "From \"Jia Tan\"'s first contributions to the backdoored 5.6.0 release"
+  - value: "~500"
+    unit: "ms"
+    label: "The SSH login delay that led to the discovery (Andres Freund)"
+glossary:
+  - term: "PGP signature"
+    desc: "A way to show that a file was signed with a particular key. A valid signature alone does not tell you who holds the key."
+  - term: "Release archive"
+    desc: "A compressed bundle of the source for distribution (.tar.gz). Here, files absent from the git source were included only in the archive."
+insight:
+  slug: "valid-signature-is-not-identity"
+  label: "A valid signature does not identify the key-holder"
+  quote: "A valid signature still lets a release from a developer whose real existence cannot be confirmed pass as official, unless who holds the key is checked before authority is handed over."
 industries: ["developers"]
-operations: ["delivery"]
+operations: ["delivery", "account-admin"]
 controls:
   - slug: "ownership-check"
     item: "Confirm the developer who signed a release is a real, verified person"
 attack_method: "supply-chain"
+impact: "Backdoor in signed releases of a compression library widely used on Linux (CVSS 10.0)"
+takeaway: "Because the releases were validly signed with \"Jia Tan\"'s key, signature verification did not catch the backdoor; discovery rested on an incidental observation of an SSH delay."
+self_check: "Before handing release or signing authority to a developer, do you check that they are a real person?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-In March 2024, a CVSS 10.0 backdoor (CVE-2024-3094) was discovered in xz utils, a compression library embedded across a wide range of Linux systems. The attacker "Jia Tan" spent roughly two years building trust as a legitimate OSS contributor, obtained de facto maintainer authority, then planted a sophisticated backdoor in the release build scripts and distributed it as code-signed official releases (5.6.0 / 5.6.1). The cryptographic signature was valid. The premise that "Jia Tan" was a legitimate developer was false from the very start. Code signing proves "whose key was used," but it does not prove "whether that key-holder's identity is authentic." That gap carried a large-scale RCE path via the OpenSSH daemon — suspected of involving a nation-state-level actor — to the very threshold of stable releases.
+"Jia Tan" kept submitting high-quality patches, earned the project's trust, and obtained de facto maintainer authority, including creating and signing releases. The backdoor was not written directly into the source tree; it was hidden as a combination of a build script and test files included only in the release archives, and the archives were validly signed with "Jia Tan"'s PGP key. <strong>A valid signature still lets a release from a developer whose real existence cannot be confirmed pass as official, unless who holds the key is checked before authority is handed over.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Publishing release archives 5.6.0 / 5.6.1 signed with "Jia Tan"'s PGP key, and each distribution pulling them in as legitimate packages. Before that, after about two years of contributions and direct contact with the existing maintainer, de facto maintainer authority, including creating and signing releases, had been handed over.
+- **What reached the receiving side**: In general, the side pulling in a release receives the archive and a valid signature; who holds the key cannot be told from the signature. Here, the backdoor was a combination of an Autoconf build script (`build-to-host.m4`) and obfuscated test files included only in the `.tar.gz` archives, and it did not appear in the source from a `git clone` (Andres Freund, Binarly).
+- **How far it reached**: Fedora Rawhide and parts of Debian testing / unstable. It was caught before reaching major stable releases. No evidence that the attack was actually used has been confirmed.
+- **Not disclosed**: Who "Jia Tan" is. Analysis of time zones, commit timestamps, and similar features has led to discussion of nation-state-level involvement, but attribution is not confirmed.
 
-- **Target**: xz utils (liblzma) — a compression library widely used across Linux / Unix-family systems, shipped by default in numerous distributions
-- **CVE**: CVE-2024-3094 (CVSS score: 10.0)
-- **Discoverer**: Andres Freund (an engineer at Microsoft). He noticed a slight delay in SSH logins and reported it to a mailing list on 2024-03-29
-- **Attacker**: "Jia Tan" (GitHub: JiaT75) — a person whose real existence cannot be confirmed. Circumstantial evidence points to involvement by a nation-state-level actor
-- **Backdoor breakdown**: The malicious code was hidden not directly in the source tree but as a combination of an Autoconf build script (`build-to-host.m4`) and obfuscated test files included only in the `.tar.gz` release archives. It does not appear in a `git clone`
-- **Scope of impact**: Through a systemd-based `openssh-server` linked against liblzma, a path opens for the holder of a specific authenticated public key to execute RCE. It reached Fedora Rawhide and parts of Debian testing / unstable. It was caught before reaching major stable releases
-- **Relation to code signing**: The release archives were signed with "Jia Tan"'s PGP key, so technically the signature was valid. But nowhere did a mechanism exist to independently verify that the "Jia Tan" identity was authentic
+## 3. What to check
 
-The incident came together as the following chain.
+Whatever the route, the condition for telling them apart is checking, before release or signing authority is handed over, that the key-holder corresponds to a real person the project approved.
 
-1. **Long-term identity construction**: "Jia Tan" begins contributing to an OSS project under a false identity. By continuously submitting high-quality patches indistinguishable from genuine ones, he accumulates the community's trust
-2. **Acquisition of maintainer authority**: Through direct contact with the existing maintainer and sustained contribution, he obtains de facto maintainer authority including the creation and signing of releases
-3. **Concealment of the backdoor**: Rather than writing the backdoor directly into the source code, he implements it as a combination of an Autoconf build script and test files inside the release archive. It cannot be detected by inspecting the source from a `git clone`
-4. **Signing and distribution as an official release**: Distributed as release archives (5.6.0 / 5.6.1) signed with "Jia Tan"'s PGP key. Each distribution pulls them in as legitimate packages
-5. **RCE path via liblzma**: When a systemd-linked `openssh-server` loads liblzma, the backdoor activates. It hooks the public-key authentication processing, putting the holder of the attacker's specific private key in a position to execute RCE
-6. **(Unfinished due to discovery)**: Discovered before reaching stable distributions; no evidence that the attack was actually used has been confirmed
+- **Who approves**: The maintainers of the project handing over authority, and the distributions that pull in its releases. The volume or quality of contributions, or a valid signature, is not an approval of the key-holder.
+- **Where it is checked**: Before maintainer or release authority is handed over, and before a signed release is pulled in. Releases signed with a key whose holder cannot be checked are held, not pulled in.
+- **What is recorded**: Who handed which authority to whom, and which release was pulled in on which signer's confirmation. Later, it shows which version came in under whose signature.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before authority is handed over and before a release is pulled in, that the key-holder is an approved real person, and keeping a record. Detection means noticing from anomalous behavior after distribution. Dates follow the timeline in section 05.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before handing over authority and before pulling in a release, check who holds the key</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Signed 5.6.0 / 5.6.1 were published<br>They reached development distributions such as Fedora Rawhide</span></div>
+<div class="rx-zone det"><b>Detection · worked after distribution</b>Found from an SSH login delay, before reaching stable releases</div>
+<div class="rx-g g1"><div class="t">Late 2021–</div><b>"Jia Tan" begins contributing</b></div>
+<div class="rx-g g2"><div class="t">2024-02-24</div><b>Backdoored 5.6.0 released</b></div>
+<div class="rx-g g3"><div class="t">2024-03-09</div><b>5.6.1 released</b></div>
+<div class="rx-g g4"><div class="t">2024-03-29</div><b>Andres Freund reports; CISA issues an alert</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+It was found before reaching stable releases, but by then the signed releases had already entered development distributions as legitimate packages. Other cases where a signature or credential was valid while the origin of the contents or the signer was not checked include [a push with a legitimate developer's stolen credentials](/critical/briefs/004-megalodon-github-supply-chain/) (Brief 004) and [malicious npm packages published with a legitimate OIDC signature](/critical/briefs/014-tanstack-oidc-trusted-publisher/) (Brief 014).
 
-- **Late 2021 to early 2022**: "Jia Tan" begins contributing to the xz project. By continuously submitting high-quality patches, he earns trust
-- **2022 to 2023**: Obtains commit rights and establishes himself as a core contributor by gradually taking over the work of the existing maintainer (Lasse Collin). During the same period, suspicious accounts pressuring the existing maintainer from the outside to "release more aggressively" were also observed
-- **2024-02-24**: xz utils 5.6.0 is released. The build script containing the backdoor is included for the first time
-- **2024-03-09**: xz utils 5.6.1 is released. Details of the backdoor are updated
-- **2024-03-29**: Andres Freund notices anomalies in Valgrind output and a slight delay in SSH logins (about 500ms) and, after investigation, discovers the liblzma backdoor. He reports it to the Openwall mailing list and to security stakeholders
-- **2024-03-29 to 30**: CISA and the various Linux distributors issue emergency advisories. They recommend downgrading affected versions
-- **After 2024-03-29**: "Jia Tan"'s account activity ceases. Detailed technical analyses are published in succession by Binarly, Openwall, and others
+## 4. What Lemma does
 
-> Note: Names, CVE, and versions are based on the primary sources from Openwall (Andres Freund's first report), NIST NVD, and CISA; attribution to a nation-state-level actor remains circumstantial and unconfirmed. Each distributor's remediation status varies over time, so consult the latest information.
+**Lemma builds the check in section 03 into the steps that hand over authority and pull in releases.** It does not watch for anomalous behavior; before authority is handed over and before a release is pulled in, it checks that the key-holder is an approved real person, and does not let through what cannot be checked.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **Andres Freund (Microsoft)**: Discovered and reported it through a deep individual technical observation. Notified the community and CISA the same day
-- **CISA**: Issued an emergency alert (2024-03-29). Recommended downgrading from affected versions
-- **The various Linux distributors**: Fedora, Debian, openSUSE, Arch, and others distributed downgrade packages as an emergency response
-- **Binarly**: Published a detailed technical analysis of the obfuscated build scripts and test files
-- **International attribution debate**: Analysis of time zones, commit timestamps, and linguistic features has led to wide discussion of nation-state-level involvement (no confirmed attribution)
-- **Industry thesis**: It demonstrated the feasibility of supply-chain attacks via "long-term accumulation of trust" in the OSS ecosystem. The need to verify the identity of contributors and maintainers was raised anew, and discussion of the spread of code-signing standards such as Sigstore accelerated
+- **Industry · Developers & agent operations**: Developers, organizations, and distributions that pull in OSS releases as dependencies or packages and feed them into builds and distribution.
+- **Operation · Sending & delivery**: The flow in which signed release archives are published and each distribution ships them as legitimate packages.
+- **Operation · Accounts & permissions**: The steps by which an OSS project hands commit rights, or authority to create and sign releases, to contributors.
 
----
+### Current controls vs Lemma
 
-## 4. Why it wasn't stopped
+The route in this case is distributions pulling in a release signed by someone who had obtained maintainer authority.
 
-The central **failure primitive is "code signing proves 'this key-holder signed,' but it does not prove 'whether this key-holder's identity is the same as the person the project trusted'"**. It is nothing other than the exposure of the foundational thesis of provenance verification.
+| Control | Handing over maintainer authority | Pulling in a signed release |
+| --- | --- | --- |
+| Signature verification | Not applicable | Not effective |
+| Review of the source from `git clone` | Not applicable | Not effective |
+| Detection of anomalous behavior (delay, Valgrind output) | Not applicable | Partial |
+| **Lemma (pre-execution check)** | Effective | Partial |
 
-OSS code signing typically confirms the technical fact that "the person holding this key signed." But "whether the person holding this key is the person intended by the organization or community that approved the contributions" is a separate proposition. "Jia Tan" generated a key pair under a non-existent (or fake) identity and, over two years, made the community trust that identity. "The key's provenance is correct," but "the key-holder's identity provenance was false."
+Signature verification does not catch the backdoor, because the signature was valid. Source review struggles to tell it apart, because the backdoor did not appear in the source from a `git clone` and was included only in the archives. Detection of anomalous behavior was the only path of discovery here and worked before stable releases were reached, but the releases had already entered development distributions. Lemma checks, before authority is handed over, that the recipient's key corresponds to an approved real person. Before a release is pulled in, it checks that the signer passed that check, but it does not judge whether the contents are safe.
 
-Comparison with [Brief No.004](/critical/briefs/004-megalodon-github-supply-chain/) (Megalodon GitHub supply chain): Megalodon seized an existing legitimate developer's credentials (PATs, etc.) and pushed (theft of identity). The present case had a fabricated identity from the very start (forgery of identity). Both are isomorphic in lacking a layer that independently verifies "whether the author of a commit / release is a legitimate developer," but the present case, in its preparation period (two years) and the precision of its concealment techniques, is one of the most refined examples indicating nation-state-level involvement.
+Note: Lemma's check works only when it is built into the steps that hand over authority and pull in releases, and the project manages which approved people correspond to which keys. If a person who passed the check signs with malicious intent, or the key of someone who passed the check is stolen, this check can be passed. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-If [Brief No.014](/critical/briefs/014-tanstack-oidc-trusted-publisher/) (TanStack npm poisoning) showed that "even when a legitimate OIDC signature is valid, the artifact can be malicious," the present case is the paired example showing that "even when a legitimate PGP signature is valid, the identity can be forged."
+### Checklist
 
-In this incident, detection worked. Andres Freund's anomaly detection (SSH delay, differences in Valgrind output) — an extraordinarily incidental and deeply technical observation — was the sole path of discovery. The rapid response by CISA and the various distributors prevented it from reaching stable releases. Had Andres Freund not noticed this anomaly, it could have been included in the stable releases of major Linux distributions, and the role the detection layer played in halting the spread of damage in this incident is not denied.
+Three things to confirm for development organizations that pull in OSS releases
 
-But there was no proof. Because the code signature was valid, signature-verification tools do not detect the backdoor. The backdoor did not exist directly in the source tree but was embedded in the build process of the release archive, making it difficult to detect by source-code review alone. The root problem lies in the absence of any mechanism to independently verify, at the point of the contribution's start or at the point of granting maintainer authority, "whether 'Jia Tan'"s identity belonged to an authentic developer. Detection captured the contours of the anomaly after the fact, but it does not change the very judgment of acceptance — "whom to trust."
+- Do you confirm that the OSS release archives you pull in have the same contents as the published source?
+- Besides verifying the signature, is there a procedure to confirm who holds the signing key?
+- Do you record which release was pulled in, on confirmation of whose signature?
 
-What changes with Lemma is that it fixes, as an independently verifiable cryptographic proof, not only who wrote the code but also "whether that someone's identity corresponds to a real person approved by the project or organization." It provides a design that does not separate key-pair generation from the key-holder's identity provenance, and an attribute proof at the point of granting maintainer authority. For the thesis that after-the-fact detection is not proof, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for the design that verifies independently before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05). Detection and pre-execution attestation stand in a relationship of **complement**, not substitute.
+## 5. Facts and timeline
 
----
+- **Subject**: xz utils (liblzma), a compression library widely used across Linux / Unix-family systems and shipped by default in numerous distributions.
+- **CVE**: CVE-2024-3094 (CVSS 10.0, NIST NVD).
+- **Discovery**: Andres Freund (an engineer at Microsoft) noticed Valgrind output and a slight delay in SSH logins (about 500ms), investigated, and reported to the Openwall mailing list on 2024-03-29.
+- **Attacker**: "Jia Tan" (GitHub: JiaT75), a person whose real existence cannot be confirmed. Nation-state-level involvement remains circumstantial and unconfirmed.
+- **Technique**: The backdoor was hidden as a combination of an Autoconf build script (`build-to-host.m4`) and obfuscated test files included only in the `.tar.gz` archives. When a systemd-linked `openssh-server` loads liblzma, it hooks public-key authentication, putting the holder of the attacker's specific private key in a position to execute RCE.
+- **Signature**: The release archives were signed with "Jia Tan"'s PGP key, and the signature was technically valid.
+- **How far it reached**: Fedora Rawhide and parts of Debian testing / unstable. It was caught before reaching major stable releases.
 
-## 5. What proof would have changed
+### Timeline
 
-Against the detection–proof gap exposed in this incident (code signing proves the key-holder, but not the provenance of the key-holder's identity), Lemma proposes the following.
+- **Late 2021 to early 2022**: "Jia Tan" begins contributing to the xz project, earning trust by continuously submitting high-quality patches.
+- **2022 to 2023**: Obtains commit rights and, by gradually taking over the work of the existing maintainer (Lasse Collin), becomes a core contributor. During the same period, suspicious accounts pressing the existing maintainer from outside to "release more aggressively" were also observed.
+- **2024-02-24**: xz utils 5.6.0 is released. The build script containing the backdoor is included for the first time.
+- **2024-03-09**: xz utils 5.6.1 is released. Details of the backdoor are updated.
+- **2024-03-29**: Andres Freund finds the liblzma backdoor and reports it to the Openwall mailing list and to security stakeholders.
+- **2024-03-29 to 30**: CISA and the Linux distributors issue emergency advisories recommending a downgrade from affected versions.
+- **After 2024-03-29**: "Jia Tan"'s account activity stops. Detailed technical analyses follow from Binarly, Openwall, and others.
 
-- **Provenance proof of developer identity**: At the point of granting contributor or maintainer authority, fix as a ZK proof "whether the identity is bound to a real organization or person." Do not separate key generation from identity provenance
-- **Pre-execution attestation of authority grants**: At each step of granting maintainer authority or delegating release authority, leave the provenance of both the delegator and the recipient as a verifiable record
-- **Provenance chain of build artifacts**: Seamlessly chain the author provenance of the source code → the executor provenance of the build process → the signer provenance of the release archive, making forgery at any stage detectable
-- **Proof of correspondence between release archive and source**: Disclose, in an independently verifiable form before the build runs, the differences between the source confirmable via `git clone` and the release archive
+> Names, the CVE, and versions are based on primary sources from Openwall (Andres Freund's first report), NIST NVD, and CISA. Attribution to a nation-state-level actor remains circumstantial and unconfirmed. Each distributor's remediation status varies over time, so consult the latest information. What has not been disclosed does not mean there were no controls.
 
-This is the design philosophy of "cryptographically valid ≠ identity provenance correct" — the core of the verifiable-origin category — and rather than replacing after-the-fact detection like Andres Freund's, it makes the two **complement** each other by fixing identity provenance before acceptance. For the design details, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance); for the scope, see [Trust402](https://lemma.frame00.com/trust402/).
+### After disclosure
 
----
+- **Andres Freund (Microsoft)**: Notified the community and CISA on the day of discovery.
+- **CISA**: Issued an emergency alert (2024-03-29) recommending a downgrade from affected versions.
+- **The Linux distributors**: Fedora, Debian, openSUSE, Arch, and others distributed downgrade packages.
+- **Binarly**: Published a detailed technical analysis of the obfuscated build scripts and test files.
 
 ## 6. Sources
 
@@ -115,3 +159,5 @@ This is the design philosophy of "cryptographically valid ≠ identity provenanc
 - **Binarly**: "XZ Utils Supply Chain Backdoor: Technical Analysis" (2024-03 to 04)
 - **NIST NVD**: CVE-2024-3094 entry — https://nvd.nist.gov/vuln/detail/CVE-2024-3094
 - **Ars Technica**: "What we know about the xz Utils backdoor that almost infected the world" (2024-03-29)
+
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

@@ -1,7 +1,7 @@
 ---
 brief_no: 96
-title: "Gitea：Docker の既定設定のため、HTTP ヘッダー 1 本で誰でも管理者になりすませた（CVE-2026-20896）"
-title_en: "Gitea: a Docker default let anyone impersonate an admin with a single HTTP header (CVE-2026-20896)"
+title: "Gitea：公式 Docker イメージの既定設定のため、HTTP ヘッダー 1 本で誰でも管理者になりすませた(CVE-2026-20896)"
+title_en: "Gitea: a default in the official Docker image let anyone impersonate an admin with a single HTTP header (CVE-2026-20896)"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["code-provenance"]
@@ -11,98 +11,148 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["003-starlette-badhost", "088-kestra-auth-filter-bypass-rce", "091-photo-zip-authentication-laundering", "046-servicenow-unauthenticated-api", "033-f5-bigip-edge-pivot"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "identity"
 version: "1.0"
-og_lead_ja: "Gitea — 既定の逆プロキシ設定で HTTP ヘッダー 1 本の管理者なりすまし（CVE-2026-20896）"
-og_lead_en: "Gitea — a default reverse-proxy config lets one HTTP header impersonate an admin (CVE-2026-20896)"
-gap_detected: "The detection chain worked — early CVE disclosure, the CVSS 9.8 rating, the fixed releases (1.26.3 / 1.26.4), and Sysdig's probing observation — making the impact and urgency externally visible."
-gap_missing: "There is no layer that independently verifies — separately from the auth layer's formal check — whether a request bearing an `X-WEBAUTH-USER` header actually passed through a trusted reverse proxy, and whether its principal holds admin authority."
-gap_fix: "Before a privileged action, verify the authenticity of the request's path and the principal's authority — decoupled from the formal check on headers or paths — and stop execution when no proof accompanies it, verified independently by Lemma to prevent it up front."
+og_lead_ja: "Gitea：公式 Docker イメージの既定設定で、HTTP ヘッダー 1 本で管理者になりすませた（CVE-2026-20896）"
+og_lead_en: "Gitea: a default in the official Docker image let one HTTP header impersonate an admin (CVE-2026-20896)"
+og_kicker_ja: "脆弱性の公表 · 開発基盤"
+og_kicker_en: "VULNERABILITY · DEV PLATFORM"
+og_headline_ja: "ヘッダー 1 本で、\n誰でも管理者に\nなりすませた。\n<accent>CVSS 9.8（Critical）</accent>"
+og_headline_en: "One HTTP header let\nanyone pose as an admin.\n<accent>CVSS 9.8 (Critical)</accent>"
+key_figures:
+  - value: "9.8"
+    unit: "CVSS"
+    label: "Severity (Critical), as rated by Gitea as the CNA. No credentials needed"
+    tone: "alert"
+  - value: "~6,200"
+    unit: "instances"
+    label: "Gitea instances exposed to the internet (external observation)"
+  - value: "13"
+    unit: "days"
+    label: "From disclosure to the first probing detected in the field (per Sysdig)"
+glossary:
+  - term: "Reverse proxy"
+    desc: "A server that sits between users and a service and relays their requests. In some setups it authenticates the user and passes the result to the service in a header."
+  - term: "Reverse-proxy (header) authentication"
+    desc: "A scheme in which the reverse proxy passes the authenticated user's name to the service in a header such as `X-WEBAUTH-USER`, and the service accepts it as an authenticated identity."
+  - term: "REVERSE_PROXY_TRUSTED_PROXIES"
+    desc: "The Gitea setting for which sources count as trusted reverse proxies. `*` trusts every source."
+insight:
+  slug: "header-as-identity"
+  label: "A header that claims to be the user"
+  quote: "When who sent a request is decided only by a value inside the request, anyone who can write that value can act as that person."
 industries: ["developers"]
 operations: ["account-admin"]
 controls:
   - slug: "ownership-check"
-    item: "Confirm an admin-claiming header really came from the trusted reverse proxy"
+    item: "Check that an admin-claiming header really came from the trusted reverse proxy"
 attack_method: "impersonation"
+impact: "With reverse-proxy authentication enabled, an unauthenticated party could be recognized as an admin (in the field, only initial probing was reported)"
+takeaway: "Under the default, an admin-claiming header was accepted from any source. Before an admin operation, check the path the request came by and who is behind it."
+self_check: "For a service that accepts identity headers, can you check, before accepting one, that it came from the trusted reverse proxy?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-The official Docker image of the self-hosted Git service Gitea shipped a vulnerability that let anyone impersonate an administrator with a single HTTP header (CVE-2026-20896, CVSS 9.8). Because the image defaulted to `REVERSE_PROXY_TRUSTED_PROXIES = *` (treating every source as a trusted reverse proxy), any deployment with reverse-proxy authentication enabled would grant admin privileges to any sender that simply added `X-WEBAUTH-USER: admin` (the fix is in 1.26.3, and reverse-proxy auth was changed to explicit opt-in). The problem is not the strength of an authentication algorithm; it is that the basis for authorization was placed on a surface signal — "an HTTP header the attacker can freely set" — without independently verifying, before execution, whether that request truly originated from a trusted reverse proxy.
+The official Docker image of Gitea, a self-hosted Git service, defaulted to treating every source as a trusted reverse proxy. So in a deployment with reverse-proxy authentication enabled, a request from anywhere was recognized as an administrator just by carrying the header `X-WEBAUTH-USER: admin`. No credentials and no other preconditions were needed. Gitea fixed it in 1.26.3 and made reverse-proxy authentication explicit opt-in. <strong>When who sent a request is decided only by a value inside the request, anyone who can write that value can act as that person.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: A request to a protected endpoint carrying `X-WEBAUTH-USER: admin`, and the resulting recognition as an administrator with privileged operations permitted. Because of the default `REVERSE_PROXY_TRUSTED_PROXIES = *`, the header was accepted as a claim of an authenticated identity whether or not the sender was a reverse proxy (Gitea, NVD).
+- **What reached the receiving side**: In general, an identity passed in a header arrives as a string inside the request. From the string alone, it cannot be told whether the reverse proxy that authenticated the user wrote it or the sender added it. The clue that tells them apart is which source the request came from, and the default here did not use that clue.
+- **What could follow once admin was reached**: Reading all private repositories, adding an SSH key for persistent access, changing webhooks to send later pushes outside, taking CI/CD secrets, and reaching the server's interior via SSRF through webhooks. These are possible impacts, not confirmed harm.
+- **Not disclosed**: Whether any instance had admin rights taken in the field. Sysdig detected the first probing 13 days after disclosure, but reported it was at the initial-reconnaissance stage with no progression to an attack (The Hacker News). How many of the roughly 6,200 exposed instances had reverse-proxy authentication enabled.
 
-- **Subject**: Gitea, a self-hosted open-source Git service, widely used as a development platform that consolidates source code, CI/CD, and developer identities.
+## 3. What to check
+
+Whatever the route, the condition for telling them apart is that the side running an operation with admin authority checks, before running it and apart from the name written in the request, that the principal behind the request is an administrator.
+
+- **Who approves**: The person who decides who gets admin authority, such as whoever is responsible for running Gitea. Who may perform admin operations such as adding SSH keys, changing webhooks or changing settings, and within what scope, is decided outside the service.
+- **Where it is checked**: In two places. Just before accepting an identity header, check that the request came from the trusted reverse proxy. Just before running an admin operation, check that the principal is allowed to perform it. A request that merely says "admin" in a header is stopped without running.
+- **What is recorded**: Which approval, whose request and which admin operation was run, kept apart from the fact that the request carried a header.
+
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before an admin operation runs, the path the request came by and whether the principal is allowed to perform it, and keeping a record. Detection means noticing a weakness or anomaly after it surfaces. The dates below are when the fixed releases came out and probing was observed, not necessarily when the weakness became exploitable.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before an admin operation, check the path the request came by and the principal's authority</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>With one header, an unauthenticated party<br>was recognized as an admin</span></div>
+<div class="rx-zone det"><b>Detection · worked</b>CVE disclosure, fixed releases, Sysdig's observation of probing</div>
+<div class="rx-g g1"><div class="t">Before</div><b>Every source trusted by default</b></div>
+<div class="rx-g g2"><div class="t">06-20</div><b>Fixed in 1.26.3, CVE published</b></div>
+<div class="rx-g g3"><div class="t">06-21</div><b>1.26.4 out, direct update urged</b></div>
+<div class="rx-g g4"><div class="t">13 days later</div><b>First probing seen in the field</b></div>
+</div>
+</figure>
+
+The fixed releases and the observation of probing deal with the weakness found and what followed; they are not a way to check the principal behind a request before an admin operation. Other cases where a value inside the request decided authentication are [Starlette's BadHost](/critical/briefs/003-starlette-badhost/) (manipulating the Host header bypassed an MCP server's authentication) and [Kestra's auth-filter bypass](/critical/briefs/088-kestra-auth-filter-bypass-rce/) (changing the end of the path removed authentication).
+
+## 4. What Lemma does
+
+**Lemma builds the check in section 03 into the side that runs operations with admin authority.** It does not look for weaknesses or intrusions; it checks, before running and apart from the name written in a header, that the principal behind the request is allowed to perform that operation.
+
+### Industries and operations to watch
+
+- **Industry · Developers & agent operations**: Organizations running a self-hosted development platform such as Gitea behind a reverse proxy. Source code, CI/CD and developer identities are gathered in one place.
+- **Operation · Accounts & permissions**: Adding SSH keys, changing webhooks, changing admin settings. A header that says "admin" does not by itself show that the sender is allowed to perform the operation.
+
+### Current controls vs Lemma
+
+What the weakness here was confirmed to allow is column 1; column 2 is the operations that could follow once a request is recognized as an admin.
+
+| Control | Accepting a request with an admin-claiming header (including reading private repositories) | Admin operations (adding SSH keys, changing webhooks) |
+| --- | --- | --- |
+| Applying the fixed release (1.26.3 / 1.26.4; reverse-proxy auth made explicit opt-in) | Partial | Not relevant |
+| Minimizing trusted sources; the reverse proxy overwriting or stripping the header | Partial | Not relevant |
+| Anomaly detection (after acceptance) | Not effective | Not effective |
+| **Lemma (pre-execution check)** | Not effective | Effective |
+
+The fixed release removes the default trust of every source, but if reverse-proxy authentication is enabled with a broad set of trusted sources, the same kind of request still gets through. Minimizing trusted sources and overwriting or stripping the header narrow who can write it, but they depend on the configuration staying as set. Anomaly detection comes after the request is accepted, so admin access at the moment of acceptance is not stopped. Lemma does not stop the acceptance itself; it checks admin operations such as adding SSH keys or changing webhooks, before they run, against whether the principal is allowed. A record of what ran is also kept, so which operation was performed under which approval can be confirmed without relying only on the fact that the request carried a header.
+
+Note: Lemma's check works only when it is built in just before admin operations run and the approvals are managed outside Gitea. What a request recognized as an admin can read (such as private repositories) is outside this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+
+### Checklist
+
+Three things to confirm for a development platform running behind a reverse proxy
+
+- Is Gitea's official Docker image on 1.26.4 or later?
+- If you use reverse-proxy authentication, are trusted sources limited to the actual reverse proxy?
+- Can you see, outside the service, a record of when and under whose authority SSH keys were added or webhooks changed?
+
+## 5. Facts and timeline
+
+- **Subject**: Gitea, a self-hosted open-source Git service, widely used as a development platform that gathers source code, CI/CD and developer identities.
 - **Identifier**: CVE-2026-20896, published as one of the security fixes in Gitea 1.26.3.
-- **Severity**: CVSS 9.8 (Critical). An unauthenticated party on the network can obtain administrator privileges.
-- **Published**: 2026-06-20 (Gitea 1.26.3 release). Reported by Joshua Martinelle of Tenable and @rz1027; fixed by @bircni.
-- **Core of the exploit**: in a deployment with reverse-proxy authentication enabled, an attacker is recognized as an administrator simply by attaching a single `X-WEBAUTH-USER: admin` header, with no credentials at all.
-- **Chain of impact**: after reaching admin, it can escalate to reading all private repositories, injecting an SSH key for persistent access, tampering with webhooks to exfiltrate subsequent code pushes, stealing CI/CD secrets, and lateral movement into the server's interior via SSRF through webhooks.
-- **Affected versions**: Gitea Docker images at 1.26.2 and earlier. Fixed in 1.26.3; updating to the immediately following 1.26.4 is recommended (it fixes a code-page regression in 1.26.3).
-- **Scale**: roughly 6,200 Gitea instances are exposed to the internet (external observation). In the field, the reported state is initial probing detected 13 days after disclosure, with no progression to actual exploitation.
+- **Severity**: CVSS 9.8 (Critical, AV:N/AC:L/PR:N/UI:N/C:H/I:H/A:H). This is the rating by Gitea as the CNA; NVD's own reassessment had not been provided as of writing.
+- **Report and fix**: Reported by Joshua Martinelle of Tenable and @rz1027; fixed by @bircni.
+- **Core of the technique**: The official Docker image defaulted to `REVERSE_PROXY_TRUSTED_PROXIES = *`, treating every source IP as a trusted reverse proxy. With reverse-proxy authentication enabled, attaching `X-WEBAUTH-USER: admin` to a request for a protected endpoint was enough to be recognized as an administrator.
+- **Possible impact**: Reading all private repositories, persistent access by adding an SSH key, changing webhooks to send later pushes outside, taking CI/CD secrets, and reaching the server's interior via SSRF through webhooks.
+- **Affected versions**: Gitea Docker images at 1.26.2 and earlier. Fixed in 1.26.3; updating to 1.26.4, which fixes a code-page regression in 1.26.3, is recommended.
+- **Scale**: Roughly 6,200 Gitea instances exposed to the internet (external observation).
 
-The incident came together as the following chain.
+### Timeline
 
-1. **Trusting every source via the default**: the official Docker image bundles `REVERSE_PROXY_TRUSTED_PROXIES = *`, treating every source IP as a "trusted reverse proxy."
-2. **Accepting the header as an identity claim**: with reverse-proxy authentication enabled, Gitea accepts an incoming `X-WEBAUTH-USER` header as a reverse-proxy-verified claim of an authenticated identity.
-3. **Sending the impersonation header**: the attacker attaches `X-WEBAUTH-USER: admin` to a request for a protected endpoint. No credentials are needed, and there are no other preconditions.
-4. **Recognition as administrator**: Gitea recognizes the request as coming from an administrator and permits privileged operations.
-5. **Persistence and lateral movement**: it can escalate to reading all private repositories, persistent access via an injected SSH key, tampering with webhooks to exfiltrate subsequent pushes, stealing CI/CD secrets, and reaching the server's interior via SSRF through webhooks.
+- **(Before)**: Gitea's official Docker image defaulted to `REVERSE_PROXY_TRUSTED_PROXIES = *`.
+- **2026-06-20**: Gitea 1.26.3 is published with several security fixes including CVE-2026-20896. Reverse-proxy authentication is made explicit opt-in and the default `*` is removed.
+- **2026-06-21**: 1.26.4 is published, fixing a code-page regression in 1.26.3. Gitea strongly recommends updating directly to 1.26.4.
+- **Early 2026-07**: Sysdig reports detecting the first exploitation attempt in the field 13 days after disclosure. The activity was at the initial-reconnaissance stage and had not progressed to exploitation.
 
----
+> Technical facts rest on Gitea's official release announcements (1.26.3 / 1.26.4) and the NVD entry. Some secondary reporting describes "in-the-wild exploitation at the time of disclosure," but the closer-to-primary Sysdig observation is "initial reconnaissance 13 days after disclosure," and this Brief writes at that precision. Refer to the latest primary sources. What has not been disclosed does not mean there were no controls.
 
-## 3. Timeline — disclosure and response
+### After disclosure
 
-- 2026-06-20: Gitea 1.26.3 is published, providing several security fixes including CVE-2026-20896. Reverse-proxy authentication is changed to explicit opt-in and the `*` wildcard is removed from the default.
-- 2026-06-21: 1.26.4 is published, fixing a code-page regression introduced in 1.26.3. Gitea strongly recommends updating directly to 1.26.4.
-- Early 2026-07: the cloud security firm Sysdig reports detecting the first exploitation attempt in the field 13 days after disclosure. It notes, however, that the activity was at the stage of an attacker's initial reconnaissance and had not progressed to exploitation.
-
-> Note: technical facts are based on Gitea's official release announcements (1.26.3 / 1.26.4) and the NVD entry. The CVSS 9.8 is the assessment by the CNA (Gitea); NVD's own reassessment is not yet provided as of writing. Some secondary reporting describes "in-the-wild exploitation at the time of disclosure," but the closest-to-primary Sysdig observation is "initial reconnaissance 13 days after disclosure," and this Brief writes at that precision. Refer to the latest primary sources.
-
-The response and industry movement after disclosure:
-
-- **Gitea (go-gitea)**: fixed CVE-2026-20896 in 1.26.3 and changed reverse-proxy authentication to explicit opt-in (deliberately enabled by an admin), removing the default `*` wildcard. It strongly recommends updating directly to 1.26.4, which fixes the code-page regression in 1.26.3. The same release also provided several security fixes including an SSRF (CVE-2026-22874).
-- **NVD**: registered CVE-2026-20896. The CVSS 9.8 (AV:N/AC:L/PR:N/UI:N/C:H/I:H/A:H) is the assessment by the CNA (Gitea); NVD's own reassessment is not yet provided as of writing.
-- **Sysdig**: detected the first field probing 13 days after disclosure, but reports it was at the initial-reconnaissance stage with no progression to exploitation.
-- **Operational point**: for deployments that use identity headers behind a reverse proxy, it was shared as an emergency measure that the reverse proxy must reliably overwrite/strip the header and that the set of sources Gitea trusts should be minimized. Immediate updating of exposed instances is also recommended.
-- **Cross-industry**: header-based authentication via a reverse proxy (delegating identity headers such as `X-WEBAUTH-USER`) is a widely used configuration, and when the premise "the upstream has verified this" collapses at a single default setting, it leads directly to unauthenticated full-authority reach. The need for a design that independently verifies a header-derived identity together with the authenticity of its path was reaffirmed.
-
----
-
-## 4. Why it wasn't stopped
-
-The central failure primitive is that **the basis for authorization was placed on a surface signal — "the value of an HTTP header the attacker can freely set" — without independently verifying, before acting, whether the request truly came from a trusted path (the reverse proxy).** Gitea decided "the `X-WEBAUTH-USER` says admin, so this party is admin," but never confirmed "did this request actually pass through the reverse proxy responsible for verifying identity." The basis for authorization was placed on how the request looked, not on a verifiable proof of authority.
-
-This case is isomorphic to [Brief 003](/critical/briefs/003-starlette-badhost/) (Starlette / BadHost, where an MCP server's authentication was bypassed by manipulating the Host header). Both share the structure in which "the authentication decision depends on a surface attribute of the request under the attacker's control (the Host header / the `X-WEBAUTH-USER` header), and the principal's authority is not independently verified before acting." It is continuous with [Brief 088](/critical/briefs/088-kestra-auth-filter-bypass-rce/) (Kestra, where authentication fell away simply by ending the path in `/configs`) in that authorization flips on a surface — "a path suffix or header value the attacker can choose" — and unauthenticated reach becomes a privileged operation directly. It connects to [Brief 091](/critical/briefs/091-photo-zip-authentication-laundering/) (Photo ZIP, where a "Calendly-originated" email that passed SPF, DKIM, and DMARC through authentication laundering was a forgery) in that passing a formal authentication check (header consistency / DNS authentication) is not itself a proof of the sender's or principal's authenticity. And it is in the same lineage as [Brief 046](/critical/briefs/046-servicenow-unauthenticated-api/) (ServiceNow, where a single setting removed authentication and customer instances were queried while unauthenticated), where a single default or setting flips authentication on or off and reach equals query.
-
-A development platform like Gitea is a layer that consolidates source code, build pipelines, and developer identities; when its authorization is broken, the code provenance and CI/CD privileges it binds together pass to the attacker at once. Because reaching admin leads directly to SSH-key injection, webhook tampering, and CI/CD secret theft, we tag `code-provenance` as secondary. Webhook tampering that exfiltrates subsequent pushes repurposes a legitimate delivery/storage path into a future code-exfiltration channel, touching the integrity of code provenance. Only when the authority of the principal requesting each "action" — a repository operation or a CI run — is independently verified can a development platform be safely placed into production use.
-
-The early CVE disclosure, the CVSS severity rating, the fixed releases (1.26.3 / 1.26.4), and Sysdig's field observation of probing are indispensable for grasping the scope and deciding on emergency patching, and this Brief does not diminish that role. Observing known impersonation-header patterns with a WAF or IDS also helps the response. Detection does play its part.
-
-But detection does not change what the receiving side — the authentication layer of the Gitea that processes the request — accepts, or on whose authority. Here, a request bearing `X-WEBAUTH-USER: admin` passed the authentication layer's decision legitimately, so an unauthenticated request reached administrative operations. What was missing is a layer that independently verifies — on a separate track from the header's formal check — "did this request actually pass through the reverse proxy responsible for verifying identity," and "does this principal truly hold admin authority." Even if anomaly detection fires after the fact, the administrative access at the moment the authentication layer accepted the request is not stopped. As material to prove in an audit that "this administrative operation was by a legitimately authorized principal," the fact that the request contained a header is not an independent record of the principal's authority.
-
----
-
-## 5. What proof would have changed
-
-Pre-execution attestation confirms, before a privileged operation, the authority of the principal requesting it — in an independently verifiable form, decoupled from the formal check on headers or paths. When no proof of authority accompanies it, execution is blocked beforehand no matter what headers the request carries. Passing the authentication layer (the detection-flavored "this header goes through") and pre-execution proof of the caller's authority ("this principal holds the authority to perform this administrative operation") are **complements**, not substitutes; only when the two overlap can the consolidated authority of a development platform be safely put into production.
-
-Against the detection-versus-proof gap this case exposed — authorization decided on a surface signal (a header value), without independently verifying the principal's authority and the path's authenticity before acting — Lemma proposes the following design.
-
-- **Pre-execution proof of authority per action**: before a privileged operation such as an administrative or repository operation, independently verify the authority of the principal requesting it, decoupled from the formal check on HTTP headers or paths, and reject execution beforehand when no proof accompanies it (proof-as-auth).
-- **No dependence on surface signals**: place the basis for authorization not on surface attributes an attacker can freely set — headers, path suffixes — but on a verifiable proof of authority.
-- **Binding the path to the identity claim**: verify an identity claim delegated in a header together with the authenticity of the path (the reverse proxy) that issued it, so that an arbitrary source cannot forge the claim.
-- **Selective disclosure**: prove only that "this principal holds the authority to perform this operation," with minimal disclosure, without revealing the principal's authority attributes themselves.
-
-Detection (after-the-fact patching, anomaly detection, severity rating) works to remediate harm; pre-execution proof (independent verification of authority before a privileged operation) works to establish trust in the development platform — each complementary.
-
----
+- **Gitea (go-gitea)**: Fixed CVE-2026-20896 in 1.26.3 and changed reverse-proxy authentication to explicit opt-in, deliberately enabled by an admin, removing the default `*`. It strongly recommends updating directly to 1.26.4. The same release also provided several security fixes, including an SSRF (CVE-2026-22874).
+- **NVD**: Registered CVE-2026-20896.
+- **Sysdig**: Detected the first probing in the field 13 days after disclosure, and reported it was at the initial-reconnaissance stage with no progression to an attack.
+- **Advice to operators**: For deployments that use identity headers behind a reverse proxy, having the reverse proxy reliably overwrite or strip the header and minimizing the sources Gitea trusts were shared as emergency measures. Immediate updating of exposed instances is also recommended.
 
 ## 6. Sources
 
 - **Gitea Blog**: “Gitea 1.26.3 and 1.26.4 are released” (the CVE-2026-20896 entry and fix details) — <https://blog.gitea.com/release-of-1.26.3-and-1.26.4/>
 - **NVD**: CVE-2026-20896 — <https://nvd.nist.gov/vuln/detail/CVE-2026-20896>
 - **The Hacker News**: “Threat Actors Probe Gitea Docker Flaw CVE-2026-20896 13 Days After Disclosure” — <https://thehackernews.com/2026/07/threat-actors-probe-gitea-docker-flaw.html>
+
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
