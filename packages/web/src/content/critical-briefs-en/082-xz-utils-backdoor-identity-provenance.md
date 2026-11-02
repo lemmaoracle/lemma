@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["004-megalodon-github-supply-chain", "014-tanstack-oidc-trusted-publisher"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "2 年かけた「信頼された開発者」なりすまし — xz utils バックドア"
 og_lead_en: "A two-year \"trusted developer\" impersonation — xz utils backdoor"

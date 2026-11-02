@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "082-xz-utils-backdoor-identity-provenance", "038-ironworm-npm-self-propagation", "090-air-fake-agent-skill-toctou"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "keyv・cacheable の npm 乗っ取り、38 分で公開された 9 本がすべて取り下げ"
 og_lead_en: "keyv and cacheable npm takeover — nine releases in 38 minutes, all pulled"

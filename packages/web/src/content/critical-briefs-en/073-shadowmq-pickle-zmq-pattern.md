@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["072-lerobot-pickle-grpc-rce", "058-langgraph-checkpoint-rce", "025-mcp-stdio-config-to-command-rce", "028-npm-dependency-confusion-recon", "003-starlette-badhost"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "ShadowMQ：未認証 pickle の同一実装が AI 推論基盤に拡散した — 再利用でエコシステム規模に"
 og_lead_en: "ShadowMQ: one unauthenticated ZMQ + pickle implementation, copied across inference stacks — at ecosystem scale"

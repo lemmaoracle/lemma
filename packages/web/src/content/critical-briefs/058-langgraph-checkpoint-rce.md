@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["027-librechat-mcp-url-secrets", "025-mcp-stdio-config-to-command-rce", "003-starlette-badhost", "037-agent-config-auto-execution"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "エージェントが自分のチェックポイントを検証せず読み込み RCE — LangGraph"
 og_lead_en: "An agent loads its own checkpoint unverified → RCE — LangGraph"

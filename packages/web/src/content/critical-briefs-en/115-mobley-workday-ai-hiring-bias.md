@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["012-williams-frt-wrongful-arrest", "076-dillon-frt-wrongful-arrest", "078-tenncare-connect-medicaid-eligibility", "056-mchire-paradox-recruiting-auth"]
 status: published
+gate: "none"
 version: "1.0"
 og_lead_ja: "Workday AI 採用差別訴訟：自動不採用の前に判定が独立検証・認可されたか残らない"
 og_lead_en: "Workday AI hiring-bias suit: no record the decision was verified before rejection"

@@ -12,6 +12,7 @@ related_pack: ["B-regulatory"]
 related_briefs: ["012-williams-frt-wrongful-arrest", "021-wirecard-balance-attestation", "009-gtg1002-ai-orchestrated-espionage"]
 version: "1.0"
 status: published
+gate: "none"
 og_lead_ja: "自動運転の事故データと安全性の根拠が自社申告のまま — Tesla FSD/NHTSA"
 og_lead_en: "Tesla FSD crash data and safety stats, self-reported and unverified — Tesla FSD"
 gap_detected: "規制当局の段階的な調査と調査報道、社内関係者の証言により、走行判断の失敗・事故の過少報告・統計の水増しは外部から可視化できた。"

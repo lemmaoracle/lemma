@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["067-syscoin-bridge-spv-proof-parsing", "016-verus-ethereum-bridge", "023-alephium-tokenbridge", "045-humanity-protocol-multisig-key-custody", "002-stakedao-vsdcrv", "001-kelpdao-rseth"]
 status: published
+gate: "signing"
 version: "1.0"
 og_lead_ja: "prover の署名鍵漏洩で偽の出金が「有効」と通った — Taiko ブリッジ"
 og_lead_en: "A leaked prover signing key let forged withdrawals pass as valid — Taiko bridge"

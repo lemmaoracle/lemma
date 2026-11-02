@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["005-noroboto-lying-fonts", "011-synthid-watermark-reverse-engineering"]
 version: "1.0"
 status: published
+gate: "agent-operation"
 og_lead_ja: "顔認識の AI 判定が独立検証なく強制処分に直結 — Robert Williams 誤認逮捕"
 og_lead_en: "AI face-match drove enforcement with no independent verification — Robert Williams"
 gap_detected: "顔認識の精度・バイアスを測る評価（NIST 等）は、技術選定や運用制限の根拠としては機能した。"

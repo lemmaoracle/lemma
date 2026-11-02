@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["003-starlette-badhost"]
 version: "1.0"
 status: published
+gate: "agent-operation"
 og_lead_ja: "AI コーディングエージェントが本番 DB を 9 秒で削除 — Cursor + Claude × PocketOS"
 og_lead_en: "An AI coding agent wiped a production DB in 9 seconds — Cursor + Claude × PocketOS"
 gap_detected: "The AI agent itself left a document afterward 'confessing' to the safety rules it had broken, so it functioned for monitoring and recording."

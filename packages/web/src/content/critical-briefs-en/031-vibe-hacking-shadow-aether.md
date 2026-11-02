@@ -12,6 +12,7 @@ related_pack: ["A-incident-response"]
 related_briefs: ["009-gtg1002-ai-orchestrated-espionage", "007-pocketos-cursor-db-deletion"]
 version: "1.0"
 status: published
+gate: "agent-operation"
 og_lead_ja: "AI が侵入から情報持ち出しまでを自律実行 — SHADOW-AETHER"
 og_lead_en: "AI agents ran intrusions end to end — SHADOW-AETHER"
 gap_detected: "Threat-research firm Trend Micro could identify and publish the techniques and indicators (IOCs) of both campaigns and share them with defenders."

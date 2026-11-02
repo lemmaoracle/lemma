@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["008-discord-scraping", "036-commonpool-training-data-pii", "011-synthid-watermark-reverse-engineering"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "家庭のテレビが AI スクレイピングの中継ノードに — Bright Data SDK"
 og_lead_en: "Your smart TV is a node in the AI-scraping economy — Bright Data SDK"

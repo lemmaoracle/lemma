@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["074-taiko-bridge-prover-key-leak", "045-humanity-protocol-multisig-key-custody", "030-stripe-trusted-channel-skimmer", "038-ironworm-npm-self-propagation"]
 status: "published"
+gate: "signing"
 version: "1.0"
 og_lead_ja: "SecondFi：未監査SDKへの差し替えで、署名のたびに秘密鍵を公開データから再構成（約240万ドル流出）"
 og_lead_en: "SecondFi: an unaudited SDK swap let private keys be rebuilt from public data (~$2.4M drained)"

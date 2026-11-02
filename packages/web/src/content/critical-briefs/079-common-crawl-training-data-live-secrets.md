@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["036-commonpool-training-data-pii", "008-discord-scraping", "006-google-api-key-revocation-lag"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "Common Crawl の学習コーパスに約 1.2 万件の「生きた」認証情報が混入"
 og_lead_en: "Common Crawl: ~12,000 live credentials embedded in an LLM training corpus"

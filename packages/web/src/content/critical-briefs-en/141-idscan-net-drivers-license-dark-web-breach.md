@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["052-discord-age-verification-id-leak", "077-idmerit-kyc-data-exposure", "086-sumsub-support-environment-breach", "034-ekyc-liveness-bypass"]
 status: published
+gate: "disclosure"
 version: "1.0"
 og_lead_ja: "IDScan.net、運転免許証 1.5 億件超がダークウェブで検索可能に"
 og_lead_en: "IDScan.net: 153M+ scanned driver's licenses sold on the dark web"

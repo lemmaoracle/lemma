@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [C-agent-governance]
 related_briefs: ["073-shadowmq-pickle-zmq-pattern", "094-cursor-duneslide-sandbox-escape", "109-servicenow-ai-platform-preauth-rce", "039-semantic-kernel-prompt-injection-rce", "066-litellm-ai-gateway-privilege-escalation"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "同一のPyodideサンドボックス脱出が7製品で再現、隔離の前提が未検証"
 og_lead_en: "One Pyodide sandbox escape reproduced across seven products; isolation premise unverified"

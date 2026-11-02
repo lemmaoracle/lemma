@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["011-synthid-watermark-reverse-engineering", "034-ekyc-camera-feed-provenance", "024-invisible-unicode-instruction-injection"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "非同意画像、生成の時点で同意・年齢が未検証 — Grok"
 og_lead_en: "Consent and age unverified at generation — Grok deepfakes"

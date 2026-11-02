@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["003-starlette-badhost", "005-noroboto-lying-fonts", "019-construction-engineer-qualification-fraud", "020-type-designation-conformity-fraud", "021-wirecard-balance-attestation", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
+gate: "permission-change"
 og_lead_ja: "削除した API キーが 23 分間も有効、失効が独立検証されない — Google"
 og_lead_en: "Deleted API keys stayed usable for 23 minutes — Google revocation lag"
 gap_detected: "セキュリティ企業 Aikido が失効の遅れ（最長約 23 分）を 10 回 × 2 日かけて計測し、業界全体に可視化できた。"

@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["055-echoleak-m365-copilot-instruction-provenance", "024-invisible-unicode-instruction-injection", "048-trapdoor-ai-instruction-provenance", "005-noroboto-lying-fonts", "104-webmcp-mid-session-tool-injection"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "Copilot for Word に文書伝播型プロンプト注入、生成文書が次の運び手に（実証）"
 og_lead_en: "Copilot for Word document-borne prompt injection; generated files become carriers (PoC)"

@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["008-discord-scraping", "036-commonpool-training-data-pii", "079-common-crawl-training-data-live-secrets", "054-sora2-ip-provenance-consent", "052-discord-age-verification-id-leak"]
 status: published
+gate: "disclosure"
 version: "1.0"
 og_lead_ja: "Figma — AI 学習は個人・小規模で既定オン、エンタープライズで既定オフ（Khan v. Figma）"
 og_lead_en: "Figma — AI training defaulted on for individuals/small teams, off for enterprise (Khan v. Figma)"

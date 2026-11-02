@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["047-openclaw-agent-phishing", "075-klue-oauth-salesforce-credential-lifecycle", "064-salesloft-drift-oauth-salesforce", "006-google-api-key-revocation-lag", "013-coinbase-kyc-insider-breach"]
 status: published
+gate: "identity"
 version: "1.0"
 og_lead_ja: "アリアナ・グランデ提訴：協力者の認証情報が行動前に検証されず未発表曲流出"
 og_lead_en: "Ariana Grande suit: collaborator credentials unverified before the action"

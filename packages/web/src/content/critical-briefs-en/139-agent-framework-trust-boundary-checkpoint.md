@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["128-coding-agent-harness-authority-gap", "133-pyodide-sandbox-escape-seven-products", "039-semantic-kernel-prompt-injection-rce", "058-langgraph-checkpoint-rce"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "LangChain・LangGraph ほか 6 フレームワークに 11 件の脆弱性"
 og_lead_en: "11 flaws across six major agent frameworks (Check Point)"

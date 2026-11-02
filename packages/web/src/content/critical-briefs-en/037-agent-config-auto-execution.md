@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "027-librechat-mcp-url-secrets", "006-google-api-key-revocation-lag", "003-starlette-badhost"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "AI コーディングエージェントが同梱設定を無検証で自動実行 — SymJack / Miasma"
 og_lead_en: "AI coding agents auto-execute project-local config — SymJack / Miasma"

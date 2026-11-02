@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["046-servicenow-unauthenticated-api", "109-servicenow-ai-platform-preauth-rce"]
 status: published
+gate: "identity"
 version: "1.0"
 og_lead_ja: "ServiceNow AI Platform、未認証で届く脆弱性が 4 件同時開示"
 og_lead_en: "ServiceNow AI Platform: four unauthenticated flaws disclosed at once"

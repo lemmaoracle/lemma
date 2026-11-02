@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["095-amazon-q-mcp-auto-execution", "055-echoleak-m365-copilot-instruction-provenance", "047-openclaw-agent-phishing", "037-agent-config-auto-execution", "062-claude-code-github-action-bot-trust", "024-invisible-unicode-instruction-injection"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "Agentjacking — 偽のエラー報告 1 件を「解決手順」と信じ、AI コーディングエージェントが攻撃者のコマンドを実行した"
 og_lead_en: "Agentjacking — one fake error report trusted as \"resolution steps,\" and an AI coding agent ran the attacker's commands"

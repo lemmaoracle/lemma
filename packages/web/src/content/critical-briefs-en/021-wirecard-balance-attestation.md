@@ -12,6 +12,7 @@ related_pack: ["B-regulatory"]
 related_briefs: ["020-type-designation-conformity-fraud", "019-construction-engineer-qualification-fraud", "006-google-api-key-revocation-lag", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
+gate: "disclosure"
 og_lead_ja: "残高確認書の偽造で資産の存在属性が独立検証されず — Wirecard"
 og_lead_en: "Forged bank balance confirmations went unverified, reaching disclosure — Wirecard"
 gap_detected: "Questions raised by investigative journalism and a separately commissioned special audit (KPMG) could make the gap between the claimed balances and reality visible to outsiders after the fact."

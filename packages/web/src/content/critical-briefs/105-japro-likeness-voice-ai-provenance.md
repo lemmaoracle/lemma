@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["053-youtube-deepfake-likeness-provenance", "054-sora2-ip-provenance-consent", "050-grok-deepfake-consent-provenance", "011-synthid-watermark-reverse-engineering", "036-commonpool-training-data-pii"]
 status: published
+gate: "none"
 version: "1.0"
 og_lead_ja: "JAPRO 2025年度調査 — 肖像・声の無断利用が4万件超、削除率100%でも同一人物のモデルが再投稿"
 og_lead_en: "JAPRO FY2025 — 40,000+ unauthorized likeness/voice posts, and a 100% takedown rate did not stop reappearance"

@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["020-type-designation-conformity-fraud", "021-wirecard-balance-attestation", "019-construction-engineer-qualification-fraud"]
 version: "1.0"
 status: published
+gate: "none"
 og_lead_ja: "検査は「完了」と記録されたが実施されていなかった — Boeing 787"
 og_lead_en: "Inspections recorded as complete but never performed — Boeing 787"
 gap_detected: "記録上は検査が完了しており、書類監査やシステム上のチェックは通過できていた。"

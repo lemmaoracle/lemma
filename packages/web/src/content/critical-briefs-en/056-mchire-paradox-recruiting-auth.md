@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["057-deepseek-clickhouse-exposed-db", "013-coinbase-kyc-insider-breach", "034-ekyc-camera-feed-provenance", "022-onlyfake-ai-id-kyc-bypass"]
 status: published
+gate: "identity"
 version: "1.0"
 og_lead_ja: "採用 AI が権限を検証せず 6,400 万件に到達 — McHire / Paradox.ai"
 og_lead_en: "Hiring AI: 64M records within reach, no authorization check — McHire"

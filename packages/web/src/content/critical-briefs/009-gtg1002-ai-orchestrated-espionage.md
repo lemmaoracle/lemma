@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["007-pocketos-cursor-db-deletion", "003-starlette-badhost", "017-mckinsey-lilli-system-prompts"]
 version: "1.0"
 status: published
+gate: "agent-operation"
 og_lead_ja: "AI エージェントが攻撃の 80–90% を自律実行 — GTG-1002"
 og_lead_en: "AI agent ran 80–90% of an attack autonomously — GTG-1002"
 gap_detected: "提供事業者側の異常検知が働き、約 10 日で範囲を特定してアカウントを停止できた。"

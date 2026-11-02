@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["015-github-vscode-extension-breach", "004-megalodon-github-supply-chain", "018-hackerbot-claw-ai-vs-ai"]
 version: "1.0"
 status: published
+gate: "intake"
 og_lead_ja: "正規 OIDC trusted publisher で署名された悪性パッケージ — TanStack npm 汚染"
 og_lead_en: "Malicious npm packages signed under a legitimate OIDC trusted publisher — TanStack"
 gap_detected: "External researchers found the malicious publication within just 20 to 26 minutes of release, leading to scope identification and alerts."

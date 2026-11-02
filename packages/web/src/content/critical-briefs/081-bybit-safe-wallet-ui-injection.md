@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["045-humanity-protocol-multisig-key-custody", "016-verus-ethereum-bridge", "067-syscoin-bridge-spv-proof-parsing", "004-megalodon-github-supply-chain"]
 status: published
+gate: "signing"
 version: "1.0"
 og_lead_ja: "署名 UI への JS 注入で約 15 億ドルが流出 — Bybit"
 og_lead_en: "JS injected into the signing UI drained ~$1.5B — Bybit"

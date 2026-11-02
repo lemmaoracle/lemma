@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["043-tesla-fsd-self-reported-safety", "035-boeing-787-inspection-records", "012-williams-frt-wrongful-arrest"]
 status: published
+gate: "none"
 version: "1.0"
 og_lead_ja: "「自律走行」事故の制御帰属と記録の来歴が自己申告 — Tesla Robotaxi"
 og_lead_en: "Crash control attribution left self-reported — Tesla Robotaxi"

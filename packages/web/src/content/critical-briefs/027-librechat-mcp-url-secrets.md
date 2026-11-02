@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["003-starlette-badhost"]
 version: "1.0"
 status: published
+gate: "disclosure"
 og_lead_ja: "ユーザーが指定する MCP サーバー URL が、サーバーの秘密情報を運び出す経路に — LibreChat CVE-2026-32625 CVSS 9.6"
 og_lead_en: "User-supplied MCP server URLs became an exfiltration channel for server secrets — LibreChat CVE-2026-32625 CVSS 9.6"
 gap_detected: "脆弱性の公開と即日の修正版提供という、正常な開示・是正の流れは機能した。"

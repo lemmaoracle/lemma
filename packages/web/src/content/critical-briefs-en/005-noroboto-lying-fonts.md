@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["003-starlette-badhost", "019-construction-engineer-qualification-fraud"]
 version: "1.0"
 status: published
+gate: "intake"
 og_lead_ja: "埋め込みフォント偽装で AI 文書レビューの入力を改ざん — Noroboto 攻撃"
 og_lead_en: "Embedded font forgery silently rewrote what the AI read — Noroboto attack"
 gap_detected: "Output-side AI safety measures (such as hallucination detection) remain usable as a layer that inspects the quality of decisions after the fact."

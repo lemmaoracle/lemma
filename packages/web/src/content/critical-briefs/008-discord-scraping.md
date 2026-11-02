@@ -12,6 +12,7 @@ related_pack: ["B-regulatory", "C-agent-governance"]
 related_briefs: ["005-noroboto-lying-fonts", "006-google-api-key-revocation-lag"]
 version: "1.1"
 status: published
+gate: "disclosure"
 og_lead_ja: "公開 API 経由で 20.5 億メッセージが AI 学習データに再配布 — Discord スクレイピング"
 og_lead_en: "2.05 billion public messages redistributed as AI training data — Discord scraping"
 gap_detected: "技術メディアが、収集と公開が起きた後にその存在を検出し、業界に問題提起できた。"

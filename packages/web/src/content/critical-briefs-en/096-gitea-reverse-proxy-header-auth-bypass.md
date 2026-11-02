@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["003-starlette-badhost", "088-kestra-auth-filter-bypass-rce", "091-photo-zip-authentication-laundering", "046-servicenow-unauthenticated-api", "033-f5-bigip-edge-pivot"]
 status: published
+gate: "identity"
 version: "1.0"
 og_lead_ja: "Gitea — 既定の逆プロキシ設定で HTTP ヘッダー 1 本の管理者なりすまし（CVE-2026-20896）"
 og_lead_en: "Gitea — a default reverse-proxy config lets one HTTP header impersonate an admin (CVE-2026-20896)"

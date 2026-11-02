@@ -12,6 +12,7 @@ related_pack: ["B-regulatory"]
 related_briefs: ["006-google-api-key-revocation-lag", "005-noroboto-lying-fonts", "020-type-designation-conformity-fraud", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
+gate: "identity"
 og_lead_ja: "国家資格の実務経験を満たさない技術者の現場配置 — 有資格者配置の独立検証不在"
 og_lead_en: "Engineers placed under national-license claims they didn't meet — qualified-worker fraud"
 gap_detected: "内部調査・第三者委員会・行政監査が不正取得の範囲と配置実績をあとから可視化できた。"

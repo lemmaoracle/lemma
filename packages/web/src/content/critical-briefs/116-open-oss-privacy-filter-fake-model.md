@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["010-claude-code-leak-lure", "101-paysafe-fake-payment-sdk", "090-air-fake-agent-skill-toctou", "004-megalodon-github-supply-chain", "048-trapdoor-ai-instruction-provenance"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "偽 OpenAI モデルが Hugging Face トレンド1位、発行者来歴が実行前に未検証"
 og_lead_en: "Fake OpenAI model tops Hugging Face trending; publisher provenance unverified before execution"

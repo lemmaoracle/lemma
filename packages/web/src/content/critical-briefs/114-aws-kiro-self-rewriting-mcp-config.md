@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["095-amazon-q-mcp-auto-execution", "094-cursor-duneslide-sandbox-escape", "037-agent-config-auto-execution", "099-agentjacking-sentry-mcp", "098-bioshocking-agentic-browser-context"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "AWS Kiro に RCE：エージェントが自らの MCP 設定を書き換える"
 og_lead_en: "RCE in AWS Kiro: the agent rewrites its own MCP config"

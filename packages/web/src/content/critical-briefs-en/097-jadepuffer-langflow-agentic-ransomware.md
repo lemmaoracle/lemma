@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["031-vibe-hacking-shadow-aether", "009-gtg1002-ai-orchestrated-espionage", "066-litellm-ai-gateway-privilege-escalation", "046-servicenow-unauthenticated-api"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "JadePuffer — LLM が侵入から暗号化まで自律実行した実地のランサムウェア"
 og_lead_en: "JadePuffer — an LLM ran a real-world ransomware attack from breach to encryption"

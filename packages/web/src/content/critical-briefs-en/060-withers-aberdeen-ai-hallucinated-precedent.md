@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["005-noroboto-lying-fonts", "011-synthid-watermark-reverse-engineering", "012-williams-frt-wrongful-arrest", "017-mckinsey-lilli-system-prompts"]
 status: published
+gate: "delivery"
 version: "1.0"
 og_lead_ja: "AI の幻覚判例を双方の弁護士が提出し制裁 — ミシシッピ連邦地裁"
 og_lead_en: "Both sides filed AI-hallucinated cases, both sanctioned — N.D. Miss."

@@ -12,6 +12,7 @@ related_pack: ["A-incident-response"]
 related_briefs: ["010-claude-code-leak-lure", "004-megalodon-github-supply-chain"]
 version: "1.0"
 status: published
+gate: "intake"
 og_lead_ja: "信頼 API がカード窃取コードの配送路に — Stripe Magecart"
 og_lead_en: "Trusted Stripe API repurposed as a card-skimming channel"
 gap_detected: "EC セキュリティ事業者によるスキマー解析・IOC 提供・被害ストアへの通知という封じ込めは機能した。"

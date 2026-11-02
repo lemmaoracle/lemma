@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["016-verus-ethereum-bridge", "107-verus-ethereum-bridge-repeat-exploit", "067-syscoin-bridge-spv-proof-parsing", "074-taiko-bridge-prover-key-leak", "108-afx-trade-validator-key-quorum"]
 status: published
+gate: "payment-instruction"
 version: "1.0"
 og_lead_ja: "Wanchain — 曖昧な署名符号化で正規署名が 6.5 万倍の払い出しに再利用"
 og_lead_en: "Wanchain — ambiguous signing encoding let one signature move 65,000× more"

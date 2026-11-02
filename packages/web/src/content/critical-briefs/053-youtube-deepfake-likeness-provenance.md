@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["011-synthid-watermark-reverse-engineering", "050-grok-deepfake-consent-provenance", "005-noroboto-lying-fonts"]
 status: published
+gate: "delivery"
 version: "1.0"
 og_lead_ja: "偽著名人が 2 億回再生、肖像の来歴が固定されない — YouTube"
 og_lead_en: "200M views of fake celebrities, likeness provenance gap — YouTube"

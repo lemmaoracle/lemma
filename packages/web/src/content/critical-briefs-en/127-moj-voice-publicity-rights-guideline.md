@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["105-japro-likeness-voice-ai-provenance", "117-speechify-voice-cloning-consent-checkbox", "054-sora2-ip-provenance-consent", "053-youtube-deepfake-likeness-provenance"]
 status: published
+gate: "none"
 version: "1.0"
 og_lead_ja: "法務省が「声」をパブリシティ権の保護対象と明記、生成AI の解釈指針を公表"
 og_lead_en: "Japan's MOJ puts voice inside publicity rights in its generative-AI interpretation guidance"

@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["008-discord-scraping", "011-synthid-watermark-reverse-engineering"]
 version: "1.0"
 status: published
+gate: "intake"
 og_lead_ja: "128 億枚の AI 学習データに ID・履歴書・顔が混入 — DataComp CommonPool"
 og_lead_en: "12.8B training images contained passports, résumés, faces — CommonPool"
 gap_detected: "An independent researcher audit made the contamination visible, and improvements to automatic face blurring and PII detection filters were advanced."

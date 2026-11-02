@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["029-github-dev-oauth-token", "033-f5-bigip-edge-pivot", "047-openclaw-agent-phishing", "006-google-api-key-revocation-lag"]
 status: published
+gate: "permission-change"
 version: "1.0"
 og_lead_ja: "AI ツールへの「すべて許可」OAuth が侵入経路に — Vercel / Context.ai"
 og_lead_en: "\"Allow all\" OAuth to an AI tool became the breach path — Vercel"

@@ -12,6 +12,7 @@ related_pack: ["A-incident-response"]
 related_briefs: ["004-megalodon-github-supply-chain", "014-tanstack-oidc-trusted-publisher", "015-github-vscode-extension-breach"]
 version: "1.0"
 status: published
+gate: "intake"
 og_lead_ja: "内部スコープを偽装した 33 パッケージが、ビルド環境の来歴前提を突いた — npm 依存関係混乱キャンペーン"
 og_lead_en: "33 packages impersonating internal scopes exploited the build environment's provenance assumptions — npm dependency-confusion recon campaign"
 gap_detected: "Investigations by security vendors made containment work — quarantine, blocking communication, and removal from the registry."

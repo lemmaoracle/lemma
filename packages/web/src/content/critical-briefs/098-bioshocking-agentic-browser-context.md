@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["055-echoleak-m365-copilot-instruction-provenance", "047-openclaw-agent-phishing", "024-invisible-unicode-instruction-injection", "048-trapdoor-ai-instruction-provenance", "017-mckinsey-lilli-system-prompts"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "BioShocking — 「ゲームだ」と信じた AI ブラウザ 6 種が認証情報を漏らした"
 og_lead_en: "BioShocking — six AI browsers, convinced \"it's a game,\" leaked credentials"

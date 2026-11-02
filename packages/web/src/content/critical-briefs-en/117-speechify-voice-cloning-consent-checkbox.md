@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["105-japro-likeness-voice-ai-provenance", "053-youtube-deepfake-likeness-provenance", "050-grok-deepfake-consent-provenance", "084-hong-kong-deepfake-video-call-fraud", "034-ekyc-liveness-bypass"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "Speechify の音声クローン、同意確認は自己申告チェックボックス1つ — CFA が FTC に申立て"
 og_lead_en: "Speechify's voice-cloning consent is one self-certification checkbox; CFA files with the FTC"

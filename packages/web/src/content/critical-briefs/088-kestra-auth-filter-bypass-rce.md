@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["003-starlette-badhost", "046-servicenow-unauthenticated-api", "066-litellm-ai-gateway-privilege-escalation", "027-librechat-mcp-url-secrets"]
 status: "published"
+gate: "identity"
 version: "1.0"
 og_lead_ja: "Kestra：パス末尾を /configs にするだけで認証回避、未認証 root RCE（CVSS 10.0）"
 og_lead_en: "Kestra: a /configs path suffix bypasses auth — unauthenticated root RCE (CVSS 10.0)"

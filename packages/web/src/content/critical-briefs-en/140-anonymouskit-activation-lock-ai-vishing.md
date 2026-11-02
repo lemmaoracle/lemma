@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["051-instagram-ai-support-takeover", "047-openclaw-agent-phishing", "006-google-api-key-revocation-lag"]
 status: published
+gate: "identity"
 version: "1.0"
 og_lead_ja: "AnonyMousKIT、AI 音声で盗難 iPhone 所有者から解除コード聴取"
 og_lead_en: "AnonyMousKIT: AI voice calls harvest stolen-iPhone passcodes"

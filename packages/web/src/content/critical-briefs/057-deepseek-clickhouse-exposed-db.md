@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["056-mchire-paradox-recruiting-auth", "013-coinbase-kyc-insider-breach", "036-public-training-dataset-pii", "006-google-api-key-revocation-lag"]
 status: published
+gate: "identity"
 version: "1.0"
 og_lead_ja: "認証なしの AI バックエンド、到達＝全取得 — DeepSeek / ClickHouse"
 og_lead_en: "No auth on the AI backend — reachable meant readable — DeepSeek"

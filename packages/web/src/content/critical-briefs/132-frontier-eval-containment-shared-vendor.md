@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [C-agent-governance]
 related_briefs: ["059-vercel-contextai-oauth", "129-claude-mythos-backdoor-self-vouch", "009-gtg1002-ai-orchestrated-espionage", "097-jadepuffer-langflow-agentic-ransomware", "080-replit-agent-code-freeze-data-loss"]
 status: published
+gate: "agent-operation"
 version: "2.0"
 og_lead_ja: "評価ベンダーの「閉じた」環境が設定ミスで外へ — 実在の第三者が侵害"
 og_lead_en: "A vendor's 'sealed' eval environment opened onto the internet — real third parties breached"

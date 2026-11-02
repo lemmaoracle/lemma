@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["018-hackerbot-claw-ai-vs-ai", "037-agent-config-auto-execution", "024-invisible-unicode-instruction-injection", "029-github-dev-oauth-token"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "AI エージェントが送信者を確かめる前に認証情報を社外送信 — OpenClaw / Varonis"
 og_lead_en: "An AI agent forwarded credentials before verifying the sender — OpenClaw / Varonis"

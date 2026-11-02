@@ -12,6 +12,7 @@ related_pack: ["A-incident-response"]
 related_briefs: ["003-starlette-badhost", "027-librechat-mcp-url-secrets", "018-hackerbot-claw-ai-vs-ai"]
 version: "1.0"
 status: published
+gate: "permission-change"
 og_lead_ja: "OAuth トークンが 1 クリックで窃取 — github.dev webview の合成イベント"
 og_lead_en: "One-click GitHub OAuth token theft via github.dev"
 gap_detected: "The preventive response — advance notification by the researcher and a same-day interim fix from the provider — worked."
