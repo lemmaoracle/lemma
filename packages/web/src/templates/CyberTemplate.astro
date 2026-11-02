@@ -22,6 +22,14 @@ export interface CyberTemplateProps {
 const { locale, t, base } = Astro.props as CyberTemplateProps;
 const isJa = locale === "ja";
 const L = (path: string) => localePath(base, path);
+const sectionLabels = {
+  value: "01 / VALUE & MECHANISM",
+  evidence: "02 / PUBLIC DEMO",
+  trial: "03 / INTERNAL TRIAL",
+  gates: "04 / GATE EXAMPLES",
+  integration: "05 / INTEGRATION",
+  status: "06 / AVAILABILITY",
+} as const;
 const C = isJa
   ? ({
       title: "Proof Gate by Lemma — 流出しないシステム｜Lemma",
@@ -34,10 +42,15 @@ const C = isJa
       heroStage:
         "送金・口座変更は設計段階。エージェント操作はテスト用メモ追加の社内試験段階。",
       scope: "保護は確認を組み込んだ経路のみ。許可範囲内の悪用は対象外です。",
+      figureStatus: "社内試験・実行直前の判定記録",
       trialAlt:
         "テスト用メモ追加だけを試した社内試験の実機履歴（13件中5件）。自分たちで用意した不正条件の依頼4件がblocked、正常依頼1件がexecuted。実業務の流出試験ではなく、理由コードは画面幅で省略表示。",
       trialCaption:
-        "社内試験の実機履歴の一部（13件中5件）。テスト用メモ追加だけを試し、自分たちで用意した不正条件の依頼を停止。実業務の流出試験ではなく、理由コードは画面幅で省略表示。",
+        "実機履歴13件中5件。実業務ではなくテスト用メモ追加の社内試験で、理由コードは画面幅で省略表示。",
+      trialSummaryLabel: "表示した5件の結果",
+      trialSummaryBlocked: "不正条件を停止",
+      trialSummaryExecuted: "正常依頼を通過",
+      trialCaptionLink: "記録の条件を見る ↓",
       call: "導入を相談する",
       learn: "実行前に止める仕組みを見る",
       valueTitle: "お金と情報、任せた仕事を守るために",
@@ -164,6 +177,7 @@ const C = isJa
       gatesNote: "各ゲートの提供時期は相談時に案内します。",
       evidenceLink: "社内試験の範囲を見る",
       evidenceTitle: "確認の有無で、デモの結果はどう変わったか",
+      evidenceKindPublic: "A — 仕組みの説明用デモ（製品検証ではありません）",
       evidenceIntro:
         "意図的に弱点を設けたデモアプリで、情報の取得や書き換えの直前に確認を置く場合・置かない場合を比べた公開実験です。",
       attackScenario: "シナリオ",
@@ -172,6 +186,8 @@ const C = isJa
       attackSucceeded: "攻撃が成立",
       attackBlocked: "停止",
       trialTitle: "依頼を通す・止める、社内試験の記録",
+      evidenceKindTrial: "B — 実機の動作記録（社内試験・テスト用メモ追加のみ）",
+      evidenceTakeawayTrial: "不正条件の依頼4件は停止し、正常な依頼1件は通過しました。",
       trialFigureLink: "冒頭の社内試験画面を見る",
       trialReconciliation:
         "停止時のHTTP記録は409・403・400。成功時はメモ・再利用防止記録・消費済み件数が各+1。それぞれの計測記録は、末尾「技術・組み込み情報」に記載しています。",
@@ -264,10 +280,15 @@ const C = isJa
         "Transfers & account changes: in design. Agent actions: internal test-memo trial.",
       scope:
         "Only integrated paths are covered; unintegrated paths and misuse within approved scope are excluded.",
+      figureStatus: "Internal trial · pre-execution decision log",
       trialAlt:
         "Actual execution history from an internal trial of test-memo appends only: 5 of 13 entries, with four deliberately invalid requests blocked and one normal request executed. This was not a business data-leak test or a record of real attacks. Reason codes are truncated to fit the screen.",
       trialCaption:
-        "Actual execution history from an internal trial (5 of 13 entries). Only test-memo appends were tried: our deliberately invalid requests were blocked; a normal request passed. This was not a business data-leak test or a record of real attacks. Reason codes are truncated to fit the screen.",
+        "5 of 13 real trial entries. Internal test-memo trial, not business operations; reason codes are truncated to fit the screen.",
+      trialSummaryLabel: "Results for the 5 entries shown",
+      trialSummaryBlocked: "Invalid requests blocked",
+      trialSummaryExecuted: "Valid request executed",
+      trialCaptionLink: "See the trial conditions ↓",
       call: "Discuss your integration",
       learn: "See how the gate works",
       valueTitle: "Protecting money, information and delegated work.",
@@ -398,6 +419,7 @@ const C = isJa
       gatesNote: "Availability of each gate will be discussed during consultation.",
       evidenceLink: "See the internal trial and its limits",
       evidenceTitle: "What changed with a check in the demo?",
+      evidenceKindPublic: "A — Illustrative demo (not product validation)",
       evidenceIntro:
         "A public experiment on an intentionally vulnerable demo application compared operations with and without a check immediately before information was retrieved or changed.",
       attackScenario: "Scenario",
@@ -406,6 +428,8 @@ const C = isJa
       attackSucceeded: "Attack succeeded",
       attackBlocked: "Blocked",
       trialTitle: "Passing and stopping requests in the internal trial.",
+      evidenceKindTrial: "B — Actual run log (internal trial, test-memo appends only)",
+      evidenceTakeawayTrial: "Four invalid requests were blocked; one normal request went through.",
       trialFigureLink: "View the internal-trial screen above",
       trialReconciliation:
         "Stopped attempts returned HTTP 409, 403 or 400. On success, memo, replay-prevention and consumed-challenge counts each rose by +1. These separate measurements are documented under “Technical and integration details” at the end of this page.",
@@ -526,6 +550,7 @@ const [publicEvidence, trialEvidence] = C.evidence;
           <p class="cy-scope">{C.scope}</p>
         </div>
         <figure id="pg-trial-screen" class="cy-trial-figure">
+          <p class="cy-figure-status"><span class="cy-figure-dot" aria-hidden="true"></span>{C.figureStatus}</p>
           <img
             src="/assets/figures/proof-gate-trial-evidence-375.png"
             width="375"
@@ -533,13 +558,28 @@ const [publicEvidence, trialEvidence] = C.evidence;
             alt={C.trialAlt}
             fetchpriority="high"
           />
+          <div class="cy-trial-summary">
+            <p class="cy-trial-summary-label">{C.trialSummaryLabel}</p>
+            <ul class="cy-trial-summary-list" role="list">
+              <li class="cy-trial-summary-blocked">
+                <strong>4</strong>
+                <span>{C.trialSummaryBlocked}</span>
+              </li>
+              <li class="cy-trial-summary-executed">
+                <strong>1</strong>
+                <span>{C.trialSummaryExecuted}</span>
+              </li>
+            </ul>
+          </div>
           <figcaption id="pg-trial-caption">
             <p>{C.trialCaption}</p>
+            <a class="cy-trial-caption-link" href="#pg-trial">{C.trialCaptionLink}</a>
           </figcaption>
         </figure>
       </section>
 
       <section id="pg-flow" class="cy-section" aria-labelledby="pg-flow-title">
+        <p class="cy-section-kicker">{sectionLabels.value}</p>
         <h2 id="pg-flow-title">{C.valueTitle}</h2>
         <ul class="cy-values" role="list">
           {
@@ -619,7 +659,21 @@ const [publicEvidence, trialEvidence] = C.evidence;
       </section>
 
       <section id="pg-evidence" class="cy-section cy-evidence" aria-labelledby="pg-evidence-title">
+        <p class="cy-section-kicker">{sectionLabels.evidence}</p>
         <h2 id="pg-evidence-title">{C.evidenceTitle}</h2>
+        <p class="cy-evidence-kind">{C.evidenceKindPublic}</p>
+        <div class="cy-attack-summary">
+          <div class="cy-attack-summary-insecure">
+            <span>INSECURE · {C.attackWithout}</span>
+            <strong>5/5</strong>
+            <p><span aria-hidden="true">×</span>{C.attackSucceeded}</p>
+          </div>
+          <div class="cy-attack-summary-secure">
+            <span>SECURE · {C.attackWith}</span>
+            <strong>5/5</strong>
+            <p><span aria-hidden="true">✓</span>{C.attackBlocked}</p>
+          </div>
+        </div>
         <p class="cy-section-intro">{C.evidenceIntro}</p>
         {publicEvidence.records.map((record) => <p class="cy-section-intro">{record}</p>)}
         <figure class="cy-attack-figure">
@@ -636,8 +690,16 @@ const [publicEvidence, trialEvidence] = C.evidence;
                 publicEvidence.patterns.map((pattern) => (
                   <tr>
                     <th scope="row">{pattern}</th>
-                    <td><span class="cy-attack-outcome cy-attack-insecure">{C.attackSucceeded}</span></td>
-                    <td><span class="cy-attack-outcome cy-attack-secure">{C.attackBlocked}</span></td>
+                    <td>
+                      <span class="cy-attack-outcome cy-attack-insecure">
+                        <span class="cy-attack-symbol" aria-hidden="true">×</span>{C.attackSucceeded}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="cy-attack-outcome cy-attack-secure">
+                        <span class="cy-attack-symbol" aria-hidden="true">✓</span>{C.attackBlocked}
+                      </span>
+                    </td>
                   </tr>
                 ))
               }
@@ -658,7 +720,10 @@ const [publicEvidence, trialEvidence] = C.evidence;
       </section>
 
       <section id="pg-trial" class="cy-section cy-trial" aria-labelledby="pg-trial-title">
+        <p class="cy-section-kicker">{sectionLabels.trial}</p>
         <h2 id="pg-trial-title" class="cy-trial-title">{C.trialTitle}</h2>
+        <p class="cy-evidence-kind">{C.evidenceKindTrial}</p>
+        <p class="cy-evidence-takeaway">{C.evidenceTakeawayTrial}</p>
         <p class="cy-section-intro">{trialEvidence.operation}</p>
         {trialEvidence.records.map((record) => <p class="cy-section-intro">{record}</p>)}
         <p class="cy-section-intro">{C.trialReconciliation}</p>
@@ -669,6 +734,7 @@ const [publicEvidence, trialEvidence] = C.evidence;
       </section>
 
       <section id="pg-gates" class="cy-section" aria-labelledby="pg-gates-title">
+        <p class="cy-section-kicker">{sectionLabels.gates}</p>
         <h2 id="pg-gates-title">{C.gatesTitle}</h2>
         <p class="cy-section-intro">{C.gatesIntro}</p>
         <div class="cy-gates">
@@ -703,6 +769,7 @@ const [publicEvidence, trialEvidence] = C.evidence;
       </section>
 
       <section id="cy-start" class="cy-section cy-close" aria-labelledby="cy-close-title">
+        <p class="cy-section-kicker">{sectionLabels.integration}</p>
         <h2 id="cy-close-title">{C.closeTitle}</h2>
         <dl class="cy-consult-items">
           {
@@ -714,8 +781,10 @@ const [publicEvidence, trialEvidence] = C.evidence;
             ))
           }
         </dl>
-        <p class="cy-note">{C.gatesNote}</p>
-        <p class="cy-scope">{C.integrationScope}</p>
+        <div class="cy-close-notes">
+          <p class="cy-note">{C.gatesNote}</p>
+          <p class="cy-scope">{C.integrationScope}</p>
+        </div>
         <div class="cy-actions">
           <a
             class="cy-btn cy-primary"
@@ -729,6 +798,7 @@ const [publicEvidence, trialEvidence] = C.evidence;
         </div>
       </section>
       <section id="pg-status" class="cy-section cy-status" aria-labelledby="pg-status-title">
+        <p class="cy-section-kicker">{sectionLabels.status}</p>
         <h2 id="pg-status-title">{C.statusTitle}</h2>
         <p class="cy-section-intro">{trialEvidence.status}</p>
         <p class="cy-section-intro">{trialEvidence.scope}</p>
@@ -794,35 +864,134 @@ const [publicEvidence, trialEvidence] = C.evidence;
   .cy-hero .cy-actions {
     justify-content: flex-start;
   }
+  .cy-hero-stage,
+  .cy-hero .cy-scope {
+    color: #9aa393;
+    font-size: 13px;
+    line-height: 1.7;
+  }
   .cy-hero-stage {
-    margin: 12px 0 0;
-    color: #bac1af;
-    font-size: 14px;
-    line-height: 1.65;
+    margin: 8px 0 0;
+  }
+  .cy-hero .cy-scope {
+    margin: 0;
   }
   .cy-trial-figure {
+    position: relative;
+    isolation: isolate;
     min-width: 0;
     width: 100%;
     max-width: 375px;
     margin: 0;
     scroll-margin-top: 100px;
   }
+  .cy-trial-figure::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -24px -16px;
+    background: radial-gradient(ellipse at 50% 30%, rgba(168, 224, 16, 0.08), transparent 70%);
+    pointer-events: none;
+  }
   .cy-trial-figure img {
     display: block;
     width: 100%;
     height: auto;
-    border: 1px solid #69705c;
+    border: 1px solid #929c85;
     border-radius: 12px;
     background: #f8fafc;
+    box-shadow: 0 18px 50px -18px rgba(168, 224, 16, 0.28);
+  }
+  .cy-trial-summary {
+    margin-top: 12px;
+    text-align: left;
+  }
+  .cy-trial-figure .cy-trial-summary-label {
+    margin: 0 0 6px;
+    color: #bac1af;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .cy-trial-summary-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cy-trial-summary-list li {
+    display: flex;
+    min-width: 0;
+    min-height: 74px;
+    padding: 10px 12px;
+    border: 1px solid #3e4435;
+    border-radius: 6px;
+    background: #191c14;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .cy-trial-summary-list strong {
+    color: #f4f7ef;
+    font-family: "Space Grotesk", "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .cy-trial-summary-list span {
+    margin-top: 6px;
+    color: #bac1af;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .cy-trial-summary-list .cy-trial-summary-executed {
+    border-color: #698f12;
+  }
+  .cy-trial-summary-list .cy-trial-summary-executed strong {
+    color: #a8e010;
   }
   .cy-trial-figure figcaption {
     margin-top: 12px;
     color: #bac1af;
-    font-size: 16px;
-    line-height: 1.75;
+    font-size: 13px;
+    line-height: 1.7;
   }
   .cy-trial-figure p {
     margin: 0;
+  }
+  .cy-figure-status,
+  .cy-evidence-kind {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #69705c;
+    border-radius: 6px;
+    background: transparent;
+    color: #bac1af;
+    font: 12px/1.7 "Space Mono", monospace;
+    letter-spacing: 0.02em;
+  }
+  .cy-trial-figure .cy-figure-status {
+    gap: 4px;
+    margin-bottom: 12px;
+    padding-inline: 4px;
+    letter-spacing: 0.005em;
+  }
+  .cy-figure-dot {
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #a8e010;
+  }
+  .cy-page .cy-trial-caption-link {
+    display: inline-block;
+    min-height: 24px;
+    margin-top: 6px;
+    font-size: 12px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
   .cy-brand {
     margin: 0 0 18px;
@@ -902,7 +1071,26 @@ const [publicEvidence, trialEvidence] = C.evidence;
   }
   .cy-section {
     margin-top: 112px;
+    padding-top: 36px;
+    border-top: 1px solid #3e4435;
     scroll-margin-top: 100px;
+  }
+  .cy-section-kicker {
+    margin: 0 0 16px;
+    color: #a8e010;
+    font: 12px/1.6 "Space Mono", monospace;
+    letter-spacing: 0.12em;
+  }
+  .cy-section.cy-evidence,
+  .cy-section.cy-trial,
+  .cy-section.cy-close {
+    padding: 40px;
+    border: 1px solid #3e4435;
+    border-radius: 12px;
+    background: #171a12;
+  }
+  .cy-section.cy-close {
+    background: radial-gradient(ellipse at 50% 0%, rgba(168, 224, 16, 0.06), transparent 60%), #171a12;
   }
   .cy-intro,
   .cy-section-intro,
@@ -1208,8 +1396,70 @@ const [publicEvidence, trialEvidence] = C.evidence;
     padding-left: 20px;
     color: #f4f7ef;
   }
+  .cy-evidence-kind {
+    margin: 0 auto 12px;
+    text-wrap: balance;
+  }
+  .cy-evidence-takeaway {
+    max-width: 640px;
+    margin: 0 auto 24px;
+    color: #f4f7ef;
+    font-size: 18px;
+    line-height: 1.7;
+    text-align: center;
+    text-wrap: pretty;
+  }
   .cy-attack-figure {
     margin: 0;
+  }
+  .cy-attack-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    max-width: 720px;
+    margin: 28px auto 36px;
+    text-align: left;
+  }
+  .cy-attack-summary > div {
+    min-width: 0;
+    padding: 22px 24px;
+    border: 1px solid;
+    border-radius: 8px;
+  }
+  .cy-attack-summary > div > span {
+    display: block;
+    font: 11px/1.6 "Space Mono", monospace;
+    letter-spacing: 0.04em;
+  }
+  .cy-attack-summary strong {
+    display: block;
+    margin-block: 8px 4px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .cy-attack-summary p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .cy-attack-summary p span {
+    font-size: 20px;
+    line-height: 1;
+  }
+  .cy-attack-summary-insecure {
+    border-color: #925353;
+    background: #351c1c;
+    color: #ffb4b4;
+  }
+  .cy-attack-summary-secure {
+    border-color: #698f12;
+    background: #22300e;
+    color: #a8e010;
   }
   .cy-attack-table {
     width: 100%;
@@ -1249,6 +1499,7 @@ const [publicEvidence, trialEvidence] = C.evidence;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     min-height: 72px;
     padding: 12px 4px;
     border: 1px solid;
@@ -1256,6 +1507,13 @@ const [publicEvidence, trialEvidence] = C.evidence;
     font-weight: 500;
     line-height: 1.5;
     text-align: center;
+  }
+  .cy-attack-symbol {
+    flex: 0 0 auto;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1;
   }
   .cy-attack-insecure {
     border-color: #925353;
@@ -1283,6 +1541,8 @@ const [publicEvidence, trialEvidence] = C.evidence;
     margin-bottom: 12px;
   }
   .cy-consult-items {
+    position: relative;
+    counter-reset: consult-step;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 22px;
@@ -1290,10 +1550,35 @@ const [publicEvidence, trialEvidence] = C.evidence;
     font-size: 16px;
     line-height: 1.9;
   }
+  .cy-consult-items::before {
+    content: "";
+    position: absolute;
+    top: 16px;
+    right: calc((100% - 44px) / 3 - 16px);
+    left: 16px;
+    height: 2px;
+    background: #3e4435;
+  }
   .cy-consult-items > div {
+    position: relative;
+    counter-increment: consult-step;
     min-width: 0;
-    padding-top: 18px;
-    border-top: 1px solid #69705c;
+    padding-top: 48px;
+  }
+  .cy-consult-items > div::before {
+    /* Empty alternative text keeps the counters decorative. */
+    content: counter(consult-step) / "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #a8e010;
+    color: #12140e;
+    font: 14px/1 "Space Mono", monospace;
   }
   .cy-consult-items dt {
     margin-bottom: 8px;
@@ -1301,8 +1586,18 @@ const [publicEvidence, trialEvidence] = C.evidence;
   .cy-consult-items dd {
     color: #bac1af;
   }
-  .cy-close .cy-note {
-    margin-bottom: 16px;
+  .cy-close-notes {
+    max-width: 720px;
+    margin: 36px auto 28px;
+    padding-top: 24px;
+    border-top: 1px solid #3e4435;
+  }
+  .cy-close-notes .cy-note,
+  .cy-close-notes .cy-scope {
+    margin: 0 auto;
+  }
+  .cy-close-notes .cy-note {
+    margin-bottom: 8px;
   }
   .cy-page .cy-details-heading {
     margin: 64px 0 16px;
@@ -1417,6 +1712,32 @@ const [publicEvidence, trialEvidence] = C.evidence;
     .cy-section {
       margin-top: 84px;
     }
+    .cy-section.cy-evidence,
+    .cy-section.cy-trial,
+    .cy-section.cy-close {
+      padding: 24px 20px;
+    }
+    .cy-section-kicker {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+    .cy-attack-summary {
+      gap: 8px;
+      margin-block: 24px 28px;
+    }
+    .cy-attack-summary > div {
+      padding: 16px 12px;
+    }
+    .cy-attack-summary > div > span {
+      font-size: 10px;
+    }
+    .cy-attack-summary strong {
+      font-size: 40px;
+    }
+    .cy-attack-summary p {
+      align-items: flex-start;
+      font-size: 12px;
+    }
     .cy-page h2 {
       font-size: 23px;
     }
@@ -1431,6 +1752,18 @@ const [publicEvidence, trialEvidence] = C.evidence;
     .cy-example-card .cy-facts,
     .cy-consult-items {
       grid-template-columns: minmax(0, 1fr);
+    }
+    .cy-consult-items::before {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      right: auto;
+      bottom: -38px;
+      left: 15px;
+      width: 2px;
+      height: auto;
+    }
+    .cy-consult-items > div {
+      padding: 0 0 0 48px;
     }
     .cy-values li {
       gap: 16px;
