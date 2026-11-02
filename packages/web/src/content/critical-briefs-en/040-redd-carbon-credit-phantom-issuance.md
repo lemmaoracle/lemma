@@ -1,7 +1,7 @@
 ---
 brief_no: 40
-title: "保全の実態がない森林から、カーボンクレジットが発行・販売されていた — 環境属性の裏づけデータが、発行時に独立検証されない構造（ブラジル Operation Greenwashing）"
-title_en: "Phantom Carbon Credits — When an Environmental Attribute Is Issued Without Independent Verification of Its Underlying Data (Operation Greenwashing)"
+title: "Operation Greenwashing: carbon credits were issued and sold from forests allegedly not conserved (Brazil Federal Police, Mongabay)"
+title_en: "Operation Greenwashing: carbon credits were issued and sold from forests allegedly not conserved (Brazil Federal Police, Mongabay)"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
 secondary_categories: ["data-provenance"]
@@ -12,91 +12,141 @@ related_pack: ["B-regulatory"]
 related_briefs: ["021-wirecard-balance-attestation", "020-type-designation-conformity-fraud", "019-construction-engineer-qualification-fraud"]
 version: "1.0"
 status: published
+layout: "report"
+sections: "proof"
 gate: "intake"
-og_lead_ja: "保全の実態がない森林からクレジットが発行・販売 — Operation Greenwashing"
-og_lead_en: "Carbon credits from forests with no real conservation — Operation Greenwashing"
-gap_detected: "Investigative reporting, independent satellite imagery analysis, and federal police investigation made the gap between the claims and reality externally visible."
-gap_missing: "At credit issuance time there was no layer to confirm whether the claimed conservation area and deforestation volumes reflected the true state of the source data, so operators' self-declarations were accepted as is."
-gap_fix: "Before issuing or trading credits, independently verify with Lemma that this area is actually conserved and meets the methodology's requirements, and prevent it up front."
-industries: ["finance"]
+og_lead_ja: "ブラジル連邦警察が Operation Greenwashing で 31 名を起訴。保全の実態がないとされる森林からクレジットが発行・販売されていた"
+og_lead_en: "Brazil's Federal Police charged 31 people in Operation Greenwashing over credits issued and sold from forests allegedly not conserved"
+og_kicker_ja: "環境属性の申告 · カーボンクレジット"
+og_kicker_en: "ENVIRONMENTAL CLAIMS · CARBON CREDITS"
+og_headline_ja: "保全の実態のない森から\nクレジットが出たと\n連邦警察が主張。\n<accent>31 名を起訴</accent>"
+og_headline_en: "Credits from forests\nwith no conservation,\nBrazil police allege.\n<accent>31 people charged.</accent>"
+key_figures:
+  - value: "31"
+    unit: "people"
+    label: "Charged by the Federal Police in Operation Greenwashing on suspicion of fraud, land-grabbing and related crimes (2025-10)"
+    tone: "alert"
+  - value: "140,000+"
+    unit: "ha"
+    label: "Combined area of the two REDD+ projects concerned (Unitor and Fortaleza Ituxi)"
+  - value: "2024-05 → 2025-10"
+    label: "From Mongabay's investigative report to the Federal Police charges"
+glossary:
+  - term: "REDD+"
+    desc: "A scheme that counts emissions avoided by reducing deforestation and forest degradation as credits."
+  - term: "Carbon credit (voluntary carbon market)"
+    desc: "Avoided or reduced emissions turned into a tradable unit. Companies use them to offset their own emissions."
+  - term: "Baseline"
+    desc: "The expected logging and emissions had the area not been conserved. Avoided emissions are counted from it."
+  - term: "MRV"
+    desc: "Measurement, reporting and verification. Includes satellite and remote-sensing monitoring of an area after issuance."
+insight:
+  slug: "self-declared-environmental-attribute"
+  label: "Environmental attributes issued as declared"
+  quote: "Without a check against source data held outside whoever made the declaration, declared conservation areas and avoided emissions are accepted as declared before issuance."
+industries: ["finance", "public-sector"]
 operations: ["approval"]
+attack_method: "privilege-abuse"
 controls:
   - slug: "ownership-check"
     item: "Check declared conservation area and logging volume against source data such as satellite imagery"
+impact: "31 people charged by the Federal Police; the two projects cover more than 140,000 ha"
+takeaway: "Declarations of conservation area and logging volume were accepted on the basis of land and environmental registrations, which the Federal Police said were falsified with the involvement of public servants."
+self_check: "Before you accept a declaration of conservation or emission reductions, is there a mechanism that checks it against source data held outside the declarant (such as satellite observation)?"
 countries: ["br"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-Brazil's Federal Police charged 31 people as "Operation Greenwashing," over carbon credits generated from land with no real conservation and sold to majors including Nestlé and Boeing. Reporting, satellite analysis, and the police probe surfaced the divergence only after the credits had flowed into corporate disclosure — after-the-fact detection. What is structurally missing is a layer that verifies, at issuance, whether the declared conservation area and logging volume reflect the true source data; self-declaration was accepted as is.
+According to the Federal Police, credits were generated for these areas while timber illegally logged elsewhere was laundered as if it had a "legitimate origin." Land-grabbing, registering federally owned land and protected areas as one's own, ran in parallel, and the police say public servants at the land-reform agency, registry offices and the state environmental agency made the fraudulent registrations possible. These are the investigators' allegations and have not been established in court. The mismatch between declarations and reality became visible from outside, through investigative reporting, satellite-imagery analysis and the police investigation, after the credits had been sold. <strong>Without a check against source data held outside whoever made the declaration, declared conservation areas and avoided emissions are accepted as declared before issuance.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: According to the Federal Police, two things. First, the issuance and sale of credits based on declarations of conservation area, logging volume and similar data. Second, registrations claiming federally owned land and protected areas as one's own. The credits had been sold to Nestlé, Toshiba, Spotify, Boeing, PwC and others.
+- **What reached the receiving side**: In general, credit issuance receives land registration, conservation area, baseline and logging volume as declared data, part of which is accepted on the basis of records held by the land-reform agency, registry offices and the state environmental agency. If those underlying records are themselves manipulated, the records available to the receiving side do not contradict one another.
+- **Detection route**: Investigative reporting by Mongabay journalist Fernanda Wenzel (2024-05) and the satellite-imagery analysis CCCA conducted on its commission flagged a mismatch between declared logging volume and satellite estimates. The Federal Police then investigated. All of these acted after issuance and sale.
+- **Not disclosed**: The sources reviewed give no confirmed figures for individual issuance lots, cancellations or buy-backs, and do not describe how the declarations were compared with which records during issuance. The charges are at the investigation stage; no one has been convicted.
 
-- **Indictment**: 2025-10, Brazil's Federal Police, as Operation Greenwashing, indicted 31 people on suspicion of fraud and land-grabbing. It is described as the largest carbon-credit fraud investigated in the country to date
-- **Target projects**: two REDD+ projects in Lábrea, Amazonas state (Unitor and Fortaleza Ituxi), together more than 140,000 hectares
-- **How the attribute was presented**: the claim "the forest was conserved and emissions were avoided" was presented as credits based on declared data for land registration, conservation area, and avoided emissions
-- **Core failure**: according to the Federal Police, while credits were generated for these areas, timber illegally logged elsewhere was laundered as if it had a "legitimate origin." Land-grabbing — registering federally owned land and protected areas as one's own — ran in parallel
-- **Trigger for detection**: investigative reporting by Mongabay journalist Fernanda Wenzel (2024-05) and the satellite-imagery analysis CCCA conducted on its commission. The mismatch between declared logging volume and satellite estimates was flagged
-- **Where the credits went**: credits had been sold to Nestlé, Toshiba, Spotify, Boeing, PwC, and others. One central figure, Ricardo Stoppe Júnior, was among Brazil's largest individual credit sellers and had promoted the business model in public venues including COP28
-- **Complicit structure**: the Federal Police held that fraudulent registrations were made possible by the involvement of public servants at the land-reform agency (Incra), registry offices, and the Amazonas state environmental agency (Ipaam)
+## 3. What to check
 
-This event stems from an issuance structure in which an environmental attribute (forest conservation, carbon sequestration) is never independently verified. The failure propagates to the voluntary carbon market and corporate emissions disclosure as follows.
+Whatever the route, the condition for telling them apart is that declared conservation area and logging volume, and the attribution of the area, are checked against source data held outside the declarant before credits are issued.
 
-1. **Attribute claim**: the claim "we conserved the forest in a given area and avoided the emissions that would otherwise have occurred" is presented as declared data for land registration, conservation area, reference scenario (baseline), and logging volume
-2. **Reliance on registration data**: part of the declared data is accepted on the basis of records held by the land-reform agency, registry offices, and the state environmental agency. Where those records themselves were manipulated complicitly, the divergence between declaration and source data is not independently re-verified at the point of issuance
-3. **Tokenization and market entry**: credits are issued on the basis of the declarations and traded on the voluntary carbon market. Purchasing companies incorporate these credits into their disclosures as emissions offsets
-4. **Delayed discovery**: the divergence between declaration and reality (the actual logging and land attribution visible from satellite) is not made visible in the ordinary issuance and audit cycle. It was first confirmed from outside only through external investigative reporting and independent satellite analysis
-5. **Impact realization**: once fraud is confirmed, beyond cancellation of credits and criminal prosecution, retrospective re-verification of the offset claim is required for every company that purchased the credits and used them in disclosure
+- **Who approves**: For issuance, the side that sets the methodology's requirements and decides to issue (the certification and registry arrangements). For source data, the side that produces satellite observations and the public registry that records land attribution. The basis for a declaration is not supplied by the operator making it.
+- **Where it is checked**: Just before credits are issued, and just before a registration of the area's attribution is accepted as a basis. Declared values are compared with the values recorded by the source of the data and checked against the methodology's requirements. Anything that cannot be checked is not issued until it can be.
+- **What is recorded**: For each issuance lot, which declaration was checked against which source data and which methodology requirements before issuance. Kept outside both the declarant and the issuer, in a form that cannot be rewritten afterwards. It is what can be consulted years later when someone asks whether the area was actually conserved at the time.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before credits are issued, declared conservation area, logging volume and the area's attribution against source data held outside the declarant, and keeping a record. Detection means noticing after issuance and sale, from reporting, satellite analysis and investigation. Dates are when the outlets and investigators made them public.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check declarations and the area's attribution against source data before issuance</div>
+<div class="rx-zone gapz"><b>What police and reporting described</b><span>Declared logging volume did not match satellite estimates (CCCA)<br>Credit generation alongside timber-origin laundering and fraudulent land registration (Federal Police)</span></div>
+<div class="rx-zone det"><b>Detection · worked after issuance and sale</b>Reporting and satellite analysis flagged the mismatch; the Federal Police investigated and charged</div>
+<div class="rx-g g1"><div class="t">2024-05</div><b>Mongabay report, CCCA analysis</b></div>
+<div class="rx-g g2"><div class="t">2024–2025</div><b>Federal Police investigate</b></div>
+<div class="rx-g g3"><div class="t">2025-10</div><b>31 people charged</b></div>
+<div class="rx-g g4"><div class="t">2025-11</div><b>Reported internationally</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+Detection made the mismatch between declarations and reality visible from outside, and moves the investigation and the identification of credits to cancel forward. It works separately from a check before issuance. Cases where a self-declared attribute led directly to disclosure or acceptance include [Brief 021](/critical/briefs/021-wirecard-balance-attestation/) (a balance attribute), [Brief 020](/critical/briefs/020-type-designation-conformity-fraud/) (a product's conformity attribute) and [Brief 019](/critical/briefs/019-construction-engineer-qualification-fraud/) (a person's qualification attribute).
 
-- 2024-05: Mongabay reports that the two projects, Unitor and Fortaleza Ituxi, appear linked to the laundering of illegally logged timber. CCCA flags a mismatch with declared logging volume through satellite-imagery analysis
-- 2024–2025: the Federal Police continues its investigation as Operation Greenwashing, examining the divergence between declarations (land registration, conservation area, logging volume) and reality, and the involvement of public servants
-- 2025-10: the Federal Police indicts 31 people belonging to three interconnected groups on suspicion of fraud, land-grabbing, and related crimes
-- 2025-11: the indictment is reported internationally. Incra and Ipaam state their cooperation with the investigation
+## 4. What Lemma does
 
-> Note: confirmed figures for individual issuance lots, cancellations, and buy-backs depend on the progress of litigation and investigation and are not asserted here.
+**Lemma builds the check in section 03 into the side that issues credits and the side that accepts an area's registration as a basis.** It does not detect fraud or judge whether a conservation methodology is sound; it checks, outside the declarant, whether declared values match the values recorded by the source of the data and meet methodology requirements set in advance, and keeps a record. It can also show only that the requirements are met, without releasing internal data such as coordinates or contracts.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **Investigation and regulation**: the Federal Police indicted 31 people as an organized-crime case. Incra and Ipaam stated their cooperation with the investigation. The complicit co-opting of public registration (land and environment) became a focal point that questions trust in public records themselves
-- **Market and certification**: in the voluntary carbon market, methodologies are being tightened around baseline-setting, additionality, double-counting, and permanence, alongside strengthened after-the-fact monitoring (MRV) via satellite and remote sensing. These, however, center on post-issuance verification; the layer that independently verifies the authenticity of source data at the point of issuance remains thin
-- **Shift in regulatory center of gravity**: the regulatory center of gravity is shifting from data disclosure to compliance proof. In corporate emissions disclosure (and related disclosure regulation), demand is growing to evidence the basis of credits used as offsets in an independently verifiable form, rather than as operator self-declaration
+- **Industry · Finance**: Organizations that issue, broker or trade products based on environmental attributes, such as carbon credits.
+- **Industry · Public sector**: Agencies holding records used as a basis for issuance, such as land attribution or environmental permits.
+- **Operations · Approval & sign-off**: Work that decides, on the basis of an operator's declaration, whether to issue or to accept a registration.
 
-The absence of a layer that independently verifies the basis of environmental attributes at the point of issuance and trading remains not as one operator's problem but as an operational challenge spanning both the voluntary carbon market and the companies that incorporate it into disclosure.
+### Current controls vs Lemma
 
----
+In this case, all three columns are routes described by the Federal Police and reporting.
 
-## 4. Why it wasn't stopped
+| Control | Issuance based on declared conservation area and logging volume | Registration of the area's attribution | Sale of issued credits |
+| --- | --- | --- | --- |
+| Tighter methodologies (baseline, additionality, double-counting, permanence) | Partial | Not relevant | Not relevant |
+| After-the-fact monitoring by satellite and remote sensing (MRV) | Partial | Not relevant | Partial |
+| **Lemma (pre-execution check)** | Effective | Partial | Partial |
 
-The central failure primitive is that **an environmental-attribute claim — "a given forest was conserved and carbon was sequestered" — is accepted as credits while severed from independent verification of the provenance and authenticity of its underlying data.** Attributes such as "we conserved" and "we avoided emissions" are presented in the form of declared data on land registration, conservation area, and logging volume, but the authenticity of the source data (the actual forest state observed by satellite, the true attribution of the land) is not connected to a verification layer at the point of issuance. As long as the declared data is the trust terminus, the divergence between asserted attribute and reality cannot be made visible without that layer.
+Tighter methodologies change the rules for what is counted; they do not check, before each issuance, that declared values match the source data. Satellite monitoring can find mismatches, but its weight falls after issuance. Lemma compares declared conservation area and logging volume with the values recorded by the side that produces the satellite observations, before issuance. For the area's attribution, it can check consistency with the registry's record, but if the registry record was itself falsified, it goes through. For sales, it can check before selling or buying whether a pre-issuance check record exists, but whether a trade without one is stopped depends on the trading procedure.
 
-The targets differ from [Brief 021](/critical/briefs/021-wirecard-balance-attestation/) (a financial attribute = asset existence), [Brief 020](/critical/briefs/020-type-designation-conformity-fraud/) (a product's conformity attribute), and [Brief 019](/critical/briefs/019-construction-engineer-qualification-fraud/) (a person's qualification attribute), but the shared primitive is the same: **an attribute assertion is decoupled from the layer that would verify it.** This case shows how attribute-proof bypass propagates simultaneously across "both the regulatory and the market side," in that the assertion complicitly co-opted public registration (land and environment) and flowed all the way into the voluntary carbon market and corporate emissions disclosure.
+Note: Lemma's check works only when it is built into the issuance and registration-acceptance steps, and the sources of the data (the side producing satellite observations, the registry) record values outside the declaring operator. If the way a baseline or additionality is set is itself wrong, wrong results go through too. Where public records were rewritten with the involvement of public servants, the check reaches only as far as source data from another origin can be compared. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent fraud or intrusions.
 
-Here, the detection chain — investigative reporting (Mongabay), independent satellite-imagery analysis (CCCA), and the Federal Police investigation — worked, and the divergence between asserted attribute and reality was ultimately made visible from outside. This is a textbook detection success, and this Brief does not dispute the role of the detection layer. Detection is indispensable for raising doubt, driving the investigation, and scoping remediation after discovery (identifying which credits to cancel).
+### Checklist
 
-Detection, however, cannot change whether "the declared conservation area and logging volume reflect the true state of the source data" at the moment credits are issued and purchased. Both investigative reporting and satellite analysis are after-the-fact chains that activated only after the credits had been issued and incorporated into major corporations' disclosures. Declaration-based issuance does not, on its own, serve as material to independently prove "the area was actually conserved at the time" in a company's emissions disclosure. This is a gap in a structurally independent layer, beyond detection's reach.
+Three things to confirm for organizations that issue or accept registrations based on declared environmental attributes
 
-As things stand, across the operating model for the voluntary carbon market, independent verification of environmental attributes depends on trust in the registration data declared by operators and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the issuance / trading path. It is a complement to detection, not a substitute; together the two establish the trust boundary for credits.
+- Can you check an area's attribution not only against one registration record but also against a record from another origin?
+- Can you confirm afterwards, for each issuance lot, which source data and which methodology requirements the issuance decision was based on?
+- Do you keep declarations and check records outside the declarant, in a form that cannot be rewritten afterwards?
 
----
+## 5. Facts and timeline
 
-## 5. What proof would have changed
+- **Subject**: Two REDD+ projects in Lábrea, Amazonas state (Unitor and Fortaleza Ituxi), together more than 140,000 hectares.
+- **Investigation**: In 2025-10, Brazil's Federal Police, as Operation Greenwashing, charged 31 people belonging to three interconnected groups on suspicion of fraud, land-grabbing and related crimes. It is described as the largest carbon-credit fraud investigated in the country to date.
+- **Federal Police allegations**: While credits were generated for these areas, timber illegally logged elsewhere was laundered as if it had a "legitimate origin." Land-grabbing, falsely registering federally owned land and protected areas as one's own, ran in parallel.
+- **Public agencies**: The Federal Police held that fraudulent registrations were made possible by the involvement of public servants at the land-reform agency (Incra), registry offices and the Amazonas state environmental agency (Ipaam).
+- **What was declared**: The claim "the forest was conserved and emissions were avoided" was presented as credits based on declared data for land registration, conservation area and avoided emissions.
+- **Trigger for detection**: Investigative reporting by Mongabay journalist Fernanda Wenzel (2024-05) and the satellite-imagery analysis CCCA conducted on its commission, which flagged a mismatch between declared logging volume and satellite estimates.
+- **Buyers**: Credits had been sold to Nestlé, Toshiba, Spotify, Boeing, PwC and others. Ricardo Stoppe Júnior, described as one of the central figures, was among Brazil's largest individual credit sellers and had promoted the business model in public venues including COP28.
 
-For the gap exposed here — an environmental-attribute claim flowing straight to issuance, market, and disclosure while severed from independent verification of its underlying data's provenance — Lemma offers a design in which the basis of credits is committed at the point of issuance as independently verifiable cryptographic proofs, so that certification bodies, purchasing companies, and regulators can independently verify "this area is conserved in a way that meets the methodology's requirements" without the operator releasing its source data.
+### Timeline
 
-- **Issuer-signed attestations**: the origin of the source data (satellite-data providers, public registries) attests to observed values and attribution with an issuer signature. Rather than declarations forwarded by the operator, the proof is bound to the originator of the source data
-- **Schema-bound proofs**: each proof is bound to the methodology / regulatory schema it satisfies (REDD+ methodology, additionality, baseline, disclosure standards), so certification bodies and regulators can verify directly against the schema
-- **Selective disclosure**: only "the conservation area and avoided emissions meet the standard" is disclosed at minimum; coordinates, contracts, and operator-internal data never leave the operator
-- **Original binding and validity**: bound to the satellite-observation and land-registration originals via docHash, proving existence and non-tampering. The trail to the source data at the time is fixed per issuance lot
+- **2024-05**: Mongabay reports that the two projects, Unitor and Fortaleza Ituxi, appear linked to the laundering of illegally logged timber. CCCA flags a mismatch with declared logging volume through satellite-imagery analysis.
+- **2024–2025**: The Federal Police continues its investigation as Operation Greenwashing, examining the mismatch between declarations (land registration, conservation area, logging volume) and reality, and the involvement of public servants.
+- **2025-10**: The Federal Police charges 31 people belonging to three interconnected groups on suspicion of fraud, land-grabbing and related crimes.
+- **2025-11**: The charges are reported internationally. Incra and Ipaam state their cooperation with the investigation.
 
-A proof fixed at the point of issuance and trading then functions, years later when "was the area actually conserved at the time?" is asked, as an independently verifiable trail that discloses no source data. Detection (after-the-fact satellite monitoring, investigative journalism) serves remediation after discovery; pre-execution attestation (attribute verification at issuance) serves independent verification of environmental attributes — complementary layers.
+> The methods alleged, the involvement of public servants and the charges rest on the Federal Police's account as reported by Folha de S.Paulo and Mongabay. The charges are at the investigation stage; no one has been convicted. Confirmed figures for individual issuance lots, cancellations and buy-backs depend on the progress of litigation and investigation and are not asserted here. This Brief does not attribute fault to the companies that bought the credits. What was not disclosed does not mean controls were absent.
 
----
+### After disclosure
+
+- **Investigation**: The Federal Police charged 31 people as an organized-crime case. Incra and Ipaam stated their cooperation with the investigation. The alleged misuse of public registration (land and environment) became a focal point that questions trust in public records.
+- **Market and certification**: In the voluntary carbon market, methodologies are being tightened around baseline-setting, additionality, double-counting and permanence, alongside strengthened after-the-fact monitoring (MRV) via satellite and remote sensing. These center on post-issuance verification.
+- **Disclosure expectations**: In corporate emissions disclosure, demand is growing to evidence the basis of credits used as offsets in a form that can be checked from outside, rather than as operator self-declaration.
 
 ## 6. Sources
 
@@ -105,4 +155,4 @@ A proof fixed at the point of issuance and trading then functions, years later w
 - **Folha de S.Paulo (primary reporting)**: “PF aponta organização criminosa e indicia 31 em maior fraude com créditos de carbono já investigada” (2025-10) — <https://www1.folha.uol.com.br/ambiente/2025/10/pf-aponta-organizacao-criminosa-e-indicia-31-em-maior-fraude-com-creditos-de-carbono-ja-investigada.shtml>
 - **Business & Human Rights Resource Centre (aggregated)**: “Brazil: Federal Police indicted 31 suspects for fraud and land-grabbing in massive criminal carbon credit scheme in the Amazon” — <https://www.business-humanrights.org/en/latest-news/brazil-federal-police-indicted-31-suspects-for-fraud-and-land-grabbing-in-massive-criminal-carbon-credit-scheme-in-the-amazon/>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/#attribute), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

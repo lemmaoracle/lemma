@@ -1,7 +1,7 @@
 ---
 brief_no: 115
-title: "Workday の AI 応募者スクリーニング差別訴訟：不利益処分は下されたが、その判定が独立に検証・認可されたかは残らない — Mobley v. Workday"
-title_en: "AI applicant-screening discrimination suit against Workday: the adverse action was taken, but whether the decision was independently verified and authorized was never recorded — Mobley v. Workday"
+title: "Workday: A lawsuit alleges its AI applicant screening sorted candidates unfavorably by race, age and disability (Mobley v. Workday)"
+title_en: "Workday: A lawsuit alleges its AI applicant screening sorted candidates unfavorably by race, age and disability (Mobley v. Workday)"
 pillar: "02-verifiable-ai"
 primary_category: "ai-bias-harm"
 secondary_categories: ["ai-decision-integrity", "identity-auth"]
@@ -11,76 +11,137 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["012-williams-frt-wrongful-arrest", "076-dillon-frt-wrongful-arrest", "078-tenncare-connect-medicaid-eligibility", "056-mchire-paradox-recruiting-auth"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "agent-operation"
 version: "1.0"
-og_lead_ja: "Workday AI 採用差別訴訟：自動不採用の前に判定が独立検証・認可されたか残らない"
-og_lead_en: "Workday AI hiring-bias suit: no record the decision was verified before rejection"
-gap_detected: "The suspected discrimination surfaced from applicants' experience and statistics and advanced as a class action in 2026."
-gap_missing: "A layer that verifies, before the adverse action of an automated rejection, that the decision was independently verified and authorized, and retains it as a record."
-gap_fix: "Before the adverse action, fix as a tamper-evident record which decision was used, on what grounds and reliability conditions, and under what independent verification and authorization."
+og_lead_ja: "Workday の AI 応募者スクリーニングが人種・年齢・障害で応募者を不利に選別したとする集団訴訟で、連邦地裁が主張の一部の続行を認めた（2026-06-22）"
+og_lead_en: "In a class action alleging Workday's AI applicant screening sorted candidates unfavorably by race, age and disability, a federal court allowed part of the claims to proceed (2026-06-22)"
+og_kicker_ja: "AI の判定 · 採用の差別訴訟"
+og_kicker_en: "AI DECISION · HIRING BIAS SUIT"
+og_headline_ja: "AI の応募者選考で\n不利に選別されたと\n原告が主張。\n<accent>100 件超の求人で落選</accent>"
+og_headline_en: "Applicants were screened\nout by AI, suit alleges.\n<accent>100+ rejections claimed</accent>"
+key_figures:
+  - value: "100+"
+    unit: "openings"
+    label: "Openings the lead plaintiff says he was rejected for at companies using Workday (plaintiff's allegation)"
+    tone: "alert"
+  - value: "Within 1"
+    unit: "hour"
+    label: "Time from applying to an automated rejection notice; some also arrived late at night (plaintiff's allegation)"
+  - value: "2023-02 → 2026-06-22"
+    label: "From filing to the federal court allowing the FEHA claims and part of the ADA claims to proceed"
+glossary:
+  - term: "Proxy"
+    desc: "Information that is not a protected attribute such as race, age or disability, but tends to correlate with one. Plaintiffs allege that employment gaps and similar factors played this role."
+  - term: "FEHA, ADA, ADEA"
+    desc: "FEHA is the California Fair Employment and Housing Act, ADA the Americans with Disabilities Act, and ADEA the US Age Discrimination in Employment Act."
+  - term: "Attorney-client privilege"
+    desc: "A US legal principle that shields communications between a lawyer and a client from disclosure in litigation."
+insight:
+  slug: "ai-judgment-to-adverse-action"
+  label: "An AI decision, taken straight to an adverse action"
+  quote: "Without a check, before an AI decision is used against a person, for the decision's grounds and who reviewed it, only the outcome arrives, and the grounds cannot be shown afterwards."
 industries: ["ai"]
 operations: ["approval"]
 controls:
   - slug: "audit-trail"
-    item: "Record who verified each automated rejection, and how, before it is sent"
+    item: "Record who reviewed each automated rejection, and how, before it is sent"
 impact: "Lead plaintiff rejected for 100+ openings (alleged)"
+takeaway: "If an AI decision is used to send applicants a rejection, check before sending which decision was used, on what grounds and with whose review, and keep a record."
+self_check: "Before an AI decision is used against a person, do you check the decision's grounds and who reviewed it?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-Mobley v. Workday, Inc. (N.D. Cal., No. 3:23-cv-00770) is a class action alleging that Workday's AI applicant screening sorted candidates unfavorably on the basis of race, age, and disability. The lead plaintiff, Derek Mobley — Black, over 40, living with anxiety and depression — alleges he was rejected for more than 100 openings at companies using Workday's platform, receiving automated rejections within an hour of applying or in the middle of the night (plaintiff's allegations). On June 22, 2026, Judge Rita F. Lin rejected Workday's defense that it "merely provided a tool" and allowed the core discrimination claims to proceed. The process for surfacing the suspected discrimination and bringing it to court worked. **Detection was working. What was missing is the layer that, before the adverse action of an automated rejection, verifies whether the decision was independently verified and authorized, and retains that as a record.**
+In a class action, plaintiffs allege that an AI applicant-screening service sorted candidates unfavorably on the basis of race, age and disability across its customers' hiring. In June 2026, the federal court rejected part of Workday's defense that it "merely provided a tool" and allowed part of the claims to proceed. The court has not yet decided whether discrimination occurred. <strong>Without a check, before an AI decision is used against a person, for the decision's grounds and who reviewed it, only the outcome arrives, and the grounds cannot be shown afterwards.</strong>
 
-## 2. What happened
+## 2. What got through
 
-- The suit is a class action alleging that Workday's AI applicant screening treated candidates unfavorably on the basis of race, age, and disability across its customers' hiring processes. The lead plaintiff is Derek Mobley.
-- Plaintiffs allege that applicants were sorted through proxies — such as employment gaps — in ways that produced disadvantage correlated with protected attributes. The figures (over 100 rejections; automated rejections within an hour or late at night) are the plaintiff's allegations.
-- On June 22, 2026, Judge Lin rejected part of Workday's defense, holding that Workday is not merely a "tool provider" but may fall within the reach of discrimination liability, and allowed the FEHA (California Fair Employment and Housing Act) claims and part of the ADA (Americans with Disabilities Act) proxy-discrimination claims to proceed.
+- **What got through**: Rejection notices sent to applicants. The plaintiff alleges he was rejected for more than 100 openings at companies using Workday's platform, receiving automated rejections within an hour of applying or in the middle of the night (plaintiff's allegations).
+- **What reached the receiving side**: In general, what reaches an applicant is the outcome, not which decision was used or on what grounds. Plaintiffs allege that applicants were sorted through proxies, such as employment gaps, in ways that produced disadvantage correlated with protected attributes.
+- **What was alleged and what the court decided**: On 2026-06-22, Judge Rita F. Lin held that Workday is not merely a "tool provider" but may fall within the reach of discrimination liability, and allowed the FEHA claims and part of the ADA proxy-discrimination claims to proceed. The ruling declined to dismiss those claims; it is not a finding that discrimination occurred.
+- **Not disclosed**: The factors the decisions used, and whether a person or a separate layer reviewed a decision before a rejection was sent. They are not in the sources reviewed. A May 2026 order found Workday's bias-testing data protected by privilege, and its production to plaintiffs was not compelled.
 
-The matter takes shape through the following chain.
+## 3. What to check
 
-1. Workday's AI screening automatically issues decisions (sorting, routing to rejection) on applications submitted to customer companies' openings.
-2. Those decisions are alleged to have sorted applicants on factors including employment-gap proxies.
-3. The adverse action of an automated rejection is issued to applicants without a record by which the decision's grounds, reliability, and independent corroboration can be verified.
-4. The bias-testing data by which the decision's validity might be checked did not, as noted below, reach plaintiffs even in the litigation — the material for independently verifying the decision was shielded.
+The condition that holds regardless of the route is to check, before an AI decision is used to return an adverse outcome to a person (such as a rejection), that the decision is tied to a record of its grounds and to the approval of the person who reviewed it.
 
-## 3. Timeline — disclosure and response
+- **Who approves**: The hiring staff who decide an action such as a rejection. They approve after looking at the grounds, separately from the AI decision. A decision looking fast and consistent is no substitute for approval.
+- **Where it is checked**: Before a rejection based on an AI decision is sent. Check that the decision is tied to a record of its grounds and to approval; if it is not, hold.
+- **What is recorded**: Which decision was used, with which inputs and conditions, and under whose review. In an audit or litigation, the basis for the action can be shown afterwards.
 
-- 2023-02: Mobley files suit against Workday in federal district court (No. 3:23-cv-00770, N.D. Cal.).
-- 2024 (around): at an early pleading stage, a ruling addresses whether Workday qualifies as an "agent," and plaintiffs are given leave to amend.
-- May 2025: preliminary certification of a nationwide ADEA (Age Discrimination in Employment Act) collective is granted.
-- 2026-05-29 (around): Magistrate Judge Laurel Beeler denies the motion to compel production of Workday's bias-testing data, finding it protected by attorney-client privilege (and separately denies compelling customers' applicant data as failing Rule 34's "control" requirement).
-- 2026-06-22: Judge Rita F. Lin rejects part of Workday's defense and allows the FEHA claims and part of the ADA proxy-discrimination claims to proceed.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Figure 1</span><span class="rx-ex-t">"Detection" versus a "pre-execution check"</span></div>
+<p class="rx-ex-cap">Pre-execution check = before using an AI decision for a rejection, check that it is tied to a record of its grounds and the reviewer's approval, and keep a record. Detection = noticing a problem after the rejection, through complaints or analysis. Dates are those given in court orders and law-firm analyses.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from what was disclosed</b>Whether grounds and review were checked before rejections were sent</div>
+<div class="rx-zone gapz"><b>What was alleged</b><span>Rejected for 100+ openings<br>Automated rejections within an hour or late at night (plaintiff's allegation)</span></div>
+<div class="rx-zone det"><b>Detection · worked after the rejections</b>An applicant's complaint reached the court as a class action</div>
+<div class="rx-g g1"><div class="t">2023-02</div><b>Mobley files suit</b></div>
+<div class="rx-g g2"><div class="t">2025-05</div><b>ADEA collective preliminarily certified</b></div>
+<div class="rx-g g3"><div class="t">2026-05-29</div><b>Motion to compel testing data denied</b></div>
+<div class="rx-g g4"><div class="t">2026-06-22</div><b>Part of the claims allowed to proceed</b></div>
+</div>
+</figure>
 
-> Note: the facts here rest on federal-court orders, law-firm analyses, and established media reporting. The litigation is ongoing, and statements about the disadvantage applicants experienced and the manner of automated rejection include the plaintiff's allegations. The scope of any collective certification and the details of the figures include unsettled items to be verified. This Brief does not condemn any party; it focuses on the structure in which there is no way to prove, before the adverse action, that the decision was independently verified and authorized.
+The suspected disadvantage was taken up only after rejections arrived, through litigation. Other cases where an AI output allegedly led straight to harm to a person without independent corroboration are the wrongful arrests of [Robert Williams](/critical/briefs/012-williams-frt-wrongful-arrest/) and [Robert Dillon](/critical/briefs/076-dillon-frt-wrongful-arrest/) (facial recognition) and [TennCare Connect](/critical/briefs/078-tenncare-connect-medicaid-eligibility/) (benefit-eligibility decisions). In hiring, there is [McHire](/critical/briefs/056-mchire-paradox-recruiting-auth/) (applicant-data exposure).
 
-Response and industry movement after disclosure are as follows.
+## 4. What Lemma does
 
-- The matter is in discovery, with continued disputes over the decision's grounds and the handling of the testing data.
-- Judge Lin's June order is widely cited in HR and legal practice as a holding that a provider of AI screening may fall within the reach of discrimination liability beyond that of a "mere tool provider."
+**Lemma builds the check in section 3 into the step that sends a rejection based on an AI decision.** It does not judge whether the decision itself is fair; before the rejection is sent, and outside the AI, it checks that the decision is tied to a record of its grounds and the reviewer's approval, and keeps a record.
 
-## 4. Why it wasn't stopped
+### Industries and operations to watch
 
-The failure here is not that applicants responded inadequately, nor that any individual acted with malice. It is that nowhere along the path from an automated pass/fail decision to the adverse action (an automated rejection) was there a record — one that could later be established — of on what grounds, under what reliability conditions, and under whose independent verification and authorization that decision was made. Detection worked: the suspected discrimination surfaced from applicants' experience and statistics and rode the process of a class action. What was missing sits earlier — verification at the instant the rejection is finalized.
+- **Industry · AI adoption**: Companies that build AI screening into sorting applicants or routing pass/fail decisions, and the vendors that provide it.
+- **Operations · Approval**: Approving an action such as a rejection whose basis is an AI decision.
 
-A decision looking legitimate and that decision being authorized for an adverse action right now are separate questions. The automated responses were fast, high-volume, and outwardly consistent. But speed and consistency are not proof that each individual decision was independently corroborated and authorized. And here, the bias-testing data by which the decision's validity might be checked was shielded by privilege, so the material for independent verification did not reach plaintiffs even procedurally. The outcome of the decision remains; the fact that the decision was verified and authorized (or was not) does not.
+### Current controls versus Lemma
 
-> The automated rejection is emblematic. The notice arrives, but on what grounds and reliability conditions, and under what independent verification, that single decision was made is shown neither to the person on the receiving end nor to the later proceedings. The outcome travels fast; the corroboration does not.
+The route in this case is column 1 (sending applicants a rejection based on an AI decision). Column 2 is the stage, after the rejection, of showing in an audit or litigation which decision was used under whose review.
 
-The same structure connects to [Brief 012 (Robert Williams wrongful arrest)](/critical/briefs/012-williams-frt-wrongful-arrest/) and [Brief 076 (Robert Dillon wrongful arrest)](/critical/briefs/076-dillon-frt-wrongful-arrest/), where a probabilistic AI output led straight to an irreversible coercive action without independent corroboration; to [Brief 078 (TennCare Connect eligibility determinations)](/critical/briefs/078-tenncare-connect-medicaid-eligibility/), where an administrative AI decision drove benefit denials; and to [Brief 056 (McHire applicant-data exposure)](/critical/briefs/056-mchire-paradox-recruiting-auth/), where attribution and authorization of decisions were at issue in hiring. Each shows that a decision "existing" and that decision being authorized for an adverse action right now are separate questions.
+| Control | Sending applicants a rejection based on an AI decision | Showing the decision's grounds and review after the rejection |
+| --- | --- | --- |
+| Bias testing of the model (evaluating group-level tendencies) | Partial | Partial |
+| A practice of having a person review the decision before a rejection is sent | Effective | Partial |
+| **Lemma (pre-execution check)** | Effective | Effective |
 
-## 5. What proof would have changed
+Bias testing underpins choosing and revising a model, but it does not change whether each individual decision was reviewed before it was sent. In this case, Workday's bias-testing data was found protected by privilege and was not produced to plaintiffs in the litigation. A human-review practice acts on the step before sending, but the record of the review stays inside the organization that runs it. Lemma checks, before sending and outside the AI, that the decision is tied to a record of its grounds and to approval, and keeps which decision was used under which conditions and review.
 
-Proof-as-auth inserts a layer, ahead of the point where an automated decision is used for an adverse action (such as an automated rejection), that fixes as a tamper-evident record which decision was used, on what grounds and reliability conditions, and under what independent verification and authorization. Rather than letting a decision's speed and apparent consistency stand in for authorization, it checks — before the adverse action is finalized — whether this single decision is authorized for the adverse action. If the answer is "no independent corroboration" or "not authorized," the adverse action based on that decision is held in advance.
+Note: Lemma's check works only when it is built into the step that sends a rejection, and the record of grounds and the approval are managed outside the AI that produces the decision. If the reviewer does not notice bias in a decision, this check can be passed. Lemma does not guarantee that a decision is fair, nor does it judge whether discrimination occurred. The table compares what each control checks; it does not show whether this case would have been stopped. Lemma does not detect or prevent intrusions.
 
-The design Lemma offers for this primitive is as follows.
+### Checklist
 
-- **Per-adverse-action authorization proof**: bind an action such as an automated rejection not to possession of a model's output, but to a verifiable proof that this action is independently verified and authorized now — excluding automatic application of an uncorroborated decision before the action.
-- **Fixing decision grounds and reliability conditions**: fix, at the moment of the action and in verifiable form, which decision was made under which inputs, which proxies, and which reliability conditions — avoiding a state where only the outcome remains while the grounds cannot be reconstructed.
-- **Making independent verification a record**: retain a record — establishable later by the affected party, auditors, and judicial process — of whether the decision was verified and authorized by a human or independent layer (or was not), and design against a state where the verifying material fails to reach the proceedings.
-- **Selective adverse-action records**: keep a tamper-evident record of whose decision, and which decision, under what authorization, was used for an adverse action, so that if a dispute arises, the path and authorization state of the action can be independently shown.
+Three things to confirm for organizations that use AI decisions in hiring or other actions
 
-Lemma is not a product that guarantees the fairness of a decision. Its scope is to retain, as a tamper-evident record, the fact that a decision was independently verified and authorized before it was used for an adverse action (or was not). Judgments of whether discrimination occurred, and of what is proper, are for process and law. Detection (catching suspected discrimination, statistical analysis, after-the-fact remedy through litigation) and pre-execution proof (a record that independently verifies a decision's corroboration and authorization before the action) are complements, not substitutes. See [Proof-as-Auth: sign in without sending your key](/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05) and [Verifiable AI](/pillars/#inference).
+- Do you pass the inputs and factors an AI decision used (including information that can act as a proxy) to the person who approves the action?
+- When an applicant or other person complains, do you have a record that shows which decision was used for that one case, under whose review?
+- When you use AI screening from an outside vendor, have you decided which side keeps the record of decisions and approvals?
+
+## 5. Facts and timeline
+
+- **Case**: Mobley v. Workday, Inc. (N.D. Cal., No. 3:23-cv-00770).
+- **Lead plaintiff**: Derek Mobley (alleges he is Black, over 40, and living with anxiety and depression).
+- **Subject of the suit**: Workday's AI applicant screening. A class action alleging it treated candidates unfavorably on the basis of race, age and disability across its customers' hiring.
+- **Plaintiff's allegations**: Rejected for more than 100 openings, receiving automated rejections within an hour of applying or late at night. Alleges sorting through proxies such as employment gaps.
+- **Court's ruling**: On 2026-06-22, Judge Lin rejected part of Workday's defense and allowed the FEHA claims and part of the ADA proxy-discrimination claims to proceed.
+- **Current stage**: The case is in discovery, with continued disputes over the decision's grounds and the handling of the testing data.
+
+### Timeline
+
+- **2023-02**: Mobley files suit against Workday in federal district court (No. 3:23-cv-00770, N.D. Cal.).
+- **2024 (around)**: At an early pleading stage, a ruling addresses whether Workday qualifies as an "agent," and plaintiffs are given leave to amend.
+- **2025-05**: Preliminary certification of a nationwide ADEA collective is granted.
+- **2026-05-29 (around)**: Magistrate Judge Laurel Beeler denies the motion to compel production of Workday's bias-testing data, finding it protected by attorney-client privilege, and separately denies compelling customers' applicant data as failing Rule 34's "control" requirement.
+- **2026-06-22**: Judge Rita F. Lin rejects part of Workday's defense and allows the FEHA claims and part of the ADA claims to proceed.
+
+> The facts rest on federal-court orders, law-firm analyses and media reporting. The litigation is ongoing, and statements about the disadvantage applicants experienced and the manner of automated rejection include the plaintiff's allegations. The court has not yet decided whether discrimination occurred. The scope of the collective certification and the details of the figures include unsettled points. This Brief does not blame Workday or the hiring companies. What has not been disclosed does not mean there were no controls.
+
+### Response after disclosure
+
+- **Litigation**: The case is in discovery, with continued disputes over the decision's grounds and the handling of the testing data.
+- **HR and legal practice**: Judge Lin's June order is widely cited as a holding that a provider of AI screening may fall within the reach of discrimination liability beyond that of a "mere tool provider."
 
 ## 6. Sources
 
@@ -91,4 +152,4 @@ Lemma is not a product that guarantees the fairness of a decision. Its scope is 
 - Norton Rose Fulbright, “Behind the privilege shield: Safeguarding AI bias-testing data in employment decisions” (Inside Tech Law, 2026-06) — <https://www.insidetechlaw.com/blog/2026/06/behind-the-privilege-shield-safeguarding-ai-bias-testing-data-in-employment-decisions>
 - Mobley v. Workday, Inc., No. 3:23-cv-00770 (N.D. Cal.) — case docket (primary) — <https://www.courtlistener.com/docket/66831340/mobley-v-workday-inc/>
 
-References: [Proof-as-Auth: sign in without sending your key](/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Verifiable AI](/pillars/#inference) · [Brief 012 (Robert Williams wrongful arrest)](/critical/briefs/012-williams-frt-wrongful-arrest/) · [Brief 076 (Robert Dillon wrongful arrest)](/critical/briefs/076-dillon-frt-wrongful-arrest/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
