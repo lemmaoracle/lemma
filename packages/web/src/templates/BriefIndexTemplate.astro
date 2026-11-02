@@ -350,7 +350,6 @@ const labels = isJa
       newest: "新着",
       impactK: "影響",
       casesK: "この対策が関わった事例",
-      selectedK: "選んでいる対策",
       selectedMark: "選択中",
       pinned: "注目",
       controlsH: "対策から読む",
@@ -405,7 +404,6 @@ const labels = isJa
       newest: "Latest",
       impactK: "Impact",
       casesK: "Cases where this applies",
-      selectedK: "Selected control",
       selectedMark: "Selected",
       pinned: "Featured",
       controlsH: "Browse by control",
@@ -638,8 +636,6 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
           {controlIntro.map((ci) => (
             <div class="ix-cintro" data-control-intro={ci.slug} hidden>
               <div class="ix-cintro-head">
-                <span class="ix-cintro-k">{labels.selectedK}</span>
-                <b class="ix-cintro-name">{ci.label}</b>
                 <p class="ix-cintro-desc">{ci.desc}</p>
               </div>
               {ci.cases.length > 0 && (
@@ -2421,12 +2417,6 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     display: flex;
     flex-direction: column;
     gap: 6px;
-  }
-  .ix-cintro-name {
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.5;
-    color: var(--tx);
   }
   .ix-cintro {
     margin-top: 14px;
