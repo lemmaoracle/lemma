@@ -1,7 +1,7 @@
 ---
 brief_no: 165
-title: "お名前.com デスクトップクラウド：借りたサーバーに不正プログラム、取引口座で身に覚えのない取引"
-title_en: "Onamae.com Desktop Cloud: Malicious programs on rented servers, and trades customers say they did not make"
+title: "お名前.com デスクトップクラウド：借りたサーバーに不正プログラムが置かれ、取引口座で身に覚えのない取引が報告された"
+title_en: "Onamae.com Desktop Cloud: Malicious programs were placed on rented servers, and customers reported trades they did not make"
 pillar: 04-regulatory-attribute
 primary_category: identity-auth
 secondary_categories: []
@@ -97,6 +97,8 @@ Shutting down all servers and asking securities and FX firms to block access wer
 
 ### Current controls vs Lemma
 
+What has been disclosed is trades on trading accounts that customers did not make; withdrawals and changes of withdrawal destination do not appear in the disclosures. Which column this route corresponds to has not been disclosed either, so the table sets out all three columns as a general comparison.
+
 | Control | Withdrawals and destination changes | Orders beyond the scope | Orders within the scope |
 | --- | --- | --- | --- |
 | Strong passwords, regular changes | Not effective | Not effective | Not effective |
@@ -132,16 +134,17 @@ Three points for businesses that host trading tools and for securities and FX fi
 - **2026-10-21**: Servers on all plans shut down from 04:00; first notice. Extortion email received the same day. From this day, reports of trades customers did not make are received.
 - **2026-10-22**: Police consulted. 26,739 potentially affected servers disclosed.
 - **2026-10-24**: Fourth notice says the security problem and the exfiltration have been confirmed. Payments to customers and compensation for losses from unauthorised trades decided.
-- **2026-10-27**: Publication by those believed to be the attackers of material claimed to be company and customer information confirmed. A bounty (up to US$1 million) announced (submissions from 12:00 on the 28th).
+- **2026-10-27**: Publication by those believed to be the attackers of material claimed to be company and customer information confirmed. A bounty (up to US$1 million) announced in the twelfth notice (as of 19:10); submissions from 12:00 on the 28th.
+- **2026-10-28**: Dedicated bounty site opened at 12:00 (fourteenth and fifteenth notices). The bounty was also announced in the same day's timely disclosure.
 - **2026-10-29**: Sixteenth notice. Bounty tip counts begin to be published as weekday 18:00 addenda (428 in total as of 18:00 on the 30th).
 - **2026-10-30**: Instructions on payments and the replacement service start going to customers.
 
-> Facts rest on GMO Internet and GMO Internet Group's official statements (up to the sixteenth notice and the 30 October notice to customers). What has not been disclosed does not mean no measure existed. As of 31 October, no later notice has disclosed the intrusion route.
+> Facts rest on GMO Internet and GMO Internet Group's official statements (up to the sixteenth notice and the 30 October notice to customers). What has not been disclosed does not mean no measure existed. As of 2 November, no later notice has disclosed the intrusion route.
 
 ### After disclosure
 
 - **Requests to securities and FX firms**: Major exchanges and brokers were asked to block access via the service, cut all sessions and monitor unauthorised trades.
-- **Compensation**: ¥5,000 to every customer. Customers whose information the company confirms was in published material receive an extra ¥10,000–25,000 per category (cap ¥3 million per publication). Realised losses from trades the company recognises as unauthorised are compensated. The replacement service is free for six months. The current system will not simply be restarted.
+- **Compensation**: ¥5,000 to every customer currently using the service, whether or not they suffered a financial loss. Customers whose information the company confirms was in published material receive an extra ¥10,000–25,000 per category (cap ¥3 million per publication). Realised losses from trades the company recognises as unauthorised are compensated. The replacement service is free for six months. The current system will not simply be restarted.
 
 ## 6. Sources
 
