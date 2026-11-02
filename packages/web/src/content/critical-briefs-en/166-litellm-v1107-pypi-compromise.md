@@ -10,7 +10,7 @@ published: 2026-10-30
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["145-litellm-mcp-oauth2-fallback-empty-auth", "066-litellm-ai-gateway-privilege-escalation", "148-openai-agent-swarm-rubygems-rubydoc-rce", "125-keyv-cacheable-npm-account-takeover"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "LiteLLM：v1.107.0 が攻撃者のリポジトリでビルドされ、署名つきで配布"
 og_lead_en: "LiteLLM: v1.107.0 was built from an attacker repo and shipped signed"
@@ -75,8 +75,8 @@ Whatever the route, the condition for telling them apart is that the consumer ch
 <div class="rx-zone gapz"><b>In between</b><span>It reached consumers with a genuine<br>signature and provenance</span></div>
 <div class="rx-zone det"><b>Detection · worked</b>Act on an outside report, quarantine and pull the release</div>
 <div class="rx-g g1"><div class="t">10-21 11:39</div><b>Published to PyPI</b></div>
-<div class="rx-g g2"><div class="t">until 13:23</div><b>Could be pulled under the official name</b></div>
-<div class="rx-g g3"><div class="t">12:06</div><b>Outside researcher reports it</b></div>
+<div class="rx-g g2"><div class="t">12:06</div><b>Outside researcher reports it</b></div>
+<div class="rx-g g3"><div class="t">until 13:23</div><b>Could be pulled under the official name</b></div>
 <div class="rx-g g4"><div class="t">13:23</div><b>PyPI quarantines it</b></div>
 </div>
 </figure>
@@ -132,12 +132,12 @@ Three points for your organisation to check about the open-source code you pull 
 - **2026-10-23**: attack-chain analysis published; the image signing key is rotated the same day.
 - **2026-10-30**: a list of changes with target dates is published; the incident post adds the new signing key's fingerprint.
 
-> Facts here rest on LiteLLM's official posts (the incident post, the 23 October attack-chain analysis and the 30 October list of changes) and Wiz's independent analysis. LiteLLM says some assumptions in its early updates on 21 October were inaccurate and treats the 23 October analysis as canonical. Wiz gives the PyPI quarantine as 13:20 UTC and Docker Hub removal as about 13:53 UTC; this Brief uses LiteLLM's values. The commits Wiz dates from 08:56 UTC were to the attacker's fork, a separate event from the 10:08 UTC push to the official workflow. At 12:09–12:24 UTC the attacker used the owner's token to revert the workflow change and remove it from visible history. What has not been disclosed does not mean no measure was in place. As of 1 November, there has been no update after 30 October.
+> Facts here rest on LiteLLM's official posts (the incident post, the 23 October attack-chain analysis and the 30 October list of changes) and Wiz's independent analysis. LiteLLM says some assumptions in its early updates on 21 October were inaccurate and treats the 23 October analysis as canonical. Wiz gives the PyPI quarantine as 13:20 UTC and Docker Hub removal as about 13:53 UTC; this Brief uses LiteLLM's values. The commits Wiz dates from 08:56 UTC were to the attacker's fork, a separate event from the 10:08 UTC push to the official workflow. At 12:09–12:24 UTC the attacker used the owner's token to revert the workflow change and remove it from visible history. What has not been disclosed does not mean no measure was in place. As of 2 November, there has been no update after 30 October.
 
 ### After disclosure
 
 - **Guidance to consumers**: pin to 1.106.2 or another pre-incident version. In affected environments, delete `cook.pth`, `cook.py`, `sitecustomize.py` and any `__pycache__/cook*.pyc` and `sitecustomize*.pyc`, stop the resident process and rebuild environments and images. If 1.107.0 ran on a host with outbound access, assume data left it and rotate every credential the host could reach (IAM role, provider keys in the database, master key and so on). Trust old-key signatures only on images published before v1.107.0.
-- **LiteLLM's own actions**: it removed all members from its GitHub organisation and revoked internal and vendor tokens. On 30 October it published 25 changes with target dates. Holding production approval only in a dedicated account tied to a specific device in its office, and keeping day-to-day accounts out of the owner role, are marked complete. A verifier running outside GitHub that compares published wheels and images with the official tag and pulls them on a mismatch is planned by 31 December.
+- **LiteLLM's own actions**: it removed all members from its GitHub organisation (except one account temporarily made owner) and revoked internal and vendor tokens. On 30 October it published 25 changes with target dates. Holding production approval only in a dedicated account tied to a specific device in its office, and keeping day-to-day accounts out of the owner role, are marked complete. A verifier running outside GitHub that compares published wheels and images with the official tag and pulls them on a mismatch is planned by 31 December.
 
 ## 6. Sources
 
