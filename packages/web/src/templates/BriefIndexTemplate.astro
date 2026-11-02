@@ -496,14 +496,31 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
               const ind = industryLabel(b);
               const atk = attackLabel(b);
               const ctry = countryLabel(b);
-              return (
+              const fig = (b.data.key_figures as { value: string; unit?: string }[] | undefined)?.[0];
+              return sec.key === "pin" ? (
+                <a class="ix-pick ix-pick--pin" href={c.href}>
+                  <span class="ix-row-top">
+                    {ctry && <span class="ix-ctry">{ctry}</span>}
+                    {ind && <span class="ix-chip">{ind}</span>}
+                    {atk && <span class="ix-chip ix-chip--atk">{atk}</span>}
+                    {fig && <span class="ix-pin-fig"><b>{fig.value}</b>{fig.unit && <i>{fig.unit}</i>}</span>}
+                  </span>
+                  <span class="ix-pick-t">{shortTitle(b)}</span>
+                  <span class="ix-pick-w">{takeawayOf(b)}</span>
+                  <span class="ix-more">{labels.readMore}<span aria-hidden="true"> →</span></span>
+                </a>
+              ) : (
                 <a class="ix-pick" href={c.href}>
                   <div class={`ix-cover ix-cover--${i % 3}`}>
                     <span class="ix-cover-meta">
                       {ctry && <span class="ix-ctry ix-ctry--dark">{ctry}</span>}
                       {ind && <b>{ind}</b>}{ind && atk && " · "}{atk}
                     </span>
-                    {b.data.impact && <span class="ix-cover-impact">{b.data.impact}</span>}
+                    {fig ? (
+                      <span class="ix-cover-fig"><b>{fig.value}</b>{fig.unit && <i>{fig.unit}</i>}</span>
+                    ) : (
+                      b.data.impact && <span class="ix-cover-impact">{b.data.impact}</span>
+                    )}
                   </div>
                   <span class="ix-pick-t">{shortTitle(b)}</span>
                   <span class="ix-pick-w">{takeawayOf(b)}</span>
@@ -916,9 +933,61 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 20px;
   }
+  /* 表紙は「大きな数字」だけ。文は題と一文に任せ、三重に同じことを言わない（2026-11-02）。 */
+  .ix-cover-fig {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    color: #f3f6ec;
+  }
+  .ix-cover-fig b {
+    font-family: var(--font-serif-jp);
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: #c9ef5a;
+  }
+  .ix-cover-fig i {
+    font-style: normal;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  /* 注目：表紙の画像は付けず、チップ＋数字＋題の小さなカード。新着の表紙と並べて二段の帯に見せない。 */
+  .ix-pick--pin {
+    gap: 8px;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .ix-pick--pin:hover {
+    border-color: rgba(124, 175, 0, 0.5);
+    box-shadow: 0 6px 18px rgba(31, 42, 34, 0.08);
+  }
+  .ix-pin-fig {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 3px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: #1f2a22;
+    color: #c9ef5a;
+    line-height: 24px;
+  }
+  .ix-pin-fig b {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .ix-pin-fig i {
+    font-style: normal;
+    font-size: 11px;
+    font-weight: 600;
+  }
   .ix-picks-grid--new .ix-cover {
     height: auto;
-    min-height: 140px;
+    min-height: 110px;
     gap: 10px;
   }
   .ix-picks-grid--new .ix-cover-impact {
