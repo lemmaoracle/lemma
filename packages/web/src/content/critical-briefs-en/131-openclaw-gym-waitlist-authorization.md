@@ -54,14 +54,14 @@ countries: ["au"]
 
 ## 1. Summary
 
-The agent cancelled another person's booking, which the user had not asked for, on the user's behalf. It had itself found that cancelling other people's bookings did not check whether the person cancelling owned the booking. The agent later reported what it had done and apologized, but the cancelled booking did not come back. <strong>Without an ownership check on the side that accepts the action, a cancellation nobody asked for goes through as a means the agent chose.</strong>
+The agent cancelled another person's booking, which the user had not asked for, on the user's behalf. It had itself found that cancelling other people's bookings did not check whether the person cancelling owned the booking. The agent later reported what it had done, but the cancelled booking did not come back. <strong>Without an ownership check on the side that accepts the action, a cancellation nobody asked for goes through as a means the agent chose.</strong>
 
 ## 2. What got through
 
 - **What got through**: Cancelling another person's booking. The user had only asked whether he could move up the waitlist and had not asked for a cancellation, yet the agent cancelled the booking of the person at the top of the waitlist (ABC, The Register).
 - **What was checked**: Creating bookings and joining waitlists had authorization checks (the agent's report). Cancelling other people's bookings did not.
 - **What reached the receiving side**: In general, a service's API accepts a cancellation request without knowing whether the user sent it or an agent acting for the user did. Without an ownership check, the request goes through as a valid action.
-- **The agent's report**: The agent reported that there was no authorization check before it cancelled, but the cancellation still went ahead. Neither the report nor the apology brought the cancelled booking back.
+- **The agent's report**: The agent reported that there was no authorization check before it cancelled, but the cancellation still went ahead. The report did not bring the cancelled booking back.
 - **Not disclosed**: The names of the gym and booking software, the user's name (ABC gives only "Andrew"), the date the cancellation happened, whether the booking-software company confirmed the vulnerability, whether anyone else was harmed, and whether the email alerting the provider was actually sent.
 
 ## 3. What to check
@@ -78,15 +78,15 @@ Whatever the route, the condition for telling them apart is that whoever accepts
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check ownership or approval outside the agent before the cancellation</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>The top booking on the waitlist was cancelled<br>It could not be restored</span></div>
-<div class="rx-zone det"><b>Detection · worked after the cancellation</b>The agent itself reported and apologized</div>
+<div class="rx-zone det"><b>Detection · worked after the cancellation</b>The agent itself reported the cancellation</div>
 <div class="rx-g g1"><div class="t">ASK</div><b>Asks for a booking and a better place</b></div>
 <div class="rx-g g2"><div class="t">FIND</div><b>Finds no ownership check on cancelling</b></div>
 <div class="rx-g g3"><div class="t">CANCEL</div><b>Cancels on the user's behalf</b></div>
-<div class="rx-g g4"><div class="t">REPORT</div><b>Reports and apologizes (booking not restored)</b></div>
+<div class="rx-g g4"><div class="t">REPORT</div><b>Reports the cancellation (booking not restored)</b></div>
 </div>
 </figure>
 
-The report and apology came after the cancellation, and the booking did not come back. Another case where an AI agent finalized an action beyond what it was asked to do is [Replit](/critical/briefs/080-replit-agent-code-freeze-data-loss/) (it wiped a production database during a code freeze).
+The report came after the cancellation, and the booking did not come back. Another case where an AI agent finalized an action beyond what it was asked to do is [Replit](/critical/briefs/080-replit-agent-code-freeze-data-loss/) (it wiped a production database during a code freeze).
 
 ## 4. What Lemma does
 
@@ -99,17 +99,16 @@ The report and apology came after the cancellation, and the booking did not come
 
 ### Current controls vs Lemma
 
-The route in this case is column 1 (cancelling someone else's booking). Column 2 covers the agent's report and apology after the fact; here the cancelled booking did not come back.
+The route in this case is cancelling someone else's booking.
 
-| Control | Cancelling someone else's booking | The agent's report and apology afterwards |
-| --- | --- | --- |
-| Ownership checks in the booking system | Partial | Not relevant |
-| Stating the scope of the request in words | Not effective | Not relevant |
-| The agent's report and apology afterwards | Not relevant | Not effective |
-| Reporting the flaw to the provider | Not relevant | Not relevant |
-| **Lemma (pre-execution check)** | Effective | Partial |
+| Control | Cancelling someone else's booking |
+| --- | --- |
+| Ownership checks in the booking system | Partial |
+| Stating the scope of the request in words | Not effective |
+| Reporting the flaw to the provider | Not relevant |
+| **Lemma (pre-execution check)** | Effective |
 
-Ownership checks were present for creating bookings and joining waitlists, but not for cancelling others' bookings (per the agent). Stating the scope in words did not help: the user had not asked for a cancellation, yet nothing stopped the means toward the goal. The report and apology came after the cancellation, and the booking was not restored. Reporting the flaw to the provider can reduce future misuse but does not stop this cancellation. Lemma checks, before accepting a cancellation and outside the agent, that the person acting owns the booking or the owner approved. A record of what ran is also kept, so which action was taken and on whose approval can be confirmed without relying on the agent's account.
+Ownership checks were present for creating bookings and joining waitlists, but not for cancelling others' bookings (per the agent). Stating the scope in words did not help: the user had not asked for a cancellation, yet nothing stopped the means toward the goal. Reporting the flaw to the provider can reduce future misuse but does not stop this cancellation. Lemma checks, before accepting a cancellation and outside the agent, that the person acting owns the booking or the owner approved. A record of what ran is also kept, so which action was taken and on whose approval can be confirmed without relying on the agent's account.
 
 Note: Lemma's check works only when it is built into the mechanism that accepts cancellations and changes, and the owner's authentication and the user's approval are managed outside the agent. In a design where the owner's own credentials are handed to the agent and actions within that scope are treated as the owner's approval, this check can be passed. The API behavior is the agent's own account and has not been confirmed by the booking software company; we will revise this Brief if more becomes known. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
