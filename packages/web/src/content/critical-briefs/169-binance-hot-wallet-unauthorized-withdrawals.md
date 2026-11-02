@@ -6,11 +6,11 @@ pillar: 03-agent-authority
 primary_category: agent-infrastructure
 secondary_categories: [identity-auth]
 incident_date: 2026-10-29
-published: 2026-11-01
+published: 2026-11-02
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["081-bybit-safe-wallet-ui-injection", "155-tving-developer-key-hardcoded-production-keys"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "Binance から約 63 億ドルが流出、秘密鍵の漏えいは見つかっていない"
 og_lead_en: "About US$6.3 billion taken from Binance, with no sign the private keys leaked"
@@ -60,7 +60,13 @@ Binance は初期の調査で、侵害された DevOps 技術者のノート PC 
 
 ## 2. 通った操作
 
-- **通った操作**: Binance のホットウォレット（常に接続されていて、出金に使う財布）からの出金。Binance は「不正な出金の取引が出された」と説明している。TRM Labs は、攻撃者がチェーンをまたいで「Binance のホットウォレットの署名の仕組みに、任意の取引を署名させられるようになった」ことを、最も可能性が高い説明としている。Ethereum では、ホットウォレットの操作を攻撃者のプログラムに任せる署名（EIP-7702 の委任）が使われた。ウォレットの取引には通し番号があり、署名はその番号のときにしか使えない。攻撃者は、番号を 1 つずつずらした 50 件の署名をまとめて用意し、1 件の取引で出した（TRM Labs）。番号は誰でも読めるが、取引の多いウォレットでは取り込まれるまでに進むため、連続した番号を並べればどれか 1 件が合う。仕様では、番号の合わない署名は飛ばされるだけで、取引は止まらない（EIP-7702）。番号が合った 1 件が通り、その後は攻撃者の指示で残高が攻撃者のアドレスへ送られた。任せた状態は、取引の実行が失敗しても巻き戻らない仕様で（EIP-7702）、数時間のあいだ、入ってきた資金も繰り返し送られた。ほかの 9 チェーンは、通常の署名済みの送金だった（TRM Labs）。
+- **通った操作**: Binance のホットウォレット（常に接続されていて、出金に使う財布）からの出金。Binance は「不正な出金の取引が出された」と説明している。TRM Labs は、攻撃者がチェーンをまたいで「Binance のホットウォレットの署名の仕組みに、任意の取引を署名させられるようになった」ことを、最も可能性が高い説明としている。
+- **Ethereum での流れ**（TRM Labs。仕様の部分は EIP-7702）:
+  1. 攻撃者は、ホットウォレットの操作を攻撃者のプログラムに任せる署名（EIP-7702 の委任）を使った。
+  2. ウォレットの取引には通し番号があり、この署名はその番号のときにしか使えない。番号は誰でも読めるが、取引の多いウォレットでは取り込まれるまでに進んでしまう。そこで攻撃者は、番号を 1 つずつずらした 50 件の署名をまとめて用意し、1 件の取引で出した。
+  3. 仕様では、番号の合わない署名は飛ばされるだけで、取引は止まらない。番号が合った 1 件が通った。
+  4. その後は攻撃者の指示で、残高が攻撃者のアドレスへ送られた。任せた状態は、取引の実行が失敗しても巻き戻らないため、数時間のあいだ、入ってきた資金も繰り返し送られた。
+- **ほかのチェーン**: 残りの 9 チェーンは、通常の署名済みの送金だった（TRM Labs）。
 - **受け付けた側に届くもの**: 一般に、ブロックチェーンは、正しい鍵で署名された取引をそのまま実行する。署名が正しいことは、その出金が顧客の申請や社内の承認に基づくことを示さない。
 - **公表されていないこと**: 根本原因、侵入の手口、追加で見つかった侵入口の中身、署名の仕組みのどこに依頼が届いたか。
 
@@ -136,18 +142,20 @@ Binance は初期の調査で、侵害された DevOps 技術者のノート PC 
 - **2026-10-29**: 20:05 UTC ごろから約 20 分で流出の大半。Ethereum の委任の取引は 20:20 UTC（TRM Labs）。23:05 UTC ごろ Avalanche・Polygon に第 2 波。Ethereum では委任が残り、23:56 UTC まで吸い上げが続いた（TRM Labs）。Binance は一部のチェーンの出金を止め、のちに全ての出金を止める（入金は通常どおりと Binance）。TRM Labs が TraderTraitor によるものと公表。
 - **2026-10-30**: Binance が公式の告知で初期の調査結果（侵害された端末、サービスのコンテナ、不正な出金の取引）を説明し、続報で追加の侵入口を公表。Chainalysis が TraderTraitor によるものと公表。
 - **2026-10-31**: Binance が約 9 割の補填と準備金の証明のスナップショットを公表し、11 月 1 日（日）の出金の再開を目指すとした。FBI が北朝鮮（TraderTraitor）によるものと公表。
+- **2026-11-01**: Binance が告知（Recovery Update #4）で、補填は約 95%、出金は段階的に再開すると公表。第 1 段階は 06:00〜09:00 UTC に、15 のネットワーク（BTC、ETH、BNB、XRP、SOL など）で始まった。未補填の約 5% は、市場の流動性が低い上位 10 銘柄以外のトークン。入金は影響を受けていない。
 
-> 事実は、Binance の公式の告知と、TRM Labs・Chainalysis の解析、FBI の警報に拠る。共同 CEO の発言は、X への投稿を引用した報道に拠る。根本原因は公表されていない。公表されていないことは、対策が無かったことを意味しない。11 月 1 日時点で、Binance の告知の一覧に出金の再開の告知は出ていない。
+> 事実は、Binance の公式の告知と、TRM Labs・Chainalysis の解析、FBI の警報に拠る。共同 CEO の発言は、X への投稿を引用した報道に拠る。根本原因は公表されていない。公表されていないことは、対策が無かったことを意味しない。11 月 2 日時点の記述。
 
 ### 公表後の対応
 
 - **停止と取り消し**: 出金を止め、影響を受けたアドレスの権限を取り消した。ブロックチェーン解析の会社や捜査機関と連携している。
-- **補填と報告**: 10 月 31 日に準備金の証明（Proof of Reserves）のスナップショットを出し、完全な証明は 11 月 3 日ごろの見込みとした。原因の事後報告（post-mortem）を出すとしている。
+- **補填と報告**: 10 月 31 日に準備金の証明（Proof of Reserves）のスナップショットを出し、完全な証明は 11 月 3 日ごろの見込みとした。11 月 1 日には、主な 10 銘柄の残高に 100% の裏付けがあるとし、調査の完了後に原因の事後報告（post-mortem）を出すとしている。日付は示していない。
 
 ## 6. Sources
 
 - **Binance（一次・当事者の公表）**: "Security Incident Update"（2026-10-30） — <https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7>
 - **Binance（一次・当事者の公表）**: "Security Incident Update #2"（2026-10-30） — <https://www.binance.com/en/support/announcement/detail/d3306d9dca5243548c813b605e1d1751>
+- **Binance（一次・当事者の公表）**: "Security Incident | Recovery Update #4: Withdrawals Resume in Phases"（2026-11-01） — <https://www.binance.com/en/support/announcement/detail/73911fb819b240f88b88256bdd318eda>
 - **Binance（一次・当事者の公表）**: "Security Incident | Recovery Update #3"（2026-10-31） — <https://www.binance.com/en/support/announcement/detail/1fdf1f61559c401da0435895ffcccb62>
 - **FBI（一次・捜査機関の警報）**: "North Korea Responsible for $6 Billion+ Binance Attack"（2026-10-31） — <https://www.fbi.gov/investigate/cyber/alerts/2026/north-korea-responsible-for-6-billion-binance-attack>
 - **Ethereum Improvement Proposals（一次・仕様）**: "EIP-7702: Set Code for EOAs" — 委任の署名は 1 件ずつ判定し、無効なものは飛ばす・実行が失敗しても委任は巻き戻らない · <https://eips.ethereum.org/EIPS/eip-7702>
