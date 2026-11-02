@@ -1,7 +1,7 @@
 ---
 brief_no: 81
-title: "Bybit：UI を信頼して署名した「正規の」マルチシグ承認が、安全なはずの Ethereum ウォレットを空にした — Safe{Wallet} フロントエンドへの JavaScript 注入で、署名者は何に署名しているかを確かめる手段がなかった（Bybit / Mandiant）"
-title_en: "Bybit: a \"legitimate\" multisig approval signed by trusting the UI drained a supposedly secure Ethereum wallet — JavaScript injected into the Safe{Wallet} frontend left signers no way to verify what they were signing (Bybit / Mandiant)"
+title: "Bybit：Safe{Wallet} のフロントエンドに注入された JavaScript で、画面の表示と違う取引にマルチシグの承認が通った(Bybit の公表・Mandiant の調査)"
+title_en: "Bybit: JavaScript injected into the Safe{Wallet} frontend got a multisig approval through for a transaction other than the one on screen (Bybit disclosure, Mandiant investigation)"
 pillar: "01-verifiable-origin"
 primary_category: "bridge-config-trust"
 secondary_categories: ["identity-auth"]
@@ -9,104 +9,145 @@ incident_date: 2025-02-21
 published: 2026-06-26
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
-related_briefs: ["045-humanity-protocol-multisig-key-custody", "016-verus-ethereum-bridge", "067-syscoin-bridge-spv-proof-parsing", "004-megalodon-github-supply-chain"]
+related_briefs: ["087-polymarket-frontend-supply-chain", "045-humanity-protocol-multisig-key-custody", "016-verus-ethereum-bridge", "067-syscoin-bridge-spv-proof-parsing", "004-megalodon-github-supply-chain"]
 status: published
 gate: "signing"
 version: "1.0"
-og_lead_ja: "署名 UI への JS 注入で約 15 億ドルが流出 — Bybit"
-og_lead_en: "JS injected into the signing UI drained ~$1.5B — Bybit"
-gap_detected: "After discovery, the statement, Mandiant's post-incident forensics, fund tracing, cross-exchange blacklisting, and OFAC sanctions were all carried out, and the breach path was identified after the fact."
-gap_missing: "There was no layer to check, independently of the UI, whether \"what the screen displayed matched the provenance of the bytes actually being signed\" before signing, so the injection that swapped the display for the signed target went straight through."
-gap_fix: "Before signing executes, independently verify with Lemma that \"the transaction being signed carries the provenance of the intended approval flow,\" and prevent it up front."
-industries: ["finance"]
+og_lead_ja: "Bybit：Safe{Wallet} のフロントエンドへの JS 注入で、マルチシグの承認が通り、約 15 億ドル相当の ETH が流出"
+og_lead_en: "Bybit: JS injected into the Safe{Wallet} frontend got a multisig approval through, and ~$1.5B in ETH was drained"
+layout: "report"
+sections: "proof"
+og_kicker_ja: "サプライチェーン攻撃 · 署名画面の改ざん"
+og_kicker_en: "SUPPLY CHAIN · SIGNING UI TAMPERING"
+og_headline_ja: "画面は通常の送金、\n署名したのは別の取引。\n<accent>約 15 億ドルが流出</accent>"
+og_headline_en: "The screen showed\na routine transfer.\nThe signed one differed.\n<accent>~$1.5B drained.</accent>"
+key_figures:
+  - value: "~$1.5B"
+    label: "Value of the drained ETH at the time (Bybit and FBI disclosures, reporting)"
+    tone: "alert"
+  - value: "~401,347"
+    unit: "ETH"
+    label: "Amount withdrawn from Bybit's ETH cold wallet"
+  - value: "02-21 → 02-26"
+    label: "From the drain to Mandiant confirming the compromise via a Safe{Wallet} developer machine"
+glossary:
+  - term: "Multisig"
+    desc: "A wallet mechanism that executes a transaction once a set number (the threshold) of several keyholders have signed. Bybit used a Safe{Wallet} (formerly Gnosis Safe) multisig."
+  - term: "Implementation contract"
+    desc: "The contract that a Safe wallet (the proxy) delegates its logic to. If it is swapped, the wallet's entire behavior is replaced by the logic at the new address."
+  - term: "delegatecall"
+    desc: "A call that runs another contract's code with the caller's own authority and state. The transaction the signers were made to sign took this form and swapped the implementation contract for an attacker-controlled address."
+insight:
+  slug: "screen-differs-from-signed"
+  label: "Signing content other than what the screen shows"
+  quote: "Unless what is signed is checked separately from the screen, a transaction other than the one displayed gets through even when enough signers sign."
+industries: ["finance", "supply-chain"]
 operations: ["approval"]
 controls:
   - slug: "hold-unverified"
-    item: "Do not sign until the content to be signed is confirmed, by a path other than the UI, to match what the screen shows"
+    item: "Do not sign until the content to be signed is checked, by a path other than the UI, to match what the screen shows"
 attack_method: "supply-chain"
 impact: "~401,347 ETH (~$1.5B) drained"
+takeaway: "JavaScript injected into the Safe{Wallet} frontend showed signers a routine transfer while making them sign a transaction that swapped the wallet's implementation. Before signing, check what is signed separately from the screen."
+self_check: "Before signing, do you check, by a path other than the screen, that the content of the transaction matches what the screen shows?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-In February 2025, roughly 401,347 ETH (worth ~$1.5B at the time) was drained from the crypto exchange Bybit. The cryptography was not broken. The attacker compromised a Safe{Wallet} (formerly Gnosis Safe) developer's machine and injected malicious JavaScript into the frontend: the multisig signers' screens displayed a "normal ETH transfer," while what they were actually made to sign was a `delegatecall` that swapped Safe's implementation contract for an attacker-controlled address. The multisig threshold was met, but the signers had no way to verify, independently of the UI, whether "what the screen displayed" matched "the provenance of the bytes actually signed." Post-discovery fund tracing, sanctions, and market coordination had some containment effect, but there was no layer to independently verify, before signing, whether "this transaction was truly what was intended."
+The cryptography was not broken. The attacker compromised a Safe{Wallet} developer's machine and injected JavaScript into the frontend. Bybit's signers saw a routine transfer to a warm wallet on screen. What they were actually made to sign was a transaction that swapped Safe's implementation contract for an attacker-controlled address; each signer approved through the legitimate procedure, and the multisig threshold was met. <strong>Unless what is signed is checked separately from the screen, a transaction other than the one displayed gets through even when enough signers sign.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: A multisig approval (transaction signatures) on Bybit's ETH cold wallet. The signers approved believing it was a routine transfer, and the signatures that met the threshold swapped the implementation contract that Safe's proxy points to. The ETH in the wallet was then withdrawn.
+- **What reached the receiving side**: In general, what a multisig contract checks is that the set number of legitimate keys signed the transaction. What the signers saw on screen when they approved does not reach the contract. On the signers' side, whether what the screen displays is the same as the bytes actually being signed cannot be told from the screen.
+- **Not disclosed**: The specific route by which the developer machine was compromised. Details of how the injected code was (reportedly) built to run only on Bybit's screens. How much of the drained funds could be frozen.
 
-- **Target**: Bybit's (a crypto exchange) ETH cold wallet, using a Safe{Wallet} (formerly Gnosis Safe) multisig
-- **Loss**: approximately 401,347 ETH (~$1.4–1.5B at the time). The largest single-incident crypto theft on record
-- **Date**: 2025-02-21
-- **Attribution**: North Korea's Lazarus Group (officially attributed by the FBI in February of that year; also known as TraderTraitor)
-- **Origin of the attack**: a Safe{Wallet} developer's machine was compromised, and malicious JavaScript was injected into the frontend code
-- **Core of the abuse**: when Bybit's signers approved the transaction, the UI displayed "a normal ETH transfer (a routine move to a warm wallet)." The bytes actually signed were a `delegatecall` that swapped Safe's implementation contract for an attacker-controlled address, replacing Safe's entire logic. The attacker then drained all the ETH in the wallet through the contract
-- **Structural point**: the multisig "threshold" (3-of-X) was met. The strength of the cryptographic signatures was not the problem. The problem was that the signers had no means to confirm, independently of the UI's display, "what they were actually signing"
-- **Aftermath**: Bybit issued a statement and pledged to cover customer losses from its own assets. Mandiant performed forensics and confirmed the Safe{Wallet} supply-chain compromise. Elliptic and Chainalysis began fund tracing. Cross-exchange address blacklisting was carried out. The U.S. Treasury's OFAC added the related addresses to the sanctions list
+## 3. What to check
 
-The incident came together as the following chain.
+Whatever the route, the condition for telling them apart is that, before signing, the content of the transaction is checked against the intended approval flow, separately from the screen that asks for the signature.
 
-1. **Initial compromise**: a Safe{Wallet} (frontend service) developer's machine is compromised. The specific malware path is established by forensics
-2. **JS injection**: using developer access, malicious JavaScript is injected into the frontend code, reportedly designed to fire only on Bybit's wallet-management UI
-3. **UI poisoning**: when Bybit's signers perform a transaction-approval operation in the Safe UI, the screen displays "a normal ETH transfer." The malicious JS swaps the payload actually being signed, converting it into a `delegatecall` that rewrites Safe's implementation contract address to the attacker's contract
-4. **Meeting the multisig threshold**: multiple signers each approve (via legitimate procedures), meeting the multisig threshold. At this point all of them believed it was "a normal transfer"
-5. **Swapping the contract implementation**: once the signatures pass, the implementation contract that Safe's proxy points to is changed to an attacker-controlled address
-6. **Draining all assets**: the attacker drains all the ETH in the wallet (~401,347 ETH) through the new implementation
-7. **Dispersing the funds**: the attacker disperses the destination addresses across multiple hops in an attempt to launder
+- **Who approves**: The business side that originates the transaction (here, the side that decided on the transfer to the warm wallet). It registers which destination and which operation, outside the screen that asks for signatures.
+- **Where it is checked**: Before the signers sign. The bytes to be signed are checked against the registered content; if they do not match (a different destination, or an unplanned operation such as swapping the implementation), signing does not start. What the screen displays is not used as the basis of the check.
+- **What is recorded**: Which transaction was checked against which registration, and who signed it (or stopped it). It shows only that "this transaction was created through the legitimate approval flow," without disclosing the whole internal business flow.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before the signers sign, the content of the transaction against the intended approval flow, separately from the screen, and keeping a record. Detection means noticing after the signatures passed and the funds were withdrawn. Dates are those each party disclosed. The date the developer machine was compromised is estimated.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before signing, check what is signed, separately from the screen</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Signatures meeting the threshold swapped the implementation;<br>~401,347 ETH drained</span></div>
+<div class="rx-zone det"><b>Detection · worked after the drain</b>Disclosure, forensics, fund tracing, blacklisting</div>
+<div class="rx-g g1"><div class="t">02-21 (est.)</div><b>A developer machine is compromised and JavaScript is injected</b></div>
+<div class="rx-g g2"><div class="t">02-21</div><b>Signers approve a transaction that looks like a routine transfer</b></div>
+<div class="rx-g g3"><div class="t">02-21</div><b>Bybit's CEO discloses the breach</b></div>
+<div class="rx-g g4"><div class="t">02-26</div><b>Mandiant confirms the compromise via the developer machine</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+Detection worked after the drain and carried forward fund tracing, cross-exchange blacklisting and a partial freeze, but it does not stop the withdrawal once the signatures pass. A similar case, where what the approval screen showed and what was actually approved diverged, is [Polymarket](/critical/briefs/087-polymarket-frontend-supply-chain/) (JavaScript injected through a third-party vendor dependency). A case where how multisig keys were held became the issue is [Humanity Protocol](/critical/briefs/045-humanity-protocol-multisig-key-custody/).
 
-- **2025-02-21 (estimated, just before the attack)**: the Safe{Wallet} developer machine is compromised and malicious JS is injected into the frontend
-- **2025-02-21**: Bybit's signers approve a transaction that appeared to be a routine warm-wallet transfer. The attacker executes the ETH withdrawal
-- **2025-02-21 (that day)**: Bybit CEO Ben Zhou discloses the breach on X (formerly Twitter). The exchange pledges customer compensation (from its own assets)
-- **2025-02-21 to 22**: Elliptic and Chainalysis begin fund tracing. Exchanges and blockchain parties coordinate to advance address blacklisting
-- **2025-02-26**: Mandiant confirms the Safe{Wallet} supply-chain compromise (via the developer machine)
-- **early 2025-03**: the FBI announces its official attribution to North Korea's Lazarus Group (TraderTraitor). Sanctions measures against the related addresses advance
+## 4. What Lemma does
 
-> Note: proper nouns, CVEs, and attribution are recorded with Mandiant, the FBI, and the exchange's disclosures as primary sources. This Brief is based on the values confirmable at the time of research, avoids asserting scale or method definitively, names its sources, and asks the reader to consult the latest primary information.
+**Lemma puts the check in section 03 at the step where signers sign.** It does not replace the multisig threshold or the signers' review of the screen; on top of them, it checks, separately from the screen that asks for signatures, that the bytes to be signed were created through the intended approval flow.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **Bybit**: CEO Ben Zhou issued a same-day statement. Pledged to compensate all customers from its own assets, and actually carried out the reimbursement
-- **Safe{Wallet} (Gnosis Safe)**: paused the service, identified and removed the compromised portion of the frontend, and conducted a full audit of related infrastructure
-- **Mandiant (Google Cloud)**: as the forensics lead, confirmed and disclosed the supply-chain compromise path (developer machine → frontend JS injection)
-- **FBI**: officially announced attribution to North Korea's Lazarus Group (TraderTraitor)
-- **Cross-industry**: Elliptic and Chainalysis's fund tracing, address blacklisting at major exchanges, and OFAC sanctions were carried out in coordination
-- **A framing for the industry**: as the first large-scale incident to squarely target the UI layer of a multisig wallet as a supply-chain attack surface, debate intensified over mandating direct transaction display on hardware wallets and independent verification of the signed payload
+- **Industry · Finance**: Services, such as crypto exchanges and asset custodians, that approve large movements from multisig wallets.
+- **Industry · Supply chain**: Organizations that rely on a third-party service's frontend for their signing or approval screens.
+- **Operation · Approvals**: Several people signing or approving a transaction after viewing it on screen.
 
----
+### Current controls vs Lemma
 
-## 4. Why it wasn't stopped
+The route in this case is column 1 (multisig signatures on content other than what the screen showed). Column 2 is understanding the damage after the drain; here, fund tracing and blacklisting worked.
 
-The central **failure primitive is that "what the multisig signers approved was what the UI displayed, and it was not verified independently of the provenance of the bytes of the transaction actually signed."**
+| Control | Signing content other than what the screen shows | Understanding the damage after the drain |
+| --- | --- | --- |
+| Multisig threshold (several signers) | Not effective | Not relevant |
+| Signers reviewing the screen | Not effective | Not relevant |
+| Fund tracing and blacklisting | Not effective | Effective |
+| **Lemma (pre-execution check)** | Effective | Partial |
 
-Safe's multisig design guarantees that "if multiple keyholders agree, it executes." But what this incident showed is the point that whether "what the keyholders agreed to" and "the actual transaction that was signed" are identical is something that design does not guarantee. The UI is an interface that displays the signing target, and the provenance of that displayed content is not cryptographically protected. The attacker did not need to break cryptography; they intervened in the "translation layer" between the UI and the signed bytes.
+The multisig threshold shows that the set number of legitimate keyholders signed, not that what they signed was what they intended. The signers reviewed the screen, but the display and the bytes to be signed were swapped outside that review. Fund tracing and blacklisting carried forward understanding and containing the damage, but did not stop the withdrawal once the signatures passed. Lemma checks, before signing, that the bytes to be signed were created through the intended approval flow. A record of which transaction was checked against which registration is kept, so it can also help in understanding the damage afterwards.
 
-It is the same `bridge-config-trust` category as [Brief No.045](/critical/briefs/045-humanity-protocol-multisig-key-custody/) (Humanity Protocol multisig key concentration), No.016 (Verus bridge, absent semantic integrity of a Merkle Proof), and No.067 (Syscoin SPV-proof parsing flaw), but the novelty of this case is that **the attack surface was neither on-chain nor the proof-verification logic, but the off-chain supply chain of the signing UI.** Not the content of the proof, but the provenance of "what is presented to the signer as the proof," was poisoned. It shares a root with No.004 (Megalodon GitHub supply chain) in that, starting from developer access, malicious code was mixed into legitimate distribution artifacts.
+Note: Lemma's check works only when it is built into the signing procedure, and the registration and check of transactions run on a path separate from the screen that asks for signatures. If the registration itself is compromised, or the path that displays the check's result is also swapped by the same attacker, this check can be passed. How the developer machine was compromised has not been disclosed. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-After the attack was discovered, Bybit's immediate statement, Mandiant's identification of the supply-chain compromise path, Elliptic and Chainalysis's fund tracing, the cross-exchange blacklisting, and the OFAC sanctions are indispensable for grasping, containing, and discussing the recurrence of the damage, and this Brief does not negate that role. Here too, this coordination worked to trace the drained funds and freeze a portion. Detection did indeed work.
+### Checklist
 
-At the same time, detection does not change what the receiving side (the signer asked to sign, the contract that receives and executes the signature) actually accepts. The signers confirmed the transaction content displayed in the UI, but had no means to confirm, independently of the UI, "whether that content matched the bytes actually being signed." The malicious JS swapped the display for the signed target outside the signers' confirmation action. Meeting the multisig threshold proves "legitimate keyholders agreed to something," but does not prove "that something was what the signers intended." What was missing was a layer that independently verifies, before signing executes and on a separate track from the UI, "whether the transaction being signed carries the provenance of the intended approval flow." Even when after-the-fact detection fires into sanctions and tracing, it does not stop the withdrawal at the moment the signatures passed.
+Three things to confirm for organizations that approve large movements from multisig wallets
 
----
+- Before signing, do you check that the transaction to be signed contains only the destination and operation registered through the legitimate approval flow?
+- Do you notice when the code that serves your signing screen (including third-party services) changes from the approved version?
+- Do you keep a traceable record of who signed which transaction, checked against which registration?
 
-## 5. What proof would have changed
+## 5. Facts and timeline
 
-Pre-execution attestation fixes the transaction bytes being signed and their provenance (through which approval flow they were generated) as a cryptographic proof independently verifiable before signing executes. It attests in advance that what the UI displays is "a transaction with this provenance," and does not begin the signing session unless the match between the display and the signed bytes can be independently confirmed. It does not decouple the confirmation of the displayed content (the detection-style "this is how the screen looks") from the pre-execution attestation of the signed target's provenance ("the bytes being signed went through the legitimate approval flow"); only where the two overlap can a multisig approval be safely put into practice. Detection and pre-execution attestation are **complements**, not substitutes.
+- **Service**: Bybit's (a crypto exchange) ETH cold wallet, using a Safe{Wallet} (formerly Gnosis Safe) multisig.
+- **Scale of loss**: About 401,347 ETH (~$1.4–1.5B at the time). Described as the largest single-incident crypto theft on record.
+- **Origin of the compromise**: A Safe{Wallet} developer's machine was compromised, and JavaScript was injected into the frontend code (Safe{Wallet} and Mandiant investigation, as reported).
+- **Method**: When the signers approved in the Safe interface, the screen displayed a routine ETH transfer (a regular move to a warm wallet). The injected code changed what they were actually made to sign into a `delegatecall` that swapped Safe's implementation contract for an attacker-controlled address. The injected code was reportedly built to run only on Bybit's wallet screens.
+- **What was confirmed**: Several signers each approved through the legitimate procedure and met the threshold. The strength of the cryptographic signatures was not the problem. The signatures that met the threshold swapped the implementation, the ETH in the wallet was withdrawn, and the destinations were dispersed across multiple hops.
+- **Attribution**: The FBI announced that North Korea's Lazarus Group (also known as TraderTraitor) was responsible.
 
-Against the detection–proof gap this incident exposed (the "provenance of the content" the signers approved was decoupled from "the bytes actually signed"), Lemma proposes the following design.
+### Timeline
 
-- **Provenance attestation of the signing target**: fix as a cryptographic proof independently verifiable before signing executes that the transaction bytes "were generated through an approved business flow," detecting in advance any divergence between the UI display and the signing target
-- **Independence from the UI**: establish a layer that verifies the signing target's provenance hash on a channel independent of the UI the signer confirms
-- **Multisig threshold ≠ legitimacy of content**: do not decouple the fact that "multiple signers agreed" from whether "what they agreed to is as intended," and make the latter the object of pre-execution attestation
-- **Selective disclosure**: without exposing the entire internal business flow, prove with minimal disclosure only that "this transaction went through the legitimate approval flow"
+- **2025-02-21 (estimated, just before the attack)**: A Safe{Wallet} developer's machine is compromised, and JavaScript is injected into the frontend.
+- **2025-02-21**: Bybit's signers approve a transaction that appeared to be a routine move to the warm wallet. The attacker withdraws the ETH.
+- **2025-02-21 (same day)**: Bybit CEO Ben Zhou discloses the breach on X (formerly Twitter). Bybit pledges to compensate customers from its own assets.
+- **2025-02-21 to 22**: Elliptic and Chainalysis begin fund tracing. Exchanges and blockchain parties advance address blacklisting.
+- **2025-02-26**: Mandiant confirms the Safe{Wallet} supply-chain compromise via the developer machine.
+- **Early 2025-03**: The FBI announces that North Korea's Lazarus Group (TraderTraitor) was responsible. Sanctions against the related addresses advance.
 
-Detection (after-the-fact statement, forensics, tracing, sanctions) works on remediating the damage; pre-execution attestation (independent verification of the signing target's provenance before signing executes) works on establishing trust in multisig approval — each complementary to the other.
+> Proper nouns and attribution are recorded with the disclosures of Mandiant, the FBI and the exchange as primary sources. This Brief is based on the values confirmable at the time of research and names the sources for scale and method; please also consult the latest primary information. What has not been disclosed does not mean there were no controls.
 
----
+### After disclosure
+
+- **Bybit**: CEO Ben Zhou issued a statement the same day, pledged to compensate all customers from its own assets, and carried out the reimbursement.
+- **Safe{Wallet} (Gnosis Safe)**: Paused the service, identified and removed the compromised portion of the frontend, and audited related infrastructure.
+- **Mandiant (Google Cloud)**: As the forensics lead, confirmed the compromise path from the developer machine to the JavaScript injected into the frontend.
+- **FBI**: Announced that North Korea's Lazarus Group (TraderTraitor) was responsible.
+- **Cross-industry**: Fund tracing by Elliptic and Chainalysis, address blacklisting at major exchanges, and sanctions on related addresses by the U.S. Treasury's OFAC advanced, and a portion of the drained funds was frozen.
+- **Industry point**: As a large case that made a multisig wallet's interface the target of a supply-chain attack, displaying transactions directly on hardware wallets and checking what is signed separately from the screen were raised as points of discussion.
 
 ## 6. Sources
 
@@ -117,4 +158,4 @@ Detection (after-the-fact statement, forensics, tracing, sanctions) works on rem
 - **Chainalysis**: blockchain analysis report (2025-02 to 03)
 - **Unchained / The Block / CoinDesk, etc.**: reporting on the incident's course (2025-02-21 onward)
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance), [Seal](https://lemma.frame00.com/seal/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
