@@ -19,6 +19,11 @@ gap_missing: "There was no layer to check before action whether the queries this
 gap_fix: "Before an integration touches customer data, independently verify with Lemma that this operation stays within its permitted scope and rests on still-valid authorization, and prevent it up front."
 industries: ["supply-chain"]
 operations: ["data-access"]
+controls:
+  - slug: "limit-and-revoke"
+    item: "Narrow a connected app's token scope per operation, and make revocation take effect immediately"
+  - slug: "verify-entry"
+    item: "Check each operation from a connected app against the grantor's authorization and its current validity"
 attack_method: "supply-chain"
 impact: "700+ Salesforce environments queried"
 countries: ["us"]

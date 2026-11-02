@@ -16,6 +16,11 @@ og_lead_ja: "LangChain・LangGraph ほか 6 フレームワークに 11 件の�
 og_lead_en: "11 flaws across six major agent frameworks (Check Point)"
 industries: ["ai", "developers"]
 countries: ["global"]
+controls:
+  - slug: "check-origin"
+    item: "チェックポイントなどの内部状態は、読み込む前に来歴と改ざんの有無を確認する"
+  - slug: "verify-entry"
+    item: "デプロイで公開される入口の認可状態を、既定値に頼らず確認する"
 ---
 
 ## 1. TL;DR

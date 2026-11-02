@@ -19,6 +19,11 @@ gap_missing: "There was no layer to check before access whether the accessing pa
 gap_fix: "Before a high-risk action, independently verify with Lemma that this requesting party legitimately holds authority over data in this scope, and prevent it up front."
 industries: ["ai"]
 operations: ["account-admin", "data-access"]
+controls:
+  - slug: "verify-entry"
+    item: "At the admin entry, check unguessable credentials and per-record permissions"
+  - slug: "limit-and-revoke"
+    item: "Remove abandoned test accounts and bind record IDs to permissions"
 countries: ["us"]
 ---
 

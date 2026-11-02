@@ -19,6 +19,11 @@ gap_missing: "There is no layer that independently establishes, at the moment co
 gap_fix: "Before content is ingested into training, verify — decoupled from the default value or the administrator's configuration action, and independently through Lemma — that the use is authorized by the rights holder and that each ingested datum carries a proof of consent, and prevent it up front."
 industries: ["ai"]
 operations: ["disclosure"]
+controls:
+  - slug: "hold-unverified"
+    item: "Take content into training only when the authorized scope is confirmed, not because a default was on"
+  - slug: "audit-trail"
+    item: "Record the consent scope and the time of collection for each piece of data taken in"
 countries: ["us"]
 ---
 

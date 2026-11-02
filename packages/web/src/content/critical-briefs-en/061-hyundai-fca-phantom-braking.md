@@ -18,6 +18,11 @@ gap_detected: "Owner reports and NHTSA complaints were aggregated to grasp how m
 gap_missing: "There was no layer to independently check before braking whether the automatic braking was truly a necessary decision, so an erroneous judgment was executed directly as a hard stop."
 gap_fix: "Before an AI decision that overrides human operation, independently verify with Lemma that this action is warranted right now, and prevent it up front."
 industries: ["manufacturing"]
+controls:
+  - slug: "hold-unverified"
+    item: "Run an automatic braking action that overrides the driver only when its validity has been independently confirmed"
+  - slug: "audit-trail"
+    item: "Record each braking decision and its telemetry in a form that cannot be rewritten afterwards"
 attack_method: "ai-misuse"
 impact: "4 rear-end crashes and 4 injuries alleged"
 countries: ["us"]

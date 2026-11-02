@@ -16,6 +16,11 @@ og_lead_ja: "LangChain・LangGraph ほか 6 フレームワークに 11 件の�
 og_lead_en: "11 flaws across six major agent frameworks (Check Point)"
 industries: ["ai", "developers"]
 countries: ["global"]
+controls:
+  - slug: "check-origin"
+    item: "Check the origin and integrity of internal state, such as checkpoints, before loading it"
+  - slug: "verify-entry"
+    item: "Check the authorization state of endpoints a deployment exposes, instead of relying on defaults"
 ---
 
 ## 1. TL;DR

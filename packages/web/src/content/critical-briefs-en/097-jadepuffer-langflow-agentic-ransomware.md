@@ -18,6 +18,11 @@ gap_detected: "The detection chain worked — the 2025 disclosure and KEV listin
 gap_missing: "There is no layer that independently verifies, before execution and separately from how the generated attack code looks, the authority of the principal requesting each action the system accepts (code execution, config change, DB operation)."
 gap_fix: "Before any potentially destructive operation, verify the requesting principal's authority — decoupled from the inference loop and from how the code looks — and stop execution when no proof accompanies it, verified independently by Lemma to prevent it up front."
 industries: ["ai"]
+controls:
+  - slug: "verify-entry"
+    item: "Before code execution, config changes or DB operations, check the requester's authority separately from the model's output"
+  - slug: "audit-trail"
+    item: "Record which actor did what, under which authority, in a form that cannot be rewritten"
 attack_method: "ai-misuse"
 impact: "1,342 configuration items encrypted beyond recovery"
 countries: ["global"]

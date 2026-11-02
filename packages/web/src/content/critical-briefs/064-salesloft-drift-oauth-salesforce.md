@@ -19,6 +19,11 @@ gap_missing: "「いまこの連携が行っている照会は、本来の許可
 gap_fix: "連携が顧客データに触れる前に「この操作は許可の範囲内で、いまも有効な認可に基づく」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["supply-chain"]
 operations: ["data-access"]
+controls:
+  - slug: "limit-and-revoke"
+    item: "連携アプリのトークンの範囲を操作ごとに絞り、失効が即時に反映されるようにする"
+  - slug: "verify-entry"
+    item: "連携アプリからの各操作を、付与者の認可の範囲と現在の有効性に照らして確認する"
 attack_method: "supply-chain"
 impact: "700 社超の Salesforce 環境を横断照会"
 countries: ["us"]

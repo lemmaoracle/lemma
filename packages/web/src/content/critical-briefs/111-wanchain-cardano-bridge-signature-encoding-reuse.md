@@ -19,6 +19,11 @@ gap_missing: "署名検証は「このバイト列に対する正しい署名か
 gap_fix: "払い出しを実行する前に、署名対象が区切り・長さ識別子を備えた正準形式で符号化され、この 1 つの払い出しだけに不可分に束ねられていることを独立検証可能な証明として要求し、証明が伴わない払い出しを事前に拒否する。"
 industries: ["finance"]
 operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "署名が、認可された 1 つの払い出しだけを指すことを、払い出しの前に照合する"
+  - slug: "hold-unverified"
+    item: "単一の取引に結びつかない署名での払い出しは、既定で拒否する"
 impact: "約 5 億 1,520 万 NIGHT（約 1,000 万ドル）が流出"
 countries: ["global"]
 ---

@@ -19,6 +19,9 @@ gap_missing: "「このアクセスは正当な権限に基づくか」をアク
 gap_fix: "高リスク行動の前に「この主体は、このスコープのデータへの権限を正当に持つ」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai"]
 operations: ["data-access"]
+controls:
+  - slug: "verify-entry"
+    item: "データ基盤への到達と、データを読む認可を分け、認証なしの到達を通さない"
 impact: "100 万行超のログと平文のチャット履歴が露出"
 countries: ["cn"]
 ---

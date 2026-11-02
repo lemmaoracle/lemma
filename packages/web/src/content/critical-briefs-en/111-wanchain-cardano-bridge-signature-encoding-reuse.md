@@ -19,6 +19,11 @@ gap_missing: "Signature verification only confirms 'is this a valid signature ov
 gap_fix: "Before a withdrawal executes, require an independently verifiable proof that the signed message is encoded in a canonical form with separators and length markers and is inseparably bound to this one withdrawal alone, and deny up front any withdrawal not accompanied by that proof."
 industries: ["finance"]
 operations: ["approval"]
+controls:
+  - slug: "ownership-check"
+    item: "Before paying out, check that the signature points to exactly one authorized payout"
+  - slug: "hold-unverified"
+    item: "Refuse by default any payout whose signature is not tied to a single transaction"
 impact: "About 515.2 million NIGHT (roughly $10 million) drained"
 countries: ["global"]
 ---

@@ -19,6 +19,11 @@ gap_missing: "「この呼び出しは、その主体に許された操作か」
 gap_fix: "特権操作の前に「この操作は、この主体に、付与された認可の範囲で許されている」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai", "developers"]
 operations: ["account-admin"]
+controls:
+  - slug: "verify-entry"
+    item: "特権操作のたびに、前段の通過を前提とせず、依頼元の認可を自層で確認する"
+  - slug: "limit-and-revoke"
+    item: "一般ユーザーに管理者の操作を渡さず、権限の範囲を必要な分に絞る"
 attack_method: "privilege-abuse"
 countries: ["global"]
 ---

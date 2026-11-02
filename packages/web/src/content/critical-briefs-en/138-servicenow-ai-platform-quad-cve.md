@@ -15,6 +15,11 @@ version: "1.0"
 og_lead_ja: "ServiceNow AI Platform、未認証で届く脆弱性が 4 件同時開示"
 og_lead_en: "ServiceNow AI Platform: four unauthenticated flaws disclosed at once"
 countries: ["global"]
+controls:
+  - slug: "verify-entry"
+    item: "Check the authorization of every request at the boundary, before it reaches any feature"
+  - slug: "audit-trail"
+    item: "Record each code execution or data change together with the authorization check behind it"
 ---
 
 ## 1. TL;DR

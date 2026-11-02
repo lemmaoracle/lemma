@@ -18,6 +18,11 @@ gap_detected: "Transactions were fully visible on the public chain; analytics fi
 gap_missing: "No attribute travels with the transaction to verify — and block — at execution time whether the sender is sanctioned or the source of funds is lawful."
 gap_fix: "Attach verifiable regulatory attributes to the sender and the source of funds so the counterparty and settlement infrastructure can verify a sanctions status and block out-of-scope transfers before execution, and prevent it up front."
 industries: ["finance"]
+controls:
+  - slug: "ownership-check"
+    item: "Check the sender's and the funds' sanctions status before a transfer is executed"
+  - slug: "hold-unverified"
+    item: "Stop a transaction whose attributes cannot be confirmed before it executes"
 impact: "Over $110 billion moved on-chain under sanctions"
 countries: ["ru", "kg"]
 ---

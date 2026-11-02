@@ -15,6 +15,13 @@ version: "2.0"
 og_lead_ja: "RubyDoc.info のドキュメント生成で任意コード実行、RubyGems に悪性パッケージ500超"
 og_lead_en: "RubyDoc.info doc builds ran arbitrary code from 500+ RubyGems spam packages"
 industries: ["developers"]
+controls:
+  - slug: "ownership-check"
+    item: "Check at publication that the publisher holds a credential from a verified issuer"
+  - slug: "limit-and-revoke"
+    item: "Narrow what a build may let imported code do (network, external scripts) according to the publisher's credential"
+  - slug: "check-origin"
+    item: "Check, before running a published package, that it comes from a publisher whose origin can be confirmed"
 attack_method: "supply-chain"
 impact: "500+ malicious packages removed"
 countries: ["global"]

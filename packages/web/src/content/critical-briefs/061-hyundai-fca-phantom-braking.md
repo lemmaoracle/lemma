@@ -18,6 +18,11 @@ gap_detected: "所有者報告と NHTSA への申し立てを集約し、誤作�
 gap_missing: "「いまの自動制動は本当に必要な判断か」を、ブレーキをかける前に独立に確かめる層が無く、誤った判断はそのまま急制動として実行された。"
 gap_fix: "人間の操作に割り込む AI 判断の前に「この行動はいま妥当か」を Lemma で独立検証して、事前に防ぐ。"
 industries: ["manufacturing"]
+controls:
+  - slug: "hold-unverified"
+    item: "人間の運転に割り込む自動制動は、判断の妥当性を独立に確認できた場合に限って実行する"
+  - slug: "audit-trail"
+    item: "自動制動の判断とテレメトリを、後から書き換えられない形で記録する"
 attack_method: "ai-misuse"
 impact: "追突 4 件・負傷 4 件の申告"
 countries: ["us"]

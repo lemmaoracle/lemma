@@ -19,6 +19,11 @@ gap_missing: "There was no layer to verify before the action whether this creden
 gap_fix: "Before a credential or token touches customer data, independently verify with Lemma that this operation stays within legitimate authorization and rests on a still-valid credential, and prevent it up front."
 industries: ["supply-chain"]
 operations: ["account-admin", "data-access"]
+controls:
+  - slug: "limit-and-revoke"
+    item: "Revoke credentials that are no longer used, including test credentials, and reduce long-lived tokens"
+  - slug: "verify-entry"
+    item: "Check valid authorization for each operation, not just possession of a token"
 attack_method: "supply-chain"
 impact: "CRM records mass-extracted over ~24 hours"
 countries: ["global"]

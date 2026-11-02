@@ -19,6 +19,11 @@ gap_missing: "「このアクセス主体が、このレコードに対して正
 gap_fix: "高リスク行動の前に「この要求主体は、このスコープのデータへの権限を正当に持つ」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai"]
 operations: ["account-admin", "data-access"]
+controls:
+  - slug: "verify-entry"
+    item: "管理画面への入口で、推測できない資格情報と、記録ごとの権限を確認する"
+  - slug: "limit-and-revoke"
+    item: "放置された試験用アカウントを残さず、参照 ID に権限を結びつける"
 countries: ["us"]
 ---
 

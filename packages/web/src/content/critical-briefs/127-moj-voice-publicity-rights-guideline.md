@@ -22,6 +22,13 @@ industries: ["ai", "media"]
 countries: ["jp"]
 search_title: "法務省「声」をパブリシティ権の保護対象に明記"
 search_description: "法務省が「声」をパブリシティ権の保護対象と明記した。示されたのは事後の民事責任で、生成の前に許諾を照合する段ではない。何が示され、何が示されていないかを整理。"
+controls:
+  - slug: "check-origin"
+    item: "生成物を、実際に照らした許諾（誰の声を、どの範囲で、いつまで）に結びつける"
+  - slug: "hold-unverified"
+    item: "許諾の確認が通らない生成物は、配信と収益化の前に差し止める"
+  - slug: "audit-trail"
+    item: "いつ、誰の発行で許諾を照合したかを、後から覆せない形で残す"
 ---
 
 ## 1. TL;DR

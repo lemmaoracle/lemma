@@ -20,6 +20,13 @@ gap_fix: "Make it checkable, before a work is published, which consent the use o
 analysis_lead_en: "What has been settled is who can sue whom, and on what basis. Not whether a use was authorized against consent before it was generated."
 industries: ["ai", "media"]
 countries: ["jp"]
+controls:
+  - slug: "check-origin"
+    item: "Tie each generated voice to the specific consent it was checked against: whose voice, what scope, until when"
+  - slug: "hold-unverified"
+    item: "Stop generated voices without a confirmed consent before distribution and monetization"
+  - slug: "audit-trail"
+    item: "Record when and by whom the consent was checked, in a form that cannot be rewritten later"
 ---
 
 ## 1. TL;DR

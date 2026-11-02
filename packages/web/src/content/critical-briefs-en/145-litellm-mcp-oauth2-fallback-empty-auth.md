@@ -15,6 +15,11 @@ version: "1.0"
 og_lead_ja: "LiteLLMのMCP認証、失敗時フォールバックが無検証許可に(CVE-2026-59822)"
 og_lead_en: "LiteLLM's MCP auth fallback silently granted unchecked access (CVE-2026-59822)"
 industries: ["ai"]
+controls:
+  - slug: "verify-entry"
+    item: "Allow an MCP tool call only after checking that the caller is entitled to call that tool"
+  - slug: "hold-unverified"
+    item: "When authentication fails or is skipped, deny by default"
 impact: "Exploitation in the wild confirmed by CISA"
 countries: ["global"]
 ---

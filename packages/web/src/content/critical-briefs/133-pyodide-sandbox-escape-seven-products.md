@@ -19,6 +19,11 @@ gap_missing: "「サンドボックスで隔離されている」という前提
 gap_fix: "コードをホスト権限で実行へ移す前に、その隔離境界が実際に成り立っていることを独立に検証する。"
 industries: ["developers", "ai"]
 countries: ["global"]
+controls:
+  - slug: "limit-and-revoke"
+    item: "実行環境が届く範囲（ファイル・プロセス・認証情報）を、意図した用途に固定する"
+  - slug: "hold-unverified"
+    item: "隔離境界の内側にあることが確認できない実行は、実行の前に止める"
 ---
 
 ## 1. TL;DR

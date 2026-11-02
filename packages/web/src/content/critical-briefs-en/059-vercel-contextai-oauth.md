@@ -19,6 +19,11 @@ gap_missing: "There was no layer to check before action whether this access stay
 gap_fix: "Before a high-risk action, independently verify with Lemma that this operation is authorized for this party in this scope and is currently valid, and prevent it up front."
 industries: ["ai", "developers"]
 operations: ["account-admin"]
+controls:
+  - slug: "verify-entry"
+    item: "Before an operation, confirm that its authorization is currently valid"
+  - slug: "limit-and-revoke"
+    item: "Scope OAuth grants to the operation, and refuse revoked tokens"
 attack_method: "supply-chain"
 countries: ["us"]
 ---

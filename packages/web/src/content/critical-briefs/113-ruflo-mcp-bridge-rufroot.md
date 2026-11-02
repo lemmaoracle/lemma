@@ -19,6 +19,13 @@ gap_missing: "ツール呼び出しごとの認可と、エージェントの記
 gap_fix: "実行前にツール呼び出しを認可で証明し、エージェント記憶の来歴・完全性を独立検証して、無認証実行と汚染の永続化を排除する。"
 industries: ["ai", "developers"]
 countries: ["global"]
+controls:
+  - slug: "verify-entry"
+    item: "ツール呼び出しは、無認証のまま実行せず、呼び出しごとに認可を確認する"
+  - slug: "limit-and-revoke"
+    item: "シェル実行・鍵・DB への権限を単一のブリッジに束ねず、行動ごとに分けて渡す"
+  - slug: "check-origin"
+    item: "エージェントの記憶に書き込むパターンは、来歴を確認したものだけにする"
 ---
 
 ## 1. TL;DR

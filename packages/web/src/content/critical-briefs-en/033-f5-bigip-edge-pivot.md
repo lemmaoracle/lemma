@@ -18,6 +18,11 @@ gap_detected: "Threat research could make the attack chain visible, observe the 
 gap_missing: "At each stage of lateral movement there was no layer to confirm before the action whether the holder of the credential held authorization to take this action within this scope, so mere possession of stolen credentials passed as authority."
 gap_fix: "Rather than possession of a key or credential, independently verify with Lemma that the action carries scoped authorization and provenance, and prevent it up front."
 operations: ["account-admin"]
+controls:
+  - slug: "verify-entry"
+    item: "At each step, check that the action is authorized, not just that the credential is held"
+  - slug: "limit-and-revoke"
+    item: "Scope credentials to each action and make them non-reusable"
 attack_method: "account-takeover"
 impact: "One appliance compromise led to full Active Directory takeover"
 countries: ["global"]

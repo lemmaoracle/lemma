@@ -18,6 +18,9 @@ gap_detected: "Threat-research firm Trend Micro could identify and publish the t
 gap_missing: "Because the AI builds new attack tools per target, detection that matches against known-bad becomes reactive, and there was no layer to confirm before the action what was permitted to run internally."
 gap_fix: "Even for an unknown tool, independently verify with Lemma that the operation carries legitimately authorized provenance, and prevent it up front."
 industries: ["public-sector", "finance"]
+controls:
+  - slug: "check-origin"
+    item: "Before running, confirm that an operation or code comes from an authorized source"
 attack_method: "ai-misuse"
 impact: "Six Mexican government agencies compromised"
 countries: ["mx", "br"]

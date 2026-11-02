@@ -14,6 +14,11 @@ status: published
 version: "1.0"
 og_lead_ja: "AnonyMousKIT、AI 音声で盗難 iPhone 所有者から解除コード聴取"
 og_lead_en: "AnonyMousKIT: AI voice calls harvest stolen-iPhone passcodes"
+controls:
+  - slug: "ownership-check"
+    item: "Confirm through an official channel that a caller claiming to be support is genuine before giving any credential"
+  - slug: "audit-trail"
+    item: "Record each unlock or account change together with the check that justified it"
 attack_method: "impersonation"
 countries: ["global"]
 ---

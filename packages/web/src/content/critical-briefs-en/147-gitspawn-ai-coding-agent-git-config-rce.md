@@ -15,6 +15,13 @@ version: "1.0"
 og_lead_ja: "GitSpawn：AIコーディングエージェント7種、git設定でコード実行"
 og_lead_en: "GitSpawn: seven AI coding agents run code via git config"
 industries: ["developers"]
+controls:
+  - slug: "check-origin"
+    item: "Check that a repository's settings and code come from a verified publisher before an agent loads them"
+  - slug: "limit-and-revoke"
+    item: "Run an agent's startup processes within an explicit scope of settings it may trust"
+  - slug: "hold-unverified"
+    item: "Disable, by default and before running, repository settings whose origin is not confirmed"
 attack_method: "ai-misuse"
 impact: "Code ran in 7 AI coding agents"
 countries: ["global"]
