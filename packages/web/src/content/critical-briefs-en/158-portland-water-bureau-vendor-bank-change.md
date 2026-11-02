@@ -1,7 +1,7 @@
 ---
 brief_no: 158
-title: "米ポートランド市：取引先を装う相手が、パスワード再設定のリンクで取引先登録に入り、工事代金を別の口座へ送らせた(米司法省ほか) — 新しい振込先を、取引先の登録済みの連絡先で照合してから払う層が無い"
-title_en: "City of Portland: An impostor used a password-reset link to enter a contractor's supplier account and had a construction payment sent elsewhere (US DOJ and others) — Nothing checks a new bank account against the supplier's registered contact before paying"
+title: "City of Portland: A supplier's bank account was switched by an impostor, and a $6.7M water-plant payment was sent elsewhere"
+title_en: "City of Portland: A supplier's bank account was switched by an impostor, and a $6.7M water-plant payment was sent elsewhere"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
@@ -15,11 +15,12 @@ version: "1.0"
 og_lead_ja: "米ポートランド市、取引先を装う相手に振込先を変えられ浄水場の工事代金 670 万ドルが別口座へ"
 og_lead_en: "City of Portland: a supplier's bank account was switched, and a $6.7M water-plant payment went elsewhere"
 layout: "report"
+sections: "proof"
+gate: "account-change"
 og_kicker_ja: "サイバー攻撃事例 · 振込先の変更"
 og_kicker_en: "CYBERATTACK · BANK ACCOUNT CHANGE"
 og_headline_ja: "取引先を装う相手に、\n振込先を書き換えられた。\n<accent>670 万ドルが別の口座へ</accent>"
 og_headline_en: "Someone posing as a contractor\nswitched the bank account on file.\n<accent>$6.7M went elsewhere.</accent>"
-summary_labels: ["What happened", "Why it went through", "The missing layer"]
 key_figures:
   - value: "$6.7M"
     label: "A water-plant construction payment owed to the contractor, sent to an account named by the impostor (US DOJ)"
@@ -39,54 +40,100 @@ glossary:
 insight:
   slug: "reset-link-to-requester"
   label: "A reset link reaches the requester"
-  quote: "The emailed request to change the bank account was stopped by a check sent to the contact on file. The password-reset link for the supplier account that followed reached the requester, and the bank account was switched there."
+  quote: "Once a bank account change arrives as the supplier's own action, it cannot be told apart from a change that passed the check that stopped the emailed request."
 industries: ["public-sector"]
 operations: ["payment-change", "account-admin"]
 controls:
   - slug: "ownership-check"
-    item: "Before paying, check that a new bank account belongs to the supplier"
+    item: "Before paying, check a new bank account against the supplier's registered contact"
   - slug: "hold-unverified"
     item: "Do not activate changes that cannot be confirmed through the supplier's registered contact"
   - slug: "audit-trail"
     item: "Record who approved the change, and on what check"
 attack_method: "impersonation"
 impact: "A $6.7M water-plant payment went to an account named by someone posing as the contractor (later fully recovered)"
-takeaway: "A password-reset link for the supplier account reached the impostor, and the bank account was switched. Nothing checked the new account against the supplier's registered contact before paying."
+takeaway: "A password-reset link for the supplier account reached the impostor, and the bank account was switched. Activate a bank account change only once it is confirmed through the supplier's registered contact, whatever path it arrives by."
 self_check: "When a supplier changes its bank account, do you confirm it through the supplier's registered contact before paying?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-In March 2025 the City of Portland, Oregon, sent $6.7 million owed to the joint venture building its water filtration plant to an account named by someone posing as one of the contractor's employees. The impostor had changed the contractor's bank account in SAP Ariba, the city's supplier system (US DOJ; press citing the city's affidavit).
+When the impostor first emailed a request to change the bank account, the city sent a check to the contact on file; it went unanswered, so nothing was changed. The impostor then asked for the supplier account's password-reset link to be resent, and it reached the impostor, not the employee. <strong>Once a bank account change arrives as the supplier's own action, it cannot be told apart from a change that passed the check that stopped the emailed request.</strong>
 
-The city had not acted on an earlier emailed change after its check to the contact on file went unanswered. The impostor then asked for the password-reset link to be resent, and it reached the impostor. From there, the change looked like the contractor's own legitimate edit.
+## 2. What got through
 
-On March 25 the receiving bank flagged possible fraud and the city asked for the payment to be blocked; the funds were still in the receiving account, were seized in April and later fully returned. The March 21 transfer still went out. What failed was the layer that checks a new bank account against the supplier's registered contact before paying.
-
-## 2. What happened
-
-- **Party**: The City of Portland, Oregon. A joint venture of MWH Constructors and Kiewit (MWH-Kiewit) is building the Water Bureau's Bull Run Filtration Project, a roughly $2.1 billion plant.
+- **What got through**: A change of the supplier's bank account in the supplier system (SAP Ariba). Posing as an MWH employee, the impostor used a reset link to enter the supplier profile and add a new account. The city paid $6.7 million to the account on file (US DOJ; ENR, citing the city attorney's affidavit).
+- **What was stopped**: In February 2025, an emailed bank-change request with a bank account confirmation letter attached was stopped when the city sent a check to the contact on file, got no answer, and made no change.
+- **What reached the receiving side**: In general, a change made through a reset link arrives as the supplier's own edit after logging in. Whether the link reached the supplier or the requester cannot be told from the receiving side.
 - **Who was impersonated**: A proposal manager at MWH, listed as the contract contact in the city's vendor database (press, citing the city's lawsuit). The city does not believe the employee committed the theft; the name was used.
-- **Loss**: A $6.7 million construction payment went to an account named by the impostor. On April 16, 2025, the FBI seized $6,748,680 still in that account (US DOJ). In August the US Marshals Service returned the funds to the city (press).
-- **Receiving account**: An attorney trust account in the name of a New York law firm. The city briefly sued the firm, then dropped the suit after the firm showed it was also a victim (press).
-- **Initial access**: Whether the impostor had broken into the contractor's email has not been disclosed. ENR says the case probably started with an email breach through phishing (speculation). No arrests had been made as of September 2025.
+- **Not disclosed**: Whether the impostor had broken into the contractor's email (ENR says the case probably started with an email breach through phishing; speculation), and whether the reset link went to an address imitating the contractor's. No arrests had been made as of September 2025.
 
-The attack ran as follows (per ENR, citing the city attorney's affidavit).
+## 3. What to check
+
+Whatever the route, the condition for telling them apart is that whoever activates a supplier's bank account matches the change to the supplier's request, through the registered contact rather than any address the requester supplies, before it takes effect.
+
+- **Who approves**: The supplier. The change is approved through the contact registered in advance (not a contact written in the requesting email). A reset link goes only to that registered contact.
+- **Where it is checked**: The part of the supplier system that activates a bank account. Emailed requests, the supplier's own edits in a portal, and edits after a password reset are all checked at one point before activation. A change that does not match an approval is not activated, and payments to that account are held until the check is done.
+- **What is recorded**: Which supplier's bank change came through which path, and who approved it through which contact. The record is looked at before paying.
 
 <figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain, as far as disclosed</span></div>
-<p class="rx-ex-cap">The stopping point is ③. Had the link's destination, or the new bank account, been checked against the supplier's registered contact, the transfer in ④ would not happen. The check in ① worked.</p>
-<div class="rx-chain">
-<div class="rx-step good"><div class="who">City</div><div class="no">1</div><b>Checks an emailed bank-change request with the contact on file</b><p>February 2025. A bank account confirmation letter was attached. The check went unanswered, and the city made no change.</p></div>
-<div class="rx-step crit"><div class="who">Impostor</div><div class="no">2</div><b>Told to use SAP Ariba, asks for the reset link to be resent</b><p>Asked for it to go to an address that looked like the same one.</p></div>
-<div class="rx-step crit"><div class="who">Impostor</div><div class="no">3</div><b>Uses the link to enter the supplier profile and adds a new account</b><p>The link reached the impostor, not the employee.</p></div>
-<div class="rx-step crit"><div class="who">City</div><div class="no">4</div><b>Sends $6.7M to the account on file</b><p>March 21. Settlement date March 25.</p></div>
-<div class="rx-step good"><div class="who">Banks, city</div><div class="no">5</div><b>The receiving bank flags possible fraud; the city asks to block the payment</b><p>March 25. The funds were still in the receiving account.</p></div>
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means matching, before a bank change takes effect, whether the supplier requested it, through the registered contact, and keeping a record. Detection means noticing possible fraud after the transfer. The dates below follow press reports.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Match the change to the registered contact before it takes effect</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>$6.7M went to another account<br>Later returned in full</span></div>
+<div class="rx-zone det"><b>Detection · worked</b>The receiving bank flags possible fraud; the city asks to block the payment</div>
+<div class="rx-g g1"><div class="t">2025-02</div><b>Emailed request stopped by a check</b></div>
+<div class="rx-g g2"><div class="t">2025-02 to 03</div><b>Bank account switched via reset link</b></div>
+<div class="rx-g g3"><div class="t">03-21</div><b>$6.7M transferred</b></div>
+<div class="rx-g g4"><div class="t">03-25</div><b>Receiving bank flags possible fraud</b></div>
 </div>
 </figure>
 
-## 3. Timeline — disclosure and response
+The first emailed request was stopped by a check with the contact on file, but nothing says where the reset link was sent was checked. The money came back through the receiving bank's alert and the seizure; the transfer itself went through. A similar case, where a payout account was switched in the legitimate admin screen, is [Polaris Holdings / Booking.com](/critical/briefs/032-booking-payout-account-tampering/).
+
+## 4. What Lemma does
+
+**Lemma builds the check in section 03 into the side that activates a supplier's bank account change.** It does not look for intrusions; it confirms, before activation, that the change rests on the supplier's request, through the registered contact.
+
+### Industries and operations to watch
+
+- **Industry · Public sector**: Cities and public bodies with many contractors and large payments. Contractor and contact names are visible in public bids and contracts.
+- **Industry · Construction**: Large projects run long chains of payments from owners and general contractors. Pauses and restarts are often public.
+- **Operation · Bank account changes**: Changes to a supplier's bank account, and resets of a supplier's login.
+
+### Current controls vs Lemma
+
+The route in this case is column 2 (a change in the portal after a password reset). The first emailed request is column 1, and it was stopped by a check. Column 3 is where the registered contact itself has been taken over; whether that was so here has not been disclosed.
+
+| Control | Emailed change request | Portal change after a password reset | Registered contact itself taken over |
+| --- | --- | --- | --- |
+| Check with the contact on file | Effective | Not effective | Not effective |
+| Supplier self-service portal | Not relevant | Not effective | Not effective |
+| Bank fraud detection | Partial | Partial | Partial |
+| Staff training | Partial | Partial | Not effective |
+| **Lemma (pre-execution check)** | Effective | Effective | Not effective |
+
+A check with the contact on file worked on the emailed request, but it does not cover the reset link unless the link's destination uses it too. A self-service portal makes the input of whoever has the login look like the supplier's own. Bank detection and staff training work only in limited places, and in this case the transfer itself was not stopped. Lemma checks the bank change itself against the registered contact before it takes effect.
+
+Note: Lemma's check works only when it is built into the system that activates bank accounts, every change — by email, in the portal, after a password reset — passes the same check, and the contact used for approval is managed apart from the system that receives the change. It passes if the registered contact itself has been taken over. The check protects where payments go; an impostor falsifying what an invoice asks for still needs separate controls. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+
+### Checklist
+
+Three things to confirm about supplier bank accounts
+
+- Can a reset of a supplier's login be sent anywhere other than the registered contact?
+- Do you hold payments to a newly changed account until the check is done?
+- Do you confirm bank changes through the registered contact, not a contact found in the email that asked for the change?
+
+## 5. Facts and timeline
+
+- **Party**: The City of Portland, Oregon. A joint venture of MWH Constructors and Kiewit (MWH-Kiewit) is building the Water Bureau's Bull Run Filtration Project, a roughly $2.1 billion plant.
+- **Loss**: A $6.7 million construction payment went to an account named by the impostor. On April 16, 2025, the FBI seized $6,748,680 still in that account (US DOJ). In August the US Marshals Service returned the funds to the city (press).
+- **Receiving account**: An attorney trust account in the name of a New York law firm. The city briefly sued the firm, then dropped the suit after the firm showed it was also a victim (press).
+
+### Timeline
 
 - **2025-02**: The city rolls out SAP Ariba and requires contractors to use it. The same month, an email in an MWH employee's name asks to change the bank account. The city sends a check to the contact on file; it goes unanswered, and no change is made. The impostor then asks for the reset link to be resent, and the city sends it.
 - **2025-03-21**: The city transfers $6.7 million. Settlement date is March 25.
@@ -98,69 +145,12 @@ The attack ran as follows (per ENR, citing the city attorney's affidavit).
 - **2025-05-23**: The US Attorney's Office for the District of Oregon announces a civil forfeiture action.
 - **2025-08**: The US Marshals Service returns the funds to the city.
 
-> The February requests and the March 21–25 events rely on ENR's reporting of the city attorney's affidavit; we have not seen the affidavit itself. The February change (an impostor accessed a payment system and changed the bank account) and the seizure amount and date rely on the US DOJ release (primary). Whether the link went to an address imitating the contractor's has not been disclosed. The DOJ dates the change to February; ENR's sequence puts the link and the change about two weeks before March 21, possibly in early March.
+> The February requests and the March 21–25 events rely on ENR's reporting of the city attorney's affidavit; we have not seen the affidavit itself. The February change (an impostor accessed a payment system and changed the bank account) and the seizure amount and date rely on the US DOJ release (primary). Whether the link went to an address imitating the contractor's has not been disclosed. What has not been disclosed does not mean there were no controls. The DOJ dates the change to February; ENR's sequence puts the link and the change about two weeks before March 21, possibly in early March.
 
 ### After disclosure
 
 - **City of Portland**: Sued the New York law firm holding the receiving account to keep the funds from moving, then dropped the suit after the firm cooperated with the FBI and showed it was also a victim (press). The mayor said fast action by local and federal law enforcement stopped the transfer "before it landed in the wrong hands" (press).
 - **US DOJ**: Urged victims of similar scams to contact law enforcement without delay, noting the recovery was possible only because the city reported it.
-
-## 4. Why it wasn't stopped
-
-The failure was neither in spotting the email nor in the bank's detection. **An operation that switched the supplier's bank account took effect, and was used for payment, without being checked against the supplier's registered contact.**
-
-<figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The gap between detection and proof</span></div>
-<p class="rx-ex-cap">Proof here means checking, before paying, that a new bank account really belongs to the supplier, through the supplier's registered contact, and keeping a record. Detection means noticing possible fraud after the transfer.</p>
-<div class="rx-gap">
-<div class="rx-zone proof"><b>Proof layer · absent</b>Check a new account with the supplier before paying</div>
-<div class="rx-zone gapz"><b>Gap</b><span>$6.7M went to<br>another account</span></div>
-<div class="rx-zone det"><b>Detection layer · worked</b>The receiving bank flags possible fraud</div>
-<div class="rx-g g1"><div class="t">STEP 1</div><b>Reset link to the impostor</b></div>
-<div class="rx-g g2"><div class="t">STEP 2</div><b>Bank account switched</b></div>
-<div class="rx-g g3"><div class="t">STEP 3</div><b>03-21 transfer</b></div>
-<div class="rx-g g4"><div class="t">STEP 4</div><b>03-25 bank alert</b></div>
-</div>
-</figure>
-
-The first emailed request was stopped by a check with the contact on file, but nothing says where the reset link was sent was checked, and a change made through it is indistinguishable from the supplier's own edit. The money came back through the receiving bank's alert and the seizure; the transfer itself went through. That distance is the **gap between detection and proof**, and it is structural.
-
-The same structure appears in [Polaris Holdings / Booking.com](/critical/briefs/032-booking-payout-account-tampering/) (a hotel's payout account was switched in the legitimate admin screen).
-
-## 5. How to counter this
-
-**Activate a supplier's bank account change only once it is confirmed through the supplier's registered contact, whatever path it arrives by**: an emailed request, a supplier's own edit in a portal, or an edit after a password reset. Then an impostor who obtains a login still cannot redirect payments. It sits in front of detection, not in place of it.
-
-### Industries and operations to watch
-
-- **Industry · Public sector**: Cities and public bodies with many contractors and large payments. Contractor and contact names are visible in public bids and contracts.
-- **Industry · Construction**: Large projects run long chains of payments from owners and general contractors. Pauses and restarts are often public.
-- **Operation · Bank account changes**: Changes to a supplier's bank account, and resets of a supplier's login.
-
-### Do today's controls close it?
-
-| Control | This case | Why |
-| --- | --- | --- |
-| Check with the contact on file | Partial | Worked: the emailed bank-change request went unanswered, so nothing was changed. Did not: nothing says the reset link's destination was checked, and the link reached the impostor. |
-| Supplier self-service portal | Ineffective | Did not: an impostor with the login looked like the supplier, and the bank-detail change went through. |
-| Bank fraud detection | Partial | Worked: four days after the transfer, the receiving bank flagged it, and the seizure brought the money back. Did not: the transfer itself was not stopped. |
-| Staff training | Partial | Worked: staff caught the first emailed request. Did not: the reset link, a different path, got through. |
-
-### What is needed
-
-1. **Put bank changes and login resets through the same check.** Activate either only when confirmed through the supplier's registered contact. Never send to an address the requester supplies.
-2. **Check that a new account belongs to the supplier before paying.** Match the account holder to the supplier before any payment.
-3. **Record who approved the change, and on what check.** Look at that record before paying, and pay only to accounts that carry it. Keep it in a form a third party can verify later, as proof.
-
-### Checklist
-
-Three things to confirm about supplier bank accounts
-
-- Can a reset of a supplier's login be sent anywhere other than the registered contact?
-- Do you hold payments to a newly changed account until the check is done?
-- Do you confirm bank changes through the registered contact, not a contact found in the email that asked for the change?
-
-Note: if the supplier's registered contact itself is compromised, this check can be passed. And it protects where payments go; an impostor falsifying what an invoice asks for still needs separate controls.
 
 ## 6. Sources
 
