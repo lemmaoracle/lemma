@@ -61,6 +61,8 @@ import {
   BRIEF_OPERATIONS,
   FACET_ICON_ATTRS,
   FACET_ICON_VIEWBOX,
+  FACET_PLAIN,
+  BRIEF_CONTROL_EXAMPLES,
   type BriefAttackSlug,
   type BriefIndustrySlug,
   type BriefOperationSlug,
@@ -196,6 +198,12 @@ const controlTiles = BRIEF_CONTROL_SLUGS.map((slug) => ({
   ).length,
   href: `${archiveHref}?control=${slug}`,
 }));
+/* 対策のページの先頭に出す説明と「たとえば」（2026-11-02）。事例は、すぐ下の一覧が出すので、ここには出さない。 */
+const controlIntro = BRIEF_CONTROL_SLUGS.map((slug) => ({
+  slug,
+  desc: FACET_PLAIN[`control:${slug}`]?.[loc] ?? "",
+  example: BRIEF_CONTROL_EXAMPLES[slug][loc],
+}));
 const indexBanner = indexBannerFor(locale);
 /* 一覧の絞り込み（業界・業務・手口）で出す候補。タグの付いた Brief がある値だけ。 */
 const usedIndustries = Object.values(BRIEF_INDUSTRIES).filter((f) =>
@@ -329,6 +337,9 @@ const labels = isJa
         "実際に起きたサイバー攻撃と事故を、公表資料から読み解きます。何が正しい操作として通ってしまったか、実行の前に何を照合するかまでを整理する解説レポートです。",
       newest: "新着",
       impactK: "影響",
+      selectedMark: "選択中",
+      aboutK: "この対策とは",
+      exampleK: "たとえば",
       pinned: "注目",
       controlsH: "対策から読む",
       controlCount: (n: number) => `解説 ${n} 本`,
@@ -381,6 +392,9 @@ const labels = isJa
         "Real cyber attacks and incidents, read from public disclosures: what got through as a legitimate operation, and what to check before it runs.",
       newest: "Latest",
       impactK: "Impact",
+      selectedMark: "Selected",
+      aboutK: "What this control is",
+      exampleK: "For example",
       pinned: "Featured",
       controlsH: "Browse by control",
       controlCount: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
@@ -593,7 +607,39 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
 
       {/* すべての Brief（アーカイブのみ・見出し行の右端に虫眼鏡の検索） */}
       {isArchive && (
-      <section aria-label={labels.allBriefs}>
+        <section class="ix-cnav" aria-label={labels.controlsH} data-control-nav>
+          <h2 class="ix-h">{labels.controlsH}</h2>
+          <div class="ix-ctl-grid">
+            {controlTiles.map((c) => (
+              <a class="ix-ctl" href={c.href} data-control-pick={c.slug}>
+                <span class="ix-ctl-ic">
+                  <svg viewBox={FACET_ICON_VIEWBOX} {...FACET_ICON_ATTRS} aria-hidden="true" set:html={c.icon} />
+                </span>
+                <span class="ix-ctl-tx">
+                  <b>{c.label}</b>
+                  <span>{labels.controlCount(c.count)}</span>
+                </span>
+                <span class="ix-ctl-sel" aria-hidden="true">✓ {labels.selectedMark}</span>
+              </a>
+            ))}
+          </div>
+          {controlIntro.map((ci) => (
+            <div class="ix-cintro" data-control-intro={ci.slug} hidden>
+              <div class="ix-cintro-head">
+                <span class="ix-cintro-k">{labels.aboutK}</span>
+                <p class="ix-cintro-desc">{ci.desc}</p>
+              </div>
+              <div class="ix-cintro-ex">
+                <span class="ix-cintro-k">{labels.exampleK}</span>
+                <p>{ci.example}</p>
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      {isArchive && (
+      <section aria-label={labels.allBriefs} id="all-briefs">
         <div class="cb-listhead ix-filter ix-filter--arc">
           <h2 class="ix-h">{labels.allBriefs} <span class="ix-h-n">{briefsCount}</span></h2>
           <label><span class="sr">{labels.fCountry}</span>
@@ -2302,6 +2348,103 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       grid-template-columns: minmax(0, 1fr);
     }
   }
+
+  /* 対策のページ（アーカイブ）の先頭：一覧と同じアイコンつきのナビ＋選んだ対策の説明と代表の事例（2026-11-02）。 */
+  .ix-cnav {
+    margin: 26px 0 28px;
+  }
+  /* 選んでいる対策：黒い面・白い文字・「✓ 選択中」。ほかは薄くして、どれを選んでいるかを一目で分かるようにする。 */
+  .ix-cnav .ix-ctl {
+    position: relative;
+    transition: opacity 0.15s, background 0.15s, border-color 0.15s;
+  }
+  .ix-cnav.has-active .ix-ctl:not(.is-active) {
+    opacity: 0.55;
+  }
+  .ix-cnav.has-active .ix-ctl:not(.is-active):hover {
+    opacity: 1;
+  }
+  .ix-cnav .ix-ctl.is-active {
+    background: var(--tx);
+    border-color: var(--tx);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(31, 42, 34, 0.22);
+  }
+  .ix-cnav .ix-ctl.is-active .ix-ctl-ic {
+    background: #c9ef5a;
+    color: var(--tx);
+  }
+  .ix-cnav .ix-ctl.is-active .ix-ctl-tx b {
+    color: #fff;
+  }
+  .ix-cnav .ix-ctl.is-active .ix-ctl-tx span {
+    color: #cfd8c4;
+  }
+  .ix-ctl-sel {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    right: 14px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #c9ef5a;
+  }
+  .ix-cnav .ix-ctl.is-active .ix-ctl-sel {
+    display: block;
+  }
+  .ix-cintro {
+    margin-top: 14px;
+    border-color: var(--tx);
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24px;
+    padding: 22px 26px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .ix-cintro[hidden] {
+    display: none;
+  }
+  .ix-cintro-head {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ix-cintro-desc {
+    margin: 0;
+    font-family: var(--font-serif-jp);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.65;
+    color: var(--tx);
+  }
+  .ix-cintro-k {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #7d8578;
+  }
+  .ix-cintro-ex {
+    align-self: start;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #f4f5ef;
+  }
+  .ix-cintro-ex p {
+    margin: 4px 0 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--tx);
+  }
+  @media (max-width: 900px) {
+    .ix-cintro {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+  }
 </style>
 
 <script>
@@ -2458,7 +2601,20 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       pager.hidden = false;
     }
 
+    const ctlNav = Array.from(root.querySelectorAll<HTMLElement>("[data-control-pick]"));
+    const ctlIntros = Array.from(root.querySelectorAll<HTMLElement>("[data-control-intro]"));
+    function syncControlNav() {
+      ctlNav.forEach((a) => {
+        a.classList.toggle("is-active", a.dataset.controlPick === facets.control);
+        a.setAttribute("aria-current", a.dataset.controlPick === facets.control ? "true" : "false");
+      });
+      root.querySelector<HTMLElement>("[data-control-nav]")?.classList.toggle("has-active", !!facets.control);
+      ctlIntros.forEach((d) => {
+        d.hidden = d.dataset.controlIntro !== facets.control;
+      });
+    }
     function syncPills() {
+      syncControlNav();
       if (allPill)
         allPill.classList.toggle("is-active", mode === "all" && !facetText());
       dists.forEach((d) =>
@@ -2512,6 +2668,17 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         const k = sel.dataset.facet || "";
         if (sel.value) facets[k] = sel.value;
         else delete facets[k];
+        update();
+      });
+    });
+
+    ctlNav.forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const slug = a.dataset.controlPick || "";
+        if (facets.control === slug) delete facets.control;
+        else facets.control = slug;
+        syncSelects();
         update();
       });
     });
