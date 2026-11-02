@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["012-williams-frt-wrongful-arrest", "035-boeing-787-inspection-records"]
 status: published
-gate: "none"
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "TennCare Connect の自動適格判定が誤判定のまま数千人を違法に打ち切り"
 og_lead_en: "TennCare Connect's automated eligibility system illegally cut thousands off Medicaid"
