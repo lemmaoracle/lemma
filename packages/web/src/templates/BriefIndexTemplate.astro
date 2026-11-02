@@ -379,11 +379,11 @@ const labels = isJa
       backToLatest: "最新の Brief へ戻る",
       archiveH1: "Brief アーカイブ",
       archiveMeta: `全 ${briefsCount} 本 · 最新は No.${latestBriefNo} · 公開月順`,
-      pageTitle: "Lemma Critical Brief — 攻撃と事故の構造を読む",
+      pageTitle: "サイバー攻撃・不正送金・情報漏えいの事例と対策｜Lemma Critical Brief",
       description:
-        "実際に起きたサイバー攻撃と事故を公表資料から読み解き、何が正しい操作として通ったか、実行の前に何を照合するかまでを整理する解説レポート。業界・手口・対策から探せる。",
-      archivePageTitle: `Brief アーカイブ（全 ${briefsCount} 本）— Lemma Critical Brief`,
-      archiveDescription: `Lemma Critical Brief の全 ${briefsCount} 本を公開月ごとに一覧。AI・暗号インフラ・サプライチェーン・規制属性領域の重大事案を、脅威タイプとキーワードで絞り込める。`,
+        "実際に起きたサイバー攻撃・不正送金・情報漏えいの事例を、公表資料から解説。何が正しい操作として通ったか、実行の前に何を照合するかを整理。対策・業界・手口から探せる。",
+      archivePageTitle: `Brief 一覧（全 ${briefsCount} 本）｜サイバー攻撃・事故の事例｜Lemma Critical Brief`,
+      archiveDescription: `Lemma Critical Brief の全 ${briefsCount} 本を公開月ごとに一覧。不正送金・情報漏えい・サプライチェーン攻撃・AI の悪用など、実際の事案を、対策・業界・手口・キーワードで絞り込める。`,
     }
   : {
       eyebrow: "Lemma Critical Brief",
@@ -435,12 +435,54 @@ const labels = isJa
       backToLatest: "Back to the latest Briefs",
       archiveH1: "Brief archive",
       archiveMeta: `${briefsCount} Briefs · latest No.${latestBriefNo} · by month of publication`,
-      pageTitle: "Lemma Critical Brief — how attacks and accidents get through",
+      pageTitle: "Cyber Attack and Payment Fraud Case Studies — What Got Through | Lemma Critical Brief",
       description:
-        "Real cyber attacks and incidents, read from public disclosures: what got through as a legitimate operation, and what to check before it runs. Browse by industry, attack method or control.",
-      archivePageTitle: `Brief archive (all ${briefsCount}) — Lemma Critical Brief`,
-      archiveDescription: `All ${briefsCount} Lemma Critical Briefs, grouped by month of publication. Major incidents across AI, cryptographic infrastructure, supply chains, and regulated attributes — filter by threat type or search by keyword.`,
+        "Case studies of real cyber attacks, payment fraud and data breaches, read from public disclosures: what got through as a legitimate operation, and what to check before it runs. Browse by control, industry or attack method.",
+      archivePageTitle: `All ${briefsCount} cyber attack and fraud case studies | Lemma Critical Brief`,
+      archiveDescription: `All ${briefsCount} Lemma Critical Briefs by month of publication: payment fraud, data breaches, supply-chain attacks, AI misuse and more. Filter by control, industry, attack method or keyword.`,
     };
+
+/* 構造化データ（2026-11-02）：一覧は CollectionPage＋ItemList（注目と新着の先頭）＋パンくず。 */
+const SITE = "https://lemma.frame00.com";
+const listUrl = `${SITE}${base}/critical/briefs/`;
+const archiveUrl = `${SITE}${archiveHref}`;
+const itemListBriefs = [...pinBriefs, ...restLatest];
+const pageJsonLd: Array<Record<string, unknown>> = [
+  {
+    "@type": "CollectionPage",
+    "@id": `${isArchive ? archiveUrl : listUrl}#collection`,
+    url: isArchive ? archiveUrl : listUrl,
+    name: isArchive ? labels.archivePageTitle : labels.pageTitle,
+    description: isArchive ? labels.archiveDescription : labels.description,
+    inLanguage: locale,
+    isPartOf: { "@id": `${SITE}/#website` },
+    ...(isArchive
+      ? { numberOfItems: briefsCount }
+      : {
+          mainEntity: {
+            "@type": "ItemList",
+            itemListOrder: "https://schema.org/ItemListOrderDescending",
+            numberOfItems: itemListBriefs.length,
+            itemListElement: itemListBriefs.map((b, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              url: `${SITE}${base}/critical/briefs/${b.id}/`,
+              name: shortTitle(b),
+            })),
+          },
+        }),
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Lemma", item: `${SITE}${base || "/"}` },
+      { "@type": "ListItem", position: 2, name: "Critical Brief", item: listUrl },
+      ...(isArchive
+        ? [{ "@type": "ListItem", position: 3, name: labels.archiveH1, item: archiveUrl }]
+        : []),
+    ],
+  },
+];
 
 const rssHref = `${base}/critical/briefs/feed.xml`;
 const methodologyHref = `${base}/critical/briefs/methodology/`;
@@ -452,6 +494,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   pagePath={pagePath}
   title={isArchive ? labels.archivePageTitle : labels.pageTitle}
   description={isArchive ? labels.archiveDescription : labels.description}
+  jsonLd={pageJsonLd}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
@@ -474,6 +517,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
           <div class="cb-acts">
             <a href={rssHref}>{labels.rssLabel}</a>
             <a href={methodologyHref}>{labels.methodologyLabel}</a>
+            {isJa && <a href="/ja/critical/topics/payment-fraud/">振込先の書き換え・ニセ社長詐欺の事例</a>}
           </div>
         </section>
       )}
