@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: identity-auth
 secondary_categories: []
 incident_date: 2026-10-20
-published: 2026-10-30
+published: 2026-11-02
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["075-klue-oauth-salesforce-credential-lifecycle", "059-vercel-contextai-oauth", "052-discord-age-verification-id-leak"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "お名前.com デスクトップクラウドに不正アクセス、身に覚えのない取引の報告"
 og_lead_en: "Onamae.com Desktop Cloud breach: customer data taken, unauthorised trades reported"

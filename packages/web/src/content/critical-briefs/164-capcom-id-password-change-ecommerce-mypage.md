@@ -6,11 +6,11 @@ pillar: 03-agent-authority
 primary_category: identity-auth
 secondary_categories: [data-provenance]
 incident_date: 2026-10-19
-published: 2026-10-26
+published: 2026-11-02
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["032-booking-payout-account-tampering", "051-instagram-ai-support-takeover", "154-yumirlink-cuenote-support-credential-db-export"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "カプコンの CAPCOM ID に不正アクセス、メールアドレスなど 1,177 万件 — 196 件でパスワードを不正に変更"
 og_lead_en: "CAPCOM ID breached: 11.77 million email records, and 196 passwords changed without authorization"

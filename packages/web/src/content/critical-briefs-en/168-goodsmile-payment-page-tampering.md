@@ -6,11 +6,11 @@ pillar: 01-verifiable-origin
 primary_category: code-provenance
 secondary_categories: []
 incident_date: 2026-10-21
-published: 2026-10-30
+published: 2026-11-02
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["087-polymarket-frontend-supply-chain", "081-bybit-safe-wallet-ui-injection", "030-stripe-trusted-channel-skimmer"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "グッスマ公式ショップ：決済ページの不正プログラムで、カード全桁が漏えいの可能性"
 og_lead_en: "Good Smile Company: a payment-page program may have exposed full card data"
