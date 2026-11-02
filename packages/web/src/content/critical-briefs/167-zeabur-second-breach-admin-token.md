@@ -6,11 +6,11 @@ pillar: 03-agent-authority
 primary_category: identity-auth
 secondary_categories: []
 incident_date: 2026-10-14
-published: 2026-10-29
+published: 2026-11-02
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["166-litellm-v1107-pypi-compromise", "059-vercel-contextai-oauth", "075-klue-oauth-salesforce-credential-lifecycle", "064-salesloft-drift-oauth-salesforce"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "Zeabur：入れ替えを報告した後も、期限なしの管理者トークンが使われた"
 og_lead_en: "Zeabur: a no-expiry admin token was used after the company reported rotating keys"
