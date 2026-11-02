@@ -1,7 +1,7 @@
 ---
 brief_no: 55
-title: "命令の出所を検証しないまま、AI が社内データを送り出した — 取り込んだ命令の出所と権限が、行動の前に独立検証されない構造（EchoLeak / Microsoft 365 Copilot）"
-title_en: "Internal Data Exfiltrated Without Verifying the Instruction's Origin — EchoLeak in Microsoft 365 Copilot (CVE-2025-32711)"
+title: "Microsoft 365 Copilot：メール 1 通に紛れた指示で、社内データが外へ送られうることが示された(Aim Labs)"
+title_en: "Microsoft 365 Copilot: An instruction hidden in one email could make Copilot send internal data out (Aim Labs)"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["agent-infrastructure", "data-provenance"]
@@ -11,95 +11,140 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["047-openclaw-agent-phishing", "024-invisible-unicode-instruction-injection", "005-noroboto-lying-fonts", "027-librechat-mcp-url-secrets"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "disclosure"
+og_kicker_ja: "攻撃の実証 · AI アシスタント"
+og_kicker_en: "ATTACK RESEARCH · AI ASSISTANT"
+og_headline_ja: "メール 1 通で、\nAI が社内データを\n外へ送りえた。\n<accent>利用者の操作は不要</accent>"
+og_headline_en: "One email could make\nCopilot send data out.\n<accent>Zero clicks.</accent>"
+key_figures:
+  - value: "9.3"
+    unit: "CVSS"
+    label: "CVE-2025-32711 の深刻度（Critical）。Microsoft のアドバイザリ"
+    tone: "alert"
+  - value: "0"
+    unit: "クリック"
+    label: "被害者の操作なしに成立した（ゼロクリック）。Aim Labs の実証"
+  - value: "なし"
+    label: "実環境で悪用された証拠。Microsoft の表明で、PoC の段階で報告・修正された"
+glossary:
+  - term: "XPIA 分類器"
+    desc: "Cross-Prompt Injection の分類器。Copilot が取り込んだ内容の中の、注入された指示を見つけて抑える層。"
+  - term: "ゼロクリック"
+    desc: "被害者がリンクを押すなどの操作をしなくても、攻撃が成立すること。"
+insight:
+  slug: "data-as-instruction"
+  label: "取り込んだデータの中の指示"
+  quote: "AI が取り込んだデータの中の一文は、出どころと権限を照合しない限り、利用者の命令と同じように実行されうる。"
+operations: ["data-access"]
 version: "1.0"
-og_lead_ja: "命令の出所を検証せず AI が社内データを送出 — EchoLeak / M365 Copilot"
-og_lead_en: "AI exfiltrated data without verifying the instruction's origin — EchoLeak"
-gap_detected: "外部研究による発見と報告、XPIA 分類器などの抑止層が働き、脆弱性は悪用の前に可視化・修正された。"
-gap_missing: "「AI が取り込んだこの命令は、正当な権限の下で与えられたものか」を行動の前に独立検証する層が無く、データに埋め込まれた指示が正規の命令として実行された。"
-gap_fix: "高リスク行動の前に「この行動は、正当に与えられた命令と権限の範囲内である」ことを Lemma で独立検証して、事前に防ぐ。"
+og_lead_ja: "EchoLeak — メール 1 通に紛れた指示で、M365 Copilot が社内データを外へ送りうることが示された（Aim Labs）"
+og_lead_en: "EchoLeak — an instruction hidden in one email could make M365 Copilot send internal data out (Aim Labs)"
 industries: ["ai"]
 controls:
   - slug: "ownership-check"
-    item: "AI が従う命令が、利用者本人から来たものか確かめる"
+    item: "AI が従う命令が、利用者本人から来たものか確認する"
 attack_method: "ai-misuse"
+takeaway: "細工メール 1 通に紛れた指示で、Copilot が社内データを外へ送りうることが示された。送る前に、その指示が利用者本人の命令かを照合する。"
+self_check: "AI アシスタントが社内データを読み出して外へ送る前に、その指示が利用者本人の命令から出たかを照合できるか。"
+search_title: "EchoLeak（M365 Copilot）：手口と対策"
+search_description: "細工メール 1 通に紛れた指示で、Microsoft 365 Copilot が社内データを外へ送りうることが示された（Aim Labs・CVE-2025-32711）。手口、なぜ止まらないか、対策。"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. 要点
 
-Aim Labs が 2025 年 6 月に公表した EchoLeak（CVE-2025-32711）は、細工メール 1 通で利用者操作なし（ゼロクリック）に、Microsoft 365 Copilot のアクセス範囲の社内機微データを社外へ送出させた。メールに紛れた命令を、Copilot が処理対象データと区別できなかったためである。XPIA 分類器など事後の検出をいくら強化しても、AI が動く瞬間に、取り込んだ命令の出所と権限が正当かを独立検証する層の不在には届かない。
+Aim Labs は、攻撃者が送った細工メール 1 通を、Copilot が通常の要約・参照の処理で取り込むだけで、利用者の操作なしに、Copilot のアクセス範囲の社内データを外へ送らせうることを実証し、2025 年 6 月に公表した（EchoLeak）。メールに紛れた指示を、Copilot は、処理するデータと区別できなかった。Microsoft はサーバ側で修正し、実環境で悪用された証拠はないとしている。<strong>AI が取り込んだデータの中の一文は、出どころと権限を照合しない限り、利用者の命令と同じように実行されうる。</strong>
 
----
+## 2. 通った操作
 
-## 2. 何が起きたか
+- **通った操作**: Copilot による社内データの読み出しと、外への送出。攻撃者のメール本文は「処理するデータ」として LLM のコンテキストに入り、その中の指示が実行の対象になった。Copilot は自身のアクセス範囲の社内データを読み出し、信頼されたドメインを経由して、攻撃者の管理下へ送った（Aim Labs の実証）。
+- **止まらなかった統制**: XPIA 分類器、外部リンクの墨消し、Content-Security-Policy、Copilot の参照記法といった検知・抑止の層は、参照形式の Markdown、自動で取得される画像、Microsoft Teams のプロキシの悪用などで回避された（Aim Labs）。
+- **受け付けた側に届くもの**: 一般に、AI アシスタントによるデータの読み出しと送出は、利用者の依頼に基づく操作として届く。その操作が、利用者の命令から出たのか、取り込んだメールの中の文から出たのかは、データを渡す側からは区別がつかない。
+- **届く範囲**: Copilot のアクセス範囲の全体（OneDrive のファイル、SharePoint の内容、Teams のメッセージ、チャット履歴、事前に読み込まれた組織のデータ）。
+- **公表されていないこと**: 実環境での悪用の有無。Microsoft は、実環境で悪用された証拠はないとしている。ゼロクリックで正規の経路を使うため、通常の利用ログでは異常として現れにくい（Aim Labs）。
 
-- **対象**: Microsoft 365 Copilot（Outlook・SharePoint・OneDrive・Teams 等を横断する RAG ベースのエンタープライズ AI アシスタント）
-- **識別子**: CVE-2025-32711。CVSS 9.3（Critical）
-- **発見・報告**: Aim Labs（Aim Security）が発見し、Microsoft Security Response Center（MSRC）へ非公開報告
-- **攻撃の性質**: **ゼロクリック**。攻撃者が送った 1 通のメールを Copilot が通常の要約・参照処理で取り込むだけで成立し、被害者側の操作・クリックは不要
-- **流出範囲**: Copilot のアクセススコープ全般（OneDrive ファイル、SharePoint コンテンツ、Teams メッセージ、チャット履歴、事前ロードされた組織データ）
-- **実環境での悪用**: Microsoft は「顧客側の対応は不要」「実環境で悪用された証拠はない」と表明。本件は責任ある開示（PoC）段階で報告・修正された
+## 3. 何を照合するか
 
-> 注: 本 Brief は個別の悪用事例の有無を断定するものではなく、AI アシスタントが命令の出所を検証せずに行動する構造を分析対象とする。
+経路を問わず区別できる条件は、AI アシスタントが社内データを読み出して外へ送る手前で、その操作が、利用者本人の命令から出たのか、取り込んだデータの中の文から出たのかを、内容の見た目とは別に照合することである。
 
-本件は、AI アシスタントが取り込んだ命令の出所・権限を行動前に独立検証しない構造に起因する。失敗の伝播は以下の通り。
+- **誰が承認を出すか**: 利用者本人。データを外へ送る操作と、その根拠になった指示を、AI が読むメールや文書とは別の画面で見て承認する。取り込んだデータの中の文は、承認に使わない。
+- **どこで照合するか**: AI アシスタントが社内データを読み出し、外へ送る手前。出どころと権限を照合できない指示による送出は、照合が済むまで止める。
+- **何が残るか**: どのデータを、どの指示に基づき、誰の承認で、どこへ送ったかの記録。AI とは別に、後から第三者に示せる形で残す。
 
-1. **untrusted データの取り込み**: Copilot は受信メールや SharePoint コンテンツを、信頼境界を分離せずに同じコンテキストへ結合して処理する。攻撃者のメール本文は「処理対象データ」として LLM のコンテキストへ入る
-2. **命令とデータの混同（LLM Scope Violation）**: LLM は「信頼できる命令」と「untrusted データ」を同一のトークン列として受け取るため、データに埋め込まれた指示を正当な命令と区別できない。攻撃者の指示が実行対象になる
-3. **防御層の多重バイパス**: Cross-Prompt Injection（XPIA）分類器、外部リンクの墨消し、Content-Security-Policy、Copilot の参照記法といった検知・抑止層を、参照スタイルの Markdown・自動取得される画像・Microsoft Teams プロキシの悪用などで回避
-4. **データの越境（exfiltration）**: Copilot が自身のアクセス範囲の社内データを読み出し、信頼されたドメイン経由で攻撃者管理下へ送出。被害者の操作は不要
-5. **可視性の欠如**: ゼロクリックかつ正規経路を使うため、通常の利用ログ上は異常として現れにくい。発見は外部研究と事後分析に依存する
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
+<p class="rx-ex-cap">実行の前の照合＝AI アシスタントが社内データを外へ送る前に、その指示の出どころと権限を照合し、記録に残すこと。検知＝分類器などで、注入された指示に気づくこと。下の日付は、報告・修正・公表の日で、実証の日とは限らない。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>社内データを送る前に、その指示の出どころと権限を照合する</div>
+<div class="rx-zone gapz"><b>確認されたこと</b><span>実証で、メール 1 通の指示により<br>社内データが外へ送られた</span></div>
+<div class="rx-zone det"><b>検知 · 実証では回避された</b>XPIA 分類器・リンクの墨消し・CSP</div>
+<div class="rx-g g1"><div class="t">2025-01</div><b>Aim Labs が MSRC に報告</b></div>
+<div class="rx-g g2"><div class="t">2025-05</div><b>Microsoft がサーバ側を修正</b></div>
+<div class="rx-g g3"><div class="t">2025-06-11</div><b>アドバイザリと研究を公開</b></div>
+<div class="rx-g g4"><div class="t">2025-06</div><b>Patch Tuesday に掲載</b></div>
+</div>
+</figure>
 
----
+メールを読むエージェントが、送信元を照合する前に資格情報を転送した [OpenClaw](https://lemma.frame00.com/ja/critical/briefs/047-openclaw-agent-phishing/) と同じく、エージェントが照合の前に動いた型である。人が読む入力とモデルが読む入力がずれる [不可視 Unicode の指示注入](https://lemma.frame00.com/ja/critical/briefs/024-invisible-unicode-instruction-injection/) や [嘘フォント](https://lemma.frame00.com/ja/critical/briefs/005-noroboto-lying-fonts/) とも、取り込んだ内容が照合なしに行動へ結びつく点で通じる。
 
-## 3. 時系列 — 公表と対応
+## 4. Lemma でできること
 
-- 2025-01: Aim Labs が実動する PoC を作成し、MSRC へ非公開で報告
-- 2025 年春先: 初期の緩和措置
-- 2025-05: Microsoft がサーバ側修正を展開
-- 2025-06-11: アドバイザリと攻撃連鎖の研究が公開（CVE-2025-32711）。同月の Patch Tuesday に掲載
-- 2026 以降: SharePoint／Copilot 連携などで類似系統が報告され、AI アシスタントの信頼境界問題が単発でないことが示される
+**Lemma は、03 の照合を、AI アシスタントが社内データを読み出して外へ送る操作の手前に組み込む。** 侵入や注入を見つけるのではなく、その操作の根拠になった指示の出どころと権限を、実行の前に、内容の見た目とは別に照合する。
 
-> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。本件は研究機関による責任ある開示（PoC）段階での実証であり、実環境での被害を断定するものではない。
+### 注意したい業界・業務
 
-公表後の対応と業界の動きは次のとおり。
+- **業界 · AI**: メール・文書・チャットを横断する AI アシスタントを社内に導入している組織と、そうした AI を提供する事業者。
+- **業務 · 照会・参照**: AI に受信メールや共有文書を要約・参照させる業務。外から届いたメールの中の文が、AI によるデータの読み出しと送出につながりうる。
 
-- **ベンダー対応**: Microsoft は CVE-2025-32711 を割り当て、サーバ側で修正。顧客側の対応は不要とし、実環境での悪用証拠はないと表明
-- **業界の認識転換**: EchoLeak は「**本番 LLM システムにおける初の実世界ゼロクリック・プロンプトインジェクション**」として、エンタープライズ AI のリスク認識を更新した。LLM が信頼できる命令と untrusted データを同一トークン列として扱うという**アーキテクチャ上の弱点**が論点化
-- **連続性**: 2026 年以降も SharePoint／Copilot 連携などで類似系統が報告され、単発のバグではなく、AI アシスタントの信頼境界に内在する課題として継続的に表面化している
-- **重心の移動**: プロンプトインジェクション対策の重心が、分類器による検出から、エージェントの実行境界そのものの設計（命令の出所・権限の検証）へ移りつつある
+### いまの対策と Lemma の違い
 
-命令の出所と権限を行動の瞬間に独立検証する層の不在は、一社の問題ではなく、エンタープライズ AI を導入する組織と AI プラットフォーム提供者の双方にまたがる運用課題として残る。
+今回の経路は、1 列目（外から届いたメールの取り込み）から 2 列目（社内データの読み出しと外への送出）へ続く連鎖である。
 
----
+| 対策 | 外から届いたメールの取り込み | 社内データの読み出しと外への送出 |
+| --- | --- | --- |
+| モデルによる、命令とデータの区別 | 効かない | 関係しない |
+| XPIA 分類器（注入された指示の検知） | 一部 | 関係しない |
+| 外部リンクの墨消し・Content-Security-Policy | 関係しない | 一部 |
+| **Lemma（実行の前の照合）** | 効かない | 効く |
 
-## 4. なぜ止まらなかったか
+モデルは、信頼できる命令と、取り込んだデータを、同じトークン列として受け取るため、データに埋め込まれた指示を区別できなかった（Aim Labs）。XPIA 分類器は、注入された指示を見つけて抑える層だが、確率による判定で、実証では回避された。リンクの墨消しと CSP は、外への送り先を絞るが、自動で取得される画像や Teams のプロキシを経て回避された。Lemma は、取り込みそのものは止めず、社内データを外へ送る操作を、その指示の出どころと権限の照合に結ぶ。実行の記録も残るので、AI の説明に頼らずに、どのデータを、どの指示で、誰の承認で送ったかを確認できる。
 
-中心的な failure primitive は、**AI エージェントが取り込んだ命令の出所と権限を、行動（社内データの読み出しと送出）の前に独立検証していない**ことである。「このメール本文に含まれる指示は、正当に与えられた命令か、それとも単なる untrusted データか」という区別が、システムの自己判断の内側に閉じており、行動前に独立検証されない。
+注：Lemma の照合が働くのは、AI アシスタントがデータを読み出して外へ送る操作に照合を組み込み、利用者の命令と権限が、AI が読むデータとは別に管理されている場合に限る。利用者が、指示の出どころを見ないまま送出を承認すれば通る。正規のドメインを経由する送出は、送り先だけでは見分けにくい。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入を検出・防止するものではない。
 
-ターゲットは [Brief 024](https://lemma.frame00.com/ja/critical/briefs/024-invisible-unicode-instruction-injection/)（不可視 Unicode による命令注入＝人間が読む入力とモデルが読む入力の乖離）や [Brief 005](https://lemma.frame00.com/ja/critical/briefs/005-noroboto-lying-fonts/)（嘘フォントによる入力整合性の偽造）と異なるが、共有する primitive は同じだ。すなわち、**判断や行動が、それを検証する層から切り離されたまま、実行・データ越境へ直結する**。さらに [Brief 047](https://lemma.frame00.com/ja/critical/briefs/047-openclaw-agent-phishing/)（メール読解エージェントが送信元を検証する前に資格情報を転送した）と同型で、「**エージェントが検証の前に動く**」点が核心である。EchoLeak が示すのは、この primitive が研究上の懸念ではなく、本番のエンタープライズ AI で、ゼロクリックの実データ流出として成立したという事実である。
+### 点検チェックリスト
 
-ここでは検出チェーン — Aim Labs による研究、MSRC への報告、Microsoft のサーバ側修正、XPIA 分類器という既存の抑止層 — が一定の役割を果たした。脆弱性は外部研究によって可視化され、悪用前に修正された。これは検出の成功例であり、本 Brief は検出層の役割を否定しない。検出は、疑いを立て、修正を促し、被害範囲を絞り込むために不可欠である。
+AI アシスタントを社内に導入している組織で確認する 3 項目
 
-しかし本件で問題なのは、XPIA 分類器という検出層が**多重にバイパスされた**こと、そして検出層がどれほど強化されても「**AI が行動する瞬間に、取り込んだ命令の出所と権限が正当か**」を独立に証明する材料にはならないことである。分類器は確率的判定であり、「この命令は正当に与えられた」という証明ではない。攻撃が正規ドメインとゼロクリック経路を使う以上、事後の検出・分析は、データがすでに越境した後に作動する後追いの系列になる。これは検出の射程の外にある、構造的に独立した層の落差である。
+- AI アシスタントが取り込む外からのメールや文書を、利用者の命令と同じ扱いにしていないか。
+- AI アシスタントが読み出して送ったデータと、その根拠になった指示の記録を、AI とは別に見られるか。
+- AI アシスタントがアクセスできる社内データの範囲を、業務に要る範囲に絞っているか。
 
-現状、エンタープライズ AI の運用モデル全体で、エージェントが取り込む命令の出所・権限の独立検証は、モデルの自己判断と分類器への信頼に依存しており、独立した層として扱われていない。事前証明（pre-execution attestation）は、エージェントの行動経路に「この命令はこの権限の下で正当に与えられた」という属性証明を 1 ステップ挿入することで落差を塞ぐ。検出の代替ではなく **補完** であり、両者が揃って初めて、AI の行動に対する信頼境界が確立される。
+## 5. 事実と時系列
 
----
+- **対象**: Microsoft 365 Copilot（Outlook・SharePoint・OneDrive・Teams などを横断する、RAG ベースの企業向け AI アシスタント）。
+- **識別子**: CVE-2025-32711。CVSS 9.3（Critical）。
+- **発見と報告**: Aim Labs（Aim Security）が発見し、Microsoft Security Response Center（MSRC）へ非公開で報告した。
+- **攻撃の性質**: ゼロクリック。攻撃者が送ったメール 1 通を、Copilot が通常の要約・参照の処理で取り込むだけで成立し、被害者の操作は要らない。
+- **研究者が示した流れ**: Copilot は、受信メールや SharePoint の内容を、信頼の境界を分けずに同じコンテキストへ結合して処理する。LLM は、命令とデータを同じトークン列として受け取り、データに埋め込まれた指示を正当な命令と区別できない（Aim Labs は LLM Scope Violation と呼ぶ）。検知・抑止の層を回避したうえで、Copilot が自身のアクセス範囲の社内データを読み出し、信頼されたドメインを経由して外へ送る。
+- **実環境での悪用**: Microsoft は「顧客側の対応は不要」「実環境で悪用された証拠はない」と表明した。本件は、責任ある開示（PoC）の段階で報告・修正された。
 
-## 5. 証明があれば、何が変わるか
+### 時系列
 
-EchoLeak が露呈した落差 — AI エージェントが取り込んだ命令の出所と権限を、行動の前に独立検証しないまま、社内データの読み出しと越境へ直結させてしまう — に対し、Lemma はエージェントの行動の根拠を、その瞬間に独立検証可能な暗号学的証明として固定する設計を提示している。
+- **2025-01**: Aim Labs が、動く PoC を作り、MSRC へ非公開で報告する。
+- **2025 年春先**: 初期の緩和策がとられる。
+- **2025-05**: Microsoft が、サーバ側の修正を展開する。
+- **2025-06-11**: アドバイザリと、攻撃の連鎖の研究が公開される（CVE-2025-32711）。同じ月の Patch Tuesday に載る。
+- **2026 年以降**: SharePoint・Copilot の連携などで、類似の系統が報告される。
 
-- **行動時アテステーション**: エージェントがデータアクセスや送出を行う前に、「この行動が、正当に与えられた命令・権限の範囲内である」ことを署名付きで証明する。命令の正当性が、事後ラベリングではなく行動時点の証明として固定される
-- **命令／データの出所束縛**: 取り込む入力（メール・ドキュメント等）を docHash で原本に束縛し、「処理対象データ」と「実行すべき命令」の区別と出所を検証可能にする。untrusted データに埋め込まれた指示が、検証を経ずに命令へ昇格しない
-- **権限スコープの証明**: エージェントのアクセス権限（誰の・どのスコープのデータへ・どこまで）を、行動前に独立検証可能な属性として束縛する
-- **選択的開示**: 「行動が権限範囲内であった」ことだけを最小限で証明し、社内データそのものは外部に出さない
+> 固有名と CVE は、一次（研究機関・Microsoft のアドバイザリ・論文）に拠る。各実装の対応の状況は時点で変わるため、最新の情報を参照されたい。本件は、研究機関による責任ある開示（PoC）の段階での実証で、実環境での被害を示すものではない。公表されていないことは、対策が無かったことを意味しない。
 
-行動時点で固定された証明は、後日「この送出はそもそも正当な命令に基づいていたか」を問われたときに、ソースデータを開示せずに独立検証できる証跡として機能する。検出（事後の研究・分類器）は被害範囲の縮小に、事前証明（行動時の検証）は AI の行動の根拠の独立検証に、それぞれ補完的に寄与する。
+### 公表後の対応
 
----
+- **Microsoft**: CVE-2025-32711 を割り当て、サーバ側で修正した。顧客側の対応は不要とし、実環境で悪用された証拠はないとした。
+- **研究**: 論文（arXiv 2509.10540）は、本件を「本番の LLM システムでの、初の実世界のゼロクリックのプロンプトインジェクション」と位置づけた。LLM が、信頼できる命令と、取り込んだデータを同じトークン列として扱う点が論点になった。
+- **続く報告**: 2026 年以降も、SharePoint・Copilot の連携などで類似の系統が報告されている。プロンプトインジェクションへの対策の論点は、分類器による検知から、エージェントの実行の境界の設計（命令の出どころと権限の照合）へ広がっている。
 
 ## 6. Sources
 
@@ -108,4 +153,4 @@ EchoLeak が露呈した落差 — AI エージェントが取り込んだ命令
 - **arXiv 2509.10540**: "EchoLeak: The First Real-World Zero-Click Prompt Injection Exploit in a Production LLM System" — <https://arxiv.org/abs/2509.10540>
 - **The Hacker News**: "Zero-Click AI Vulnerability Exposes Microsoft 365 Copilot Data Without User Interaction"（2025-06、手口・流出スコープ） — <https://thehackernews.com/2025/06/zero-click-ai-vulnerability-exposes.html>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/#inference)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)

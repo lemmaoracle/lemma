@@ -44,6 +44,8 @@ insight:
 industries: ["healthcare"]
 attack_method: "human-error"
 controls:
+  - slug: "minimize-data"
+    item: "Make data on retired media unreadable before the media leaves your hands"
   - slug: "audit-trail"
     item: "Get photos or records showing each drive was destroyed, and match them against the number sent"
 impact: "Drives holding data on about 179,000 patients circulated online"

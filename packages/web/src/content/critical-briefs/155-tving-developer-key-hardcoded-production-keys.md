@@ -51,6 +51,8 @@ operations: ["account-admin", "data-access"]
 controls:
   - slug: "hold-unverified"
     item: "影響の大きい本番の操作は、誰のどの作業かを照合できるまで通さない"
+  - slug: "minimize-data"
+    item: "休眠・退会したアカウントの情報は、使う目的が無くなったら本番のデータベースから外す"
   - slug: "audit-trail"
     item: "キーの発行と使用を、誰のどの作業かと一緒に、使う側とは別に記録する"
 attack_method: "account-takeover"

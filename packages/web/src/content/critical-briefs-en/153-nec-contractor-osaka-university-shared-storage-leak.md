@@ -46,6 +46,8 @@ operations: ["data-access"]
 controls:
   - slug: "ownership-check"
     item: "Let the data owner decide which companies may handle each dataset, and check before sharing"
+  - slug: "minimize-data"
+    item: "After the work ends, check that files in shared storage were deleted as the deletion rule requires"
   - slug: "audit-trail"
     item: "Record who data was shared with and when it was deleted, separately from the contractor's report"
 attack_method: "supply-chain"

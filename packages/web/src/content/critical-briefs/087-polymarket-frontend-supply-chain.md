@@ -1,7 +1,7 @@
 ---
 brief_no: 87
-title: "Polymarket：正規サイトに信頼されたまま、第三者ベンダー経由で注入された JavaScript が利用者に偽の承認をさせた"
-title_en: "Polymarket: Malicious JavaScript Injected via a Compromised Third-Party Vendor Tricked Users Into Approving Fraudulent Transactions"
+title: "Polymarket：第三者ベンダーの依存から注入された JavaScript が、正規サイトで利用者に偽の承認を求めた(BleepingComputer ほかの報道)"
+title_en: "Polymarket: JavaScript injected through a third-party vendor dependency asked users for fake approvals on the real site (BleepingComputer and others)"
 pillar: "01-verifiable-origin"
 primary_category: "code-provenance"
 secondary_categories: ["identity-auth", "data-provenance"]
@@ -15,95 +15,139 @@ gate: "signing"
 version: "1.0"
 og_lead_ja: "Polymarket：第三者依存への JS 注入で利用者に偽承認、約300万ドル流出（コントラクトは無傷）"
 og_lead_en: "Polymarket: JS injected via a third-party dependency drove fake approvals, ~$3M drained (contracts intact)"
-gap_detected: "Polymarket の迅速な公表・影響依存の除去・利用者への連絡と全額補償、PeckShield・Bubblemaps の資金追跡が作動した。"
-gap_missing: "利用者のブラウザで実行されるフロントエンドコードが「Polymarket の配信した正規の来歴を持つか」を実行の前に独立検証する層が無く、正規ドメインの内側から承認対象が差し替えられた。"
-gap_fix: "フロントエンドコードと承認対象トランザクションの来歴を実行・承認の前に Lemma で独立検証し、正規の来歴が確認できなければ承認セッションを開始しない。"
+layout: "report"
+sections: "proof"
+og_kicker_ja: "サイバー攻撃事例 · サプライチェーン"
+og_kicker_en: "CYBERATTACK · SUPPLY CHAIN"
+og_headline_ja: "正規のサイトで、\n偽の承認を求められた。\n<accent>約 300 万ドルが流出</accent>"
+og_headline_en: "A real site asked\nusers to approve fakes.\n<accent>About $3M drained.</accent>"
+key_figures:
+  - value: "約 300"
+    unit: "万ドル"
+    label: "利用者のウォレットから流出した暗号資産（pUSD）の額（報道）"
+    tone: "alert"
+  - value: "15 未満"
+    unit: "アカウント"
+    label: "不正な承認をして、被害を受けたアカウントの数（報道）"
+  - value: "約 1,893"
+    unit: "ETH"
+    label: "盗まれた pUSD の交換先。Polygon から Ethereum へブリッジされた（PeckShield・Bubblemaps の追跡）"
+glossary:
+  - term: "依存コンポーネント"
+    desc: "Web サイトのフロントエンドが読み込む、第三者のベンダーが提供するスクリプトなどの部品。読み込んだ部品は、サイト自身のコードと同じ権限でブラウザの中で動く。"
+  - term: "ウォレットの承認"
+    desc: "暗号資産のウォレットで、取引に署名して、その実行を認めること。承認された取引は、ウォレットから資産を動かせる。"
+  - term: "pUSD"
+    desc: "Polymarket の決済用ステーブルコイン（Polymarket USD、USDC 担保）。一部の報道の ParionUSD・ParyonUSD は、同じトークンを指す。"
+insight:
+  slug: "real-domain-unchecked-code"
+  label: "正規のドメイン、照合されないコード"
+  quote: "正規のドメインから届いたコードでも、運営者が配信したものかを利用者に承認を求める前に照合しなければ、承認させる取引の中身は差し替えられる。"
 industries: ["finance", "supply-chain"]
 operations: ["approval"]
 controls:
   - slug: "ownership-check"
-    item: "ブラウザで動くコードが、本当にPolymarketが配信したものか確かめる"
+    item: "ブラウザで動くコードが、Polymarket が配信したものかを照合する"
 attack_method: "supply-chain"
 impact: "約 300 万ドル相当の資産が盗まれた"
+takeaway: "第三者ベンダーの依存から注入された JavaScript が、正規サイトで利用者に偽の承認を求めた。承認を求める前に、ブラウザで動くコードと承認させる取引が正規のものかを照合する。"
+self_check: "利用者のブラウザで動くコードが、自社が配信したものかを、承認を求める前に照合しているか。"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. 要点
 
-予測市場プラットフォーム Polymarket の利用者が、いつも通り正規サイトを開いて取引を承認したところ、約300万ドル相当の資産を失った。スマートコントラクトもバックエンドも侵害されていない。攻撃者はフロントエンドが読み込む第三者ベンダーの依存コンポーネントを侵害し、Polymarket の正規サイトに悪意ある JavaScript を注入した。そのスクリプトは利用者のブラウザで実行され、本人に「正規の操作」と見える形で不正なウォレット承認を求めた。盗まれたのはプラットフォームの決済用ステーブルコイン pUSD（Polymarket USD、USDC 担保）で、約1,893 ETH に交換され Polygon から Ethereum へブリッジされた。被害は15アカウント未満にとどまったが、利用者には「いま自分のブラウザで動いているフロントエンドのコードが、Polymarket が配信した正規のものか」を実行の前に確かめる手段がなかった。発覚後のサイト依存関係の除去・利用者への連絡・全額補償の表明は機能したが、コードの来歴を実行の前に独立検証する層は存在しなかった。
+攻撃者は、Polymarket のフロントエンドが読み込む第三者ベンダーの依存コンポーネントを侵害し、正規のサイトに JavaScript を注入した。利用者が正規のサイトを開くと、そのスクリプトがブラウザの中で動き、正規の取引に見える形で、ウォレットの不正な承認を求めた。Polymarket のバックエンド、サーバー、スマートコントラクトは侵害されていない。<strong>正規のドメインから届いたコードでも、運営者が配信したものかを利用者に承認を求める前に照合しなければ、承認させる取引の中身は差し替えられる。</strong>
 
----
+## 2. 通った操作
 
-## 2. 何が起きたか
+- **通った操作**: 利用者による、ウォレットの不正な承認（取引への署名）。利用者は正規のサイトの操作と信じて承認し、承認された取引で、ウォレットから pUSD が引き出された。
+- **侵害されなかった範囲**: Polymarket のバックエンド、サーバー、スマートコントラクト。被害は、フロントエンドと利用者の操作にとどまった（Polymarket）。
+- **受け付けた側に届くもの**: 一般に、ブラウザは、正規のドメインから届いたスクリプトを、そのサイトのコードとして動かす。利用者に見えるのは、サイトの画面と、ウォレットの承認の画面である。承認を求めているコードが運営者の配信したものかは、画面からは分からない。
+- **公表されていないこと**: どのベンダーの、どの依存が、どう侵害されたか。注入が始まった日と、スクリプトが動いていた期間（報道は「2026-06-26 以前」と推定）。攻撃者の帰属（特定の攻撃者への確度の高い帰属はされていない）。
 
-- **対象**: Polymarket（暗号資産ベースの予測市場プラットフォーム）の Web フロントエンドおよびその利用者ウォレット
-- **被害規模**: 約300万ドル相当の暗号資産。影響を受けたのは15アカウント未満
-- **公表日**: 2026-06-26（Polymarket が公表。BleepingComputer・OffSeq Radar が同日報道、Rescana が 2026-06 下旬に構造解析を公開）
-- **侵害の起点**: フロントエンドが読み込む第三者ベンダーの依存コンポーネント（ソフトウェア依存）が侵害された。MITRE ATT&CK では T1195.002（Supply Chain Compromise: Compromise Software Dependencies and Development Tools）に対応
-- **悪用の核心**: 侵害された依存を通じて Polymarket の正規サイトに悪意ある JavaScript が注入された。利用者がサイトを訪れると、そのスクリプトがブラウザ内で実行され、本人に「正規の取引」と見える形で不正なウォレット承認を求めた（T1059.007 JavaScript／T1189 Drive-by Compromise／T1566.002 phishing via service）
-- **資金の流れ**: 盗まれたのは Polymarket の決済用ステーブルコイン pUSD（[Polymarket USD](https://docs.polymarket.com/concepts/pusd)、USDC 担保。一部報道では ParionUSD／ParyonUSD とも表記されるが同一トークンを指す）。攻撃者はこれを約1,893 ETH に交換し、Polygon から Ethereum へブリッジした（PeckShield・Bubblemaps が追跡）
-- **侵害されなかった範囲**: Polymarket のバックエンド・サーバー・スマートコントラクトは侵害されていない。被害はフロントエンドと利用者操作に限定された
-- **事後対応**: Polymarket は影響を受けた依存を速やかにシステムから除去し、影響利用者へ連絡。全額補償を表明
-- **文脈**: 手口は EC・暗号資産プラットフォームを標的にした Magecart 系の JavaScript 注入と同型で、特定脅威アクターへの確度の高い帰属はなされていない
+## 3. 何を照合するか
 
-事象は次の連鎖で成立している。
+経路を問わず区別できる条件は、利用者に承認を求める前に、ブラウザで動くコードがサイトの運営者の配信したものか、承認させる取引が正規の業務の流れで作られたものかを、ドメインの正当性とは別に照合することである。
 
-1. **第三者依存の侵害**: Polymarket のフロントエンドが読み込むベンダー提供の依存コンポーネントが攻撃者に侵害される。Polymarket 自身のコードベース・サーバーは侵害されていない
-2. **正規サイトへの JS 注入**: 侵害された依存を経由して、Polymarket の正規ドメイン上に悪意ある JavaScript が配信される。利用者から見ればサイトは正規のまま
-3. **ブラウザ内実行**: 利用者が Polymarket を訪れると、注入スクリプトが本人のブラウザで実行される。サイトに到達して操作するだけで影響を受ける（drive-by）
-4. **偽の承認要求**: スクリプトが、本人に「正規の取引」と見える形で不正なウォレット承認（トランザクション署名）を求める。利用者は正規サイト上の操作と信じて承認する
-5. **資産の窃取**: 承認された取引により利用者ウォレットから pUSD が引き出される
-6. **資金の交換とブリッジ**: 攻撃者は pUSD を約1,893 ETH に交換し、Polygon から Ethereum へブリッジして資金を集約する
-7. **事後対応**: Polymarket が影響依存を除去し、利用者へ連絡・全額補償を表明。PeckShield・Bubblemaps が資金を追跡（承認が通った後に作動する事後の系列）
+- **誰が承認を出すか**: サイトの運営者。配信するコードを、運営者が出したものとして登録する。第三者の依存も、運営者が認めた版だけを登録する。
+- **どこで照合するか**: 利用者のウォレットに承認を求める前。登録と合わないコードからの承認の要求は、始めない。承認させる取引も、画面の表示とは別に、正規の流れで作られたかを照合する。
+- **何が残るか**: どのコードの、どの版が、どの取引の承認を求めたかの記録。配信の仕組みの全体を開示せずに、「このコードは運営者が配信したものだ」ということだけを示す。
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
+<p class="rx-ex-cap">実行の前の照合＝利用者に承認を求める前に、ブラウザで動くコードと承認させる取引が正規のものかを照合し、記録に残すこと。検知＝承認と流出の後に気づくこと。日付は、各社が公表・公開した日。依存が侵害された日は公表されていない。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>承認を求める前に、コードと取引が正規のものかを照合する</div>
+<div class="rx-zone gapz"><b>確認されたこと</b><span>15 未満のアカウントから<br>約 300 万ドル相当が流出</span></div>
+<div class="rx-zone det"><b>検知 · 流出の後に働いた</b>依存を外し、資金の流れを追跡する</div>
+<div class="rx-g g1"><div class="t">06-26 以前</div><b>第三者の依存が侵害される（推定）</b></div>
+<div class="rx-g g2"><div class="t">06-26</div><b>正規のサイトで、偽の承認を求める</b></div>
+<div class="rx-g g3"><div class="t">06-26</div><b>Polymarket が公表し、依存を外す</b></div>
+<div class="rx-g g4"><div class="t">06-29</div><b>Rescana が解析を公開する</b></div>
+</div>
+</figure>
 
-## 3. 時系列 — 公表と対応
+検知は流出の後に働き、被害の範囲の特定と、アカウントごとの補償を進めた。同じように、承認の画面の表示と、実際に承認する対象が食い違った事案に、[Bybit](https://lemma.frame00.com/ja/critical/briefs/081-bybit-safe-wallet-ui-injection/)（Safe{Wallet} のフロントエンドに JavaScript が注入された）がある。信頼された経路に載るコードが汚染された事案に、[Stripe の信頼された経路を使ったスキマー](https://lemma.frame00.com/ja/critical/briefs/030-stripe-trusted-channel-skimmer/)がある。
 
-- 2026-06-26 以前（推定）: フロントエンドが読み込む第三者ベンダーの依存が侵害され、悪意ある JavaScript が正規サイトに注入される
-- 2026-06-26: 注入スクリプトが利用者ブラウザで実行され、15アカウント未満が不正なウォレット承認を行い、約300万ドル相当が流出。pUSD は約1,893 ETH に交換され Polygon→Ethereum へブリッジ
-- 2026-06-26: Polymarket が事案を公表。BleepingComputer・OffSeq Radar が報道。Polymarket は影響依存の除去と全額補償を表明
-- 2026-06 下旬: Rescana がサプライチェーン構造解析を公開（PeckShield・Bubblemaps の追跡を引用）
+## 4. Lemma でできること
 
-> 注: 規模・帰属は Polymarket の公表および外部解析（Rescana・BleepingComputer・PeckShield・Bubblemaps）に基づく。本 Brief は調査時点で確認できた値を記し、断定を避けて出所を明示する。盗まれたステーブルコインは Polymarket の決済用 pUSD（Polymarket USD、USDC 担保）で、一部報道の ParionUSD／ParyonUSD は同一トークンを指す表記揺れである。
+**Lemma は、03 の照合を、利用者に承認を求める段に組み込む。** ドメインが正規かの確認の代わりではなく、その上で、ブラウザで動くコードが運営者の配信したものか、承認させる取引が正規の流れで作られたかを、承認を求める前に照合する。
 
-公表後の対応と業界の動きは次のとおり。
+### 注意したい業界・業務
 
-- **Polymarket**: 事案を公表し、影響を受けた第三者依存をシステムから除去。影響利用者へ連絡し、全額補償を表明。バックエンド・スマートコントラクトの無侵害を確認
-- **Rescana**: サプライチェーン構造解析を公開し、MITRE ATT&CK へのマッピング（T1195.002 ほか）と第三者依存リスクの一般化を提示
-- **PeckShield / Bubblemaps**: pUSD→ETH の交換と Polygon→Ethereum のブリッジを含む資金の流れを追跡
-- **業界横断の論点**: DeFi・暗号資産プラットフォームは第三者依存が多く、利用者操作が Web ウォレット経由で媒介されるため、フロントエンド依存の継続監査・配信コードの完全性検証・利用者教育（不審な承認要求の見分け）が防御の論点として改めて共有された
+- **業界 · 金融**: 暗号資産の取引所や予測市場など、Web のフロントエンドから、利用者のウォレットに承認を求めるサービス。
+- **業界 · サプライチェーン**: 第三者のベンダーが提供する依存コンポーネントを、フロントエンドに読み込む Web サイト。
+- **業務 · 承認・決裁**: 利用者に、取引の承認（署名）を求める操作。
 
-「Web フロントエンドに載るコードの来歴を、ドメインの正当性とは別にどう実行前に独立検証するか」は、本事案を契機に DeFi フロントエンド設計の論点として議論が進む見込み。
+### いまの対策と Lemma の違い
 
----
+今回の経路は、1 列目（正規のサイトに注入されたコードが求めた、ウォレットの承認）である。2 列目は、流出の後の被害の把握で、今回は依存の除去と資金の追跡が働いた。
 
-## 4. なぜ止まらなかったか
+| 対策 | 注入されたコードが求めた承認 | 流出の後の被害の把握 |
+| --- | --- | --- |
+| ドメインの正当性（TLS・URL の見た目） | 効かない | 関係しない |
+| 利用者による承認の画面の確認 | 効かない | 関係しない |
+| 依存の除去と資金の追跡 | 効かない | 効く |
+| **Lemma（実行の前の照合）** | 効く | 一部 |
 
-中心的な失敗 primitive は、**利用者のブラウザで実行されるフロントエンドコードが「正規ドメインから配信された」ことは確認できても、「そのコードが Polymarket の配信した正規のものか（来歴）」が実行の前に独立検証されていなかった**点にある。ドメインの正当性（TLS・URL の見た目）は、そこに載るコードの来歴を保証しない。攻撃者は暗号も Polymarket のサーバーも破る必要がなく、フロントエンドに混ざり込む第三者依存という「配信されるコードの来歴」に介入した。
+ドメインの正当性は、サイトがどこにあるかを示すが、そこに載るコードが運営者の配信したものかは示さない。利用者は、正規のドメインで正規に見える画面を操作し、承認の対象はサイトの内側から差し替えられた。依存の除去と資金の追跡は、被害の範囲の特定とアカウントごとの補償を進めたが、承認が通った時点の引き出しは止めない。Lemma は、承認を求める前に、ブラウザで動くコードが運営者の配信したものか、承認させる取引が正規の流れで作られたかを照合する。どのコードがどの承認を求めたかの記録が残るので、流出の後の把握にも使える。
 
-本事案は [Brief No.030](https://lemma.frame00.com/ja/critical/briefs/030-stripe-trusted-channel-skimmer/)（Stripe の信頼された API インフラがカード窃取コードの配送・保管に転用された Magecart 事案）と同根である。いずれも「信頼されたチャネルに載るコードの来歴」が汚染され、正規に見える経路から悪性コードが利用者に届いた。[Brief No.081](https://lemma.frame00.com/ja/critical/briefs/081-bybit-safe-wallet-ui-injection/)（Bybit、Safe{Wallet} フロントエンドへの JS 注入で署名者が「何に署名しているか」を確かめられなかった）とは、署名・承認 UI に表示される内容と実際に署名・承認する対象が、利用者側で独立検証されないまま乖離した点で表裏をなす。[Brief No.004](https://lemma.frame00.com/ja/critical/briefs/004-megalodon-github-supply-chain/)（Megalodon、GitHub サプライチェーンで正規配布物に悪性コードを混入）とは、開発・配布の上流を起点に正規の成果物へ悪性コードを混ぜた構造で連なる。[Brief No.059](https://lemma.frame00.com/ja/critical/briefs/059-vercel-contextai-oauth/)（AI ツールに渡した OAuth がベンダー侵害でそのまま侵入経路に）とは、第三者ベンダーへの信頼が侵害の伝播経路になった点で隣接する。
+注：Lemma の照合が働くのは、利用者に承認を求める仕組みに照合を組み込み、配信するコードと認めた依存の登録が、配信の経路の外で管理されている場合に限る。登録そのものが侵害されている場合や、認めた版の依存の中に悪意あるコードが入っている場合は、この照合を通りうる。依存がどう侵害されたかは公表されていない。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入を検出・防止するものではない。
 
-Polymarket の迅速な公表、影響依存の除去、利用者への連絡と全額補償の表明、PeckShield・Bubblemaps による資金追跡は、被害の把握・封じ込め・是正に不可欠であり、本 Brief がその役割を否定するものではない。実際、被害範囲の特定とアカウント単位の補償はこれらの検知・解析によって進められた。検出は確かに機能した。
+### 点検チェックリスト
 
-一方で、検出は受信側（フロントコードを実行する利用者ブラウザ、承認を求められる本人）が「何を実行し、何を承認するか」自体を変えない。利用者は正規ドメインで正規に見える UI を操作したが、「いま実行されているフロントエンドコードが Polymarket の配信した正規のものか」を実行の前に確かめる手段がなかった。悪意ある JS は正規サイトの内側で、利用者の確認動作の外側から承認対象を差し替えた。ドメインが正規であることは「サイトの所在」を証明するが、「そこに載るコードの来歴」を証明しない。欠けていたのは、フロントエンドコードの実行前に「このコードは Polymarket が配信した正規の来歴を持つか」を独立検証する層である。事後の検知が資金追跡・補償に発火しても、承認が通った時点の引き出しは止まらない。
+Web のフロントエンドから利用者に承認を求める組織で確認する 3 項目
 
----
+- 利用者のブラウザで動くコードが、自社が配信したもの（認めた版の第三者の依存を含む）かを、承認を求める前に照合しているか。
+- 承認させる取引が、正規の業務の流れで作られたものかを、画面の表示とは別に照合しているか。
+- フロントエンドが読み込む第三者の依存を、認めた版だけに限り、変わったときに分かるようにしているか。
 
-## 5. 証明があれば、何が変わるか
+## 5. 事実と時系列
 
-事前証明（pre-execution attestation）は、利用者のブラウザで実行されるフロントエンドコードと、署名・承認の対象になるトランザクションの来歴を、実行・承認の前に独立検証可能な暗号証明として固定する。配信されるコードが「正規の来歴を持つ」ことを事前証明し、来歴が確認できなければ承認セッションを開始しない。正規ドメインの確認（detection 的な「サイトは本物に見える」）と、配信コードの来歴の事前証明（「実行するコードは正規の配信物だ」）を切り離さず、両者が重なって初めて、Web フロントエンド越しの資産操作を実務に安心して載せられる。検出と事前証明は代替ではなく **補完** の関係にある。
+- **サービス**: Polymarket（暗号資産を使う予測市場のプラットフォーム）の Web フロントエンドと、その利用者のウォレット。
+- **被害の規模**: 約 300 万ドル相当の暗号資産。影響を受けたのは 15 未満のアカウント。
+- **侵害の起点**: フロントエンドが読み込む第三者ベンダーの依存コンポーネント（ソフトウェアの依存）が侵害された。MITRE ATT&CK の T1195.002（Supply Chain Compromise: Compromise Software Dependencies and Development Tools）に対応する（Rescana）。
+- **手口**: 侵害された依存を通じて、Polymarket の正規のサイトに JavaScript が注入された。利用者がサイトを訪れると、スクリプトがブラウザの中で動き、正規の取引に見える形で、ウォレットの不正な承認を求めた（T1059.007 JavaScript・T1189 Drive-by Compromise・T1566.002 phishing via service、Rescana）。
+- **資金の流れ**: 盗まれたのは、Polymarket の決済用ステーブルコイン pUSD（[Polymarket USD](https://docs.polymarket.com/concepts/pusd)、USDC 担保）。攻撃者は、これを約 1,893 ETH に交換し、Polygon から Ethereum へブリッジした（PeckShield・Bubblemaps が追跡）。
+- **侵害されなかった範囲**: Polymarket のバックエンド、サーバー、スマートコントラクトは侵害されていない。
+- **文脈**: 手口は、EC や暗号資産のプラットフォームを狙う Magecart 系の JavaScript の注入と同じ型で、特定の攻撃者への確度の高い帰属はされていない。
 
-本事案で露呈した検出と証明の落差（正規ドメインでも、配信されるフロントコードの来歴が実行・承認の前に独立検証されていない）に対し、Lemma は以下の設計を提示する。
+### 時系列
 
-- **配信コードの来歴証明**: 利用者のブラウザで実行されるフロントエンドコードが「正規の配信物である」ことを、実行の前に独立検証可能な来歴証明として固定し、改ざん・注入されたコードを事前に排除する
-- **承認対象の来歴固定**: 署名・承認の対象になるトランザクションが「正規の業務フローを経て生成された」ことを、UI 表示とは独立に事前証明し、表示と承認対象の乖離を実行前に検出する
-- **ドメイン正当性 ≠ コード来歴**: 「サイトが正規ドメインである」事実と「そこに載るコードが正規の来歴を持つ」事実を切り離さず、後者を事前証明の対象とする
-- **選択的開示**: 配信パイプライン全体を開示せずに、「このコードは正規の来歴を持つ」ことだけを最小開示で証明する
+- **2026-06-26 以前（推定）**: フロントエンドが読み込む第三者ベンダーの依存が侵害され、JavaScript が正規のサイトに注入される。
+- **2026-06-26**: 注入されたスクリプトが利用者のブラウザで動き、15 未満のアカウントが不正な承認をして、約 300 万ドル相当が流出する。pUSD は約 1,893 ETH に交換され、Polygon から Ethereum へブリッジされる。
+- **2026-06-26**: Polymarket が事案を公表する。BleepingComputer・OffSeq Radar が報じる。Polymarket は、影響を受けた依存の除去と、全額の補償を表明する。
+- **2026-06-29**: Rescana が、サプライチェーンの構造の解析を公開する（PeckShield・Bubblemaps の追跡を引く）。
 
-検出（事後の依存除去・資金追跡・補償）は被害の是正に、事前証明（実行・承認前のコードおよび承認対象の来歴の独立検証）は Web フロントエンド越しの資産操作の信頼確立に、それぞれ相補的に働く。
+> 規模と帰属は、Polymarket の公表と、外部の解析（Rescana・BleepingComputer・PeckShield・Bubblemaps）に拠る。本 Brief は、調査の時点で確認できた値を記し、出所を明示する。盗まれたステーブルコインは、Polymarket の決済用の pUSD（Polymarket USD、USDC 担保）で、一部の報道の ParionUSD・ParyonUSD は、同じトークンを指す表記の揺れである。公表されていないことは、対策が無かったことを意味しない。
 
----
+### 公表後の対応
+
+- **Polymarket**: 事案を公表し、影響を受けた第三者の依存をシステムから外した。影響を受けた利用者に連絡し、全額の補償を表明した。バックエンドとスマートコントラクトが侵害されていないことを確認した。
+- **Rescana**: サプライチェーンの構造の解析を公開し、MITRE ATT&CK への対応（T1195.002 ほか）と、第三者の依存のリスクの一般化を示した。
+- **PeckShield・Bubblemaps**: pUSD から ETH への交換と、Polygon から Ethereum へのブリッジを含む、資金の流れを追跡した。
+- **業界の論点**: DeFi や暗号資産のプラットフォームは、第三者の依存が多く、利用者の操作が Web のウォレットを通るため、フロントエンドの依存の継続的な監査、配信するコードの完全性の確認、利用者への周知（不審な承認の要求の見分け方）が、守りの論点として改めて共有された。
 
 ## 6. Sources
 
@@ -113,4 +157,4 @@ Polymarket の迅速な公表、影響依存の除去、利用者への連絡と
 - **The Next Web**: “Polymarket confirms hackers stole $3 million from users after third-party vendor was compromised”（2026-06）— <https://thenextweb.com/news/polymarket-hack-3-million-stolen-third-party-breach>
 - **TechRadar Pro**: “Prediction market giant Polymarket hit by cyberattack…”（2026-06）— <https://www.techradar.com/pro/security/prediction-market-giant-polymarket-hit-by-cyberattack-with-company-confirming-user-funds-stolen-here-is-what-we-know>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance)、[Seal](https://lemma.frame00.com/ja/seal/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)

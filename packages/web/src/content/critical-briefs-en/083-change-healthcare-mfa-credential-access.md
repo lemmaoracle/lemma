@@ -1,7 +1,7 @@
 ---
 brief_no: 83
-title: "Change Healthcare：MFA のない単一 Citrix アカウントへの侵入が、米国医療請求処理の 3 分の 1 を数週間停止させた — 「パスワードを知っている」ことと「正規の権限者である」ことを切り離す層がなく、盗まれた認証情報が正規アクセスと区別できなかった（UnitedHealth Group 議会証言）"
-title_en: "Change Healthcare: a breach of a single Citrix account without MFA halted a third of US medical-claims processing for weeks — with no layer separating \"knows the password\" from \"is the legitimate authorized party,\" stolen credentials were indistinguishable from legitimate access (UnitedHealth Group congressional testimony)"
+title: "Change Healthcare：盗まれた認証情報でリモートアクセスに入られ、米国の医療請求の処理が数週間止まった(UnitedHealth Group の議会証言)"
+title_en: "Change Healthcare: Stolen credentials opened remote access, and US medical-claims processing stalled for weeks (UnitedHealth Group congressional testimony)"
 pillar: "04-regulatory-attribute"
 primary_category: "identity-auth"
 secondary_categories: ["attribute-proof-bypass"]
@@ -11,13 +11,35 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["046-servicenow-unauthenticated-api", "057-deepseek-clickhouse-exposed-db", "056-mchire-paradox-recruiting-auth"]
 status: published
-gate: "identity"
 version: "1.0"
 og_lead_ja: "Change Healthcare：MFA なしの単一 Citrix アカウントへの侵入が米国医療請求の 3 分の 1 を数週間停止"
 og_lead_en: "Change Healthcare: a breach of one Citrix account without MFA halted a third of US medical claims for weeks"
-gap_detected: "At the ransomware-deployment stage the attack was detected and core systems were shut down; the intrusion path was identified and disclosed in congressional testimony, and the company moved on provider support and recovery."
-gap_missing: "Because there was no MFA, the first malicious login to Citrix was outwardly indistinguishable from legitimate access, and there was no layer to independently prove at login time whether the login came from a legitimate authorized party."
-gap_fix: "Independently verify the requester's authorization attributes with Lemma at the moment of the access request, replacing a design that gates on credential match alone, and prevent it up front."
+layout: "report"
+sections: "proof"
+gate: "identity"
+og_kicker_ja: "サイバー攻撃事例 · ランサムウェア"
+og_kicker_en: "CYBERATTACK · RANSOMWARE"
+og_headline_ja: "盗まれた認証情報で、\n医療請求が止まった。\n<accent>米国の約 3 分の 1</accent>"
+og_headline_en: "Stolen credentials\nstalled medical claims.\n<accent>~1/3 of US claims, for weeks</accent>"
+key_figures:
+  - value: "~1/3"
+    label: "Share of US health-insurance claims processing handled by Change Healthcare (also put at 40–50%). The outage lasted weeks"
+    tone: "alert"
+  - value: "~9 days"
+    label: "From the intrusion (2024-02-12, estimated) to detection of the ransomware (02-21)"
+  - value: "100M+"
+    label: "Medical records affected (HHS disclosure). Later estimates put it at up to 190 million"
+glossary:
+  - term: "Citrix remote access"
+    desc: "The entry point for reaching internal systems from outside the company. This intrusion began with a login to it."
+  - term: "MFA (multi-factor authentication)"
+    desc: "A way of logging in that confirms the person with another factor, such as a device in hand or a biometric, in addition to the password."
+  - term: "Lateral movement"
+    desc: "An intruder moving from system to system inside a network and widening their privileges."
+insight:
+  slug: "password-is-not-authority"
+  label: "Knowing is not being authorized"
+  quote: "Even when the password matches, unless you separately check that the person logging in is the authorized holder, a login with stolen credentials passes as legitimate access."
 industries: ["healthcare"]
 operations: ["account-admin"]
 controls:
@@ -25,88 +47,104 @@ controls:
     item: "Confirm the person logging in is the account holder by more than a password"
 attack_method: "account-takeover"
 impact: "Medical records of 100M+ Americans affected"
+takeaway: "Stolen credentials got in through the remote-access entry point as a legitimate login. At the entry point, check — separately from the password match — that the party logging in is the authorized holder."
+self_check: "At your remote-access entry point, do you check, separately from the password match, that the party logging in is the authorized holder?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-In February 2024, the medical data processing company Change Healthcare (a UnitedHealth Group subsidiary) was breached by the AlphV/BlackCat ransomware group. The intrusion path was a malicious login with stolen credentials to a single account on a Citrix remote-access portal that had no multi-factor authentication (MFA) configured. Change Healthcare handles roughly a third (40–50%) of US health-insurance claims processing, and the system outage paralyzed prescription, billing, and eligibility-verification operations at pharmacies, hospitals, and physicians nationwide for weeks. Ultimately the medical records of over 100 million Americans were reportedly affected, making it the largest healthcare data breach in US history. A design in which "knowing the credentials" functioned as proof that "this person is a legitimate authorized party" made the ransomware intrusion indistinguishable from legitimate remote access.
+The login at the entry point used a stolen ID and password and was outwardly indistinguishable from legitimate remote access. Detection worked only at the ransomware-deployment stage, after lateral movement inside the network had progressed. <strong>Even when the password matches, unless you separately check that the person logging in is the authorized holder, a login with stolen credentials passes as legitimate access.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: A login to the Citrix remote-access entry point with stolen credentials (ID and password). UnitedHealth Group's CEO said in congressional testimony that the intrusion path was a single Citrix account with no MFA configured.
+- **What was stopped**: Change Healthcare detected the attack at the ransomware-deployment stage and shut down core systems. By then the attacker had been moving laterally inside the network (the intrusion is estimated at 2024-02-12).
+- **What the receiving side sees**: In general, an entry point that accepts a password alone receives an ID and a password. A legitimate user's login and a login with stolen credentials look the same to it.
+- **Not disclosed**: How the credentials were obtained (phishing, info-stealing malware or a dark-web purchase are possible, but the path has not been disclosed). The intrusion date is an estimate.
 
-- **Affected organization**: Change Healthcare (a UnitedHealth Group subsidiary; the largest medical-claims processing and health-information exchange network in the US)
-- **Attacker**: The AlphV/BlackCat ransomware group (RansomHub later joined in separate extortion)
-- **Intrusion path**: A malicious login with stolen credentials (ID and password) to a Citrix remote-desktop / VPN gateway portal that had no MFA configured
-- **Operational impact**: The Change Healthcare outage rendered prescription-dispensing verification at pharmacies (chain and independent) nationwide, hospital insurance billing, and physician eligibility checks impossible or severely delayed for weeks. Some hospitals had to demand cash payment and could not verify prescription-drug stock
-- **Impact scale (financial)**: The ransom UnitedHealth Group paid was approximately $22 million (a separate payment to RansomHub is also reported to have occurred later). Total losses including outage, recovery, and provider support are reported on the order of billions of dollars
-- **Data impact**: The medical records, personal information, and insurance information of over 100 million Americans (up to 190 million in later estimates) may have been affected. The largest healthcare data breach in US history
-- **Root cause (congressional testimony)**: UnitedHealth Group CEO Andrew Witty stated in congressional testimony (May 2024) that "a single Citrix account had no MFA configured" was the intrusion path
-- **Structural point**: Credential authentication without MFA grants access to "someone who knows this password." It does not verify "whether the one who knows that password is the legitimate authorized party"
+## 3. What to check
 
-The incident came together as the following chain.
+The condition that holds regardless of route is that the entry point checks, before accepting a login and separately from the password match, that the party logging in is the holder with authority over that scope.
 
-1. **Credential acquisition**: A Change Healthcare employee's Citrix account credentials (ID and password) were obtained by some means (phishing, infostealer, dark-web purchase, etc.) (the specific path has not been disclosed)
-2. **Login to the Citrix portal**: Because no MFA was configured, remote access completes with the entry of an ID and password alone. The system cannot distinguish it from a "legitimate user's login"
-3. **Lateral movement within the network**: The attacker enters the internal network as a user holding legitimate remote-access permissions. Through lateral movement, escalates privileges and expands access to critical systems
-4. **Ransomware deployment**: Deploys and executes ransomware (AlphV/BlackCat) on core systems. Carries out data encryption and exfiltration
-5. **Ransom demand and double extortion**: Demands a ransom conditioned on a decryption key for system recovery and on non-disclosure of the exfiltrated data. Even after the approximately $22 million payment, a separate group (RansomHub) retained the data and conducted secondary extortion
+- **Who approves**: The organization (the side that manages access rights). It decides in advance who may enter which scope, for which operational need.
+- **Where the check happens**: At the remote-access entry point. Beyond the password match, it checks before the login that the party is the authorized holder. Logins that cannot be checked do not go through.
+- **What is recorded**: Which party passed the entry point, under what authority and when, and under what authority it touched medical records and the like.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Figure 1</span><span class="rx-ex-t">"Detection" vs "pre-execution check"</span></div>
+<p class="rx-ex-cap">Pre-execution check = before accepting a remote-access login, check that the party logging in is the authorized holder, and record it. Detection = noticing the attack after the intrusion. The intrusion date (02-12) is an estimate.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before the login, check that the party is the authorized holder</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>About 9 days inside the network,<br>indistinguishable from legitimate access</span></div>
+<div class="rx-zone det"><b>Detection · worked after the intrusion</b>Notices the ransomware deployment and shuts down core systems</div>
+<div class="rx-g g1"><div class="t">02-12 (est.)</div><b>Login with stolen credentials</b></div>
+<div class="rx-g g2"><div class="t">From 02-12</div><b>Lateral movement inside the network</b></div>
+<div class="rx-g g3"><div class="t">02-21</div><b>Detects it and shuts down core systems</b></div>
+<div class="rx-g g4"><div class="t">2024-05</div><b>Intrusion path stated in congressional testimony</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+Detection limited the damage by shutting systems down, but it came about 9 days after the intrusion. Unlike cases where the entry point had no authentication at all, such as [DeepSeek](/critical/briefs/057-deepseek-clickhouse-exposed-db/) (an unauthenticated database), here a legitimate, authenticated entry point was logged into with credentials.
 
-- **2024-02-12 (estimated)**: The attacker logs in to the MFA-less Citrix account with stolen credentials. Begins lateral movement within the network
-- **2024-02-21**: Change Healthcare detects the ransomware attack. Shuts down core systems. Medical claims and prescription processing halt nationwide
-- **2024-02-21 to March**: Pharmacies, hospitals, and physicians nationwide are affected by the outage. HHS (the US Department of Health and Human Services) announces an emergency response. The AHA (American Hospital Association) appeals to Congress citing catastrophic impact
-- **March 2024 (estimated)**: AlphV/BlackCat receives the approximately $22 million ransom and then disbands the group. An affiliated group that retained the data reappears as RansomHub and separately extorts Change Healthcare
-- **2024-05 (congressional testimony)**: UnitedHealth Group CEO Andrew Witty testifies before Senate and House committees. Officially acknowledges that "the MFA-less Citrix account was the intrusion path"
-- **From 2024-10**: HHS discloses the affected count (initially over 100 million). As a final estimate, up to over 190 million may have been affected, as reported
+## 4. What Lemma does
 
-> Note: This Brief is based on the UnitedHealth Group congressional testimony and HHS disclosures as primary sources. The intrusion date (2024-02-12) is an estimate, and the affected count has been updated by point in time of disclosure, so consult the latest information.
+**Lemma builds the check in section 03 into the remote-access entry point.** It does not look for intrusions; it checks before the login, separately from the password match, that the party logging in is the authorized holder.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **UnitedHealth Group / Change Healthcare**: Immediate system shutdown, establishment of an emergency funding-assistance program for providers (billions of dollars), and investigation and disclosure of the breach scope in parallel with recovery work
-- **HHS (US Department of Health and Human Services)**: Issued emergency guidance. Temporary flexibility measures regarding application of HIPAA rules. Disclosure of the final affected count (over 100 million)
-- **AHA (American Hospital Association)**: Appealed to Congress for emergency measures, citing "catastrophic and unprecedented" impact
-- **Congress**: In May 2024, UnitedHealth Group CEO Andrew Witty testified before both Senate and House committees. Stated that the missing MFA was the intrusion path
-- **AlphV/BlackCat**: Effectively disbanded after receiving approximately $22 million. According to a whistleblower, the ransom was monopolized by the group leader, and affiliates reorganized as RansomHub with the data
-- **Industry argument**: Debate over the de facto mandating of MFA in healthcare IT accelerated. HHS began considering a revision to the HIPAA Security Rule (explicitly stating an MFA requirement). Attention to third-party vendor risk management for medical infrastructure increased
+- **Industry · Healthcare**: Organizations that run infrastructure many providers connect to, such as medical-claims processing and health-information exchange. One entry point can stop operations nationwide.
+- **Operation · Account administration and remote access**: Accounts on entry points reached from outside, how logins work, and access rights to protected health information (PHI).
 
----
+### Current controls vs Lemma
 
-## 4. Why it wasn't stopped
+The route in this case is column 1 (a remote-access login with stolen credentials). Column 2 is lateral movement and ransomware deployment after the login; this case was detected at that stage.
 
-The central **failure primitive is "authentication depended only on the knowledge check of 'do you know this password' and had no layer to independently prove whether the one entering this password is the legitimate authorized party."**
+| Control | Remote-access login with stolen credentials | Lateral movement and ransomware deployment after the login |
+| --- | --- | --- |
+| MFA (factors beyond the password) | Partial | Not relevant |
+| Ransomware detection and system shutdown | Not effective | Partial |
+| **Lemma (pre-execution check)** | Effective | Partial |
 
-Password authentication is based on a "shared secret" model. The moment a password leaks, the people who know that password grow to two — the "legitimate user" and the "attacker" — and the system cannot distinguish either login. MFA is a design that sets up additional resistance against this problem by "also verifying factors other than the password (possession, biometrics)," but in this incident it was not configured on the external access gateway of medical infrastructure.
+MFA adds resistance to a login with a stolen password alone by also checking factors other than the password. It was not configured on the Citrix account named as the intrusion path (UnitedHealth Group congressional testimony). Ransomware detection worked at the deployment stage and shut down core systems, but the first login was indistinguishable from legitimate access, and detection came about 9 days after the intrusion. Lemma checks before the login, separately from the password match, that the party is the authorized holder. Access to medical records can likewise be checked, at the time of access, for the authority it rests on, and recorded.
 
-The distinctive point this incident shows in comparison with existing Briefs lies in **scale** and **infrastructure impact**. [Brief No.046](/critical/briefs/046-servicenow-unauthenticated-api/) (ServiceNow misconfiguration removed authentication), No.057 (DeepSeek ClickHouse unauthenticated exposure), and No.056 (McHire Paradox recruiting-AI lack of authentication) are all incidents in which "the authentication gate failed to function," but this incident differs in that "a login with credentials was made to a legitimate gate." The attack did not exploit a system flaw; it **broke the premise of authentication ("the one entering this password is the authorized party")**.
+Note: Lemma's check works only when it is built into the remote-access entry point and authority decisions are managed apart from the password. It can be passed if the authorized holder's device or session is taken over as a whole. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-In the HIPAA context, access to PHI (protected health information) should be limited to "authorized parties with a legitimate operational need," but there was no layer to independently verify the authorization attribute for PHI access, and with the intruder indistinguishable from legitimate access, that constraint did not function.
+### Checklist
 
-Detection functioned in this incident as well. Change Healthcare detected the attack at the ransomware-deployment stage and shut down core systems. Post-incident forensics identified the intrusion path, it was made explicit in congressional testimony, and cross-industry provider support and recovery work proceeded. This Brief does not deny the role of incident detection, containment, and forensics.
+Three things to confirm about remote access in your organization
 
-That said, detection does not change the very structure in which "a login with credentials can succeed at a legitimate gate." The first malicious login to the Citrix portal was outwardly indistinguishable from legitimate remote access — because there was no MFA, a "legitimate user's login" and a "login with stolen credentials" have the same appearance. By the time detection fired, the attacker had already been moving laterally within the network for about 9 days (intrusion February 12, detection February 21). As long as there was no layer to independently prove at login time "whether this login came from a legitimate authorized party," detection can only contain after the fact.
+- Can the entry points reached from outside be entered with a password alone?
+- Do you check at the entry point that the party logging in is the holder with authority over that scope?
+- Do you record who touched sensitive data such as medical records, and under what authority?
 
----
+## 5. Facts and timeline
 
-## 5. What proof would have changed
+- **Affected organization**: Change Healthcare (a UnitedHealth Group subsidiary; the largest medical-claims processing and health-information exchange network in the US).
+- **Attacker**: The AlphV/BlackCat ransomware group. RansomHub later carried out separate extortion.
+- **Intrusion path**: A login with stolen credentials (ID and password) to a Citrix remote-desktop / VPN gateway entry point that had no MFA configured (congressional testimony by UnitedHealth Group's CEO).
+- **Operational impact**: For weeks, prescription-dispensing verification at pharmacies nationwide, hospital insurance billing and physician eligibility checks were impossible or severely delayed. Some hospitals had to ask for cash payment and could not verify prescription-drug stock.
+- **Financial impact**: The ransom UnitedHealth Group paid was approximately $22 million (a separate payment to RansomHub was also reported later). Total losses including the outage, recovery and provider support are reported in the billions of dollars.
+- **Data impact**: The medical records, personal information and insurance information of over 100 million Americans (up to 190 million in later estimates) may have been affected. It is described as the largest healthcare data breach in US history.
 
-Pre-execution attestation adopts a design that combines the knowledge proof of "knowing the password" with an independent attribute proof of "this person is the legitimate authorized party." At the moment of the access request, it verifies the requester's identity provenance and authorization attributes as a pre-execution attestation, replacing a design that gates on credential match alone. With this, even if credentials leak, access does not succeed unless the requester can prove a legitimate authorization attribute. Detection (ransomware detection, lateral-movement monitoring, and the like) and pre-execution attestation (attribute proof) are in a **complementary**, not substitutive, relationship.
+### Timeline
 
-Against the detection–proof gap exposed by this incident (a credential match did not function as proof of an authorized party, and the breach login was indistinguishable from legitimate access), Lemma proposes the following.
+- **2024-02-12 (estimated)**: The attacker logs in to the Citrix account with no MFA configured, using stolen credentials, and begins moving laterally inside the network.
+- **2024-02-21**: Change Healthcare detects the ransomware attack and shuts down core systems. Medical claims and prescription processing halt nationwide.
+- **2024-02-21 to March**: Pharmacies, hospitals and physicians nationwide are affected. HHS (the US Department of Health and Human Services) announces an emergency response. The AHA (American Hospital Association) appeals to Congress, citing catastrophic impact.
+- **March 2024 (estimated)**: AlphV/BlackCat receives the approximately $22 million ransom and then disbands. Affiliates holding the data reappear as RansomHub and separately extort Change Healthcare.
+- **2024-05**: UnitedHealth Group CEO Andrew Witty testifies before Senate and House committees and states that the Citrix account with no MFA configured was the intrusion path.
+- **From 2024-10**: HHS discloses the affected count (initially over 100 million). Later estimates of up to over 190 million are reported.
 
-- **Attribute proof of the access request**: At login, confirm in advance, as an independently verifiable cryptographic proof, "whether this access requester holds a legitimate authorization attribute (operational need, employment relationship, the provenance of delegated authority)"
-- **Separation of credential knowledge from authority**: Treat the proof of "knowing the password" and the proof of "being the legitimate authorized party" as separate propositions, and set up a layer that independently verifies the latter
-- **Provenance chain for PHI access**: Leave a provable record, at the moment of the access request, of "whether access to medical records is by someone holding legitimate operational authority." Implement HIPAA's "Minimum Necessary" principle as pre-execution proof rather than after-the-fact self-declaration
-- **Selective disclosure**: Without disclosing the access requester's full personal information, prove only that "this party holds the access-authorization attribute for this system"
+> This Brief rests on UnitedHealth Group's congressional testimony and HHS disclosures as primary sources. The intrusion date (2024-02-12) is an estimate, and the affected count has been updated over time, so consult the latest information. What has not been disclosed does not mean there were no controls.
 
-Detection (incident detection, containment) and pre-execution attestation (independent verification of the access authorization attribute) are complements, not substitutes; without denying after-the-fact detection, they place a gate at the front of the design that does not depend on credential match alone. For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/#attribute) and [Seal](https://lemma.frame00.com/seal/).
+### After disclosure
 
----
+- **UnitedHealth Group / Change Healthcare**: Shut systems down immediately and set up emergency funding assistance for providers (billions of dollars). Investigated and disclosed the scope of the breach in parallel with recovery.
+- **HHS (US Department of Health and Human Services)**: Issued emergency guidance and temporarily relaxed how HIPAA rules were applied. Disclosed the affected count (over 100 million).
+- **AHA (American Hospital Association)**: Asked Congress for emergency measures, citing "catastrophic and unprecedented" impact.
+- **AlphV/BlackCat**: Effectively disbanded after receiving approximately $22 million. According to a whistleblower, the group leader kept the ransom, and affiliates regrouped as RansomHub with the data.
+- **Industry debate**: Debate over making MFA a de facto requirement in healthcare IT accelerated. HHS began considering a revision to the HIPAA Security Rule that would state an MFA requirement. Attention to third-party risk management for healthcare infrastructure grew.
 
 ## 6. Sources
 

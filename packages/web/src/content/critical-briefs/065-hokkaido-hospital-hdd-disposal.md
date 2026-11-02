@@ -44,6 +44,8 @@ insight:
 industries: ["healthcare"]
 attack_method: "human-error"
 controls:
+  - slug: "minimize-data"
+    item: "使い終わった媒体のデータは、手元を離れる前に読めない状態にする"
   - slug: "audit-trail"
     item: "HDD を 1 台ずつ、壊した写真や記録を受け取り、委託した台数と照合する"
 impact: "患者約 17.9 万名分の情報を含む HDD がネットで流通"

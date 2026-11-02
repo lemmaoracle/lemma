@@ -46,6 +46,8 @@ operations: ["data-access"]
 controls:
   - slug: "ownership-check"
     item: "データごとに、扱ってよい会社を持ち主の側で決め、共有の前に照合する"
+  - slug: "minimize-data"
+    item: "作業が終わった共有ストレージのファイルが、削除のルールどおりに消えたかを照合する"
   - slug: "audit-trail"
     item: "誰と共有し、いつ消したかを、委託先の報告とは別に記録する"
 attack_method: "supply-chain"

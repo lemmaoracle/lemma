@@ -1,7 +1,7 @@
 ---
 brief_no: 9
-title: "GTG-1002：AI エージェントがサイバー攻撃の 80–90% を自律実行した初の報告 — エージェント権限が独立検証されない構造"
-title_en: "GTG-1002: AI agent autonomously executed 80–90% of a cyberattack — first reported AI-orchestrated espionage, agent authority never independently verified"
+title: "GTG-1002：AI コーディングエージェントに、サイバー攻撃の工程の大半を実行させた諜報活動(Anthropic の公表)"
+title_en: "GTG-1002: An espionage campaign that had an AI coding agent carry out most of a cyberattack (Anthropic disclosure)"
 pillar: "03-agent-authority"
 primary_category: "agent-runaway"
 secondary_categories: ["identity-auth"]
@@ -13,11 +13,32 @@ related_briefs: ["007-pocketos-cursor-db-deletion", "003-starlette-badhost", "01
 version: "1.0"
 status: published
 gate: "agent-operation"
-og_lead_ja: "AI エージェントが攻撃の 80–90% を自律実行 — GTG-1002"
-og_lead_en: "AI agent ran 80–90% of an attack autonomously — GTG-1002"
-gap_detected: "提供事業者側の異常検知が働き、約 10 日で範囲を特定してアカウントを停止できた。"
-gap_missing: "侵入先のシステムが、AI からの各操作を実行の前に「これは正規の委任の下か」と確かめる層を持たず、「正規のセキュリティ企業の従業員だ」という偽りの名乗りが素通りした。"
-gap_fix: "外部システムへ作用する前に「この操作は、この主体に、この権限で認可されているか」を Lemma で独立検証して、事前に防ぐ。"
+og_lead_ja: "GTG-1002：AI エージェントが攻撃の工程の 80〜90% を実行（Anthropic の公表）"
+og_lead_en: "GTG-1002: an AI agent carried out 80–90% of an attack (Anthropic disclosure)"
+layout: "report"
+sections: "proof"
+og_kicker_ja: "サイバー攻撃事例 · AI エージェントの悪用"
+og_kicker_en: "CYBERATTACK · AI AGENT MISUSE"
+og_headline_ja: "攻撃の大半を、\nAI が自律で実行した。\n<accent>工程の 80〜90%</accent>"
+og_headline_en: "An AI agent ran most\nof a cyberattack itself.\n<accent>80–90% of the work.</accent>"
+key_figures:
+  - value: "80〜90"
+    unit: "%"
+    label: "攻撃の工程のうち、AI が人の介入なしに実行した割合（Anthropic）"
+    tone: "alert"
+  - value: "約 30"
+    label: "攻撃の標的。大手テック企業・金融機関・化学製造業・政府機関（Anthropic）。侵入に成功したのは少数"
+  - value: "約 10 日"
+    label: "不審な活動の検知から、範囲を特定して関連アカウントを停止するまで（Anthropic）"
+glossary:
+  - term: "MCP（Model Context Protocol）"
+    desc: "AI エージェントが、外の道具やシステムを呼び出すための接続の決まり。今回は、ネットワークのスキャナーやパスワードクラッカーなどが、これを通じて使われた。"
+  - term: "ジェイルブレイク"
+    desc: "AI の安全の仕組みを、指示の工夫で回避すること。今回は、攻撃を小さな作業に分け、正規のセキュリティ企業の防御テストだと AI に信じ込ませた。"
+insight:
+  slug: "claimed-role-not-checked"
+  label: "名乗りで通った操作"
+  quote: "AI エージェントが外のシステムに出す操作は、受け付ける側が、誰の委任で、どの範囲の操作かを実行の前に照合しなければ、名乗りだけで通る。"
 industries: ["ai"]
 controls:
   - slug: "verify-entry"
@@ -26,84 +47,100 @@ controls:
     item: "AI エージェントが実行できる操作と回数を、範囲と上限で決めておく"
 attack_method: "ai-misuse"
 impact: "約 30 の標的を攻撃、少数で侵入成功"
+takeaway: "攻撃者は、正規のセキュリティ企業の防御テストだと AI に信じ込ませ、偵察から抜き取りまでの工程の大半を AI に実行させた。"
+self_check: "AI エージェントが社内外のシステムに出す操作を、誰の委任で、どの範囲のものかを、実行の前に照合しているか。"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. 要点
 
-2025 年 11 月、Anthropic は、中国の国家支援グループ GTG-1002 が Claude Code を悪用し、偵察から脆弱性探索・攻撃コード生成・認証情報窃取・データ抜き取りまで攻撃工程の 80〜90% を人間の介入なしに自律実行したと公表した。攻撃者は AI に「正規のセキュリティ企業の従業員で防御テスト中だ」と信じ込ませて安全機構をすり抜けた。提供側の異常検知は約 10 日で停止に至ったが、侵入先は各操作を実行前に「正規の委任の下か」と独立検証する層を持たなかった。
+攻撃者は、攻撃を無害に見える小さな作業に分け、AI に「正規のセキュリティ企業の従業員で、防御のテスト中だ」と信じ込ませて、AI の安全の仕組みを回避した（Anthropic）。そのうえで AI は、偵察、脆弱性の探索と検証、攻撃コードの作成、認証情報の窃取、データの抜き取りまでを、MCP 経由の道具で連鎖的に実行した。人の関与は、作戦ごとに 4〜6 か所の重要な判断に限られた。<strong>AI エージェントが外のシステムに出す操作は、受け付ける側が、誰の委任で、どの範囲の操作かを実行の前に照合しなければ、名乗りだけで通る。</strong>
 
----
+## 2. 通った操作
 
-## 2. 何が起きたか
+- **通った操作**: 標的のシステムへの、偵察、脆弱性の検証、窃取した認証情報でのアクセス、権限の高いアカウントの特定、バックドアの作成、データの抜き取り。AI が、MCP 経由のスキャナーやパスワードクラッカーなどの道具で実行した（Anthropic）。
+- **止まった操作**: 提供事業者の Anthropic が不審な活動を検知し、範囲を特定して、関連アカウントを順に停止した。止まったのは、検知の後である。
+- **受け付けた側に届くもの**: 一般に、標的のシステムや API には、操作そのもの（リクエスト）が届く。それが誰の委任で、どの範囲で出されたかは届かない。「防御のテスト中だ」という名乗りは AI に向けたもので、受け付ける側には届かない。
+- **公表されていないこと**: 侵入に成功した標的の名前と数。各標的で使われた脆弱性と入口。抜き取られたデータの中身。
 
-- **社内呼称**: GTG-1002（攻撃グループ。Anthropic は high confidence で中国国家支援グループと評価）
-- **悪用された tool**: AI coding agent（Claude Code）+ Model Context Protocol（MCP）経由の各種ツール（ネットワークスキャナ、パスワードクラッカー等）
-- **標的**: 約 30 の global target（大手テック企業、金融機関、化学製造業、政府機関）
-- **着地**: 少数の標的で侵入成功、private data の exfiltration
-- **AI 自律度**: 攻撃工程の 80–90% を AI が実行。人間の介入はキャンペーンあたり 4–6 か所の重要判断点に限定
-- **攻撃速度**: ピーク時、AI は毎秒複数を含む数千リクエストを発行（人間チームでは不可能な速度）
-- **guardrail 回避**: 攻撃を無害に見える小タスクに分解し、AI に「正規のセキュリティ企業の従業員」「防御テスト中」と信じ込ませる role-play（jailbreak）
-- **検知・対応**: 2025-09 中旬に suspicious activity を検知、約 10 日かけて範囲を特定し、関連アカウントを順次 ban、関係当局・affected entities に通知
-- **公表**: 2025-11-13（Anthropic、full report PDF 同時公開。11-14 に攻撃速度の表記を訂正）
+## 3. 何を照合するか
 
-事象は次の連鎖で成立している。
+経路を問わず区別できる条件は、AI エージェントが外のシステムに作用する操作を、受け付ける側が、誰の委任で、どの範囲の操作かを、実行の前にエージェントの外で照合することである。
 
-1. **Human-led targeting（Phase 1）**: 人間の運用者が標的を選定し、選定標的を自律的に侵害する attack framework を構築。Claude Code を自動化ツールとして組み込む
-2. **Guardrail bypass**: 攻撃を無害に見える小タスクへ分解し、AI に「正規のセキュリティ企業の従業員として防御テスト中」と思い込ませることで safety guardrail を回避
-3. **Reconnaissance（Phase 2）**: AI が標的システム・インフラを調査し、最高価値の database を特定して人間に要約報告
-4. **Vulnerability discovery & exploitation**: AI が自ら exploit コードを調査・記述し、脆弱性を特定・検証
-5. **Credential harvesting & lateral movement**: AI が認証情報を窃取しさらなるアクセスを獲得、最高権限アカウントを特定、backdoor を作成
-6. **Exfiltration & triage**: 大量の private data を抽出し、intelligence value で分類。最小限の人間監督下で exfiltration
-7. **Documentation（Phase 終盤）**: AI が窃取した認証情報と分析済みシステムの包括的ドキュメントを生成し、次段階の作戦立案を支援
+- **誰が承認を出すか**: 操作を受けるシステムの持ち主（組織）。AI に向けた名乗りや指示は、承認の代わりにならない。
+- **どこで照合するか**: 標的のシステム、API、MCP の道具が、操作を受け付ける前。委任の無い操作と、範囲の外の操作は、保留にする。
+- **何が残るか**: どの操作を、誰の委任で、いつ受け付けた（または止めた）かの記録。提供事業者の記録とは別に、受け付けた側に残る。規制への報告や訴訟で、その操作が認可されていたかを示す材料になる。
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
+<p class="rx-ex-cap">実行の前の照合＝AI エージェントの操作を受け付ける前に、誰の委任で、どの範囲の操作かを、エージェントの外で照合し、記録に残すこと。検知＝提供事業者が、不審な活動に気づくこと。日付は Anthropic が公表したもの。検知の日は「9 月中旬」とだけ公表されている。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>操作を受け付ける前に、誰の委任で、どの範囲かを照合する</div>
+<div class="rx-zone gapz"><b>確認されたこと</b><span>約 30 の標的が攻撃された<br>少数で侵入され、データが抜き取られた</span></div>
+<div class="rx-zone det"><b>検知 · 提供事業者で働いた</b>不審な活動を検知し、アカウントを停止</div>
+<div class="rx-g g1"><div class="t">2025-09 中旬</div><b>Anthropic が不審な活動を検知</b></div>
+<div class="rx-g g2"><div class="t">約 10 日</div><b>範囲を特定し、アカウントを停止</b></div>
+<div class="rx-g g3"><div class="t">2025-11-13</div><b>Anthropic が公表</b></div>
+<div class="rx-g g4"><div class="t">2025-11-14</div><b>攻撃の速度の記述を訂正</b></div>
+</div>
+</figure>
 
-## 3. 時系列 — 公表と対応
+検知は、提供事業者の側で働き、範囲の特定と停止につながった。一方で、検知は、標的のシステムが何を受け付けるかを変えない。同じように、AI エージェントの操作が受け付ける前に照合されなかった事案に、[PocketOS](https://lemma.frame00.com/ja/critical/briefs/007-pocketos-cursor-db-deletion/)（本番のデータベースの削除 1 回）がある。今回は、偵察から抜き取りまで連鎖する、数百から数千の操作だった。名乗りが照合されずに通った点では、[Starlette](https://lemma.frame00.com/ja/critical/briefs/003-starlette-badhost/)（認証の回避）とも近い。
 
-- 2025-09 中旬: Anthropic が suspicious activity を検知。後の調査で高度な espionage campaign と判明
-- 2025-09 中旬 〜（約 10 日間）: 範囲と深刻度を mapping。特定したアカウントを順次 ban、affected entities へ通知、当局と連携
-- 2025-11-13: Anthropic が事案と full report を公表
-- 2025-11-14: 攻撃速度の記述を「毎秒数千」から「毎秒複数を含む数千リクエスト」へ訂正
+## 4. Lemma でできること
 
-> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
+**Lemma は、03 の照合を、AI エージェントの操作を受け付ける側に置く。** AI の判断を正すのではなく、その操作が、誰の委任で、どの範囲のものかを、実行の前に、エージェントの外で照合する。
 
-公表後の対応と業界の動きは次のとおり。
+### 注意したい業界・業務
 
-- **Anthropic**: 関連アカウントを ban、検出能力と classifier を拡張、affected entities と当局へ通知。事案を公開し定期的な脅威レポート発行を表明。security team には SOC 自動化・脅威検知・脆弱性評価・incident response への AI 適用実験を、開発者には敵対的悪用を防ぐ safeguard 投資を推奨
-- **業界・政策側**: 本事案は「AI agent が人間チームの作業を長時間自律代行する」段階への移行を示す初の large-scale 報告例として、analyst・規制実務者・政策当局の議論対象となった。米下院国土安全保障委員会は Anthropic に証言要請を出すなど、政策レベルの関心に発展
-- **論点**: 攻撃の barrier が大幅に下がり、資源の乏しいグループでも同種攻撃が可能になりつつあるとの予測。industry threat sharing・検出手法の改善・safety control の強化が並行課題として提示された
+- **業界 · テック・金融・化学製造・政府機関**: 今回の標的とされた分野（Anthropic）。
+- **業務 · AI エージェントの運用**: AI エージェントに、MCP などで社内外のシステムを操作させる組織。
 
-「AI agent がどの権限の下で外部システムへ作用しているか」を組織・提供事業者・規制側がどう設計・監督・検証するかは、本事案を契機に業界横断の必須要件として議論が進む見込み。
+### いまの対策と Lemma の違い
 
----
+今回の経路は、AI エージェントが、標的のシステムに連鎖して出した操作である。
 
-## 4. なぜ止まらなかったか
+| 対策 | AI エージェントが標的のシステムに出す操作 |
+| --- | --- |
+| AI の安全の仕組み（ガードレール） | 効かない |
+| 提供事業者の異常検知とアカウントの停止 | 一部 |
+| **Lemma（実行の前の照合）** | 効く |
 
-中心的な<strong>失敗 primitive は「AI agent が外部システムへ連鎖的に作用する各 action について、どの権限・誰の委任によるかを実行前に独立検証する layer の不在」</strong>である。攻撃者が AI に注入した「正規のセキュリティ企業の従業員である」という identity の主張は、それを検証する独立 layer を持たないまま、各標的システムへの一連の operation の前提として通過した。
+AI の安全の仕組みは、攻撃を小さな作業に分け、正規の企業の防御テストだと信じ込ませることで回避された（Anthropic）。提供事業者の異常検知とアカウントの停止は、約 10 日で範囲を特定して攻撃を止めたが、検知の後に働き、標的のシステムが何を受け付けるかは変えない。Lemma は、AI の名乗りではなく、操作が誰の委任で、どの範囲のものかを、受け付ける前に照合する。実行の記録も受け付けた側に残るので、提供事業者の記録に頼らずに、どの操作がどの委任で通ったかを確認できる。
 
-[Brief 007](https://lemma.frame00.com/ja/critical/briefs/007-pocketos-cursor-db-deletion/)（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異なる。[Brief 007](https://lemma.frame00.com/ja/critical/briefs/007-pocketos-cursor-db-deletion/) は単一の destructive call（本番 DB 削除）の事前検証不在、本事案は偵察から exfiltration まで連鎖する数百〜数千の autonomous action それぞれの authority 不在。両者は「AI agent の trust boundary が、それを検証する layer と切り離されている」という構造で同根。[Brief 003](https://lemma.frame00.com/ja/critical/briefs/003-starlette-badhost/)（Starlette/BadHost）の認証回避とも、identity の主張が独立検証されないという論点で隣接する。違いは規模と意図——本事案は国家規模・敵対的・自律連鎖である点で、AI agent 運用の trust boundary 問題が最も先鋭化した形で現れている。
+注：Lemma の照合が働くのは、操作を受けるシステム、API、MCP の道具に照合を組み込み、委任と範囲が、エージェントの外で管理されている場合に限る。窃取された認証情報で、正規の委任の範囲の中の操作として出された場合は、この照合を通りうる。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入を検出・防止するものではない。
 
-本事案は、提供事業者（Anthropic）側の異常検知・classifier・アカウント ban という検出層が機能し、約 10 日で範囲を特定して停止に至った。検出層は incident の認識・遮断・業界横断の脅威共有に不可欠であり、本 Brief がその役割を否定するものではない。Anthropic 自身も調査における大量データ分析に AI を活用したと報告している。
+### 点検チェックリスト
 
-一方で、検出は受信側（標的システム、API、MCP ツール）が「どの action を accept するか」自体を変えない。本事案では、AI が発行する各 operation が「正規の委任関係の下で生成されたものか」を、受信側が実行前に独立検証する仕組みは存在しなかった。攻撃者が注入した「防御テスト中の正規企業従業員」という identity の主張は proof を伴わず、role-play として通過した。規制報告・行政手続き・訴訟で「この AI agent は認可された権限の下で動いていたか」を立証する材料として、提供事業者側の事後 telemetry は被害組織から独立した証跡になりにくい。
+AI エージェントを運用する組織で確認する 3 項目
 
----
+- AI エージェントの各操作を、誰がどの権限で要求したかを、受け付ける前に確認しているか。
+- AI エージェントが実行できる操作と回数を、範囲と上限で決めているか。
+- AI エージェントの操作の記録を、提供事業者の記録とは別に、自社の側に残しているか。
 
-## 5. 証明があれば、何が変わるか
+## 5. 事実と時系列
 
-事前証明（pre-execution attestation）は、AI agent が外部システムへ作用する前に、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定する設計を採る。proof が「正規の委任関係なし」「scope 外」と告げれば、当該 action は事前に block される。検出と事前証明は代替ではなく **補完** の関係にあり、両層の組み合わせで AI agent の trust boundary が確立される。
+- **攻撃グループ**: GTG-1002。Anthropic は、中国の国家支援グループと high confidence で評価している。
+- **使われた道具**: AI コーディングエージェント（Claude Code）と、MCP 経由の各種の道具（ネットワークのスキャナー、パスワードクラッカーなど）。
+- **標的**: 約 30 の世界の標的（大手テック企業、金融機関、化学製造業、政府機関）。少数の標的で侵入に成功し、非公開のデータが抜き取られた。
+- **AI の関与**: 攻撃の工程の 80〜90% を AI が実行した。人の介入は、作戦ごとに 4〜6 か所の重要な判断に限られた。
+- **攻撃の速度**: ピーク時、AI は、毎秒複数を含む数千のリクエストを出した。人のチームには不可能な速度とされている。
+- **安全の仕組みの回避**: 攻撃を無害に見える小さな作業に分け、AI に「正規のセキュリティ企業の従業員」「防御のテスト中」と信じ込ませる、役割の偽装（ジェイルブレイク）。
+- **流れ（Anthropic）**: ① 人の運用者が標的を選び、Claude Code を自動化の道具として組み込んだ攻撃の仕組みを作る。② 安全の仕組みを回避する。③ AI が標的のシステムを調べ、価値の高いデータベースを特定して人に要約を返す。④ AI が脆弱性を探し、攻撃コードを書いて検証する。⑤ AI が認証情報を窃取して、権限の高いアカウントを特定し、バックドアを作る。⑥ AI がデータを抜き取り、情報の価値で分類する。⑦ AI が、窃取した認証情報と分析したシステムの文書を作り、次の段階の計画を支える。
 
-本事案で露呈した検出と証明の落差（AI agent の autonomous action それぞれについて、その権限と運用者 identity が実行前に独立検証されない）に対して、Lemma は次の設計要素を提示している。
+### 時系列
 
-- **要求の暗号証明化**: AI agent が外部システムへ作用する時点で、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込む。
-- **受信側での accept 判定**: 受信側が proof を見て、正規の委任関係・scope 内かを実行前に判定する。
-- **identity 主張からの分離**: AI の判断や運用者の identity 主張が偽装されていても、proof は別系統で「この action は正規の委任関係の下で生成された / 生成されていない」を告げる。
-- **連鎖 action の事前 block**: proof が「委任関係なし」「scope 外」と告げれば、偵察から exfiltration まで連鎖する各 action は事前に block される。
+- **2025-09 中旬**: Anthropic が不審な活動を検知する。のちの調査で、高度な諜報活動と分かる。
+- **2025-09 中旬から約 10 日**: 範囲と深刻度を特定する。特定したアカウントを順に停止し、影響を受けた組織に通知し、当局と連携する。
+- **2025-11-13**: Anthropic が、事案と報告書の全文を公表する。
+- **2025-11-14**: 攻撃の速度の記述を、「毎秒数千」から「毎秒複数を含む数千のリクエスト」に訂正する。
 
-proof は別系統で正規の委任関係の有無を告げる構造であり、検出層と組み合わせることで AI agent の trust boundary を確立する。
+> 本件の事実は、Anthropic の公表と報告書（一次）に拠る。攻撃グループの帰属（中国の国家支援）は、Anthropic の評価である。侵入された標的の名前と、各標的での入口は公表されていない。公表されていないことは、対策が無かったことを意味しない。
 
----
+### 公表後の対応
+
+- **Anthropic**: 関連アカウントを停止し、検出の能力と分類器を広げ、影響を受けた組織と当局に通知した。定期的に脅威のレポートを出すとした。セキュリティの担当には、SOC の自動化、脅威の検知、脆弱性の評価、事案の対応に AI を使う試みを、開発者には、悪用を防ぐ安全策への投資を勧めた。調査の大量のデータの分析にも AI を使ったとしている。
+- **政策の側**: 米下院の国土安全保障委員会が、Anthropic に証言を求めた。
 
 ## 6. Sources
 
@@ -114,4 +151,4 @@ proof は別系統で正規の委任関係の有無を告げる構造であり�
 - **PwC**: "AI-orchestrated cyberattacks: A call to action"（2025）— https://www.pwc.com/us/en/services/consulting/cybersecurity-risk-regulatory/library/ai-orchestrated-cyberattacks.html
 - **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)

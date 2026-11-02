@@ -45,6 +45,8 @@ operations: ["data-access"]
 controls:
   - slug: "hold-unverified"
     item: "Don't let an environment whose use has changed be used until its data and access are re-checked"
+  - slug: "minimize-data"
+    item: "Inventory customer and shareholder data left in retired environments, and delete what is no longer used"
   - slug: "audit-trail"
     item: "Record which customer data is in which environment, and when it was deleted"
 attack_method: "account-takeover"

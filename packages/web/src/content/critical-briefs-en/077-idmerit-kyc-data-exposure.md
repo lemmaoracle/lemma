@@ -44,6 +44,8 @@ insight:
 industries: ["finance"]
 operations: ["data-access"]
 controls:
+  - slug: "minimize-data"
+    item: "Agree by contract whether, where and for how long a vendor stores identity data, and check it against the register"
   - slug: "audit-trail"
     item: "Record which data is held, under whose custody, and where"
 impact: "Reported exposure of about 1 billion records; custody disputed (figures unverified)"

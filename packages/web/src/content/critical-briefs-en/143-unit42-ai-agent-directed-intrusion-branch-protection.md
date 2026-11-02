@@ -1,7 +1,7 @@
 ---
 brief_no: 143
-title: "人間の攻撃者が指揮する複数のフロンティアAIエージェントが、企業ネットワークを10時間未満で侵害した(Unit 42調査) — その場で止まった工程は、行動の前に認可を要求する仕組みが働いた一箇所だけだった"
-title_en: "A human attacker directing multiple frontier AI agents breached an enterprise network in under 10 hours (Unit 42) — the only step stopped in real time was the one place a pre-action authorization gate was enforced"
+title: "非公表の企業：攻撃者が指揮する複数の AI エージェントに、ネットワークを侵害された(Unit 42 の調査)"
+title_en: "Undisclosed enterprise: A network breached by multiple AI agents directed by a human attacker (Unit 42 investigation)"
 pillar: 03-agent-authority
 primary_category: agent-runaway
 secondary_categories: [identity-auth, agent-infrastructure]
@@ -11,11 +11,39 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["009-gtg1002-ai-orchestrated-espionage", "128-coding-agent-harness-authority-gap", "130-atlassian-rovo-instruction-provenance"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "agent-operation"
+og_kicker_ja: "インシデント調査 · AI エージェントの攻撃"
+og_kicker_en: "INCIDENT RESPONSE · AI-AGENT INTRUSION"
+og_headline_ja: "攻撃者が AI に任せ、\n10 時間未満で侵害した。\n<accent>止まったのは 1 か所</accent>"
+og_headline_en: "AI agents breached\na network in <10 hours.\n<accent>One step was stopped.</accent>"
+key_figures:
+  - value: "<10"
+    unit: "hours"
+    label: "Time to complete the intrusion. Unit 42 assessed it as work that would take human operators about two weeks"
+    tone: "alert"
+  - value: "50+"
+    label: "MITRE ATT&CK techniques used (Unit 42)"
+  - value: "1"
+    unit: "step"
+    label: "The only step stopped in real time: branch protection blocked the Terraform change (Unit 42)"
+glossary:
+  - term: "Branch protection"
+    desc: "A code-repository setting that keeps changes without the required approvals out of the main branches."
+  - term: "Terraform"
+    desc: "A tool that describes cloud configuration as code and builds infrastructure from it. Changing the configuration code changes the infrastructure."
+  - term: "Secrets management"
+    desc: "A system that stores passwords, tokens, and keys in one place and hands them to other systems."
+insight:
+  slug: "valid-key-not-authorization"
+  label: "A valid key is not permission to act"
+  quote: "Even a stolen key or token passes any step that has no per-action authorization check, as long as it is formally valid."
 version: "1.0"
 og_lead_ja: "Unit 42、AIエージェント主導の侵入が10時間未満で完了と報告"
 og_lead_en: "Unit 42: AI-agent-run intrusion completed in under 10 hours"
 industries: ["ai"]
+operations: ["account-admin"]
 controls:
   - slug: "verify-entry"
     item: "Check per action not only that a token or key is valid, but that this actor may take this action"
@@ -23,80 +51,99 @@ controls:
     item: "Keep the agent within an allowed scope and limit at each stage it can reach"
 attack_method: "ai-misuse"
 impact: "Breach completed in under 10 hours"
+takeaway: "Of five stages, the only one stopped in real time was where branch protection required approval before the change."
+self_check: "Even if a stolen key or token is valid, is there a step that checks, before the operation, whether this actor may perform it?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-On September 2, 2026, Unit 42, Palo Alto Networks' threat intelligence arm, published its response to an incident in which a human attacker directed frontier AI models and attack-specific agentic frameworks to autonomously breach an enterprise network. Intrusion tradecraft that would normally take about two weeks by hand — over 50 MITRE ATT&CK techniques — was compressed into under 10 hours, with stolen tokens, credentials, and cloud keys used one after another to widen the breach. Detection worked as forensic reconstruction after the fact. **The only step stopped in real time, during those 10 hours, was the one place a pre-action authorization gate was enforced: branch protection, which blocked an attempted backdoor in Terraform.**
+A human attacker directed frontier AI models and attack-specific agentic frameworks and completed an intrusion into an enterprise network in under 10 hours. Stolen tokens, credentials, and cloud keys were used one after another, from breaking into the secrets manager to hijacking the AI infrastructure. The only thing stopped in real time was an attempted backdoor in the Terraform configuration, blocked by branch protection (Unit 42). <strong>Even a stolen key or token passes any step that has no per-action authorization check, as long as it is formally valid.</strong>
 
-## 2. What happened
+## 2. What got through
 
-- On September 2, 2026, Unit 42 published a blog analyzing its response to an incident. The threat actor told Unit 42, during negotiations, that they had used frontier AI models and attack-specific agentic AI frameworks.
-- The agents worked through the company's security layers methodically, each targeting a different layer of defense toward a shared goal. Unit 42 assessed the impact as being at the scale of a coordinated effort from multiple red teams, work that would normally take human operators around two weeks.
-- The intrusion itself required no novel zero-day or elite tradecraft; what stood out, Unit 42 writes, was AI-assisted operational efficiency. The attacker left tactical execution to the agents, which monitored, evaluated, acted, and re-planned in real time, increasing speed throughout the attack chain.
-- The attacker also directed an agent to leave behind an 80-page technical audit of the victim organization's security posture, detailing dozens of exploited findings.
-- Unit 42 observed several indicators of AI use: parallel LLM calls to multiple frontier AI agents, structured Markdown files passing information between agents and sessions, and custom scripts — assessed with high confidence to be AI-generated based on UI elements — managing dynamic operations.
+- **What went through**: Breaking into the secrets manager with stolen tokens, harvesting administrative credentials, and seizing root access. Hijacking an internal code-integration application and exfiltrating cloud access keys. Turning the victim's AI endpoints into attack infrastructure with the stolen cloud keys (Unit 42).
+- **What was stopped**: Planting a backdoor in the Terraform configuration. Enforced branch protection stopped it (Unit 42).
+- **What reaches the receiving side**: In general, the secrets manager and the cloud receive a request carrying a valid token or key. Whether that key was stolen, and whether the actor may take the action, cannot be told from the key's validity.
+- **Not disclosed**: The victim's name and industry, the date of the attack, the attacker's identity, and the nature of any ransom demand. How the public web service was breached.
 
-The attack proceeded in five stages.
+## 3. What to check
 
-1. **Infiltration and mapping**: The attacker breached a publicly accessible web service to tunnel into the network, then deployed an automated recon agent to map internal microservices.
-2. **Secrets harvesting**: Sub-agents combed enterprise code repositories, extracting hard-coded tokens and service passwords.
-3. **Privilege takeover**: Using the exposed tokens, the attacker infiltrated the secrets management system, harvesting master administrative credentials to seize root system access.
-4. **Pipeline exploitation**: The attacker hijacked an enterprise code integration application via custom workflows to exfiltrate cloud access keys. An attempt to plant backdoors in Terraform configurations was stopped by enforced branch-protection controls.
-5. **AI infrastructure hijacking**: Using the stolen cloud keys, the attacker turned the victim's AI endpoints into post-compromise infrastructure, using the victim's own compute power for future moves.
+The condition that holds whatever the route is to check, before each action and separately from whether a key or token is valid, whether this actor may take this action.
 
-## 3. Timeline — disclosure and response
+- **Who approves**: A person with the authority to allow the operation. Important operations on the secrets manager, cloud configuration, and AI infrastructure are approved separately from holding a key.
+- **Where the check happens**: Just before the secrets manager, the cloud, configuration code, or AI infrastructure accepts an operation. The same place branch protection sat in this incident, applied to the other stages too.
+- **What remains**: A record of which operation, by which actor, on whose approval. The chain can later be shown to a third party.
 
-- (Undisclosed): The entire operation was completed in under 10 hours. The victim organization's name, industry, and the actual date of the attack are all undisclosed.
-- 2026-09-02: Unit 42 publishes its findings.
-- 2026-09-03: Unit 42 issues a correction clarifying the incident was an intrusion, not a ransomware attack.
-- 2026-09-04: Minor clarifying copyedits.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">Pre-execution check = before accepting an operation, checking separately from key validity whether this actor may perform it, and keeping a record. Detection = finding the chain from traces after the attack. The date of the attack was not disclosed; dates are when Unit 42 published and corrected its report.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · worked in one place</b>The Terraform change was stopped by approval before the change. Checks at other stages cannot be seen in the disclosures</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>With stolen keys, 4 of 5 stages went through<br>Only the Terraform change was stopped</span></div>
+<div class="rx-zone det"><b>Detection · after the intrusion</b>The attack chain was reconstructed from traces of AI use</div>
+<div class="rx-g g1"><div class="t">Undisclosed</div><b>Intrusion (under 10 hours)</b></div>
+<div class="rx-g g2"><div class="t">09-02</div><b>Unit 42 publishes its investigation</b></div>
+<div class="rx-g g3"><div class="t">09-03</div><b>Corrected: an intrusion, not ransomware</b></div>
+<div class="rx-g g4"><div class="t">09-04</div><b>Minor copyedits</b></div>
+</div>
+</figure>
 
-> This brief treats Unit 42's self-published report (posted 2026-09-02, corrected 2026-09-03 and 2026-09-04) as its primary source. **Initial coverage framed this as a "ransomware attack," but Unit 42's September 3 correction clarified it was an intrusion, not a ransomware attack.** The attacker reportedly described its AI usage to Unit 42 "in negotiations," but the nature of any ransom demand, the victim's industry or size, and the attacker's identity remain undisclosed. This brief does not treat these as established facts and confines itself to the published technical chain and lessons.
+The one place that held did not ask whether the key was valid; it asked for approval before the change. The same shape appears in [GTG-1002](/critical/briefs/009-gtg1002-ai-orchestrated-espionage/), where an AI agent autonomously executed 80–90% of a campaign, and in [coding-agent authority](/critical/briefs/128-coding-agent-harness-authority-gap/), where coding agents in their default configuration reached CI execution from a single unauthorized instruction.
 
-Lessons Unit 42 drew from the incident:
+## 4. What Lemma does
 
-- AI agents reduce the time between steps in the attack flow, since they are designed to parse raw tool output and act on it immediately.
-- AI agents leave recognizable indicators — structured Markdown, Python caches, and paired asset folders among them, per Unit 42.
-- Attackers can use AI agents to build and maintain redundant persistence in parallel across SSH keys, serverless functions, container restart policies, cloud identities, and CI/CD pipelines.
-- Attackers can hijack a victim's own AI tools as post-compromise infrastructure, hiding command traffic among expected traffic and shifting compute cost onto the victim.
+**Lemma builds the check in section 3 in front of the operations an agent can reach.** It does not find intrusions; before each operation, it checks whether this actor may perform it, separately from whether the key is valid.
 
-## 4. Why it wasn't stopped
+### Industries and operations to watch
 
-This incident's failure is neither an unknown vulnerability nor elite tradecraft. **Across most of the chain, a stolen token, credential, or cloud key being formally "valid" was the sole basis on which the next action was allowed — no layer independently re-verified that action's legitimacy each time.**
+- **Industry · AI**: Organizations with their own AI endpoints or model invocations, which stolen cloud keys can turn into attack infrastructure.
+- **Operation · Accounts & permissions**: Secrets management, cloud administrator rights, and configuration-code changes — the stages that went through on key validity alone in this incident.
 
-Detection worked as forensic reconstruction after the fact. Unit 42 was able to reassemble the attack chain hour by hour from traces left in structured Markdown and custom scripts. But while the attack was under way, only one of the five stages was stopped in real time: branch protection, which blocked the attempted backdoor in the Terraform configuration. Every other stage — secrets harvesting, privilege takeover, exfiltrating cloud keys, hijacking AI infrastructure — went through on the strength of one fact alone: the stolen token or key was formally valid.
+### Current controls vs Lemma
 
-> "The attacker left tactical execution to AI agents that monitored, evaluated, acted and re-planned in real time, increasing speed throughout the attack chain." — from Unit 42's blog.
+The route in this case is column 1 (operations on the secrets manager, cloud, and AI infrastructure with stolen keys or tokens). Column 2 (changing the Terraform configuration) is the stage that was stopped in real time.
 
-Branch protection worked for a simple reason: it didn't ask whether a valid credential was presented, but whether multiple parties could confirm, before the change was made, that this actor was allowed to make it. None of the other four stages had an equivalent layer — the formal validity of a stolen key or token alone carried the attacker from the secrets manager all the way to hijacking AI infrastructure.
+| Control | Operations on secrets manager, cloud, and AI infrastructure with stolen keys | Changing the Terraform configuration |
+| --- | --- | --- |
+| Checking token and key validity | Not effective | Not effective |
+| Branch protection (approval before the change) | Not relevant | Effective |
+| Analyzing traces of AI use (after the fact) | Not effective | Not relevant |
+| **Lemma (pre-execution check)** | Effective | Effective |
 
-The same shape appears in [Brief 009](/critical/briefs/009-gtg1002-ai-orchestrated-espionage/), a state-linked campaign in which an AI agent autonomously executed 80-90% of the attack, and in [Brief 128](/critical/briefs/128-coding-agent-harness-authority-gap/), where coding agents in their default configuration reached CI execution from a single unauthorized instruction.
+Checking token and key validity passes a stolen key as long as it is formally valid; that alone carried the attacker from the secrets manager to hijacking the AI infrastructure (Unit 42). Branch protection asked for approval before the change rather than for a key, so it stopped the Terraform backdoor, but it does not reach stages outside the code repository. Trace analysis reconstructed the chain from structured Markdown and scripts, but after the attack. Lemma places the same kind of pre-action approval check that branch protection provided on secrets-manager, cloud, and AI-infrastructure operations as well.
 
-## 5. What proof would have changed
+Note: Lemma's check works only when it is built in just before the secrets manager, the cloud, and AI infrastructure accept operations, and approvals are managed separately from the agent and from keys that can be stolen. If the approver's own credentials are stolen too, this check can be passed. The initial intrusion from the public web service, and tokens written into code repositories (pre-intrusion hygiene), are outside this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-Proof before the fact replaces "the token, credential, or cloud key is valid" with "this action, by this actor, at this moment, was independently verified as authorized" as the basis for allowing the next step. It does not stop AI agents from making attack execution faster. It keeps that speed from bypassing per-action authorization.
+### Checklist
 
-The design Lemma offers against this gap:
+Three things to confirm about the stages an AI agent can reach
 
-<ul class="bd-check">
-<li><strong>Proof of authorization per action</strong>: separate "the token, credential, or cloud key is formally valid" from "this request, at this moment, comes from a party legitimately entitled to take this action."</li>
-<li><strong>Consistent enforcement of pipeline provenance protection</strong>: extend the kind of pre-action authorization gate that branch protection provided in this incident — the only one that worked — across every stage an agent can reach, not just CI/CD and IaC changes, but access to the secrets manager and cloud infrastructure as well.</li>
-<li><strong>Authorization for calls into AI infrastructure itself</strong>: gate access to an organization's own AI endpoints and model invocations on more than API key validity — verify the caller is a legitimate internal system.</li>
-</ul>
+- Do you check separately that a key or token is valid and that this actor may perform this operation?
+- Do you require approval before the operation, like branch protection, for secrets-manager and cloud administrative operations too?
+- Do you allow calls to your own AI endpoints based not only on API key validity but on the caller being a legitimate internal system?
 
-What it does not do:
+## 5. Facts and timeline
 
-<ul class="bd-limit">
-<li>It does not substitute for the technical fixes to the initial access route itself — patching and vulnerability management for the public-facing web service.</li>
-<li>It does not prove how the tokens and credentials first leaked — the pre-intrusion hygiene issue of hard-coding them into repositories.</li>
-<li>It does not substitute for attacker attribution, legal response, or handling of any ransom negotiation.</li>
-</ul>
+- **Disclosure**: On September 2, 2026, Unit 42 (Palo Alto Networks) published a blog analyzing its response to an incident. The attacker told Unit 42, during negotiations, that it had used frontier AI models and attack-specific agentic AI frameworks.
+- **Scale**: The agents each targeted a different layer of defense toward a shared goal. Unit 42 assessed the work as matching a coordinated effort by multiple red teams, about two weeks of human effort (over 50 MITRE ATT&CK techniques).
+- **Method**: No novel zero-day or elite tradecraft was needed; what stood out was AI-assisted operational efficiency, Unit 42 writes. The agents monitored, evaluated, acted, and re-planned in real time.
+- **What was left behind**: The attacker had an agent produce an 80-page technical audit of the victim's security posture (dozens of exploited findings) and left it for the victim.
+- **Indicators of AI use**: Parallel LLM calls to multiple frontier AI agents, structured Markdown passing information between agent sessions, and scripts assessed with high confidence to be AI-generated based on UI elements (Unit 42).
+- **Five stages**: (1) Breached a public web service and mapped internal microservices with a recon agent. (2) Sub-agents extracted hard-coded tokens and passwords from code repositories. (3) Used stolen tokens to enter the secrets manager, harvest administrative credentials, and seize root. (4) Hijacked an internal code-integration application and exfiltrated cloud access keys; an attempted backdoor in the Terraform configuration was stopped by enforced branch protection. (5) Used the stolen cloud keys to turn the victim's AI endpoints into post-compromise infrastructure.
 
-The difference from forensic reconstruction is here: traces in Markdown and scripts remain after the attack, and being able to reassemble the intrusion chain from them is not the same as stopping the next action the moment it happens.
+### Timeline
 
-Detection and this layer are complementary, not substitutes. The former surfaces the chain of AI-driven activity after the fact; the latter makes "a valid key is not the same as being allowed to act" something verifiable before the next stage proceeds.
+- **Undisclosed**: The whole operation is completed in under 10 hours. The victim's name, industry, and the date of the attack are undisclosed.
+- **2026-09-02**: Unit 42 publishes its investigation.
+- **2026-09-03**: A correction clarifies it was an intrusion, not a ransomware attack.
+- **2026-09-04**: Minor copyedits.
+
+> This Brief treats Unit 42's self-published report (posted 2026-09-02, corrected 2026-09-03 and 2026-09-04) as its primary source. Initial coverage framed this as a "ransomware attack," but Unit 42's September 3 correction clarified it was an intrusion, not a ransomware attack. The attacker reportedly described its AI use "in negotiations," but the nature of any ransom demand, the victim's industry or size, and the attacker's identity are undisclosed. This Brief does not treat these as facts. What has not been disclosed does not mean there were no controls.
+
+### After disclosure
+
+- **Unit 42**: Drew these lessons. AI agents shorten the time between attack steps. AI agents leave recognizable traces such as structured Markdown, Python caches, and paired asset folders. Attackers can build redundant persistence in parallel across SSH keys, serverless functions, container restart policies, cloud identities, and CI/CD. Attackers can hijack a victim's own AI tools as post-compromise infrastructure, hiding command traffic among normal traffic and shifting compute cost onto the victim.
 
 ## 6. Sources
 
@@ -104,6 +151,4 @@ Detection and this layer are complementary, not substitutes. The former surfaces
 - **The Register (independent)**: "AI agents carried out every step of this ransomware attack – then left the victim an 80-page security audit" (2026-09-02) — <https://www.theregister.com/security/2026/09/02/ai-agents-carried-out-every-step-of-this-ransomware-attack-then-left-the-victim-an-80-page-security-audit/5294009>
 - **Cybernews (independent)**: "AI agents speed ransomware breach to under 10 hours" — <https://cybernews.com/security/ai-agents-ransomware-attack-security-audit/>
 
-References: On why after-the-fact detection is not proof, see ["The last layer left in AI-era cyber defense"](/blog/detection-is-not-proof/). On agent authority, see [Pillar 03 — Agent Authority](/pillars/#authority).
-
-Figures and the sequence of events are based on Unit 42's self-published report (2026-09-02, corrected 2026-09-03/09-04). The victim organization's name, industry, the actual date of the attack, and the attacker's identity remain undisclosed as of this writing.
+References: ["The last layer left in AI-era cyber defense"](https://lemma.frame00.com/blog/detection-is-not-proof/)
