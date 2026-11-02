@@ -1,7 +1,7 @@
 ---
 brief_no: 117
-title: "Speechify の音声クローン、同意の確認はチェックボックス1つだった — 米消費者団体が FTC と州司法長官に調査を申し立て"
-title_en: "Speechify verified voice-cloning consent with a single checkbox — CFA asks the FTC and state AGs to investigate"
+title: "Speechify：音声クローンの同意の確認が自己申告だけだとして、調査が申し立てられた(CFA の申し立て)"
+title_en: "Speechify: Consumer group alleges voice-cloning consent relies on self-declaration alone and seeks an investigation (CFA complaint)"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
 secondary_categories: ["identity-auth", "data-provenance"]
@@ -11,77 +11,137 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["105-japro-likeness-voice-ai-provenance", "053-youtube-deepfake-likeness-provenance", "050-grok-deepfake-consent-provenance", "084-hong-kong-deepfake-video-call-fraud", "034-ekyc-liveness-bypass"]
 status: published
-gate: "intake"
 version: "1.0"
-og_lead_ja: "Speechify の音声クローン、同意確認は自己申告チェックボックス1つ — CFA が FTC に申立て"
-og_lead_en: "Speechify's voice-cloning consent is one self-certification checkbox; CFA files with the FTC"
-gap_detected: "Independent testing by a consumer group and a law school demonstrated concretely that the consent check and the script-reading safeguard do not work, and brought it to regulators."
-gap_missing: "A layer that independently verifies, at the moment the audio is generated, that the voice's owner authorized the use."
-gap_fix: "Require the owner's authorization as an independently verifiable proof before a voice clone is generated, and refuse generation that carries no proof."
+og_lead_ja: "Speechify の音声クローン、同意の確認は自己申告のチェックボックスだけだと CFA が FTC に申し立て"
+og_lead_en: "CFA tells the FTC that Speechify's voice-cloning consent check is a single self-declaration checkbox"
+layout: "report"
+sections: "proof"
+gate: "intake"
+og_kicker_ja: "AI の事例 · 音声クローンの同意"
+og_kicker_en: "AI CASE · VOICE-CLONE CONSENT"
+og_headline_ja: "声の持ち主の同意は、\n自己申告だけと訴え。\n<accent>CFA が調査を申し立て</accent>"
+og_headline_en: "Voice-clone consent was\nself-declared, CFA says.\n<accent>It seeks an FTC probe.</accent>"
+key_figures:
+  - value: "1"
+    unit: "checkbox"
+    label: "The consent check offered: a self-declaration checkbox (plus a name field), with no technical verification (CFA complaint)"
+    tone: "alert"
+  - value: "2"
+    unit: "scripts"
+    label: "Scripts of the kind used in real scams were read aloud with no warning or restriction (the complaint authors' testing)"
+  - value: "$3.5"
+    unit: "billion"
+    label: "Reported losses to impersonation scams in 2025, nearly three times 2020 (FTC data cited in the complaint)"
+glossary:
+  - term: "Voice cloning"
+    desc: "Technology that takes recordings of a person's voice and lets any text be spoken in that voice."
+  - term: "CFA"
+    desc: "Consumer Federation of America, a consumer group. It prepared this complaint with students from UCLA Law."
+  - term: "Complaint"
+    desc: "A document asking agencies to investigate. It is neither a lawsuit nor a finding of fact by an authority."
+insight:
+  slug: "declared-consent-not-checked"
+  label: "Declared consent is not checked consent"
+  quote: "If consent is accepted on the uploader's word alone, nothing checks before generation whether that word is true, and someone else's voice passes through the same steps."
 industries: ["ai"]
+operations: ["approval"]
 controls:
   - slug: "ownership-check"
-    item: "Confirm the voice's owner authorized the use before generating audio"
+    item: "Check, before generating audio, that the voice's owner authorized the use"
+impact: "The complaint alleges consent was a self-declaration checkbox and name field, and that other people's voices could be cloned"
+takeaway: "According to the complaint, consent was self-declared and other people's voices could be cloned. Check the owner's own authorization before generating the voice."
+self_check: "Before generating someone's voice or likeness, do you check that the owner authorized it, separately from what the uploader declares?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-On July 27, 2026, the Consumer Federation of America and students from UCLA Law School's Information Policy Lab asked the FTC and every state Attorney General to investigate the voice-cloning service **Speechify**. Their allegation: the only mechanism verifying ownership or consent is a single self-certification checkbox and a free-text name field, with no technical verification at all. The other purported safeguard — reading a script aloud — never checks the recording against the script, and can be skipped entirely by uploading a pre-recorded file. Detection, in the form of independent testing and a regulatory filing, worked. **What was missing is the layer that verifies, at the moment the audio is generated, that the voice's owner authorized the use.**
+According to the complaint, the voice-cloning flow offered a self-declaration checkbox and a name field as its consent check, with no technical verification of what was entered. The script-reading step, it says, could be bypassed by uploading pre-recorded audio. These are results of testing by a consumer group and law students, not findings by an authority. <strong>If consent is accepted on the uploader's word alone, nothing checks before generation whether that word is true, and someone else's voice passes through the same steps.</strong>
 
-## 2. What happened
+## 2. What got through
 
-- The complaint was prepared by CFA with students from UCLA Law School's Information Policy Lab, a project of the UCLA Institute for Technology, Law & Policy. It is addressed to "Attorneys General of the United States; Federal Trade Commission" and dated July 27, 2026.
-- The filing includes a methodology section: the authors created accounts and tested the free and paid tiers of the standard product as well as Speechify Studio. For voice cloning they tested a private individual and a public figure whose voice they had no licence to use. Neither triggered a safeguard.
-- On Speechify Studio, the only mechanism for verifying ownership or consent is a self-certification checkbox plus a name field. No technical verification confirms the identity of the voice owner or that the uploader obtained consent. The complaint notes the name can be a pseudonym, a fictitious name, or the name of the person whose voice is being cloned — and that a single actor can clone dozens of voices, each under a different fabricated identity.
-- Account creation requires only an email address and a password. No identity verification is performed.
-- There is no content moderation of the text to be spoken. In the authors' testing, scripts drawn from known scams — a USPS impersonation demanding a $1.45 shipping fee and card details, and a boss-impersonation asking an employee to buy five $100 Apple gift cards and text back the codes — were accepted and read aloud without any flag, warning, or restriction.
-- The complaint invokes Section 5(a) of the FTC Act along with state UDAP laws and digital forgery statutes, and devotes a section to why Section 230 does not immunize Speechify's voice-cloning pipeline.
+- **What got through**: Registering a voice clone, and having text read aloud in the cloned voice. The complaint's authors say they tried cloning both a private individual and a public figure whose voice they had no licence to use, and that no safeguard triggered for either (CFA complaint).
+- **What the receiving side gets**: According to the complaint, account creation receives only an email address and a password, and clone registration receives a ticked checkbox, a free-text name and audio. The name can be a pseudonym or the name of the person being cloned, and a different fictitious identity can be entered each time, it says.
+- **The script check**: There was a step to read a specified script, but it allegedly did not verify that what was said matched the script, and uploading pre-recorded audio skipped the step entirely.
+- **Not disclosed**: Speechify's response (not confirmed at the time of writing). Whether any cloned voice has actually been used in a scam.
 
-Consent verification fails through the following chain.
+## 3. What to check
 
-1. A user creates an account with only an email address and a password. No identity check occurs.
-2. At the cloning step, the user is asked to read a specified script. The platform does not verify that what was said matches the script. Anything passes.
-3. The script step can be skipped entirely by uploading a pre-recorded audio file.
-4. The user ticks one checkbox and types a name. That is the entirety of the "I have the right to this voice" declaration; nothing corroborates it.
-5. The cloned voice reads any text the user supplies. There is no content review.
+The condition that holds whatever the route is this: before a voice is generated, check that the use falls within what the voice's owner authorized, separately from what the uploader declares.
 
-## 3. Timeline — disclosure and response
+- **Who approves**: The owner of the voice. The uploader's declaration (a checkbox or a name) does not stand in for the owner's approval.
+- **Where the check happens**: Just before the cloned voice is generated. Generation that cannot be matched to the owner's authorization does not run. Generation outside the authorized purpose, period or distribution is stopped at the same point.
+- **What remains**: A record of which voice generation rested on which authorization from the owner, in a form that shows authorization exists without handing over the owner's identity or contact details.
 
-- 2026-07-27: The complaint is dated, addressed to the Attorneys General of the United States and the FTC.
-- 2026-07-27: CFA publishes a press release urging the FTC and state Attorneys General to investigate Speechify's voice-cloning practices.
-- 2026-07-27: The complaint itself is published as a PDF on CFA's site. The document is headed "Draft Complaint"; that published version is what this Brief cites.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Figure 1</span><span class="rx-ex-t">"Detection" versus a "pre-execution check"</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking the voice owner's own authorization before the voice is generated, and keeping a record. Detection means finding out afterwards that generation is possible; here, independent testing by a consumer group and others did that. The date is the date of the complaint.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check the voice owner's authorization before generation</div>
+<div class="rx-zone gapz"><b>What was alleged</b><span>Consent was a self-declaration only;<br>other people's voices could be cloned</span></div>
+<div class="rx-zone det"><b>Detection · independent testing worked</b>Shown by testing and filed with the FTC and state AGs</div>
+<div class="rx-g g1"><div class="t">SIGN-UP</div><b>Account created with email and password</b></div>
+<div class="rx-g g2"><div class="t">CLONE</div><b>Voice registered with a checkbox and a name</b></div>
+<div class="rx-g g3"><div class="t">READ</div><b>Scam-style scripts read aloud without warning</b></div>
+<div class="rx-g g4"><div class="t">07-27</div><b>CFA publishes the complaint</b></div>
+</div>
+</figure>
 
-> Note: the facts here come from the complaint and press release CFA published. The filing asks agencies to investigate; it is neither litigation nor a finding of fact. The described safeguard failures are the results of the authors' own independent testing, and no response from Speechify was available at the time of writing. This Brief is not a condemnation of a particular vendor but an examination of a structure in which consent, as an attribute, is never verified at the moment of generation.
+The independent testing showed concretely that the steps were nominal, but it found a state in which generation was already possible. Other cases where consent or provenance was not checked before generation or publication are [JAPRO's likeness and voice survey](https://lemma.frame00.com/critical/briefs/105-japro-likeness-voice-ai-provenance/) and [Grok's deepfake consent](https://lemma.frame00.com/critical/briefs/050-grok-deepfake-consent-provenance/). The bypassable biometric step also echoes [the eKYC liveness bypass](https://lemma.frame00.com/critical/briefs/034-ekyc-liveness-bypass/).
 
-The response and industry movement after disclosure:
+## 4. What Lemma does
 
-- The filing pairs Section 5(a) of the FTC Act with state UDAP and digital forgery statutes, and argues Section 230 does not reach a voice-cloning generation pipeline — framing voice cloning as content creation rather than hosting.
-- As background, the complaint cites FTC data showing people lost $3.5 billion to impersonation scams in 2025, with reported losses up nearly threefold since 2020. Impersonation is now the most commonly reported type of fraud.
-- The complaint quotes Speechify's own Terms of Service and Privacy Policy — which state that employees do not monitor user content and that there is no systematic review of user material — as corroboration that content moderation is absent.
+**Lemma builds the check in section 3 into the point just before a voice is generated.** It does not judge voice quality or detect scam scripts; it checks, before generation, that the generation falls within what the voice's owner authorized.
 
-## 4. Why it wasn't stopped
+### Industries and operations to watch
 
-The failure here is not that safeguards were absent. It is that every safeguard provided merely receives a declaration, and **no layer independently verified that the voice's owner had authorized the use**. A checkbox is a declaration, not a proof. A name field is self-reported, not an identity. A script-reading check confirms that audio exists; it does not confirm whose voice it is or what that person agreed to.
+- **Industry · AI**: Services that generate speech or images that sound or look like a real person from their voice or likeness.
+- **Operation · Approvals**: Accepting the owner's consent for generation that uses someone else's voice or likeness.
 
-Detection worked. A consumer group and a law school created accounts, cloned both a private person and a public figure, had scam scripts read aloud, showed concretely that the safeguards were nominal, and took it to regulators. What was missing came earlier — the layer that, at the instant the audio is generated, verifies whether that generation falls within what the owner authorized.
+### Current controls vs Lemma
 
-> A self-certification checkbox costs a bad actor nothing. It constrains only honest users, never those with a motive to route around it. Presented as a safeguard, all it leaves with the recipient is the impression that verification occurred.
+The route in this case is column 1 (accepting the owner's consent when registering a voice clone). Column 2 is generating text read aloud in the cloned voice; the complaint says there was no review of the text's content.
 
-The same structure runs through [Brief 105 (JAPRO's likeness and voice survey)](/critical/briefs/105-japro-likeness-voice-ai-provenance/), where flawless takedown and monitoring still could not stop the next generation; [Brief 053 (YouTube's fake celebrities)](/critical/briefs/053-youtube-deepfake-likeness-provenance/), where likeness provenance was never fixed before publication; and [Brief 050 (Grok's deepfake consent)](/critical/briefs/050-grok-deepfake-consent-provenance/), where a default permission state passed as proof of consent. In each, whether consent was *declared* and whether consent is *being verified now* are different questions. The fact that a supposedly biometric check turned out to be trivially bypassable also echoes [Brief 034 (eKYC liveness bypass)](/critical/briefs/034-ekyc-liveness-bypass/).
+| Control | Registering a voice clone (owner's consent) | Reading text aloud in the cloned voice |
+| --- | --- | --- |
+| Self-declaration checkbox and name field | Not effective | Not relevant |
+| Script-reading check | Not effective | Not relevant |
+| **Lemma (pre-execution check)** | Effective | Partial |
 
-## 5. What proof would have changed
+According to the complaint, the checkbox and name field only receive a declaration and carry no technical verification. The script-reading check did not verify that what was read matched the script, and could be skipped by uploading pre-recorded audio. Lemma checks, before generation, an authorization issued by the voice's owner, not the uploader's declaration. For reading text aloud, binding a purpose or period to the authorization stops out-of-scope generation, but Lemma does not judge whether text within that scope is a scam.
 
-Proof-as-auth inserts one layer into the path ahead of each individual act of generating a cloned voice: an independent verification of the owner's authorization. Instead of treating a checkbox and a typed name as a stand-in for consent, it asks — before generation succeeds — whether this use of this voice falls within what its owner authorized. If the answer is "no proof of authorization," generation is refused up front.
+Note: Lemma's check works only when it is built in just before voice generation and the owner's authorization is issued and managed separately from the uploader. Generation within the scope the owner authorized passes this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-Lemma's design against this primitive:
+### Checklist
 
-- **Verify authorization before generation.** Bind voice cloning to a verifiable authorization issued by the owner rather than to a self-report. Requests carrying no proof are separated out before generation.
-- **Selective disclosure of the attribute.** Make "this use is authorized" provable on its own, without handing over the owner's identity or contact details, so that verifying consent does not require accumulating personal data.
-- **Scope the authorization.** Bind purpose, duration, and distribution scope into the proof, so out-of-scope generation is excluded up front and one grant does not become unlimited use.
-- **Bind provenance to the output.** Attach the authorization's provenance to the generated audio itself, in tamper-evident form, so recipients can check it independently.
+Three items to confirm for generation that uses someone else's voice or likeness
 
-Lemma is not a product that judges the quality of a cloned voice, nor one that detects scam scripts. Its scope is to verify the owner's authorization independently before audio is generated, and to exclude generation that lacks proof. Detection (surveys, independent testing, regulatory filings and enforcement) and pre-execution proof (an audit trail that independently verifies authorization before generation) are complementary, not alternatives. The first grasps and remedies harm that has occurred; the second establishes trust before harm can occur. For design detail see ["Proof-as-Auth: sign in without ever sending your key"](/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for scope, [Pillar 04 — Regulatory Attribute Proof](/pillars/#attribute).
+- Is the consent check only the uploader's self-declaration (a checkbox or a name)?
+- Do you check the voice owner's own authorization before generation?
+- Can you stop generation outside the authorized purpose, period or distribution before it runs?
+
+## 5. Facts and timeline
+
+- **Who filed**: The Consumer Federation of America (CFA) and students from UCLA Law School's Information Policy Lab, a project of the UCLA Institute for Technology, Law & Policy. Addressed to the Attorneys General of the United States and the Federal Trade Commission (FTC).
+- **Testing method**: The authors write in the complaint's methodology section that they created accounts and tested the free and paid tiers and Speechify Studio.
+- **Consent check**: The complaint says Speechify Studio's only mechanism for verifying ownership or consent is a self-certification checkbox and a name field, and that neither the voice owner's identity nor whether the uploader obtained consent is technically verified. It says a single actor can clone dozens of voices, each under a different fictitious identity.
+- **Account creation**: Only an email address and a password are needed, with no identity verification, it says.
+- **Text read aloud**: There is no content review, it says; in the authors' testing, scripts of the kind used in real scams (a USPS impersonation demanding a $1.45 shipping fee and card details, and a boss impersonation asking for five $100 Apple gift cards and the codes) were read aloud without any flag, warning or restriction.
+- **Legal basis claimed**: The complaint invokes Section 5(a) of the FTC Act, state unfair and deceptive practices (UDAP) laws and digital forgery statutes, and includes a section on why Section 230 of the Communications Decency Act does not immunize the pipeline.
+
+### Timeline
+
+- **2026-07-27**: Date of the complaint, addressed to the Attorneys General of the United States and the FTC.
+- **2026-07-27**: CFA issues a press release urging the FTC and state Attorneys General to investigate Speechify's voice-cloning practices.
+- **2026-07-27**: The complaint itself is published as a PDF on CFA's site. The document is headed "Draft Complaint"; this Brief relies on that published version.
+
+> The facts here rest on the complaint and press release CFA published. The complaint asks agencies to investigate; it is neither a lawsuit nor a finding of fact. The safeguard failures described are results of the authors' own independent testing, and Speechify's response had not been confirmed at the time of writing. This Brief does not blame any particular company. What has not been disclosed does not mean there were no controls.
+
+### After disclosure
+
+- **The complaint's argument**: It frames voice cloning as content creation rather than hosting, and argues that Section 230 does not reach a voice-cloning generation pipeline.
+- **Background figures**: Citing FTC data, the complaint says reported losses to impersonation scams reached $3.5 billion in 2025, nearly three times 2020, making impersonation the most commonly reported type of fraud.
+- **Terms of service**: The complaint quotes Speechify's Terms of Service and Privacy Policy, which state that employees do not monitor user content and that there is no systematic review of user material, as support for the absence of content review.
 
 ## 6. Sources
 
@@ -92,4 +152,4 @@ Lemma is not a product that judges the quality of a cloned voice, nor one that d
 - **FTC (background, primary)**: "FTC Data Show People Reported Losing $3.5 Billion to Imposter Scams in 2025" (2026-06) — <https://www.ftc.gov/news-events/news/press-releases/2026/06/ftc-data-show-people-reported-losing-3-point-5-billion-imposter-scams-2025>
 - **FBI / IC3 (background, primary)**: "Federal Bureau of Investigation Internet Crime Report 2025" (PDF) — <https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf>
 
-References: ["The last layer left for cyber defense in the age of AI"](/blog/detection-is-not-proof/) (Lemma, 2026-05) · [Pillar 04 — Regulatory Attribute Proof](/pillars/#attribute) · [Brief 105 (JAPRO's likeness and voice survey)](/critical/briefs/105-japro-likeness-voice-ai-provenance/) · [Brief 053 (YouTube's fake celebrities)](/critical/briefs/053-youtube-deepfake-likeness-provenance/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

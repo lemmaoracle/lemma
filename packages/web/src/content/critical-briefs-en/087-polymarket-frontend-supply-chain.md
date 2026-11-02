@@ -1,7 +1,7 @@
 ---
 brief_no: 87
-title: "Polymarket：正規サイトに信頼されたまま、第三者ベンダー経由で注入された JavaScript が利用者に偽の承認をさせた"
-title_en: "Polymarket: Malicious JavaScript Injected via a Compromised Third-Party Vendor Tricked Users Into Approving Fraudulent Transactions"
+title: "Polymarket：第三者ベンダーの依存から注入された JavaScript が、正規サイトで利用者に偽の承認を求めた(BleepingComputer ほかの報道)"
+title_en: "Polymarket: JavaScript injected through a third-party vendor dependency asked users for fake approvals on the real site (BleepingComputer and others)"
 pillar: "01-verifiable-origin"
 primary_category: "code-provenance"
 secondary_categories: ["identity-auth", "data-provenance"]
@@ -15,95 +15,138 @@ gate: "signing"
 version: "1.0"
 og_lead_ja: "Polymarket：第三者依存への JS 注入で利用者に偽承認、約300万ドル流出（コントラクトは無傷）"
 og_lead_en: "Polymarket: JS injected via a third-party dependency drove fake approvals, ~$3M drained (contracts intact)"
-gap_detected: "Polymarket's rapid disclosure, removal of the affected dependency, user notification and full reimbursement, and the fund tracing by PeckShield and Bubblemaps all operated."
-gap_missing: "There was no layer that independently verified, before execution, whether the front-end code running in the user's browser carried the legitimate provenance distributed by Polymarket, so the approval target was swapped from inside the legitimate domain."
-gap_fix: "Independently verify the provenance of the front-end code and the transaction being approved with Lemma before execution and approval, and do not start an approval session unless legitimate provenance is confirmed."
+layout: "report"
+sections: "proof"
+og_kicker_ja: "サイバー攻撃事例 · サプライチェーン"
+og_kicker_en: "CYBERATTACK · SUPPLY CHAIN"
+og_headline_ja: "正規のサイトで、\n偽の承認を求められた。\n<accent>約 300 万ドルが流出</accent>"
+og_headline_en: "A real site asked\nusers to approve fakes.\n<accent>About $3M drained.</accent>"
+key_figures:
+  - value: "~$3M"
+    label: "Crypto assets (pUSD) drained from users' wallets (reporting)"
+    tone: "alert"
+  - value: "Under 15"
+    unit: "accounts"
+    label: "Accounts that made the fraudulent approval and lost funds (reporting)"
+  - value: "~1,893"
+    unit: "ETH"
+    label: "What the stolen pUSD was swapped into, then bridged from Polygon to Ethereum (traced by PeckShield and Bubblemaps)"
+glossary:
+  - term: "Dependency component"
+    desc: "A part, such as a script, supplied by a third-party vendor and loaded by a website's front end. Once loaded, it runs in the browser with the same rights as the site's own code."
+  - term: "Wallet approval"
+    desc: "Signing a transaction in a crypto wallet to authorize it. An approved transaction can move assets out of the wallet."
+  - term: "pUSD"
+    desc: "Polymarket's settlement stablecoin (Polymarket USD, USDC-collateralized). ParionUSD and ParyonUSD in some reporting refer to the same token."
+insight:
+  slug: "real-domain-unchecked-code"
+  label: "Real domain, unchecked code"
+  quote: "Even code served from the real domain can swap what users are asked to approve, unless the site checks, before asking for approval, that the code is what its operator shipped."
 industries: ["finance", "supply-chain"]
 operations: ["approval"]
 controls:
   - slug: "ownership-check"
-    item: "Confirm the code running in the browser is really what Polymarket shipped"
+    item: "Check that the code running in the browser is what Polymarket shipped"
 attack_method: "supply-chain"
 impact: "About $3 million worth of assets stolen"
+takeaway: "JavaScript injected through a third-party vendor dependency asked users for fake approvals on the real site. Before asking for approval, check that the code running in the browser and the transaction to be approved are legitimate."
+self_check: "Before asking users for an approval, do you check that the code running in their browser is what you shipped?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-A user of the prediction-market platform Polymarket opened the legitimate site as usual, approved a transaction, and lost about $3 million worth of assets. Neither the smart contracts nor the backend were compromised. The attacker compromised a third-party vendor dependency component loaded by the front end and injected malicious JavaScript into Polymarket's legitimate site. That script ran in the user's browser and requested a fraudulent wallet approval in a form that looked, to the user, like a "legitimate operation." What was stolen was the platform's settlement stablecoin pUSD (Polymarket USD, USDC-collateralized), which was swapped into about 1,893 ETH and bridged from Polygon to Ethereum. The damage was confined to fewer than 15 accounts, but users had no means to confirm, before execution, whether "the front-end code now running in my browser is the legitimate one distributed by Polymarket." The post-discovery removal of the site dependency, user notification, and pledge of full reimbursement all functioned, but there was no layer that independently verified the provenance of the code before execution.
+The attacker compromised a third-party vendor dependency loaded by Polymarket's front end and injected JavaScript into the real site. When users opened the real site, the script ran in their browser and requested a fraudulent wallet approval that looked like a legitimate transaction. Polymarket's backend, servers and smart contracts were not compromised. <strong>Even code served from the real domain can swap what users are asked to approve, unless the site checks, before asking for approval, that the code is what its operator shipped.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Users' fraudulent wallet approvals (transaction signatures). Users approved, believing it was an operation on the real site, and the approved transactions withdrew pUSD from their wallets.
+- **What was not compromised**: Polymarket's backend, servers and smart contracts. The harm stayed within the front end and users' operations (Polymarket).
+- **What reached the receiving side**: In general, a browser runs a script served from the real domain as that site's code. What users see is the site's screen and the wallet's approval screen. Whether the code asking for approval is what the operator shipped cannot be told from the screen.
+- **Not disclosed**: Which vendor's dependency was compromised, and how. When the injection began and how long the script ran (reporting estimates "before 2026-06-26"). Attribution: no high-confidence attribution to a specific actor has been made.
 
-- **Subject**: The web front end of Polymarket (a crypto-based prediction-market platform) and its users' wallets
-- **Scale of loss**: About $3 million worth of crypto assets. Fewer than 15 accounts were affected
-- **Date of disclosure**: 2026-06-26 (disclosed by Polymarket; BleepingComputer and OffSeq Radar reported the same day, and Rescana published a structural analysis in late June 2026)
-- **Origin of the compromise**: A third-party vendor dependency component (a software dependency) loaded by the front end was compromised. In MITRE ATT&CK this corresponds to T1195.002 (Supply Chain Compromise: Compromise Software Dependencies and Development Tools)
-- **Core of the exploit**: Through the compromised dependency, malicious JavaScript was injected into Polymarket's legitimate site. When users visited the site, the script ran inside their browser and requested a fraudulent wallet approval in a form that looked like a "legitimate transaction" (T1059.007 JavaScript / T1189 Drive-by Compromise / T1566.002 phishing via service)
-- **Flow of funds**: What was stolen was Polymarket's settlement stablecoin pUSD ([Polymarket USD](https://docs.polymarket.com/concepts/pusd), USDC-collateralized; some reporting also writes it as ParionUSD/ParyonUSD, but this refers to the same token). The attacker swapped it into about 1,893 ETH and bridged it from Polygon to Ethereum (traced by PeckShield and Bubblemaps)
-- **Scope not compromised**: Polymarket's backend, servers, and smart contracts were not compromised. The damage was confined to the front end and user operations
-- **Response**: Polymarket promptly removed the affected dependency from its systems and notified affected users. It pledged full reimbursement
-- **Context**: The method is of the same type as Magecart-style JavaScript injection targeting e-commerce and crypto platforms, and no high-confidence attribution to a specific threat actor has been made
+## 3. What to check
 
-The incident came together as the following chain.
+Whatever the route, the condition for telling them apart is that, before asking users for approval, the site checks, separately from whether the domain is real, that the code running in the browser is what its operator shipped and that the transaction to be approved was created through the legitimate business flow.
 
-1. **Compromise of a third-party dependency**: A vendor-provided dependency component loaded by Polymarket's front end is compromised by the attacker. Polymarket's own codebase and servers are not compromised
-2. **JS injection into the legitimate site**: Via the compromised dependency, malicious JavaScript is delivered onto Polymarket's legitimate domain. From the user's perspective, the site remains legitimate
-3. **In-browser execution**: When a user visits Polymarket, the injected script runs in their browser. Simply reaching and operating the site is enough to be affected (drive-by)
-4. **Fake approval request**: The script requests a fraudulent wallet approval (transaction signature) in a form that looks, to the user, like a "legitimate transaction." The user approves it, believing it to be an operation on the legitimate site
-5. **Theft of assets**: The approved transaction withdraws pUSD from the user's wallet
-6. **Swapping and bridging of funds**: The attacker swaps the pUSD into about 1,893 ETH and bridges it from Polygon to Ethereum to consolidate the funds
-7. **Response**: Polymarket removes the affected dependency and notifies users and pledges full reimbursement. PeckShield and Bubblemaps trace the funds (an after-the-fact sequence that operates after the approval has gone through)
+- **Who approves**: The site operator. It registers the code it ships as its own, and registers only the approved versions of third-party dependencies.
+- **Where it is checked**: Before asking a user's wallet for approval. An approval request from code that does not match the registration is not started. The transaction to be approved is also checked, separately from what the screen shows, for whether it came through the legitimate flow.
+- **What is recorded**: Which code, at which version, asked for approval of which transaction. It shows only that "this code is what the operator shipped," without disclosing the whole delivery pipeline.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before asking users for approval, that the code running in the browser and the transaction to be approved are legitimate, and keeping a record. Detection means noticing after the approvals and the drain. Dates are those each party disclosed or published. The date the dependency was compromised has not been disclosed.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before asking for approval, check that the code and the transaction are legitimate</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>About $3M drained<br>from under 15 accounts</span></div>
+<div class="rx-zone det"><b>Detection · worked after the drain</b>Remove the dependency and trace the funds</div>
+<div class="rx-g g1"><div class="t">Before 06-26</div><b>A third-party dependency is compromised (estimated)</b></div>
+<div class="rx-g g2"><div class="t">06-26</div><b>Fake approvals are requested on the real site</b></div>
+<div class="rx-g g3"><div class="t">06-26</div><b>Polymarket discloses and removes the dependency</b></div>
+<div class="rx-g g4"><div class="t">06-29</div><b>Rescana publishes its analysis</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+Detection worked after the drain and carried forward the scoping of the damage and per-account reimbursement. A similar case, where what the approval screen showed and what was actually approved diverged, is [Bybit](/critical/briefs/081-bybit-safe-wallet-ui-injection/) (JavaScript injected into the Safe{Wallet} front end). A case where code riding on a trusted channel was contaminated is [the skimmer using Stripe's trusted channel](/critical/briefs/030-stripe-trusted-channel-skimmer/).
 
-- Before 2026-06-26 (estimated): The third-party vendor dependency loaded by the front end is compromised, and malicious JavaScript is injected into the legitimate site
-- 2026-06-26: The injected script runs in users' browsers, fewer than 15 accounts perform fraudulent wallet approvals, and about $3 million worth is drained. The pUSD is swapped into about 1,893 ETH and bridged Polygon→Ethereum
-- 2026-06-26: Polymarket discloses the case. BleepingComputer and OffSeq Radar report it. Polymarket pledges removal of the affected dependency and full reimbursement
-- Late June 2026: Rescana publishes a supply-chain structural analysis (citing the tracing by PeckShield and Bubblemaps)
+## 4. What Lemma does
 
-> Note: The scale and attribution draw on Polymarket's disclosure and external analyses (Rescana, BleepingComputer, PeckShield, Bubblemaps). This Brief records the values confirmable as of the time of investigation, avoids assertion, and makes the sources explicit. The stablecoin stolen is Polymarket's settlement pUSD (Polymarket USD, USDC-collateralized); ParionUSD/ParyonUSD in some reporting is a naming variation referring to the same token.
+**Lemma puts the check in section 03 at the step where users are asked for approval.** It does not replace checking that the domain is real; on top of that, before asking for approval, it checks that the code running in the browser is what the operator shipped and that the transaction to be approved came through the legitimate flow.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **Polymarket**: Disclosed the case and removed the affected third-party dependency from its systems. Notified affected users and pledged full reimbursement. Confirmed that the backend and smart contracts were not compromised
-- **Rescana**: Published a supply-chain structural analysis, presenting a mapping to MITRE ATT&CK (T1195.002 and others) and a generalization of third-party dependency risk
-- **PeckShield / Bubblemaps**: Traced the flow of funds, including the pUSD→ETH swap and the Polygon→Ethereum bridge
-- **Cross-industry point**: Because DeFi and crypto platforms have many third-party dependencies and user operations are mediated via web wallets, continuous auditing of front-end dependencies, integrity verification of delivered code, and user education (distinguishing suspicious approval requests) were again shared as points of defense
+- **Industry · Finance**: Services, such as crypto exchanges and prediction markets, that ask users' wallets for approval from a web front end.
+- **Industry · Supply chain**: Websites whose front end loads dependency components supplied by third-party vendors.
+- **Operation · Approvals**: Asking users to approve (sign) a transaction.
 
-"How to independently verify, before execution and separately from the legitimacy of the domain, the provenance of the code riding on a web front end" is expected to advance as a point of DeFi front-end design discussion in the wake of this case.
+### Current controls vs Lemma
 
----
+The route in this case is column 1 (the wallet approval requested by code injected into the real site). Column 2 is understanding the damage after the drain; here, removing the dependency and tracing the funds worked.
 
-## 4. Why it wasn't stopped
+| Control | Approval requested by injected code | Understanding the damage after the drain |
+| --- | --- | --- |
+| Domain legitimacy (TLS, how the URL looks) | Not effective | Not relevant |
+| Users checking the approval screen | Not effective | Not relevant |
+| Removing the dependency and tracing funds | Not effective | Effective |
+| **Lemma (pre-execution check)** | Effective | Partial |
 
-The central failure primitive is that **while it could be confirmed that the front-end code running in the user's browser was "delivered from the legitimate domain," whether "that code was the legitimate one distributed by Polymarket (its provenance)" was not independently verified before execution**. The legitimacy of the domain (TLS, the look of the URL) does not guarantee the provenance of the code riding on it. The attacker did not need to break the cryptography or Polymarket's servers, and instead intervened in "the provenance of the delivered code" — the third-party dependency mixed into the front end.
+Domain legitimacy shows where the site is, not whether the code riding on it is what the operator shipped. Users operated a real-looking screen on the real domain, and the object of approval was swapped from inside the site. Removing the dependency and tracing the funds carried forward the scoping of the damage and per-account reimbursement, but did not stop the withdrawals once the approvals went through. Lemma checks, before asking for approval, that the code running in the browser is what the operator shipped and that the transaction came through the legitimate flow. A record of which code asked for which approval is kept, so it can also help in understanding the damage afterwards.
 
-This incident shares its root with [Brief No.030](/critical/briefs/030-stripe-trusted-channel-skimmer/) (the Magecart case in which Stripe's trusted API infrastructure was repurposed for the delivery and storage of card-skimming code). In both, "the provenance of the code riding on a trusted channel" was contaminated, and malicious code reached users via a route that looked legitimate. With [Brief No.081](/critical/briefs/081-bybit-safe-wallet-ui-injection/) (Bybit, where JS injection into the Safe{Wallet} front end left signers unable to confirm "what they were signing"), it forms two sides of the same coin: the content displayed in the signing/approval UI and the object actually signed/approved diverged without being independently verified on the user's side. With [Brief No.004](/critical/briefs/004-megalodon-github-supply-chain/) (Megalodon, where malicious code was mixed into legitimate distribution artifacts via the GitHub supply chain), it connects through the structure of mixing malicious code into legitimate artifacts from the development/distribution upstream. With [Brief No.059](/critical/briefs/059-vercel-contextai-oauth/) (where OAuth handed to an AI tool became a direct intrusion path through a vendor compromise), it is adjacent in that trust in a third-party vendor became the propagation path of the compromise.
+Note: Lemma's check works only when it is built into the mechanism that asks users for approval, and the registration of shipped code and approved dependencies is managed outside the delivery path. If the registration itself is compromised, or malicious code sits inside an approved version of a dependency, this check can be passed. How the dependency was compromised has not been disclosed. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-Polymarket's rapid disclosure, removal of the affected dependency, user notification and pledge of full reimbursement, and the fund tracing by PeckShield and Bubblemaps are indispensable for grasping, containing, and remediating the harm, and this Brief does not deny that role. In fact, the scoping of the damage and the per-account reimbursement were carried forward by this detection and analysis. Detection did indeed function.
+### Checklist
 
-At the same time, detection does not change "what is executed and what is approved" on the receiving side (the user's browser that runs the front-end code, the person being asked to approve). The user operated a legitimate-looking UI on a legitimate domain, but had no means to confirm, before execution, whether "the front-end code now running is the legitimate one distributed by Polymarket." The malicious JS swapped the approval target from inside the legitimate site, outside the user's confirmation actions. The legitimacy of the domain proves "where the site is," but not "the provenance of the code riding on it." What was missing is a layer that, before the front-end code executes, independently verifies "whether this code carries the legitimate provenance distributed by Polymarket." Even if after-the-fact detection fires for fund tracing and reimbursement, it does not stop the withdrawal at the moment the approval goes through.
+Three things to confirm for organizations that ask users for approval from a web front end
 
----
+- Before asking for approval, do you check that the code running in users' browsers is what you shipped (including approved versions of third-party dependencies)?
+- Do you check, separately from what the screen shows, that the transaction to be approved came through the legitimate business flow?
+- Do you limit the third-party dependencies your front end loads to approved versions, and notice when they change?
 
-## 5. What proof would have changed
+## 5. Facts and timeline
 
-Pre-execution attestation fixes the provenance of the front-end code running in the user's browser and of the transaction being signed/approved, before execution and approval, as cryptographic proof that can be independently verified. It attests in advance that the delivered code "carries legitimate provenance," and does not start an approval session unless that provenance is confirmed. Without separating the confirmation of the legitimate domain (the detection-style "the site looks real") from the pre-execution attestation of the delivered code's provenance ("the code I am executing is the legitimate artifact"), and only when the two overlap, can asset operations across a web front end be placed on practical footing with confidence. Detection and pre-execution proof are not substitutes but **complements**.
+- **Service**: The web front end of Polymarket (a crypto-based prediction-market platform) and its users' wallets.
+- **Scale of loss**: About $3 million worth of crypto assets. Fewer than 15 accounts were affected.
+- **Origin of the compromise**: A third-party vendor dependency component (a software dependency) loaded by the front end was compromised. This corresponds to MITRE ATT&CK T1195.002 (Supply Chain Compromise: Compromise Software Dependencies and Development Tools) (Rescana).
+- **Method**: Through the compromised dependency, JavaScript was injected into Polymarket's real site. When users visited, the script ran in their browser and requested a fraudulent wallet approval that looked like a legitimate transaction (T1059.007 JavaScript, T1189 Drive-by Compromise, T1566.002 phishing via service; Rescana).
+- **Flow of funds**: What was stolen was Polymarket's settlement stablecoin pUSD ([Polymarket USD](https://docs.polymarket.com/concepts/pusd), USDC-collateralized). The attacker swapped it into about 1,893 ETH and bridged it from Polygon to Ethereum (traced by PeckShield and Bubblemaps).
+- **Not compromised**: Polymarket's backend, servers and smart contracts.
+- **Context**: The method is the same type as Magecart-style JavaScript injection aimed at e-commerce and crypto platforms, and no high-confidence attribution to a specific actor has been made.
 
-Against the gap between detection and proof this case exposed (even on a legitimate domain, the provenance of the delivered front-end code is not independently verified before execution and approval), Lemma proposes the following design.
+### Timeline
 
-- **Provenance proof of delivered code**: Fix the fact that the front-end code running in the user's browser "is a legitimate artifact" as a provenance proof that can be independently verified before execution, and exclude tampered/injected code in advance
-- **Fixing the provenance of the approval target**: Attest in advance, independently of the UI display, that the transaction being signed/approved "was generated through a legitimate business flow," and detect divergence between the display and the approval target before execution
-- **Domain legitimacy ≠ code provenance**: Do not conflate the fact that "the site is a legitimate domain" with the fact that "the code riding on it carries legitimate provenance," and make the latter the object of pre-execution attestation
-- **Selective disclosure**: Without disclosing the entire delivery pipeline, prove with minimal disclosure only that "this code carries legitimate provenance"
+- **Before 2026-06-26 (estimated)**: A third-party vendor dependency loaded by the front end is compromised, and JavaScript is injected into the real site.
+- **2026-06-26**: The injected script runs in users' browsers; fewer than 15 accounts make fraudulent approvals and about $3 million worth is drained. The pUSD is swapped into about 1,893 ETH and bridged from Polygon to Ethereum.
+- **2026-06-26**: Polymarket discloses the case. BleepingComputer and OffSeq Radar report it. Polymarket announces removal of the affected dependency and full reimbursement.
+- **2026-06-29**: Rescana publishes a structural analysis of the supply chain (citing the tracing by PeckShield and Bubblemaps).
 
-Detection (after-the-fact dependency removal, fund tracing, reimbursement) works toward remediation of harm, and pre-execution attestation (independent verification, before execution and approval, of the provenance of the code and the approval target) works toward establishing trust in asset operations across a web front end; the two operate complementarily.
+> The scale and attribution draw on Polymarket's disclosure and external analyses (Rescana, BleepingComputer, PeckShield, Bubblemaps). This Brief records the values confirmable at the time of investigation and makes the sources explicit. The stolen stablecoin is Polymarket's settlement pUSD (Polymarket USD, USDC-collateralized); ParionUSD and ParyonUSD in some reporting are naming variations of the same token. What has not been disclosed does not mean there were no controls.
 
----
+### After disclosure
+
+- **Polymarket**: Disclosed the case and removed the affected third-party dependency from its systems. Notified affected users and announced full reimbursement. Confirmed that the backend and smart contracts were not compromised.
+- **Rescana**: Published a structural analysis of the supply chain, mapping it to MITRE ATT&CK (T1195.002 and others) and generalizing the risk of third-party dependencies.
+- **PeckShield / Bubblemaps**: Traced the flow of funds, including the pUSD-to-ETH swap and the Polygon-to-Ethereum bridge.
+- **Industry point**: Because DeFi and crypto platforms have many third-party dependencies and users' operations pass through web wallets, continuous auditing of front-end dependencies, integrity checks of shipped code, and user awareness (how to spot suspicious approval requests) were again shared as points of defense.
 
 ## 6. Sources
 
@@ -113,4 +156,4 @@ Detection (after-the-fact dependency removal, fund tracing, reimbursement) works
 - **The Next Web**: “Polymarket confirms hackers stole $3 million from users after third-party vendor was compromised” (2026-06) — <https://thenextweb.com/news/polymarket-hack-3-million-stolen-third-party-breach>
 - **TechRadar Pro**: “Prediction market giant Polymarket hit by cyberattack…” (2026-06) — <https://www.techradar.com/pro/security/prediction-market-giant-polymarket-hit-by-cyberattack-with-company-confirming-user-funds-stolen-here-is-what-we-know>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance), [Seal](https://lemma.frame00.com/seal/)
+References: ["The last layer left in AI-era cyber defense"](https://lemma.frame00.com/blog/detection-is-not-proof/)
