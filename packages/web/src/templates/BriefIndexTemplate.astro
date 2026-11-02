@@ -1551,6 +1551,50 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     .cb-page:not([data-variant="archive"]) {
       padding-top: 8px;
     }
+    /* スマホの崩れの直し（2026-11-02）：セルフチェックの帯は、文を下の段へ送る。
+       点検カードは、旧い帯の「PR ·」を出さず、本文も隠さない。新着の絞り込みは、折り返しで並べる。 */
+    .ix-self {
+      flex-wrap: wrap;
+      gap: 8px 12px;
+    }
+    .ix-self b {
+      order: 3;
+      flex: 1 1 100%;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .ix-self-go {
+      margin-left: auto;
+    }
+    .ix-banner--card {
+      padding: 18px 18px 16px;
+    }
+    .ix-banner--card .ix-banner-k::before {
+      content: none;
+    }
+    .ix-banner--card .ix-banner-k {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--tx-soft);
+    }
+    .ix-banner--card .ix-banner-b {
+      display: block;
+    }
+    .ix-banner--card b {
+      font-family: var(--font-serif-jp);
+      font-size: 18px;
+    }
+    .ix-rest .ix-filter {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .ix-rest .ix-filter .ix-q {
+      flex: 1 1 100%;
+    }
+    .ix-rest .ix-filter .ix-q input {
+      width: 100%;
+    }
   }
 
 
