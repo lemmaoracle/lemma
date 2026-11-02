@@ -180,7 +180,7 @@ const pinBriefs = BRIEF_PICKS.map((id) => briefById.get(id))
 const pinIds = new Set(pinBriefs.map((b) => b.id));
 /* 新着：公開日の新しい順に自動で NEW_COUNT 本（ピンを除く）。同じ日の公開は番号の大きい順。
    「新着」はひとつにまとめた（2026-11-02）：上の注目 1 本のほかは、同じ形のカードで続ける。 */
-const NEW_COUNT = 12;
+const NEW_COUNT = 10;
 const restLatest = [...briefsByPublishedDesc]
   .sort(
     (a, b) =>
@@ -1075,6 +1075,13 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
      上に国・業界・手口のチップと日付、真ん中に題、下に影響を小さな見出し付きで。 */
   .ix-rest .ix-filter {
     margin-bottom: 18px;
+  }
+  /* トップの新着では、影響の一文を 2 行までにする（アーカイブは全文）。 */
+  .ix-rest .ix-row-i {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .ix-row-top {
     justify-content: flex-start;
