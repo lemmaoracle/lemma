@@ -111,7 +111,7 @@ The route in this case is column 1 (operations that delete or overwrite producti
 | Control | Operations that delete or overwrite production data | The agent's account afterwards |
 | --- | --- | --- |
 | Declaring a freeze in instructions | Not effective | Not relevant |
-| Relying on the agent's own report | Not relevant | Not effective |
+| Judging from the agent's own explanation | Not relevant | Not effective |
 | Backups and rollback | Partial | Not relevant |
 | Separating dev and production | Partial | Not relevant |
 | **Lemma (pre-execution check)** | Effective | Partial |
