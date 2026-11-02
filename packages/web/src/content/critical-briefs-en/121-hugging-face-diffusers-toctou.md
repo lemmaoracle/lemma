@@ -1,7 +1,7 @@
 ---
 brief_no: 121
-title: "Hugging Face Diffusers「FaceHugger」：モデルを読み込むだけで任意コードが実行された — 安全ガードは最初の1回しか確かめていなかった（Zafran / CVE-2026-44827 他）"
-title_en: "\"FaceHugger\" in Hugging Face Diffusers: loading a model ran arbitrary code — the safeguard only checked the first fetch (Zafran / CVE-2026-44827 et al.)"
+title: "Hugging Face Diffusers「FaceHugger」：モデルを読み込むだけで任意コードが実行された(Zafran の調査、CVE-2026-44827 他)"
+title_en: "Hugging Face Diffusers \"FaceHugger\": loading a model was enough to run arbitrary code (Zafran research, CVE-2026-44827 et al.)"
 pillar: "02-verifiable-ai"
 primary_category: "model-supply-chain"
 secondary_categories: ["code-provenance", "agent-infrastructure"]
@@ -15,72 +15,133 @@ gate: "intake"
 version: "1.0"
 og_lead_ja: "Hugging Face Diffusers「FaceHugger」でモデル読込時にコード実行（CVE-2026-44827 他）"
 og_lead_en: "\"FaceHugger\" flaws in Hugging Face Diffusers let a malicious model repo run code on load"
-gap_detected: "A safeguard existed and was on by default: trust_remote_code, built to stop unreviewed custom code from running."
-gap_missing: "The guard checked only the first fetch — the config — and never re-verified the artifact that was actually loaded and executed."
-gap_fix: "Require the provenance and integrity of the artifact that actually executes as independently verifiable proof, and block loads that do not match it before execution."
+search_title: "Diffusers の FaceHugger：読込でコード実行"
+search_description: "Hugging Face の Diffusers で、悪性のモデルリポジトリを読み込むだけで任意コードが実行される欠陥群 FaceHugger が公表された（Zafran）。何が起きたか、なぜ安全ガードを通ったか、対策を整理。"
+layout: "report"
+sections: "proof"
+og_kicker_ja: "AI ライブラリの脆弱性 · モデル読込で実行"
+og_kicker_en: "AI LIBRARY FLAW · CODE RUNS ON LOAD"
+og_headline_ja: "モデルを読み込むだけで、\n任意コードが実行された。\n<accent>CVE 3 件</accent>"
+og_headline_en: "Just loading a model\nran arbitrary code.\n<accent>Three CVEs</accent>"
+key_figures:
+  - value: "3"
+    unit: "CVEs"
+    label: "Flaws tracked as CVEs, scored CVSS 8.8, 7.5 and 8.8 (by GitHub as CNA)"
+    tone: "alert"
+  - value: "~7M"
+    label: "Monthly Diffusers downloads, running inside production AI pipelines and CI/CD"
+  - value: "03-19 → 05-01"
+    label: "From Zafran's report of the first two flaws to the release of the fixed Diffusers 0.38.0"
+glossary:
+  - term: "trust_remote_code"
+    desc: "The safeguard built to stop unreviewed custom code from running. It is off by default (False), refusing custom code."
+  - term: "TOCTOU"
+    desc: "Time-of-check to time-of-use: if the target can change after it is checked, the check stops meaning anything."
+insight:
+  slug: "checked-is-not-what-runs"
+  label: "What was checked is not what runs"
+  quote: "Unless the file about to run is checked, immediately before it runs, against the file that was checked, different code runs with the safeguard's approval."
 industries: ["ai", "developers"]
 controls:
   - slug: "hold-unverified"
     item: "Do not execute until the files the guard checked are confirmed to be the files being run"
 attack_method: "supply-chain"
+takeaway: "The trust_remote_code safeguard applied only to the config fetch, so code that diverged from it at load time still ran as if it had passed the guard."
+self_check: "When you load a model, do you check that the files the guard checked are the files that actually run?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-On July 27, 2026, security firm **Zafran** disclosed a set of flaws — collectively named **FaceHugger** — in **Hugging Face Diffusers** that let a malicious model repository run arbitrary Python on a user's machine at load time. The cause was a time-of-check-to-time-of-use (TOCTOU) gap: model downloads split into two non-atomic HTTP requests, and the `trust_remote_code` safeguard ran against only the first. The guard was in place and running. **What was missing is the layer that confirms that the artifact the guard checked is the artifact that actually runs.**
+Merely loading a malicious model repository ran arbitrary Python on the user's machine. The `trust_remote_code` safeguard, built to stop unreviewed code, refused custom code by default. But a model download is split into two non-atomic HTTP requests, a config fetch and a body fetch, and the guard ran against only the first (Zafran). <strong>Unless the file about to run is checked, immediately before it runs, against the file that was checked, different code runs with the safeguard's approval.</strong>
 
-## 2. What happened
+## 2. What got through
 
-- The target is Diffusers, Hugging Face's diffusion-model library. Anyone calling `DiffusionPipeline.from_pretrained` with custom pipelines is affected; loading a malicious model repository quietly executes attacker code. The library draws roughly seven million downloads a month — close to 200,000 a day — sitting inside production AI pipelines and CI/CD systems.
-- Three CVEs track the issue. **CVE-2026-44827** (CVSS 8.8) — code injection via the default-resolved filename `None.py` loaded as custom pipeline code. **CVE-2026-45804** (CVSS 7.5) — a race condition between the `hf_hub_download` and `snapshot_download` calls, with the configuration rewritten in the interval between them. **CVE-2026-44513** (CVSS 8.8) — three further variants sharing the same root cause: cross-repository pipeline loading, loads from a local snapshot, and malicious custom components.
-- All of them bypass `trust_remote_code` — the safeguard built to stop unreviewed custom code from executing, which is off by default (`False`).
+- **What got through**: Loading a custom pipeline through `DiffusionPipeline.from_pretrained`. Once what the guard inspected was made to diverge from what actually loads, the substituted code ran with the "safe" status the guard had already conferred (Zafran).
+- **What was stopped**: Nothing. The `trust_remote_code` check ran, but it covered only the first request, the config (Zafran).
+- **How the divergence is made**: In the race-condition variant (CVE-2026-45804), the config is swapped in the window after the check and before the body fetch. The other variants need no timing: they create the same divergence through the default resolution of `None.py`, cross-repository pipeline loading, loads from a local snapshot, or malicious custom components (Zafran).
+- **What reached the receiving side**: In general, the side loading a model receives a name, a model card, a download count, and the fetched files. None of those show the provenance of the code about to run. The substitution happens inside the trusted distribution path itself.
+- **Not disclosed**: Whether, and in how many environments, a malicious repository was actually loaded. As of this Brief's publication, no widespread in-the-wild exploitation has been reported.
 
-The bypass works through the following chain.
+## 3. What to check
 
-1. A model download is split into a config fetch and a body fetch — two HTTP requests rather than one atomic operation.
-2. The `trust_remote_code` check applies only to the first request, the config.
-3. The attacker makes what the guard inspected diverge from what actually loads. In the race-condition variant (CVE-2026-45804) the config is swapped in the window between the check and the body fetch — Zafran measured that window at roughly 0.3 seconds, and the exploit needs an uncached first download. Even so, Zafran notes that on a heavily used repository an attacker can still win the race often enough, by briefly publishing a malicious config and then reverting it. The other variants need no timing at all: they create the same divergence through the default resolution of `None.py`, or through cross-repository and local-snapshot loads.
-4. The substituted code runs with the "safe" status the guard already conferred.
+Whatever the route, the condition for telling them apart is that, after the fetch completes and immediately before execution, the side loading the model checks that the code and weights actually loading are the ones that were checked, issued unaltered by the publisher they claim.
 
-## 3. Timeline — disclosure and response
+- **Who approves**: The model's publisher, and the user or organization that decides whose models may be loaded. A repository's location, reputation, or download count is not an approval.
+- **Where it is checked**: After the fetch completes, immediately before the code runs. What is checked is the hash of the code and weights that actually load, not the model card or the name. Anything that does not match is held, not loaded.
+- **What is recorded**: Which code and weights were loaded (or held), on which publisher's confirmation, and when. Later, it shows which environment ran what.
 
-- 2026-03-19: Zafran reports the first two flaws to Hugging Face.
-- 2026-05-01: Diffusers 0.38.0 ships with the fix.
-- 2026-05: the CVEs are published following responsible disclosure.
-- 2026-07-27: Zafran Labs (Gal Zaban, Ido Shani) publishes the technical detail.
-- 2026-08-03: The Hacker News, Cybersecurity News and others report on it, and coverage spreads.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before a model's code runs, that the code and weights loading are the ones that were checked and that the publisher is who it claims, and keeping a record. Detection means researchers finding and reporting the flaw. Dates are those each party reported or published.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>After the fetch and immediately before execution, check that the code and weights loading match what was checked</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Substituted code ran with the guard's approval<br>All three CVEs bypass trust_remote_code</span></div>
+<div class="rx-zone det"><b>Detection · researchers found it</b>Zafran reported it; 0.38.0 closed the known bypass paths</div>
+<div class="rx-g g1"><div class="t">2026-03-19</div><b>Zafran reports the first two</b></div>
+<div class="rx-g g2"><div class="t">2026-05-01</div><b>Diffusers 0.38.0 fixes them</b></div>
+<div class="rx-g g3"><div class="t">2026-07-27</div><b>Zafran publishes the detail</b></div>
+<div class="rx-g g4"><div class="t">2026-08-03</div><b>Coverage spreads</b></div>
+</div>
+</figure>
 
-> All three CVSS scores are the assessment of the CNA, GitHub. NVD's own evaluation status differs by CVE: as of writing, CVE-2026-44827 is Analyzed, CVE-2026-44513 is Modified, and CVE-2026-45804 is Awaiting Analysis. This was responsible disclosure; as of publication no widespread in-the-wild exploitation has been reported.
+The guard was running and refused custom code by default. What was missing is the layer that checks that the artifact seen at the moment of the check is the artifact run at the moment of execution. It has the same shape as [Brief 116](/critical/briefs/116-open-oss-privacy-filter-fake-model/) (a fake OSS privacy filter), where trending and download counts stood in for provenance, and [Brief 090](/critical/briefs/090-air-fake-agent-skill-toctou/) (a fake AIR agent skill), where contents changed after passing a scanner. Here the target changed between check and execution.
 
-The response and industry movement after disclosure:
+## 4. What Lemma does
 
-- Diffusers 0.38.0 relocated the security checks to the **dynamic-module loading chokepoint**, so that what is checked and what is executed are the same object, closing the known bypass paths. Users are advised to upgrade and to pin repository revisions.
-- Zafran also disclosed a parallel flaw in Hugging Face's `transformers`, where a pinned commit hash fails to propagate, letting an attacker swap in malicious code after `trust_remote_code` approval — the same check-then-use gap.
-- Comparable load-time code execution had already surfaced in other frameworks in March and April 2026, ahead of this disclosure: an equivalent `trust_remote_code` bypass in vLLM in March, and InstructLab hardcoding `trust_remote_code=True` in April. "Loading a model can execute code" is not specific to diffusion models.
+**Lemma puts the check in section 03 immediately before a model's code runs.** It does not tell good models from bad or judge whether code is dangerous; before execution, it checks that the code and weights actually loading match what a verified publisher issued.
 
-## 4. Why it wasn't stopped
+### Industries and operations to watch
 
-The failure here is neither a missing safeguard nor a malfunctioning one. **There was no layer that independently confirmed that what the guard checked and what actually executes are the same thing.**
+- **Industry · AI**: Organizations that fetch models from public repositories such as Hugging Face and load them in production AI pipelines.
+- **Industry · Developers & agent operations**: Developers and organizations that load models, including custom pipelines, inside CI/CD.
 
-`trust_remote_code` exists to stop unreviewed code from running, and it refused custom code by default. Detection worked. What was missing came earlier — any guarantee that the artifact seen at the moment of the check is the artifact executed at the moment of the load.
+### Current controls vs Lemma
 
-> TOCTOU makes a check meaningless whenever the target can change between check and use. The guard does not lie. The thing it checked simply no longer exists.
+The route in this case is a divergence between what the guard checked and what loads afterwards, through variants that use timing and variants that do not.
 
-Models ship wrapped in a name, a card, and a download count. None of those prove the provenance of the code about to run. The substitution happens inside the "trusted" distribution path itself. This pushes the lesson of [Brief 116](/critical/briefs/116-open-oss-privacy-filter-fake-model/) — trending and download counts are not a substitute for provenance — all the way to integrity at the moment of execution, and it is continuous with the timing gap in [Brief 090](/critical/briefs/090-air-fake-agent-skill-toctou/), where the contents change after passing a scanner.
+| Control | Config swapped in a timing window (CVE-2026-45804) | Divergence without timing (`None.py`, cross-repository, local snapshot) |
+| --- | --- | --- |
+| `trust_remote_code` (off by default) | Not effective | Not effective |
+| Upgrading to 0.38.0 (checks moved to the dynamic-module loading chokepoint) | Effective | Effective |
+| Pinning repository revisions | Partial | Partial |
+| **Lemma (pre-execution check)** | Effective | Effective |
 
-## 5. What proof would have changed
+`trust_remote_code` was bypassed in all three CVEs. Diffusers 0.38.0 moved the security checks to the dynamic-module loading chokepoint, so that what is checked and what runs sit at the same point, closing the known bypass paths; it does not reach environments that have not upgraded. Pinning revisions is recommended, but in the parallel `transformers` flaw Zafran disclosed, a pinned commit hash failed to propagate, letting malicious code be swapped in after `trust_remote_code` approval. Lemma checks the code and weights that actually load, not the name or location, before they run. A record of each load is also kept, so which environment ran what can be confirmed later.
 
-Proof-as-auth inserts one layer into the path ahead of each individual load of a model: an independent verification of the provenance of the artifact that is about to execute. Rather than treating a repository's location or reputation as a stand-in for provenance, it establishes — before execution can proceed — whether this code and these weights were issued by the publisher they claim, unaltered. The placement is the point: not in the window between check and execution where the swap happens, but immediately before execution.
+Note: Lemma's check works only when it is built into the step that loads the model, and the approved publishers and the hashes of code and weights allowed to run are managed outside the loading side. If an approved publisher itself issues malicious code, it can pass. Lemma does not change Diffusers itself. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-Lemma's design against this primitive:
+### Checklist
 
-- **Bind provenance to the executing artifact.** Attach provenance and issuer proof to the hash of the code and weights that actually load — not to the model card or the name.
-- **Verify immediately before loading.** After the fetch completes and before execution begins, confirm the artifact matches verified provenance, closing the gap between check and use.
-- **Verify the issuer independently.** Confirm the publisher's identity independently of where the repository sits.
-- **Execute with least privilege.** Confine the model-loading process to a scope that does not presume code execution.
+Three things to confirm for organizations that load models
 
-Lemma is not a product that tells good models from bad, nor one that judges whether code is dangerous. Its scope is to verify the provenance of the executing artifact before it runs, and to hold back loads whose artifact does not match its proof. Scanners and guards (`trust_remote_code`, revision pinning, repository monitoring) and pre-execution proof (an audit trail confirming artifact identity immediately before execution) are complementary, not alternatives. The first rejects known danger; the second closes the one thing detection structurally cannot reach — the drift between what was checked and what runs. For the complementarity framing see ["The last layer left for cyber defense in the age of AI"](/blog/detection-is-not-proof/) (Lemma, 2026-05); for design detail, ["Proof-as-Auth: sign in without ever sending your key"](/blog/proof-as-auth-sign-in-without-sending-your-key/); for scope, [Pillar 02 — Verifiable AI](/pillars/#inference).
+- Do you decide whose models may be loaded, and confirm that a model was issued by that publisher separately from its name and download count?
+- Have you upgraded Diffusers to 0.38.0 or later and pinned the revisions of the repositories you load?
+- Do you confine the model-loading process to a scope of permissions that does not presume code execution?
+
+## 5. Facts and timeline
+
+- **Affected product**: Hugging Face's Diffusers, a library for diffusion models. Anyone calling `DiffusionPipeline.from_pretrained` with custom pipelines is affected; loading a malicious model repository quietly executes attacker code. Roughly seven million downloads a month, close to 200,000 a day.
+- **Discovered by**: Security firm Zafran (Gal Zaban and Ido Shani of Zafran Labs), under the collective name FaceHugger.
+- **Vulnerabilities**: **CVE-2026-44827** (CVSS 8.8): code injection via the default-resolved filename `None.py` loaded as custom pipeline code. **CVE-2026-45804** (CVSS 7.5): a race condition between the `hf_hub_download` and `snapshot_download` calls, with the configuration rewritten in between. **CVE-2026-44513** (CVSS 8.8): three further variants sharing the same root cause: cross-repository pipeline loading, loads from a local snapshot, and malicious custom components.
+- **The bypass chain (Zafran)**: (1) A model download is split into a config fetch and a body fetch, two HTTP requests. (2) The `trust_remote_code` check applies only to the first, the config. (3) What the guard inspected is made to diverge from what actually loads. (4) The substituted code runs with the "safe" status the guard already conferred.
+- **Race-condition window (Zafran)**: Zafran measured the swap window at roughly 0.3 seconds, and the exploit needs an uncached first download. Even so, Zafran notes that on a heavily used repository an attacker can still win often enough by briefly publishing a malicious config and then reverting it.
+
+### Timeline
+
+- **2026-03-19**: Zafran reports the first two flaws to Hugging Face.
+- **2026-05-01**: Diffusers 0.38.0 ships with the fix.
+- **2026-05**: The CVEs are published following responsible disclosure.
+- **2026-07-27**: Zafran Labs (Gal Zaban, Ido Shani) publishes the technical detail.
+- **2026-08-03**: The Hacker News, Cybersecurity News and others report on it, and coverage spreads.
+
+> All three CVSS scores are the assessment of the CNA, GitHub. NVD's own evaluation status differs by CVE: as of writing, CVE-2026-44827 is Analyzed, CVE-2026-44513 is Modified, and CVE-2026-45804 is Awaiting Analysis. This was responsible disclosure; as of publication no widespread in-the-wild exploitation has been reported. What has not been disclosed does not mean there were no controls.
+
+### After disclosure
+
+- **Diffusers**: 0.38.0 relocated the security checks to the dynamic-module loading chokepoint, so that what is checked and what is executed are the same object, closing the known bypass paths. Users are advised to upgrade and to pin repository revisions.
+- **transformers**: Zafran also disclosed a parallel flaw in Hugging Face's `transformers`, where a pinned commit hash fails to propagate, letting an attacker swap in malicious code after `trust_remote_code` approval.
+- **Earlier comparable cases**: An equivalent `trust_remote_code` bypass in vLLM in March 2026, and InstructLab hardcoding `trust_remote_code=True` in April. Loading a model can amount to executing code beyond diffusion models.
 
 ## 6. Sources
 
@@ -92,4 +153,4 @@ Lemma is not a product that tells good models from bad, nor one that judges whet
 - **RAXE Labs (earlier sibling case, independent analysis)**: "RAXE-2026-044: vLLM Hardcoded trust_remote_code Bypass" (CVE-2026-27893, 2026-03-27) — <https://raxe.ai/labs/advisories/RAXE-2026-044>
 - **TheHackerWire (earlier sibling case)**: "InstructLab RCE via Malicious HuggingFace Models" (CVE-2026-6859, 2026-04-22) — <https://www.thehackerwire.com/instructlab-rce-via-malicious-huggingface-models-cve-2026-6859/>
 
-References: ["The last layer left for cyber defense in the age of AI"](/blog/detection-is-not-proof/) (Lemma, 2026-05) · [Pillar 02 — Verifiable AI](/pillars/#inference) · [Brief 116 (fake OSS privacy filter)](/critical/briefs/116-open-oss-privacy-filter-fake-model/) · [Brief 090 (AIR fake agent skill)](/critical/briefs/090-air-fake-agent-skill-toctou/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

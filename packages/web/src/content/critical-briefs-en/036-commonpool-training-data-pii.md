@@ -1,7 +1,7 @@
 ---
 brief_no: 36
-title: "128 億枚の AI 学習データに、パスポート・履歴書・顔が混入していた — 学習データの来歴と同意が、収集の時点で検証されていなかった"
-title_en: "12.8 Billion Training Images Contained Passports, Résumés, and Faces — The Provenance and Consent of Training Data Were Never Verified at Collection"
+title: "DataComp CommonPool：公開の AI 学習データに、パスポート・履歴書・顔が含まれていた(arXiv:2506.17185)"
+title_en: "DataComp CommonPool: A public AI training dataset contained passports, résumés and faces (arXiv:2506.17185)"
 pillar: "01-verifiable-origin"
 primary_category: "training-data-provenance"
 secondary_categories: ["data-provenance", "attribute-proof-bypass"]
@@ -12,95 +12,142 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["008-discord-scraping", "011-synthid-watermark-reverse-engineering"]
 version: "1.0"
 status: published
+search_title: "CommonPool の個人情報混入：AI 学習データの監査"
+search_description: "公開 AI 学習データセット DataComp CommonPool に、パスポート・履歴書・顔など個人情報が含まれていた（研究チームの監査・arXiv:2506.17185）。何が起きたか、なぜ事後のフィルタで除ききれないか、対策を整理。"
+og_lead_ja: "DataComp CommonPool の 128 億ペアの AI 学習データに、パスポート・履歴書・顔が含まれていたと研究チームが報告"
+og_lead_en: "Researchers report that DataComp CommonPool's 12.8B training pairs contained passports, résumés and faces"
+layout: "report"
+sections: "proof"
 gate: "intake"
-og_lead_ja: "128 億枚の AI 学習データに ID・履歴書・顔が混入 — DataComp CommonPool"
-og_lead_en: "12.8B training images contained passports, résumés, faces — CommonPool"
-gap_detected: "An independent researcher audit made the contamination visible, and improvements to automatic face blurring and PII detection filters were advanced."
-gap_missing: "There was no layer to confirm at collection time whether each item had the provenance and consent to be used for training, and after-the-fact mechanical filters could not cover everything (a 0.1% sample alone leaked over 800 faces)."
-gap_fix: "Rather than asking whether it is public, independently verify with Lemma that each item has the provenance and consent to be used for training, and prevent it up front."
+og_kicker_ja: "AI の事例 · 学習データの個人情報"
+og_kicker_en: "AI CASE · PERSONAL DATA IN TRAINING SETS"
+og_headline_ja: "AI の学習データに、\n身分証や履歴書、顔。\n<accent>ぼかしを逃れた顔 800 超</accent>"
+og_headline_en: "AI training data held\nIDs, résumés and faces.\n<accent>800+ faces evaded blurring</accent>"
+key_figures:
+  - value: "800+"
+    unit: "faces"
+    label: "Faces that escaped automatic blurring in a 0.1% sample; about 102 million estimated overall (the research team)"
+    tone: "alert"
+  - value: "12.8"
+    unit: "billion pairs"
+    label: "Image-text pairs in DataComp CommonPool (released 2023), built on material Common Crawl collected in 2014–2022"
+  - value: "0.1%"
+    label: "Share of the dataset the research team audited; thousands of valid ID documents and over 800 résumés and cover letters were found"
+glossary:
+  - term: "DataComp CommonPool"
+    desc: "An AI training dataset of image-text pairs released in 2023; the successor to LAION-5B."
+  - term: "Common Crawl"
+    desc: "An effort that collects the public web at scale. CommonPool is built on material it collected in 2014–2022."
+  - term: "PII string filter"
+    desc: "A filter that searches text for personal data with a fixed format, such as email addresses or Social Security numbers, and removes it."
+insight:
+  slug: "public-is-not-consent"
+  label: "Being public is not consent to train"
+  quote: "Even when material is public, unless the provenance and consent to use it for training are checked before ingestion, personal data that later filters cannot fully remove stays in the dataset."
 industries: ["ai"]
+operations: ["disclosure"]
 controls:
   - slug: "ownership-check"
-    item: "Check that each item has the provenance and consent to be used for training"
-impact: "Over 800 faces escaped blurring in a 0.1% sample alone"
+    item: "Check, before ingestion, that each item has the provenance and consent to be used for training"
+impact: "In a 0.1% sample, over 800 faces had escaped automatic blurring (the research team's audit)"
+takeaway: "The research team's audit found personal data that had slipped past after-the-fact filters such as face blurring. Check each item's provenance and consent before it goes into training data."
+self_check: "Before ingesting data for training or analysis, do you check that each item has the provenance and consent for that use?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-DataComp CommonPool, one of the largest public AI training datasets, was reported to contain large volumes of real individuals' personal data — passports, résumés, faces. Independent audit made it visible, but after-the-fact PII filtering cannot guarantee coverage: a 0.1% sample alone leaked over 800 faces. What was missing was a layer to confirm, at collection time, whether each item had the provenance and consent for training; instead it was fixed at scale and propagates downstream irrecoverably.
+According to the research team's audit, image-text pairs collected from the public web included real people's ID documents, résumés and faces, and some faces had escaped the automatic blurring the curators applied. Filters for known PII strings such as email addresses were reportedly not applied. The scale is an estimate from a sample audit, not a full count. <strong>Even when material is public, unless the provenance and consent to use it for training are checked before ingestion, personal data that later filters cannot fully remove stays in the dataset.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Ingesting image-text pairs collected from the public web into a training dataset, and releasing it. After automatic face blurring, it was released as a dataset anyone could use for training (the research team's audit; reporting by MIT Technology Review).
+- **What the receiving side gets**: In general, material collected from the web arrives with images and text, but not with provenance saying whose material it is, under what consent, and for what scope of use it was published. The ingesting side receives nothing on which to judge whether it may be used for training.
+- **After-the-fact filters**: Automatic face blurring was applied, but over 800 faces in the sample escaped detection. Filters for known PII strings such as emails and Social Security numbers were not applied, the research team reports.
+- **Not disclosed**: How much personal data actually reached downstream generative models and derivatives. The size of the problem across the whole dataset (estimated from a sample; not counted in full).
 
-- **Target**: DataComp CommonPool (released 2023, 12.8 billion image-text pairs; built on material that Common Crawl web-scraped in 2014–2022; successor to LAION-5B)
-- **Disclosure**: 2025-07-18, the research team's audit results (arXiv:2506.17185); reported by MIT Technology Review
-- **Findings**: in an audit of 0.1% of the dataset, thousands of valid ID documents (credit cards, driver's licenses, passports, birth certificates) and over 800 résumés/cover letters (real existence confirmed via LinkedIn) were found; personal images are estimated to number in the hundreds of millions overall
-- **Gaps in privacy measures**: the curators applied automatic face blurring, but over 800 faces escaped detection in the sample, with an estimated ~102 million faces missed overall; filters for known PII strings such as emails and SSNs were not applied
-- **Propagation**: CommonPool is the successor to LAION-5B and sits in the lineage that trained Stable Diffusion, Midjourney, and others; PII contamination of downstream generative models and derivatives propagates with high likelihood
-- **Positioning**: not an attack incident, but a trust-layer risk event of the AI era (the absence of provenance and consent in training data); a training-data-provenance case following [Brief 008](/critical/briefs/008-discord-scraping/) (Discord scraping)
+## 3. What to check
 
-(This is not an attack but a risk event that exposed the absence of provenance and consent in training data. The confirmed structure is recorded below.)
+The condition that holds whatever the route is this: before material goes into a dataset, check that it has the provenance and consent to be used for training.
 
-- 2014–2022: Common Crawl broadly web-scrapes (images and text on the public web)
-- 2023: DataComp CommonPool is released at 12.8 billion pairs, with privacy measures such as automatic face blurring applied
-- 2025-07-18: the research team publishes the results of a 0.1% audit (arXiv:2506.17185), reporting the large-scale contamination by ID documents, résumés, and missed faces, and the overall estimates; reported by MIT Technology Review
+- **Who approves**: The owner of the material (the person pictured, or the owner of the document). Being public on the web does not stand in for permission to use it for training.
+- **Where the check happens**: Just before material is ingested into the dataset. Material whose provenance and consent cannot be checked is not ingested.
+- **What remains**: A record of which material went in under which provenance and consent, so that the relevant items can be traced when deletion or correction is requested.
 
-> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information. This is a 0.1% sample audit and overall estimate by the research team; estimated figures are not treated as confirmed totals, and the scale of contamination is not exaggerated.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Figure 1</span><span class="rx-ex-t">"Detection" versus a "pre-execution check"</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before material goes into a dataset, the provenance and consent to use it for training, and keeping a record. Detection means finding personal data mixed in after ingestion; here, the research team's sample audit did that.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check each item's provenance and consent before ingestion</div>
+<div class="rx-zone gapz"><b>What the research team reported</b><span>Unblurred faces, IDs and résumés<br>remained in the data</span></div>
+<div class="rx-zone det"><b>Detection · the research audit worked</b>Audit a 0.1% sample and estimate the whole</div>
+<div class="rx-g g1"><div class="t">2014–22</div><b>Common Crawl collects the public web at scale</b></div>
+<div class="rx-g g2"><div class="t">2023</div><b>Faces auto-blurred; the dataset is released</b></div>
+<div class="rx-g g3"><div class="t">DOWNSTREAM</div><b>Circulates in a form anyone can train on</b></div>
+<div class="rx-g g4"><div class="t">2025-07</div><b>The audit results are reported</b></div>
+</div>
+</figure>
 
-The incident came together as the following chain.
+The research team's audit showed concretely what after-the-fact filters had failed to remove, but it found this after the dataset had been released. A case where being public and consent to train came apart is [the Discord message scraping](https://lemma.frame00.com/critical/briefs/008-discord-scraping/). The removable provenance mark on AI outputs echoes [the SynthID watermark removal](https://lemma.frame00.com/critical/briefs/011-synthid-watermark-reverse-engineering/).
 
-1. **Indiscriminate collection**: broadly scrape the public web and collect image-text pairs at scale; the collection includes individuals' ID documents, résumés, and faces
-2. **Absence of provenance/consent**: no provenance accompanies each piece of material as to "whose, under what consent, and within what scope of use" it was published, so there is no basis to judge fitness for training
-3. **Incomplete after-the-fact filtering**: face blurring etc. is applied, but over 800 faces leaked in the sample alone and PII-string filtering was not applied; after-the-fact mechanical filtering cannot be comprehensive
-4. **Dataset release**: released as 12.8 billion pairs, usable by anyone for training
-5. **Downstream propagation**: PII propagates to successor/derivative models (the Stable Diffusion / Midjourney lineage) and is fixed in a form that is hard to recall
+## 4. What Lemma does
 
----
+**Lemma builds the check in section 3 into the point just before material is ingested into a dataset.** It does not search for personal data after the fact; it checks, before ingestion, that the material has the provenance and consent to be used for training.
 
-## 3. Timeline — disclosure and response
+### Industries and operations to watch
 
-The response and industry movement after disclosure:
+- **Industry · AI**: Organizations that train models on material collected from the web, or that publish or provide training datasets.
+- **Operation · Disclosure & data release**: Publishing or providing collected data as a dataset.
 
-- **The research team / MIT Technology Review**: presented overall estimates from a 0.1% audit, pointed out the leakage past face blurring and the non-application of PII filters, and raised the downstream-propagation risk as the successor to LAION-5B
-- **Cross-industry**: training data built on large-scale web scraping cannot comprehensively prevent contamination by regulated personal data via after-the-fact filtering. A mechanism to verify the provenance and consent of material at the time of collection, and a design ensuring the auditability of a dataset's composition (which material, with what provenance, is included), are increasingly demanded by both regulation (personal-data protection, right to be forgotten) and the model supply chain. A dataset without provenance is poorly suited to deletion, correction, or regulatory response.
+### Current controls vs Lemma
 
-The need to "ingest training data by whether it has provenance and consent, not by whether it is publicly available" is gaining weight through this case and [Brief 008](/critical/briefs/008-discord-scraping/).
+Column 1 is ingesting material into the dataset and column 2 is removing personal data from ingested material; in this case, both were passed.
 
----
+| Control | Ingesting material (provenance and consent) | Removing personal data from ingested material |
+| --- | --- | --- |
+| Automatic face blurring | Not relevant | Partial |
+| Known PII string filter | Not relevant | Partial |
+| **Lemma (pre-execution check)** | Effective | Not relevant |
 
-## 4. Why it wasn't stopped
+According to the research team, automatic face blurring was applied, but over 800 faces escaped detection in the sample alone, and filters for known PII strings were not applied. Both search ingested material for personal data and remove it; neither decides whether the material may be used for training. Lemma checks each item's provenance and consent before ingestion. It does not find personal data inside ingested material, and it does not delete data.
 
-The central **failure primitive is "the provenance of from where, under whose consent, and within what scope of use the training data was collected is not verified at the time of collection and release."** A dataset can say "collected from the public web," but whether each piece of material may be used for training (consent, regulated status, scope of use) does not accompany the data. Provenance and consent are missing yet fixed at massive scale, and after-the-fact filters like face blurring cannot guarantee coverage (over 800 faces leaked in a 0.1% sample).
+Note: Lemma's check works only when it is built in just before ingestion and each item's provenance and consent are issued and managed separately from the collector. Material that has provenance and consent passes this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-This is the **sibling** of [Brief 008](/critical/briefs/008-discord-scraping/) (scraping 2.05 billion Discord messages via the public API into an AI training dataset). 008 showed "publicly available ≠ consent for training use," and this case concretizes, at a scale of 12.8 billion, that "after-the-fact filtering of large-scale collection cannot prevent contamination by regulated personal data (ID documents, faces)." Both share the root that "if the provenance and consent of training data are not verified at the time of collection, they propagate downstream in a form that is hard to recall." It also connects to [Brief 011](/critical/briefs/011-synthid-watermark-reverse-engineering/) (SynthID, whose provenance markers on AI-generated outputs can be stripped) as a family of problems in which provenance is not independently verified across the entire AI lifecycle. For regulation (GDPR's personal data and right to be forgotten), deletion and correction from a dataset without provenance are effectively infeasible.
+### Checklist
 
-The research team's audit, the curators' face blurring, and improving PII-detection filters are indispensable for reducing harm; this Brief does not dispute that role. Here, too, the problem was made visible by independent researchers' audit.
+Three items to confirm when ingesting data for training or analysis
 
-But detection / after-the-fact filtering does not decide "whether, at the time of collection, this material may be ingested for training" itself. Face blurring and PII detection try to mechanically remove material from the already-collected 12.8 billion pairs, but coverage is not guaranteed — as 800-plus faces leaked in a 0.1% sample. Detection is reactive to generation/collection, and once a dataset is released and has propagated to downstream models, recall is nearly impossible. What was missing is independent verification, at the time of collection, that "this material has the provenance and consent to be used for training" — a different track from after-the-fact PII detection. For regulatory response, too, from data without provenance one cannot prove "under whose consent and within what scope it may be used."
+- Do you select material by a criterion other than whether it is public?
+- Do you record which material went into the dataset under which provenance and consent?
+- When deletion or correction is requested, can you trace the relevant items within the dataset?
 
----
+## 5. Facts and timeline
 
-## 5. What proof would have changed
+- **Target**: DataComp CommonPool, a training dataset of 12.8 billion image-text pairs released in 2023. It is built on material Common Crawl collected from the web in 2014–2022, and is the successor to LAION-5B.
+- **Disclosure**: The research team published its audit paper (arXiv:2506.17185), and MIT Technology Review reported it on 2025-07-18.
+- **What was found**: In an audit of 0.1% of the dataset, thousands of valid ID documents (credit cards, driver's licences, passports, birth certificates) and over 800 résumés and cover letters (real people confirmed via LinkedIn) were found, the research team reports.
+- **Estimate**: The research team estimates that personal images number in the hundreds of millions across the whole dataset.
+- **Privacy measures**: The curators applied automatic face blurring, but over 800 faces in the sample escaped detection, with about 102 million faces estimated to have been missed overall. Filters for known PII strings such as emails and Social Security numbers were not applied.
+- **Impact**: CommonPool is the successor to LAION-5B and sits in the training lineage of Stable Diffusion, Midjourney and others. The research team and reporting point to the risk of personal data reaching downstream generative models and derivatives.
 
-Pre-execution attestation places the ingestion of training data not in after-the-fact filtering but in "independent verification, at the time of collection, of whether each piece of material has the provenance and consent to be used for training." Material for which a proof of provenance/consent does not hold is rejected before it is ingested into the dataset. PII detection (the detection-style "search for contaminants after the fact") and pre-execution proof of provenance ("is this material fit to ingest?") are not substitutes but **complements**, and to prevent hard-to-recall downstream propagation, the weight shifts toward the latter.
+### Timeline
 
-Against the structure exposed here (the provenance and consent of training data are not verified at collection, and after-the-fact filtering cannot be comprehensive), Lemma proposes a design that places data ingestion not in after-the-fact PII detection but in "independent verification, at the time of collection, of whether each piece of material has the provenance and consent to be used for training."
+- **2014–2022**: Common Crawl collects images and text from the public web at scale.
+- **2023**: DataComp CommonPool is released at 12.8 billion pairs, with measures such as automatic face blurring applied.
+- **2025-06**: The research team's paper is published on arXiv (arXiv:2506.17185).
+- **2025-07-18**: MIT Technology Review reports the ID documents, résumés and unblurred faces found, and the overall estimates.
 
-- **Invert public into provenance**: shift the ingestion criterion from "is it publicly available?" to "does each piece of material have the provenance and consent to be used for training?"
-- **Block at collection time**: reject material for which a proof of provenance/consent does not hold before it is ingested into the dataset, preventing fixation without provenance.
-- **Auditability of composition**: record which material, with what provenance, is included — with provenance attached — so the composition can answer deletion, correction, and regulatory response (right to be forgotten, etc.).
-- **Complement to detection**: place after-the-fact PII detection (search for contaminants later) and pre-execution proof of provenance (is this material fit to ingest?) side by side as separate tracks, shifting weight to the latter for hard-to-recall downstream propagation.
+> Proper names are based on primary sources (research institutions, etc.). This is a 0.1% sample audit and overall estimate by the research team; estimates are not treated as confirmed totals, and the scale is not exaggerated. This is not an attack but a case that brought the handling of provenance and consent in training data into view. This Brief does not blame any particular organization. What has not been disclosed does not mean no measures were in place.
 
-Material for which a proof of provenance/consent does not hold is rejected before ingestion, and after-the-fact filtering is complemented by proof beforehand. The design philosophy of the verifiable-origin category — "publicly available ≠ has provenance and consent" — is what operates here. Read together with [Brief 008](/critical/briefs/008-discord-scraping/) (Discord scraping) as the training-data-provenance lineage.
+### Response after disclosure
 
----
+- **The research team and reporting**: Estimated the whole from a sample audit, and pointed out the faces missed by blurring and the absence of PII string filtering. As the successor to LAION-5B, they flagged the risk of downstream spread.
+- **Filter improvements**: Improvements to automatic face blurring and PII detection filters are under way.
+- **Industry discussion**: For training data built on large-scale web collection, after-the-fact filters alone cannot fully remove personal data, and a composition that can trace which material went in with which provenance is increasingly demanded by both personal-data protection (such as the right to be forgotten) and the model supply chain. A dataset without provenance makes deletion and correction hard to honour.
 
 ## 6. Sources
 
 - **MIT Technology Review**: "A major AI training data set contains millions of examples of personal data" (2025-07-18; CommonPool's PII contamination, scale estimates, leakage past face blurring) — https://www.technologyreview.com/2025/07/18/1120466/a-major-ai-training-data-set-contains-millions-of-examples-of-personal-data/
 - **Research paper (arXiv)**: "A Common Pool of Privacy Problems: Legal and Technical Lessons from a Large-Scale Web-Scraped Machine Learning Dataset" (arXiv:2506.17185, 2025-06) — https://arxiv.org/abs/2506.17185
-- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

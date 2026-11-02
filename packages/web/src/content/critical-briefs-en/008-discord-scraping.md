@@ -1,7 +1,7 @@
 ---
 brief_no: 8
-title: "公開 API 経由の Discord 20.5 億メッセージ scraping — 公開チャンネルデータが AI training dataset として再配布される構造"
-title_en: "Discord 2.05 Billion Message Scraping via Public API — How Public Channel Data Gets Redistributed as AI Training Datasets"
+title: "Discord: Messages from public servers were bulk-collected and published as a research dataset (404 Media)"
+title_en: "Discord: Messages from public servers were bulk-collected and published as a research dataset (404 Media)"
 pillar: "01-verifiable-origin"
 primary_category: "training-data-provenance"
 secondary_categories: ["data-provenance", "attribute-proof-bypass"]
@@ -10,111 +10,147 @@ published: 2026-05-30
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory", "C-agent-governance"]
 related_briefs: ["005-noroboto-lying-fonts", "006-google-api-key-revocation-lag"]
-version: "1.1"
+version: "1.2"
 status: published
+og_lead_ja: "Discord：公開 API で集めた 20.52 億メッセージが、研究用のデータセットとして公開された（404 Media）"
+og_lead_en: "Discord: 2.05 billion messages collected through the public API were published as a research dataset (404 Media)"
+search_title: "Discord の20億メッセージ収集：経緯と対策"
+search_description: "研究チームが Discord の公開 API で 3,167 サーバーの 20.52 億メッセージを集め、データセットとして公開した（404 Media）。何が起きたか、なぜ止まらなかったか、対策を整理。"
+layout: "report"
+sections: "proof"
 gate: "disclosure"
-og_lead_ja: "公開 API 経由で 20.5 億メッセージが AI 学習データに再配布 — Discord スクレイピング"
-og_lead_en: "2.05 billion public messages redistributed as AI training data — Discord scraping"
-gap_detected: "Tech media detected the dataset's existence after the collection and publication had already happened, raising the issue with the industry."
-gap_missing: "Before distribution there was no layer to confirm whether the data had been collected within the bounds of the terms of service, so data gathered for a use the terms prohibited was published as-is."
-gap_fix: "Before distributing data or ingesting it into AI training, independently verify with Lemma where the data came from and under what usage conditions it was collected, and prevent it up front."
+og_kicker_ja: "データ利用の事例 · 一括収集と公開"
+og_kicker_en: "DATA USE · BULK SCRAPING"
+og_headline_ja: "公開サーバーの\nメッセージが一括収集され、\nデータセットとして公開。\n<accent>20.52 億メッセージ</accent>"
+og_headline_en: "Messages on public\nservers were scraped\nand published online.\n<accent>2.05 billion messages</accent>"
+key_figures:
+  - value: "2.05B"
+    unit: "messages"
+    label: "Collected through the public API from 3,167 public servers and published in a form anyone can download (the research team's paper)"
+    tone: "alert"
+  - value: "4,735,057"
+    unit: "users"
+    label: "Users included in the dataset (covering 2015–2024)"
+  - value: "10%"
+    label: "Share chosen at random from the 31,673 public servers found through the Discovery feature (as of 2024-11-17)"
+glossary:
+  - term: "Scraping"
+    desc: "Collecting data shown on a site or service in bulk with a program. Discord's developer policy and terms of service prohibit it."
+  - term: "Developer policy"
+    desc: "The rules developers using Discord's API must follow. It prohibits using messages obtained through the API to train machine-learning or AI models."
+insight:
+  slug: "terms-not-in-data"
+  label: "Usage terms don't travel with the data"
+  quote: "The usage terms of the source are not carried in the dataset itself, so unless they are checked before distribution or training, data for a use the terms prohibit passes downstream like any other data."
 industries: ["ai"]
 operations: ["disclosure"]
 controls:
   - slug: "hold-unverified"
     item: "Do not publish the dataset until it is confirmed to be collected within the terms"
-impact: "2.05 billion messages scraped and published"
+impact: "2.05 billion messages collected and published"
+takeaway: "Messages collected through a public API were published as a dataset anyone can download. Check where the data came from and under what usage terms before distributing it or ingesting it for training."
+self_check: "Before you distribute data collected from outside or use it for training, do you check where it came from and under what usage terms it was collected?"
 countries: ["global"]
 ---
 
-> **Revision (v1.1 / 2026-10-17)**: Corrected the exact message count in §2 to 2,052,206,308, as given in the research team's paper (arXiv 2502.00627).
+> **Revision (v1.2 / 2026-11-03)**: Moved from the older format to chapters that start from what got through, and dropped the second half and the figures from the title. Facts and sources are unchanged. (The v1.1 / 2026-10-17 correction of the total message count stands as it was.)
 
-## 1. TL;DR
+## 1. Summary
 
-A research team used Discord's public API to scrape 2.05 billion messages from 3,167 servers and published them as an arXiv paper and a JSON dataset anyone can download. Discord's terms explicitly ban using API-obtained messages for AI training and ban bulk scraping and redistribution. Technical access through a public API and the use-scope the terms permit are different things — yet nothing verified, before distribution, whether the dataset was collected within a lawful scope, so forbidden-use data can flow downstream into AI training.
+Being technically able to retrieve data through a public API is not the same as the use the terms allow. The research team says it anonymized the data, but the dataset was distributed with an arXiv paper in a form anyone can download, and 404 Media reported that this ran against Discord's terms of service and developer policy. The reporting came after publication, and reporting alone does not close the path by which a distributed dataset passes downstream. <strong>The usage terms of the source are not carried in the dataset itself, so unless they are checked before distribution or training, data for a use the terms prohibit passes downstream like any other data.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Bulk retrieval of messages from public servers through the public API, and publication online as an arXiv paper (2502.00627) and a JSON dataset.
+- **What reached the receiving side**: In general, a public API answers queries without telling what use they are for. For those who receive a distributed dataset, even with anonymization applied, whether the collection stayed within the terms cannot be told from the dataset alone.
+- **What the terms say**: Discord's developer policy states "You must not use the content of messages obtained via the API to train machine-learning models or AI (including large language models)" and "You must not mine or scrape any data, content, or information available on or via Discord services." The terms of service also include a clause prohibiting scraping.
+- **The research team's account**: It says the purpose of distribution is "to make it available for other research teams to use for research on mental health and politics or to train bots," and that it rewrote usernames and hashed and truncated IDs and messages.
+- **Not disclosed**: An official statement from Discord (none confirmed at the time of publication), and whether the dataset was used downstream for AI training.
 
-- **Scale**: 2.05 billion messages (2,052,206,308), 3,167 servers, 4,735,057 people, covering 2015–2024
-- **Discovery scope**: 10% of 31,673 public servers discovered via Discord's "Discovery" feature, selected at random (as of 2024-11-17)
-- **Scraping party**: A 15-researcher team at the Federal University of Minas Gerais in Brazil
-- **Distribution format**: arXiv paper (2502.00627) and a JSON dataset published online
-- **Distribution purpose**: A research dataset for "research on mental health and politics" and "bot training"
-- **Anonymization measures**: Username rewriting; ID and message hashing with truncation
-- **Policy / terms position**:
-  - Discord developer policy: "You must not use the content of messages obtained via the API to train machine-learning models or AI (including large language models)" and "You must not mine or scrape any data, content, or information available on or via Discord services"
-  - Discord terms of service: includes an anti-scraping clause
-- **Distribution reach**: Publicly downloadable via arXiv, with downstream flow to researchers and AI vendors established
-- **Discord platform response**: No public statement confirmed at the time of disclosure (the company had previously considered legal action against a similar case, Spy Pet, as of April 2024)
+## 3. What to check
 
-This incident is treated not as a cybersecurity attack incident but as a "trust-layer-related risk event" prompted by a research-purpose terms violation. We position it as the first case in expanding the scope of Lemma Critical Brief — beyond attack incidents to trust-layer-related risk events of the AI era in general.
+Whatever the route, the condition for telling them apart is checking, before data is distributed and before it is ingested for training, where it came from and under what usage terms it was collected, separately from the content of the data.
 
-The incident came together as the following chain.
+- **Who approves**: The party distributing the data. Before distribution, it states the source, how the data was collected, and the usage terms (whether redistribution and AI training are allowed). The terms themselves rest on the source platform's terms.
+- **Where it is checked**: Just before a dataset is distributed, and just before the receiving side ingests it for training. It is checked whether the intended use (for example, machine learning) fits the terms under which the data was collected; if not, the data is not distributed or ingested.
+- **What is recorded**: Which dataset was used for which purpose, after passing a check against which terms. Later, it can be traced where the training data came from.
 
-1. **Research design**: A 15-researcher team at the Federal University of Minas Gerais in Brazil drafts a research project to distribute Discord public communication as a large-scale dataset
-2. **Discovery scope mapping**: Via Discord's "Discovery" feature, the team discovers 31,673 public servers as of 2024-11-17, and selects 10% (3,167 servers) at random
-3. **Scraping via public API**: Using the public API, the team collects 2.05 billion messages for the 2015–2024 period and data on 4,735,057 people
-4. **Anonymization measures**: Username rewriting and ID-and-message hashing with truncation are claimed to have been implemented
-5. **Distribution**: A paper is posted to arXiv; the dataset is published online as JSON files
-6. **Policy collision**: Simultaneous violation of the Discord developer policy's ML / AI training use ban and anti-scraping clause, and the terms of service's anti-scraping clause
-7. **Downstream flow availability**: Dataset distribution to downstream researchers and AI vendors is technically established via arXiv, forming a path for use as AI training data
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means confirming, before distribution or ingestion for training, the source of the data and its usage terms, and keeping a record. Detection means finding the publication after it happens. The dates below follow the disclosures.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check the source and usage terms before distribution</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>2.05 billion messages published<br>in a form anyone can download</span></div>
+<div class="rx-zone det"><b>Detection · worked after publication</b>404 Media reports it and sets out how it relates to the terms and policy</div>
+<div class="rx-g g1"><div class="t">2024-11-17</div><b>10% of public servers chosen</b></div>
+<div class="rx-g g2"><div class="t">From 11-17</div><b>Collected via the public API (estimated)</b></div>
+<div class="rx-g g3"><div class="t">2025-05</div><b>Paper and dataset published</b></div>
+<div class="rx-g g4"><div class="t">05-22</div><b>404 Media reports</b></div>
+</div>
+</figure>
 
----
+The reporting showed that the collection and publication existed and widened the debate, but it came after the dataset had been posted to arXiv and distributed as JSON. A case of the same kind, where the receiving side treats what arrives without checking where it came from, is [Noroboto](/critical/briefs/005-noroboto-lying-fonts/) (disguised input read by AI).
 
-## 3. Timeline — disclosure and response
+## 4. What Lemma does
 
-- 2015–2024 (target period): Messages targeted for scraping accumulated on Discord public servers
-- 2024-11-17: The research team uses Discord's "Discovery" feature to discover 31,673 public servers in total and selects 10% at random
-- After 2024-11-17 (estimated): Scraping via the public API is conducted
-- May 2025: The arXiv paper (2502.00627) and JSON dataset are published online
-- 2025-05-22: 404 Media publishes the initial reporting, explicitly noting violations of Discord's terms of service and developer policy. Japanese-language outlets follow up the same day
-- After May 2025: Cross-industry discussion proceeds in GenAI as an argument concerning training data provenance
+**Lemma builds the check in section 03 in just before a dataset is distributed and before it is ingested for training.** It does not look for scraping; it checks where the data came from and under what usage terms it was collected, before distribution or ingestion.
 
-> Note: Proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information. This Brief treats it as a demonstrated structural flaw and does not exaggerate the scale of harm.
+### Industries and operations to watch
 
-The response and industry movement after disclosure:
+- **Industry · AI**: AI companies and research institutions that gather training data from outside. A published dataset can be obtained by downstream researchers and AI companies, and explaining where training data came from (such as the EU AI Act's training-data documentation requirements) becomes an issue.
+- **Operation · Disclosure and provision of information**: Publishing and distributing datasets, and accepting outside datasets. Whether the source's terms fit the intended distribution and training use.
 
-- **404 Media** (initial reporting, 2025-05-22): Explicitly noted violations of Discord's terms of service and developer policy, presenting the problem to the industry. Raised the argument: "The researchers claim they anonymized the data, but no one likes the idea of their Discord messages being saved in public files online," and "It should be kept in mind that many Discord users are children"
-- **Research team (Federal University of Minas Gerais)**: Stated that the purpose of dataset distribution is "to make it available for other research teams to use for research on mental health and politics or to train bots," and claimed that anonymization measures were implemented
-- **Discord platform**: No official response confirmed at the time of disclosure. The company had previously considered legal action against a similar case, Spy Pet (April 2024, an operator that monitored over 600 million Discord users)
-- **arXiv**: Training-data-dataset distribution policy on preprint platforms — including the dataset paper (2502.00627) — emerges as a cross-industry argument
-- **Cross-industry argument**:
-  - **GenAI vendors' training-data provenance accountability**: As an argument directly bearing on the EU AI Act's training-data documentation requirements and guidance such as the US NIST AI RMF, this incident provides a concrete case
-  - **Reassessment of enterprise SaaS data perimeter**: The risk of third-party-scraping-mediated training-data inflow from public-channel settings of enterprise chat / collaboration tools such as Slack / Teams / Notion emerges as a primary area of concern at the CSO level
-  - **ToS violation + anonymization claim + academic-research-purpose gray-zone regulation**: The legal positioning of the combination of public API + ToS violation + anonymization claim in the GDPR, US federal and state privacy laws, and Japan's Personal Information Protection Law enters the discussion among policy practitioners
+### Current controls vs Lemma
 
----
+The route in this case is column 1 (distributing a dataset for a use the terms prohibit). Column 2 is the stage where the receiving side ingests it for training; whether that happened here has not been disclosed.
 
-## 4. Why it wasn't stopped
+| Control | Distributing a dataset for a use the terms prohibit | Ingesting a received dataset for training |
+| --- | --- | --- |
+| Prohibition in the terms of service and developer policy | Partial | Partial |
+| Anonymization (rewriting usernames, hashing) | Not relevant | Not relevant |
+| Detection by reporters and researchers | Partial | Not effective |
+| **Lemma (pre-execution check)** | Partial | Effective |
 
-This incident is a representative case of a structure in which, for public channel data on a chat platform, **the attribute assertion that "the server is set to public" and the use-scope attribute assertion defined by terms are not independently attested, and flow downstream via the distribution layer**. A technically accessible public API, a use scope forbidden by terms (ML / AI training use, redistribution, scraping), and the absence of a layer that independently verifies "whether the collection scope complies with terms" at the point of dataset distribution coexist simultaneously. The central **failure primitive is "the absence of a layer that, at the point of dataset distribution, independently verifies whether the collection scope is consistent with the terms-defined use scope."**
+The terms and policy define the prohibited uses, but no mechanism checks, at the public API's response or at the place of distribution, whether a use falls within them. Anonymization reduces how identifiable users are and does not bear on whether the collection stayed within the terms. Detection by reporters and researchers shows the dataset exists after publication, but does not stop an already-distributed dataset from passing downstream. Lemma checks the source and usage terms just before the distributing side and the receiving side act.
 
-[Brief 005](/critical/briefs/005-noroboto-lying-fonts/) (Noroboto) is a structure in which AI judgment's **input integrity** is forged; [Brief 006](/critical/briefs/006-google-api-key-revocation-lag/) (Google API key revocation lag) is a structure in which a credential's **revocation attribute** is not independently verified; the present incident is positioned as a structure in which a dataset's **provenance and use-scope attributes** are not independently verified. The three share the common structure that "a trust assertion (in this incident, 'this dataset was collected under a lawful scope') is detached from the layer that verifies it."
+Note: Lemma's check works only when it is built in at the place of distribution, or just before the receiving side ingests data for training. If the distributing side publishes without using the check, nothing stops it before distribution, and only the receiving side's check remains. Lemma does not withdraw or delete data that has already been distributed. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-What differs from the other Briefs is that this incident is not a cybersecurity attack incident but a trust-layer risk event caused by a research-purpose terms violation. We position it as the first case in expanding the scope of Lemma Critical Brief — beyond attack incidents to trust-layer-related risk events of the AI era in general. The same-shape structure is expected to be referenced repeatedly going forward in discussions of data-perimeter risk in the public-channel settings of enterprise SaaS (Slack / Teams / Notion, etc.) and in arguments over GenAI vendors' training-data provenance accountability.
+### Checklist
 
-In this incident, technology media centered on 404 Media detected the scraping and dataset publication and prompted cross-industry argument. This is a typical function of the detection layer, and this Brief does not deny the role of detection media and researchers. Detection remains essential for shaping the contours of an event, surfacing cross-industry argument, and prompting cross-organizational operational review.
+Three things to confirm about distributing and accepting datasets
 
-That said, detection cannot reverse the state in which the dataset **has already been posted to arXiv and distributed as JSON**. Downstream researchers and AI vendors can download the dataset, and the path into AI training is not closed by detection alone. Even though there are violations of Discord's terms of service and developer policy, no technical access controls exist, and no mechanism for withdrawing a distributed dataset is established. Even if anonymization measures were applied, the regulatory compliance of the collection scope cannot be verified from the dataset alone.
+- Before you publish or distribute a dataset, do you confirm that the source's terms allow redistribution and use for AI training?
+- For datasets you accept, do you receive a record of the source and usage terms, separately from the data?
+- Do you record which dataset was used, under which terms, for which training, so it can be traced later?
 
-For the purposes of establishing in regulatory filings, administrative proceedings, or enterprise AI-adoption due diligence that "the training data was collected under a lawful scope," when a dataset like this one flows into downstream AI training, an independent layer is required between detection scores and proof of dataset origin / scope. Pre-execution attestation stands in a **complementary**, not substitutive, relationship to detection; the combination of both layers establishes the trust boundary for AI training data.
+## 5. Facts and timeline
 
----
+- **Scale**: 2.05 billion messages (2,052,206,308), 3,167 servers, 4,735,057 people, covering 2015–2024.
+- **Scope**: 10% chosen at random from the 31,673 public servers found through Discord's "Discovery" feature (as of 2024-11-17).
+- **Collecting party**: A team of 15 researchers at the Federal University of Minas Gerais in Brazil.
+- **Distribution format**: An arXiv paper (2502.00627) and a JSON dataset published online.
+- **Distribution purpose**: A research dataset for research on mental health and politics and for bot training (the research team's account).
+- **Anonymization**: Rewriting usernames, and hashing and truncating IDs and messages (the research team's account).
+- **Position under the terms**: 404 Media reported that it ran against the developer policy's prohibition on use for machine-learning / AI training and on scraping, and the terms of service's prohibition on scraping.
+- **Distribution reach**: Downloadable by anyone through arXiv, with a path to downstream researchers and AI companies.
+- **Discord's response**: No official statement confirmed at the time of publication. The company had previously considered legal action against a similar case, Spy Pet, in April 2024.
 
-## 5. What proof would have changed
+### Timeline
 
-Against the detection–proof gap exposed by this incident (a dataset's provenance and use-scope attributes flow downstream without independent verification), Lemma proposes the following two-layer design elements.
+- **2015–2024**: The messages later collected accumulated on Discord's public servers.
+- **2024-11-17**: The research team finds 31,673 public servers through the Discovery feature and selects 10% at random.
+- **After 2024-11-17 (estimated)**: Collection through the public API.
+- **2025-05**: The arXiv paper (2502.00627) and the JSON dataset are published.
+- **2025-05-22**: 404 Media reports it, noting that it runs against Discord's terms of service and developer policy. Japanese-language outlets follow up the same day.
 
-- **Provenance embedding at the distribution layer**: Embed the dataset's collection source, collection scope (compliant / in violation), and use conditions (no redistribution, no ML / AI training, etc.) as an independently verifiable cryptographic proof.
-- **Mandatory proof attestation at distribution**: Mandate proof attestation at the point of distribution, so downstream researchers and AI vendors can independently verify, as verifiers, whether their own use case (e.g., ML training) is consistent with the dataset's collection scope.
-- **Proof built into the AI training-data audit layer**: Build proof-mandatory verification into the AI vendor's training-data audit process, enabling independent verification of "what training data this output is based on" and "whether it was collected under a lawful scope."
-- **Exclusion at the adoption decision point**: Enterprise CSOs can exclude — as contract requirements at the AI-adoption decision point — training data with no proof or with proof of an unlawful scope.
+> This case is treated not as an intrusion by an attack but as one about collection and publication for research. The facts rest on 404 Media's reporting, the research team's paper, and Discord's developer policy. The scale of harm is not exaggerated. What has not been disclosed does not mean there were no controls.
 
-The combination of the two layers is in a complementary, not substitutive, relationship to detection. Detection can retroactively capture the occurrence of scraping and the dataset's distribution but cannot control downstream flow of an already-distributed dataset. Pre-execution attestation establishes the trust boundary at the two layers: dataset distribution and AI training audit.
+### Response after disclosure
 
----
+- **404 Media** (2025-05-22): Set out how it relates to the terms and policy, and raised the points that "The researchers claim they anonymized the data, but no one likes the idea of their Discord messages being saved in public files online," and "It should be kept in mind that many Discord users are children."
+- **Research team**: Said the purpose of distribution was research by other teams and bot training, and that anonymization had been applied.
+- **Discord**: No official statement confirmed at the time of publication. It had previously considered legal action against Spy Pet (April 2024, an operator that monitored over 600 million Discord users).
+- **Industry debate**: The accountability of generative-AI companies for where their training data came from (the EU AI Act's training-data documentation requirements, and guidance such as the US NIST AI RMF), and how the combination of a public API, terms, and an anonymization claim is positioned under the GDPR and national privacy laws, became points of debate.
 
 ## 6. Sources
 
@@ -123,4 +159,4 @@ The combination of the two layers is in a complementary, not substitutive, relat
 - **Discord developer policy** official (the basis for the ML / AI training use ban and anti-scraping clause) — https://support-dev.discord.com/hc/ja/articles/8563934450327
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/#provenance), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
