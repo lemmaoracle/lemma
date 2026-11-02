@@ -12,8 +12,8 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["149-revolut-italy-government-mailbox-disclosure-requests", "044-arcadia-speecan-raiden-disaster-mail-spoofing", "006-google-api-key-revocation-lag"]
 version: "2.0"
 status: published
-og_lead_ja: "Booking.com でホテルの受取口座が書き換えられ約900万円の損失 — ポラリスHD"
-og_lead_en: "Booking.com payout account switched, ¥9M lost — Polaris Holdings"
+og_lead_ja: "Booking.com でホテルの受取口座が書き換えられ、1 ホテルで約 900 万円の損失"
+og_lead_en: "Booking.com payout account switched; one hotel lost about ¥9M"
 layout: "report"
 og_kicker_ja: "サイバー攻撃事例 · アカウント乗っ取り"
 og_kicker_en: "CYBERATTACK · ACCOUNT TAKEOVER"

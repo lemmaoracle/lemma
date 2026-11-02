@@ -292,7 +292,7 @@ og:description は `insight.quote` で始まる。
 
 ### 一覧の索引（2026-10・レイアウトを問わず書ける）
 
-一覧（`/critical/briefs/`）は「新着 3 本（公開日順・自動）→ 注目（ピン 1〜2 本）→ 対策から読む → そのほかの新着」で組む。
+一覧（`/critical/briefs/`）は「新着 4 本（公開日順・自動。同じ日は番号の大きい順）→ 注目（ピン 1〜2 本）→ 対策から読む → そのほかの新着」で組む。
 各 Brief の frontmatter に次を書くと一覧に出る。`attack_method` / `operations` / `controls` は、
 記事の「似た事例を一覧で読む」（下）にも使う。
 

@@ -176,8 +176,17 @@ const pinBriefs = BRIEF_PICKS.map((id) => briefById.get(id)).filter(
   (b): b is AnyBrief => Boolean(b),
 );
 const pinIds = new Set(pinBriefs.map((b) => b.id));
-/* 新着：公開日の新しい順に自動で 3 本（ピンを除く）。 */
-const newestBriefs = briefsByPublishedDesc.filter((b) => !pinIds.has(b.id)).slice(0, 3);
+/* 新着：公開日の新しい順に自動で 4 本（ピンを除く）。同じ日の公開は番号の大きい順。
+   4 本にするのは、同じ日に 4 本公開した週でも最新が落ちないため（2026-11-02）。 */
+const NEWEST_COUNT = 4;
+const newestBriefs = [...briefsByPublishedDesc]
+  .sort(
+    (a, b) =>
+      b.data.published.getTime() - a.data.published.getTime() ||
+      b.data.brief_no - a.data.brief_no,
+  )
+  .filter((b) => !pinIds.has(b.id))
+  .slice(0, NEWEST_COUNT);
 const newestIds = new Set(newestBriefs.map((b) => b.id));
 const restLatest = briefsByPublishedDesc
   .filter((b) => !pinIds.has(b.id) && !newestIds.has(b.id))
@@ -323,6 +332,7 @@ const labels = isJa
       heroDesc:
         "実際に起きたサイバー攻撃と事故を、公表資料から読み解きます。何が正しい操作として通ってしまったか、実行の前に何を照合するかまでを整理する解説レポートです。",
       newest: "新着",
+      impactK: "影響",
       pinned: "注目",
       controlsH: "対策から読む",
       controlCount: (n: number) => `解説 ${n} 本`,
@@ -374,6 +384,7 @@ const labels = isJa
       heroDesc:
         "Real cyber attacks and incidents, read from public disclosures: what got through as a legitimate operation, and what to check before it runs.",
       newest: "Latest",
+      impactK: "Impact",
       pinned: "Featured",
       controlsH: "Browse by control",
       controlCount: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
@@ -566,18 +577,25 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
             </label>
             <button type="submit">{labels.fGo}</button>
           </form>
-          <div class="ix-list">
+          <div class="ix-list ix-list--cards">
             {restLatest.map((b) => {
               const c = briefCardData(b);
-              const meta = [c.publishedStr, industryLabel(b), attackLabel(b)].filter(Boolean).join(" · ");
+              const ind = industryLabel(b);
+              const atk = attackLabel(b);
+              const ctry = countryLabel(b);
               return (
-                <a class="ix-row" href={c.href}>
-                  <span class="ix-row-body">
-                    <span class="ix-row-m">{countryLabel(b) && <span class="ix-ctry">{countryLabel(b)}</span>}{meta}</span>
-                    <span class="ix-row-t">{shortTitle(b)}</span>
-                    {b.data.impact && <span class="ix-row-i">{b.data.impact}</span>}
+                <a class="ix-row ix-row--card" href={c.href}>
+                  <span class="ix-row-top">
+                    {ctry && <span class="ix-ctry">{ctry}</span>}
+                    {ind && <span class="ix-chip">{ind}</span>}
+                    {atk && <span class="ix-chip ix-chip--atk">{atk}</span>}
+                    <time class="ix-date" datetime={c.publishedStr}>{c.publishedStr}</time>
                   </span>
-                  <span class="ix-arrow" aria-hidden="true">→</span>
+                  <span class="ix-row-t">{shortTitle(b)}</span>
+                  {b.data.impact && (
+                    <span class="ix-row-fig"><span class="ix-fig-k">{labels.impactK}</span>{b.data.impact}</span>
+                  )}
+                  <span class="ix-row-go" aria-hidden="true">→</span>
                 </a>
               );
             })}
@@ -893,6 +911,123 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   }
   .ix-picks-grid--pin {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ix-picks-grid--new {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .ix-picks-grid--new .ix-cover {
+    height: auto;
+    min-height: 140px;
+    gap: 10px;
+  }
+  .ix-picks-grid--new .ix-cover-impact {
+    font-size: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .ix-picks-grid--new .ix-pick-t {
+    font-size: 16px;
+  }
+  .ix-picks-grid--new .ix-pick-w {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  /* そのほかの新着：カードにする（2026-11-02・文字ばかりを減らす）。
+     上に国・業界・手口のチップと日付、真ん中に題、下に影響を小さな見出し付きで。 */
+  .ix-list--cards {
+    column-gap: 18px;
+    row-gap: 16px;
+  }
+  .ix-list .ix-row--card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin: 0;
+    padding: 16px 44px 16px 18px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  }
+  .ix-list .ix-row--card:hover {
+    background: #fff;
+    border-color: rgba(124, 175, 0, 0.5);
+    box-shadow: 0 6px 18px rgba(31, 42, 34, 0.08);
+    transform: translateY(-1px);
+  }
+  .ix-row-top {
+    justify-content: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .ix-row-top .ix-ctry {
+    margin-right: 0;
+  }
+  .ix-chip {
+    padding: 0 8px;
+    border-radius: 999px;
+    background: var(--lite-2, #eef2e6);
+    color: var(--tx);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+  .ix-chip--atk {
+    background: transparent;
+    border: 1px solid #c9cfc3;
+    color: var(--tx-soft);
+  }
+  .ix-date {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #8a9083;
+  }
+  .ix-row--card .ix-row-t {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .ix-row-fig {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--tx);
+  }
+  .ix-fig-k {
+    flex: none;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: #1f2a22;
+    color: #c9ef5a;
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 18px;
+  }
+  .ix-row-go {
+    position: absolute;
+    right: 16px;
+    bottom: 14px;
+    font-size: 14px;
+    color: var(--tx-soft);
+    transition: transform 0.15s, color 0.15s;
+  }
+  .ix-row--card:hover .ix-row-go {
+    color: var(--ok-light);
+    transform: translateX(3px);
   }
   .ix-pick {
     display: flex;

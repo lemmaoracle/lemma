@@ -169,7 +169,7 @@ with `insight.quote`.
 
 ### Index fields (2026-10, any layout)
 
-The index (`/critical/briefs/`) is built as "Latest (3, automatic by publication date) → Featured (1–2 pinned) → Browse by control → More recent briefs".
+The index (`/critical/briefs/`) is built as "Latest (4, automatic by publication date; same-day ties go to the higher number) → Featured (1–2 pinned) → Browse by control → More recent briefs".
 These frontmatter fields feed it and are not rendered in the article: `industries`, `operations`,
 `controls` (four controls; add one only when three briefs don't fit any), `attack_method`
 (`account-takeover` / `impersonation` / `privilege-abuse` / `supply-chain` / `human-error` /

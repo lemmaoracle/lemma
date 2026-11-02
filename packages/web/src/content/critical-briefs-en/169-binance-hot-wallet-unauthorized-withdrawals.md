@@ -46,7 +46,7 @@ controls:
   - slug: "audit-trail"
     item: "Record, outside the requesting service, which request or approval each signed withdrawal was based on"
 attack_method: "privilege-abuse"
-impact: "About USD 6.3 billion in crypto was taken (Binance's estimate; about USD 6.36 billion from ten chains per TRM Labs). About USD 2.7 billion was frozen, and Binance says it will cover the losses"
+impact: "About USD 6.3 billion taken (Binance's estimate); about USD 2.7 billion frozen"
 takeaway: "Even if the keys never leak, whoever can get the system to sign can move funds with valid signatures."
 self_check: "Before signing a withdrawal, do you check that a matching customer request or internal approval exists?"
 countries: ["global"]
