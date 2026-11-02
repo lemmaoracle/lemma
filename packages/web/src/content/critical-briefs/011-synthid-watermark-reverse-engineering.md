@@ -19,6 +19,8 @@ gap_missing: "来歴の印を成果物そのものに埋め込むため、十分
 gap_fix: "コンテンツの真偽を判断する前に「この成果物は正規の生成主体によって作られたものか」を、成果物の外側に置いた証明として Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai", "media"]
 countries: ["global"]
+search_title: "SynthID の透かしが剥がされた：来歴印の限界"
+search_description: "Google DeepMind の透かし SynthID が、統計的に剥がされたとする報告（Alosh Denny）。成果物に埋めた来歴印は、除去も偽造もされうる。何が示されたか、確認する点を整理。"
 ---
 
 ## 1. TL;DR
