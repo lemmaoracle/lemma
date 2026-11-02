@@ -198,28 +198,12 @@ const controlTiles = BRIEF_CONTROL_SLUGS.map((slug) => ({
   ).length,
   href: `${archiveHref}?control=${slug}`,
 }));
-/* 対策のページの先頭に出す代表の事例（2026-11-02）：その対策が付いた Brief のうち、新しい順に最大 3 本。
-   大きな数字（key_figures）があるものを先に。 */
-const controlIntro = BRIEF_CONTROL_SLUGS.map((slug) => {
-  const has = briefsByPublishedDesc.filter((b) =>
-    ((b.data.controls as { slug: string }[] | undefined) ?? []).some((c) => c.slug === slug),
-  );
-  const withFig = has.filter((b) => (b.data.key_figures as unknown[] | undefined)?.length);
-  const picks = [...withFig, ...has.filter((b) => !withFig.includes(b))].slice(0, 3);
-  return {
-    slug,
-    label: BRIEF_CONTROLS[slug][loc],
-    desc: FACET_PLAIN[`control:${slug}`]?.[loc] ?? "",
-    example: BRIEF_CONTROL_EXAMPLES[slug][loc],
-    count: has.length,
-    cases: picks.map((b) => ({
-      href: `${base}/critical/briefs/${b.id}/`,
-      title: shortTitle(b),
-      fig: (b.data.key_figures as { value: string; unit?: string }[] | undefined)?.[0],
-      impact: b.data.impact as string | undefined,
-    })),
-  };
-});
+/* 対策のページの先頭に出す説明と「たとえば」（2026-11-02）。事例は、すぐ下の一覧が出すので、ここには出さない。 */
+const controlIntro = BRIEF_CONTROL_SLUGS.map((slug) => ({
+  slug,
+  desc: FACET_PLAIN[`control:${slug}`]?.[loc] ?? "",
+  example: BRIEF_CONTROL_EXAMPLES[slug][loc],
+}));
 const indexBanner = indexBannerFor(locale);
 /* 一覧の絞り込み（業界・業務・手口）で出す候補。タグの付いた Brief がある値だけ。 */
 const usedIndustries = Object.values(BRIEF_INDUSTRIES).filter((f) =>
@@ -353,11 +337,9 @@ const labels = isJa
         "実際に起きたサイバー攻撃と事故を、公表資料から読み解きます。何が正しい操作として通ってしまったか、実行の前に何を照合するかまでを整理する解説レポートです。",
       newest: "新着",
       impactK: "影響",
-      casesK: "この対策が関わった事例",
       selectedMark: "選択中",
       aboutK: "この対策とは",
       exampleK: "たとえば",
-      seeList: (n: number) => `この対策の解説 ${n} 本を、下の一覧で見る ↓`,
       pinned: "注目",
       controlsH: "対策から読む",
       controlCount: (n: number) => `解説 ${n} 本`,
@@ -410,11 +392,9 @@ const labels = isJa
         "Real cyber attacks and incidents, read from public disclosures: what got through as a legitimate operation, and what to check before it runs.",
       newest: "Latest",
       impactK: "Impact",
-      casesK: "Cases where this applies",
       selectedMark: "Selected",
       aboutK: "What this control is",
       exampleK: "For example",
-      seeList: (n: number) => `See all ${n} briefs for this control below ↓`,
       pinned: "Featured",
       controlsH: "Browse by control",
       controlCount: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
@@ -648,32 +628,11 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
               <div class="ix-cintro-head">
                 <span class="ix-cintro-k">{labels.aboutK}</span>
                 <p class="ix-cintro-desc">{ci.desc}</p>
-                <div class="ix-cintro-ex">
-                  <span class="ix-cintro-k">{labels.exampleK}</span>
-                  <p>{ci.example}</p>
-                </div>
-                <a class="ix-cintro-list" href="#all-briefs">{labels.seeList(ci.count)}</a>
               </div>
-              {ci.cases.length > 0 && (
-                <div class="ix-cintro-cases">
-                  <span class="ix-cintro-k">{labels.casesK}</span>
-                  <ul>
-                    {ci.cases.map((k) => (
-                      <li>
-                        <a href={k.href}>
-                          <span class="ix-cintro-figbox">
-                            {k.fig ? <b class="ix-cintro-fig">{k.fig.value}{k.fig.unit && <i>{k.fig.unit}</i>}</b> : <b class="ix-cintro-fig ix-cintro-fig--none">—</b>}
-                          </span>
-                          <span class="ix-cintro-txt">
-                            <span class="ix-cintro-t">{k.title}</span>
-                            {k.impact && <span class="ix-cintro-i">{k.impact}</span>}
-                          </span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <div class="ix-cintro-ex">
+                <span class="ix-cintro-k">{labels.exampleK}</span>
+                <p>{ci.example}</p>
+              </div>
             </div>
           ))}
         </section>
@@ -2438,7 +2397,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     margin-top: 14px;
     border-color: var(--tx);
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: 1.2fr 1fr;
     gap: 24px;
     padding: 22px 26px;
     background: #fff;
@@ -2469,8 +2428,8 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     color: #7d8578;
   }
   .ix-cintro-ex {
-    margin-top: 6px;
-    padding: 12px 14px;
+    align-self: start;
+    padding: 14px 16px;
     border-radius: 10px;
     background: #f4f5ef;
   }
@@ -2479,82 +2438,6 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     font-size: 13.5px;
     line-height: 1.75;
     color: var(--tx);
-  }
-  .ix-cintro-list {
-    margin-top: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ok-light);
-    text-decoration: none;
-  }
-  .ix-cintro-list:hover {
-    text-decoration: underline;
-  }
-  .ix-cintro-cases ul {
-    list-style: none;
-    margin: 8px 0 0;
-    padding: 0;
-    display: grid;
-    gap: 8px;
-  }
-  .ix-cintro-cases a {
-    display: flex;
-    align-items: stretch;
-    gap: 14px;
-    padding: 12px 14px;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--tx);
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  .ix-cintro-cases a:hover {
-    border-color: rgba(124, 175, 0, 0.5);
-    box-shadow: 0 4px 14px rgba(31, 42, 34, 0.08);
-  }
-  .ix-cintro-figbox {
-    flex: none;
-    width: 112px;
-    display: flex;
-    align-items: center;
-  }
-  .ix-cintro-fig {
-    font-family: var(--font-serif-jp);
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 1.2;
-    color: var(--tx);
-  }
-  .ix-cintro-fig i {
-    margin-left: 3px;
-    font-style: normal;
-    font-size: 12px;
-  }
-  .ix-cintro-fig--none {
-    color: #b9bfb2;
-  }
-  .ix-cintro-txt {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    min-width: 0;
-  }
-  .ix-cintro-t {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.55;
-  }
-  .ix-cintro-cases a:hover .ix-cintro-t {
-    color: var(--ok-light);
-  }
-  .ix-cintro-i {
-    font-size: 12.5px;
-    line-height: 1.6;
-    color: var(--tx-soft);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
   @media (max-width: 900px) {
     .ix-cintro {
