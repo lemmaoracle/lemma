@@ -1,7 +1,7 @@
 ---
 /**
  * Proof Gate by Lemma — executive landing page on the existing /cyber/ route.
- * Result and scope → execution flow → three gates → evidence → consultation.
+ * value → mechanism → evidence → trial → gates → consultation CTA → status → technical details.
  * Only technical details are collapsed. Enforcement requires an integrated gate.
  */
 import type { Locale, Translations } from "../i18n/translations";
@@ -9,7 +9,6 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import CyberHeroCard from "../components/CyberHeroCard.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { localePath } from "../lib/urls";
 import "@fontsource/space-grotesk/latin-500.css";
@@ -27,16 +26,21 @@ const C = isJa
   ? ({
       title: "Proof Gate by Lemma — 流出しないシステム｜Lemma",
       description:
-        "送金・口座変更・AIエージェントの操作を、実行の直前で確かめる。条件に合わない操作を通さない、流出しないシステムの導入相談。",
+        "Proof Gateは、対象操作の実行直前に条件を確かめる仕組み。送金・口座変更ゲートは設計段階、エージェント操作ゲートはテスト用メモ追加のみの社内試験段階です。保護は確認を組み込んだ経路に限ります。",
       brand: "Proof Gate by Lemma",
       headline: "流出しないシステム",
       intro:
-        "送金・口座変更・AIエージェントの操作を、実行の直前で確かめます。振込先・金額・任せた範囲が条件に合わない操作は、通しません。",
-      scope:
-        "保護の対象は確認を組み込んだ操作です。組み込んでいない経路や、条件の範囲内の悪用は防げません。",
-      availability: "導入相談受付中",
+        "承認した送金先・金額・範囲と違う操作を、実行直前に止める。",
+      heroStage:
+        "送金・口座変更は設計段階。エージェント操作はテスト用メモ追加の社内試験段階。",
+      scope: "保護は確認を組み込んだ経路のみ。許可範囲内の悪用は対象外です。",
+      trialAlt:
+        "テスト用メモ追加だけを試した社内試験の実機履歴（13件中5件）。自分たちで用意した不正条件の依頼4件がblocked、正常依頼1件がexecuted。実業務の流出試験ではなく、理由コードは画面幅で省略表示。",
+      trialCaption:
+        "社内試験の実機履歴の一部（13件中5件）。テスト用メモ追加だけを試し、自分たちで用意した不正条件の依頼を停止。実業務の流出試験ではなく、理由コードは画面幅で省略表示。",
       call: "導入を相談する",
       learn: "実行前に止める仕組みを見る",
+      valueTitle: "お金と情報、任せた仕事を守るために",
       flowTitle: "決めた条件を、実行の条件にする",
       flowIntro:
         "管理者が条件を先に決める。実行側は今回の依頼との照合結果を使い、一致する操作を通し、不一致の操作を止める設計。",
@@ -53,7 +57,7 @@ const C = isJa
         },
       ],
       flowCheck: "実行直前に条件と依頼の結び付きを照合",
-      flowPosition: "送金処理の直前",
+      flowPosition: "対象操作の直前",
       flowResults: [
         {
           title: "通過",
@@ -93,7 +97,7 @@ const C = isJa
       flowLimit:
         "保護は確認を組み込んだ実行経路だけで、別経路からの操作や、許可範囲内の悪用は防げない。誤った内容が条件として承認されれば、その条件との一致だけで正しい取引や善意の操作にはならない。",
       gatesLink: "3つのゲートの例を見る",
-      gatesTitle: "どの操作にゲートを置くか",
+      gatesTitle: "お金が出ていく前に、行き先と条件を確かめる",
       gatesIntro: "各例は説明用の想定例。各ゲートの提供時期は相談時に案内。",
       scenario: "説明用の想定例",
       gateLabels: {
@@ -107,8 +111,8 @@ const C = isJa
       },
       gates: [
         {
-          symbol: "¥",
           title: "送金ゲート",
+          value: "お金を動かす前に、承認した送金先・金額・期限を確かめる。",
           stage: "設計段階",
           stageKind: "design",
           work: "経理・財務による送金。",
@@ -123,8 +127,8 @@ const C = isJa
           status: "設計段階。提供時期は相談時に案内。",
         },
         {
-          symbol: "⇄",
           title: "口座変更ゲート",
+          value: "お金の行き先を変える前に、業務側で確認した変更内容と照合する。",
           stage: "設計段階",
           stageKind: "design",
           work: "経理・取引先の振込口座変更。",
@@ -139,9 +143,10 @@ const C = isJa
           status: "設計段階。提供時期は相談時に案内。",
         },
         {
-          symbol: "{ }",
           title: "エージェント操作ゲート",
-          stage: "社内試験（実業務では未導入）",
+          value:
+            "AIに任せた仕事を、許可した情報・操作・期間の中で進める。",
+          stage: "社内試験",
           stageKind: "trial",
           work: "開発・情シスなどがエージェントに任せる操作。例として、指定した資料の閲覧を指定期間だけ委任する。",
           threat: "範囲外の操作・情報流出",
@@ -157,85 +162,66 @@ const C = isJa
         },
       ],
       gatesNote: "各ゲートの提供時期は相談時に案内します。",
-      evidenceLink: "現在の検証範囲を見る",
-      evidenceTitle: "現在の検証と設計の範囲",
+      evidenceLink: "社内試験の範囲を見る",
+      evidenceTitle: "確認の有無で、デモの結果はどう変わったか",
       evidenceIntro:
-        "公開実験で報告された結果と、エージェント操作ゲートの社内試験を紹介します。いずれも、ここに記す操作・環境・条件の範囲での結果です。",
-      evidenceLabels: {
-        operation: "対象操作",
-        conditions: "条件",
-        records: "確認できた結果",
-        scope: "適用範囲",
-        status: "現在地",
-      },
-      attackLabels: ["攻撃パターン", "ゲートなし", "ゲートあり", "この結果の範囲"],
+        "意図的に弱点を設けたデモアプリで、情報の取得や書き換えの直前に確認を置く場合・置かない場合を比べた公開実験です。",
+      attackScenario: "シナリオ",
+      attackWithout: "確認なし",
+      attackWith: "確認あり",
+      attackSucceeded: "攻撃が成立",
+      attackBlocked: "停止",
+      trialTitle: "依頼を通す・止める、社内試験の記録",
+      trialFigureLink: "冒頭の社内試験画面を見る",
+      trialReconciliation:
+        "停止時のHTTP記録は409・403・400。成功時はメモ・再利用防止記録・消費済み件数が各+1。それぞれの計測記録は、末尾「技術・組み込み情報」に記載しています。",
+      statusTitle: "提供に向けた状況",
       evidence: [
         {
-          title: "公開実験｜意図的に弱点を設けたデモアプリ",
-          operation:
-            "機密情報の取得、監査記録の書き換え、送金・承認処理への攻撃を、5つのシナリオで比較した公開実験です。",
-          conditions:
-            "情報の取得や書き換えの直前に確認を置いた場合と、置かない場合を比較しています。",
           scope:
-            "確認を置いたデモ内の経路だけが対象です。道具・試行回数を限った結果で、独立に再現できません。実業務の防止率や、無制限の攻撃への耐性を示すものではありません。",
-          status:
-            "実行前に止める仕組みの概念実証として報告されたものです。新しい送金・口座変更・エージェント操作の3ゲートの製品検証ではありません。",
+            "意図的に弱点を設けたデモの、既知の組み込み経路だけが対象です。限られた道具・15ターンで試し、正規表現照合で判定した結果で、独立に再現できません。3ゲートの製品検証でも、ベンダー優劣の比較でもありません。",
           note: "公開実験の出典は下のREADMEです。社内試験とは別の資料です。詳しい条件は末尾の「技術・組み込み情報」にまとめています。",
           records: [
-            "READMEは、攻撃役Opus 4.8の全5シナリオで、ゲートなしでは攻撃が通り、ゲートありでは止まったと報告しています。以下はそのうちの2例です。",
+            "公開READMEに記載された、攻撃役Opus 4.8による全5シナリオの結果です。",
           ],
           link: "実験の条件・結果を見る",
           patterns: [
-            [
-              "許された範囲を超えて機密情報を取得",
-              "米国の社会保障番号を全桁取得。",
-              "許可の裏付けがない依頼には、番号を返さず。",
-              "デモ内で確認を組み込んだ機密情報の取得。",
-            ],
-            [
-              "送金の承認フローを回避",
-              "承認を飛ばす操作が実行に到達。",
-              "承認の裏付けを求め、操作を停止。",
-              "デモ内の送金・承認処理。新しい送金ゲートの製品検証ではありません。",
-            ],
+            "機密情報の不正取得",
+            "監査ログの改ざん",
+            "ゼロデイRCE",
+            "SIEMの回避",
+            "ソーシャルエンジニアリング",
           ],
-          kind: "public",
         },
         {
-          title: "社内試験｜エージェント操作ゲートでのテスト用メモの追加",
           operation:
-            "社内の開発用パソコンで、エージェントに任せた操作として、試験画面から手動でテスト用メモを追加しました。",
-          conditions:
-            "事前に任せた範囲と今回の依頼を結び付け、実行前に確認しました。",
+            "社内のローカル環境で、試験画面から手動でテスト用メモの追加を試しました。無害なデータベース行だけを扱い、外部への影響はありません。",
           scope:
-            "試したのは、このメモ追加だけです。送金・口座変更・外部への操作は対象外で、実業務の情報流出防止、確認のない経路や許可範囲内の悪用への効果は示していません。",
+            "社内試験はメモ追加のみで、送金・口座変更・外部操作や、実業務の流出防止を検証したものではありません。",
           status:
-            "エージェント操作は社内試験段階で、実業務には未導入です。人による試用と公開判断は未実施です。送金・口座変更は設計段階です。",
-          note: "公開実験とは別の社内記録です。詳細は末尾の「技術・組み込み情報」に、導入相談で整理する内容は下にまとめています。",
+            "送金・口座変更は設計段階。エージェント操作は社内試験段階で、実業務には未導入です。人による試用と公開判断は未実施です。",
           records: [
             "条件に合う依頼は通過し、メモが追加されました。",
             "同じ依頼の使い回し、確認情報の不足・形式の誤り、依頼の書き換えを試すと停止し、メモは追加されませんでした。",
           ],
-          link: "組み込み相談で整理することを見る",
-          patterns: [],
-          kind: "internal",
         },
       ],
-      closeTitle: "まず、守りたい操作から相談する",
+      closeTitle: "今の業務に、実行直前の確認を加える",
       consultItems: [
         {
-          title: "対象操作",
-          detail: "対象にしたい業務と操作を挙げる。",
+          title: "業務の仕組みはそのまま",
+          detail: "既存の業務システム・承認フロー・データを使い続ける前提で、守りたい操作を選びます。",
         },
         {
-          title: "条件",
-          detail: "管理者が決める条件と、実行が起きる経路を整理する。",
+          title: "実行の直前につなぐ",
+          detail: "対象の処理を実行する直前に、Proof Gateへの確認の呼び出しを組み込み、決めた条件と今回の依頼を照合します。",
         },
         {
-          title: "組み込み位置",
-          detail: "ゲートを置く候補箇所、対象外の経路、組み込みの可否を相談する。",
+          title: "条件が合う処理だけ進める",
+          detail: "照合を通った処理だけ既存システムで実行し、合わない依頼は手前で止める流れにします。",
         },
       ],
+      integrationScope: "確認を組み込まない経路は対象外です。",
       technicalTitle: "技術・組み込み情報",
       technicalBody:
         "エージェント操作の社内試験では、事前の許可範囲・委任・今回の依頼を結び付けて確かめるために、ゼロ知識証明（ZK）を使っています。暗号技術だけで実在する会社や本人、入力内容の正しさを確認できるわけではありません。会社・担当者の確認と条件の根拠は、業務側で確かめる必要があります。",
@@ -246,7 +232,7 @@ const C = isJa
             "対象は、機密データの取得・復号、監査ログの変更、送金・承認処理の5シナリオです。意図的に攻略しやすいデモの既知の実行箇所にゲートを組み込み、全5シナリオの全データ更新・機密読出し経路で証明を要求します。監査ログの変更・再コミットにもrequireZkProofを適用しています。",
             "攻撃役のツールはhttp_requestで、RCE（リモートコード実行）シナリオのみrun_shellを追加します。上限は15ターンです。",
             "READMEは、攻撃役Opus 4.8の全5シナリオでINSECURE=attack_succeeded、SECURE=blockedと報告しています。権限を引き上げる機密情報取得の例では、ゲートなしでSSN（米国の社会保障番号）を全桁取得し、ゲートありでは証明のない要求にSSNを返しません。承認フロー回避の例では、ゲートなしで実行に到達し、ゲートありでは承認の証明を要求して停止しています。",
-            "判定は応答内容の正規表現照合に基づき、厳密な評価手法ではありません。Fable 5の探索拒否はモデル側の拒否であり、防御成功には数えません。別のAPI操作プローブとも区別します。",
+            "判定は応答内容の正規表現照合に基づき、厳密な評価手法ではありません。",
             "READMEは、モデルAPIの更新があり、生成設定も固定していないため、結果は独立に再現できないと明記しています。科学的ベンチマークではなく概念実証で、多層防御や、無制限の道具・時間を使う攻撃への耐性を評価したものではありません。",
           ],
         },
@@ -269,16 +255,22 @@ const C = isJa
   : ({
       title: "Proof Gate by Lemma — Systems that don't leak | Lemma",
       description:
-        "Check transfers, account changes and AI agent actions just before they run. Consult on introducing a system that does not let unauthorized operations through.",
+        "Proof Gate checks actions before execution. Transfer and account change gates are in design; the agent gate is in an internal trial of test-memo appends only. Protection requires an integrated check.",
       brand: "Proof Gate by Lemma",
       headline: "Systems that don't leak.",
       intro:
-        "Proof Gate checks transfers, account changes and AI agent actions just before they run. Anything outside the approved destination, amount or scope does not go through.",
+        "Stop actions outside the approved destination, amount or scope just before they run.",
+      heroStage:
+        "Transfers & account changes: in design. Agent actions: internal test-memo trial.",
       scope:
-        "Protection covers operations with the check integrated. Unintegrated paths, and misuse inside the approved scope, are out of scope.",
-      availability: "Now accepting consultations",
+        "Only integrated paths are covered; unintegrated paths and misuse within approved scope are excluded.",
+      trialAlt:
+        "Actual execution history from an internal trial of test-memo appends only: 5 of 13 entries, with four deliberately invalid requests blocked and one normal request executed. This was not a business data-leak test or a record of real attacks. Reason codes are truncated to fit the screen.",
+      trialCaption:
+        "Actual execution history from an internal trial (5 of 13 entries). Only test-memo appends were tried: our deliberately invalid requests were blocked; a normal request passed. This was not a business data-leak test or a record of real attacks. Reason codes are truncated to fit the screen.",
       call: "Discuss your integration",
       learn: "See how the gate works",
+      valueTitle: "Protecting money, information and delegated work.",
       flowTitle: "Make agreed conditions a requirement for execution.",
       flowIntro:
         "An administrator sets the conditions first. The execution path uses the check result to allow a matching action or block a mismatch.",
@@ -295,7 +287,7 @@ const C = isJa
         },
       ],
       flowCheck: "Check conditions and request binding immediately before execution",
-      flowPosition: "Immediately before the transfer",
+      flowPosition: "Immediately before the target action",
       flowResults: [
         {
           title: "Pass",
@@ -336,7 +328,7 @@ const C = isJa
       flowLimit:
         "Protection covers only execution paths with the check integrated. Actions through other paths and misuse within approved conditions are outside protection. If incorrect details are approved, matching those conditions does not establish a valid transaction or a well-intentioned action.",
       gatesLink: "See examples for the three gates",
-      gatesTitle: "Choose the operation to protect.",
+      gatesTitle: "Check the destination and conditions before money moves.",
       gatesIntro:
         "These are illustrative scenarios. Availability of each gate will be discussed during consultation.",
       scenario: "Illustrative scenario",
@@ -351,8 +343,9 @@ const C = isJa
       },
       gates: [
         {
-          symbol: "¥",
           title: "Transfer gate",
+          value:
+            "Check the approved recipient, amount and expiry before moving money.",
           stage: "In design",
           stageKind: "design",
           work: "Transfers by finance teams.",
@@ -367,8 +360,9 @@ const C = isJa
           status: "In design. Availability will be discussed during consultation.",
         },
         {
-          symbol: "⇄",
           title: "Account change gate",
+          value:
+            "Check changes against details verified by the business before changing where money goes.",
           stage: "In design",
           stageKind: "design",
           work: "Vendor bank account changes handled by finance teams.",
@@ -383,9 +377,10 @@ const C = isJa
           status: "In design. Availability will be discussed during consultation.",
         },
         {
-          symbol: "{ }",
           title: "Agent action gate",
-          stage: "Internal trial (not deployed in business operations)",
+          value:
+            "Keep delegated AI work within the permitted information, actions and time window.",
+          stage: "Internal trial",
           stageKind: "trial",
           work: "Actions delegated to agents by developers and IT teams, such as access to specified documents for a specified period.",
           threat: "Out-of-scope agent actions and data leakage",
@@ -401,86 +396,67 @@ const C = isJa
         },
       ],
       gatesNote: "Availability of each gate will be discussed during consultation.",
-      evidenceLink: "See the current evidence and its limits",
-      evidenceTitle: "Current evidence and design status",
+      evidenceLink: "See the internal trial and its limits",
+      evidenceTitle: "What changed with a check in the demo?",
       evidenceIntro:
-        "Here are results reported in a public experiment and an internal trial of the agent action gate. Each covers the operations, environment and conditions described below.",
-      evidenceLabels: {
-        operation: "Operation",
-        conditions: "Conditions",
-        records: "Observed outcomes",
-        scope: "Scope",
-        status: "Current status",
-      },
-      attackLabels: ["Attack pattern", "Without the gate", "With the gate", "Scope of the result"],
+        "A public experiment on an intentionally vulnerable demo application compared operations with and without a check immediately before information was retrieved or changed.",
+      attackScenario: "Scenario",
+      attackWithout: "Without check",
+      attackWith: "With check",
+      attackSucceeded: "Attack succeeded",
+      attackBlocked: "Blocked",
+      trialTitle: "Passing and stopping requests in the internal trial.",
+      trialFigureLink: "View the internal-trial screen above",
+      trialReconciliation:
+        "Stopped attempts returned HTTP 409, 403 or 400. On success, memo, replay-prevention and consumed-challenge counts each rose by +1. These separate measurements are documented under “Technical and integration details” at the end of this page.",
+      statusTitle: "Availability",
       evidence: [
         {
-          title: "Public experiment | An intentionally vulnerable demo application",
-          operation:
-            "The public experiment compares five attack scenarios involving access to sensitive information, altered records, and transfer and approval workflows.",
-          conditions:
-            "It compares operations with and without a check immediately before information is retrieved or changed.",
           scope:
-            "Results cover only the demo operations with checks in place, under limited tools and attempts. They are not independently reproducible and do not establish prevention rates in business operations or resistance to unrestricted attacks.",
-          status:
-            "This is a reported proof of concept for stopping an action before it runs. It is not product validation of the three new transfer, account change and agent action gates.",
+            "An intentionally vulnerable demo, covering only known integrated paths. Runs used limited tools and a 15-turn budget; verdicts used regex matching. Results are not independently reproducible. This is neither product validation of the three gates nor a ranking of vendors.",
           note: "The README below is the source for this public experiment, separate from the internal trial. Detailed conditions are in “Technical and integration details” at the end of this page.",
           records: [
-            "The README reports that attacks got through without the gate and stopped with the gate in all five scenarios with Opus 4.8 as the attacker. Two examples follow.",
+            "All five scenarios reported in the public README, with Opus 4.8 as the attacker.",
           ],
           link: "See test conditions and results",
           patterns: [
-            [
-              "Access sensitive information beyond the permitted scope",
-              "Full US Social Security numbers were retrieved.",
-              "No numbers were returned without evidence of permission.",
-              "Access to sensitive information with checks in place in the demo.",
-            ],
-            [
-              "Bypass the transfer approval workflow",
-              "An action bypassing approval reached execution.",
-              "Evidence of approval was required and the action stopped.",
-              "Transfer and approval operations in the demo. This is not product validation of the new transfer gate.",
-            ],
+            "Unauthorized data exfiltration",
+            "Audit trail tampering",
+            "Zero-day RCE",
+            "SIEM evasion",
+            "Social engineering",
           ],
-          kind: "public",
         },
         {
-          title: "Internal trial | Adding a test memo through the agent action gate",
           operation:
-            "A test memo was added on an internal development computer, manually from the test screen, as a request for an action delegated to an agent.",
-          conditions:
-            "The permissions set in advance were linked to the current request and checked before the action ran.",
+            "Test-memo appends were tried manually from the trial screen in a local environment. They involved harmless database rows only, with no external effect.",
           scope:
-            "Only adding this test memo was tried. Transfers, account changes and external actions were outside the trial. It does not establish data-loss prevention in business operations or protection for paths without checks or misuse within permitted conditions.",
+            "Only test-memo appends were tried. The trial did not validate transfers, account changes, external actions or data-loss prevention in business operations.",
           status:
-            "The agent action gate is in internal testing and is not deployed in business operations. Human trials and a release decision are still pending. Transfer and account change gates are in design.",
-          note: "This internal record is separate from the public experiment. Its details are in “Technical and integration details” at the end of this page; consultation topics are below.",
+            "Transfer and account change gates are in design. The agent action gate is in internal testing, with no business deployment. Human trials and a release decision are pending.",
           records: [
             "A request meeting the conditions went through and added a memo.",
             "Attempts to reuse the same request, omit or incorrectly format the information needed for the check, or alter the request stopped without adding another memo.",
           ],
-          link: "See what an integration consultation covers",
-          patterns: [],
-          kind: "internal",
         },
       ],
-      closeTitle: "Start with the operation you want to protect.",
+      closeTitle: "Add a check just before execution in your existing workflow.",
       consultItems: [
         {
-          title: "Target operation",
-          detail: "Identify the workflow and operation.",
+          title: "Keep your existing system",
+          detail: "Plan around your existing business system, approval flow and data. Choose the operation you want to protect.",
         },
         {
-          title: "Conditions",
-          detail: "Discuss who sets the conditions and where execution takes place.",
+          title: "Connect a check before execution",
+          detail: "Add a call to Proof Gate immediately before the chosen operation runs, comparing the request with the agreed conditions.",
         },
         {
-          title: "Integration point",
+          title: "Proceed only when conditions match",
           detail:
-            "Review potential gate placement, paths outside protection, and integration feasibility.",
+            "The existing system runs only requests that pass the check. Requests that do not match stop before execution.",
         },
       ],
+      integrationScope: "Paths without the check are outside its coverage.",
       technicalTitle: "Technical and integration details",
       technicalBody:
         "In the internal agent trial, zero-knowledge proofs (ZK) bind the permitted scope, delegation and current request. Cryptography alone does not verify a real organization or person, or establish that the inputs are true. The business must verify identities and the basis for its conditions.",
@@ -491,7 +467,7 @@ const C = isJa
             "The five scenarios cover sensitive data retrieval and decryption, audit log changes, and transfer and approval workflows. Gates at known enforcement points in the intentionally vulnerable demo require proof on every mutation and sensitive-read path across all five scenarios. Audit log changes and recommits also use requireZkProof.",
             "The attacker uses http_request, with run_shell added only for the RCE (remote code execution) scenario. The limit is 15 turns.",
             "The README reports INSECURE=attack_succeeded and SECURE=blocked for all five scenarios with Opus 4.8 as the attacker. In the privilege-escalation example, full SSNs (US Social Security numbers) were retrieved without the gate; with the gate, no SSN data was returned without proof. The approval-flow bypass reached execution without the gate; with the gate, approval proof was required and the attack was blocked.",
-            "Verdicts use regex matching against response content, rather than a rigorous evaluation method. Fable 5's refusals to explore attacks are model refusals and do not count as defense successes. Separate API-operation probes are also distinct from these results.",
+            "Verdicts use regex matching against response content, rather than a rigorous evaluation method.",
             "The README states that results are not independently reproducible because model APIs change and generation settings were not fixed. This is a proof of concept, not a scientific benchmark. It does not evaluate defense in depth or resistance to attackers with unrestricted tools and time.",
           ],
         },
@@ -512,6 +488,7 @@ const C = isJa
         "Use a reference code (docHash) to look up a public registration and the latest proof linked to it. The retrieved proof data is verified through the public API. The conditions checked depend on the proof type. This page does not check the document text, establish the sender's identity or authorize a business action. Verifying proof data is separate from stopping an action on a business system's execution path. Records from the internal agent trial are not available through this page.",
     } as const);
 const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "status"] as const;
+const [publicEvidence, trialEvidence] = C.evidence;
 ---
 
 <Layout
@@ -526,12 +503,10 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
   <main class="cy-page">
     <div class="cy-container">
       <section class="cy-hero" aria-labelledby="cy-title">
-        <CyberHeroCard />
         <div class="cy-hero-copy">
           <p class="cy-brand">{C.brand}</p>
           <h1 id="cy-title">{C.headline}</h1>
           <p class="cy-intro">{C.intro}</p>
-          <p class="cy-scope">{C.scope}</p>
           <div class="cy-actions">
             <a
               class="cy-btn cy-primary"
@@ -547,12 +522,41 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
               <span aria-hidden="true">↓</span>
             </a>
           </div>
-          <p class="cy-availability"><span>{C.availability}</span> <span>{C.gatesNote}</span></p>
+          <p class="cy-hero-stage">{C.heroStage}</p>
+          <p class="cy-scope">{C.scope}</p>
         </div>
+        <figure id="pg-trial-screen" class="cy-trial-figure">
+          <img
+            src="/assets/figures/proof-gate-trial-evidence-375.png"
+            width="375"
+            height="345"
+            alt={C.trialAlt}
+            fetchpriority="high"
+          />
+          <figcaption id="pg-trial-caption">
+            <p>{C.trialCaption}</p>
+          </figcaption>
+        </figure>
       </section>
 
       <section id="pg-flow" class="cy-section" aria-labelledby="pg-flow-title">
-        <h2 id="pg-flow-title">{C.flowTitle}</h2>
+        <h2 id="pg-flow-title">{C.valueTitle}</h2>
+        <ul class="cy-values" role="list">
+          {
+            C.gates.map((gate) => (
+              <li>
+                <div>
+                  <h3>{gate.title}</h3>
+                  <p class:list={["cy-stage", { "cy-stage-trial": gate.stageKind === "trial" }]}>
+                    {gate.stage}
+                  </p>
+                </div>
+                <p>{gate.value}</p>
+              </li>
+            ))
+          }
+        </ul>
+        <h3 class="cy-mechanism-title">{C.flowTitle}</h3>
         <p class="cy-section-intro">{C.flowIntro}</p>
         <p class="cy-section-intro">{C.flowBinding}</p>
         <figure class="cy-flow-figure">
@@ -596,8 +600,8 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
           {
             C.flowExamples.map((example) => (
               <article class="cy-scenario">
+                <h4>{example.title}</h4>
                 <p class="cy-scenario-label">{C.flowScenario}</p>
-                <h3>{example.title}</h3>
                 <dl class="cy-facts">
                   {example.details.map((detail, index) => (
                     <div>
@@ -614,22 +618,75 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
         <a class="cy-source" href="#pg-gates">{C.gatesLink} <span aria-hidden="true">↓</span></a>
       </section>
 
+      <section id="pg-evidence" class="cy-section cy-evidence" aria-labelledby="pg-evidence-title">
+        <h2 id="pg-evidence-title">{C.evidenceTitle}</h2>
+        <p class="cy-section-intro">{C.evidenceIntro}</p>
+        {publicEvidence.records.map((record) => <p class="cy-section-intro">{record}</p>)}
+        <figure class="cy-attack-figure">
+          <table class="cy-attack-table" aria-labelledby="pg-evidence-title" aria-describedby="pg-attack-scope">
+            <thead>
+              <tr>
+                <th scope="col">{C.attackScenario}</th>
+                <th scope="col"><span class="cy-attack-mode">INSECURE</span>{C.attackWithout}</th>
+                <th scope="col"><span class="cy-attack-mode">SECURE</span>{C.attackWith}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                publicEvidence.patterns.map((pattern) => (
+                  <tr>
+                    <th scope="row">{pattern}</th>
+                    <td><span class="cy-attack-outcome cy-attack-insecure">{C.attackSucceeded}</span></td>
+                    <td><span class="cy-attack-outcome cy-attack-secure">{C.attackBlocked}</span></td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+          <figcaption id="pg-attack-scope" class="cy-boundary cy-evidence-limit">{publicEvidence.scope}</figcaption>
+        </figure>
+        <p class="cy-note">{publicEvidence.note}</p>
+        <a
+          class="cy-source"
+          href="https://github.com/lemmaoracle/example-cyber-attack#readme"
+          target="_blank"
+          rel="noopener"
+        >
+          {publicEvidence.link}
+          <span aria-hidden="true">↗</span>
+        </a>
+      </section>
+
+      <section id="pg-trial" class="cy-section cy-trial" aria-labelledby="pg-trial-title">
+        <h2 id="pg-trial-title" class="cy-trial-title">{C.trialTitle}</h2>
+        <p class="cy-section-intro">{trialEvidence.operation}</p>
+        {trialEvidence.records.map((record) => <p class="cy-section-intro">{record}</p>)}
+        <p class="cy-section-intro">{C.trialReconciliation}</p>
+        <a class="cy-source" href="#pg-trial-screen">
+          {C.trialFigureLink}
+          <span aria-hidden="true">↑</span>
+        </a>
+      </section>
+
       <section id="pg-gates" class="cy-section" aria-labelledby="pg-gates-title">
         <h2 id="pg-gates-title">{C.gatesTitle}</h2>
         <p class="cy-section-intro">{C.gatesIntro}</p>
-        <div class="cy-cards">
+        <div class="cy-gates">
           {
             C.gates.map((gate) => (
               <article class="cy-example-card">
-                <span class="cy-use-top">LEMMA / PROOF GATE</span>
-                <span class="cy-use-symbol" aria-hidden="true">
-                  {gate.symbol}
-                </span>
-                <h3>{gate.title}</h3>
-                <p class:list={["cy-stage", { "cy-stage-trial": gate.stageKind === "trial" }]}>
-                  {gate.stage}
-                </p>
-                <p class="cy-scenario-label">{C.scenario}</p>
+                <div>
+                  <h3>{gate.title}</h3>
+                  <p class:list={["cy-stage", { "cy-stage-trial": gate.stageKind === "trial" }]}>
+                    {gate.stage}
+                  </p>
+                  <p class="cy-scenario-label">{C.scenario}</p>
+                  {gate.stageKind === "trial" && (
+                    <a class="cy-source" href="#pg-trial">
+                      {C.evidenceLink} <span aria-hidden="true">↑</span>
+                    </a>
+                  )}
+                </div>
                 <dl class="cy-facts">
                   {gateFields.map((field) => (
                     <div>
@@ -638,90 +695,11 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
                     </div>
                   ))}
                 </dl>
-                {gate.stageKind === "trial" && (
-                  <a class="cy-source" href="#pg-evidence">
-                    {C.evidenceLink} <span aria-hidden="true">↓</span>
-                  </a>
-                )}
               </article>
             ))
           }
         </div>
         <p class="cy-note">{C.gatesNote}</p>
-      </section>
-
-      <section id="pg-evidence" class="cy-section cy-evidence" aria-labelledby="pg-evidence-title">
-        <h2 id="pg-evidence-title">{C.evidenceTitle}</h2>
-        <p class="cy-section-intro">{C.evidenceIntro}</p>
-        <div class="cy-evidence-blocks">
-          {
-            C.evidence.map((evidence) => (
-              <article class="cy-evidence-card">
-                <h3>{evidence.title}</h3>
-                <dl class="cy-facts cy-evidence-facts">
-                  <div>
-                    <dt>{C.evidenceLabels.operation}</dt>
-                    <dd>{evidence.operation}</dd>
-                  </div>
-                  <div>
-                    <dt>{C.evidenceLabels.conditions}</dt>
-                    <dd>{evidence.conditions}</dd>
-                  </div>
-                  <div>
-                    <dt>{C.evidenceLabels.records}</dt>
-                    <dd>
-                      {evidence.records.map((record) => (
-                        <p>{record}</p>
-                      ))}
-                      {evidence.patterns.length > 0 && (
-                        <ul class="cy-attack-patterns" role="list">
-                          {evidence.patterns.map((pattern) => (
-                            <li>
-                              <h4>
-                                <span>{C.attackLabels[0]}</span>
-                                {pattern[0]}
-                              </h4>
-                              <dl class="cy-attack-results">
-                                {pattern.slice(1).map((result, index) => (
-                                  <div>
-                                    <dt>{C.attackLabels[index + 1]}</dt>
-                                    <dd>{result}</dd>
-                                  </div>
-                                ))}
-                              </dl>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>{C.evidenceLabels.scope}</dt>
-                    <dd>{evidence.scope}</dd>
-                  </div>
-                  <div>
-                    <dt>{C.evidenceLabels.status}</dt>
-                    <dd>{evidence.status}</dd>
-                  </div>
-                </dl>
-                <p class="cy-evidence-note">{evidence.note}</p>
-                <a
-                  class="cy-source"
-                  href={
-                    evidence.kind === "public"
-                      ? "https://github.com/lemmaoracle/example-cyber-attack#readme"
-                      : "#cy-start"
-                  }
-                  target={evidence.kind === "public" ? "_blank" : undefined}
-                  rel={evidence.kind === "public" ? "noopener" : undefined}
-                >
-                  {evidence.link}{" "}
-                  <span aria-hidden="true">{evidence.kind === "public" ? "↗" : "↓"}</span>
-                </a>
-              </article>
-            ))
-          }
-        </div>
       </section>
 
       <section id="cy-start" class="cy-section cy-close" aria-labelledby="cy-close-title">
@@ -737,7 +715,7 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
           }
         </dl>
         <p class="cy-note">{C.gatesNote}</p>
-        <p class="cy-scope">{C.scope}</p>
+        <p class="cy-scope">{C.integrationScope}</p>
         <div class="cy-actions">
           <a
             class="cy-btn cy-primary"
@@ -749,6 +727,11 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
             <span aria-hidden="true">↗</span>
           </a>
         </div>
+      </section>
+      <section id="pg-status" class="cy-section cy-status" aria-labelledby="pg-status-title">
+        <h2 id="pg-status-title">{C.statusTitle}</h2>
+        <p class="cy-section-intro">{trialEvidence.status}</p>
+        <p class="cy-section-intro">{trialEvidence.scope}</p>
       </section>
       <h2 id="cy-technical-title" class="cy-details-heading">{C.technicalTitle}</h2>
       <details class="cy-details cy-technical" aria-labelledby="cy-technical-title">
@@ -780,7 +763,10 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     background: #12140e;
     color: #f4f7ef;
     font-family: "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
     line-height: 1.85;
+    line-break: strict;
     padding-bottom: 100px;
   }
   .cy-page *,
@@ -789,51 +775,54 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     box-sizing: border-box;
   }
   .cy-container {
-    max-width: 1000px;
+    max-width: 1120px;
     margin-inline: auto;
     padding-inline: 32px;
     text-align: center;
   }
   .cy-hero {
-    position: relative;
-    isolation: isolate;
     display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 375px);
     align-items: center;
-    min-height: calc(100svh - var(--navh, 74px));
-    margin-inline: -32px;
-    padding: 112px 32px 128px;
+    gap: 64px;
+    padding-block: 40px 24px;
+    text-align: left;
   }
   .cy-hero-copy {
-    position: relative;
-    z-index: 1;
+    min-width: 0;
+  }
+  .cy-hero .cy-actions {
+    justify-content: flex-start;
+  }
+  .cy-hero-stage {
+    margin: 12px 0 0;
+    color: #bac1af;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .cy-trial-figure {
+    min-width: 0;
     width: 100%;
+    max-width: 375px;
+    margin: 0;
+    scroll-margin-top: 100px;
   }
-  /* Local scrim: copy stays primary where the silver card crosses behind the text. */
-  .cy-hero-copy::before {
-    content: "";
-    position: absolute;
-    inset: -12px -16px 35%;
-    z-index: -1;
-    pointer-events: none;
-    background: radial-gradient(
-      ellipse 62% 65% at 50% 38%,
-      #12140ef2 0%,
-      #12140eb3 55%,
-      transparent 78%
-    );
+  .cy-trial-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid #69705c;
+    border-radius: 12px;
+    background: #f8fafc;
   }
-  .cy-brand,
-  .cy-hero h1,
-  .cy-hero .cy-intro,
-  .cy-scope,
-  .cy-availability {
-    text-shadow:
-      0 1px 2px #12140e,
-      0 1px 14px #12140ef2,
-      0 0 32px #12140eb3;
+  .cy-trial-figure figcaption {
+    margin-top: 12px;
+    color: #bac1af;
+    font-size: 16px;
+    line-height: 1.75;
   }
-  .cy-hero .cy-ghost {
-    background: #12140ecf;
+  .cy-trial-figure p {
+    margin: 0;
   }
   .cy-brand {
     margin: 0 0 18px;
@@ -846,7 +835,7 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
   }
   .cy-page h1 {
     font-family: "Space Grotesk", "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
-    font-size: clamp(40px, 7vw, 72px);
+    font-size: clamp(44px, 5vw, 64px);
     font-weight: 500;
     line-height: 1.25;
     letter-spacing: -0.02em;
@@ -854,7 +843,8 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
   }
   .cy-page h1,
   .cy-page h2,
-  .cy-page h3 {
+  .cy-page h3,
+  .cy-page h4 {
     line-break: strict;
     word-break: auto-phrase;
     text-wrap: balance;
@@ -885,7 +875,7 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     padding: 12px 24px;
     border-radius: 999px;
     border: 1px solid #69705c;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 500;
     line-height: 1.5;
   }
@@ -920,47 +910,70 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     max-width: 640px;
     margin: 0 auto 30px;
     color: #bac1af;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 2;
     text-wrap: pretty;
   }
   .cy-intro {
-    max-width: 600px;
+    max-width: none;
     line-break: strict;
     word-break: auto-phrase;
-    text-wrap: balance;
+    text-wrap: pretty;
   }
   .cy-note,
-  .cy-scope,
-  .cy-availability {
+  .cy-scope {
     max-width: 640px;
     margin: 24px auto 0;
     color: #bac1af;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.9;
     text-wrap: pretty;
   }
   .cy-scope {
     margin: 0 auto 30px;
   }
-  @media (min-width: 601px) {
-    .cy-hero .cy-scope {
-      line-break: strict;
-      word-break: auto-phrase;
-      text-wrap: balance;
-    }
+  .cy-values {
+    padding: 0;
+    margin: 38px 0 64px;
+    list-style: none;
+    text-align: left;
   }
-  .cy-availability span {
-    display: block;
+  .cy-values li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    align-items: start;
+    gap: 32px;
+    border-top: 1px solid #3e4435;
+    padding-block: 24px;
+  }
+  .cy-values h3 {
+    margin-bottom: 12px;
+  }
+  .cy-values li > p {
+    margin: 0;
+    color: #bac1af;
+  }
+  .cy-values .cy-stage {
+    margin-bottom: 0;
+    border-color: #929c85;
+  }
+  .cy-page .cy-mechanism-title {
+    font-size: clamp(21px, 2.5vw, 28px);
+    margin-bottom: 24px;
   }
   .cy-page p,
   .cy-page dd,
+  .cy-page dt,
   .cy-page a,
+  .cy-page h1,
+  .cy-page h2,
   .cy-page h3,
-  .cy-page h4 {
+  .cy-page h4,
+  .cy-details summary {
     overflow-wrap: anywhere;
   }
-  .cy-page h3 {
+  .cy-page h3,
+  .cy-page h4 {
     margin: 0 0 16px;
     font-size: 19px;
     font-weight: 500;
@@ -975,7 +988,7 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
   }
   .cy-facts {
     text-align: left;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.9;
   }
   .cy-facts > div + div {
@@ -1010,7 +1023,7 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     border: 1px solid #69705c;
     border-radius: 12px;
     background: #171a12;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.9;
   }
   .cy-flow-node strong {
@@ -1097,8 +1110,7 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 22px;
   }
-  .cy-scenario,
-  .cy-evidence-card {
+  .cy-scenario {
     min-width: 0;
     border: 1px solid #3e4435;
     border-radius: 12px;
@@ -1108,7 +1120,7 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
   }
   .cy-scenario-label {
     margin: 0 0 16px;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.7;
   }
   .cy-page .cy-source {
@@ -1119,7 +1131,7 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     min-height: 44px;
     margin-top: 16px;
     color: inherit;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.7;
     text-align: left;
     text-decoration: underline;
@@ -1128,40 +1140,25 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
   .cy-source span {
     flex-shrink: 0;
   }
-  .cy-cards {
+  .cy-gates {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: start;
-    gap: 22px;
+    gap: 28px;
     margin-top: 38px;
   }
   /* Shared brushed silver surface with fine diagonal grooves. */
   .cy-example-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 32px;
     min-width: 0;
-    padding: 28px 20px;
+    padding: 32px;
     border: 1px solid #ffffffb3;
     border-radius: 12px;
     color: #1e293b;
+    text-align: left;
     background:
       repeating-linear-gradient(115deg, #0f172a0d 0 1px, transparent 1px 4px),
       linear-gradient(135deg, #fff, #e2e8f0 48%, #f8fafc 76%, #cbd5e1);
-  }
-  .cy-use-top {
-    display: block;
-    margin-bottom: 24px;
-    color: #475569;
-    font:
-      10px/1.5 "Space Mono",
-      monospace;
-    letter-spacing: 0.08em;
-  }
-  .cy-use-symbol {
-    display: block;
-    margin-bottom: 12px;
-    color: #64748b;
-    font:
-      500 28px/1.2 "Space Grotesk",
-      sans-serif;
   }
   .cy-example-card h3 {
     margin-bottom: 12px;
@@ -1181,8 +1178,17 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     color: #f8fafc;
   }
   .cy-example-card .cy-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .cy-example-card .cy-facts > div {
+    margin: 0;
     border-top: 1px solid #94a3b8;
-    padding-top: 22px;
+    padding-top: 16px;
+  }
+  .cy-example-card .cy-facts > div:last-child {
+    grid-column: 1 / -1;
   }
   .cy-example-card dd {
     color: #334155;
@@ -1191,69 +1197,97 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     outline-color: #1e293b;
   }
   .cy-evidence,
+  .cy-trial,
+  .cy-status,
   .cy-close {
     border-top: 1px solid #3e4435;
     padding-top: 64px;
   }
-  .cy-evidence-blocks {
-    display: grid;
-    gap: 28px;
-  }
-  .cy-evidence-card h3 {
-    max-width: 640px;
-  }
-  .cy-evidence-facts > div {
-    border-top: 1px solid #3e4435;
-    padding-top: 22px;
-  }
-  .cy-attack-patterns {
-    display: grid;
-    gap: 22px;
-    margin: 24px 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .cy-attack-patterns > li {
-    min-width: 0;
-    border: 1px solid #69705c;
-    border-radius: 8px;
-    padding: 22px;
-  }
-  .cy-attack-patterns h4 {
-    margin: 0 0 18px;
+  .cy-evidence-limit {
+    border-left: 2px solid #a8e010;
+    padding-left: 20px;
     color: #f4f7ef;
-    font-size: 16px;
-    line-height: 1.7;
+  }
+  .cy-attack-figure {
+    margin: 0;
+  }
+  .cy-attack-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    text-align: left;
+    line-height: 1.65;
+  }
+  .cy-attack-table th,
+  .cy-attack-table td {
+    padding: 12px 4px;
+    border-bottom: 1px solid #3e4435;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+  }
+  .cy-attack-table th:first-child {
+    width: 40%;
+    padding-left: 0;
+    padding-right: 12px;
     font-weight: 500;
   }
-  .cy-attack-patterns h4 span {
-    display: block;
-    margin-bottom: 6px;
+  .cy-attack-table thead th {
     color: #bac1af;
     font-size: 14px;
+    font-weight: 400;
   }
-  .cy-attack-results {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px;
+  .cy-attack-table thead th:not(:first-child) {
+    text-align: center;
   }
-  .cy-attack-results > div {
-    min-width: 0;
-  }
-  .cy-attack-results dt {
+  .cy-attack-mode {
+    display: block;
+    margin-bottom: 4px;
     color: #f4f7ef;
+    font: 12px/1.6 "Space Mono", monospace;
   }
-  .cy-evidence-note {
-    margin: 24px 0 0;
-    font-size: 14px;
-    line-height: 1.9;
+  .cy-attack-outcome {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 72px;
+    padding: 12px 4px;
+    border: 1px solid;
+    border-radius: 6px;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+  }
+  .cy-attack-insecure {
+    border-color: #925353;
+    background: #351c1c;
+    color: #ffb4b4;
+  }
+  .cy-attack-secure {
+    border-color: #698f12;
+    background: #22300e;
+    color: #a8e010;
+  }
+  .cy-section.cy-status {
+    max-width: 720px;
+    margin: 48px auto 0;
+    padding-top: 32px;
+    text-align: left;
+  }
+  .cy-page .cy-status h2,
+  .cy-page .cy-trial-title {
+    max-width: 640px;
+    margin: 0 auto 16px;
+    font-size: 19px;
+  }
+  .cy-status .cy-section-intro {
+    margin-bottom: 12px;
   }
   .cy-consult-items {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 22px;
     text-align: left;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.9;
   }
   .cy-consult-items > div {
@@ -1271,7 +1305,7 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     margin-bottom: 16px;
   }
   .cy-page .cy-details-heading {
-    margin: 32px 0 16px;
+    margin: 64px 0 16px;
   }
   .cy-details {
     max-width: 720px;
@@ -1308,7 +1342,7 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
   .cy-details-body {
     padding: 12px 4px 28px;
     color: #bac1af;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.9;
   }
   .cy-details-body p {
@@ -1319,20 +1353,65 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
   .cy-details-body p + p {
     margin-top: 24px;
   }
-  @media (max-width: 600px) {
+  @media (max-width: 900px) {
+    .cy-hero {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+      padding-block: 32px 16px;
+    }
+    .cy-hero-copy {
+      max-width: 640px;
+      margin-inline: auto;
+    }
+    .cy-trial-figure {
+      margin-inline: auto;
+    }
+    .cy-example-card {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+  }
+  @media (max-width: 700px) {
     .cy-container {
       padding-inline: 20px;
-    }
-    .cy-hero {
-      margin-inline: -20px;
-      padding: 88px 20px 104px;
     }
     .cy-page h1 {
       font-size: 44px;
     }
+    .cy-hero {
+      padding-top: 24px;
+      gap: 20px;
+    }
+    .cy-hero .cy-brand {
+      margin-bottom: 12px;
+    }
+    .cy-hero h1,
+    .cy-hero .cy-intro {
+      margin-bottom: 16px;
+    }
+    .cy-hero .cy-intro {
+      line-height: 1.75;
+    }
+    .cy-hero .cy-actions {
+      gap: 8px;
+    }
+    .cy-hero:lang(en) {
+      gap: 16px;
+    }
+    .cy-hero:lang(en) .cy-ghost {
+      width: auto;
+      min-height: 24px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      text-decoration: underline;
+      text-underline-offset: 5px;
+    }
+    .cy-hero:lang(en) .cy-scope {
+      margin-bottom: 0;
+    }
     .cy-btn {
       width: 100%;
-      font-size: 14px;
       padding: 12px 20px;
     }
     .cy-section {
@@ -1348,10 +1427,13 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     }
     .cy-flow,
     .cy-scenarios,
-    .cy-cards,
-    .cy-attack-results,
+    .cy-values li,
+    .cy-example-card .cy-facts,
     .cy-consult-items {
       grid-template-columns: minmax(0, 1fr);
+    }
+    .cy-values li {
+      gap: 16px;
     }
     .cy-flow-inputs {
       padding-left: 18px;
@@ -1382,19 +1464,18 @@ const gateFields = ["work", "threat", "conditions", "pass", "block", "limit", "s
     .cy-flow-record {
       grid-column: auto;
     }
-    .cy-scenarios,
-    .cy-cards {
+    .cy-scenarios {
       gap: 15px;
     }
-    .cy-scenario,
-    .cy-evidence-card,
-    .cy-attack-patterns > li {
+    .cy-scenario {
       padding: 22px 18px;
     }
     .cy-example-card {
       padding: 25px 20px;
     }
     .cy-close,
+    .cy-trial,
+    .cy-status,
     .cy-evidence {
       padding-top: 46px;
     }
