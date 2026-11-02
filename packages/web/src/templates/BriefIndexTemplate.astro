@@ -597,20 +597,15 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
             {restLatest.map((b) => {
               const c = briefCardData(b);
               const ind = industryLabel(b);
-              const atk = attackLabel(b);
               const ctry = countryLabel(b);
               return (
                 <a class="ix-row ix-row--card" href={c.href}>
                   <span class="ix-row-top">
                     {ctry && <span class="ix-ctry">{ctry}</span>}
                     {ind && <span class="ix-chip">{ind}</span>}
-                    {atk && <span class="ix-chip ix-chip--atk">{atk}</span>}
-                    <time class="ix-date" datetime={c.publishedStr}>{c.publishedStr}</time>
+                    <time class="ix-date" datetime={c.publishedStr}>{c.publishedStr.slice(5)}</time>
                   </span>
                   <span class="ix-row-t">{shortTitle(b)}</span>
-                  {b.data.impact && (
-                    <span class="ix-row-fig"><span class="ix-fig-k">{labels.impactK}</span>{b.data.impact}</span>
-                  )}
                   <span class="ix-row-go" aria-hidden="true">→</span>
                 </a>
               );
@@ -1020,7 +1015,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   /* そのほかの新着：カードにする（2026-11-02・文字ばかりを減らす）。
      上に国・業界・手口のチップと日付、真ん中に題、下に影響を小さな見出し付きで。 */
   .ix-list--cards {
-    column-gap: 18px;
+    column-gap: 16px;
     row-gap: 16px;
   }
   .ix-list .ix-row--card {
