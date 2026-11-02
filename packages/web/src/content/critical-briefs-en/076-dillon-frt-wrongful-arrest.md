@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["012-williams-frt-wrongful-arrest", "049-tesla-robotaxi-control-attribution", "043-tesla-fsd-self-reported-safety"]
 status: published
-gate: "none"
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "FRT の「93% 一致」が独立裏付けなく逮捕に直結 — Robert Dillon 誤認逮捕"
 og_lead_en: "A 93% FRT 'match' drove arrest with no independent corroboration — Robert Dillon"
