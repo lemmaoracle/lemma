@@ -61,6 +61,7 @@ import {
   BRIEF_OPERATIONS,
   FACET_ICON_ATTRS,
   FACET_ICON_VIEWBOX,
+  FACET_PLAIN,
   type BriefAttackSlug,
   type BriefIndustrySlug,
   type BriefOperationSlug,
@@ -196,6 +197,24 @@ const controlTiles = BRIEF_CONTROL_SLUGS.map((slug) => ({
   ).length,
   href: `${archiveHref}?control=${slug}`,
 }));
+/* 対策のページの先頭に出す代表の事例（2026-11-02）：その対策が付いた Brief のうち、新しい順に最大 3 本。
+   大きな数字（key_figures）があるものを先に。 */
+const controlIntro = BRIEF_CONTROL_SLUGS.map((slug) => {
+  const has = briefsByPublishedDesc.filter((b) =>
+    ((b.data.controls as { slug: string }[] | undefined) ?? []).some((c) => c.slug === slug),
+  );
+  const withFig = has.filter((b) => (b.data.key_figures as unknown[] | undefined)?.length);
+  const picks = [...withFig, ...has.filter((b) => !withFig.includes(b))].slice(0, 3);
+  return {
+    slug,
+    desc: FACET_PLAIN[`control:${slug}`]?.[loc] ?? "",
+    cases: picks.map((b) => ({
+      href: `${base}/critical/briefs/${b.id}/`,
+      title: shortTitle(b),
+      fig: (b.data.key_figures as { value: string; unit?: string }[] | undefined)?.[0],
+    })),
+  };
+});
 const indexBanner = indexBannerFor(locale);
 /* 一覧の絞り込み（業界・業務・手口）で出す候補。タグの付いた Brief がある値だけ。 */
 const usedIndustries = Object.values(BRIEF_INDUSTRIES).filter((f) =>
@@ -329,6 +348,7 @@ const labels = isJa
         "実際に起きたサイバー攻撃と事故を、公表資料から読み解きます。何が正しい操作として通ってしまったか、実行の前に何を照合するかまでを整理する解説レポートです。",
       newest: "新着",
       impactK: "影響",
+      casesK: "この対策が関わった事例",
       pinned: "注目",
       controlsH: "対策から読む",
       controlCount: (n: number) => `解説 ${n} 本`,
@@ -381,6 +401,7 @@ const labels = isJa
         "Real cyber attacks and incidents, read from public disclosures: what got through as a legitimate operation, and what to check before it runs.",
       newest: "Latest",
       impactK: "Impact",
+      casesK: "Cases where this applies",
       pinned: "Featured",
       controlsH: "Browse by control",
       controlCount: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
@@ -592,6 +613,45 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       )}
 
       {/* すべての Brief（アーカイブのみ・見出し行の右端に虫眼鏡の検索） */}
+      {isArchive && (
+        <section class="ix-cnav" aria-label={labels.controlsH} data-control-nav>
+          <h2 class="ix-h">{labels.controlsH}</h2>
+          <div class="ix-ctl-grid">
+            {controlTiles.map((c) => (
+              <a class="ix-ctl" href={c.href} data-control-pick={c.slug}>
+                <span class="ix-ctl-ic">
+                  <svg viewBox={FACET_ICON_VIEWBOX} {...FACET_ICON_ATTRS} aria-hidden="true" set:html={c.icon} />
+                </span>
+                <span class="ix-ctl-tx">
+                  <b>{c.label}</b>
+                  <span>{labels.controlCount(c.count)}</span>
+                </span>
+              </a>
+            ))}
+          </div>
+          {controlIntro.map((ci) => (
+            <div class="ix-cintro" data-control-intro={ci.slug} hidden>
+              <p class="ix-cintro-desc">{ci.desc}</p>
+              {ci.cases.length > 0 && (
+                <div class="ix-cintro-cases">
+                  <span class="ix-cintro-k">{labels.casesK}</span>
+                  <ul>
+                    {ci.cases.map((k) => (
+                      <li>
+                        <a href={k.href}>
+                          {k.fig && <b class="ix-cintro-fig">{k.fig.value}{k.fig.unit && <i>{k.fig.unit}</i>}</b>}
+                          <span>{k.title}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
+
       {isArchive && (
       <section aria-label={labels.allBriefs}>
         <div class="cb-listhead ix-filter ix-filter--arc">
@@ -2302,6 +2362,95 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       grid-template-columns: minmax(0, 1fr);
     }
   }
+
+  /* 対策のページ（アーカイブ）の先頭：一覧と同じアイコンつきのナビ＋選んだ対策の説明と代表の事例（2026-11-02）。 */
+  .ix-cnav {
+    margin: 26px 0 28px;
+  }
+  .ix-cnav .ix-ctl.is-active {
+    border: 2px solid var(--tx);
+    padding: 15px;
+    box-shadow: var(--sh-s);
+  }
+  .ix-cnav .ix-ctl.is-active .ix-ctl-ic {
+    background: var(--tx);
+    color: #fff;
+  }
+  .ix-cintro {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 24px;
+    padding: 22px 26px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .ix-cintro[hidden] {
+    display: none;
+  }
+  .ix-cintro-desc {
+    margin: 0;
+    font-family: var(--font-serif-jp);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--tx);
+  }
+  .ix-cintro-k {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #7d8578;
+  }
+  .ix-cintro-cases ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .ix-cintro-cases a {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
+    text-decoration: none;
+    color: var(--tx);
+  }
+  .ix-cintro-cases li:first-child a {
+    border-top: 0;
+  }
+  .ix-cintro-cases a:hover span {
+    color: var(--ok-light);
+  }
+  .ix-cintro-fig {
+    flex: none;
+    min-width: 118px;
+    font-family: var(--font-serif-jp);
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--tx);
+  }
+  .ix-cintro-fig i {
+    margin-left: 3px;
+    font-style: normal;
+    font-size: 12px;
+  }
+  .ix-cintro-cases span {
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  @media (max-width: 900px) {
+    .ix-cintro {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+  }
 </style>
 
 <script>
@@ -2458,7 +2607,18 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       pager.hidden = false;
     }
 
+    const ctlNav = Array.from(root.querySelectorAll<HTMLElement>("[data-control-pick]"));
+    const ctlIntros = Array.from(root.querySelectorAll<HTMLElement>("[data-control-intro]"));
+    function syncControlNav() {
+      ctlNav.forEach((a) =>
+        a.classList.toggle("is-active", a.dataset.controlPick === facets.control),
+      );
+      ctlIntros.forEach((d) => {
+        d.hidden = d.dataset.controlIntro !== facets.control;
+      });
+    }
     function syncPills() {
+      syncControlNav();
       if (allPill)
         allPill.classList.toggle("is-active", mode === "all" && !facetText());
       dists.forEach((d) =>
@@ -2512,6 +2672,17 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         const k = sel.dataset.facet || "";
         if (sel.value) facets[k] = sel.value;
         else delete facets[k];
+        update();
+      });
+    });
+
+    ctlNav.forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const slug = a.dataset.controlPick || "";
+        if (facets.control === slug) delete facets.control;
+        else facets.control = slug;
+        syncSelects();
         update();
       });
     });
