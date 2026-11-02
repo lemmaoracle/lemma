@@ -20,8 +20,8 @@ gap_fix: "Before signing executes, independently verify with Lemma that \"the tr
 industries: ["finance"]
 operations: ["approval"]
 controls:
-  - slug: "separate-approval"
-    item: "Verify, by a means separate from the UI, that the bytes being signed match what the screen shows"
+  - slug: "hold-unverified"
+    item: "Do not sign until the content to be signed is confirmed, by a path other than the UI, to match what the screen shows"
 attack_method: "supply-chain"
 impact: "~401,347 ETH (~$1.5B) drained"
 countries: ["global"]

@@ -19,6 +19,9 @@ gap_missing: "Because the provenance mark is embedded in the artifact itself, ob
 gap_fix: "Before judging whether content is authentic, independently verify with Lemma, as a proof held outside the artifact, that it was created by a legitimate generating party, and prevent it up front."
 industries: ["ai", "media"]
 countries: ["global"]
+controls:
+  - slug: "check-origin"
+    item: "Confirm where a work came from through the generator's signature, not an embedded mark"
 ---
 
 ## 1. TL;DR

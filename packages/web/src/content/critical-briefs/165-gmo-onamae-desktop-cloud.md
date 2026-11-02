@@ -40,8 +40,6 @@ insight:
 industries: ["finance"]
 operations: ["account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "出金や出金先の変更を、取引ツールの環境とは別の端末で本人が承認する"
   - slug: "hold-unverified"
     item: "取引ツールに任せる注文の範囲を本人が決め、範囲の外の注文は実行せずに保留する"
   - slug: "audit-trail"

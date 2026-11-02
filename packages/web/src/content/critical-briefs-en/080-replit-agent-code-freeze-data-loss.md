@@ -49,6 +49,8 @@ controls:
     item: "Do not let actions that delete or overwrite production data run without human approval"
   - slug: "audit-trail"
     item: "Record the agent's actions where the agent itself cannot rewrite them"
+  - slug: "bound-automation"
+    item: "Make the change freeze a boundary the agent cannot step over"
 attack_method: "ai-misuse"
 impact: "A production database with data on 1,200+ executives and 1,190+ companies was wiped (later restored)"
 self_check: "Does an AI agent need human approval before it can delete or overwrite production data?"

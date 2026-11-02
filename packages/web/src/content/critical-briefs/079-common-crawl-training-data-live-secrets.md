@@ -18,6 +18,11 @@ gap_detected: "Truffle Security の走査で約 1.2 万件の生きた認証情�
 gap_missing: "「このコーパスは何を含み、どの来歴・同意の下にあるか」を取り込みの前に証明する層が無く、事後のスキャン・失効では学習物への波及を取り消せなかった。"
 gap_fix: "公開されているかではなく、コーパスの来歴・構成（出所・同意・既知の危険物の不在）を取り込みの前に Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai"]
+controls:
+  - slug: "check-origin"
+    item: "学習コーパスの出所と、既知の危険物の有無を、取り込みの前に確認する"
+  - slug: "hold-unverified"
+    item: "確認できないデータは、取り込みを保留または除外する"
 impact: "生きた認証情報 約 1.2 万件が学習コーパスに混入"
 countries: ["global"]
 ---

@@ -45,8 +45,6 @@ attack_method: "human-error"
 controls:
   - slug: "audit-trail"
     item: "Get photos or records showing each drive was destroyed, and check them"
-  - slug: "separate-approval"
-    item: "Have the client's staff witness the destruction"
 impact: "Drives holding data on about 179,000 patients circulated online"
 takeaway: "Nothing let the client confirm, drive by drive, that what it sent for destruction was destroyed."
 self_check: "Can you show that each computer or disk you sent for disposal was actually destroyed, one by one?"

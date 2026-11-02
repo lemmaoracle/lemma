@@ -20,8 +20,6 @@ gap_fix: "資産を発行する前に「このメッセージは正規の出所�
 industries: ["finance"]
 operations: ["account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "信頼設定の変更は、鍵を持つ人以外も確かめる"
   - slug: "ownership-check"
     item: "受け入れる前に、メッセージが正規のコントラクトから来たか確かめる"
 attack_method: "account-takeover"

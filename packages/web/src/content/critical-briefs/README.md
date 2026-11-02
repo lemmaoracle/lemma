@@ -282,7 +282,7 @@ insight:                # quote は §4 の最初の段落の直後に「この�
 industries: ["retail", "finance"]               # config/industriesV1.ts の slug
 operations: ["payment-change", "account-admin"] # config/briefFacets.ts
 controls:
-  - { slug: "separate-approval", item: "…" }    # separate-approval / ownership-check / hold-unverified / audit-trail
+  - { slug: "ownership-check", item: "…" }    # ownership-check / hold-unverified / audit-trail / verify-entry / limit-and-revoke / check-origin / minimize-data / bound-automation
 ```
 
 **OG 画像（共有カード）**: report Brief の OG は脅威タイプ名ではなく事件そのものが主役
@@ -300,7 +300,7 @@ og:description は `insight.quote` で始まる。
 ```yaml
 industries: ["public-sector"]          # 業界（config/briefFacets.ts）
 operations: ["delivery"]               # 業務
-controls:                              # 対策（4 つ・増やすのは 4 つに当てはまらない Brief が 3 本たまったとき）
+controls:                              # 対策（8 つ・増やすのは、今ある 7 つに当てはまらない Brief が 3 本たまったとき）
   - { slug: "ownership-check", item: "…" }
 attack_method: "impersonation"         # 手口：account-takeover / impersonation / privilege-abuse / supply-chain / human-error / ai-misuse
 countries: ["jp"]                      # 国・地域（必須・2 つまで）。事案が起きた国。国に結びつかないものは "global"

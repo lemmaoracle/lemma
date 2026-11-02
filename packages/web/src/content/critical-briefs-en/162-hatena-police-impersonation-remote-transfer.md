@@ -42,8 +42,6 @@ insight:
 industries: ["media"]
 operations: ["approval", "account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "Check transfers and fund moves against a documented reason, by a means separate from the requester"
   - slug: "hold-unverified"
     item: "Do not execute transfers or fund moves that cannot be matched to a documented reason"
   - slug: "audit-trail"

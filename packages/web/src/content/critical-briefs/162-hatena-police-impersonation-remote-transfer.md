@@ -44,8 +44,6 @@ insight:
 industries: ["media"]
 operations: ["approval", "account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "送金と資金移動は、依頼した人とは別の手段で、理由の裏付けと照合する"
   - slug: "hold-unverified"
     item: "裏付けと照合できない送金・資金移動は実行しない"
   - slug: "audit-trail"

@@ -40,8 +40,6 @@ insight:
 industries: ["public-sector"]
 operations: ["approval", "payment-change"]
 controls:
-  - slug: "separate-approval"
-    item: "Check payment requests with the vendor's registered contact, through a channel other than the email they came in"
   - slug: "hold-unverified"
     item: "Do not pay requests whose sender cannot be confirmed"
   - slug: "audit-trail"

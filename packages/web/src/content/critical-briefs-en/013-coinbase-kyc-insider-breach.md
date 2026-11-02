@@ -19,6 +19,9 @@ gap_missing: "The raw personal data collected and stored for regulatory complian
 gap_fix: "When performing the identity verification regulators require, independently verify with Lemma that the user is verified without hoarding raw personal data, and prevent it up front."
 industries: ["finance"]
 operations: ["data-access"]
+controls:
+  - slug: "minimize-data"
+    item: "Do not store raw KYC personal data; receive only the verified attribute"
 attack_method: "privilege-abuse"
 impact: "KYC data of at least 69,461 customers exfiltrated"
 countries: ["us"]

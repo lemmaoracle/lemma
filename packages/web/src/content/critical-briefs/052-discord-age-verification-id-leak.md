@@ -18,6 +18,9 @@ gap_detected: "Discord は侵害を検知し、影響利用者へ通知して委
 gap_missing: "「年齢が要件を満たす」ことだけを生の身分証を渡さずに示す仕組みが無く、年齢一つを証明するために ID 全体が第三者に渡って溜まり続けた。"
 gap_fix: "年齢制限のある機能を認可する前に「18 歳以上である」ことだけを生 ID を渡さずに示せることを Lemma で独立検証して、事前に防ぐ。"
 operations: ["disclosure"]
+controls:
+  - slug: "minimize-data"
+    item: "年齢の確認に渡された政府 ID の画像を保管せず、年齢の条件を満たすことだけを受け取る"
 attack_method: "supply-chain"
 impact: "政府発行 ID 画像 7 万枚が盗まれた"
 countries: ["global"]

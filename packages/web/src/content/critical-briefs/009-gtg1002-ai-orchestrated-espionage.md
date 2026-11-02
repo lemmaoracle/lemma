@@ -18,6 +18,11 @@ gap_detected: "提供事業者側の異常検知が働き、約 10 日で範囲�
 gap_missing: "侵入先のシステムが、AI からの各操作を実行の前に「これは正規の委任の下か」と確かめる層を持たず、「正規のセキュリティ企業の従業員だ」という偽りの名乗りが素通りした。"
 gap_fix: "外部システムへ作用する前に「この操作は、この主体に、この権限で認可されているか」を Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai"]
+controls:
+  - slug: "verify-entry"
+    item: "AI エージェントの各操作を、誰がどの権限で要求したかを受け付ける前に確認する"
+  - slug: "bound-automation"
+    item: "AI エージェントが実行できる操作と回数を、範囲と上限で決めておく"
 attack_method: "ai-misuse"
 impact: "約 30 の標的を攻撃、少数で侵入成功"
 countries: ["global"]

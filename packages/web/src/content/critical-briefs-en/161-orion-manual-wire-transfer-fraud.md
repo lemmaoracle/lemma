@@ -42,8 +42,6 @@ insight:
 industries: ["manufacturing"]
 operations: ["approval", "payment-change"]
 controls:
-  - slug: "separate-approval"
-    item: "Confirm that a manual wire request is genuine, by a means separate from the requester"
   - slug: "hold-unverified"
     item: "Do not execute transfers not tied to a verified request"
   - slug: "audit-trail"

@@ -41,8 +41,6 @@ insight:
 industries: ["finance"]
 operations: ["approval"]
 controls:
-  - slug: "separate-approval"
-    item: "出金の署名の前に、その依頼に対応する顧客の申請か、権限のある担当者の承認があるかを、依頼を出すサービスとは別の場所で照合する"
   - slug: "hold-unverified"
     item: "申請や承認に対応しない出金、上限を超える出金、出金ではない署名の依頼は、署名せずに保留する"
   - slug: "audit-trail"

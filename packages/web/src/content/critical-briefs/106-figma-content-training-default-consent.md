@@ -19,6 +19,11 @@ gap_missing: "「いま学習に用いられているこのコンテンツが、
 gap_fix: "コンテンツを学習に取り込む前に、その利用が権利者に認可されていること、そして取り込んだ各データに同意の証明が結び付いていることを、既定値や管理者の設定操作とは切り離して Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai"]
 operations: ["disclosure"]
+controls:
+  - slug: "hold-unverified"
+    item: "学習への取り込みは、既定の設定ではなく、認可された範囲を確認できた場合に限る"
+  - slug: "audit-trail"
+    item: "取り込んだデータごとに、同意の範囲と取得時点を記録する"
 countries: ["us"]
 ---
 

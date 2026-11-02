@@ -19,6 +19,11 @@ gap_missing: "The premise — 'it's isolated by the sandbox' — was never indep
 gap_fix: "Before code runs with host privileges, independently verify that the isolation boundary actually holds."
 industries: ["developers", "ai"]
 countries: ["global"]
+controls:
+  - slug: "limit-and-revoke"
+    item: "Fix what the execution environment can reach (files, processes, credentials) to its intended use"
+  - slug: "hold-unverified"
+    item: "Stop a run before it starts unless it is confirmed to be inside the isolation boundary"
 ---
 
 ## 1. TL;DR

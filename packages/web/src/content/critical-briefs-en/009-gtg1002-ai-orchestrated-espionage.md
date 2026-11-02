@@ -18,6 +18,11 @@ gap_detected: "The provider's anomaly detection kicked in, identifying the scope
 gap_missing: "The target systems had no layer to confirm before execution whether each operation from the AI was under a legitimate delegation, so the false claim of being 'an employee of a legitimate security firm' passed straight through."
 gap_fix: "Before acting on an external system, independently verify with Lemma that the operation is authorized for this principal with this authority, and prevent it up front."
 industries: ["ai"]
+controls:
+  - slug: "verify-entry"
+    item: "Check who requested each AI agent action, and with what authority, before accepting it"
+  - slug: "bound-automation"
+    item: "Set in advance which operations an AI agent may run, and how many"
 attack_method: "ai-misuse"
 impact: "About 30 targets attacked; a few breached"
 countries: ["global"]

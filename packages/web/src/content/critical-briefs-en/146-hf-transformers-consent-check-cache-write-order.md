@@ -15,6 +15,11 @@ version: "1.0"
 og_lead_ja: "Transformers、同意確認前にリモートコードをディスク書込と判明(CVE-2026-80047)"
 og_lead_en: "Transformers writes remote code to disk before consent check (CVE-2026-80047)"
 industries: ["ai"]
+controls:
+  - slug: "check-origin"
+    item: "Check the origin of remote code from a model repository before fetching and writing it"
+  - slug: "hold-unverified"
+    item: "Block fetching and writing before consent is confirmed, on every loading path"
 attack_method: "supply-chain"
 countries: ["global"]
 ---

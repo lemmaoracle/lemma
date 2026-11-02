@@ -19,6 +19,9 @@ gap_missing: "Altering a single character in the request's destination informati
 gap_fix: "Before accessing an external resource, independently verify with Lemma who issued the request, with what authority, and to what extent, and prevent it up front."
 industries: ["ai", "developers"]
 countries: ["global"]
+controls:
+  - slug: "verify-entry"
+    item: "Check the requesting party and its delegated scope, not the Host header, before accepting a request"
 ---
 
 ## 1. TL;DR

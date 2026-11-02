@@ -19,6 +19,11 @@ gap_missing: "「この認証情報・トークンは、今この操作を行う
 gap_fix: "認証情報・トークンが顧客データに触れる前に「この操作は正当な認可の範囲内で、いまも有効な認証情報に基づく」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["supply-chain"]
 operations: ["account-admin", "data-access"]
+controls:
+  - slug: "limit-and-revoke"
+    item: "使わなくなった認証情報とテストの認証情報を失効させ、長命のトークンを減らす"
+  - slug: "verify-entry"
+    item: "トークンを持っていることだけを根拠にせず、操作ごとに有効な認可を確認する"
 attack_method: "supply-chain"
 impact: "約 24 時間にわたり CRM レコードを大量抽出"
 countries: ["global"]

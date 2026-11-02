@@ -20,8 +20,8 @@ gap_fix: "署名の実行前に「署名対象のトランザクションが意�
 industries: ["finance"]
 operations: ["approval"]
 controls:
-  - slug: "separate-approval"
-    item: "署名する中身が画面の表示と同じか、UI とは別の方法で確かめる"
+  - slug: "hold-unverified"
+    item: "署名する中身が画面の表示と同じかを、UI とは別の方法で確認できるまで、署名しない"
 attack_method: "supply-chain"
 impact: "約 401,347 ETH（約 15 億ドル相当）が流出"
 countries: ["global"]

@@ -171,7 +171,7 @@ with `insight.quote`.
 
 The index (`/critical/briefs/`) is built as "Latest (4, automatic by publication date; same-day ties go to the higher number) → Featured (1–2 pinned) → Browse by control → More recent briefs".
 These frontmatter fields feed it and are not rendered in the article: `industries`, `operations`,
-`controls` (four controls; add one only when three briefs don't fit any), `attack_method`
+`controls` (eight controls; add one only when three briefs don't fit any of them), `attack_method`
 (`account-takeover` / `impersonation` / `privilege-abuse` / `supply-chain` / `human-error` /
 `ai-misuse`), `impact` (a short phrase that says what the number counts; omit if nothing was
 disclosed) and `takeaway` (one sentence shown on the Latest and Featured cards; always write it, since Latest fills automatically). Write `impact`,

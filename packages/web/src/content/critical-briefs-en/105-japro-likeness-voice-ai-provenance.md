@@ -18,6 +18,11 @@ gap_detected: "JAPRO による継続的な実態調査、主要 SNS と画像生
 gap_missing: "「この人物の肖像・声を使ってよいか」という許諾の問いを、生成物が作られる時点でその生成物に結び付け、受け手が独立に検証する層がない。削除は事後の個別操作であり、次の生成を成立させない構造にはならない（削除率100%の後も同一人物のモデルが再投稿された）。"
 gap_fix: "肖像・声を素材とする生成の前に、その利用が権利者に認可された範囲に属すること、そして生成物に許諾の証明が改ざん耐性のある形で結び付いていることを、既定の許諾状態とは切り離して Lemma で独立検証して、事前に防ぐ。"
 industries: ["media", "ai"]
+controls:
+  - slug: "check-origin"
+    item: "Before generating from a person's likeness or voice, check the material's provenance and the scope of permission"
+  - slug: "hold-unverified"
+    item: "Stop generation whose permission cannot be confirmed before it runs"
 impact: "Over 40,000 suspected infringing posts"
 countries: ["jp"]
 ---

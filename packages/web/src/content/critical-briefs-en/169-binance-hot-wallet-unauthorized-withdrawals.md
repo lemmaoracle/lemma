@@ -39,8 +39,6 @@ insight:
 industries: ["finance"]
 operations: ["approval"]
 controls:
-  - slug: "separate-approval"
-    item: "Before signing a withdrawal, check — somewhere other than the service that requested it — that a matching customer request or an approval by an authorised person exists"
   - slug: "hold-unverified"
     item: "Hold, unsigned, withdrawals with no matching request or approval, withdrawals over the limit, and signing requests that are not withdrawals"
   - slug: "audit-trail"

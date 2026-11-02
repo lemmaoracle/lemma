@@ -18,6 +18,11 @@ gap_detected: "Truffle Security's scan detected about 12,000 live credentials, a
 gap_missing: "There was no layer to prove, before ingestion, what a corpus contains and under what provenance and consent it sits, and after-the-fact scanning and revocation could not undo the propagation into trained models."
 gap_fix: "Rather than asking whether it is public, independently verify with Lemma the provenance and composition of a corpus (origin, consent, absence of known dangerous material) before ingestion, and prevent it up front."
 industries: ["ai"]
+controls:
+  - slug: "check-origin"
+    item: "Check a training corpus's source, and for known hazards such as live credentials, before taking it in"
+  - slug: "hold-unverified"
+    item: "Hold or exclude data that cannot be confirmed instead of taking it in"
 impact: "~12,000 live credentials found in a training corpus"
 countries: ["global"]
 ---

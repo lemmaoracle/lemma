@@ -19,6 +19,9 @@ gap_missing: "規制対応で集めて保管している生の個人情報その
 gap_fix: "規制が求める本人確認を、生の個人情報を抱え込まず「この利用者は確認済みである」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["finance"]
 operations: ["data-access"]
+controls:
+  - slug: "minimize-data"
+    item: "KYC で集めた生の個人情報を保管せず、必要な属性だけを検証した結果として受け取る"
 attack_method: "privilege-abuse"
 impact: "少なくとも 69,461 名分の KYC データが流出"
 countries: ["us"]

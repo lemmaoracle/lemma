@@ -43,8 +43,6 @@ insight:
 industries: ["finance"]
 operations: ["approval", "payment-change"]
 controls:
-  - slug: "separate-approval"
-    item: "送金の指示は、会議とは別の経路で本人に確かめる"
   - slug: "hold-unverified"
     item: "本人に確かめられるまで、送金を止める"
 attack_method: "impersonation"

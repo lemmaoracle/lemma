@@ -19,6 +19,11 @@ gap_missing: "「いまこのアクセスは本来の許可の範囲内か」を
 gap_fix: "高リスク行動の前に「この操作は、この主体に、この範囲で認可されており、現に有効である」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai", "developers"]
 operations: ["account-admin"]
+controls:
+  - slug: "verify-entry"
+    item: "操作の前に、その認可が現に有効かを確認する"
+  - slug: "limit-and-revoke"
+    item: "OAuth の許可は操作の範囲に絞り、失効したトークンが通らないようにする"
 attack_method: "supply-chain"
 countries: ["us"]
 ---

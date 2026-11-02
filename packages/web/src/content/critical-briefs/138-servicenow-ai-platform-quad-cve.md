@@ -15,6 +15,11 @@ version: "1.0"
 og_lead_ja: "ServiceNow AI Platform、未認証で届く脆弱性が 4 件同時開示"
 og_lead_en: "ServiceNow AI Platform: four unauthenticated flaws disclosed at once"
 countries: ["global"]
+controls:
+  - slug: "verify-entry"
+    item: "リクエストが機能に届く前に、認可の状態を境界で一貫して確認する"
+  - slug: "audit-trail"
+    item: "コード実行やデータ変更を、根拠になった認可の確認とひもづけて記録する"
 ---
 
 ## 1. TL;DR

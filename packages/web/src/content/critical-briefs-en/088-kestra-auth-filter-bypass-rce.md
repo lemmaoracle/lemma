@@ -19,6 +19,9 @@ gap_missing: "Authorization of the request was decided on a surface signal — w
 gap_fix: "Before privileged operations such as creating and executing a flow, independently verify the requesting party's authority with Lemma, decoupled from the formal judgment of the URL path, and block execution up front if no proof accompanies it."
 industries: ["developers"]
 operations: ["account-admin"]
+controls:
+  - slug: "verify-entry"
+    item: "Check the requester's authentication and authorization before a privileged operation, not by the shape of the URL path or headers"
 countries: ["global"]
 ---
 

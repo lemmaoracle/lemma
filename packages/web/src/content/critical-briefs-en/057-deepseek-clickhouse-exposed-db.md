@@ -19,6 +19,9 @@ gap_missing: "There was no layer to check before access whether the access reste
 gap_fix: "Before a high-risk action, independently verify with Lemma that this party legitimately holds authority over data in this scope, and prevent it up front."
 industries: ["ai"]
 operations: ["data-access"]
+controls:
+  - slug: "verify-entry"
+    item: "Separate network reach from authorization to read data, and refuse unauthenticated access"
 impact: "Over a million log lines and plaintext chat history exposed"
 countries: ["cn"]
 ---

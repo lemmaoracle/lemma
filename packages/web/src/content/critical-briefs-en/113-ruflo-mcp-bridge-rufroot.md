@@ -19,6 +19,13 @@ gap_missing: "A layer that independently verifies, before execution, per-call to
 gap_fix: "Prove tool-call authorization before execution and independently verify agent-memory provenance and integrity, excluding unauthenticated execution and the persistence of poisoning."
 industries: ["ai", "developers"]
 countries: ["global"]
+controls:
+  - slug: "verify-entry"
+    item: "Check authorization on every tool call instead of running unauthenticated requests"
+  - slug: "limit-and-revoke"
+    item: "Do not bundle shell, key and database access in one bridge; grant each action separately"
+  - slug: "check-origin"
+    item: "Let only patterns with a verified origin be written to the agent's memory"
 ---
 
 ## 1. TL;DR

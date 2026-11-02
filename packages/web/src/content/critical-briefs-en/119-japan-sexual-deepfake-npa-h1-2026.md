@@ -18,6 +18,11 @@ gap_detected: "Statistics collection, case identification, and investigation mad
 gap_missing: "A layer that lets a recipient independently verify, at generation and at publication, whether use of a real person's likeness was authorized by that person."
 gap_fix: "Require the subject's authorization as independently verifiable proof before likeness-based generation, and refuse generation and publication that carry no proof."
 industries: ["ai"]
+controls:
+  - slug: "check-origin"
+    item: "Bind the source material and the person's consent to each generated image so recipients can check it"
+  - slug: "hold-unverified"
+    item: "Hold generation and publication until the person's consent is confirmed"
 attack_method: "ai-misuse"
 impact: "123 sexual deepfake cases of minors in six months"
 countries: ["jp"]

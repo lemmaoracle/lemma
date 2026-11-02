@@ -19,6 +19,11 @@ gap_missing: "There was no layer to confirm before execution who registered each
 gap_fix: "For the privileged act of registering a connection target, independently verify with Lemma that the registrant holds authorization to access information of this scope, and prevent it up front."
 industries: ["ai", "developers"]
 countries: ["global"]
+controls:
+  - slug: "verify-entry"
+    item: "Before applying a connection setting, check that the registrant is allowed to make it"
+  - slug: "limit-and-revoke"
+    item: "Limit what a setting can reference to the registrant's own permissions"
 ---
 
 ## 1. TL;DR

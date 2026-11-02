@@ -19,6 +19,9 @@ gap_missing: "「削除済み」という表示を信じる限り、認証情報
 gap_fix: "認証情報を使う前に「この鍵は本当に失効済みである」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["developers"]
 operations: ["account-admin"]
+controls:
+  - slug: "limit-and-revoke"
+    item: "削除した API キーが、使用の前に失効済みと確認できるようにする"
 countries: ["global"]
 ---
 

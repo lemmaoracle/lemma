@@ -19,6 +19,9 @@ gap_missing: "通信の宛先情報を 1 文字だけ細工すると、本来そ
 gap_fix: "外部リソースへアクセスする前に「この要求は、誰が、どの権限で、どこまで出したものか」を Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai", "developers"]
 countries: ["global"]
+controls:
+  - slug: "verify-entry"
+    item: "Host ヘッダーではなく、要求した主体と委任範囲を、受け付ける前に別系統で確認する"
 ---
 
 ## 1. TL;DR

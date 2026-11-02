@@ -19,6 +19,9 @@ gap_missing: "リクエストの認可が「パス末尾が /configs か」と�
 gap_fix: "flow の作成・実行のような特権操作の前に、要求主体の権限を URL パスの形式判定とは切り離して Lemma で独立検証し、証明が伴わなければ実行を事前に block する。"
 industries: ["developers"]
 operations: ["account-admin"]
+controls:
+  - slug: "verify-entry"
+    item: "URL パスやヘッダーの形に頼らず、特権操作の前に依頼元の認証・認可を確認する"
 countries: ["global"]
 ---
 

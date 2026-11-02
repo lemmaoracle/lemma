@@ -19,6 +19,11 @@ gap_missing: "There was no layer to check before an operation whether the call w
 gap_fix: "Before a privileged operation, independently verify with Lemma that this operation is permitted for this party within the authority granted to it, and prevent it up front."
 industries: ["ai", "developers"]
 operations: ["account-admin"]
+controls:
+  - slug: "verify-entry"
+    item: "For every privileged operation, check the requester's authorization in your own layer rather than assuming an earlier layer did"
+  - slug: "limit-and-revoke"
+    item: "Keep admin operations away from ordinary users and narrow permissions to what is needed"
 attack_method: "privilege-abuse"
 countries: ["global"]
 ---

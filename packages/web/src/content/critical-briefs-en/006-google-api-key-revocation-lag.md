@@ -19,6 +19,9 @@ gap_missing: "As long as the 'deleted' label was trusted, there was no layer to 
 gap_fix: "Before using a credential, independently verify with Lemma that the key has truly been revoked, and prevent it up front."
 industries: ["developers"]
 operations: ["account-admin"]
+controls:
+  - slug: "limit-and-revoke"
+    item: "Confirm before each use that a deleted API key is revoked"
 countries: ["global"]
 ---
 

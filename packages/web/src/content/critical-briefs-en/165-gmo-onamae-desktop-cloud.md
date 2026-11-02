@@ -37,8 +37,6 @@ insight:
 industries: ["finance"]
 operations: ["account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "The account holder approves withdrawals and changes of withdrawal destination on a device separate from the trading tool's environment"
   - slug: "hold-unverified"
     item: "The account holder sets the scope of orders delegated to the trading tool; orders outside it are held, not executed"
   - slug: "audit-trail"

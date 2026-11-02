@@ -44,8 +44,6 @@ insight:
 industries: ["finance"]
 operations: ["approval", "payment-change"]
 controls:
-  - slug: "separate-approval"
-    item: "Confirm a transfer instruction with the person through a channel other than the meeting"
   - slug: "hold-unverified"
     item: "Hold the transfer until the person has confirmed it"
 attack_method: "impersonation"

@@ -18,6 +18,11 @@ gap_detected: "脅威リサーチによる攻撃チェーンの可視化や、�
 gap_missing: "横展開の各段階で「この認証情報の持ち主は、この行動をこの範囲で行う認可を持つか」を行動の前に確かめる層が無く、盗まれた認証情報の保有がそのまま権限として通用した。"
 gap_fix: "鍵や認証情報の保有ではなく「この行動が、スコープされた認可と来歴を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
 operations: ["account-admin"]
+controls:
+  - slug: "verify-entry"
+    item: "横展開の各段階で、資格情報の保有ではなく、その行動の認可を確認する"
+  - slug: "limit-and-revoke"
+    item: "資格情報は行動ごとの範囲に絞り、再利用できないようにする"
 attack_method: "account-takeover"
 impact: "1 台の侵害からドメイン全体が乗っ取られた"
 countries: ["global"]

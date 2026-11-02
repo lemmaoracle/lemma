@@ -43,8 +43,6 @@ insight:
 industries: ["finance"]
 operations: ["approval", "payment-change"]
 controls:
-  - slug: "separate-approval"
-    item: "Confirm a payment instruction with the person who gave it, through a channel other than the one it arrived on"
   - slug: "hold-unverified"
     item: "Do not pay on an instruction whose origin cannot be confirmed"
   - slug: "audit-trail"

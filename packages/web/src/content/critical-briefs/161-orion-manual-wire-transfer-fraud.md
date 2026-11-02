@@ -44,8 +44,6 @@ insight:
 industries: ["manufacturing"]
 operations: ["approval", "payment-change"]
 controls:
-  - slug: "separate-approval"
-    item: "手作業の送金は、依頼した人とは別の手段で、依頼が本物かを照合する"
   - slug: "hold-unverified"
     item: "照合済みの依頼に結びつかない送金は、実行しない"
   - slug: "audit-trail"

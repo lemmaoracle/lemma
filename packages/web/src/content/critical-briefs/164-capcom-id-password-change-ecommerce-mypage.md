@@ -47,8 +47,6 @@ insight:
 industries: ["media", "retail"]
 operations: ["account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "パスワードやメールアドレスの変更を、変更前の登録済みの連絡先で持ち主に確認してから確定する"
   - slug: "hold-unverified"
     item: "持ち主に確認できない変更の直後は、住所や購入履歴を持つサービスへの入場を止める"
   - slug: "audit-trail"

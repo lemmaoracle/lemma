@@ -15,6 +15,11 @@ version: "1.0"
 og_lead_ja: "Unit 42、AIエージェント主導の侵入が10時間未満で完了と報告"
 og_lead_en: "Unit 42: AI-agent-run intrusion completed in under 10 hours"
 industries: ["ai"]
+controls:
+  - slug: "verify-entry"
+    item: "Check per action not only that a token or key is valid, but that this actor may take this action"
+  - slug: "bound-automation"
+    item: "Keep the agent within an allowed scope and limit at each stage it can reach"
 attack_method: "ai-misuse"
 impact: "Breach completed in under 10 hours"
 countries: ["global"]

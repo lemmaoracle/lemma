@@ -19,6 +19,11 @@ gap_missing: "「この接続先設定は誰が登録し、社内の機微情報
 gap_fix: "接続先の登録という権限行為について「登録者は、この範囲の情報にアクセスする認可を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
 industries: ["ai", "developers"]
 countries: ["global"]
+controls:
+  - slug: "verify-entry"
+    item: "接続先の設定は、解釈する前に、登録者にその権限があるかを確認する"
+  - slug: "limit-and-revoke"
+    item: "設定が参照できる範囲を、登録者の権限に限る"
 ---
 
 ## 1. TL;DR
