@@ -1,7 +1,7 @@
 ---
 brief_no: 68
-title: "未認証のネットワークアクセスだけで、産業用ロボットの OS で任意コードが実行できた（Universal Robots PolyScope） — ロボット（実体エージェント）が、命令の送り手の権限を物理動作の前に検証しない構造（Universal Robots / CISA）"
-title_en: "Universal Robots PolyScope: unauthenticated network access yields RCE on industrial robots — the robot doesn't verify the commander's authority before physical action (CVE-2026-8153)"
+title: "Universal Robots PolyScope：認証なしのネットワーク到達だけで、協働ロボットの OS で任意のコードが実行できた(CVE-2026-8153・CISA)"
+title_en: "Universal Robots PolyScope: unauthenticated network access alone allowed arbitrary code to run on the cobot's OS (CVE-2026-8153, CISA)"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["agent-infrastructure", "attribute-proof-bypass"]
@@ -11,93 +11,137 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["003-starlette-badhost", "046-servicenow-unauthenticated-api", "007-pocketos-cursor-db-deletion", "033-f5-bigip-edge-pivot", "025-mcp-stdio-config-to-command-rce", "066-litellm-ai-gateway-privilege-escalation"]
 status: published
-gate: "identity"
 version: "1.0"
 og_lead_ja: "未認証のネット到達だけで産業用ロボットに RCE — UR PolyScope"
 og_lead_en: "Unauthenticated network access yields RCE on cobots — UR PolyScope"
-gap_detected: "CISA and vendor advisories, the availability of a patch, and exposure cutoff through network segmentation were all communicated and put in place."
-gap_missing: "There was no layer to check before physical motion whether the sender of a command held legitimate authority to operate the robot, so commands arriving over the network passed straight through."
-gap_fix: "Before physical motion, independently verify with Lemma that this command comes from a sender with legitimate authority, and prevent it up front."
+layout: "report"
+sections: "proof"
+gate: "identity"
+og_kicker_ja: "脆弱性の公表 · 産業用ロボット"
+og_kicker_en: "VULNERABILITY · INDUSTRIAL ROBOTS"
+og_headline_ja: "認証なしで、\n協働ロボットの OS に\nコードを実行できた。\n<accent>必要なのはネットワーク到達だけ</accent>"
+og_headline_en: "No login was needed to run code on a cobot's OS.\n<accent>Network reach was all it took.</accent>"
+key_figures:
+  - value: "9.8"
+    unit: "CVSS 3.1"
+    label: "Severity (Critical). 9.3 on CVSS 4.0. No authentication needed"
+    tone: "alert"
+  - value: "29999"
+    unit: "TCP"
+    label: "Default listening port of the Dashboard Server. Reaching it over the network was enough"
+  - value: "5.25.1"
+    label: "The fixed PolyScope 5 release. Earlier versions are affected"
+glossary:
+  - term: "Collaborative robot (cobot)"
+    desc: "An industrial robot designed to work in the same space as people. Universal Robots' products are widely deployed on manufacturing and logistics floors."
+  - term: "OS command injection"
+    desc: "A flaw where input received from outside is run as part of an OS command without being neutralised."
+  - term: "Dashboard Server"
+    desc: "PolyScope 5's network-facing interface. It listens on TCP 29999 by default."
+insight:
+  slug: "reach-as-authority"
+  label: "Reach it and it moves"
+  quote: "A command arriving over the network and its sender being allowed to operate the machine are separate facts; on a device where arrival counts as authority, a hole at the entry becomes control."
 industries: ["manufacturing"]
 controls:
   - slug: "ownership-check"
-    item: "Confirm the sender of a command is authorized to operate the robot"
+    item: "Check, before physical motion, that the sender of a command is allowed to operate the robot"
+impact: "An attacker with network reach and no authentication could run arbitrary commands on the robot's OS (no exploitation in the wild reported)"
+takeaway: "Nothing on the path checked, before a command ran, whether its sender was allowed to operate the robot."
+self_check: "For commands that reach your control devices, can you check before they run that the sender is allowed to operate them?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-CISA warned that PolyScope 5 (before 5.25.1), the control software for the widely deployed Universal Robots cobots, carries a critical flaw (CVE-2026-8153) by which an unauthenticated attacker can run arbitrary code on the robot's OS. PolyScope passed user-supplied input to the OS without neutralizing it, so network reachability alone meant control. CISA advisories, a patch, and segmentation cannot confirm, before physical motion, whether the command's sender holds legitimate authority to operate the robot. The authorization check itself was absent from the path.
+CISA warned that PolyScope 5 (before 5.25.1), the control software for collaborative robots, carries a flaw (CVE-2026-8153) by which an unauthenticated attacker can run arbitrary code on the robot's OS. No exploitation in the wild had been reported at the time of writing. Even so, on robots that had not been patched, reaching the listening port over the network was enough to run commands on the OS. <strong>A command arriving over the network and its sender being allowed to operate the machine are separate facts; on a device where arrival counts as authority, a hole at the entry becomes control.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Crafted input that reached the Dashboard Server port (TCP 29999 by default), and the arbitrary commands it ran on the robot's OS. The input was passed to the OS without neutralising special characters. All the attack needed was network reachability; no authentication was demanded (per CISA and Universal Robots).
+- **What reached the receiving side**: In general, a command that reaches control software carries no information on whether its sender holds authority to operate the machine. From the receiving side, you cannot tell whether a command that arrived over the network comes from someone allowed to operate it.
+- **What was stopped**: On robots running the fixed release (PolyScope 5.25.1), the flaw is fixed (per Universal Robots). Network segmentation and blocking exposure of the Dashboard Server port were also given as mitigations.
+- **Not disclosed**: Exploitation in the wild (none reported at the time of writing). Altered control logic or disrupted operation after code execution on the robot OS are plausible impacts, not confirmed harm.
 
-- **Target**: PolyScope 5 (versions before 5.25.1), the control software for Universal Robots' collaborative robots (cobots) — the control foundation of industrial robots widely operating on manufacturing and logistics floors.
-- **Disclosing party**: CISA (industrial control systems advisory ICSA-26-134-17, 2026-05-14). Universal Robots also published its own security advisory for the vulnerability. The finder is Vera Mens of Claroty Team82.
-- **Vulnerability**: CVE-2026-8153 (OS command injection, CWE-78). CVSS v3.1 base 9.8 (Critical), CVSS v4.0 base 9.3.
-- **Core of the technique**: PolyScope's Dashboard Server interface passed user-supplied input to the OS without neutralizing special characters. An **unauthenticated attacker** who can reach the Dashboard Server port over the network (the default listener is TCP 29999) can execute arbitrary commands on the robot's OS via crafted input.
-- **What it required**: not "legitimate authority to operate the robot" but only "network reachability to the Dashboard Server port." No authentication is demanded.
-- **Plausible impact**: arbitrary code execution on the robot OS can lead to altering control logic, disrupting operation, and establishing a foothold for lateral movement. It opens room for a manufacturing-line embodied agent to act on an attacker's instruction (directly tied to cyber-physical safety).
+## 3. What to check
+
+Whatever the route, the condition for telling them apart is that whoever carries out a command that leads to physical motion checks, before it runs, that the sender is allowed to operate the machine, wherever on the network the command came from.
+
+- **Who approves**: Whoever decides who may operate the robot, such as the person responsible for its operation. Who may start it, run it or load a program, and within what scope, is decided outside the robot.
+- **Where it is checked**: One point just before a command that leads to physical motion runs. A command from the internal network and one from outside pass the same check. A command that does not match a permission is stopped, not run.
+- **What is recorded**: Which permission allowed whose command to run as which motion, kept apart from the record of network reach.
+
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before a command that leads to physical motion runs, that the sender is allowed to operate the machine, and keeping a record. Detection means noticing after a flaw or anomaly surfaces. The date below is when CISA published its advisory, not necessarily when the flaw became exploitable.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check that the sender is allowed to operate the machine before a command runs</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>With no authentication, network reach alone<br>could run commands on the OS</span></div>
+<div class="rx-zone det"><b>Detection · worked</b>The flaw was found, and CISA and the vendor issued advisories</div>
+<div class="rx-g g1"><div class="t">BEFORE</div><b>A flaw passing input to the OS unneutralised</b></div>
+<div class="rx-g g2"><div class="t">05-14</div><b>CISA publishes its advisory</b></div>
+<div class="rx-g g3"><div class="t">AFTER</div><b>Update to 5.25.1 and segment</b></div>
+<div class="rx-g g4"><div class="t">AT WRITING</div><b>No exploitation in the wild reported</b></div>
+</div>
+</figure>
+
+The advisory and the fixed release address the flaw that was found; they are not a mechanism that checks the sender of a command that arrives. Another case where an entry point with no authentication led to actions on a business platform is [ServiceNow's unauthenticated API](/critical/briefs/046-servicenow-unauthenticated-api/) (the requester's authorisation was not checked before the action ran).
+
+## 4. What Lemma does
+
+**Lemma builds the check in section 03 into the side that carries out commands leading to physical motion.** It does not look for flaws or intrusions; it checks, before a command runs and whatever the network path, whether its sender is allowed to operate the machine.
+
+### Industries and operations to watch
+
+- **Industry · Manufacturing**: Organisations that run collaborative robots on manufacturing and logistics floors. The robot's control software has an entry point reachable over the network.
+- **Operation · Starting, running and loading programs on robots**: Commands that lead to physical motion. That a sender reached the network does not show it is allowed to operate the machine.
+
+### Current controls vs Lemma
+
+The route in this case is a command that leads to physical motion, arriving over the network.
+
+| Control | Command leading to physical motion, arriving over the network |
+| --- | --- |
+| Applying the fixed release (PolyScope 5.25.1 or later) | Partial |
+| Network segmentation and blocking exposure | Partial |
+| Anomaly detection (after the motion) | Not effective |
+| **Lemma (pre-execution check)** | Effective |
+
+Applying the fixed release closes this flaw, but it is not a mechanism that checks the sender of a command that arrives. Segmentation narrows who can reach the robot, but the robot does not thereby check whether the party that reached it is allowed to operate it. Anomaly detection comes after the command has run and the motion has happened, and the result cannot be undone. Lemma checks commands that lead to physical motion, before they run, against whether the sender is allowed to operate the machine. A record of what ran is also kept, so which motion happened under which permission can be confirmed without relying on a record of network reach alone.
+
+Note: Lemma's check works only when it is built in just before commands such as start, run and load-program, and the record of permissions is managed outside the robot. A party running code on the robot's OS may be able to cause motion without passing this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+
+### Checklist
+
+Three things to confirm in your organisation about control devices (robots)
+
+- Are your PolyScope 5 robots on 5.25.1 or later?
+- Do you know from where on the network the Dashboard Server port can be reached, and have you closed the ranges you do not need?
+- Is there a step that checks, before a command runs, that its sender is allowed to operate the robot, even for commands from the internal network?
+
+## 5. Facts and timeline
+
+- **Target**: PolyScope 5 (versions before 5.25.1), the control software for Universal Robots' collaborative robots (cobots), the control foundation of industrial robots widely deployed on manufacturing and logistics floors.
+- **Disclosing party**: CISA (industrial control systems advisory ICSA-26-134-17, 2026-05-14). Universal Robots also published an advisory for the same vulnerability. The finder is Vera Mens of Claroty Team82.
+- **Vulnerability**: CVE-2026-8153 (OS command injection, CWE-78). CVSS v3.1 base score 9.8 (Critical); CVSS v4.0 base score 9.3.
+- **Core of the technique**: PolyScope's Dashboard Server interface passed user-supplied input to the OS without neutralising special characters. An unauthenticated attacker who can reach the Dashboard Server port over the network (the default listener is TCP 29999) could run arbitrary commands on the robot's OS via crafted input.
+- **What it required**: Not authority to operate the robot, but only network reachability to the Dashboard Server port. No authentication is demanded.
+- **Plausible impact**: Arbitrary code execution on the robot OS can lead to altered control logic, disrupted operation and a foothold for lateral movement. It opens room for a robot on a manufacturing line to act on an attacker's instruction.
 - **Fix**: Universal Robots released the fix in PolyScope 5.25.1.
 
-The incident came together as the following chain.
+### Timeline
 
-1. **Network reach**: the attacker reaches the port on which the robot's PolyScope Dashboard Server listens (default TCP 29999), over the network. No authentication is required.
-2. **Unsanitized input**: the Dashboard Server passes user-supplied input into the OS command string without neutralizing special characters.
-3. **OS command injection**: with crafted input, the attacker executes arbitrary commands on the robot's OS (CVE-2026-8153).
-4. **Impact on the embodied agent**: using code execution on the robot OS as a foothold, altering control logic, disrupting operation, retrieving stored information, and lateral movement can follow. An embodied agent that performs physical motion gains room to move on instructions from someone who is not a legitimate controller.
-5. **Fix and mitigation**: updating to PolyScope 5.25.1, and network segmentation / exposure blocking of the Dashboard Server port, are the mitigations (an after-the-fact, perimeter sequence that cuts off exposure).
+- **(Before)**: A flaw existed in PolyScope 5's Dashboard Server, passing input to the OS without neutralising it.
+- **2026-05-14**: CISA publishes industrial control systems advisory ICSA-26-134-17, warning of CVE-2026-8153 (CVSS 9.8). Universal Robots also publishes an advisory for the same vulnerability and points to the fix in PolyScope 5.25.1.
+- **After**: Operators are advised to update to 5.25.1 and to block or segment network exposure of the Dashboard Server port.
 
----
+> This Brief covers the CVE-2026-8153 vulnerability and its structure; no exploitation in the wild had been reported at the time of writing. The CISA advisory and Universal Robots' advisory are the dated anchors, and scale and technique are described from the primary sources. What has not been disclosed does not mean there were no controls.
 
-## 3. Timeline — disclosure and response
+### Response after disclosure
 
-- (prior): a flaw existed in PolyScope 5's Dashboard Server, passing input to the OS without neutralization.
-- 2026-05-14: CISA publishes the industrial control systems advisory ICSA-26-134-17, warning of CVE-2026-8153 (CVSS 9.8). Universal Robots also publishes its advisory and announces the fix in PolyScope 5.25.1.
-- After: operators are advised to update to 5.25.1 and to block/segment network exposure of the Dashboard Server port.
-
-> Note: This Brief covers the CVE-2026-8153 vulnerability and its structure; no in-the-wild exploitation has been reported as of writing (CISA notes no known public exploitation, and the CVE is not in the CISA KEV catalog). It anchors on the CISA and Universal Robots advisories by name and date, and describes scale/method per primary sources.
-
-The response and industry movement after disclosure:
-
-- **Universal Robots**: published the security advisory for CVE-2026-8153 and released the fix in PolyScope 5.25.1, advising operators to update.
-- **CISA**: issued industrial control systems advisory ICSA-26-134-17, publicizing the unauthenticated-RCE risk and the mitigations (update, network segmentation, minimizing exposure).
-- **Recommendations for OT / industrial-robot operators**: update to PolyScope 5.25.1 or later; block and segment network exposure of the Dashboard Server port; apply least privilege to the control network. Do not open the robot control surface without verification merely because it sits on a "trusted" internal network.
-- **A cross-industry issue**: as robots and autonomous systems proliferate on industrial floors and AI agents come to participate in operational decisions, "how to independently verify, before motion, the authority of a command's sender" in cyber-physical systems is being framed as a safety requirement. A shift is called for, from implicit trust resting on network reachability (positional trust) to per-action authorization verification.
-
-The absence of a design that moves the command sender's authority from the implicit trust of "reached the network = legitimate" to "a proof of authorization independently verified per action" is not a problem of a specific product; it is increasingly shared as a cross-organizational challenge for any organization operating robots and autonomous systems.
-
----
-
-## 4. Why it wasn't stopped
-
-The central **failure primitive is "the robot, an embodied agent, never independently verifying — before moving — the authority or identity of the sender of a command that leads to physical motion."** The Dashboard Server accepts "a command that arrived over the network" and passes it to the OS, but lacked a layer to verify "does the sender of this command hold legitimate authority to operate this robot." The fact that the attack required not authority but only network reachability shows this plainly.
-
-It shares a root with [Brief 003](/critical/briefs/003-starlette-badhost/) (Starlette/BadHost, where Host-header manipulation bypassed MCP authentication) and [Brief 046](/critical/briefs/046-servicenow-unauthenticated-api/) (a ServiceNow unauthenticated API that never proved the requester's authorization before execution), in the structure where **authorization passes to the privileged side without being independently verified before the action** — differing in that this incident shows it at the exit of **physical robot motion** rather than a software response. It connects to [Brief 007](/critical/briefs/007-pocketos-cursor-db-deletion/) (an AI coding agent that deleted a production DB without its destructive authority being independently verified) in that an agent's destructive, irreversible action lacks independent verification of authorization. It connects to [Brief 033](/critical/briefs/033-f5-bigip-edge-pivot/) (the compromise of an implicitly trusted edge appliance becoming a foothold for lateral movement) and [Brief 025](/critical/briefs/025-mcp-stdio-config-to-command-rce/) (MCP's default design becoming a broad RCE path) in the structure where a single point on the infrastructure, lacking authorization verification, becomes a foothold.
-
-What this incident throws into relief is that **agent authority proof is not limited to software agents.** [Brief 066](/critical/briefs/066-litellm-ai-gateway-privilege-escalation/) (a hijacked AI gateway steering an agent's execution flow) posed the same question on the software side; this incident shows that embodied agents performing physical motion on manufacturing and logistics floors equally need a layer that independently verifies, before motion, "is this motion an instruction from a sender with legitimate authority." Only once the command sender's authority is independently verified per action can increasingly autonomous robots be safely placed on factory and warehouse floors.
-
-The CISA and Universal Robots advisories, updating to PolyScope 5.25.1, and network segmentation of the Dashboard Server port are indispensable for deterring exposure, and this Brief does not negate that role. Patching and network segmentation are an important check that severs the path of reach.
-
-At the same time, network monitoring and patches are no material for the robot to independently verify — **before moving** — whether "the command just received may be executed in light of the sender's authority." The core of this incident is that the Dashboard Server passed the command to the OS without verifying the sender's authorization — the authorization check itself was absent from the path. Network segmentation narrows "who can reach," but the robot does not thereby confirm whether the party that reached it is a legitimate controller. Anomaly detection firing after the motion cannot undo the result at the moment the command executed and physical motion occurred. For audit and safety reporting, a record of network reach alone is no independent evidentiary trail that "this robot's motion was based on an instruction held by legitimate authority."
-
----
-
-## 5. What proof would have changed
-
-Pre-execution attestation takes the design choice of treating a command the robot receives not as "the fact that it arrived over the network" but as "an independently verifiable proof of authorization from a sender holding legitimate authority." If commands that lead to physical motion — start, operate, load program — are verified before motion against the bounds of the grantor's authorization, then network reachability alone does not produce motion. Detecting network reach (the detection-style "who reached") and proving the command's authorization ("is the command based on legitimate authority") are **complements**, not substitutes; only where the two overlap can increasingly autonomous robots be safely placed on manufacturing and logistics floors.
-
-Against the detection–proof gap this incident exposed (an embodied agent not independently verifying the command sender's authority before physical motion), Lemma proposes a design that backs an agent's action — software or embodied — not with "network reach or the presentation of a token" but with "a proof of authorization scoped per action and independently verifiable."
-
-- **Per-action scoped authorization (proof-as-auth)**: independently verify commands that lead to physical motion (start, operate, load program), before motion, against the bounds of the grantor's authorization. Replace "the fact of having reached the network" with a per-command proof.
-- **Eliminating positional trust**: break the implicit trust that "arrived from the internal network = legitimate," and independently verify the authority attributes of the command sender before the action (connecting to the positional trust and lateral movement of [Brief 033](/critical/briefs/033-f5-bigip-edge-pivot/)).
-- **Consistent application to embodied agents**: apply the same authorization-proof framework used for software agents (the gateway of [Brief 066](/critical/briefs/066-litellm-ai-gateway-privilege-escalation/)) consistently to embodied agents that perform physical motion.
-- **Selective disclosure**: without exposing internal data, disclose only the minimum — that "this command is within the grantor's authorization" — reconciling independent verification with the protection of operational information.
-
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this robot's motion is based on an instruction from a sender holding legitimate authority," without depending on after-the-fact network logs. Detection (after-the-fact monitoring, patching, segmentation) works on correcting exposure; pre-execution attestation (independent verification of authorization before motion) works on establishing trust in embodied agents — each complementary to the other.
-
----
+- **Universal Robots**: Published a security advisory for CVE-2026-8153 and released the fix in PolyScope 5.25.1. Pointed operators to the update.
+- **CISA**: Issued ICS advisory ICSA-26-134-17, publicising the risk of unauthenticated code execution and the mitigations (update, network segmentation, minimising exposure).
+- **Recommendations for OT and industrial-robot operators**: Update to PolyScope 5.25.1 or later, block or segment network exposure of the Dashboard Server port, and apply least privilege on the control network.
 
 ## 6. Sources
 
@@ -106,4 +150,4 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 - **SecurityWeek**: "Critical Vulnerability Exposes Industrial Robot Fleets to Hacking" — <https://www.securityweek.com/critical-vulnerability-exposes-industrial-robot-fleets-to-hacking/>
 - **SC Media**: "Critical vulnerability in Universal Robots' PolyScope OS allows remote command execution" — <https://www.scworld.com/brief/critical-vulnerability-in-universal-robots-polyscope-os-allows-remote-command-execution>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/#authority), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
