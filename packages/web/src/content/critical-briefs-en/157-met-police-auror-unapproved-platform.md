@@ -1,7 +1,7 @@
 ---
 brief_no: 157
-title: "ロンドン警視庁：「承認済み」と誤って伝わった外部の基盤に、警官らが容疑者の情報を載せた(英 ICO の処分) — 承認済みかを、使う時点で照合する層が無い"
-title_en: "Metropolitan Police: Officers put suspects' data on an outside platform wrongly said to be approved (UK ICO action) — Nothing checks at the point of use whether a platform is approved"
+title: "ロンドン警視庁：「承認済み」と誤って伝わった外部の基盤に、警官らが容疑者の情報を載せた(英 ICO の処分)"
+title_en: "Metropolitan Police: Officers put suspects' data on an outside platform wrongly said to be approved (UK ICO action)"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [identity-auth]
@@ -15,12 +15,12 @@ version: "1.0"
 og_lead_ja: "ロンドン警視庁、「承認済み」と誤って伝わった外部基盤に 179 人分の個人情報（英 ICO）"
 og_lead_en: "Met Police: data on 179 people put on a platform wrongly said to be approved (ICO)"
 layout: "report"
+sections: "proof"
 gate: "disclosure"
 og_kicker_ja: "情報管理の事例 · 未承認ツールの利用"
 og_kicker_en: "DATA GOVERNANCE · UNAPPROVED TOOL"
 og_headline_ja: "「承認済み」と誤って\n伝わった外部の基盤に、\n警官らが登録した。\n<accent>179 人分の個人情報を掲載</accent>"
 og_headline_en: "Officers joined a platform\nwrongly said to be approved.\n<accent>Data on 179 people uploaded.</accent>"
-summary_labels: ["What happened", "How it spread", "The missing layer"]
 key_figures:
   - value: "179"
     unit: "people"
@@ -43,12 +43,12 @@ glossary:
 insight:
   slug: "outside-platform-approval-not-checked-at-use"
   label: "Outside platform approval not checked at the point of use"
-  quote: "Being able to sign up with a work email did not mean the organisation had approved the platform. That difference was asked neither when accounts were created nor when data was uploaded."
+  quote: "Being able to sign up to an outside platform with a work email does not mean the organisation approved it, and that difference stays invisible unless someone asks."
 industries: ["public-sector", "retail"]
 operations: ["disclosure", "approval"]
 controls:
   - slug: "hold-unverified"
-    item: "Do not upload personal data to an outside platform until it is checked as approved"
+    item: "Do not upload personal data to an outside platform unless it can be confirmed as approved"
   - slug: "audit-trail"
     item: "Record what went to which platform, under which approval"
 attack_method: "human-error"
@@ -58,15 +58,77 @@ self_check: "Do you know which outside services have been signed up to with your
 countries: ["gb"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-On October 14, 2026, the UK Information Commissioner's Office (ICO) announced a reprimand and enforcement notice against the Metropolitan Police Service (MPS). From March 2023 to September 2024, officers and staff used Auror, a retail crime intelligence platform the Met had not approved, creating about 500 accounts. In 2024, personal data on 179 shoplifting suspects was uploaded, three of them under 18.
+Officers and staff created accounts on Auror, a retail-crime information-sharing platform the Met had not approved, using their Met email addresses. By the Met's account, the site carried the Met's logo and said the Met was a customer. Per the ICO, the approval board reviewed only the mobile app, and the browser version actually used never went through any approval process. <strong>Being able to sign up to an outside platform with a work email does not mean the organisation approved it, and that difference stays invisible unless someone asks.</strong>
 
-Officers, encouraged by retailers, used QR codes sent by the operator to create their own accounts with Met email addresses. Some began after a former officer's account of it. By the Met's account, the site carried the Met's logo and statements that the Met was a customer, and its URL filter classed the site as professional services and did not block it (per the ICO).
+## 2. What got through
 
-The Met noticed through internal reports and blocked access, but data on 179 people had already been uploaded. What failed was the layer that checks, at sign-up and at upload, whether an outside platform is approved.
+- **What got through**: Account sign-ups to the outside platform Auror with Met email addresses, and the upload of suspects' personal data to it (per the ICO).
+- **What was not stopped / what stopped it**: The URL filter classed the site as professional services and did not block it (per the Met and the ICO). The Met noticed through an internal security incident report and blocked access on September 26, 2024 (per the ICO).
+- **What reached the receiving side**: In general, a sign-up with a work email reaches the operator as a registration by that organisation's staff. Whether the organisation approved the platform cannot be told from the sign-up or from the upload.
+- **Not disclosed**: Statements from the Met and Auror on the action; whether the uploaded data was deleted on Auror's side. Use from March 2023 is "possible" but not proven (per the ICO).
 
-## 2. What happened
+## 3. What to check
+
+Whatever the route, the condition for telling them apart is that whoever accepts outside sign-ups with work email, and uploads of personal data to outside platforms, checks before the sign-up or upload that the platform is on the organisation's approved list and that each field is needed for the purpose.
+
+- **Who approves**: The organisation's information governance and security function. It keeps the list of approved outside platforms apart from whoever requests approval, and the requester alone does not decide whether a DPIA is needed.
+- **Where it is checked**: At the entry for outside sign-ups with work email, and just before personal data leaves for an outside platform. Sign-ups and uploads to platforms not on the list do not go through, and whether each field is needed for the purpose is checked too.
+- **What is recorded**: What went to which platform under which approval, kept on the organisation's side, apart from individual sign-ups.
+
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before signing up to an outside platform or uploading personal data, that the platform is approved by the organisation, and keeping a record. Detection means noticing afterwards through an internal report. The dates below are when the Met and the ICO confirmed or disclosed each point, not when the sign-ups or uploads took place.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before use, check that the platform is approved</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>About 500 accounts<br>Data on 179 people uploaded</span></div>
+<div class="rx-zone det"><b>Detection · noticed</b>Noticed through an internal incident report, then blocked</div>
+<div class="rx-g g1"><div class="t">2024-08-29</div><b>First incident report</b></div>
+<div class="rx-g g2"><div class="t">2024-09-26</div><b>Access blocked</b></div>
+<div class="rx-g g3"><div class="t">2026-09-23</div><b>ICO issues its action</b></div>
+<div class="rx-g g4"><div class="t">2026-10-14</div><b>ICO publishes it</b></div>
+</div>
+</figure>
+
+The internal report worked and the Met blocked access, but it noticed after the uploads, and blocking took about a month more (the ICO says no explanation was given). A similar case, where an environment still holding customer data was kept in use for another purpose without anyone re-confirming it was allowed, is [the Awa Bank test environment](/critical/briefs/142-awa-bank-test-environment-repurposed-leak/).
+
+## 4. What Lemma does
+
+**Lemma builds the check in section 03 into outside sign-ups with work email and the point just before personal data leaves.** It does not look for intrusions; it checks, before the sign-up or upload, whether the platform is on the organisation's approved list.
+
+### Industries and operations to watch
+
+- **Industry · Public sector**: Police and local governments, where staff easily start using convenient outside services on their own. The ICO pointed out that this repeats the same type of case as Clearview AI, the facial-recognition matter for which it reprimanded the Met in 2021.
+- **Industry · Services & retail**: Retailers that share crime information with police and government, and the companies that run the sharing platforms. Here the operator sent officers a QR code to register.
+- **Operation · Disclosure**: Putting personal data on an outside platform. The ICO found it unlawful to share dates of birth and addresses when names would have done.
+- **Operation · Approvals**: Approving a new tool. The requester alone decided whether a DPIA was needed, and no one from data protection was at the board.
+
+### Current controls vs Lemma
+
+The route in this case is column 1 (sign-ups to outside platforms with work email) and column 2 (uploading personal data to them). Column 3 is use from personal devices or personal accounts; whether that applied here has not been disclosed.
+
+| Control | Sign-up to an outside platform with work email | Uploading personal data to the platform | Use from personal devices or accounts |
+| --- | --- | --- | --- |
+| Policy | Partial | Partial | Not relevant |
+| URL filter | Not effective | Not relevant | Not relevant |
+| Approval board | Partial | Not relevant | Not relevant |
+| Internal incident reports | Not relevant | Partial | Not relevant |
+| **Lemma (pre-execution check)** | Effective | Effective | Not effective |
+
+The ICO said the policy itself was appropriate, but it was not backed by technical measures or training. By the Met's account, the URL filter classed the site as professional services and did not stop it. The approval board reviewed only the mobile app, and the browser version used never went through the process. Internal incident reports noticed after uploads, and blocking took about a month. Lemma checks, before sign-up or upload, that the platform is on the approved list and that each field is needed for the purpose.
+
+Note: Lemma's check works only when it is built into outside sign-ups with work email and the point just before personal data leaves, and the approved list is kept apart from whoever requests approval. Misuse inside an approved platform, or uploading fields that are not needed, is not stopped by this check alone. Use from personal devices or personal accounts bypasses the organisation's check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+
+### Checklist
+
+Three things to confirm in your organisation about outside services
+
+- Can anyone create accounts on outside services with an organisation email address?
+- When approving a new tool, does only the requester decide whether an impact assessment is needed?
+- Can you technically block traffic to services you have not approved?
+
+## 5. Facts and timeline
 
 - **The organisation**: The Metropolitan Police Service (MPS). The ICO acted under Part 3 of the Data Protection Act 2018, which covers processing for law enforcement.
 - **Auror's status**: The Met had not procured, approved or adopted Auror as an organisation, and there was no contract or information-sharing agreement (per the ICO). An approval board on June 27, 2023 reviewed only the mobile app and approved it with caveats, but the app was blocked by the Met's own IT controls. The browser version officers actually used never went through any approval process (per the ICO).
@@ -76,19 +138,7 @@ The Met noticed through internal reports and blocked access, but data on 179 peo
 - **The ICO's findings**: Sharing dates of birth and addresses when names would have done was unnecessary, and so unlawful. There were no appropriate technical or organisational measures, and no DPIA before high-risk processing. Measures to make sure only approved technology is used are still lacking, so the ICO issued an enforcement notice (per the ICO).
 - **Reporting and notification**: No personal data breach report was submitted. The Met judged there was no high risk requiring notification to individuals (per the ICO).
 
-<figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The sequence, following the ICO notice</span></div>
-<p class="rx-ex-cap">The stopping points are ② and ③. Had signing up with a work email and uploading personal data each been checked against whether the platform was approved, an unapproved platform would have been stopped.</p>
-<div class="rx-chain">
-<div class="rx-step"><div class="who">Retailers / operator</div><div class="no">1</div><b>Recommend Auror to officers and send sign-up QR codes</b><p>By the Met's account, the site carried its logo.</p></div>
-<div class="rx-step crit"><div class="who">Officers / staff</div><div class="no">2</div><b>Create their own accounts with Met email addresses</b><p>About 500. Wrongly told it was approved.</p></div>
-<div class="rx-step crit"><div class="who">Officers / staff</div><div class="no">3</div><b>Upload suspects' names and other details</b><p>179 people in 2024.</p></div>
-<div class="rx-step"><div class="who">Met</div><div class="no">4</div><b>An internal security incident is reported</b><p>August 29, 2024.</p></div>
-<div class="rx-step"><div class="who">Met</div><div class="no">5</div><b>Access is blocked</b><p>September 26, 2024.</p></div>
-</div>
-</figure>
-
-## 3. Timeline — disclosure and response
+### Timeline
 
 - **2023-03**: Auror is made available to officers (exact date unknown). The ICO says use from this point is possible but not proven.
 - **2023-06-27**: An approval board reviews the Auror mobile app. The data protection team is not present.
@@ -103,71 +153,13 @@ The Met noticed through internal reports and blocked access, but data on 179 peo
 - **2026-09-23**: The ICO issues the reprimand and enforcement notice.
 - **2026-10-14**: The ICO publishes it.
 
-> The facts rest on the ICO's reprimand and enforcement notice (47 pages) and its announcement (both primary). The announcement ends the account and upload periods in September; parts of the notice say October. We could not find statements from the Met or Auror on the action. The notice does not say whether the uploaded data was deleted on Auror's side.
+> The facts rest on the ICO's reprimand and enforcement notice (47 pages) and its announcement (both primary). The announcement ends the account and upload periods in September; parts of the notice say October. We could not find statements from the Met or Auror on the action. The notice does not say whether the uploaded data was deleted on Auror's side. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 
 - **The Met**: Accepted the provisional findings, including that governance at the time was insufficient. It set up a Commander-led Gold Group, had Auror remove the Met's logo (confirmed November 5, 2024) and asked Auror for the shared data. It found no retailer had used the data to ban anyone, take civil action or share it further (per the ICO).
 - **Use since reinstatement**: Officers can only view; they cannot upload or enter free text. Training is required first, and the Met can audit use (per the ICO).
 - **What the enforcement notice requires**: Within three months (then at least annually), identify unapproved outside platforms in use and review and revise the approval process. Within six months, assess and approve each one or block it technically, set standard controls for sharing with third parties, and review training. Within twelve months, test that the measures work. The Met must send the ICO periodic updates (per the ICO).
-
-## 4. Why it wasn't stopped
-
-This case was not about missing policy. Whether the outside platform was approved was asked neither when accounts were created nor when personal data was uploaded.
-
-<figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The detection–proof gap</span></div>
-<p class="rx-ex-cap">Proof here means checking, before signing up to an outside platform and uploading personal data, "is this platform approved by the organisation?", and recording it. Detection means noticing through internal reports after the data is uploaded.</p>
-<div class="rx-gap">
-<div class="rx-zone proof"><b>Proof layer · absent</b>Before use, check the platform is approved</div>
-<div class="rx-zone gapz"><b>The gap</b><span>Data on 179 people<br>uploaded</span></div>
-<div class="rx-zone det"><b>Detection layer · noticed</b>An internal report leads to a block</div>
-<div class="rx-g g1"><div class="t">STEP 1</div><b>Accounts created</b></div>
-<div class="rx-g g2"><div class="t">STEP 2</div><b>Personal data uploaded</b></div>
-<div class="rx-g g3"><div class="t">STEP 3</div><b>08-29 incident report</b></div>
-<div class="rx-g g4"><div class="t">STEP 4</div><b>09-26 blocked</b></div>
-</div>
-</figure>
-
-Internal reporting worked and the Met blocked access, but it noticed after data was uploaded, and blocking took about another month (the ICO said no explanation was given). "Could sign up with a Met email" and "is a platform the Met approved" are separate facts, and the ICO notice shows no layer checking the first against the second. That distance is the **detection–proof gap**, and it is a structural one.
-
-The same structure appears in [Awa Bank](/critical/briefs/142-awa-bank-test-environment-repurposed-leak/) (an environment still holding customer data stayed in other use without anyone re-confirming it should).
-
-## 5. How to counter this
-
-**When staff sign up to an outside platform, and when they upload personal data to it, check that the platform is approved by the organisation.** Then a handy outside service can spread on the front line without data going to an unapproved platform. This is not a substitute for detection; it sits in front of it.
-
-### Industries and operations to watch
-
-- **Industry · Government & public sector**: Police forces and local governments where staff readily start using handy outside services. The ICO called it a repeat of the type of incident behind its December 2021 reprimand of the Met over Clearview AI facial recognition.
-- **Industry · Services & retail**: Retailers that share crime intelligence with police and government, and the companies running the sharing platforms. Here the operator sent officers sign-up QR codes.
-- **Operation · Disclosure & data release**: Uploading personal data to outside platforms. The ICO found sharing dates of birth and addresses, when names would have done, unlawful.
-- **Operation · Approval & sign-off**: Approving new tools. Only the requester decided whether a DPIA was needed, and data protection staff were absent from the board.
-
-### Do today's controls close it?
-
-| Control | This case | Why |
-| --- | --- | --- |
-| Policy | Partial | The ICO said the policy itself was appropriate, but it was not backed by technical measures or training. |
-| URL filter | Ineffective | By the Met's account, the site was classed as professional services and was not stopped. |
-| Approval board | Partial | It reviewed only the mobile app; the browser version used never went through the process. |
-| Internal incident reports | Partial | They noticed after uploads, and blocking took about a month. |
-
-### What is needed
-
-1. **Limit outside sign-ups with work email to approved services.** Do not let sign-ups to services off the approved list go through on an individual's judgement.
-2. **Before personal data goes to an outside platform, check that the platform is approved and that each field is needed for the purpose.** Here the ICO judged dates of birth and addresses were not needed.
-3. **Keep, on the organisation's side, what went to which platform under which approval.** Here individual sign-ups left no record, and even when use began could not be confirmed. Keep it in a form that can be checked later: in other words, as proof.
-
-### Checklist
-
-Three things to confirm in your organisation about outside services
-
-- Can anyone create accounts on outside services with an organisation email address?
-- When approving a new tool, does only the requester decide whether an impact assessment is needed?
-- Can you technically block traffic to services you have not approved?
-
-Note: misuse inside an approved platform, or uploading fields that are not needed, is not stopped by this check alone. Use from personal devices or personal accounts bypasses the organisation's check.
 
 ## 6. Sources
 
