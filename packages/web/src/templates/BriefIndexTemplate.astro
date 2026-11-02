@@ -337,6 +337,11 @@ const labels = isJa
         "実際に起きたサイバー攻撃と事故を、公表資料から読み解きます。何が正しい操作として通ってしまったか、実行の前に何を照合するかまでを整理する解説レポートです。",
       newest: "新着",
       selectedMark: "選択中",
+      cbarNone: `${controlTiles.length} つの対策から選ぶ`,
+      cbarPick: "選ぶ",
+      cbarChange: "変える",
+      cbarClose: "閉じる",
+      fBtn: "絞り込み",
       aboutK: "この対策とは",
       exampleK: "たとえば",
       pinned: "注目",
@@ -391,6 +396,11 @@ const labels = isJa
         "Real cyber attacks and incidents, read from public disclosures: what got through as a legitimate operation, and what to check before it runs.",
       newest: "Latest",
       selectedMark: "Selected",
+      cbarNone: `Choose from ${controlTiles.length} controls`,
+      cbarPick: "Choose",
+      cbarChange: "Change",
+      cbarClose: "Close",
+      fBtn: "Filters",
       aboutK: "What this control is",
       exampleK: "For example",
       pinned: "Featured",
@@ -648,6 +658,26 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       {/* すべての Brief（アーカイブのみ・見出し行の右端に虫眼鏡の検索） */}
       {isArchive && (
         <section class="ix-cnav" aria-label={labels.controlsH} data-control-nav>
+          {/* スマホだけ：対策の列と説明を 1 行にたたむ（B 案・2026-11-03）。タップで開く。 */}
+          <button
+            type="button"
+            class="ix-cbar"
+            data-cbar
+            aria-expanded="false"
+            data-t-none={labels.cbarNone}
+            data-t-pick={labels.cbarPick}
+            data-t-change={labels.cbarChange}
+            data-t-close={labels.cbarClose}
+          >
+            <span class="ix-cbar-ic" data-cbar-ic aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 4.5h10M3 8h10M3 11.5h10" /></svg>
+            </span>
+            <span class="ix-cbar-tx">
+              <span class="ix-cbar-k">{labels.fControl}</span>
+              <span data-cbar-label>{labels.cbarNone}</span>
+            </span>
+            <span class="ix-cbar-act" data-cbar-act>{labels.cbarPick} ▸</span>
+          </button>
           <h2 class="ix-h">{labels.controlsH}</h2>
           <div class="ix-ctl-grid">
             {controlTiles.map((c) => (
@@ -682,6 +712,16 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       <section aria-label={labels.allBriefs} id="all-briefs">
         <div class="cb-listhead ix-filter ix-filter--arc">
           <h2 class="ix-h">{labels.allBriefs} <span class="ix-h-n">{briefsCount}</span></h2>
+          {/* スマホだけ：5 つの絞り込みとキーワードを、ボタン 1 つと検索にたたむ（B 案・2026-11-03）。 */}
+          <div class="ix-fbar">
+            <button type="button" class="ix-fbtn" data-fbar aria-expanded="false">
+              <span>{labels.fBtn}</span>
+              <b data-fbar-n hidden></b>
+            </button>
+            <button type="button" class="ix-fsearch" data-fsearch aria-label={labels.searchAria}>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5 14 14" /></svg>
+            </button>
+          </div>
           <label><span class="sr">{labels.fCountry}</span>
             <select data-facet="country">
               <option value="">{labels.fCountry}</option>
@@ -2545,6 +2585,186 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       line-height: 1.65;
     }
   }
+
+  /* スマホのアーカイブ（B 案・2026-11-03）：最初の 1 画面に一覧が入るように、
+     対策は 1 行（タップで列と説明が開く）、絞り込みはボタン 1 つと検索にたたむ。
+     パソコンでは、この 2 つのボタンは出さない。 */
+  .ix-cbar,
+  .ix-fbar {
+    display: none;
+  }
+  @media (max-width: 620px) {
+    .cb-hero--archive {
+      padding-top: 6px;
+    }
+    .cb-hero--archive .cb-back,
+    .cb-hero--archive .cb-archive-meta {
+      display: none;
+    }
+    .cb-page .cb-hero--archive h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+    .ix-cnav {
+      margin: 10px 0 14px;
+    }
+    .ix-cnav > .ix-h,
+    .ix-cnav:not(.is-open) .ix-ctl-grid,
+    .ix-cnav:not(.is-open) .ix-cintro {
+      display: none;
+    }
+    .ix-cbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cfd3c8;
+      border-radius: 12px;
+      background: #fff;
+      color: var(--tx);
+      font: inherit;
+      font-size: 13px;
+      line-height: 1.45;
+      text-align: left;
+      cursor: pointer;
+    }
+    .ix-cbar-ic {
+      flex: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: #eef0ea;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ix-cbar-ic svg {
+      width: 18px;
+      height: 18px;
+    }
+    .ix-cbar-tx {
+      flex: 1;
+      min-width: 0;
+      font-weight: 600;
+      text-wrap: balance;
+    }
+    .ix-cnav .ix-ctl-grid {
+      scroll-padding-inline: 16px;
+    }
+    /* 対策だけで絞っているときは、上の 1 行が同じことを言うので、件数の行は出さない。 */
+    .cb-fctx.is-ctlonly {
+      display: none;
+    }
+    .cb-fctx button {
+      white-space: nowrap;
+    }
+    #all-briefs.is-fopen .ix-filter--arc > label:not(.cb-search) {
+      flex: 1 1 calc(50% - 4px);
+      min-width: 0;
+    }
+    #all-briefs.is-fopen .ix-filter--arc > label:not(.cb-search) select {
+      width: 100%;
+      max-width: none;
+      field-sizing: fixed;
+    }
+    .ix-cbar-k {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 500;
+      color: #6b7368;
+    }
+    .ix-cbar-act {
+      flex: none;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .ix-cbar.is-set {
+      background: var(--tx);
+      border-color: var(--tx);
+      color: #fff;
+    }
+    .ix-cbar.is-set .ix-cbar-ic {
+      background: #c9ef5a;
+      color: var(--tx);
+    }
+    .ix-cbar.is-set .ix-cbar-k {
+      color: #cfd8c4;
+    }
+    .ix-cbar.is-set .ix-cbar-act {
+      color: #c9ef5a;
+    }
+    .ix-filter--arc {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 4px;
+      gap: 8px;
+    }
+    .ix-filter--arc .ix-h {
+      width: 100%;
+      margin-right: 0;
+    }
+    .ix-fbar {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+    .ix-filter .ix-fbtn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 42px;
+      padding: 0 16px;
+      border: 1px solid #cfd3c8;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--tx);
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #all-briefs.is-fopen .ix-fbtn {
+      border-color: var(--tx);
+    }
+    .ix-fbtn b {
+      min-width: 20px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: var(--tx);
+      color: #fff;
+      font-size: 12px;
+      text-align: center;
+    }
+    .ix-fbtn b[hidden] {
+      display: none;
+    }
+    .ix-filter .ix-fsearch {
+      flex: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid #cfd3c8;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--tx);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .ix-fsearch svg {
+      width: 17px;
+      height: 17px;
+    }
+    #all-briefs:not(.is-fopen) .ix-filter--arc > label,
+    #all-briefs:not(.is-fopen) .ix-detail {
+      display: none;
+    }
+    #all-briefs.is-fopen .ix-filter--arc .cb-search,
+    #all-briefs.is-fopen .ix-filter--arc .cb-search input {
+      width: 100%;
+    }
+  }
 </style>
 
 <script>
@@ -2667,6 +2887,10 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         } else {
           fctx.hidden = true;
         }
+        fctx.classList.toggle(
+          "is-ctlonly",
+          mode === "all" && !!facets.control && FACET_KEYS.every((k) => k === "control" || !facets[k]),
+        );
       }
     }
 
@@ -2718,9 +2942,66 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       if (activeCtl && strip && strip.scrollWidth > strip.clientWidth) {
         strip.scrollLeft = Math.max(0, activeCtl.offsetLeft - strip.offsetLeft - 16);
       }
+      syncCbar(activeCtl);
     }
+
+    // スマホの 1 行（B 案）：選んでいる対策の名前とアイコン。開いているあいだは「閉じる ▴」。
+    const cnav = root.querySelector<HTMLElement>("[data-control-nav]");
+    const cbar = root.querySelector<HTMLElement>("[data-cbar]");
+    function syncCbar(activeCtl?: HTMLElement) {
+      if (!cbar || !cnav) return;
+      const open = cnav.classList.contains("is-open");
+      const label = cbar.querySelector<HTMLElement>("[data-cbar-label]");
+      const act = cbar.querySelector<HTMLElement>("[data-cbar-act]");
+      const ic = cbar.querySelector<HTMLElement>("[data-cbar-ic]");
+      const name = activeCtl?.querySelector<HTMLElement>(".ix-ctl-tx b")?.textContent;
+      cbar.classList.toggle("is-set", !!name);
+      if (label) label.textContent = name || cbar.dataset.tNone || "";
+      if (act)
+        act.textContent = open
+          ? `${cbar.dataset.tClose} ▴`
+          : `${name ? cbar.dataset.tChange : cbar.dataset.tPick} ▸`;
+      const svg = activeCtl?.querySelector("svg");
+      if (ic) {
+        if (!ic.dataset.blank) ic.dataset.blank = ic.innerHTML;
+        ic.innerHTML = svg ? svg.outerHTML : ic.dataset.blank;
+      }
+      cbar.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+    function setCnavOpen(open: boolean) {
+      if (!cnav) return;
+      cnav.classList.toggle("is-open", open);
+      syncControlNav();
+    }
+    if (cbar) cbar.addEventListener("click", () => setCnavOpen(!cnav?.classList.contains("is-open")));
+
+    // スマホの絞り込み（B 案）：ボタン 1 つで 5 つの絞り込みとキーワードを開く。数は対策以外の絞り込み。
+    const allBriefs = root.querySelector<HTMLElement>("#all-briefs");
+    const fbar = root.querySelector<HTMLElement>("[data-fbar]");
+    const fbarN = root.querySelector<HTMLElement>("[data-fbar-n]");
+    const fsearch = root.querySelector<HTMLElement>("[data-fsearch]");
+    function setFilterOpen(open: boolean) {
+      allBriefs?.classList.toggle("is-fopen", open);
+      fbar?.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+    function syncFbar() {
+      if (!fbarN) return;
+      const n =
+        FACET_KEYS.filter((k) => k !== "control" && facets[k]).length +
+        (mode === "category" ? 1 : 0) +
+        (mode === "search" && query ? 1 : 0);
+      fbarN.textContent = String(n);
+      fbarN.hidden = n === 0;
+    }
+    if (fbar) fbar.addEventListener("click", () => setFilterOpen(!allBriefs?.classList.contains("is-fopen")));
+    if (fsearch)
+      fsearch.addEventListener("click", () => {
+        setFilterOpen(true);
+        searchInput?.focus();
+      });
     function syncPills() {
       syncControlNav();
+      syncFbar();
       if (allPill)
         allPill.classList.toggle("is-active", mode === "all" && !facetText());
       dists.forEach((d) =>
@@ -2785,6 +3066,8 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
         if (facets.control === slug) delete facets.control;
         else facets.control = slug;
         syncSelects();
+        // スマホでは、選んだら 1 行に戻す（パソコンでは is-open を使わないので影響しない）。
+        cnav?.classList.remove("is-open");
         update();
       });
     });
@@ -2868,6 +3151,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     if (mode === "category") {
       const det = root.querySelector<HTMLDetailsElement>(".ix-detail");
       if (det) det.open = true;
+      setFilterOpen(true);
     }
     update(false);
   })();
