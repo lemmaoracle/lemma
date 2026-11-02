@@ -172,34 +172,43 @@ const takeawayOf = (b: AnyBrief): string => {
   return tail ?? "";
 };
 /* 注目（ピン）：config/briefPicks.ts の 1〜2 本。新着には重ねない。 */
-const pinBriefs = BRIEF_PICKS.map((id) => briefById.get(id)).filter(
-  (b): b is AnyBrief => Boolean(b),
-);
+const pinBriefs = BRIEF_PICKS.map((id) => briefById.get(id))
+  .filter((b): b is AnyBrief => Boolean(b))
+  .slice(0, 1);
 const pinIds = new Set(pinBriefs.map((b) => b.id));
-/* 新着：公開日の新しい順に自動で 4 本（ピンを除く）。同じ日の公開は番号の大きい順。
-   4 本にするのは、同じ日に 4 本公開した週でも最新が落ちないため（2026-11-02）。 */
-const NEWEST_COUNT = 4;
-const newestBriefs = [...briefsByPublishedDesc]
+/* 新着：公開日の新しい順に自動で NEW_COUNT 本（ピンを除く）。同じ日の公開は番号の大きい順。
+   「新着」はひとつにまとめた（2026-11-02）：上の注目 1 本のほかは、同じ形のカードで続ける。 */
+const NEW_COUNT = 12;
+const restLatest = [...briefsByPublishedDesc]
   .sort(
     (a, b) =>
       b.data.published.getTime() - a.data.published.getTime() ||
       b.data.brief_no - a.data.brief_no,
   )
   .filter((b) => !pinIds.has(b.id))
-  .slice(0, NEWEST_COUNT);
-const newestIds = new Set(newestBriefs.map((b) => b.id));
-const restLatest = briefsByPublishedDesc
-  .filter((b) => !pinIds.has(b.id) && !newestIds.has(b.id))
-  .slice(0, LATEST_COUNT);
-const controlTiles = BRIEF_CONTROL_SLUGS.map((slug) => ({
-  slug,
-  label: BRIEF_CONTROLS[slug][loc],
-  icon: BRIEF_CONTROLS[slug].icon,
-  count: allBriefs.filter((b) =>
-    ((b.data.controls as { slug: string }[] | undefined) ?? []).some((c) => c.slug === slug),
-  ).length,
-  href: `${archiveHref}?control=${slug}`,
-}));
+  .slice(0, NEW_COUNT);
+/* 代表の 1 本：この対策が付いた Brief のうち、いちばん新しく、大きな数字（key_figures）があるもの。
+   4 つのタイルで同じ Brief が重ならないよう、先に決めたタイルで使ったものは避ける。 */
+const usedRepIds = new Set<string>();
+const controlTiles = BRIEF_CONTROL_SLUGS.map((slug) => {
+  const rep = briefsByPublishedDesc.find(
+    (b) =>
+      !usedRepIds.has(b.id) &&
+      ((b.data.controls as { slug: string }[] | undefined) ?? []).some((c) => c.slug === slug) &&
+      (b.data.key_figures as unknown[] | undefined)?.length,
+  );
+  if (rep) usedRepIds.add(rep.id);
+  return {
+    slug,
+    label: BRIEF_CONTROLS[slug][loc],
+    icon: BRIEF_CONTROLS[slug].icon,
+    count: allBriefs.filter((b) =>
+      ((b.data.controls as { slug: string }[] | undefined) ?? []).some((c) => c.slug === slug),
+    ).length,
+    href: `${archiveHref}?control=${slug}`,
+    rep,
+  };
+});
 const indexBanner = indexBannerFor(locale);
 /* 一覧の絞り込み（業界・業務・手口）で出す候補。タグの付いた Brief がある値だけ。 */
 const usedIndustries = Object.values(BRIEF_INDUSTRIES).filter((f) =>
@@ -333,6 +342,7 @@ const labels = isJa
         "実際に起きたサイバー攻撃と事故を、公表資料から読み解きます。何が正しい操作として通ってしまったか、実行の前に何を照合するかまでを整理する解説レポートです。",
       newest: "新着",
       impactK: "影響",
+      repK: "代表の事例",
       pinned: "注目",
       controlsH: "対策から読む",
       controlCount: (n: number) => `解説 ${n} 本`,
@@ -385,6 +395,7 @@ const labels = isJa
         "Real cyber attacks and incidents, read from public disclosures: what got through as a legitimate operation, and what to check before it runs.",
       newest: "Latest",
       impactK: "Impact",
+      repK: "A case",
       pinned: "Featured",
       controlsH: "Browse by control",
       controlCount: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
@@ -431,14 +442,6 @@ const labels = isJa
       archivePageTitle: `Brief archive (all ${briefsCount}) — Lemma Critical Brief`,
       archiveDescription: `All ${briefsCount} Lemma Critical Briefs, grouped by month of publication. Major incidents across AI, cryptographic infrastructure, supply chains, and regulated attributes — filter by threat type or search by keyword.`,
     };
-
-/* 一覧トップの上段：新着（自動）→ 注目（ピン）。 */
-/* 一覧トップは「新着」ひとつ。先頭の 1〜2 本（ピン）だけ大きく、続きを小さなカードで出す
-   （ブログのよくある形・2026-11-02）。見出しは最初の段にだけ付ける。 */
-const topSections = [
-  { key: "pin", heading: labels.newest, items: pinBriefs },
-  { key: "new", heading: labels.newest, items: newestBriefs },
-].filter((sec) => sec.items.length > 0);
 
 const rssHref = `${base}/critical/briefs/feed.xml`;
 const methodologyHref = `${base}/critical/briefs/methodology/`;
@@ -489,17 +492,50 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
           トップ = 2列・件数の横バー（アーカイブへのリンク）。
           アーカイブ = 横並びの小さいチップ（絞り込みボタン）。同じ面が2枚続くと
           「遷移した感じ」が出ないので、アーカイブ側は畳んで一覧を上に出す。 */}
-      {!isArchive && topSections.map((sec) => (
-        <section class={`ix-picks ix-picks--${sec.key}`} aria-label={sec.heading}>
-          {sec === topSections[0] && <h2 class="ix-h">{sec.heading}</h2>}
-          <div class={`ix-picks-grid ix-picks-grid--${sec.key}`}>
-            {sec.items.map((b, i) => {
+
+      {!isArchive && (
+        <section class="ix-controls" aria-label={labels.controlsH}>
+          <h2 class="ix-h">{labels.controlsH}</h2>
+          <div class="ix-ctl-grid">
+            {controlTiles.map((c) => {
+              const fig = (c.rep?.data.key_figures as { value: string; unit?: string }[] | undefined)?.[0];
+              return (
+                <div class="ix-ctl">
+                  <a class="ix-ctl-main" href={c.href} data-index-ev="brief_index_control_click" data-cta={c.slug}>
+                    <span class="ix-ctl-ic">
+                      <svg viewBox={FACET_ICON_VIEWBOX} {...FACET_ICON_ATTRS} aria-hidden="true" set:html={c.icon} />
+                    </span>
+                    <span class="ix-ctl-tx">
+                      <b>{c.label}</b>
+                      <span>{labels.controlCount(c.count)}</span>
+                    </span>
+                    <span class="ix-arrow" aria-hidden="true">→</span>
+                  </a>
+                  {c.rep && fig && (
+                    <a class="ix-ctl-rep" href={`${base}/critical/briefs/${c.rep.id}/`} data-index-ev="brief_index_control_rep_click" data-cta={c.slug}>
+                      <span class="ix-ctl-rk">{labels.repK}</span>
+                      <span class="ix-ctl-fig"><b>{fig.value}</b>{fig.unit && <i>{fig.unit}</i>}</span>
+                      <span class="ix-ctl-rt">{shortTitle(c.rep)}</span>
+                    </a>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {!isArchive && pinBriefs.length > 0 && (
+        <section class="ix-feature" aria-label={labels.pinned}>
+          <h2 class="ix-h">{labels.pinned}</h2>
+          <div class="ix-feat-grid">
+            {pinBriefs.slice(0, 1).map((b) => {
               const c = briefCardData(b);
               const ind = industryLabel(b);
               const atk = attackLabel(b);
               const ctry = countryLabel(b);
               const fig = (b.data.key_figures as { value: string; unit?: string }[] | undefined)?.[0];
-              return sec.key === "pin" ? (
+              return (
                 <a class="ix-pick ix-pick--pin" href={c.href}>
                   <span class="ix-pin-badge">{labels.pinned}</span>
                   <span class="ix-row-top">
@@ -512,62 +548,22 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
                   <span class="ix-pick-w">{takeawayOf(b)}</span>
                   <span class="ix-more">{labels.readMore}<span aria-hidden="true"> →</span></span>
                 </a>
-              ) : (
-                <a class="ix-pick" href={c.href}>
-                  <div class={`ix-cover ix-cover--${i % 3}`}>
-                    <span class="ix-cover-meta">
-                      {ctry && <span class="ix-ctry ix-ctry--dark">{ctry}</span>}
-                      {ind && <b>{ind}</b>}{ind && atk && " · "}{atk}
-                    </span>
-                    {fig ? (
-                      <span class="ix-cover-fig"><b>{fig.value}</b>{fig.unit && <i>{fig.unit}</i>}</span>
-                    ) : (
-                      b.data.impact && <span class="ix-cover-impact">{b.data.impact}</span>
-                    )}
-                  </div>
-                  <span class="ix-pick-t">{shortTitle(b)}</span>
-                  <span class="ix-pick-w">{takeawayOf(b)}</span>
-                  <span class="ix-more">{labels.readMore}<span aria-hidden="true"> →</span></span>
-                </a>
               );
             })}
-          </div>
-        </section>
-      ))}
-
-      {!isArchive && (
-        <section class="ix-controls" aria-label={labels.controlsH}>
-          <h2 class="ix-h">{labels.controlsH}</h2>
-          <div class="ix-ctl-grid">
-            {controlTiles.map((c) => (
-              <a class="ix-ctl" href={c.href} data-index-ev="brief_index_control_click" data-cta={c.slug}>
-                <span class="ix-ctl-ic">
-                  <svg viewBox={FACET_ICON_VIEWBOX} {...FACET_ICON_ATTRS} aria-hidden="true" set:html={c.icon} />
-                </span>
-                <span class="ix-ctl-tx">
-                  <b>{c.label}</b>
-                  <span>{labels.controlCount(c.count)}</span>
-                </span>
-                <span class="ix-arrow" aria-hidden="true">→</span>
-              </a>
-            ))}
-          </div>
-          <aside class="ix-banner" aria-label={indexBanner.label} data-index-banner>
-            <span class="ix-banner-pr">PR</span>
-            <span class="ix-banner-tx">
+            <aside class="ix-banner ix-banner--card" aria-label={indexBanner.label} data-index-banner>
               <span class="ix-banner-k">{indexBanner.label}</span>
               <b>{indexBanner.head}</b>
               <span class="ix-banner-b">{indexBanner.body}</span>
-            </span>
-            <a class="ix-banner-btn" href={indexBanner.href} target="_blank" rel="noopener" data-index-ev="brief_index_banner_click" data-cta="index_banner">{indexBanner.button}</a>
-          </aside>
+              <a class="ix-banner-btn" href={indexBanner.href} target="_blank" rel="noopener" data-index-ev="brief_index_banner_click" data-cta="index_banner">{indexBanner.button}</a>
+            </aside>
+          </div>
         </section>
       )}
 
       {!isArchive && (
         <section class="ix-rest" aria-label={labels.restH}>
           <form class="ix-filter" action={archiveHref} method="get">
-            <h2 class="ix-h">{labels.restH}</h2>
+            <h2 class="ix-h">{labels.newest}</h2>
             <label><span class="sr">{labels.fCountry}</span>
               <select name="country">
                 <option value="">{labels.fCountry}</option>
@@ -601,20 +597,15 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
             {restLatest.map((b) => {
               const c = briefCardData(b);
               const ind = industryLabel(b);
-              const atk = attackLabel(b);
               const ctry = countryLabel(b);
               return (
                 <a class="ix-row ix-row--card" href={c.href}>
                   <span class="ix-row-top">
                     {ctry && <span class="ix-ctry">{ctry}</span>}
                     {ind && <span class="ix-chip">{ind}</span>}
-                    {atk && <span class="ix-chip ix-chip--atk">{atk}</span>}
-                    <time class="ix-date" datetime={c.publishedStr}>{c.publishedStr}</time>
+                    <time class="ix-date" datetime={c.publishedStr}>{c.publishedStr.slice(5)}</time>
                   </span>
                   <span class="ix-row-t">{shortTitle(b)}</span>
-                  {b.data.impact && (
-                    <span class="ix-row-fig"><span class="ix-fig-k">{labels.impactK}</span>{b.data.impact}</span>
-                  )}
                   <span class="ix-row-go" aria-hidden="true">→</span>
                 </a>
               );
@@ -920,22 +911,6 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     gap: 28px;
   }
   /* 先頭の 1〜2 本（ピン）を大きく、続きを小さく。境界線は上の線と下の線だけ。 */
-  .ix-picks--pin {
-    border-bottom: 0;
-    padding-bottom: 0;
-  }
-  .ix-picks--pin + .ix-picks--new {
-    margin-top: 0;
-    padding-top: 26px;
-    border-top: 0;
-  }
-  .ix-picks-grid--pin {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .ix-picks-grid--new {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 20px;
-  }
   /* 表紙は「大きな数字」だけ。文は題と一文に任せ、三重に同じことを言わない（2026-11-02）。 */
   .ix-cover-fig {
     display: flex;
@@ -1037,31 +1012,13 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   .ix-pick--pin .ix-more {
     color: #c9ef5a;
   }
-  .ix-picks-grid--new .ix-cover {
-    height: auto;
-    min-height: 110px;
-    gap: 10px;
-  }
-  .ix-picks-grid--new .ix-cover-impact {
-    font-size: 15px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .ix-picks-grid--new .ix-pick-t {
-    font-size: 16px;
-  }
-  .ix-picks-grid--new .ix-pick-w {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
   /* そのほかの新着：カードにする（2026-11-02・文字ばかりを減らす）。
      上に国・業界・手口のチップと日付、真ん中に題、下に影響を小さな見出し付きで。 */
+  .ix-rest .ix-filter {
+    margin-bottom: 18px;
+  }
   .ix-list--cards {
-    column-gap: 18px;
+    column-gap: 16px;
     row-gap: 16px;
   }
   .ix-list .ix-row--card {
@@ -1253,18 +1210,71 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   }
   .ix-ctl {
     display: flex;
-    align-items: center;
-    gap: 14px;
+    flex-direction: column;
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 12px;
+    color: var(--tx);
+    overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .ix-ctl-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
     padding: 16px;
     text-decoration: none;
+    color: inherit;
+  }
+  /* 代表の 1 本：数字を大きく、題を 2 行まで。タイルから記事へ直接行ける（2026-11-02）。 */
+  .ix-ctl-rep {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: auto;
+    padding: 12px 16px 14px;
+    border-top: 1px solid var(--line);
+    background: transparent;
+    text-decoration: none;
+    color: inherit;
+  }
+  .ix-ctl-rep:hover .ix-ctl-rt {
+    color: var(--ok-light);
+  }
+  .ix-ctl-rk {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #8a9083;
+  }
+  .ix-ctl-fig {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+  .ix-ctl-fig b {
+    font-family: var(--font-serif-jp);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.15;
     color: var(--tx);
-    transition: border-color 0.15s;
+  }
+  .ix-ctl-fig i {
+    font-style: normal;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .ix-ctl-rt {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--tx-soft);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .ix-ctl:hover,
-  .ix-ctl:focus-visible {
+  .ix-ctl:focus-within {
     border-color: #b8cf7a;
     box-shadow: var(--sh-s);
   }
@@ -1277,10 +1287,10 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   }
   .ix-ctl-ic {
     flex: none;
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: #eef7d2;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ececE6;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2312,6 +2322,61 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     .cb-seeall,
     .cb-seeall-arrow {
       transition: none;
+    }
+  }
+
+  /* 注目 1 本＋点検サービスのカード（2026-11-02）。濃い緑の面は注目の 1 本だけ。 */
+  .ix-feature {
+    margin-top: 34px;
+  }
+  .ix-feat-grid {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .ix-banner--card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 24px 24px 22px;
+    background: #fff;
+    background-image: none;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    color: var(--tx);
+    overflow: visible;
+  }
+  .ix-banner--card::before,
+  .ix-banner--card::after {
+    display: none;
+  }
+  .ix-banner--card .ix-banner-k {
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--tx-soft);
+  }
+  .ix-banner--card b {
+    font-family: var(--font-serif-jp);
+    font-size: 21px;
+    line-height: 1.45;
+    color: var(--tx);
+  }
+  .ix-banner--card .ix-banner-b {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--tx-soft);
+  }
+  .ix-banner--card .ix-banner-btn {
+    align-self: flex-start;
+    margin-top: auto;
+  }
+  @media (max-width: 900px) {
+    .ix-feat-grid {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>
