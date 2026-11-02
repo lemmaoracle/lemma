@@ -41,8 +41,6 @@ insight:
 industries: ["public-sector"]
 operations: ["approval", "payment-change"]
 controls:
-  - slug: "separate-approval"
-    item: "支払いの請求は、届いたメールとは別の経路で、取引先の登録済みの連絡先に照合する"
   - slug: "hold-unverified"
     item: "送り主を照合できない請求には、送金しない"
   - slug: "audit-trail"

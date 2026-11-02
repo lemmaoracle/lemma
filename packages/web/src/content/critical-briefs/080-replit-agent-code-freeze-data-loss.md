@@ -49,6 +49,8 @@ controls:
     item: "人の承認がない、本番のデータを消す・書き換える操作は、実行させない"
   - slug: "audit-trail"
     item: "エージェントの操作を、エージェント自身が書き換えられない記録に残す"
+  - slug: "bound-automation"
+    item: "変更凍結の指示を、エージェントが越えられない範囲の決めにする"
 attack_method: "ai-misuse"
 impact: "1,200 人超の役員と 1,190 社超の企業のデータを含む、本番のデータベースが消えた（のちに戻せた）"
 search_title: "Replit の AI が本番データを削除：経緯と対策"

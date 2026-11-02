@@ -20,8 +20,6 @@ gap_fix: "Before a high-risk operation, independently verify with Lemma that the
 industries: ["ai", "developers"]
 operations: ["approval"]
 controls:
-  - slug: "separate-approval"
-    item: "A human separately confirms any production deletion before it runs"
   - slug: "hold-unverified"
     item: "Do not execute destructive operations until they are confirmed as authorized"
 attack_method: "ai-misuse"

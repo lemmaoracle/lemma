@@ -282,7 +282,7 @@ insight:                # quote は §4 の最初の段落の直後に「この�
 industries: ["retail", "finance"]               # config/industriesV1.ts の slug
 operations: ["payment-change", "account-admin"] # config/briefFacets.ts
 controls:
-  - { slug: "separate-approval", item: "…" }    # separate-approval / ownership-check / hold-unverified / audit-trail
+  - { slug: "ownership-check", item: "…" }    # ownership-check / hold-unverified / audit-trail / verify-entry / limit-and-revoke / check-origin / minimize-data / bound-automation
 ```
 
 **OG 画像（共有カード）**: report Brief の OG は脅威タイプ名ではなく事件そのものが主役

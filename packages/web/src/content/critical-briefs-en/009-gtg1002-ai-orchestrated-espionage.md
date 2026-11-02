@@ -21,8 +21,8 @@ industries: ["ai"]
 controls:
   - slug: "verify-entry"
     item: "Check who requested each AI agent action, and with what authority, before accepting it"
-  - slug: "limit-and-revoke"
-    item: "Limit what an agent can do to the scope and time it needs"
+  - slug: "bound-automation"
+    item: "Set in advance which operations an AI agent may run, and how many"
 attack_method: "ai-misuse"
 impact: "About 30 targets attacked; a few breached"
 countries: ["global"]

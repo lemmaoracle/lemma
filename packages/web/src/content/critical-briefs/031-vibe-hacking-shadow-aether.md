@@ -21,6 +21,8 @@ industries: ["public-sector", "finance"]
 controls:
   - slug: "check-origin"
     item: "実行する操作とコードが、認可された出どころを持つかを実行前に確認する"
+  - slug: "bound-automation"
+    item: "エージェントの行動を、許可した範囲の中に限る"
 attack_method: "ai-misuse"
 impact: "メキシコの 6 政府機関が侵害された"
 countries: ["mx", "br"]

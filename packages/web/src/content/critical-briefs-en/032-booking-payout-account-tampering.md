@@ -43,8 +43,6 @@ insight:
 industries: ["retail", "finance"]
 operations: ["payment-change", "account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "Someone other than the person who made the change approves it through a separate path before it takes effect"
   - slug: "ownership-check"
     item: "Check the new account holder against the bank's own record"
   - slug: "hold-unverified"

@@ -37,8 +37,6 @@ insight:
 industries: ["developers"]
 operations: ["account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "After a breach, close out credential rotation only once it is matched against an inventory of admin credentials and someone other than the rotator confirms the old credentials no longer work"
   - slug: "hold-unverified"
     item: "Keep admin credentials whose expiry and scope cannot be checked from being usable from the public internet"
   - slug: "audit-trail"

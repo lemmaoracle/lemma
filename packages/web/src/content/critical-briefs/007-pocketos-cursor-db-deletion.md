@@ -20,8 +20,6 @@ gap_fix: "高リスクな操作の前に「この依頼は、この主体に、�
 industries: ["ai", "developers"]
 operations: ["approval"]
 controls:
-  - slug: "separate-approval"
-    item: "本番データの削除は、実行前に人が別に確かめる"
   - slug: "hold-unverified"
     item: "正規の依頼と確かめられるまで、破壊的な操作は実行しない"
 attack_method: "ai-misuse"

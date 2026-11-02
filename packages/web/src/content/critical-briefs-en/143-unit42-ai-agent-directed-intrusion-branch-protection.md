@@ -18,8 +18,8 @@ industries: ["ai"]
 controls:
   - slug: "verify-entry"
     item: "Check per action not only that a token or key is valid, but that this actor may take this action"
-  - slug: "limit-and-revoke"
-    item: "Narrow what a valid key can reach, and separate permissions for each step an agent can touch"
+  - slug: "bound-automation"
+    item: "Keep the agent within an allowed scope and limit at each stage it can reach"
 attack_method: "ai-misuse"
 impact: "Breach completed in under 10 hours"
 countries: ["global"]

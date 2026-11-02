@@ -21,6 +21,8 @@ industries: ["public-sector", "finance"]
 controls:
   - slug: "check-origin"
     item: "Before running, confirm that an operation or code comes from an authorized source"
+  - slug: "bound-automation"
+    item: "Limit what the agent can do to the range that was allowed"
 attack_method: "ai-misuse"
 impact: "Six Mexican government agencies compromised"
 countries: ["mx", "br"]

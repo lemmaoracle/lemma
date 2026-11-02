@@ -18,8 +18,8 @@ industries: ["ai"]
 controls:
   - slug: "verify-entry"
     item: "トークンや鍵が有効かだけでなく、その主体がその行動をしてよいかを行動ごとに確認する"
-  - slug: "limit-and-revoke"
-    item: "有効な鍵があっても届く範囲を絞り、エージェントが到達しうる工程ごとに権限を分ける"
+  - slug: "bound-automation"
+    item: "エージェントが届く範囲を、工程ごとに許可した範囲と上限に収める"
 attack_method: "ai-misuse"
 impact: "\u4fb5\u5165\u306e\u5b8c\u4e86\u307e\u3067 10 \u6642\u9593\u672a\u6e80"
 countries: ["global"]

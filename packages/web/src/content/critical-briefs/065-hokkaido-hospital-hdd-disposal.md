@@ -44,8 +44,6 @@ attack_method: "human-error"
 controls:
   - slug: "audit-trail"
     item: "HDD を 1 台ずつ、壊した写真や記録を受け取って確かめる"
-  - slug: "separate-approval"
-    item: "廃棄には委託元の担当者が立ち会う"
 impact: "患者約 17.9 万名分の情報を含む HDD がネットで流通"
 takeaway: "委託した HDD が確かに壊されたかを、委託元が 1 台ずつ確かめる手順が無かった。"
 self_check: "廃棄を委託したパソコンやディスクが、1 台ずつ確かに壊されたことを示せるか。"

@@ -39,8 +39,6 @@ industries: ["retail"]
 controls:
   - slug: "ownership-check"
     item: "Match the scripts loaded on the payment page against an approved list and content, and do not load anything not on it"
-  - slug: "separate-approval"
-    item: "Apply changes to the payment page and its scripts through an approval separate from site administrator rights"
   - slug: "audit-trail"
     item: "Record which version of the payment page each payment action ran on, and who performed it"
 attack_method: "privilege-abuse"

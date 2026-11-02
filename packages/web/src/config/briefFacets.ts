@@ -158,7 +158,6 @@ export const BRIEF_OPERATIONS: Record<BriefOperationSlug, FacetEntry> = {
 
 /** 対策（何を足せば埋まるか）。 */
 export const BRIEF_CONTROL_SLUGS = [
-  "separate-approval",
   "ownership-check",
   "hold-unverified",
   "audit-trail",
@@ -166,16 +165,11 @@ export const BRIEF_CONTROL_SLUGS = [
   "limit-and-revoke",
   "check-origin",
   "minimize-data",
+  "bound-automation",
 ] as const;
 export type BriefControlSlug = (typeof BRIEF_CONTROL_SLUGS)[number];
 
 export const BRIEF_CONTROLS: Record<BriefControlSlug, FacetEntry> = {
-  "separate-approval": {
-    slug: "separate-approval",
-    ja: "大事な変更は、別の人が別の連絡手段で確認する",
-    en: "Important changes confirmed by someone else, over another channel",
-    icon: '<circle cx="7" cy="8" r="2.6"/><circle cx="15" cy="8" r="2.6"/><path d="M2.8 17c0-2.6 1.9-4.3 4.2-4.3S11 14.4 11 17M11 17c0-2.6 1.8-4.3 4-4.3s4.2 1.7 4.2 4.3"/>',
-  },
   "ownership-check": {
     slug: "ownership-check",
     ja: "送り主や口座が本物か確認する",
@@ -212,6 +206,12 @@ export const BRIEF_CONTROLS: Record<BriefControlSlug, FacetEntry> = {
     ja: "届いたもの（コード・データ・画像）の出どころを確認する",
     en: "Check where code, data and media came from",
     icon: '<path d="M5 3.5h7.5l4 4V18.5H5z"/><circle cx="10.5" cy="12.5" r="2.4"/><path d="M12.3 14.3l2.5 2.5"/>',
+  },
+  "bound-automation": {
+    slug: "bound-automation",
+    ja: "AI・自動化の動きは、範囲と上限の中に収める",
+    en: "Keep AI and automation within a scope and a limit",
+    icon: '<circle cx="11" cy="11" r="7.3"/><path d="M11 11l3.2-3.2"/><path d="M4.6 11h1.6M15.8 11h1.6M11 4.6v1.6M11 15.8v1.6"/>',
   },
   "minimize-data": {
     slug: "minimize-data",
@@ -349,10 +349,6 @@ export const FACET_PLAIN: Readonly<Partial<Record<string, { readonly ja: string;
     ja: "データの照会や参照から、大量に持ち出される",
     en: "Data lookups are used to pull out large volumes",
   },
-  "control:separate-approval": {
-    ja: "依頼とは別の人が、別の経路で確認してから実行する",
-    en: "Someone else confirms through a separate channel before it is carried out",
-  },
   "control:ownership-check": {
     ja: "依頼や口座が本物かを、登録済みの連絡先などで照合する",
     en: "Check the request or account against contacts you already have on file",
@@ -364,6 +360,26 @@ export const FACET_PLAIN: Readonly<Partial<Record<string, { readonly ja: string;
   "control:audit-trail": {
     ja: "誰が何を確認して通したかを、あとから示せる形で残す",
     en: "Keep a record of who checked what, so you can show it later",
+  },
+  "control:verify-entry": {
+    ja: "依頼してきた主体と、その操作をしてよいかを、入口で確認する",
+    en: "At the entry point, check who is asking and whether they may",
+  },
+  "control:limit-and-revoke": {
+    ja: "渡す権限は必要な分に絞り、使い終えた鍵は失効させる",
+    en: "Grant only what is needed, and retire keys once they are done",
+  },
+  "control:check-origin": {
+    ja: "届いたコード・データ・画像の出どころを、使う前に確認する",
+    en: "Check where code, data or media came from before using it",
+  },
+  "control:minimize-data": {
+    ja: "個人情報は、必要な分だけ預かり、持たない形にする",
+    en: "Hold only the personal data you need",
+  },
+  "control:bound-automation": {
+    ja: "AI や自動化が動ける範囲と回数を、あらかじめ決めておく",
+    en: "Decide in advance what AI and automation may do, and how often",
   },
 };
 

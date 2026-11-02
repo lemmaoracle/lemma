@@ -43,8 +43,6 @@ insight:
 industries: ["retail"]
 operations: ["delivery", "account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "顧客への一斉通知は、作った人とは別の人が別の方法で確認する"
   - slug: "hold-unverified"
     item: "承認済みの配信と照合できない一斉通知は送らない"
 attack_method: "impersonation"

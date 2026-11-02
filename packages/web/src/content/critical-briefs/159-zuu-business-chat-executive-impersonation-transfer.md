@@ -44,8 +44,6 @@ insight:
 industries: ["finance"]
 operations: ["approval", "payment-change"]
 controls:
-  - slug: "separate-approval"
-    item: "送金の指示は、指示が届いたのとは別の経路で、指示した本人に確認する"
   - slug: "hold-unverified"
     item: "出どころを照合できない送金の指示は、振り込まない"
   - slug: "audit-trail"

@@ -19,8 +19,6 @@ gap_missing: "For each individual match there was no layer to confirm whether in
 gap_fix: "Before using an AI judgment in a decision such as a coercive enforcement action, independently verify with Lemma under what reliability conditions and with what independent corroboration and authorization the output is being used, and prevent it up front."
 industries: ["public-sector", "ai"]
 controls:
-  - slug: "separate-approval"
-    item: "Corroborate a face-recognition match with separate evidence before an arrest"
   - slug: "hold-unverified"
     item: "Do not proceed to arrest until the match is corroborated"
 attack_method: "ai-misuse"

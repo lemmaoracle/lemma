@@ -21,8 +21,8 @@ industries: ["ai"]
 controls:
   - slug: "verify-entry"
     item: "AI エージェントの各操作を、誰がどの権限で要求したかを受け付ける前に確認する"
-  - slug: "limit-and-revoke"
-    item: "エージェントに渡す権限は、必要な範囲と期間に絞る"
+  - slug: "bound-automation"
+    item: "AI エージェントが実行できる操作と回数を、範囲と上限で決めておく"
 attack_method: "ai-misuse"
 impact: "約 30 の標的を攻撃、少数で侵入成功"
 countries: ["global"]

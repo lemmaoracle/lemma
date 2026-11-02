@@ -43,8 +43,6 @@ insight:
 industries: ["retail"]
 operations: ["delivery", "account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "Have someone other than the author confirm mass customer notifications, another way"
   - slug: "hold-unverified"
     item: "Do not send mass notifications that cannot be matched to an approved send"
 attack_method: "impersonation"

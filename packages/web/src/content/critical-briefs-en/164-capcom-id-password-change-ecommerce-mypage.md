@@ -45,8 +45,6 @@ insight:
 industries: ["media", "retail"]
 operations: ["account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "Confirm password and email changes with the owner at the contact registered before the change, then apply them"
   - slug: "hold-unverified"
     item: "Right after a change the owner has not confirmed, hold entry to services that hold addresses or purchase history"
   - slug: "audit-trail"

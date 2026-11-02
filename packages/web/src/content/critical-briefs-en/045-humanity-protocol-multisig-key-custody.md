@@ -20,8 +20,8 @@ gap_fix: "Before executing a fund movement or contract change, independently ver
 industries: ["finance"]
 operations: ["approval"]
 controls:
-  - slug: "separate-approval"
-    item: "Check that threshold signatures came from separate people on separate devices"
+  - slug: "ownership-check"
+    item: "Before a multisig is completed, check that the signatures came from separate parties on separate devices"
 impact: "Over $32M drained"
 countries: ["global"]
 ---

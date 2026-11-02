@@ -42,8 +42,6 @@ industries: ["retail"]
 controls:
   - slug: "ownership-check"
     item: "決済ページで読み込まれるスクリプトを、承認した一覧と内容で照合し、一覧に無いものは読み込ませない"
-  - slug: "separate-approval"
-    item: "決済ページとそのスクリプトの変更を、サイトの管理者権限とは別の承認で反映する"
   - slug: "audit-trail"
     item: "どの版の決済ページで、誰が決済の操作をしたかを記録する"
 attack_method: "privilege-abuse"

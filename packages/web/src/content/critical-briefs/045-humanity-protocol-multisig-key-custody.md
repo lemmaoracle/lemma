@@ -20,8 +20,8 @@ gap_fix: "資金移動やコントラクト変更を実行する前に「この�
 industries: ["finance"]
 operations: ["approval"]
 controls:
-  - slug: "separate-approval"
-    item: "閾値の署名が、別々の人が別々の端末でしたものか確かめる"
+  - slug: "ownership-check"
+    item: "マルチシグの署名が、別々の主体・別々の端末から来たかを、署名がそろう前に照合する"
 impact: "3,200 万ドル超が流出"
 countries: ["global"]
 ---

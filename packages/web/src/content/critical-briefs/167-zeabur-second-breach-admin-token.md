@@ -40,8 +40,6 @@ insight:
 industries: ["developers"]
 operations: ["account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "侵害の後の資格情報の入れ替えは、管理者資格情報の一覧と照合し、旧い資格情報で通らないことを、入れ替えた人とは別に確認してから完了とする"
   - slug: "hold-unverified"
     item: "有効期限と範囲を照合できない管理者資格情報は、公開インターネットから使えないようにする"
   - slug: "audit-trail"

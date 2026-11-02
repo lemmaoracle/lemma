@@ -20,8 +20,6 @@ gap_fix: "Before minting assets, independently verify with Lemma that the messag
 industries: ["finance"]
 operations: ["account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "Changes to the trust configuration are confirmed by someone other than the key holder"
   - slug: "ownership-check"
     item: "Before accepting, confirm the message came from the legitimate contract"
 attack_method: "account-takeover"

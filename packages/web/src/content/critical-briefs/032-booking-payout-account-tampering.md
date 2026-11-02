@@ -43,8 +43,6 @@ insight:
 industries: ["retail", "finance"]
 operations: ["payment-change", "account-admin"]
 controls:
-  - slug: "separate-approval"
-    item: "変更した本人以外が、別の経路で承認してから有効にする"
   - slug: "ownership-check"
     item: "新しい口座が自分たちのものかを、銀行の側の名義で照合する"
   - slug: "hold-unverified"

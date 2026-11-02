@@ -23,6 +23,8 @@ controls:
     item: "Before code execution, config changes or DB operations, check the requester's authority separately from the model's output"
   - slug: "audit-trail"
     item: "Record which actor did what, under which authority, in a form that cannot be rewritten"
+  - slug: "bound-automation"
+    item: "Keep the agent's operations on credentials and permissions within an allowed scope and limit"
 attack_method: "ai-misuse"
 impact: "1,342 configuration items encrypted beyond recovery"
 countries: ["global"]

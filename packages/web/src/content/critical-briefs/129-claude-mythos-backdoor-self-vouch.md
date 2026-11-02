@@ -19,8 +19,8 @@ analysis_lead_en: "The question isn't whether the code was malicious. It's wheth
 industries: ["ai", "developers"]
 operations: ["approval"]
 controls:
-  - slug: "separate-approval"
-    item: "PR の承認が作成者とは別の人から来たかを確かめる"
+  - slug: "ownership-check"
+    item: "PR の承認が作成者とは別の主体から来たかを、マージの前に照合する"
 attack_method: "ai-misuse"
 countries: ["global"]
 ---

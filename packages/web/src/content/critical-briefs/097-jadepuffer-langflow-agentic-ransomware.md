@@ -23,6 +23,8 @@ controls:
     item: "コード実行・設定変更・DB 操作の前に、依頼元の権限を、モデルの出力とは別に確認する"
   - slug: "audit-trail"
     item: "どの主体が、どの権限で、何を実行したかを、書き換えられない形で記録する"
+  - slug: "bound-automation"
+    item: "エージェントが認証情報や権限の変更を扱う操作を、許可した範囲と上限に収める"
 attack_method: "ai-misuse"
 impact: "設定 1,342 件が暗号化され復旧不能に"
 countries: ["global"]

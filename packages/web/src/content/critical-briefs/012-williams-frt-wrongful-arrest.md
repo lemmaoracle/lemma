@@ -19,8 +19,6 @@ gap_missing: "個々の照合結果について「逮捕という行動の前に
 gap_fix: "AI の判定を強制処分などの意思決定に使う前に「この出力が、どの信頼性条件で、どの独立裏付け・認可の下で使われるのか」を Lemma で独立検証して、事前に防ぐ。"
 industries: ["public-sector", "ai"]
 controls:
-  - slug: "separate-approval"
-    item: "顔認識の一致は、逮捕の前に別の証拠で裏づける"
   - slug: "hold-unverified"
     item: "裏づけが取れるまで、逮捕に進まない"
 attack_method: "ai-misuse"
