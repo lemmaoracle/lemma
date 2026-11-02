@@ -22,7 +22,7 @@ gate: "disclosure"
 og_kicker_ja: "サイバー攻撃事例 · 権限の悪用"
 og_kicker_en: "CYBERATTACK · PRIVILEGE ABUSE"
 og_headline_ja: "入れ替えを報告した後も、\n期限なしの管理者\nトークンが通った。\n<accent>環境変数 321 万件</accent>"
-og_headline_en: "Keys \"rotated\", yet\nan admin token worked.\n<accent>3.2 million env variables read.</accent>"
+og_headline_en: "Keys reported rotated,\nyet an admin token worked.\n<accent>3.2 million env variables read.</accent>"
 key_figures:
   - value: "3,218,965"
     unit: "件"
