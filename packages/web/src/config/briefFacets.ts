@@ -384,6 +384,45 @@ export const FACET_PLAIN: Readonly<Partial<Record<string, { readonly ja: string;
 };
 
 /**
+ * 対策ごとの「たとえば」（2026-11-02）。対策のページの説明カードに出す、場面が浮かぶ 1 文。
+ * 一般論で、特定の事案の事実ではない。
+ */
+export const BRIEF_CONTROL_EXAMPLES: Readonly<Record<BriefControlSlug, { readonly ja: string; readonly en: string }>> = {
+  "ownership-check": {
+    ja: "取引先から口座の変更が届いたら、メールに書かれた連絡先ではなく、登録済みの連絡先で本物かを照合する。",
+    en: "When a supplier asks to change a bank account, check it against the contact already on file, not the one in the email.",
+  },
+  "hold-unverified": {
+    ja: "新しい振込先への支払いは、照合が済むまで保留にして、済んでから送る。",
+    en: "Hold a payment to a new bank account until the check is done, then send it.",
+  },
+  "audit-trail": {
+    ja: "誰が、何を、どの手段で確認して通したかを残し、あとから第三者に示せるようにする。",
+    en: "Record who confirmed what, and by which means, so you can show it to a third party later.",
+  },
+  "verify-entry": {
+    ja: "AI や API への依頼は、誰がどの権限で出したかを受け付ける前に確認し、認証のない入口を残さない。",
+    en: "For requests to an AI or an API, check who is asking and with what permission before accepting, and leave no unauthenticated entry.",
+  },
+  "limit-and-revoke": {
+    ja: "渡す権限は必要な範囲と期間に絞り、使い終えた鍵やトークンは、確実に失効させる。",
+    en: "Limit what you grant to the scope and time needed, and retire keys and tokens once they are done.",
+  },
+  "check-origin": {
+    ja: "ライブラリ・データ・画像は、使う前に、誰が作りどこから来たかを、署名や来歴で確認する。",
+    en: "Before using a library, data or an image, check who made it and where it came from, by signature or provenance.",
+  },
+  "minimize-data": {
+    ja: "本人確認の画像は保管せず、「年齢の条件を満たす」などの結果だけを受け取る。",
+    en: "Do not keep ID images; receive only the result, such as \"meets the age condition\".",
+  },
+  "bound-automation": {
+    ja: "AI エージェントが動ける操作と回数をあらかじめ決め、上限を超える前に止める。",
+    en: "Decide in advance what an AI agent may do and how many times, and stop it before it goes past the limit.",
+  },
+};
+
+/**
  * 国・地域（2026-10-23）。一覧の行のラベル・「国・地域」の絞り込み・表紙の下の
  * 段に出す。事案が起きた国（被害を受けた組織の所在、公表・処分した当局の国）で
  * 選び、調査した研究者の国では選ばない。2 か国が同じだけ中心なら 2 つまで。
