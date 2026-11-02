@@ -52,7 +52,7 @@ countries: ["jp"]
 
 ## 1. Summary
 
-The company did not store card numbers, but a program placed on its payment page may have read them the moment they were typed. It closed the site an hour after learning of the intrusion, but did not find this program until five days later. <strong>If a payment page is rewritten, card numbers can be read the moment they are typed, even when they are not stored.</strong>
+The company did not store card numbers, but a program placed on its payment page may have read them the moment they were typed. It closed the site an hour after the intrusion came to light, but the program itself came to light only five days later. <strong>If a payment page is rewritten, card numbers can be read the moment they are typed, even when they are not stored.</strong>
 
 ## 2. What got through
 
@@ -74,7 +74,7 @@ Whatever the route, the condition for telling them apart is that whoever serves 
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Match the payment page's code to the approved version before entry</div>
 <div class="rx-zone gapz"><b>In between</b><span>Customers typed into the usual<br>screen from the genuine site</span></div>
-<div class="rx-zone det"><b>Detection · worked</b>Learn of the access from the contractor and close the site</div>
+<div class="rx-zone det"><b>Detection · worked</b>The contractor reports the access; the site is closed</div>
 <div class="rx-g g1"><div class="t">10-21</div><b>Program placed on the payment page</b></div>
 <div class="rx-g g2"><div class="t">10-21 to 10-23</div><b>About 41 hours of possible interception</b></div>
 <div class="rx-g g3"><div class="t">10-23</div><b>Site closed</b></div>
@@ -95,17 +95,19 @@ Closing the site also stopped the program, but what was noticed was the unauthor
 
 ### Current controls vs Lemma
 
+It has not been disclosed whether the route in this incident was a script swap or a server-side rewrite of the page. The third column (a flaw in the approved version itself) is not the route here; it is a comparison for a different situation.
+
 | Control | Scripts swapped or added | Page rewritten on the server | A flaw in the approved version itself |
 | --- | --- | --- | --- |
 | Not storing full card numbers | Not relevant | Not relevant | Not relevant |
 | Detecting access and closing the site | Partial | Partial | Not relevant |
 | Patching the vulnerability | Partial | Partial | Not relevant |
-| Leaving the payment screen to an external processor | Partial | Partial | Not relevant |
-| **Lemma (pre-execution check)** | Effective | Effective | Not effective |
+| Leaving the payment screen to an external processor | Partial (embedded) / Effective (redirect, where the page has no card field) | Partial | Not relevant |
+| **Lemma (pre-execution check)** | Effective (if the approval key is held separately) | Effective (if the approval key is held separately) | Not effective |
 
 Not storing full card numbers protects stored data, and detection and closure work after the fact. Lemma checks the code running on the page itself, before card details are entered. PCI DSS v4.0.1 Requirements 6.4.3 and 11.6.1 have also required authorisation of payment-page scripts and tamper detection since March 2025.
 
-Note: Lemma's check works only when it is built into the system that serves the payment page and the approval key is held separately from site administrator rights. It passes if the approval rights themselves are taken or the checking system itself is rewritten. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the system that serves the payment page and the approval key is held separately from site administrator rights. It passes if the approval rights themselves are taken or the checking system itself is rewritten. The company believes administrator privileges were taken; in a server-side rewrite, the list or hashes the check relies on could be rewritten with the same privileges, so the check does not work unless the approval key is held elsewhere. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -117,10 +119,10 @@ Three points for your organisation to check about payment-page tampering on your
 
 ## 5. Facts and timeline
 
-- **Site**: Good Smile Company's official online shop. Its Rakuten store is outside the scope. Card data for external payments such as Amazon Pay and PayPal is also outside it, but order information is in scope whatever the payment method.
+- **Site**: Good Smile Company's official online shop. Its Rakuten store is not included. The company says no exposure has been confirmed for payments made through Amazon Pay or PayPal; order information, however, is in scope whatever the payment method.
 - **Cause**: The company believes a vulnerability in part of its system was exploited and administrator privileges were taken. It says this was not the recently reported PHP vulnerability.
-- **Why data that was not stored still leaked**: Card-industry rules say security codes must not be stored after payment, and the company did not store them or full card numbers. It believes the exposure came from information entered on the payment page being intercepted. Attacks of this type are commonly called e-skimming.
-- **Full card data possibly exposed**: 2,800 people — 384 who ordered by card, 185 who changed the card for a pre-order, those who tried to pay but did not complete, and those who only added items to the cart. With no record of operations, the last two cannot be told apart, so cart-only customers, who likely had no card data exposed, were contacted too.
+- **Why data that was not stored still leaked**: Card-industry rules (per the PCI SSC FAQ) say security codes, which are authentication data, must not be stored after authorisation, and the company did not store them or full card numbers. It believes the exposure came from information entered on the payment page being intercepted. Attacks of this type are commonly called e-skimming.
+- **Full card data possibly exposed**: 2,800 people — 384 who ordered by card, 185 who changed the card for a pre-order, those who tried to pay but did not complete, and those who only added items to the cart. With no record of operations, the last two cannot be told apart, so cart-only customers, who likely had no card data exposed, were contacted too. Customers who tried to change their card after ordering but did not complete it may also have had data exposed; the company says it likewise has no record and cannot identify them (fourth notice).
 - **Partial card data**: The last four digits and expiry of 402,466 cards (excluding duplicates) registered by customers.
 - **Order information**: Up to 202 viewed orders out of 7,774 orders from 5,356 people.
 
@@ -133,7 +135,7 @@ Three points for your organisation to check about payment-page tampering on your
 - **2026-10-28**: Shortly after 18:30, the program on the payment page is found.
 - **2026-10-29**: Third notice discloses possible exposure of full card data and security codes (order-information scope corrected in the fourth notice on the 30th).
 
-> Facts rest on the company's official notices (first to fourth) and Q&As; "may have been exposed" is its wording. What has not been disclosed does not mean no measure was in place. As of 1 November, no fifth notice has been published.
+> Facts rest on the company's official notices (first to fourth) and Q&As; "may have been exposed" is its wording. What has not been disclosed does not mean no measure was in place. As of 2 November, no fifth notice has been published.
 
 ### After disclosure
 
@@ -144,9 +146,10 @@ Three points for your organisation to check about payment-page tampering on your
 
 - **Good Smile Company (Primary, company notice)**: "Notice of Possible Exposure of Customer Information Due to Unauthorized Access (Fourth Update)" (2026-10-30; partial correction of the third notice of 10-29) — <https://support.goodsmile.com/hc/en-us/articles/63718007508761>
 - **Good Smile Company (Primary, company notice)**: "Notice of Possible Exposure of Customer Information Due to Unauthorized Access (Updated October 26, 2026)" (first notice 2026-10-23, second notice 10-26) — <https://support.goodsmile.com/hc/en-us/articles/63547468806297>
-- **Good Smile Company (Primary, Q&A)**: "Group B: Customers Whose Full Credit Card Information May Have Been Exposed" (published 2026-10-29, updated 10-31) — <https://support.goodsmile.com/hc/en-us/articles/63751588397849>
-- **Good Smile Company (Primary, Q&A)**: "Frequently Asked Questions About Unauthorized Access and Information Exposure (All Customers)" (published 2026-10-29, updated 10-31) — <https://support.goodsmile.com/hc/en-us/articles/63753982590105>
+- **Good Smile Company (Primary, Q&A)**: "Group B: Customers Whose Full Credit Card Information May Have Been Exposed" (published 2026-10-29; content checked 11-02) — <https://support.goodsmile.com/hc/en-us/articles/63751588397849>
+- **Good Smile Company (Primary, Q&A)**: "Frequently Asked Questions About Unauthorized Access and Information Exposure (All Customers)" (published 2026-10-29; content checked 11-02) — <https://support.goodsmile.com/hc/en-us/articles/63753982590105>
 - **PCI Security Standards Council (Primary, standards body)**: "Coffee with the Council Podcast: Guidance for PCI DSS E-commerce Requirements Effective After 31 March 2025" (2025-03-26) — Requirements 6.4.3 and 11.6.1 take effect · <https://blog.pcisecuritystandards.org/coffee-with-the-council-podcast-guidance-for-pci-dss-e-commerce-requirements-effective-after-31-march-2025>
+- **PCI Security Standards Council (Primary, standards body)**: FAQ 1533, "For PCI DSS, why is storage of sensitive authentication data (SAD) after authorization not permitted even when there are no primary account numbers (PANs) in an environment?" — security codes must not be stored after authorisation · <https://www.pcisecuritystandards.org/faqs/1533>
 - **Good Smile Company (Primary, company notice, Japanese)**: 「不正アクセスによるお客様情報流出の可能性について（第4報）」 (2026-10-30) — <https://support.goodsmile.com/hc/ja/articles/63718007508761>
 
 References: [The last layer left in AI-era cyber defense](/blog/detection-is-not-proof/)
