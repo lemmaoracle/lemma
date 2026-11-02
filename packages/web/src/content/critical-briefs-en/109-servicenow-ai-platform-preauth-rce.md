@@ -1,7 +1,7 @@
 ---
 brief_no: 109
-title: "ServiceNow AI Platform：ログイン前に届くページの入力がサンドボックスを抜けてコード実行に至り、詳細の公開から 3 日で悪用の試行が観測された(CVE-2026-6875) — 入口がどこであれ、管理者の作成のような操作を、実行の前に誰に許されたかで確かめる層が無い"
-title_en: "ServiceNow AI Platform: input to a page reachable before login escaped the sandbox to code execution, and exploitation attempts were seen three days after details went public (CVE-2026-6875) — No layer checks, before it runs, who authorised an action like creating an admin, whatever the entry point"
+title: "ServiceNow AI Platform：ログイン前に届くページの入力がサンドボックスを抜けてコード実行に至り、詳細の公開から 3 日で悪用の試行が観測された(CVE-2026-6875)"
+title_en: "ServiceNow AI Platform: input to a page reachable before login escaped the sandbox to code execution, and exploitation attempts were seen three days after details went public (CVE-2026-6875)"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["agent-infrastructure"]
@@ -11,16 +11,16 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["046-servicenow-unauthenticated-api", "088-kestra-auth-filter-bypass-rce", "094-cursor-duneslide-sandbox-escape"]
 status: published
-version: "2.0"
+version: "2.1"
 og_lead_ja: "ServiceNow CVE-2026-6875：ログイン前の 1 リクエストがサンドボックスを抜けてコード実行"
 og_lead_en: "ServiceNow CVE-2026-6875: one request before login escapes the sandbox to code execution"
 layout: "report"
+sections: "proof"
 gate: "permission-change"
 og_kicker_ja: "サイバー攻撃事例 · 脆弱性の悪用"
 og_kicker_en: "CYBERATTACK · VULNERABILITY EXPLOIT"
 og_headline_ja: "ログインの前に、\n管理者を作れる穴が\n業務基盤にあった。\n<accent>公開の 3 日後に悪用の試行</accent>"
 og_headline_en: "A hole let anyone create an admin before logging in.\n<accent>Exploit attempts three days after disclosure.</accent>"
-summary_labels: ["What happened", "Why it was hard to tell", "The missing layer"]
 key_figures:
   - value: "9.5"
     unit: "CVSS 4.0"
@@ -40,12 +40,12 @@ glossary:
 insight:
   slug: "reachability-as-permission"
   label: "Reach it and it runs"
-  quote: "Once a value entered before login escaped the sandbox, every later action ran as legitimate processing, never asked who had authorised it."
+  quote: "Reaching an entry point and being allowed to act are separate facts; on a platform where reaching it counts as permission, a hole at the entry becomes full control."
 industries: ["ai"]
 operations: ["account-admin"]
 controls:
   - slug: "hold-unverified"
-    item: "Hold actions that change permissions, such as creating an admin, until it is clear who authorised them"
+    item: "Hold actions that change permissions, such as creating an admin, until it can be confirmed who authorised them"
   - slug: "audit-trail"
     item: "Record which permission allowed which action, outside the platform"
 impact: "On unpatched instances, data could be read and admins created without logging in"
@@ -54,97 +54,67 @@ self_check: "Do you know which entry points on your business platforms are reach
 countries: ["global"]
 ---
 
-> **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Facts were re-checked against ServiceNow's advisory (KB3137947), the researcher's write-up and Defused's posts. Corrected: cloud instances got mitigations within 24 hours of the report (not "from April onward"); the researcher published details on July 14; and the advisory's wording ("not currently aware of exploitation against ServiceNow instances") is now kept separate from the statement given to the press. v1.1 (2026-09-01) had already changed Defused's first claim of "a different route from the public PoC" in line with its correction.
+> **Revision (v2.1 / 2026-11-02)**: Reordered so the chapters start from what got through, and dropped the second half of the title. Facts and sources are unchanged. In v2.0 (2026-10-21) the facts were re-checked against ServiceNow's advisory (KB3137947), the researcher's write-up and Defused's posts: cloud instances got mitigations within 24 hours of the report (not "from April onward"), the researcher published details on July 14, and the advisory's wording ("not currently aware of exploitation against ServiceNow instances") is kept separate from the statement given to the press. v1.1 (2026-09-01) had already changed Defused's first claim of "a different route from the public PoC" in line with its correction.
 
-## 1. TL;DR
+## 1. Summary
 
-ServiceNow AI Platform had a flaw, CVE-2026-6875 (CVSS 4.0 score 9.5), that let input to a page reachable without logging in (`/assessment_thanks.do`) be evaluated as JavaScript, escape the sandbox and run arbitrary code. Searchlight Cyber reported it on April 1; ServiceNow mitigated its cloud instances within 24 hours and published an advisory on July 13. The researcher published details on the 14th, and exploitation attempts were seen on the 17th.
+ServiceNow's advisory says it is "not currently aware of exploitation against ServiceNow instances," and no actual compromise has been reported. Even so, exploitation attempts against instances that had not been patched began three days after the details went public. Whatever code gets through the entry point runs, from the platform's side, as the system's own legitimate processing. <strong>Reaching an entry point and being allowed to act are separate facts; on a platform where reaching it counts as permission, a hole at the entry becomes full control.</strong>
 
-Code that escapes can read any table, create admins and run commands on the relay servers (MID Servers) customers place inside their own networks. To the platform, all of it runs as the system's own legitimate processing.
+## 2. What got through
 
-No actual compromise has been reported, but attempts against unpatched instances began three days after the details went public. What failed was the layer that checks, before it runs, who authorised a permission-changing action like creating an admin, whatever entry point it came through.
+- **What got through**: Evaluation of a parameter on `/assessment_thanks.do`, reachable before login, and what the escaped code did: reading data, creating admins and running commands on MID Servers. The value is evaluated as JavaScript as part of a data query; it should run inside a sandbox, but a mechanism for loading another script let it step outside the limits (per the researcher).
+- **What reached the receiving side**: In general, an action by code that has escaped the sandbox arrives as the platform's own legitimate processing. From the side of the action, you cannot tell who authorised an admin being created.
+- **What was stopped**: Cloud instances were mitigated within 24 hours of the report (per ServiceNow). The fixed releases immediately apply a "single expression only" restriction (Guarded Script) to pre-login traffic.
+- **Not disclosed**: Any actual compromise (none reported, and the CVE is not in CISA's Known Exploited Vulnerabilities catalog as of 2026-10-20), and when the self-hosted fixes arrived (reports disagree: June or July 13).
 
-## 2. What happened
+## 3. What to check
 
-- **Target**: ServiceNow AI Platform, which runs companies' IT, HR and customer-service work. According to the company, more than 85% of the Fortune 500 use it.
-- **Flaw**: CVE-2026-6875. A parameter on `/assessment_thanks.do`, reachable before login, is evaluated as JavaScript as part of a data query. The evaluation happens inside a sandbox, but a mechanism for loading another script let code step outside its limits.
-- **Severity**: CVSS 4.0 score 9.5 (Critical, scored by ServiceNow). Attack complexity is rated High.
-- **What it allows**: Reading any table, creating admins, and running commands on the MID Servers inside the customer's network (per the researcher).
-- **Fix**: Cloud instances were mitigated within 24 hours of the report. The July 13 advisory lists fixed releases for each family (Zurich, Yokohama, Australia, Brazil). The fix immediately applies a "single expression only" restriction (Guarded Script) to pre-login traffic.
-- **Exploitation**: Attempts were seen from July 17. Defused says the payload it captured matched the researcher's published validation payload (its first claim of "a different route" was corrected on the 20th). No actual compromise has been reported, and the CVE is not in CISA's Known Exploited Vulnerabilities catalog (as of 2026-10-20).
+Whatever the route, the condition for telling them apart is that whoever carries out a permission-changing action, such as creating an admin, checks before it runs who authorised that action, whichever entry point it came through.
 
-<figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The attack as the researcher showed it</span></div>
-<p class="rx-ex-cap">The patch closes the entry hole. There is also a stopping point at ④: check who authorised a permission-changing action before it runs, and getting through the hole does not mean full control.</p>
-<div class="rx-chain">
-<div class="rx-step"><div class="who">Attacker</div><div class="no">1</div><b>Sends a crafted value to a page reachable before login</b><p><code>/assessment_thanks.do</code></p></div>
-<div class="rx-step"><div class="who">Platform</div><div class="no">2</div><b>Evaluates the value as JavaScript</b><p>Inside the sandbox.</p></div>
-<div class="rx-step crit"><div class="who">Attacker's code</div><div class="no">3</div><b>Uses script loading to step outside the sandbox</b><p>Runs without restrictions.</p></div>
-<div class="rx-step crit"><div class="who">Attacker's code</div><div class="no">4</div><b>Reads data, creates admins, runs commands on MID Servers</b><p>Runs as legitimate processing.</p></div>
-</div>
-</figure>
-
-## 3. Timeline — disclosure and response
-
-- **2026-04-01**: Searchlight Cyber reports to ServiceNow, which deploys mitigations to all cloud instances within 24 hours.
-- **2026-07-13**: ServiceNow publishes its advisory (KB3137947) with fixed releases: "We are not currently aware of exploitation against ServiceNow instances."
-- **2026-07-14**: Searchlight Cyber publishes technical details.
-- **2026-07-17**: Exploitation attempts begin to be seen (press reports).
-- **2026-07-18**: Defused posts on X, saying the route differs from the researcher's published PoC.
-- **2026-07-20**: Defused corrects this: the captured payload matched the published one. ServiceNow tells the press it has not observed evidence the activity relates to instances it hosts. Canada's Centre for Cyber Security adds the exploitation reports to its advisory.
-
-> Facts rest on ServiceNow's advisory, Searchlight Cyber's research and Defused's posts (all primary), and on press reports. Reports disagree on when self-hosted fixes arrived (June or July 13). As of October 2026, no actual compromise, KEV listing or Japanese government alert has been found.
-
-### After disclosure
-
-- **SecurityWeek**: Reported that the attempts may have come from members of the security industry looking for vulnerable systems.
-- **ServiceNow**: Guarded Script applies to pre-login traffic immediately, and to logged-in traffic on cloud instances over about four weeks. On self-hosted instances, admins move through the phases by hand.
-
-## 4. Why it wasn't stopped
-
-This case was not a failure of customer care, nor only of slow patching. Once a value entered before login escaped the sandbox, reading data and creating admins went through as the platform's legitimate processing, never asked who had authorised them.
+- **Who approves**: Whoever decides permissions, such as the platform's administrators. Who may create admins, grant roles or run commands on internal servers, and within what scope, is decided outside the platform.
+- **Where it is checked**: One point just before a permission-changing action runs. Whether the entry point is before or after login, it passes the same check. An action that does not match a permission is stopped, not run.
+- **What is recorded**: Which permission allowed which action, by whom, kept apart from the platform in a form that can be shown to a third party later.
 
 <figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The detection–proof gap</span></div>
-<p class="rx-ex-cap">Proof works before an action runs; detection works after attempts or anomalies surface. In between, actions by code that got through the entry point are treated as legitimate processing.</p>
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before a permission-changing action runs, who authorised it, and keeping a record. Detection means noticing after attempts or anomalies surface. The dates below are when ServiceNow, the researcher and Defused reported or disclosed each point, not necessarily when exploitation became possible.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Proof layer · absent</b>Before a permission-changing action runs, check who authorised it</div>
-<div class="rx-zone gapz"><b>The gap</b><span>Unpatched, an admin gets created.<br>Three days from disclosure to attempts</span></div>
-<div class="rx-zone det"><b>Detection layer · noticed</b>Spot the attempts and apply the fix</div>
-<div class="rx-g g1"><div class="t">STEP 1</div><b>A crafted value reaches the entry point</b></div>
-<div class="rx-g g2"><div class="t">STEP 2</div><b>Admin creation goes through</b></div>
-<div class="rx-g g3"><div class="t">STEP 3</div><b>Attempts noticed</b></div>
-<div class="rx-g g4"><div class="t">STEP 4</div><b>Fix applied</b></div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check who authorised a permission-changing action before it runs</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>On unpatched instances, data could be read<br>and admins created without logging in</span></div>
+<div class="rx-zone det"><b>Detection · worked</b>Attempts were observed and fixed releases applied</div>
+<div class="rx-g g1"><div class="t">04-01</div><b>Searchlight Cyber reports</b></div>
+<div class="rx-g g2"><div class="t">07-13</div><b>Advisory published</b></div>
+<div class="rx-g g3"><div class="t">07-14</div><b>Researcher publishes details</b></div>
+<div class="rx-g g4"><div class="t">07-17</div><b>Exploitation attempts seen</b></div>
 </div>
 </figure>
 
-Detection worked: ServiceNow mitigated cloud instances within 24 hours of the report, and Defused caught attempts three days after the details went public. But a patch closes the hole that was found, and although "it reached the entry point" and "this action is authorised" are separate facts, on this platform the first stood in for the second. That distance is the **detection–proof gap**, and it is a structural one.
+Detection worked. The patch closed the entry hole, but a patch closes the hole that was found, not the next one. A similar case where authentication came off with a single setting is [ServiceNow's unauthenticated API](/critical/briefs/046-servicenow-unauthenticated-api/) (customer instance data was queried).
 
-The same structure appears in [ServiceNow's unauthenticated API](/critical/briefs/046-servicenow-unauthenticated-api/) (one setting removed authentication and customer instance data was queried).
+## 4. What Lemma does
 
-## 5. How to counter this
-
-**Close the entry holes, and stop what gets through with permissions.** Apply the fixed releases and reduce the entry points reachable before login. Beyond that, check before they run who authorised permission-changing actions, such as creating an admin or running commands on internal servers, whatever entry point they came through. When the next hole is found, it will not reach full control.
+**Lemma builds the check in section 03 into the side that carries out permission-changing actions.** It does not look for holes or intrusions; it checks, before the action runs and whatever the entry point, whether it rests on a permission.
 
 ### Industries and operations to watch
 
-- **Industry · AI adoption (cross-industry)**: Organisations that run IT, HR and customer-service work on a business platform like ServiceNow. Business data and connections to internal systems gather there.
-- **Operation · Accounts & permissions**: Creating admin accounts and connecting the platform to internal servers. Here, both could be reached from a single request before login.
+- **Industry · AI adoption (cross-industry)**: Organisations that run IT, HR and customer-service work on a business platform such as ServiceNow. Business data and connections into internal systems gather on the platform.
+- **Operation · Accounts & permissions**: Creating admin accounts and the platform's connections to internal servers. In this case both could be reached from a single request before login.
 
-### Do today's controls close it?
+### Current controls vs Lemma
 
-| Control | This case | Why |
+The route in this case is column 1 (a permission-changing action arriving through an entry point before login). Column 2 is where code runs in a position to rewrite the permission check itself; whether that was so here has not been disclosed.
+
+| Control | Permission-changing action through a pre-login entry point | Rewriting the permission check itself |
 | --- | --- | --- |
-| Applying fixed releases | Partial | It closes the hole that was found, but not the window before patching or the next hole. |
-| Login and multi-factor authentication (MFA) | Not relevant | The entry point was before login. |
-| Sandbox | Ineffective | There was a way out of its limits. |
-| Monitoring admin creation and connections | Partial | It can notice, but only after the admin exists. |
+| Applying fixed releases | Partial | Not relevant |
+| Login and multi-factor authentication (MFA) | Not relevant | Not relevant |
+| Sandbox | Not effective | Not relevant |
+| Monitoring admin creation and connections | Partial | Not relevant |
+| **Lemma (pre-execution check)** | Effective | Not effective |
 
-### What is needed
+Applying fixed releases closes the hole that was found, but not the window before patching or the next hole. Login and multi-factor authentication do not bear on this route, because the entry point was before login. The sandbox had a way out of its limits. Monitoring admin creation and connections can notice, but only after the admin exists. Lemma checks permission-changing actions before they run, whatever the entry point, against whether they were authorised.
 
-1. **Apply fixes and reduce pre-login entry points.** On self-hosted instances, move through the Guarded Script phases yourself. Turn off unused public pages and guest traffic.
-2. **Check permission-changing actions before they run, whatever the entry point.** For admin creation, role grants and commands on internal servers, match who is acting under which permission, and do not let it through if that cannot be matched.
-3. **Record which permission allowed which action, outside the platform.** Keep what was stopped and what was let through in a form that can later be shown to a third party: in other words, as proof.
+Note: Lemma's check works only when it is built in just before permission-changing actions such as creating an admin, granting a role or running a command on an internal server, and the record of permissions is managed apart from the platform. If code that got through the entry point runs where it can rewrite the permission check itself, this check can be broken too. Placing the check outside the platform makes it stronger, but also adds work to legitimate admin tasks. Reading data is not itself covered by this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -154,7 +124,30 @@ Three things to confirm in your organisation about business platforms (cloud or 
 - When a new admin account is created, who gets notified?
 - When a critical vulnerability is announced, is there a set number of days within which fixes are applied?
 
-Note: if code that got through the entry point runs where it can rewrite the permission check itself, this check can be broken too. Placing the check outside the platform makes it stronger, but also adds work to legitimate admin tasks.
+## 5. Facts and timeline
+
+- **Target**: ServiceNow AI Platform, which runs companies' IT, HR and customer-service work. According to the company, more than 85% of the Fortune 500 use it.
+- **Flaw**: CVE-2026-6875. A parameter on `/assessment_thanks.do`, reachable before login, is evaluated as JavaScript as part of a data query. The evaluation happens inside a sandbox, but a mechanism for loading another script let code step outside its limits.
+- **Severity**: CVSS 4.0 score 9.5 (Critical, scored by ServiceNow). Attack complexity is rated High.
+- **What it allows**: Reading any table, creating admins, and running commands on the MID Servers inside the customer's network (per the researcher).
+- **Fix**: Cloud instances were mitigated within 24 hours of the report. The July 13 advisory lists fixed releases for each family (Zurich, Yokohama, Australia, Brazil). The fix immediately applies a "single expression only" restriction (Guarded Script) to pre-login traffic.
+- **Exploitation**: Attempts were seen from July 17. Defused says the payload it captured matched the researcher's published validation payload (its first claim of "a different route" was corrected on the 20th). No actual compromise has been reported, and the CVE is not in CISA's Known Exploited Vulnerabilities catalog (as of 2026-10-20).
+
+### Timeline
+
+- **2026-04-01**: Searchlight Cyber reports to ServiceNow, which deploys mitigations to all cloud instances within 24 hours.
+- **2026-07-13**: ServiceNow publishes its advisory (KB3137947) with fixed releases: "We are not currently aware of exploitation against ServiceNow instances."
+- **2026-07-14**: Searchlight Cyber publishes technical details.
+- **2026-07-17**: Exploitation attempts begin to be seen (press reports).
+- **2026-07-18**: Defused posts on X, saying the route differs from the researcher's published PoC.
+- **2026-07-20**: Defused corrects this: the captured payload matched the published one. ServiceNow tells the press it has not observed evidence the activity relates to instances it hosts. Canada's Centre for Cyber Security adds the exploitation reports to its advisory.
+
+> Facts rest on ServiceNow's advisory, Searchlight Cyber's research and Defused's posts (all primary), and on press reports. Reports disagree on when self-hosted fixes arrived (June or July 13). As of October 2026, no actual compromise, KEV listing or Japanese government alert has been found. What has not been disclosed does not mean there were no controls.
+
+### After disclosure
+
+- **SecurityWeek**: Reported that the attempts may have come from members of the security industry looking for vulnerable systems.
+- **ServiceNow**: Guarded Script applies to pre-login traffic immediately, and to logged-in traffic on cloud instances over about four weeks. On self-hosted instances, admins move through the phases by hand.
 
 ## 6. Sources
 

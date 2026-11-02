@@ -1,7 +1,7 @@
 ---
 brief_no: 77
-title: "IDMerit：本人確認に使われたとみられる約 10 億件がパスワードの無い DB で見つかったと報じられたが、IDMerit は否認し、帰属は確定しないまま(Cybernews 報道・IDMerit 否認) — 見つかったデータが誰の管理下にあったかを、記録で示せる層が無い"
-title_en: "IDMerit: about a billion records apparently used for identity checks were reported found in a password-less database, IDMerit denied it, and whose data it was remains unsettled (Cybernews report, IDMerit denial) — No layer can show, from records, whose custody the data was in"
+title: "IDMerit: about a billion records apparently used for identity checks were reported found in a password-less database, IDMerit denied it, and whose data it was remains unsettled (Cybernews report, IDMerit denial)"
+title_en: "IDMerit: about a billion records apparently used for identity checks were reported found in a password-less database, IDMerit denied it, and whose data it was remains unsettled (Cybernews report, IDMerit denial)"
 pillar: "04-regulatory-attribute"
 primary_category: "kyc-aml-disclosure"
 secondary_categories: ["data-provenance", "attribute-proof-bypass"]
@@ -11,16 +11,16 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["086-sumsub-support-environment-breach", "013-coinbase-kyc-insider-breach", "052-discord-age-verification-id-leak"]
 status: published
-version: "3.0"
+version: "3.1"
 og_lead_ja: "IDMerit 10 億件露出の係争 — 誰のデータかを誰も記録で示せない"
 og_lead_en: "IDMerit's disputed billion-record exposure — no one can show whose data it was"
 layout: "report"
+sections: "proof"
 gate: "disclosure"
 og_kicker_ja: "情報漏えい事例 · 帰属の係争"
 og_kicker_en: "DATA EXPOSURE · DISPUTED CUSTODY"
 og_headline_ja: "本人確認のデータが\n公開の DB で見つかった。\n誰のものかは決まらない。\n<accent>約 10 億件（報道の主張）</accent>"
 og_headline_en: "Identity-check data was found in an open database. Whose it was is unsettled.\n<accent>About 1 billion records (as claimed).</accent>"
-summary_labels: ["What happened", "Why it was hard to tell", "The missing layer"]
 key_figures:
   - value: "≈ 1"
     unit: "billion"
@@ -40,111 +40,81 @@ glossary:
 insight:
   slug: "custody-unprovable"
   label: "No one can show whose data it was"
-  quote: "That an open database existed could be confirmed, but neither the side denying it nor the side reporting it could show from records whose custody the data was in."
+  quote: "Finding an open database does not settle whose data it was; without records of custody, notification and responsibility stay undecided."
 industries: ["finance"]
 operations: ["data-access"]
 controls:
   - slug: "audit-trail"
     item: "Record which data is held, under whose custody, and where"
 impact: "Reported exposure of about 1 billion records; custody disputed (figures unverified)"
-takeaway: "Nothing could show, from records, whose custody the exposed data was in or under which contract it was held."
+takeaway: "Record, before placing data, whose custody it is in and under which contract, so you can answer from records when challenged."
 self_check: "If someone said your users' data had been found exposed, could you answer from records whether it was in your custody?"
 countries: ["us"]
 ---
 
+> **Revision (v3.1 / 2026-11-02)**: Reordered so the chapters start from what got through, and dropped the second half of the title. Facts and sources are unchanged.
+
 > **Revision (v3.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". Cybernews's article (archived) and IDMerit's statement were re-read. Added: IDMerit acknowledged that ports associated with independent data sources "could have been open"; Cybernews's note (the finder was an outside contributor, and it learned of the payment exchange later); and the US class action's filing and dismissal. Sources suspected of being AI-generated, and a network of KYC blogs of unclear ownership, were removed. v2.0 (2026-07-03) had already recast the first version, which treated the exposure as established, as a dispute.
 
-## 1. TL;DR
+## 1. Summary
 
-On February 18, 2026, security outlet Cybernews reported that about a billion records of personal data apparently used for identity verification (KYC) (about 3 billion records in total, across 26 countries) had been found in a password-less MongoDB database, and that it belonged to IDMerit. The database was found on November 11, 2025 and closed the day after notification. IDMerit denied it, saying it does not own, control or store customer data or the data held by independent data sources, and that there was no exposure in its environment.
+IDMerit denied that it owns, controls or stores customer data or the data held by independent data sources, and said there was no exposure in its own environment. It did, however, acknowledge that certain ports associated with independent data sources could have been open. Cybernews's basis for attribution was clues such as collection names and its team's belief; neither side has published records showing who owned the database. <strong>If you cannot show from records whose custody found data was in, closing the database does not settle who must notify, or who is responsible.</strong>
 
-IDMerit did, however, acknowledge that certain ports associated with independent data sources could have been open. Cybernews's basis for attribution was clues such as collection names and its team's belief; neither side has published records showing who owned the database.
+## 2. What got through
 
-The database was closed the day after notification, so detection worked. A class action filed in the US also ended in dismissal without a ruling. What failed was the layer that can show, from records, whose custody the data was in and under which contract it was held.
+- **What got through**: Personal data apparently used for identity verification was placed in a password-less MongoDB database and kept readable from the internet (per Cybernews). Whether the party that placed it was IDMerit or a data source is disputed.
+- **What was stopped**: The database was closed the day after the researcher's notification (November 12, 2025).
+- **What reached the receiving side**: In general, identity-check data flows across vendors, data sources and the links between them. When an open database is found, whose custody it is in cannot be told from the database itself.
+- **Not disclosed**: Records, such as hostnames, that directly identify the database's owner; how the ports IDMerit acknowledged could have been open relate to the database that was found; any regulator finding. The figures and contents are Cybernews's claims and have not been independently confirmed.
 
-## 2. What happened
+## 3. What to check
 
-- **Who**: IDMerit, based in California, which connects to 440+ data sources in 180+ countries to provide identity verification by API (per the company).
-- **Discovery**: An outside researcher working with Cybernews found a password-less MongoDB database on November 11, 2025. It was closed the day after notification, on November 12. Publication came on February 18, 2026.
-- **Claimed scale (unverified)**: About 3 billion records; about 1 billion broken down by country and said to contain sensitive personal data, with the rest likely logs. About 1TB, 26 countries; about 203 million in the US and 124 million in Mexico, among others.
-- **Data types (claimed)**: Names, addresses, dates of birth, national ID numbers, phone numbers, email addresses, gender, telecom metadata and more.
-- **Basis for attribution**: Cybernews wrote that "our team believes the exposed database belongs to IDMerit", citing clues such as collection names in some countries ("idmtelco"). It did not publish hostnames or similar evidence directly identifying the owner.
-- **IDMerit's denial**: It does not own, control or store customer data or data held by independent data sources. Its review found no exposure, vulnerability or unauthorised access in the IDMerit environment. It did acknowledge that certain ports associated with independent data sources could have been open, potentially exposing databases. It said that when it asked for the report it was asked for money, and suspected a ransom motive.
-- **Cybernews's note**: The finder was an outside contributor, and Cybernews did not know until February 26 about the exchange between the finder and IDMerit over payment for the findings. Its internal researchers reviewed the technical material and found the findings legitimate.
+Whatever the route, the condition for telling them apart is that whoever places data checks, before placing it, whose custody the data is in and under which contract it was entrusted, against the ledger kept by the party that entrusted it, and records where it was placed.
 
-<figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain of events, as far as disclosed</span></div>
-<p class="rx-ex-cap">The point to stop it was ①. Had it been recorded, when the data was placed, whose custody it was in and under which contract, the dispute at ④ could have been settled from records.</p>
-<div class="rx-chain">
-<div class="rx-step"><div class="who">Someone (disputed)</div><div class="no">1</div><b>Places data apparently used for identity checks in a database</b><p>IDMerit, or a data source?</p></div>
-<div class="rx-step crit"><div class="who">Database</div><div class="no">2</div><b>Becomes readable from the internet without a password</b><p>About 3 billion records (claimed).</p></div>
-<div class="rx-step"><div class="who">Researcher</div><div class="no">3</div><b>Finds and reports it; the database is closed next day</b><p>2025-11-11 → 11-12.</p></div>
-<div class="rx-step crit"><div class="who">Parties</div><div class="no">4</div><b>Claims split over custody, and records can't settle it</b><p>Denial and rebuttal; lawsuit dismissed.</p></div>
-</div>
-</figure>
-
-## 3. Timeline — disclosure and response
-
-- **2025-11-11**: A researcher finds the password-less database and reports it.
-- **2025-11-12**: The database is closed.
-- **2026-02-18**: Cybernews publishes. The next day it retitles the piece "IDMerit data breach" and rewrites the database as "owned by IDMerit".
-- **2026-02-20**: Biometric Update publishes IDMerit's denial.
-- **2026-02-26**: Cybernews learns of the payment exchange between the finder and IDMerit (per its note).
-- **2026-03-11**: A class action against IDMerit is filed in the US District Court for the Southern District of California.
-- **2026-06-03**: The plaintiff voluntarily dismisses the case; no ruling was made.
-
-> The figures and contents are Cybernews's claims and have not been independently verified. IDMerit's denial is not backed by records that outsiders can check either. As of October 2026, there has been no regulator finding and no disclosure identifying the database's owner. This Brief does not rule on either side's claims.
-
-### After disclosure
-
-- **Cybernews**: Maintained that the findings were legitimate, and noted that it does not sell fixes.
-- **IDMerit**: Around the same time published blog posts on its no-storage design, without referring to the case directly.
-
-## 4. Why it wasn't stopped
-
-This case does not come down to one side being wrong. As identity-check data flows across vendors, data sources and the links between them, neither side could show from records whose custody the database that was found was in.
+- **Who approves**: The party that entrusted the data (such as a financial institution that outsources identity checks). For the vendor and the data sources beyond it, it sets by contract which data may be stored (or not) and where, and keeps that in a ledger. It does not rely on the vendor's own "we don't store it" statement.
+- **Where it is checked**: The mechanism that places and stores data (the procedures that create or copy a database). It refuses to place data under a custodian or location that is not in the ledger.
+- **What is recorded**: For each set of data, who controls it, the basis it was entrusted on (the contract), and where and for how long it was placed, kept in a form that can be shown to a third party later, so that you can answer from records whether it was yours when challenged.
 
 <figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The detection–proof gap</span></div>
-<p class="rx-ex-cap">Proof works when data is placed; detection works after an open database is found. Detection got the database closed, but does not decide whose data it was.</p>
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before data is placed, whose custody and which contract it falls under against the ledger, and keeping a record. Detection means noticing after an open database is found. The dates below are when the researcher, Cybernews or the court confirmed or disclosed a point, not when data was placed in the database.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Proof layer · absent</b>When placing data, record whose custody and which contract</div>
-<div class="rx-zone gapz"><b>The gap</b><span>The database closed,<br>but whose it was stays unsettled</span></div>
-<div class="rx-zone det"><b>Detection layer · noticed</b>A researcher finds it and gets it closed</div>
-<div class="rx-g g1"><div class="t">STEP 1</div><b>Database left open</b></div>
-<div class="rx-g g2"><div class="t">STEP 2</div><b>Researcher finds it</b></div>
-<div class="rx-g g3"><div class="t">STEP 3</div><b>Database closed</b></div>
-<div class="rx-g g4"><div class="t">STEP 4</div><b>Custody disputed</b></div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before placing, check whose custody and which contract against the ledger</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>The database was closed,<br>but whose it was stays unsettled</span></div>
+<div class="rx-zone det"><b>Detection · noticed</b>A researcher finds it and gets it closed</div>
+<div class="rx-g g1"><div class="t">2025-11-11</div><b>Researcher finds the database</b></div>
+<div class="rx-g g2"><div class="t">11-12</div><b>Database closed</b></div>
+<div class="rx-g g3"><div class="t">2026-02-18</div><b>Cybernews publishes</b></div>
+<div class="rx-g g4"><div class="t">06-03</div><b>Class action dismissed</b></div>
 </div>
 </figure>
 
-Detection worked: the database was closed the day after notification. But "an open database existed" can be confirmed while "whose custody the data was in" is a separate fact, and without records, neither the side denying it nor the side reporting it could show it. That distance is the **detection–proof gap**, and it is a structural one.
+Detection worked, and the database was closed the day after notification. But "an open database existed" and "whose custody the data was in" are separate facts, and without records neither the side denying it nor the side reporting it could show the second. A similar case, where personal data was left outside the core, is [Sumsub](/critical/briefs/086-sumsub-support-environment-breach/).
 
-The same structure appears in [Sumsub](/critical/briefs/086-sumsub-support-environment-breach/) (client end-users' contact details left outside the core at an identity-verification vendor).
+## 4. What Lemma does
 
-## 5. How to counter this
-
-**Be able to show, from records, whose custody identity-check data is in and where it is kept.** Identity-verification vendors connect to many data sources, and data flows across organisations. Those who outsource should set out in contracts whether the vendor, and the data sources beyond it, store the data and where, and ask for records. Then, if told your data was found, you can answer from records whether it was yours.
+**Lemma builds the check in section 03 into the side that places and stores data.** It does not look for intrusions; before the data is placed, it checks the custodian and contract against the ledger and keeps that record in a form a third party can verify later.
 
 ### Industries and operations to watch
 
 - **Industry · Finance & FinTech**: Financial institutions, payment and crypto businesses that outsource identity checks by API. Users' data also reaches the data sources beyond the vendor.
 - **Operation · Lookup & data access**: Querying outside data sources about users for identity checks. Each query moves data across organisations.
 
-### Do today's controls close it?
+### Current controls vs Lemma
 
-| Control | This case | Why |
-| --- | --- | --- |
-| The vendor's "we don't store it" | Partial | It can account for the vendor's own environment, not the data sources beyond it. |
-| Data-processing contracts (storage, location) | Partial | Even when set, without records outsiders can check, a dispute is not settled. |
-| Checking databases' exposure settings | Partial | It finds open databases, but not whose they are. |
-| Discovery and reporting by researchers | Partial | The database was closed the next day, but whose it was was never settled. |
+The route in this case is column 1 (placing and storing data), but who placed it has not been disclosed. Column 2 is deciding whose data it is after an open database is found, which is the heart of this dispute. Column 3 is storage at the data sources beyond the vendor; it is close to the ports IDMerit acknowledged could have been open, but their relation to the database found has not been disclosed.
 
-### What is needed
+| Control | Placing and storing data | Identifying the owner after an open database is found | Storage at data sources beyond the vendor |
+| --- | --- | --- | --- |
+| The vendor's "we don't store it" | Partial | Not relevant | Not effective |
+| Data-processing contracts (storage, location) | Partial | Not effective | Partial |
+| Checking databases' exposure settings | Not relevant | Not effective | Not relevant |
+| Discovery and reporting by researchers | Not relevant | Partial | Not relevant |
+| **Lemma (pre-execution check)** | Effective | Effective | Partial |
 
-1. **Know the data flow beyond your vendor.** Ask the vendor for a list of which data sources it queries and where data is stored, or not.
-2. **Set storage and location in contracts and confirm them with records.** If data is not stored, ask for records showing that. If it is, set where and for how long.
-3. **Record whose custody and which contract.** For each set of data, keep who controls it and on what basis it was entrusted, in a form that can later be shown to a third party: in other words, as proof. If challenged, you can answer at once whether it was yours.
+The vendor's statement can account for the vendor's own environment, not the data sources beyond it. Contracts, even when set, do not settle a dispute without records outsiders can check. Checking exposure settings finds open databases, but not whose they are. Researchers' discovery and reporting got the database closed the next day, but whose it was was never settled. Lemma checks custodian and contract against the ledger before placing, and keeps a record you can answer from when challenged.
+
+Note: Lemma's check works only when it is built into the mechanism that places and stores data and the ledger is managed apart from the party placing the data. Records do not settle a dispute if the records themselves can be falsified, so they must be kept in a form that can be checked independently of the parties. Asking for records from data sources beyond the vendor also makes contract negotiations heavier. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -154,7 +124,32 @@ Three things to confirm in an organisation that outsources identity checks
 - Do you confirm your vendor's "we don't store it" with records, not just the statement?
 - If told your users' data had been found, could you answer from records whether it was in your custody?
 
-Note: records do not settle a dispute if the records themselves can be falsified, so they must be kept in a form that can be checked independently of the parties. Asking for records from data sources beyond the vendor also makes contract negotiations heavier.
+## 5. Facts and timeline
+
+- **Who**: IDMerit, based in California, which connects to 440+ data sources in 180+ countries to provide identity verification by API (per the company).
+- **Discovery**: An outside researcher working with Cybernews found a password-less MongoDB database on November 11, 2025. It was closed the day after notification, on November 12. Publication came on February 18, 2026.
+- **Claimed scale (unverified)**: About 3 billion records; about 1 billion broken down by country and said to contain sensitive personal data, with the rest likely logs. About 1TB, 26 countries; about 203 million in the US and 124 million in Mexico, among others.
+- **Data types (claimed)**: Names, addresses, dates of birth, national ID numbers, phone numbers, email addresses, gender, telecom metadata and more.
+- **Basis for attribution**: Cybernews wrote that "our team believes the exposed database belongs to IDMerit", citing clues such as collection names in some countries ("idmtelco"). It did not publish hostnames or similar evidence directly identifying the owner.
+- **IDMerit's denial**: It does not own, control or store customer data or data held by independent data sources. Its review found no exposure, vulnerability or unauthorised access in the IDMerit environment. It did acknowledge that certain ports associated with independent data sources could have been open, potentially exposing databases. It said that when it asked for the report it was asked for money, and suspected a ransom motive.
+- **Cybernews's note**: The finder was an outside contributor, and Cybernews did not know until February 26 about the exchange between the finder and IDMerit over payment for the findings. Its internal researchers reviewed the technical material and found the findings legitimate.
+
+### Timeline
+
+- **2025-11-11**: A researcher finds the password-less database and reports it.
+- **2025-11-12**: The database is closed.
+- **2026-02-18**: Cybernews publishes. The next day it retitles the piece "IDMerit data breach" and rewrites the database as "owned by IDMerit".
+- **2026-02-20**: Biometric Update publishes IDMerit's denial.
+- **2026-02-26**: Cybernews learns of the payment exchange between the finder and IDMerit (per its note).
+- **2026-03-11**: A class action against IDMerit is filed in the US District Court for the Southern District of California.
+- **2026-06-03**: The plaintiff voluntarily dismisses the case; no ruling was made.
+
+> The figures and contents are Cybernews's claims and have not been independently verified. IDMerit's denial is not backed by records that outsiders can check either. As of October 2026, there has been no regulator finding and no disclosure identifying the database's owner. This Brief does not rule on either side's claims. What has not been disclosed does not mean there were no controls.
+
+### After disclosure
+
+- **Cybernews**: Maintained that the findings were legitimate, and noted that it does not sell fixes.
+- **IDMerit**: Around the same time published blog posts on its no-storage design, without referring to the case directly.
 
 ## 6. Sources
 
