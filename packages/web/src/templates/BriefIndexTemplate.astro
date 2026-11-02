@@ -336,7 +336,6 @@ const labels = isJa
       heroDesc:
         "実際に起きたサイバー攻撃と事故を、公表資料から読み解きます。何が正しい操作として通ってしまったか、実行の前に何を照合するかまでを整理する解説レポートです。",
       newest: "新着",
-      impactK: "影響",
       selectedMark: "選択中",
       aboutK: "この対策とは",
       exampleK: "たとえば",
@@ -391,7 +390,6 @@ const labels = isJa
       heroDesc:
         "Real cyber attacks and incidents, read from public disclosures: what got through as a legitimate operation, and what to check before it runs.",
       newest: "Latest",
-      impactK: "Impact",
       selectedMark: "Selected",
       aboutK: "What this control is",
       exampleK: "For example",
@@ -624,20 +622,18 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
             </label>
             <button type="submit">{labels.fGo}</button>
           </form>
-          <div class="ix-list ix-list--cards">
+          <div class="ix-list">
             {restLatest.map((b) => {
               const c = briefCardData(b);
-              const ind = industryLabel(b);
-              const ctry = countryLabel(b);
+              const meta = [c.publishedStr, industryLabel(b), attackLabel(b)].filter(Boolean).join(" · ");
               return (
-                <a class="ix-row ix-row--card" href={c.href}>
-                  <span class="ix-row-top">
-                    {ctry && <span class="ix-ctry">{ctry}</span>}
-                    {ind && <span class="ix-chip">{ind}</span>}
-                    <time class="ix-date" datetime={c.publishedStr}>{c.publishedStr.slice(5)}</time>
+                <a class="ix-row" href={c.href}>
+                  <span class="ix-row-body">
+                    <span class="ix-row-m">{countryLabel(b) && <span class="ix-ctry">{countryLabel(b)}</span>}{meta}<span class="ix-row-no"> · No.{c.briefNoPad}</span></span>
+                    <span class="ix-row-t">{shortTitle(b)}</span>
+                    {b.data.impact && <span class="ix-row-i">{b.data.impact}</span>}
                   </span>
-                  <span class="ix-row-t">{shortTitle(b)}</span>
-                  <span class="ix-row-go" aria-hidden="true">→</span>
+                  <span class="ix-arrow" aria-hidden="true">→</span>
                 </a>
               );
             })}
@@ -1080,29 +1076,6 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
   .ix-rest .ix-filter {
     margin-bottom: 18px;
   }
-  .ix-list--cards {
-    column-gap: 16px;
-    row-gap: 16px;
-  }
-  .ix-list .ix-row--card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    margin: 0;
-    padding: 16px 44px 16px 18px;
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
-  }
-  .ix-list .ix-row--card:hover {
-    background: #fff;
-    border-color: rgba(124, 175, 0, 0.5);
-    box-shadow: 0 6px 18px rgba(31, 42, 34, 0.08);
-    transform: translateY(-1px);
-  }
   .ix-row-top {
     justify-content: flex-start;
     display: flex;
@@ -1132,43 +1105,6 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     font-family: var(--font-mono);
     font-size: 11px;
     color: #8a9083;
-  }
-  .ix-row--card .ix-row-t {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .ix-row-fig {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    font-size: 13.5px;
-    font-weight: 600;
-    line-height: 1.6;
-    color: var(--tx);
-  }
-  .ix-fig-k {
-    flex: none;
-    padding: 0 6px;
-    border-radius: 4px;
-    background: #1f2a22;
-    color: #c9ef5a;
-    font-size: 10.5px;
-    font-weight: 600;
-    line-height: 18px;
-  }
-  .ix-row-go {
-    position: absolute;
-    right: 16px;
-    bottom: 14px;
-    font-size: 14px;
-    color: var(--tx-soft);
-    transition: transform 0.15s, color 0.15s;
-  }
-  .ix-row--card:hover .ix-row-go {
-    color: var(--ok-light);
-    transform: translateX(3px);
   }
   .ix-pick {
     display: flex;
