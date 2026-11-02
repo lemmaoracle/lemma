@@ -95,6 +95,8 @@ What detection stopped was the published release, not the environments that had 
 
 ### Current controls vs Lemma
 
+This case is the leftmost column (a build from a fork's source). The two columns on the right are other routes that did not occur here, and no control covers them well.
+
 | Control | Build from a fork's source | Rewriting the official tag itself | Malicious release from the holder of the approval key |
 | --- | --- | --- | --- |
 | Checking signatures and publishing provenance (cosign, Trusted Publishing) | Not effective | Not effective | Not effective |
