@@ -1,7 +1,7 @@
 ---
 brief_no: 163
-title: "米リバティ市：取引先に似せたドメインから本物と同じ額の請求が届き、市が送金した(市の声明) — 支払いの請求が本当にその取引先から出たかを、送金の前に照合する層が見えない"
-title_en: "City of Liberty, Texas: A lookalike vendor domain sent a request for the exact amount owed, and the city paid it (city statement) — No check, before paying, that the request really came from that vendor is visible"
+title: "米リバティ市：取引先に似せたドメインから本物と同じ額の請求が届き、市が送金した(市の声明)"
+title_en: "City of Liberty, Texas: A lookalike vendor domain sent a request for the exact amount owed, and the city paid it (city statement)"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
@@ -15,11 +15,12 @@ version: "1.0"
 og_lead_ja: "米リバティ市、取引先に似せたドメインの請求に応じ約 60 万ドルを送金 — 債務の額は本物と同じだった"
 og_lead_en: "City of Liberty, Texas, wired ~$600K on a lookalike-domain request that matched a real debt"
 layout: "report"
+sections: "proof"
+gate: "payment-instruction"
 og_kicker_ja: "サイバー攻撃事例 · なりすましメール"
 og_kicker_en: "CYBERATTACK · LOOKALIKE DOMAIN"
 og_headline_ja: "取引先に似せたドメインから、\n本物と同じ額の請求が届いた。\n<accent>約 60 万ドルを送金</accent>"
 og_headline_en: "A lookalike domain sent a request\nfor the exact amount owed.\n<accent>About $600K wired.</accent>"
-summary_labels: ["What happened", "Why it can't be told apart", "The missing layer"]
 key_figures:
   - value: "~$600K"
     label: "Wired in response to a payment request impersonating a vendor (city statement)"
@@ -36,7 +37,7 @@ glossary:
 insight:
   slug: "real-debt-fake-sender"
   label: "Real contents, fake sender"
-  quote: "The amount requested matched a debt the city really owed. The more accurate the contents, the more genuine the request looked, No check of the sender before payment is visible in the disclosure."
+  quote: "When the amount requested matches a debt that is really owed, no amount of scrutiny of the contents shows whether the sender is genuine."
 industries: ["public-sector"]
 operations: ["approval", "payment-change"]
 controls:
@@ -46,77 +47,48 @@ controls:
     item: "Record which request was paid, and how it was confirmed"
 attack_method: "impersonation"
 impact: "About $600K wired in response to a request from a lookalike vendor domain"
-takeaway: "A request for the exact amount of a real debt came from a domain made to look like the vendor's. No check, before paying, that it really came from that vendor is visible in the disclosure."
+takeaway: "A request for the exact amount of a real debt came from a domain made to look like the vendor's. Before paying, confirm that it really came from that vendor, through the vendor's registered contact."
 self_check: "Can you confirm, before paying, that a vendor's payment request really came from that vendor?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-On October 14, 2026, the City of Liberty, Texas, announced it had wired about $600,000 in response to a payment request sent from a lookalike email domain impersonating a vendor. After the payment went through, the receiving bank alerted the city's bank to possible fraud.
+The city really owed that vendor exactly the amount requested, and says the genuine debt shaped its initial view that the request was valid. The receiving bank flagged possible fraud only after the payment had gone through. <strong>When the amount requested matches a debt that is really owed, no amount of scrutiny of the contents shows whether the sender is genuine.</strong>
 
-The city really owed that vendor exactly the amount requested, and says the genuine debt shaped its initial view that the request was valid. When the contents are right, the sender's display alone cannot reveal the fake.
+## 2. What got through
 
-The receiving bank flagged possible fraud, but only after the money had gone. What is not visible is the layer that checks, before paying, that a payment request really came from that vendor.
+- **What got through**: A wire transfer made on a payment request that arrived by email from a lookalike vendor domain. The city wired about $600,000 (City of Liberty statement).
+- **What reached the receiving side**: In general, a payment request arrives as an amount, a vendor name and a sender display. When the amount matches a real debt, the contents cannot tell it apart. A lookalike domain is hard to spot by sight.
+- **Not disclosed**: The transfer date, the vendor's name, whether the request named a new bank account, who approved it, and whether any money was recovered. How the attacker learned of the vendor and the amount owed (for example, whether the vendor's email was compromised). The city says it cannot give details during the investigation.
 
-## 2. What happened
+## 3. What to check
 
-- **Party**: The City of Liberty, Texas, northeast of Houston.
-- **What happened**: A payment request arrived by email from a lookalike domain impersonating a real vendor the city owed. The city wired about $600,000 in response.
-- **Why it was hard to spot**: The city had a legitimate outstanding obligation to the vendor in the amount of the transfer, which it says contributed to the initial assessment that the request was valid.
-- **How it came to light**: After the payment went through, the receiving bank alerted the city's bank that the transfer appeared potentially fraudulent.
-- **City systems**: The city says its internal network was not compromised; the incident appears to have been an isolated one from outside, using a domain designed to closely resemble the vendor's email address.
-- **Not disclosed**: The transfer date, the vendor's name, whether the request named a new bank account, who approved it, and whether any money was recovered. How the attacker learned of the vendor and the amount owed (for example, whether the vendor's email was compromised). The city says it cannot give details during the investigation. No legitimate party, including the city, the vendor or the city's consultants, is suspected of wrongdoing.
+Whatever the route, the condition for telling them apart is that whoever wires money on a payment request checks, before paying and through a channel other than the email, that the request really came from that vendor, using the vendor's registered contact.
 
-As far as disclosed, the attack ran as follows.
-
-<figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain, as far as disclosed</span></div>
-<p class="rx-ex-cap">The stopping point is ②. Had the city checked, through a channel other than the email, that the request really came from the vendor, the transfer in ③ would not happen.</p>
-<div class="rx-chain">
-<div class="rx-step crit"><div class="who">Third party</div><div class="no">1</div><b>Requests payment from a lookalike vendor domain</b><p>For the exact amount the city really owed.</p></div>
-<div class="rx-step crit"><div class="who">City</div><div class="no">2</div><b>Judges the request genuine against the real debt</b><p>No check of the sender is visible in the disclosure.</p></div>
-<div class="rx-step crit"><div class="who">City</div><div class="no">3</div><b>Wires about $600K</b><p>Date not disclosed.</p></div>
-<div class="rx-step good"><div class="who">Bank</div><div class="no">4</div><b>The receiving bank flags possible fraud</b><p>After the payment went through.</p></div>
-</div>
-</figure>
-
-## 3. Timeline — disclosure and response
-
-- **Transfer date (not disclosed)**: The city wires about $600,000 in response to the impersonated request. The receiving bank then alerts the city's bank to possible fraud.
-- **2026-10-14**: The city issues a statement disclosing the incident.
-
-> The facts rely on the City of Liberty's statement (primary). Press coverage repeats the statement; we found no further facts. The transfer date and recovery status have not been disclosed.
-
-### After disclosure
-
-- **City of Liberty**: Says it has strengthened its review of vendor payment verification procedures, filed an insurance claim and is cooperating with federal law enforcement. The Liberty Police Department is investigating with federal agencies.
-
-## 4. Why it wasn't stopped
-
-The failure was not a lack of attention to the contents. **The contents were right, and no check, before paying, that the request really came from that vendor is visible in the disclosure.**
+- **Who approves**: The vendor. It confirms that it sent the request through the contact registered in advance (not a contact written in the request email).
+- **Where it is checked**: The approval step before the payment is carried out. Whether the contents are right and whether the sender is real are checked separately. A request whose sender cannot be confirmed is held, not paid.
+- **What is recorded**: Which request was paid, and through which contact it was confirmed, so you can show insurers or investigators what was checked before paying.
 
 <figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The gap between detection and proof</span></div>
-<p class="rx-ex-cap">Proof here means checking, before paying and through a channel other than the email, that a payment request really came from that vendor, and keeping a record. Detection means noticing possible fraud after the payment.</p>
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means confirming, before wiring money on a payment request and through a channel other than the email, that the request really came from that vendor, and keeping a record. Detection means noticing possible fraud after the payment. The transfer date has not been disclosed.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Proof layer · not visible</b>Check the request's sender before paying</div>
-<div class="rx-zone gapz"><b>Gap</b><span>About $600K<br>wired</span></div>
-<div class="rx-zone det"><b>Detection layer · worked</b>The receiving bank flags possible fraud</div>
-<div class="rx-g g1"><div class="t">STEP 1</div><b>Lookalike-domain request</b></div>
-<div class="rx-g g2"><div class="t">STEP 2</div><b>Matches the real debt</b></div>
-<div class="rx-g g3"><div class="t">STEP 3</div><b>Wire transfer</b></div>
-<div class="rx-g g4"><div class="t">STEP 4</div><b>Bank alert</b></div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before paying, confirm the sender through the registered contact</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>About $600K was wired<br>The amount matched a real debt</span></div>
+<div class="rx-zone det"><b>Detection · worked</b>After the payment, the receiving bank flags possible fraud</div>
+<div class="rx-g g1"><div class="t">Request</div><b>Arrives from a lookalike domain</b></div>
+<div class="rx-g g2"><div class="t">Payment</div><b>About $600K wired (date not disclosed)</b></div>
+<div class="rx-g g3"><div class="t">Alert</div><b>The receiving bank flags it</b></div>
+<div class="rx-g g4"><div class="t">10-14</div><b>The city issues a statement</b></div>
 </div>
 </figure>
 
-When the amount matches a real debt, no amount of scrutiny of the contents tells it apart; only checking the sender does. That distance is the **gap between detection and proof**, and it is structural.
+Detection worked, but only after the payment had gone through. A similar case, where being "from a legitimate route" stood in for "being a correct operation", is [Polaris Holdings / Booking.com](/critical/briefs/032-booking-payout-account-tampering/) (a hotel's payout account was switched in the legitimate admin screen).
 
-The same structure appears in [Polaris Holdings / Booking.com](/critical/briefs/032-booking-payout-account-tampering/) (a hotel's payout account was switched in the legitimate admin screen).
+## 4. What Lemma does
 
-## 5. How to counter this
-
-**Pay a request only once the sender has been confirmed through the vendor's registered contact.** Check whether the contents are right and whether the sender is real separately. Then even a request for the exact amount owed does not get paid if it came from a lookalike domain. It sits in front of detection, not in place of it.
+**Lemma builds the check in section 03 into the side that wires money on a payment request.** It does not look for intrusions; it confirms, before the payment, that the request is one that could be confirmed through the vendor's registered contact.
 
 ### Industries and operations to watch
 
@@ -124,20 +96,21 @@ The same structure appears in [Polaris Holdings / Booking.com](/critical/briefs/
 - **Operation · Approval**: Approving payments based on vendor requests.
 - **Operation · Bank account changes**: Bank details named or changed alongside a payment request (not disclosed here).
 
-### Do today's controls close it?
+### Current controls vs Lemma
 
-| Control | This case | Why |
-| --- | --- | --- |
-| Checking the request's contents | Partial | The amount matched a real debt. The more accurate the contents, the more genuine it looks. |
-| Checking the email sender | Partial | The domain was made to look like the real one. Hard to tell by sight. |
-| Bank fraud detection | Partial | The receiving bank noticed only after the payment. |
-| Insurance | Ineffective | May cover the loss, but does not stop the payment. |
+The route in this case is column 1 (a request from a lookalike domain). Column 2 is where the request names a new bank account; whether it did here has not been disclosed. Column 3 is where the vendor's registered contact itself has been taken over.
 
-### What is needed
+| Control | Request from a lookalike domain | Request naming a new bank account | Vendor's registered contact taken over |
+| --- | --- | --- | --- |
+| Checking the request's contents | Partial | Partial | Not effective |
+| Checking the email sender | Partial | Partial | Not effective |
+| Bank fraud detection | Partial | Partial | Partial |
+| Insurance | Not effective | Not effective | Not effective |
+| **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-1. **Confirm the sender through a channel other than the email.** Ask the vendor's registered contact whether it sent the request.
-2. **Do not pay requests whose sender cannot be confirmed.** Even when the contents match a real debt, do not skip the check.
-3. **Record which request was paid, and how it was confirmed.** Keep the result as proof, separate from the request email, so you can show insurers or investigators what was checked before paying.
+Checking the contents did not settle it, because the amount matched a real debt and the more accurate the contents, the more genuine the request looked. Checking the email sender is hard when the domain is made to look like the real one. Bank detection noticed only after the payment. Insurance may cover the loss but does not stop the payment. Lemma checks the sender, not the contents, against the registered contact before paying.
+
+Note: Lemma's check works only when it is built into the approval step before payment and the vendor's registered contact is managed apart from the request email. It passes if the vendor's registered contact itself has been taken over. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -147,7 +120,24 @@ Three things to confirm about vendor payment requests
 - Do you confirm requests through the registered contact, not a contact in the email itself?
 - Do your procedures assume vendors and amounts owed can be learned from public records?
 
-Note: if the vendor's registered contact itself is compromised, this check can be passed. The city has not disclosed the transfer date or how bank details were handled; we will revise this Brief if they become known.
+## 5. Facts and timeline
+
+- **Party**: The City of Liberty, Texas, northeast of Houston.
+- **What happened**: A payment request arrived by email from a lookalike domain impersonating a real vendor the city owed. The city wired about $600,000 in response.
+- **Why it was hard to spot**: The city had a legitimate outstanding obligation to the vendor in the amount of the transfer, which it says contributed to the initial assessment that the request was valid.
+- **How it came to light**: After the payment went through, the receiving bank alerted the city's bank that the transfer appeared potentially fraudulent.
+- **City systems**: The city says its internal network was not compromised; the incident appears to have been an isolated one from outside, using a domain designed to closely resemble the vendor's email address. No legitimate party, including the city, the vendor or the city's consultants, is suspected of wrongdoing.
+
+### Timeline
+
+- **Transfer date (not disclosed)**: The city wires about $600,000 in response to the impersonated request. The receiving bank then alerts the city's bank to possible fraud.
+- **2026-10-14**: The city issues a statement disclosing the incident.
+
+> The facts rely on the City of Liberty's statement (primary). Press coverage repeats the statement; we found no further facts. The transfer date and recovery status have not been disclosed. What has not been disclosed does not mean there were no controls.
+
+### After disclosure
+
+- **City of Liberty**: Says it has strengthened its review of vendor payment verification procedures, filed an insurance claim and is cooperating with federal law enforcement. The Liberty Police Department is investigating with federal agencies.
 
 ## 6. Sources
 
