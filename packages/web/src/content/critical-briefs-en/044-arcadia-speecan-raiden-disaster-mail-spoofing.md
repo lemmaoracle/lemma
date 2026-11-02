@@ -44,7 +44,7 @@ industries: ["public-sector", "finance"]
 operations: ["delivery"]
 controls:
   - slug: "ownership-check"
-    item: "Attach proof that the municipality issued the notice"
+    item: "Attach a signature that confirms the municipality issued the notice"
   - slug: "hold-unverified"
     item: "Do not act on notices that cannot be verified"
   - slug: "audit-trail"
