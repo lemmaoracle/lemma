@@ -2476,6 +2476,75 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       gap: 14px;
     }
   }
+  /* スマホ：対策のページの先頭は、8 つの大きなカードで 1 画面以上を使い、Brief の一覧が下すぎた（2026-11-02）。
+     横に流れる 1 行のチップにして、選んでいるものは黒いまま。説明のカードも詰める。 */
+  @media (max-width: 620px) {
+    .ix-cnav {
+      margin: 12px 0 18px;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .ix-cnav .ix-ctl-grid {
+      min-width: 0;
+      max-width: calc(100% + 32px);
+      display: flex;
+      overflow-x: auto;
+      gap: 8px;
+      margin: 10px -16px 0;
+      padding: 2px 16px 6px;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+    }
+    .ix-cnav .ix-ctl-grid::-webkit-scrollbar {
+      display: none;
+    }
+    .ix-cnav .ix-ctl {
+      flex: 0 0 auto;
+      width: 190px;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px 8px 8px;
+      border-radius: 12px;
+      scroll-snap-align: start;
+    }
+    .ix-cnav .ix-ctl-ic {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+    }
+    .ix-cnav .ix-ctl-ic svg {
+      width: 18px;
+      height: 18px;
+    }
+    .ix-cnav .ix-ctl-tx b {
+      font-size: 12.5px;
+      line-height: 1.4;
+    }
+    .ix-cnav .ix-ctl-tx span,
+    .ix-cnav .ix-ctl.is-active .ix-ctl-sel {
+      display: none;
+    }
+    .ix-cnav.has-active .ix-ctl:not(.is-active) {
+      opacity: 0.7;
+    }
+    .ix-cintro {
+      margin-top: 10px;
+      padding: 14px 16px;
+      gap: 10px;
+    }
+    .ix-cintro-desc {
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .ix-cintro-ex {
+      padding: 10px 12px;
+    }
+    .ix-cintro-ex p {
+      font-size: 13px;
+      line-height: 1.65;
+    }
+  }
 </style>
 
 <script>
@@ -2643,6 +2712,12 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
       ctlIntros.forEach((d) => {
         d.hidden = d.dataset.controlIntro !== facets.control;
       });
+      // スマホでは対策が横に流れる 1 行なので、選んでいるものを行の中で見える位置に寄せる（ページはスクロールしない）。
+      const activeCtl = ctlNav.find((a) => a.dataset.controlPick === facets.control);
+      const strip = activeCtl?.parentElement;
+      if (activeCtl && strip && strip.scrollWidth > strip.clientWidth) {
+        strip.scrollLeft = Math.max(0, activeCtl.offsetLeft - strip.offsetLeft - 16);
+      }
     }
     function syncPills() {
       syncControlNav();
