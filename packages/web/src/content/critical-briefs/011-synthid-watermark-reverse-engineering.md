@@ -22,6 +22,8 @@ countries: ["global"]
 controls:
   - slug: "check-origin"
     item: "成果物の出どころを、埋め込んだ印ではなく、生成元の署名で確認する"
+search_title: "SynthID の透かしが剥がされた：来歴印の限界"
+search_description: "Google DeepMind の透かし SynthID が、統計的に剥がされたとする報告（Alosh Denny）。成果物に埋めた来歴印は、除去も偽造もされうる。何が示されたか、確認する点を整理。"
 ---
 
 ## 1. TL;DR
