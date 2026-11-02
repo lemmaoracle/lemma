@@ -1,7 +1,7 @@
 ---
 brief_no: 11
-title: "SynthID 透かしが統計的に剥がされた — 成果物に埋めた来歴印は除去も偽造もされうる（Google DeepMind / Alosh Denny）"
-title_en: "SynthID Watermark, Statistically Stripped — a provenance mark that can be removed and forged (Google DeepMind / Alosh Denny)"
+title: "SynthID：Google DeepMind の AI 画像の透かしが、統計的な解析だけで剥がされた(Alosh Denny の研究)"
+title_en: "SynthID: Google DeepMind's AI-image watermark was stripped by statistical analysis alone (Alosh Denny's research)"
 pillar: "01-verifiable-origin"
 primary_category: "data-provenance"
 secondary_categories: ["ai-decision-integrity"]
@@ -13,92 +13,135 @@ related_briefs: ["008-discord-scraping", "005-noroboto-lying-fonts", "022-onlyfa
 version: "1.0"
 status: published
 gate: "intake"
-og_lead_ja: "SynthID 透かしが統計的に剥がされた — 成果物に埋めた来歴印は除去も偽造もされうる"
-og_lead_en: "SynthID Watermark, Statistically Stripped — a provenance mark that can be removed and forged"
-gap_detected: "透かしと検出 API は、コンテンツを大規模に「AI 生成らしいか」とラベル付けする初期選別としては機能する。"
-gap_missing: "来歴の印を成果物そのものに埋め込むため、十分な量を観測すれば統計的に印を剥がすことも、偽って付けることもできてしまう。"
-gap_fix: "コンテンツの真偽を判断する前に「この成果物は正規の生成主体によって作られたものか」を、成果物の外側に置いた証明として Lemma で独立検証して、事前に防ぐ。"
+og_lead_ja: "SynthID：Google DeepMind の AI 画像の透かしを、統計的な解析で約 91% 除去したと研究者が報告（Alosh Denny）"
+og_lead_en: "SynthID: a researcher reports removing about 91% of Google DeepMind's AI-image watermark by statistical analysis (Alosh Denny)"
+search_title: "SynthID の透かしの除去：研究の報告と対策"
+search_description: "研究者 Alosh Denny が、Google DeepMind の AI 画像の透かし SynthID を、2D フーリエ変換と位相の解析だけで約 91% 除去したと報告した。何が通ったか、何を照合するか、対策を整理。"
+layout: "report"
+sections: "proof"
+og_kicker_ja: "AI の研究実証 · 透かしの除去"
+og_kicker_en: "AI RESEARCH · WATERMARK REMOVAL"
+og_headline_ja: "SynthID の透かしが\n統計的に剥がせると\n研究者が報告。\n<accent>約 91% を除去</accent>"
+og_headline_en: "A researcher reports\nSynthID's watermark\ncan be stripped.\n<accent>About 91% removed</accent>"
+key_figures:
+  - value: "約 91"
+    unit: "%"
+    label: "除去できた透かしのエネルギーの割合。任意の解像度の Gemini 画像で再現した（Alosh Denny の公開した結果）"
+    tone: "alert"
+  - value: "123,000"
+    unit: "枚"
+    label: "平均して透かしの周波数のパターンを取り出すのに使った Gemini 生成画像の数"
+  - value: "43.5"
+    unit: "dB"
+    label: "除去した後の画質（PSNR。SSIM は 0.997）。画質はほぼ保たれた"
+glossary:
+  - term: "透かし（SynthID）"
+    desc: "AI が生成した画像に、目に見えない形で埋め込む印。Google DeepMind の SynthID は Gemini が生成した画像に埋め込み、検出 API で AI 生成かを判定する。"
+  - term: "位相シフト攻撃"
+    desc: "透かしが置かれた特定の周波数を狙って位相を操作し、印を無効にする手法（Denny の説明）。"
+insight:
+  slug: "mark-inside-the-artifact"
+  label: "成果物の中に埋めた来歴の印"
+  quote: "成果物の中に埋めた印は、十分な量を観測すれば剥がすことも付けることもできるので、出どころは、印の有無ではなく、生成元の署名を受け付けの前に照合しない限り分からない。"
 industries: ["ai", "media"]
 countries: ["global"]
 controls:
   - slug: "check-origin"
     item: "成果物の出どころを、埋め込んだ印ではなく、生成元の署名で確認する"
-search_title: "SynthID の透かしが剥がされた：来歴印の限界"
-search_description: "Google DeepMind の透かし SynthID が、統計的に剥がされたとする報告（Alosh Denny）。成果物に埋めた来歴印は、除去も偽造もされうる。何が示されたか、確認する点を整理。"
+takeaway: "研究者が、SynthID の透かしを統計的な解析だけで約 91% 除去したと報告した。画像の出どころは、埋め込んだ印の有無ではなく、生成元の署名を受け付けの前に照合する。"
+self_check: "届いた画像の出どころを、埋め込まれた印とは別に、生成元の署名で照合しているか。"
 ---
 
-## 1. TL;DR
+## 1. 要点
 
-SynthID — Google DeepMind の AI 画像向け透かし — が、2026 年 3 月、研究者 Alosh Denny によって 2D フーリエ変換と位相コヒーレンス分析だけ（ニューラルネットも専有アクセスも使わず）でリバースエンジニアリングされた。画質をほぼ保ったまま透かしの約 91% を除去でき、同じ原理で非 AI 画像への偽装も成立する。攻撃事案ではなく研究実証だが、成果物に埋め込んだ印は統計的に剥離・偽造されうる構造を示す。
+研究者は、ニューラルネットも、提供元だけが持つ情報も使わずに、生成画像を大量に平均するだけで、透かしの鍵に当たるパターンを取り出したと報告している。取り出せる以上、逆の操作で、AI で作られていない画像に印を付けることも、同じ原理で成り立ち得る。透かしの検出は、大量のコンテンツを AI 生成らしいかで選り分ける層としては働くが、規制の報告や訴訟で「印が無い＝AI 生成でない」「印が有る＝そのモデルが生成した」と扱う根拠にはならない。<strong>成果物の中に埋めた印は、十分な量を観測すれば剥がすことも付けることもできるので、出どころは、印の有無ではなく、生成元の署名を受け付けの前に照合しない限り分からない。</strong>
 
----
+## 2. 通った操作
 
-## 2. 何が起きたか
+- **通った操作**: Gemini が生成した画像から、SynthID の透かしのエネルギーの約 91% を、画質をほぼ保ったまま取り除く処理。手法・コード・結果は GitHub（`aloshdenny/reverse-SynthID`）で公開された（Alosh Denny の報告）。
+- **手法**: SynthID が、固定の搬送周波数を一定の位相で符号化していることを観測し、123,000 枚の Gemini 生成画像のノイズを平均して、透かしの周波数のパターン（鍵に当たるもの）を取り出す。そのうえで、位相シフト攻撃でその周波数を狙い、印を無効にする。ニューラルネットも、提供元だけが持つ情報も使っていない（Denny の説明）。
+- **受け付けた側に届くもの**: 一般に、画像を受け取る側に届くのは画像そのものであり、印を剥がされた画像と、もともと印の無い画像は、印の有無からは区別できない。パターンを取り出せる以上、非 AI の画像に印を付ける逆の操作（誤った帰属）も、同じ原理で成り立ち得る。
+- **公表されていないこと**: 除去や偽造をした画像が、実際の受け付けの場（モデレーション・規制の報告・訴訟）で通った事例。Google DeepMind の公式の声明（公式のチャネルからは確認できていない）。
 
-- **対象システム**: Google DeepMind SynthID（AI 生成画像に不可視透かしを埋め込み、検出 API で AI 生成か否かを判定する仕組み。Gemini 生成画像が対象）
-- **実証者**: Alosh Denny（独立研究者）
-- **公表形態**: 手法・コード・結果を GitHub（`aloshdenny/reverse-SynthID`）で公開。テキスト版検出を対象とする `reverse-SynthID-text` も併存。技術コミュニティ（Hacker News 等）で議論
-- **時期**: 2026-03-05（公開 disclosure、Medium 「How to Reverse SynthID (legally😉)」公開時点。GitHub 初コミットは 2025-12-15、Hacker News 議論は 2026-04-11 前後）
-- **手法**: ニューラルネット不使用・proprietary access 不使用。123,000 枚の Gemini 生成画像を用い、SynthID が固定 carrier 周波数を一定位相で符号化する性質を観測。多数画像を平均して透かしの周波数領域シグネチャ（鍵に相当するパターン）を抽出し、phase-shift attack で当該周波数を狙って無効化
-- **結果**: 透かしエネルギーの約 91% を除去、画質はほぼ無損（PSNR 43.5 dB / SSIM 0.997）、任意解像度の Gemini 画像で再現
-- **性質**: 攻撃 incident（被害組織・被害額のある事案）ではなく、来歴標識の構造的限界を示すセキュリティ研究の実証
+## 3. 何を照合するか
 
-事象は次の連鎖で成立している。
+経路を問わず区別できる条件は、画像を受け付ける前に、その画像を生成した主体が出した署名を、画像の中の印とは別に照合することである。
 
-1. **観測（Observation）**: SynthID が画像群に対し固定 carrier 周波数を一定位相で符号化していることを特定。透かしが出力間で一貫しているため、複数画像にわたり共通の周波数領域シグネチャが現れる
-2. **鍵抽出（Key extraction）**: 多数の Gemini 生成画像（実証では 123,000 枚）のノイズを平均し、共通パターン＝透かしのシグネチャを分離。proprietary access なしに「鍵に相当するもの」を統計的に復元
-3. **除去（Removal）**: phase-shift attack により、透かしが存在する特定周波数を狙って位相を操作し、標識を無効化。画質に視認可能な損傷を与えずに透かしエネルギーの約 91% を除去
-4. **偽造可能性（Forging surface）**: 透かしのシグネチャが復元される以上、除去の逆操作——非 AI 生成コンテンツへの透かし注入（misattribution）——も同じ原理で成立し得る。透かしの「有無」が真正性の判定基準である限り、両方向の改ざんが脅威になる
-5. **規制との衝突（Regulatory collision）**: 透かしが真正性の制度的根拠（EU AI Act の透明性要件など）として要件化される一方、上記のとおり剥離・偽造が可能なため、「透かしの有無＝来歴の真偽」という前提自体が成立しない
+- **誰が承認を出すか**: 画像を生成した主体（モデルの提供者・生成のサービス）。生成したときに、署名付きの manifest として、正規の生成元が作ったことを示す。
+- **どこで照合するか**: 画像を受け付ける手前。モデレーション、規制の報告、訴訟の資料として扱う前に、生成元の署名を照合する。署名が無い・合わないものは「生成元を確認できない」として扱い、印の有無だけで AI 生成かを決めない。
+- **何が残るか**: どの画像を、どの生成元の署名の照合を通して受け付けたかの記録。後から、どの判断が何を根拠にしたかを辿れる。
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
+<p class="rx-ex-cap">実行の前の照合＝画像を受け付ける前に、生成元の署名を照合し、記録に残すこと。検知＝画像の中に埋め込んだ印から、後で AI 生成かを判定すること。下の日付は、公開と報道に基づく経過である。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>受け付けの前に、画像の外にある生成元の署名を照合する</div>
+<div class="rx-zone gapz"><b>確認されたこと</b><span>透かしのエネルギーの約 91% を除去、<br>画質はほぼ保たれた（Denny の報告）</span></div>
+<div class="rx-zone det"><b>検知 · 画像の中の印で判定する</b>SynthID の検出 API が、埋め込んだ印から AI 生成かを判定する</div>
+<div class="rx-g g1"><div class="t">2025-12-15</div><b>GitHub のリポジトリを立ち上げ</b></div>
+<div class="rx-g g2"><div class="t">2026-03-05</div><b>Medium で手法を公開</b></div>
+<div class="rx-g g3"><div class="t">04-11 前後</div><b>Hacker News で議論</b></div>
+<div class="rx-g g4"><div class="t">2026-04 以降</div><b>MediaNama などが報道</b></div>
+</div>
+</figure>
 
-## 3. 時系列 — 公表と対応
+透かしの検出は、AI 生成らしさを大規模に選り分ける層として実務の価値を持ち、本 Brief はその役割を否定しない。ただ、印が画像と同じ信号の中にある限り、印とは別に生成元を照合する層が要る。データの来歴がデータの中身に残らない型の事案に [Discord](https://lemma.frame00.com/ja/critical/briefs/008-discord-scraping/)（公開 API で集めたメッセージの公開）、AI への入力の真正性が照合されない型の事案に [Noroboto](https://lemma.frame00.com/ja/critical/briefs/005-noroboto-lying-fonts/)（フォントの偽装による AI の文書レビューの誤誘導）がある。
 
-- 2025-12-15: Alosh Denny が GitHub repo `aloshdenny/reverse-SynthID` を非公開で立ち上げ（dev 開始）
-- 2026-03-05: Medium 「How to Reverse SynthID (legally😉)」で reverse-engineering 手法を公開 disclosure
-- 2026-04-11 前後: Hacker News（item 47709130）で議論拡大、技術コミュニティ横断で関心が広がる
-- 2026-04 以降: 同手法を踏まえた SynthID 透かし bypass ツールの存在が一般メディアでも報道（MediaNama 等）
-- 2026-08-02: EU AI Act の AI 生成コンテンツ透かし義務（透明性要件）適用開始予定。透かしが規制要件化する局面と、透かしの剥離可能性が実証された局面が重なる
+## 4. Lemma でできること
 
-> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。本事案は攻撃 incident ではなく研究・ラボ実証であり、被害規模・運用上の影響を誇張しない。
+**Lemma は、03 の照合を、画像を受け付ける手前に置く。** 透かしを検出するのでも、AI 生成らしさを判定するのでもなく、画像が正規の生成元によって作られたかを、画像の外に置いた生成元の署名で、受け付けの前に照合する。
 
-公表後の対応と業界の動きは次のとおり。
+### 注意したい業界・業務
 
-- **Google DeepMind**: SynthID は AI 生成コンテンツの識別を目的とした透かし技術として提供されている。本事案を受けた公式 statement は公式チャネル（blog / press release）から独立に確認できなかった。一部の二次報道（techbuzz.ai、stork.ai 等）は The Verge を典拠として Google が SynthID 侵害認識を否定したと記述するが、典拠記事を本 Brief で独立確認できないため確定情報としては扱わない。透かしの堅牢性をめぐる議論への DeepMind の関与は今後の論点
-- **規制動向**: EU AI Act は AI 生成コンテンツへの透かし / 透明性要件を 2026-08-02 から適用予定。透かしが規制上の必須要件になる局面と、透かしの剥離・偽造可能性が実証された局面が重なり、「透かしを義務化すれば来歴が担保される」という前提自体が問われている。AI 画像生成器のうち十分な透かしを実装しているのは一部にとどまるとの学術報告もある
-- **学術動向**: 生成コンテンツ向け透かしへの攻撃研究が 2025–2026 年に増加。UnMarker（USENIX Security 2025）は防御的透かしへの汎用攻撃を初めて提示したとされ、本事案はこの流れの中の具体的実証に位置づく
+- **業界 · AI**: 画像を生成して外へ出すモデルの提供者と生成のサービス。EU AI Act の透かし・透明性の要件で、AI 生成コンテンツの来歴の示し方が論点になる。
+- **業界 · メディア**: 届いた画像の真正性を扱う報道機関とプラットフォーム。AI 生成コンテンツのラベリング・モデレーション・初期選別に透かしを使う。
 
-「AI 生成コンテンツの来歴をどの層で担保するか」は、透かしの規制要件化と剥離可能性の実証が同時に進む中で、業界横断の論点として顕在化している。
+### いまの対策と Lemma の違い
 
----
+今回実証された経路は、1 列目（透かしを取り除いた AI 生成画像）である。2 列目は、同じ原理で成り立ち得ると整理される逆の操作で、実際に行われたかは公表されていない。
 
-## 4. なぜ止まらなかったか
+| 対策 | 透かしを取り除いた AI 生成画像を、AI 生成でないものとして受け付ける | 非 AI の画像に偽って付けた印を、そのモデルの生成として受け付ける | 大量のコンテンツを、AI 生成らしいかで選り分ける |
+| --- | --- | --- | --- |
+| 透かしと検出 API（SynthID） | 効かない | 効かない | 一部 |
+| **Lemma（実行の前の照合）** | 一部 | 効く | 関係しない |
 
-中心的な<strong>失敗 primitive は「来歴標識を成果物そのものに埋め込むこと（embedded provenance marking）」</strong>であり、その標識が成果物と同じ統計的特性を持つために、外部から観測・抽出・除去・偽造され得る。来歴の主張（この画像は AI 生成である / ない）が、それを独立検証する別系統の証明と切り離されている。secondary に `ai-decision-integrity` を併記し、AI 出力の検証可能性（Pillar 02）との straddle を記録する。
+透かしと検出 API は、大規模な初期選別には使えるが、印が画像と同じ信号の中にあるため、取り除かれた印も、偽って付けられた印も、印の有無からは見分けられない。Lemma は、画像の外にある生成元の署名を照合するので、偽って付けた印は署名の照合を通らない。印を取り除いた画像は、署名が無いものとして扱われ、「AI 生成でない」の根拠にはならないが、AI 生成かどうかを Lemma が判定するわけではない。
 
-本事案は、[Brief 008](https://lemma.frame00.com/ja/critical/briefs/008-discord-scraping/)（Discord scraping）に続く「攻撃 incident ではない信頼層リスク事象」の事例である（Methodology の射程拡張に基づく）。[Brief 008](https://lemma.frame00.com/ja/critical/briefs/008-discord-scraping/) が公開 API + ToS を通じた訓練データの来歴の問題を扱ったのに対し、本事案は AI 生成 **出力** の来歴標識の問題を扱う。両者は「データ / コンテンツの来歴が、それを検証する独立 layer を欠く」という構造で同根。[Brief 005](https://lemma.frame00.com/ja/critical/briefs/005-noroboto-lying-fonts/)（Noroboto、フォント偽装による AI 文書レビューの誤誘導）とも、コンテンツの真正性の主張が独立検証されないという論点で隣接する。前者は AI への入力、本事案は AI からの出力という対称性を持つ。
+注：Lemma の照合が働くのは、生成元が生成のときに署名を出し、受け付ける側がモデレーション・報告・審査の手前に照合を組み込んでいる場合に限る。署名を出さない生成元の画像は、照合の対象にならない。署名の鍵は、生成元が成果物の外で管理していることが前提で、鍵が漏れれば通りうる。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入を検出・防止するものではない。
 
-透かしと、その検出 API は、AI 生成コンテンツのラベリング・コンテンツモデレーション・初期スクリーニングに有用であり、本 Brief がその役割を否定するものではない。大規模に「AI 生成らしさ」を判定する層として、透かしは実務的な価値を持つ。
+### 点検チェックリスト
 
-一方で、透かしは標識を成果物の内部に埋め込む detection 的アプローチであり、標識が成果物と同じ信号空間に存在する以上、十分な観測量があれば統計的に分離・除去・偽造され得る。本事案はその構造を実証した。受信側が「この画像は本当に当該モデルが生成したものか」を判定する基準が透かしの有無である限り、攻撃者は除去（来歴の消去）と注入（来歴の偽造）の双方を行える。規制報告・訴訟・コンテンツ真正性の立証で「透かしが無い ＝ 非 AI 生成」「透かしが有る ＝ 当該モデル生成」と扱うことは、独立した証跡を伴わない。学術側でも汎用的な透かし除去・偽造攻撃（例: USENIX Security 2025 の UnMarker、arXiv の Warfare）が 2023–2026 年に相次いで示されており、本事案は孤立した事例ではない。
+AI 生成のコンテンツを扱う組織で確認する 3 項目
 
----
+- 透かしの検出 API の結果を、初期選別の目安として扱い、真正性の判断の根拠と分けて定めているか。
+- 自社が生成して外へ出す画像に、生成元として署名を付けているか。
+- どの画像を、どの根拠で受け付けたかを記録し、後から辿れるか。
 
-## 5. 証明があれば、何が変わるか
+## 5. 事実と時系列
 
-事前証明（pre-execution / pre-distribution attestation）は、コンテンツの来歴を成果物に埋め込む標識ではなく、生成主体が「この成果物は正規の origin によって生成された」ことを独立検証可能な暗号証明（署名付き manifest や ZK origin proof）として付与し、受信側が proof を検証する設計を採る。proof は成果物の信号空間の外側にあり、統計的平均化で抽出できる「埋め込み標識」ではない。透かし（detection）と暗号的来歴（proof）は代替ではなく **補完** の関係にある（事後の検知では満たせない来歴の独立検証については [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、鍵を渡さずに正当性を立証する設計については [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照）。
+- **対象**: Google DeepMind の SynthID。AI が生成した画像に目に見えない透かしを埋め込み、検出 API で AI 生成かを判定する仕組みで、Gemini が生成した画像が対象。
+- **実証者**: Alosh Denny（独立の研究者）。
+- **公表の形**: 手法・コード・結果を GitHub（`aloshdenny/reverse-SynthID`）で公開。テキストの検出を対象とする `reverse-SynthID-text` もある。Hacker News などの技術コミュニティで議論された。
+- **手法**: ニューラルネットも、提供元だけが持つ情報も使わない。123,000 枚の Gemini 生成画像を使い、SynthID が固定の搬送周波数を一定の位相で符号化する性質を観測し、多数の画像を平均して透かしの周波数のパターンを取り出し、位相シフト攻撃でその周波数を狙って無効にする（Denny の説明）。
+- **結果**: 透かしのエネルギーの約 91% を除去。画質はほぼ保たれ（PSNR 43.5 dB / SSIM 0.997）、任意の解像度の Gemini 画像で再現した（Denny の公開した結果）。
+- **偽造の余地**: 透かしのパターンを取り出せる以上、除去の逆の操作（非 AI の画像への透かしの注入）も、同じ原理で成り立ち得る。
+- **性質**: 被害を受けた組織や被害額のある攻撃の事案ではなく、来歴の印の限界を示すセキュリティ研究の実証。
 
-本事案で露呈した検出と証明の落差（来歴を成果物に埋め込む標識は、成果物と同じ信号空間に存在するため統計的に剥離・偽造され得る）に対して、Lemma は、コンテンツの来歴を埋め込み標識ではなく、生成主体による独立検証可能な暗号証明として固定する設計を提示している。
+### 時系列
 
-- **来歴の暗号証明（origin proof / proof-as-auth）**: 生成主体が「この成果物は正規の origin の下で生成された」ことを、署名付き manifest や ZK origin proof として付与し、受信側が proof を検証する
-- **信号空間の外側に置く**: 証明を成果物の信号空間の外側に置き、平均化や周波数操作で抽出できる「鍵」を成果物内に残さない
-- **両方向の改ざんに対処**: 標識が剥がされても、非正規コンテンツに偽って付けられても、proof が別系統で「正規の origin か否か」を告げる
-- **選択的開示**: 内部情報を出さずに「この成果物は正規の origin の下で生成された」ことだけを最小開示する
+- **2025-12-15**: Alosh Denny が GitHub のリポジトリ `aloshdenny/reverse-SynthID` を非公開で立ち上げ、開発を始める。
+- **2026-03-05**: Medium の記事「How to Reverse SynthID (legally😉)」で、手法を公開する。
+- **2026-04-11 前後**: Hacker News（item 47709130）で議論が広がる。
+- **2026-04 以降**: 同じ手法を踏まえた SynthID の透かしの回避ツールが、一般の媒体でも報じられる（MediaNama など）。
+- **2026-08-02**: EU AI Act の、AI 生成コンテンツの透かしの義務（透明性の要件）の適用開始の予定日（本 Brief の公開時点）。
 
-検出（事後の透かし判定・モデレーション）は AI 生成らしさのラベリングに、事前証明（来歴の独立検証）はコンテンツ真正性の確立に、それぞれ相補的に働く。設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/#provenance) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
+> 本件は、攻撃による侵害ではなく、研究・ラボでの実証として扱う。被害の規模や運用への影響は誇張しない。手法と数値は、Alosh Denny が GitHub と Medium で公開した内容に拠り、各実装の対応状況は時点により異なる。公表されていないことは、対策が無かったことを意味しない。
 
----
+### 公表後の対応
+
+- **Google DeepMind**: SynthID は、AI 生成コンテンツの識別を目的とした透かしの技術として提供されている。本件を受けた公式の声明は、公式のチャネル（ブログ・プレスリリース）からは確認できていない。一部の二次報道（techbuzz.ai、stork.ai など）は、The Verge を典拠に、Google が SynthID の侵害の認識を否定したと書くが、典拠の記事を本 Brief では確認できないため、確定した情報としては扱わない。
+- **規制の動き**: EU AI Act は、AI 生成コンテンツへの透かし・透明性の要件を 2026-08-02 から適用する予定とされていた。透かしが規制の要件になる局面と、剥がせることや偽って付けられることが実証された局面が重なり、「透かしを義務にすれば来歴が担保される」という前提が問われている。十分な透かしを実装している AI 画像の生成器は一部にとどまるとする学術の報告もある。
+- **学術の動き**: 生成コンテンツの透かしへの攻撃の研究は、2025〜2026 年に増えた。UnMarker（USENIX Security 2025）は、防御のための透かしへの汎用の攻撃を初めて示したとされ、arXiv の Warfare（2023）も、透かしの除去・偽造の汎用の枠組みを示している。本件は、その流れの中の具体的な実証に当たる。
 
 ## 6. Sources
 
@@ -108,3 +151,5 @@ SynthID — Google DeepMind の AI 画像向け透かし — が、2026 年 3 �
 - **arXiv 2310.07726**: Guanlin Lee et al. "Warfare: Breaking the Watermark Protection of AI-Generated Content"（2023-10、2024-03 更新）— 透かし除去・偽造攻撃の汎用フレームワーク（背景文献）。https://arxiv.org/abs/2310.07726
 - **ACM CSAI'25**: "Insecure AI Image Watermarking — Is it Really Damaging The Future?"（2025、Proceedings of the 2025 9th International Conference on Computer Science and Artificial Intelligence）— SynthID 等の透かしが除去可能・相互運用性を欠くことを論じた定性研究（背景文献）。https://dl.acm.org/doi/10.1145/3788149.3788154
 - **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
+
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)

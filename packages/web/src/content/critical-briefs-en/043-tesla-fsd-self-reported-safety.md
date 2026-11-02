@@ -1,7 +1,7 @@
 ---
 brief_no: 43
-title: "自動運転の事故データと「人間より安全」の根拠が、自社申告のまま検証されていない — AI の走行判断と安全性属性の独立検証不在（Tesla FSD／NHTSA EA26002）"
-title_en: "Self-Reported Autonomous-Driving Safety, Unverified — Tesla FSD Crash Data and Safety-Stat Methodology"
+title: "Tesla FSD: NHTSA escalated its reduced-visibility crash probe, and the safety figures were self-reported (NHTSA EA26002, Reuters)"
+title_en: "Tesla FSD: NHTSA escalated its reduced-visibility crash probe, and the safety figures were self-reported (NHTSA EA26002, Reuters)"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["attribute-proof-bypass", "ai-bias-harm"]
@@ -9,97 +9,147 @@ incident_date: 2026-03-18
 published: 2026-06-09
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
-related_briefs: ["012-williams-frt-wrongful-arrest", "021-wirecard-balance-attestation", "009-gtg1002-ai-orchestrated-espionage"]
+related_briefs: ["061-hyundai-fca-phantom-braking", "012-williams-frt-wrongful-arrest", "021-wirecard-balance-attestation"]
 version: "1.0"
 status: published
+layout: "report"
+sections: "proof"
 gate: "none"
-og_lead_ja: "自動運転の事故データと安全性の根拠が自社申告のまま — Tesla FSD/NHTSA"
-og_lead_en: "Tesla FSD crash data and safety stats, self-reported and unverified — Tesla FSD"
-gap_detected: "Regulators' phased investigations, investigative reporting, and insider testimony made the driving-decision failures, under-reporting of crashes, and inflated statistics externally visible."
-gap_missing: "At the point of continuing to drive or submitting data to regulators, there was no layer to confirm whether the premises of a decision (can the camera see) and the declared crash data and statistics reflected reality, so everything was accepted as the operator's self-declaration."
-gap_fix: "Before continuing to drive or releasing safety data to regulators and the market, independently verify with Lemma that the decision's premises are met, the declaration is exhaustive, and the statistics follow their definitions, and prevent it up front."
-industries: ["ai"]
+og_lead_ja: "Tesla FSD の視界低下の事故調査を NHTSA が引き上げ、安全の主張の比較を Reuters が報道"
+og_lead_en: "NHTSA escalated its Tesla FSD reduced-visibility crash probe; Reuters reported on the safety-claim comparison"
+og_kicker_ja: "AI の運転判断 · 安全の自己申告"
+og_kicker_en: "AI DRIVING · SELF-REPORTED SAFETY"
+og_headline_ja: "カメラの視界低下を\n検知しなかったと\nNHTSA が指摘。\n<accent>対象 約 320 万台</accent>"
+og_headline_en: "FSD missed degraded\ncamera visibility,\nNHTSA says.\n<accent>About 3.2M vehicles.</accent>"
+key_figures:
+  - value: "3,203,754"
+    unit: "vehicles"
+    label: "Covered by NHTSA's Engineering Analysis (EA26002)"
+    tone: "alert"
+  - value: "9"
+    unit: "crashes"
+    label: "Related to reduced visibility (including 1 death and 1 injury); 6 more under examination as possibly related (NHTSA)"
+  - value: "10 → ~3"
+    unit: "×"
+    label: "Tesla's \"up to 10× safer\", as corrected to a symmetric comparison by a University of Michigan researcher (Reuters)"
+glossary:
+  - term: "FSD (Full Self-Driving)"
+    desc: "Tesla's driver-assistance feature. It perceives the surroundings from camera input and makes driving decisions."
+  - term: "NHTSA"
+    desc: "The US Department of Transportation's road safety agency. It investigates vehicle defects and seeks recalls."
+  - term: "Engineering Analysis (EA)"
+    desc: "The stage of an NHTSA defect investigation after a Preliminary Evaluation (PE); typically the stage immediately before a recall."
+  - term: "SGO (Standing General Order)"
+    desc: "The order under which operators report to NHTSA crashes involving automated driving or driver-assistance systems."
+insight:
+  slug: "self-reported-safety-figures"
+  label: "Safety figures accepted as reported"
+  quote: "Without a check outside whoever produced them, the premises of a decision to keep driving, and the crash records and safety figures released to regulators and markets, are accepted as reported."
+industries: ["manufacturing", "ai"]
 operations: ["disclosure"]
 attack_method: "ai-misuse"
 impact: "9 reduced-visibility crashes (1 death, 1 injury)"
+takeaway: "Both the premises of the decision to keep driving and the crash records and safety figures that reached regulators and markets rested on the operator's own reporting."
+self_check: "Before you release crash records or safety figures, is there a mechanism that checks they follow the counting definition and scope you set?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-NHTSA escalated its probe into Tesla FSD's inability to handle reduced visibility, noting that data-labeling constraints may have under-reported crashes; Reuters separately found the "up to 10× safer than humans" claim rested on an asymmetric comparison inflating safety by roughly 3×. Investigation, reporting, and insider testimony surfaced it only after the fact. What is structurally missing is a layer that verifies, while driving and submitting data, whether a decision's premises and declared statistics reflect reality; all was self-reported.
+NHTSA found that, in the crashes it reviewed, FSD did not detect road conditions impairing camera visibility, or did not warn of degraded performance until just before the collision. Tesla told NHTSA that data-labeling constraints kept it from uniformly identifying crashes during active degradation detection; NHTSA said this may have led to under-reporting. Reuters reported separately on the comparison behind the safety claim. Regulatory investigation and investigative reporting work after the driving and the reports are accepted. <strong>Without a check outside whoever produced them, the premises of a decision to keep driving, and the crash records and safety figures released to regulators and markets, are accepted as reported.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Two things. First, continuing to drive when camera visibility was degraded; per NHTSA, vehicles lost sight of, or never recognized, a vehicle directly ahead and collided. Second, the submission and publication of crash records and safety figures: crash records reached NHTSA as SGO reports, and the "up to 10× safer" claim reached the market.
+- **What reached the receiving side**: In general, driving control runs on the system's own judgment that camera input is valid. The regulator evaluates starting from the crash data submitted. How the comparison population was chosen is decided inside the producer's own counting and is hard to see from the receiving side.
+- **Detection route**: NHTSA's staged investigations (PE24031 → EA26002, plus PE25012 and the crash-reporting-practice investigation), Reuters' investigative reporting, and its interviews with in-house data labelers. All of them act after the driving and the reports.
+- **Not disclosed**: The sources reviewed do not say when, or to which vehicles, the degradation-detection update Tesla began developing on 2024-06-28 was deployed (NHTSA says it does not know). Liability for individual crashes has not been determined.
 
-- **Investigation upgrade**: 2026-03-18, NHTSA upgraded a Preliminary Evaluation (PE24031, opened 2024-10) to an Engineering Analysis (EA26002). Scope is 3,203,754 vehicles. An EA is typically the stage immediately before a recall
-- **Failure on the driving-decision side**: NHTSA found that, in the crashes it reviewed, the system "failed to detect common road conditions that impair camera visibility and/or did not warn of degraded camera performance until just before the collision." Vehicles lost sight of, or never recognized, a vehicle directly ahead and collided
-- **Scope**: 9 crashes related to reduced visibility (including 1 death and 1 injury) confirmed, with a further 6 under examination as possibly related
-- **Failure on the reporting side (under-reporting)**: Tesla told NHTSA that "data-labeling constraints" meant it could not uniformly identify and analyze crashes that occurred while degradation detection was active. NHTSA stated this may have led to **under-reporting** of crashes for part of the period in scope
-- **Inflation of the safety claim**: 2026-05-28, Reuters reported that Tesla's "up to 10× safer" claim rests on an asymmetric comparison — its own airbag-deployment crashes against all tow-away crashes in federal data. A University of Michigan researcher, correcting to a symmetric comparison, found the advantage shrinks to about 3×, and even that is unreliable given differences such as fleet age (Tesla average 4.1 years vs U.S. 12.8 years). Of 11 traffic-safety researchers who reviewed it, 10 assessed it as "misleading marketing"
-- **Delayed data submission**: in a separate investigation, Tesla has repeatedly delayed submitting FSD driving-violation data (video, EDR, CAN bus)
+## 3. What to check
 
-This event stems from a structure in which the AI driving decision and the safety attributes are not independently verified. The failure propagates to regulatory disclosure and the markets as follows.
+Whatever the route, the condition for telling them apart is that the premises of a decision to keep driving, and the crash records and safety figures being released, are checked before the action or submission, outside the process that produced them.
 
-1. **Self-judgment of the driving decision**: FSD itself judges whether camera input is valid (not degraded) and continues driving as long as it deems the input valid. The very detection of "not seeing" is closed within the system's self-judgment and is not independently verified
-2. **Self-reporting of crash records**: when a collision occurs, identifying and labeling which crashes happened "while degradation detection was active" depends on the operator's internal process. Labeling constraints can effectively shrink, on the operator's side, the population of crashes that reaches the regulator
-3. **Flow into regulatory disclosure**: self-reported crash data is presented as reporting to the regulator (SGO and the like). The regulator must, at first, evaluate from the submitted data as its starting point
-4. **Claim to the market**: a "safer" safety attribute constructed from self-reported data is presented to investors, users, and the market. Even when the choice of comparison population is asymmetric, it is hard to verify from outside
-5. **Delayed discovery and impact realization**: the divergence in the validity of the driving decision, the completeness of the crash population, and the symmetry of the statistics is not made visible in the ordinary reporting cycle. It is first confirmed from outside only when regulatory investigation and investigative reporting activate after the fact, and once confirmed, retrospective re-verification is required for the entire prior reporting period
+- **Who approves**: For the driving decision, the side that sets the conditions under which input counts as valid (the design of the vehicle's safety function). For submission and publication, the side that sets reporting obligations, metric definitions and the comparison population (the regulator's reporting format and the operator's internal counting definitions).
+- **Where it is checked**: Just before continuing to drive on input judged valid, and just before submitting crash records to the regulator or publishing safety figures. The former against a condition that can be checked from outside, not only the system's self-judgment; the latter against the source data and the definitions. Anything that cannot be checked is held and not released until it can be.
+- **What is recorded**: Which decision or submission was made, on which conditions and definitions, and the telemetry at the time (video, EDR, CAN). Kept outside the processes that made the decision and did the counting, in a form that cannot be rewritten afterwards.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before continuing to drive or releasing crash records and safety figures, their premises and definitions outside the process that produced them, and keeping a record. Detection means noticing after the driving and the reports, from investigations and reporting. Dates are those each company, authority or outlet confirmed or published.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check the driving premises, and the records and figures released, outside the process that produced them</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>9 reduced-visibility crashes<br>Possible under-reporting for part of the period (NHTSA)</span></div>
+<div class="rx-zone det"><b>Detection · worked after the driving and the reports</b>NHTSA escalated its investigation; Reuters reported on the safety-claim comparison</div>
+<div class="rx-g g1"><div class="t">2024-06-27</div><b>SGO report filed for the fatal crash</b></div>
+<div class="rx-g g2"><div class="t">2024-10</div><b>NHTSA opens PE24031</b></div>
+<div class="rx-g g3"><div class="t">2026-03-18</div><b>Upgraded to EA26002</b></div>
+<div class="rx-g g4"><div class="t">2026-05-28</div><b>Reuters reports</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+Detection made the driving-decision failures, the possible under-reporting and the asymmetric comparison visible from outside, and moved the investigation up a stage. It works separately from a check before the driving and the submission. Cases where an AI decision led directly to action without an independent check include [Brief 061](/critical/briefs/061-hyundai-fca-phantom-braking/) (automatic braking with no danger present); a case where self-reported figures led directly to disclosure is [Brief 021](/critical/briefs/021-wirecard-balance-attestation/) (a balance attribute flowing straight to disclosure and markets).
 
-- Mid-2021: Tesla removes onboard radar and moves to a camera-only approach (reported as against the concerns of in-house engineers)
-- 2023-11-28: a fatal crash involving FSD and reduced visibility occurs
-- 2024-06-27: Tesla files the Standing General Order (SGO) report for that crash (about 7 months after it occurred)
-- 2024-06-28: Tesla begins developing an update to the degradation-detection system. NHTSA states it does not know when, or to which vehicles, that update was deployed
-- 2024-10: NHTSA opens Preliminary Evaluation PE24031 (4 crashes under reduced visibility, one of them a pedestrian fatality)
-- 2025-08: NHTSA raises a separate investigation into Tesla's crash-reporting practices
-- 2025-10: NHTSA opens a separate investigation, PE25012, into 58 driving violations (running red lights, entering oncoming lanes, etc.)
-- 2026-03-18: NHTSA upgrades the investigation to Engineering Analysis EA26002 (about 3.2 million vehicles, 9 crashes including 1 death)
-- 2026-05-28: Reuters reports the methodological flaw in Tesla's safety claim (roughly 3× inflation) and the distrust of in-house data labelers
+## 4. What Lemma does
 
-> Note: final liability findings and the outcomes of disputes for individual crashes depend on the progress of investigation and litigation and are not asserted here.
+**Lemma builds the check in section 03 into the side that executes AI decisions and the side that releases crash records and safety figures.** It does not judge whether perception was right or detect crashes; it checks, outside the process that produced them, whether the premises of a decision and the records and figures being released meet conditions and definitions set in advance, and keeps a record.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **Regulation and investigation**: NHTSA runs multiple parallel investigations into FSD / Autopilot and upgraded the reduced-visibility investigation to an EA. The operator's delays in submitting crash data and driving-violation data have become a focal point in debates over the investigation's effectiveness
-- **Safety assurance and standards**: in autonomous-driving safety assurance, debate continues over presenting a safety case, third-party verification of crash and driving data, and standardizing metrics (aligning comparison populations and thresholds). These, however, rely heavily on the operator's self-reported data, and the layer that independently verifies the completeness and authenticity of source data at the point of reporting remains thin
-- **Shift in regulatory center of gravity**: the regulatory center of gravity is shifting from data disclosure to compliance proof. In autonomous driving and advanced driver assistance, demand is growing to require safety claims in an independently verifiable form rather than as operator self-report
+- **Industry · Manufacturing**: Organizations that build automatic control functions that take over human driving or operation into vehicles or machinery.
+- **Industry · AI adoption**: Organizations that show regulators and markets the safety of AI decisions using figures they count themselves.
+- **Operations · Disclosure & data release**: Work that releases crash records or safety metrics as reports to regulators or as public statements.
 
-The absence of a layer that independently verifies, at the point of action and reporting, the validity of the driving decision and the basis of the safety attributes remains not as one company's problem but as an operational challenge spanning both the operators deploying autonomous driving and the regulators and markets supervising it.
+### Current controls vs Lemma
 
----
+In this case, all three columns are routes that got through.
 
-## 4. Why it wasn't stopped
+| Control | Continuing to drive with degraded visibility | Crash records submitted to the regulator | Safety figures released to the market |
+| --- | --- | --- | --- |
+| Degradation-detection system update (development begun 2024-06-28) | Partial | Not relevant | Not relevant |
+| Metric standardization and third-party verification (debate continues) | Not relevant | Partial | Partial |
+| **Lemma (pre-execution check)** | Partial | Effective | Partial |
 
-The central failure primitive is that **both the validity of the AI driving decision and the safety attributes derived from it are accepted as the operator's self-report, severed from independent verification.** On the driving-decision side, the validity of the premise "the camera input is valid" is closed within the system's self-judgment and is not independently verified before the action (continuing to drive). On the reporting side, the attribute construction — "which crashes to include in the population" and "what to compare against" — is left to the operator, and regulators and markets cannot re-verify that construction from outside.
+The degradation-detection update changes detection performance; it does not check each decision to keep driving from outside. Standardization and third-party verification rely heavily on the operator's self-reported data. Lemma binds crash records to the source data (video, EDR, CAN) and checks, before submission, that they follow the reporting definition and scope. For safety figures, it can check that they were counted according to the published definition, but it does not judge whether the choice of comparison population is sound.
 
-The targets differ from [Brief 012](/critical/briefs/012-williams-frt-wrongful-arrest/) (a facial-recognition AI judgment flowing, without independent verification, straight to an administrative coercive measure), [Brief 021](/critical/briefs/021-wirecard-balance-attestation/) (a self-reported financial attribute flowing, without independent verification, straight to disclosure and markets), and [Brief 009](/critical/briefs/009-gtg1002-ai-orchestrated-espionage/) (autonomous execution where agent authority is not independently verified), but the shared primitive is the same: **a decision or attribute assertion flows straight to action, disclosure, and markets while decoupled from the layer that would verify it.** This case shows the magnitude of AI-decision-integrity bypass in that the assertion flows simultaneously into both "a physical driving action directly affecting human safety" and "a safety claim presented to the public markets."
+Note: Lemma's check works only when it is built into the driving control or the submission and publication steps, and the conditions, definitions and source data are managed outside the processes that made the decision and did the counting. If a condition or definition is itself wrong, wrong results go through too. Finding crashes that were never labeled requires all the source data to be bound. How the driving premises could be checked in the short time while driving is not clear from the sources reviewed. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-Here, the detection chain — NHTSA's staged investigations (PE24031 → EA26002, plus PE25012 and the reporting-practice investigation), Reuters' investigative reporting, and the testimony of Tesla's in-house data labelers — worked, and the driving-decision failures, under-reporting, and statistical inflation were made visible from outside. This is a textbook detection success, and this Brief does not dispute the role of the detection layer. Detection is indispensable for raising doubt, driving the investigation, and judging whether a recall is required.
+### Checklist
 
-What matters here is that, while this case looks at first like an "AI perception" crash, the gap Lemma addresses is not perception accuracy itself. However much perception is improved, detection does not serve as material to independently prove "the basis of the driving decision (was camera input valid?)" and "whether the reported crash population and safety statistics reflect reality" **at the moment the vehicle keeps driving and at the moment the data is submitted to the regulator.** Both regulatory investigation and investigative reporting are after-the-fact chains that activate after the action and the report have been received by the market. This is a gap in a structurally independent layer, beyond detection's reach.
+Three things to confirm for organizations that show the safety of AI decisions to outsiders through records and figures
 
-As things stand, across the operating model for autonomous-driving safety assurance, independent verification of the validity of the driving decision and of the safety attributes depends on trust in the operator's self-reported telemetry, crash labels, and statistics, and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the driving-decision and reporting / disclosure path. It is a complement to detection, not a substitute; together the two establish the trust boundary for safety attributes.
+- Do you check, before it runs and against a condition outside the deciding system, that the input an AI decision relies on is valid?
+- Are the crash records you submit to regulators bound to the source data, so you can confirm afterwards which crashes were included?
+- Do you keep decisions, crash records and telemetry in a form that cannot be rewritten afterwards?
 
----
+## 5. Facts and timeline
 
-## 5. What proof would have changed
+- **Subject**: Tesla vehicles equipped with FSD. EA26002 covers 3,203,754 vehicles.
+- **Identifier**: NHTSA Preliminary Evaluation PE24031 (opened 2024-10), upgraded on 2026-03-18 to Engineering Analysis EA26002.
+- **What NHTSA found**: In the crashes it reviewed, the system "failed to detect common road conditions that impair camera visibility and/or did not warn of degraded camera performance until just before the collision." Vehicles lost sight of, or never recognized, a vehicle directly ahead and collided.
+- **Crashes**: 9 crashes related to reduced visibility (including 1 death and 1 injury) confirmed, with a further 6 under examination as possibly related.
+- **On reporting**: Tesla told NHTSA that "data-labeling constraints" meant it could not uniformly identify and analyze crashes that occurred while degradation detection was active. NHTSA stated this may have led to under-reporting of crashes for part of the period in scope.
+- **The safety claim**: According to Reuters, Tesla's "up to 10× safer" claim rests on a comparison of its own airbag-deployment crashes against all tow-away crashes in federal data. A University of Michigan researcher, correcting to a symmetric comparison, found the advantage shrinks to about 3×, and even that is unreliable given differences such as fleet age (Tesla average 4.1 years vs U.S. 12.8 years). Of 11 traffic-safety researchers who reviewed it, 10 assessed it as "misleading marketing."
+- **Data submission**: In a separate investigation, Tesla has repeatedly delayed submitting FSD driving-violation data (video, EDR, CAN bus).
 
-For the gap exposed here — the AI driving decision and the safety attributes flowing straight to action, disclosure, and markets while severed from independent verification of their basis — Lemma offers a design in which the basis of the decision and the crash / driving records are committed, at that moment, as independently verifiable cryptographic proofs, so that regulators and third-party verifiers can independently verify "the basis was met at the time / the record is complete" without the operator releasing its source data.
+### Timeline
 
-- **Decision-time attestation**: the premises of the decision to continue driving (e.g., the perception-input validity check passed) are attested with a signature at the moment of the decision. The validity of the premise is fixed as a proof at the time of action, not as after-the-fact labeling
-- **Original binding and completeness of records**: crash and driving telemetry (video, EDR, CAN) is bound to the originals via docHash, making non-tampering — and the absence of arbitrary dropouts from the population — verifiable. "Which crashes to include" is not closed within the operator's internal process
-- **Schema-bound proofs**: each proof is bound to the regulatory schema it satisfies (reporting obligations, metric definitions, comparison populations), so the regulator can verify directly against the schema
-- **Selective disclosure**: only "the given metric is met as defined" is disclosed at minimum; driving video and source data that could identify individuals never leave the operator
+- **Mid-2021**: Tesla removes onboard radar and moves to a camera-only approach (reported as against the concerns of in-house engineers).
+- **2023-11-28**: A fatal crash involving FSD and reduced visibility occurs.
+- **2024-06-27**: Tesla files the SGO report for that crash (about 7 months after it occurred).
+- **2024-06-28**: Tesla begins developing an update to the degradation-detection system. NHTSA states it does not know when, or to which vehicles, that update was deployed.
+- **2024-10**: NHTSA opens Preliminary Evaluation PE24031 (4 crashes under reduced visibility, one of them a pedestrian fatality).
+- **2025-08**: NHTSA raises a separate investigation into Tesla's crash-reporting practices.
+- **2025-10**: NHTSA opens a separate investigation, PE25012, into 58 driving violations (running red lights, entering oncoming lanes, etc.).
+- **2026-03-18**: NHTSA upgrades the investigation to Engineering Analysis EA26002 (about 3.2 million vehicles, 9 crashes including 1 death).
+- **2026-05-28**: Reuters reports on the method behind Tesla's safety-claim comparison and the distrust of in-house data labelers.
 
-A proof fixed at the point of action and reporting then functions, years later when "was the basis of the decision met at the time?" and "is the report complete?" are asked, as an independently verifiable trail that discloses no source data. Detection (after-the-fact regulatory investigation, investigative reporting) serves remediation after discovery; pre-execution attestation (verification at the time of action and reporting) serves independent verification of the driving decision and the safety attributes — complementary layers.
+> The vehicle count (3,203,754), the crash counts (9, with 6 under examination), NHTSA's findings and the possibility of under-reporting rest on NHTSA's EA26002 opening notice; the safety-claim comparison and the researchers' assessment rest on Reuters' reporting. Final liability findings and the outcomes of disputes for individual crashes depend on the progress of investigation and litigation and are not asserted here. This Brief does not blame Tesla. What was not disclosed does not mean controls were absent.
 
----
+### After disclosure
+
+- **NHTSA**: Runs multiple parallel investigations into FSD / Autopilot and upgraded the reduced-visibility investigation to an EA. Delays in submitting crash data and driving-violation data have become a focal point in debates over the investigations' effectiveness.
+- **Safety assurance and standards**: In autonomous-driving safety assurance, debate continues over presenting a safety case, third-party verification of crash and driving data, and standardizing metrics (aligning comparison populations and thresholds). These rely heavily on the operator's self-reported data.
+- **Regulatory direction**: In autonomous driving and advanced driver assistance, demand is growing to require safety claims in a form that can be checked from outside, rather than as operator self-report.
 
 ## 6. Sources
 
@@ -108,4 +158,4 @@ A proof fixed at the point of action and reporting then functions, years later w
 - **Electrek (secondary)**: “Tesla is one step away from having to recall FSD in NHTSA visibility crash probe” (2026-03-19; details and timeline of EA26002) — <https://electrek.co/2026/03/19/nhtsa-upgrades-tesla-fsd-visibility-investigation-3-2-million-vehicles/>
 - **Electrek (secondary)**: “Tesla's own AI trainers don't trust 'Full Self-Driving' or its safety stats, Reuters finds” (2026-05-28; summary of the Reuters investigation) — <https://electrek.co/2026/05/28/tesla-fsd-safety-stats-misleading-reuters-investigation/>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/#inference), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

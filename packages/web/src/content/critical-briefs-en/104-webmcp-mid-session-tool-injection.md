@@ -1,7 +1,7 @@
 ---
 brief_no: 104
-title: "WebMCP：セッションの途中で「使える道具」が差し替えられ、エージェントは気づかないまま攻撃者のツールを呼んだ"
-title_en: "WebMCP — swapping the tools mid-session led agents to call the attacker's tool without noticing"
+title: "WebMCP：セッションの途中で差し替えたツールを、AI エージェントが呼びうることが示された(国立陽明交通大学の研究)"
+title_en: "WebMCP: AI agents could be led to call a tool swapped in mid-session (National Yang Ming Chiao Tung University research)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["ai-decision-integrity", "identity-auth"]
@@ -11,99 +11,143 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["099-agentjacking-sentry-mcp", "048-trapdoor-ai-instruction-provenance", "024-invisible-unicode-instruction-injection", "025-mcp-stdio-config-to-command-rce", "027-librechat-mcp-url-secrets", "094-cursor-duneslide-sandbox-escape"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "agent-operation"
 version: "1.0"
-og_lead_ja: "WebMCP — セッション途中でツールが差し替えられ、エージェントは気づかず攻撃者のツールを呼んだ"
-og_lead_en: "WebMCP — swapping the tools mid-session led agents to call the attacker's tool without noticing"
-gap_detected: "The detection chain worked — the researchers' disclosure of the attack taxonomy, the quantitative evaluation across three models and four scenarios, the field-level contribution analysis, the identification of injection timing, and the proposed design principles — making the risk externally visible; existing defense research that inspects tool behavior or observes runtime traffic also helps grasp the damage."
-gap_missing: "There is no layer that, at the moment the agent makes a call, independently establishes — decoupled from the public name and the metadata's self-declaration (such as readOnlyHint=true) — whether the tool is the same legitimate one observed at planning time or a different one swapped in mid-session; the malicious tool carries the same name and is presented with legitimate fields."
-gap_fix: "Before the agent calls a tool and hands over data, verify — decoupled from the public name and metadata self-declaration, and independently through Lemma — that the tool carries the same immutable identifier and origin as at planning time and is authorized for this scope, and prevent it up front."
-industries: ["ai"]
+og_lead_ja: "WebMCP で、セッションの途中にツールを差し替える攻撃を研究者が公開。登録の競合で攻撃成功率 100%（3 モデル・統制環境）"
+og_lead_en: "Researchers disclose mid-session tool injection against WebMCP: a registration race reached 100% attack success (three models, controlled setting)"
+og_kicker_ja: "攻撃の研究 · AI エージェントのツール"
+og_kicker_en: "ATTACK RESEARCH · AI AGENT TOOLS"
+og_headline_ja: "セッション途中で\nツールを差し替えると、\nAI は気づかず呼んだ。\n<accent>成功率 100% と報告</accent>"
+og_headline_en: "Tools swapped mid-session\nwere called by AI agents.\n<accent>Up to 100%, study reports.</accent>"
+key_figures:
+  - value: "100"
+    unit: "%"
+    label: "Success rate of registering under the same name before the legitimate tool (registration race), on all three models. Researchers' evaluation in a controlled setting, not real-world harm"
+    tone: "alert"
+  - value: "85"
+    unit: "%"
+    label: "Share of runs (maximum) in which attacks on how a tool is presented exfiltrated data while the original task still completed normally. It looks normal to the user"
+  - value: "36–100% → 0%"
+    label: "Attack success rate before and after enabling the researchers' two implemented defenses. Task completion stayed on par with the baseline"
+glossary:
+  - term: "WebMCP"
+    desc: "An emerging mechanism that lets a website expose tools directly to an AI agent. Rather than driving the screen, the agent reads what it can do from the tools' metadata."
+  - term: "readOnlyHint"
+    desc: "A field in a tool's metadata, in which the tool itself declares that it only reads."
+  - term: "Attack success rate (ASR)"
+    desc: "In this study, the share of runs that called the malicious tool and sent task-relevant data to the attacker's endpoint."
+insight:
+  slug: "tool-identity-by-name-alone"
+  label: "Tool identity decided by public name alone"
+  quote: "As long as an agent picks the tools it calls by public name and the metadata's self-declaration alone, they can be replaced by something else with the same name."
+industries: ["ai", "developers"]
+operations: ["disclosure"]
 controls:
   - slug: "ownership-check"
     item: "Confirm the tool being called was really registered by that site"
 attack_method: "ai-misuse"
+takeaway: "Unless the origin of a tool is checked before the call, apart from its public name and its metadata's self-declaration, a different tool with the same name can be called."
+self_check: "Before an AI agent calls a tool, can you check that the tool has the same origin as when the agent planned, apart from its public name?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-On 2026-06-04 a research team at National Yang Ming Chiao Tung University (Taiwan) disclosed a new class of attack against WebMCP that they named "Mid-Session Tool Injection" (MSTI). WebMCP is an emerging mechanism that lets a website expose tools directly to an AI agent; rather than driving the screen, the agent learns "what it can do" from the tools' metadata. The problem is that this list of tools can change dynamically. If an attacker can taint a third-party script loaded into the same page (a CDN, an ad SDK, and the like), they can rewrite the very set of tools the agent sees in the middle of a session. The research organizes the attack into two families. One is Tool Hijacking, which manipulates "which tools exist": techniques such as using the `AbortSignal` API to deregister a legitimate tool and re-register a malicious tool under the same name, or winning a registration race by registering under the same name before the legitimate tool does. The other is Tool Framing, which manipulates "what a tool is interpreted to be": through metadata such as `description`, `readOnlyHint`, `inputSchema`, and the tool name, a malicious tool is made to look like a mandatory step in a workflow or a safe read-only operation. In an evaluation across three models — GPT-5.4, Claude Opus 4.6, and Gemini 2.5-flash — and four scenarios, the registration race reached an average 100% attack success rate and `AbortSignal` hijacking an average 94%. Tool Framing has lower success rates, but because the original task still completes normally in up to 85% of runs while data is exfiltrated, everything appears to the user to have gone smoothly. Two findings stand out. First, attacks that strike the protocol layer (C1, C3) lose almost no success rate from older-generation models through the latest ones — model updates cannot close them. Second, when the researchers enabled their implemented defenses, the agent still called the malicious tool, yet no data reached the attacker at all. **Whether the model's judgment is misled and whether real harm occurs are independent problems.** What was missing is a layer that binds a tool's identity to its origin and independently verifies the consistency of that binding before the agent makes the call.
+A research team at National Yang Ming Chiao Tung University (Taiwan) showed, in a controlled setting, that on WebMCP a third-party script loaded into the same page can rewrite the set of tools an AI agent sees in the middle of a session. According to the researchers, attacks that manipulate which tools exist lose almost no success rate from older-generation models to the latest ones, so model updates do little to close them. When the researchers enabled their implemented defenses, the agent still called the malicious tool, yet no data reached the attacker. No exploitation or harm in the wild has been reported. <strong>As long as an agent picks the tools it calls by public name and the metadata's self-declaration alone, they can be replaced by something else with the same name.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: The agent calling a malicious tool and handing over data with that call. The researchers organize the attack into two families. Manipulating the existence of tools (Tool Hijacking) replaces the tools the agent sees, for example by deregistering a legitimate tool and registering again under the same name, or by registering under the same name before the legitimate tool does. Manipulating the interpretation of tools (Tool Framing) uses legitimate fields such as the tool name, `description`, `readOnlyHint` and `inputSchema` to make a malicious tool look like a mandatory workflow step or a safe read-only operation (the researchers' paper).
+- **What reached the receiving side**: In general, an agent plans and chooses which tool to call from the names and metadata in the tool list. According to the researchers, the malicious tool carries the same public name as the legitimate one and is presented through legitimate fields, so the list's contents alone do not tell them apart. Setting `readOnlyHint=true` alone produced an average attack success rate of 87%.
+- **Not disclosed**: Exploitation or harm in the wild (none reported). Reproducibility under Chrome's native WebMCP implementation (the researchers note it may vary with implementation details). Whether users can notice Tool Framing (no user study was conducted). How the two of the researchers' four design directions that were not evaluated would perform.
 
-- **Subject**: WebMCP, an emerging protocol that lets a website expose structured tools directly to an AI agent. Rather than driving a conventional user interface, the agent grasps the available capabilities from the tools' metadata.
-- **Reporter**: research by Lin-Fa Lee, Yi-Yu Chang, Chia-Mu Yu, and Kuo-Hui Yeh of National Yang Ming Chiao Tung University (Hsinchu, Taiwan), "WebMCP Tool Surface Poisoning: Runtime Manipulation Attacks on LLM Agents." Published 2026-06-04 as arXiv:2606.06387v1 [cs.CR].
-- **Threat model**: the attacker is assumed able to compromise or inject the supply of a third-party script loaded into the victim site (a CDN, an ad SDK, or any other JavaScript component on the same page). Whereas conventional third-party-script attacks aim to alter page content or exfiltrate DOM data, this threat model targets **the agent's tool registry itself**, changing the set of tools the agent can observe and select at runtime.
-- **Two families of attack**: (1) **Tool Hijacking** (manipulating the existence of tools) = manipulating which tools exist and when. Disabling a legitimate tool, hijacking its name, replacing it with a malicious tool. Because the tool list is rewritten before the agent begins any semantic reasoning, the model side has no direct means of defense. (2) **Tool Framing** (manipulating the interpretation of tools) = using legitimate fields such as the tool name, `description`, `readOnlyHint`, and `inputSchema` to make a malicious tool look like a mandatory step in a workflow, a required safety check, or a safer read-only tool.
-- **Evaluation environment**: three models — GPT-5.4, Claude Opus 4.6, and Gemini 2.5-flash. Four scenarios of differing severity (knowledge-base search / business-report generation and sending / e-commerce payment / GPU driver update). The attack success rate (ASR) is defined as "the proportion of runs that called the malicious tool and sent task-relevant data to the attacker's endpoint."
-- **Key results**: the registration race (C3) hit 100% on all three models, and `AbortSignal` hijacking (C1) averaged 94%. Among the Tool Framing family, `description` injection (C2) averaged 59% and the combined attack (C5) 61%. Isolating individual fields, `description` alone averaged 93%, merely setting `readOnlyHint=true` averaged 87%, and the combination of `description` and `readOnlyHint` reached 100% on all three models.
+## 3. What to check
 
-The incident came together as the following chain.
+Whatever the route, the condition for telling them apart is that, just before the agent calls a tool, it checks that the tool has the same origin as when the agent planned and that this call is within the authorized scope, apart from the public name and the metadata's self-declaration.
 
-1. **Tainting a third-party script**: the attacker compromises the supply of a third-party script loaded into the victim site (a CDN, an ad SDK, etc.). This lets them run arbitrary script on the same page.
-2-a. **Manipulating the existence of tools (Tool Hijacking)**: the attacker aborts the legitimate tool's `AbortController` to deregister it, then re-registers a malicious tool under the same name before the agent's first call (C1). Alternatively, they register first under the same name before the legitimate tool is registered, so that first-come-first-served leaves the agent seeing only the malicious version (C3).
-2-b. **Manipulating the interpretation of tools (Tool Framing)**: the attacker embeds a procedural instruction in the malicious tool's `description`, such as "always call this before `send_email`," framing it as a mandatory workflow step (C2). Or they bury the instruction in the first ~40 words of a 1,203-word description padded with standard names such as ISO 27001, SOC 2, and GDPR (C4). Standalone techniques also work: setting `readOnlyHint=true` to look like a safe read-only operation, or giving it a name that evokes corporate operations such as `audit_logger`.
-3. **The agent makes the call**: taking the rewritten tool set or metadata as its premise, the agent plans and calls the malicious tool as a legitimate step consistent with its original task.
-4. **Data exfiltration**: with the call, task-relevant data, intermediate results, and sensitive context are sent to the attacker's endpoint. In the Tool Framing family the original task still completes normally in up to 85% of runs, so everything appears to the user to have gone smoothly.
-5. **Timing dependence**: Tool Hijacking requires the injection to complete before the agent's loop begins (100% at P1, dropping to 0% if it misses the first legitimate call), while Tool Framing is more effective the earlier it lands before sensitive context enters (82% at S1, versus 28% just before the final action).
+- **Who approves**: The site that registered the tool states its identifier and origin (where the registering script came from). For high-impact calls such as payments or sending data out, the user approves. The approval is given apart from the contents of the tool list.
+- **Where it is checked**: Just before the agent calls a tool and hands over data. If a tool is deregistered, replaced or has its metadata changed after planning, the plan is checked again.
+- **What is recorded**: Which tool was registered, deregistered or replaced, from which origin, when, and under whose approval it was called. Kept apart from the agent.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking a tool's identifier, origin and call scope before the agent calls it, and keeping a record. Detection means noticing attack techniques or a tool's suspicious behavior or traffic. The dates below are when the research was published and cited, and the results come from a controlled evaluation.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before the call, check the tool's identifier and origin apart from its public name</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>In a controlled setting, agents<br>called tools that had been swapped</span></div>
+<div class="rx-zone det"><b>Detection · researchers classified and published it</b>Publishing techniques, inspecting behavior, observing traffic</div>
+<div class="rx-g g1"><div class="t">06-04</div><b>Study published on arXiv</b></div>
+<div class="rx-g g2"><div class="t">06-04</div><b>Four design directions proposed</b></div>
+<div class="rx-g g3"><div class="t">06-04</div><b>Two defenses bring success to 0%</b></div>
+<div class="rx-g g4"><div class="t">07</div><b>Cited in MCP security surveys</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+The researchers hold that research inspecting tool behavior before and after use (MCPShield) or observing runtime traffic (ShieldNet) does not directly reach the problem that a script on the same page can change the tools while a task is running. In that the agent acts on ingested content without checking its issuer, this case is in line with [Agentjacking (Brief 099)](/critical/briefs/099-agentjacking-sentry-mcp/), [TrapDoor (Brief 048)](/critical/briefs/048-trapdoor-ai-instruction-provenance/) and [instruction injection via invisible Unicode (Brief 024)](/critical/briefs/024-invisible-unicode-instruction-injection/); in that the design of agent infrastructure becomes the attack surface, it connects with [Brief 025](/critical/briefs/025-mcp-stdio-config-to-command-rce/), [Brief 027](/critical/briefs/027-librechat-mcp-url-secrets/) and [Brief 094](/critical/briefs/094-cursor-duneslide-sandbox-escape/).
 
-- 2026-06-04: "WebMCP Tool Surface Poisoning: Runtime Manipulation Attacks on LLM Agents" (arXiv:2606.06387v1 [cs.CR]) is published on arXiv, presenting the MSTI taxonomy, a quantitative evaluation across three models and four scenarios, a field-level contribution analysis, an injection-timing analysis, and the implementation and evaluation of two baseline defenses.
-- 2026-07: in surveys of MCP security trends, the study is cited as a new attack surface — runtime manipulation of the tool surface.
+## 4. What Lemma does
 
-> Note: this is research in a controlled environment; no exploitation or harm in the wild has been reported as of this writing. The experimental setup does not use Chrome's native WebMCP implementation but a `navigator.modelContext` API provided by the CDN-delivered `@mcp-b/global` polyfill, and the agent runs in a headless Node.js environment rather than under a real browser's full security model. The researchers themselves note that reproducibility under a native implementation may vary with implementation details. Consult the latest primary sources.
+**Lemma builds the check in section 03 into the point just before an agent calls a tool and hands over data.** It does not look for attack techniques; it checks the tool's identifier and origin, and the scope of the call, before the operation runs, apart from the public name and the metadata's self-declaration.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **The researchers' design principles**: holding that WebMCP's tool surface should be treated not as a neutral, static interface but as a security boundary, they present four directions. (A) Tool identity and ownership = generate an immutable internal `tool_id` at registration and bind it to the origin, document, frame, and supplying source of the registering script. The agent verifies against the `tool_id` rather than the public name. (B) Lifecycle and state consistency = deregistration, `AbortSignal`, replacement, and metadata updates should invalidate or force re-validation of an existing plan. Before a call, confirm that the `tool_id`, owner, schema, annotations, and capabilities are consistent with planning time. (C) Capability and data-flow boundaries = require tools to declare their capabilities, data-access scope, and destinations, and by default do not hand sensitive data to third-party tools. (D) Control through user authorization = record registrations, deregistrations, replacements, metadata changes, and calls in a provenance log, and require explicit consent through the UI for high-risk actions such as payment, installation, and data exfiltration.
-- **Demonstration of the baseline defenses**: they implemented two defenses corresponding to (A) and (C) above and reduced the attack success rate from 36–100% to 0%, with task completion rates on par with the baseline. The researchers frame Tool Hijacking as a protocol-layer problem to be handled by access control and Tool Framing as a semantic-layer problem requiring restriction of data flow and control flow, and organize the two as a clearly non-overlapping correspondence in defensive terms.
-- **The limits of model updates**: in a comparison of older-generation and latest models, attacks striking the protocol layer lost almost no success rate. The researchers hold that mitigating attacks that abuse WebMCP's tool-registration mechanism is difficult to achieve through model version updates alone. In contrast, the effectiveness of using a tool's description as the primary attack path correlated with the model's semantic-understanding ability.
-- **Limitations of the research (stated by the researchers)**: the experiments use a polyfill rather than Chrome's native WebMCP implementation and are not under a real browser's full security model. A user study of whether users can notice a Tool Framing attack was not conducted. The defense evaluation covers only two of the four directions. The low task-completion rate for Tool Hijacking is a consequence of payload design; a real-world attacker who knows the legitimate tool's specification and returns a normal success response could greatly raise the completion rate, making it even harder for users to notice.
+- **Industry · AI & development**: Organizations whose websites expose tools to AI agents, or that let AI agents use a site's tools, especially where third-party scripts (CDNs, ad SDKs and the like) load into the same page.
+- **Operation · Disclosure & data release**: Work in which an agent uses tools to send data out, such as generating and sending reports or making payments. In the study, task-relevant data and intermediate results were sent to the attacker's endpoint along with the call.
 
-The absence of a layer that independently verifies, at call time, the identity and origin of the tools an agent calls is not an implementation defect of a specific protocol, but remains an operational challenge across designs that make agents rely on a dynamically changing tool surface.
+### Current controls vs Lemma
 
----
+The routes the researchers showed are two: column 1 (manipulating the existence of tools) and column 2 (manipulating the interpretation of tools).
 
-## 4. Why it wasn't stopped
+| Control | Manipulating existence (Tool Hijacking) | Manipulating interpretation (Tool Framing) |
+| --- | --- | --- |
+| Model updates | Not effective | Partial |
+| Inspecting tool behavior and observing runtime traffic | Partial | Partial |
+| Binding origin at registration and rejecting same-name registrations from another origin (researchers' defense) | Effective | Not relevant |
+| Blocking calls to tools of third-party origin and limiting the arguments they receive (researchers' defense) | Not relevant | Effective |
+| **Lemma (pre-execution check)** | Effective | Partial |
 
-The central failure primitive is that **the tool registry the agent relies on did not bind a tool's identity to its origin, and instead rested on the mutable identifier of a public name**. Simply registering first under the same name, or swapping it out afterward, is enough to substitute what the agent observes and selects.
+According to the researchers, attacks on the existence of tools lose almost no success rate from older-generation models (GPT-4o, Claude 3.5 Sonnet) to the latest ones, while the effectiveness of attacks that rely mainly on the description correlated with the model's semantic understanding. Behavior inspection and traffic observation help grasp and shrink the damage, but the researchers hold that they do not directly reach the problem of tools changing mid-task. The researchers' two defenses cut the attack success rate from 36–100% to 0%, and the researchers describe the mapping as non-overlapping: existence is handled by access control, interpretation by limiting data flow. Lemma checks a tool's identifier and origin against the plan and ties the call and the data handed over to the declared, authorized scope. Where an instruction sits in the description of a tool whose origin is legitimate, checking origin alone cannot tell it apart, so that cell is marked partial.
 
-This incident is in line with [Brief No.099](/critical/briefs/099-agentjacking-sentry-mcp/) ([Agentjacking](/critical/briefs/099-agentjacking-sentry-mcp/), where an agent believed a fake error report to be its "resolution steps" and ran the attacker's commands), [Brief No.048](/critical/briefs/048-trapdoor-ai-instruction-provenance/) ([TrapDoor](/critical/briefs/048-trapdoor-ai-instruction-provenance/), where invisible commands were planted in an AI-facing instruction file), and [Brief No.024](/critical/briefs/024-invisible-unicode-instruction-injection/) ([instruction injection via invisible Unicode](/critical/briefs/024-invisible-unicode-instruction-injection/)), in that the agent moves to act on ingested content without confirming its issuer. With [Brief No.025](/critical/briefs/025-mcp-stdio-config-to-command-rce/) ([the MCP standard's design became a path to RCE](/critical/briefs/025-mcp-stdio-config-to-command-rce/)), [Brief No.027](/critical/briefs/027-librechat-mcp-url-secrets/) ([LibreChat, where secrets leaked from a user-specified MCP URL](/critical/briefs/027-librechat-mcp-url-secrets/)), and [Brief No.094](/critical/briefs/094-cursor-duneslide-sandbox-escape/) ([Cursor DuneSlide](/critical/briefs/094-cursor-duneslide-sandbox-escape/)), it shares the structure in which the very design of the agent infrastructure becomes the attack surface.
+Note: Lemma's check works only when it is built into the agent's tool calls, and the records of a tool's identifier, origin and call scope are managed apart from the page's scripts and the tool list. What the check can show is the origin of the tool being called and whether the call is within the authorized scope; it does not show that the agent's judgment was not misled. If a user approves a high-impact call without checking its origin, it goes through. The table compares what each control checks; it does not show whether the study's evaluation would have been stopped. Lemma does not detect or prevent intrusions.
 
-What is specific to this incident is that the target of the attack is **neither the content of a prompt nor the output of a tool, but the very state of the execution environment the agent perceives**. Prior indirect-prompt-injection research assumed the set of available tools was fixed before execution began and attacked "how the agent interprets information." What MSTI changes is "which tools the agent can observe and select in the first place." The researchers make this distinction explicit by contrast with existing MCP attack research (MCPTox, which handles metadata poisoning at registration time) and defense research (MCPShield, which inspects tool behavior before and after use, and ShieldNet, which observes network traffic at runtime), holding that the latter do not directly reach the root problem that "a script on the same page can change WebMCP's tools while a task is running." The shared primitive is the same: **the identity of what the agent calls is decoupled from the layer that verifies its origin.**
+### Checklist
 
-The researchers' disclosure of the attack taxonomy, the quantitative evaluation across three models and four scenarios, the field-level contribution analysis, the identification of injection timing, and the proposed design principles form a detection-and-visibility sequence that is indispensable for raising awareness of the risk and considering countermeasures, and this Brief does not deny that role. Existing defense research such as inspecting tool behavior (the MCPShield type) and observing runtime network traffic (the ShieldNet type) also contributes to grasping and shrinking the damage. Detection does play its part.
+Three things to confirm in organizations that let AI agents use a site's tools
 
-At the same time, detection provides no material to independently establish — **at the moment the call is made** — whether the tool the agent is about to call is the same legitimate tool it observed at planning time or a different one swapped in mid-session. The malicious tool carries the same public name as the legitimate tool and is presented using legitimate metadata fields. There is no way to distinguish them formally on the detection side, which relies on how content looks or on the model's semantic judgment. The research results bear this out twice over. First, attacks that strike the protocol layer (`AbortSignal` hijacking and the registration race) lose almost no success rate from older-generation models (GPT-4o, Claude 3.5 Sonnet) through the latest ones — **model updates cannot close them**. Second, the fact that merely setting `readOnlyHint=true` yields an average 87% success rate shows that the agent accepts the metadata's self-declaration of being "safe" without independent corroboration. As material for an audit to establish "was this tool call made by a tool whose origin was legitimately confirmed?", the mere facts "it was in the registry" and "it declared itself read-only" are not an independent trail of the tool's identity and origin. This is a gap in a structurally independent layer, outside the reach of the detection layer.
+- When a tool is deregistered, replaced or has its metadata changed after planning, is there a mechanism that checks the agent's plan again?
+- Do you limit the data handed to tools of third-party origin to the declared, authorized scope?
+- Can you see, apart from the agent, a record of which tool was registered or replaced, from which origin, when, and when it was called?
 
-The most important finding of this research is its demonstration that this gap can be filled in an implementable form. The researchers implemented two baseline defenses — binding origin at registration time and rejecting a subsequent registration under the same name from a different origin (a Tool Hijacking countermeasure), and blocking tool calls from a third-party origin and restricting the arguments they can receive (a Tool Framing countermeasure) — and reduced the attack success rate from 36–100% to **0% in every case**. Moreover, task completion rates were held on par with the baseline. What is decisive is the substance of it. Even with the defenses enabled, **the agent still called the malicious tool in most trials. And yet no data reached the attacker at all**. The researchers put it as "whether the LLM is misled and whether data actually leaks are independent problems."
+## 5. Facts and timeline
 
----
+- **Researchers**: Research by Lin-Fa Lee, Yi-Yu Chang, Chia-Mu Yu and Kuo-Hui Yeh of National Yang Ming Chiao Tung University (Hsinchu, Taiwan), "WebMCP Tool Surface Poisoning: Runtime Manipulation Attacks on LLM Agents," published 2026-06-04 as arXiv:2606.06387v1 [cs.CR]. They named the attack class "Mid-Session Tool Injection" (MSTI).
+- **Subject**: WebMCP, an emerging protocol that lets a website expose structured tools directly to an AI agent. The agent grasps the available capabilities from the tools' metadata rather than by driving the screen.
+- **Threat model (researchers' assumption)**: The attacker can compromise or inject the supply of a third-party script loaded into the victim site (a CDN, an ad SDK or any other JavaScript component on the same page). Whereas conventional third-party-script attacks aim to alter page content or exfiltrate DOM data, this threat model targets the agent's tool registry itself.
+- **Evaluation environment**: Three models: GPT-5.4, Claude Opus 4.6 and Gemini 2.5-flash. Four scenarios of differing severity (knowledge-base search / business-report generation and sending / e-commerce payment / GPU driver update).
+- **Key results**: The registration race (C3) hit 100% on all three models, and `AbortSignal` hijacking (C1) averaged 94%. In the Tool Framing family, `description` injection (C2) averaged 59% and the combined attack (C5) 61%. Isolating fields, `description` alone averaged 93%, `readOnlyHint=true` alone 87%, and the two combined 100% on all three models. In Tool Framing, the original task still completed normally in up to 85% of runs while data was exfiltrated.
+- **Injection timing**: Tool Hijacking needs the injection to be complete before the agent's loop begins (100% at P1, 0% if it misses the first legitimate call), while Tool Framing worked better the earlier it landed before sensitive context entered (82% at S1, 28% just before the final action).
+- **Researchers' defenses**: They implemented a defense that binds origin at registration and rejects a later same-name registration from a different origin (for Tool Hijacking), and one that blocks tool calls from a third-party origin and restricts the arguments it can receive (for Tool Framing), reducing the attack success rate from 36–100% to 0%, with task completion on par with the baseline. Even with the defenses enabled, the agent called the malicious tool in most trials, yet no data reached the attacker. The researchers put it as "whether the LLM is misled and whether data actually leaks are independent problems."
+- **Real-world harm**: This is research in a controlled setting; no exploitation or harm in the wild had been reported as of this writing.
 
-## 5. What proof would have changed
+### Timeline
 
-Pre-action attestation fills this gap by inserting a proof of identity and authorization one step into the path by which the agent calls a tool. Before the call, it verifies — decoupled from the public name and from the metadata's self-declaration — "does this tool carry the same immutable identifier as the one observed at planning time, and are its origin, owner, schema, annotations, and capabilities consistent with planning time?" and "is this call authorized within its declared capabilities and the scope of data exchange?", and it blocks the call or the handover of data up front when no proof accompanies it. The four directions the research's design principles enumerate — binding tool identity to origin, verifying the consistency of lifecycle state, declaring the boundaries of capabilities and data flow, and keeping a traceable provenance log of registrations and calls — are all concretizations of this layer. Pre-action attestation is a **complement** to detection, not a substitute, and the combination of the two layers establishes the trust boundary of the agent's tool surface.
+- **2026-06-04**: "WebMCP Tool Surface Poisoning: Runtime Manipulation Attacks on LLM Agents" (arXiv:2606.06387v1 [cs.CR]) is published on arXiv, presenting the MSTI taxonomy, a quantitative evaluation across three models and four scenarios, a field-level contribution analysis, an injection-timing analysis, and the implementation and evaluation of two baseline defenses.
+- **2026-07**: In a survey of MCP security trends, the study is cited as a new attack surface: runtime manipulation of the tool surface (Adversa AI).
 
-Against the detection–proof gap this event exposed (the identity of what the agent calls is decoupled from the layer that verifies its origin), Lemma proposes a design that requires, before the agent calls a tool and hands over data, its identity and authorization as independently verifiable cryptographic proof.
+> This is research in a controlled setting. The experiments do not use Chrome's native WebMCP implementation but a `navigator.modelContext` API provided by the CDN-delivered `@mcp-b/global` polyfill, and the agent runs in a headless Node.js environment rather than under a real browser's full security model. The researchers themselves note that reproducibility under a native implementation may vary with implementation details. The facts in this Brief rest on the researchers' paper. What has not been disclosed does not mean there were no controls.
 
-- **Binding tool identity to origin**: verify a tool by tying it to an immutable identifier and an origin (origin, document, registrant), distinguishing a different tool registered first under the same name, or swapped in afterward, from one legitimately registered. Judge by the authenticity of registration, not by the public name or a metadata self-declaration (such as `readOnlyHint=true`).
-- **Pre-action authorization proof (proof-as-auth)**: before the call, prove with a signature that "this tool is the same as at planning time, and this call is authorized within this scope." Do not make "it was in the tool list" the terminus of the call.
-- **Scoping data flow**: narrow the range of data handed to a tool to the declared, authorized minimum. Even if the agent's judgment is misled, keep sensitive context from reaching an undeclared destination.
-- **Provenance log of registrations and calls**: keep registrations, deregistrations, replacements, metadata changes, and calls as a tamper-resistant trail, so that an after-the-fact audit can independently verify "which tool appeared, from which origin, when, and was called."
-- **Selective disclosure**: disclose only "this call satisfies the authorization schema," at minimum, keeping sensitive context out of undeclared destinations.
+### After disclosure
 
-As the research demonstrated, these layers are not about "keeping the model from being fooled." Even with the defenses enabled the agent kept calling the malicious tool, yet no data reached the attacker. The detection layer, which probabilistically reduces misled judgments, and the proof layer, which deterministically rules out the materialization of real harm, do separate jobs. Detection (after-the-fact behavior inspection, traffic monitoring, visibility of the technique) works on remediation after discovery; pre-action proof (pre-call identity and authorization verification) works on the independent verification of agent operations — the two work complementarily.
-
----
+- **The researchers' design principles**: Holding that WebMCP's tool surface should be treated not as a neutral, static interface but as a security boundary, they set out four directions. (A) Tool identity and ownership: generate an immutable internal `tool_id` at registration and bind it to the origin, document, frame and supplying source of the registering script; the agent checks against the `tool_id`, not the public name. (B) Lifecycle and state consistency: deregistration, `AbortSignal`, replacement and metadata updates should invalidate an existing plan or force it to be checked again. (C) Capability and data-flow boundaries: require tools to declare their capabilities, data-access scope and destinations, and by default do not hand sensitive data to third-party tools. (D) Control through user authorization: record registrations, deregistrations, replacements, metadata changes and calls in a provenance log, and require explicit consent through the UI for high-risk actions such as payment, installation and sending data out.
+- **The limits of model updates**: The researchers hold that mitigating attacks that abuse WebMCP's tool-registration mechanism is hard to achieve through model version updates alone.
+- **Limitations of the research (stated by the researchers)**: The experiments use a polyfill and are not under a real browser's full security model. No user study was conducted. The defense evaluation covers only two of the four directions. The low task-completion rate for Tool Hijacking is a consequence of payload design; an attacker who knows the legitimate tool's specification and returns a normal response could raise completion sharply, making it even harder for users to notice.
 
 ## 6. Sources
 
 - **arXiv (research, primary)**: Lin-Fa Lee, Yi-Yu Chang, Chia-Mu Yu, Kuo-Hui Yeh, "WebMCP Tool Surface Poisoning: Runtime Manipulation Attacks on LLM Agents," arXiv:2606.06387v1 [cs.CR] (2026-06-04) — <https://arxiv.org/abs/2606.06387>
 - **W3C Web Machine Learning (WebMCP specification)**: "WebMCP" — <https://webmachinelearning.github.io/webmcp/>
 - **Adversa AI (MCP security trends)**: "Top MCP security resources & CVEs July 2026" (2026-07) — <https://adversa.ai/blog/top-mcp-security-resources-july-2026/>
+
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
