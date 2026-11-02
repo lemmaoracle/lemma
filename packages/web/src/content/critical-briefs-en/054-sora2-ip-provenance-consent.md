@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["008-discord-scraping", "036-public-training-dataset-pii", "011-synthid-watermark-reverse-engineering", "053-youtube-deepfake-likeness-provenance"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "著作権キャラが事後 opt-out まで生成され続けた — Sora 2"
 og_lead_en: "Copyrighted characters generated until opt-out — Sora 2"

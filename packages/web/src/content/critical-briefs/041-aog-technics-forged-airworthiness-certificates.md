@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["020-type-designation-conformity-fraud", "035-boeing-787-inspection-records", "019-construction-engineer-qualification-fraud", "021-wirecard-balance-attestation"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "AOG Technics、偽造耐空証明書付きで6万点超の航空機エンジン部品が4年以上流通"
 og_lead_en: "AOG Technics circulated 60,000+ aircraft engine parts with forged airworthiness certificates for over four years"

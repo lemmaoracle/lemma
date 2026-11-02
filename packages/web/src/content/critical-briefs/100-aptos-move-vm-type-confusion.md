@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["067-syscoin-bridge-spv-proof-parsing", "085-secret-network-axelar-bridge-infinite-mint", "016-verus-ethereum-bridge", "074-taiko-bridge-prover-key-leak", "002-stakedao-vsdcrv"]
 status: published
+gate: "none"
 version: "1.0"
 og_lead_ja: "Aptos — 約 3,000 ドルの検証環境で Move VM の型混同を再現、波及すれば約 700 億ドル規模のリスク"
 og_lead_en: "Aptos — a ~$3,000 rig reproduced a Move VM type confusion, a risk cascading to ~$70B"

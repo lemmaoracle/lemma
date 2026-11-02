@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["099-agentjacking-sentry-mcp", "048-trapdoor-ai-instruction-provenance", "037-agent-config-auto-execution", "095-amazon-q-mcp-auto-execution", "098-bioshocking-agentic-browser-context", "062-claude-code-github-action-bot-trust", "024-invisible-unicode-instruction-injection", "018-hackerbot-claw-ai-vs-ai", "031-vibe-hacking-shadow-aether"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "Friendly Fire — セキュリティ審査を頼んだ AI コーディングエージェントが、審査対象の悪性バイナリを「安全」と判定して実行した"
 og_lead_en: "Friendly Fire — a defensive AI coding agent ran the very binary it was asked to vet"

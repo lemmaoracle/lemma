@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["108-afx-trade-validator-key-quorum", "045-humanity-protocol-multisig-key-custody", "002-stakedao-vsdcrv", "067-syscoin-bridge-spv-proof-parsing", "016-verus-ethereum-bridge"]
 status: published
+gate: "signing"
 version: "1.0"
 og_lead_ja: "BonkDAO のガバナンス乗っ取りで財庫から約2,000万ドル流出、スマートコントラクトは正常動作"
 og_lead_en: "BonkDAO governance attack drained about $20M; the smart contracts ran as designed"

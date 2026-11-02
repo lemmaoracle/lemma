@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["093-a7a5-stablecoin-sanctions-evasion", "086-sumsub-support-environment-breach", "077-idmerit-kyc-data-exposure", "013-coinbase-kyc-insider-breach"]
 status: published
+gate: "payment-instruction"
 version: "1.0"
 og_lead_ja: "FCA が Starling Bank を £29m 制裁、自動サンクション照合は全リストの一部のみ"
 og_lead_en: "FCA fines Starling Bank £29m — sanctions screening covered only a fraction of the list"

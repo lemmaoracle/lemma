@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["028-npm-dependency-confusion-recon", "038-ironworm-npm-self-propagation", "090-air-fake-agent-skill-toctou", "077-idmerit-kyc-data-exposure", "013-coinbase-kyc-insider-breach"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "Paysafe 偽 SDK — 決済 SDK を装う 17 パッケージが決済 API 鍵ごと開発者の秘密を窃取した"
 og_lead_en: "Paysafe fake SDKs — 17 packages posing as payment SDKs stole developer secrets, payment API keys and all"

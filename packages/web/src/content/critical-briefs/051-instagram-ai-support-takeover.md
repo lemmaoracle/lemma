@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["047-openclaw-agent-phishing", "046-servicenow-unauthenticated-api", "029-github-dev-oauth-token", "006-google-api-key-revocation-lag"]
 status: published
+gate: "account-change"
 version: "1.0"
 og_lead_ja: "AI サポートに頼むだけで Instagram 2 万件が乗っ取り — Meta HTS"
 og_lead_en: "Asking the AI support bot hijacked 20k accounts — Meta HTS"

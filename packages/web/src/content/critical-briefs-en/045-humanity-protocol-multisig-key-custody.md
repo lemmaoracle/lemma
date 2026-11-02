@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["002-stakedao-vsdcrv", "001-kelpdao-rseth", "023-alephium-tokenbridge", "016-verus-ethereum-bridge"]
 status: published
+gate: "signing"
 version: "1.0"
 og_lead_ja: "1 台の端末から奪われた鍵がマルチシグ閾値を突破 — Humanity Protocol"
 og_lead_en: "Keys stolen from one device clear the multisig threshold — Humanity Protocol"

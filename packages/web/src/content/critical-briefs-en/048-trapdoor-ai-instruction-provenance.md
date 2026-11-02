@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["037-agent-config-auto-execution", "018-hackerbot-claw-ai-vs-ai", "024-invisible-unicode-instruction-injection", "028-npm-dependency-confusion-recon"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "AI 指示ファイル（.cursorrules/CLAUDE.md）に隠し命令 — TrapDoor"
 og_lead_en: "Hidden directives planted in AI instruction files — TrapDoor"

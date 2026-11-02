@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: []
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "Transformers、同意確認前にリモートコードをディスク書込と判明(CVE-2026-80047)"
 og_lead_en: "Transformers writes remote code to disk before consent check (CVE-2026-80047)"

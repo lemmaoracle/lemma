@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["124-wiser-medicare-ai-prior-authorization", "076-dillon-frt-wrongful-arrest"]
 status: published
+gate: "none"
 version: "1.0"
 og_lead_ja: "支払基金の「1 秒以上の目視」目標、達成率は実態より大きく報告"
 og_lead_en: "Staff met Japan's claims-Fund one-second target with a tool"

@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["006-google-api-key-revocation-lag", "033-f5-bigip-edge-pivot", "029-github-dev-oauth-token", "013-coinbase-kyc-insider-breach"]
 status: published
+gate: "identity"
 version: "1.0"
 og_lead_ja: "設定一つで認証が外れ、未認証で顧客インスタンスが照会された — ServiceNow"
 og_lead_en: "A flipped auth flag let an unauthenticated API query customer instances — ServiceNow"

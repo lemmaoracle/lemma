@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["003-starlette-badhost", "138-servicenow-ai-platform-quad-cve"]
 status: published
+gate: "identity"
 version: "1.0"
 og_lead_ja: "LiteLLMのMCP認証、失敗時フォールバックが無検証許可に(CVE-2026-59822)"
 og_lead_en: "LiteLLM's MCP auth fallback silently granted unchecked access (CVE-2026-59822)"

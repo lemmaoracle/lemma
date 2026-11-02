@@ -12,6 +12,7 @@ related_pack: ["B-regulatory"]
 related_briefs: ["019-construction-engineer-qualification-fraud", "006-google-api-key-revocation-lag", "021-wirecard-balance-attestation"]
 version: "1.0"
 status: published
+gate: "intake"
 og_lead_ja: "認証試験データの改ざんで型式指定を取得し出荷に直結 — 型式指定不正"
 og_lead_en: "Tampered certification test data reached type designation and shipment — type-designation fraud"
 gap_detected: "内部調査・第三者委員会・規制当局の立入検査が不正の範囲と対象車種をあとから可視化できた。"

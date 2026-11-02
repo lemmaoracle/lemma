@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["079-common-crawl-training-data-live-secrets", "036-commonpool-training-data-pii", "008-discord-scraping"]
 status: published
+gate: "permission-change"
 version: "1.0"
 og_lead_ja: "Truffle Security が Hugging Face 公開データセット7.6PBを走査、生きた認証情報221,303件を検出"
 og_lead_en: "Truffle Security scanned 7.6PB of Hugging Face datasets, found 221,303 live secrets"

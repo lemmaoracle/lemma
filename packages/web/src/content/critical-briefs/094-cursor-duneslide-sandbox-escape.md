@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["037-agent-config-auto-execution", "039-semantic-kernel-prompt-injection-rce", "027-librechat-mcp-url-secrets", "048-trapdoor-ai-instruction-provenance", "058-langgraph-checkpoint-rce"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "Cursor の DuneSlide — 一つの注入指示でサンドボックスが外れ RCE"
 og_lead_en: "Cursor's DuneSlide — one injected prompt escapes the sandbox to RCE"

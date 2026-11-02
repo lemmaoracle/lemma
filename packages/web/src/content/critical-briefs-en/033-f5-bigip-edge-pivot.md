@@ -12,6 +12,7 @@ related_pack: ["A-incident-response"]
 related_briefs: ["006-google-api-key-revocation-lag", "029-github-dev-oauth-token", "003-starlette-badhost"]
 version: "1.0"
 status: published
+gate: "identity"
 og_lead_ja: "1 台のエッジ機器の侵害がドメイン全体へ連鎖 — F5 BIG-IP"
 og_lead_en: "One edge-appliance compromise cascaded to full domain takeover — F5 BIG-IP"
 gap_detected: "Threat research could make the attack chain visible, observe the exposure of vulnerable appliances, and identify what needed patching."

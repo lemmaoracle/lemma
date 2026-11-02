@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["006-google-api-key-revocation-lag", "002-stakedao-vsdcrv"]
 version: "1.0"
 status: published
+gate: "disclosure"
 og_lead_ja: "規制が要求する生の個人情報の保管が内部買収で漏洩面化 — Coinbase KYC"
 og_lead_en: "Regulation-mandated raw PII storage became the breach surface via insider — Coinbase KYC"
 gap_detected: "社内不正を認識した後は、開示・懸賞金設定・サポート体制の見直しと、被害顧客への返金まで動けた。"

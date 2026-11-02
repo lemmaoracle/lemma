@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["005-noroboto-lying-fonts", "009-gtg1002-ai-orchestrated-espionage", "018-hackerbot-claw-ai-vs-ai"]
 version: "1.0"
 status: published
+gate: "agent-operation"
 og_lead_ja: "AI の挙動を統治する層に完全性も来歴もなかった — McKinsey Lilli システムプロンプト"
 og_lead_en: "The layer governing the AI's behavior had no integrity or provenance — McKinsey Lilli"
 gap_detected: "開示を受けた後、McKinsey は認証未実装のエンドポイント修正・開発環境のオフライン化などを数時間以内に実施できた。"

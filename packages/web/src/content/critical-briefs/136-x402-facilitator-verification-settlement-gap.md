@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [C-agent-governance]
 related_briefs: ["104-webmcp-mid-session-tool-injection", "047-openclaw-agent-phishing", "135-zombie-cards-visa-contactless-expiry"]
 status: published
+gate: "payment-instruction"
 version: "1.0"
 og_lead_ja: "x402 のファシリテーター 15 社すべてで違反、検証と決済確定が未結合"
 og_lead_en: "All 15 x402 facilitators in violation; verification isn't bound to settlement"

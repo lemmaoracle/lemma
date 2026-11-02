@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["032-booking-payout-account-tampering", "126-starling-bank-sanctions-screening-partial-list"]
 status: published
+gate: "disclosure"
 version: "1.0"
 og_lead_ja: "Revolut：伊政府の認証メール網からの開示要求に数か月応じ続けた"
 og_lead_en: "Revolut answered data requests from Italy's certified state email"

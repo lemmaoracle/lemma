@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["011-synthid-watermark-reverse-engineering", "053-youtube-deepfake-likeness-provenance", "105-japro-likeness-voice-ai-provenance", "119-japan-sexual-deepfake-npa-h1-2026", "050-grok-deepfake-consent-provenance"]
 status: published
+gate: "intake"
 version: "1.0"
 og_lead_ja: "TikTok の AI ラベル30億件と、AI生成司会者550本超の偽情報が同時に成立"
 og_lead_en: "TikTok's 3 billion AI labels coexisted with a 550-video AI-presenter disinformation network"

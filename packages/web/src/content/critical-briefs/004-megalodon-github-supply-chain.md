@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "003-starlette-badhost"]
 version: "1.0"
 status: published
+gate: "intake"
 og_lead_ja: "6 時間で 5,561 リポジトリの CI/CD 認証情報を窃取 — Megalodon GitHub サプライチェーン"
 og_lead_en: "5,561 repos poisoned in 6 hours via CI/CD credential theft — Megalodon GitHub supply chain"
 gap_detected: "セキュリティ企業 3 社が独立に解析し、感染の起点と影響範囲（5,561 リポジトリ）を 5 日以内に特定できた。"

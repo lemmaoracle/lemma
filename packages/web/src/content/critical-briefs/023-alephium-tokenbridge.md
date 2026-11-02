@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["001-kelpdao-rseth", "002-stakedao-vsdcrv", "016-verus-ethereum-bridge"]
 version: "1.0"
 status: published
+gate: "signing"
 og_lead_ja: "guardian の鍵は無事でも、署名対象のイベントの来歴が検証されなかった — Alephium TokenBridge $815K 流出"
 og_lead_en: "Guardian keys intact — but the provenance of the events they signed was never verified — Alephium TokenBridge $815K exploit"
 gap_detected: "Blockaid のリアルタイム検知と SEAL 911 の調査支援が、被害把握・ブリッジ停止・無担保トークンの焼却（約 96.4%）・資金追跡を可能にした。"

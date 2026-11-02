@@ -12,6 +12,7 @@ related_pack: ["B-regulatory"]
 related_briefs: ["021-wirecard-balance-attestation", "020-type-designation-conformity-fraud", "019-construction-engineer-qualification-fraud"]
 version: "1.0"
 status: published
+gate: "intake"
 og_lead_ja: "保全の実態がない森林からクレジットが発行・販売 — Operation Greenwashing"
 og_lead_en: "Carbon credits from forests with no real conservation — Operation Greenwashing"
 gap_detected: "Investigative reporting, independent satellite imagery analysis, and federal police investigation made the gap between the claims and reality externally visible."

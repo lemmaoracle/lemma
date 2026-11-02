@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["077-idmerit-kyc-data-exposure", "013-coinbase-kyc-insider-breach", "086-sumsub-support-environment-breach", "021-wirecard-balance-attestation"]
 status: published
+gate: "payment-instruction"
 version: "1.0"
 og_lead_ja: "A7A5 が制裁下で累計 $110B — 追えても実行時に制裁属性を遮断できない"
 og_lead_en: "A7A5 moved $110B under sanctions — traceable, yet no attribute stops it at transaction time"

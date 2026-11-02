@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["037-agent-config-auto-execution", "062-claude-code-github-action-bot-trust", "027-librechat-mcp-url-secrets", "059-vercel-contextai-oauth", "094-cursor-duneslide-sandbox-escape"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "Amazon Q — 同梱 .amazonq/mcp.json が無検証実行され AWS 認証情報が流出"
 og_lead_en: "Amazon Q — a bundled .amazonq/mcp.json auto-ran and leaked AWS credentials"

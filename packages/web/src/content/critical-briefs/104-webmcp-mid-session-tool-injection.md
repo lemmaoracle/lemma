@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["099-agentjacking-sentry-mcp", "048-trapdoor-ai-instruction-provenance", "024-invisible-unicode-instruction-injection", "025-mcp-stdio-config-to-command-rce", "027-librechat-mcp-url-secrets", "094-cursor-duneslide-sandbox-escape"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "WebMCP — セッション途中でツールが差し替えられ、エージェントは気づかず攻撃者のツールを呼んだ"
 og_lead_en: "WebMCP — swapping the tools mid-session led agents to call the attacker's tool without noticing"

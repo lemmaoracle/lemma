@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["017-mckinsey-lilli-system-prompts", "014-tanstack-oidc-trusted-publisher"]
 version: "1.0"
 status: published
+gate: "agent-operation"
 og_lead_ja: "リポジトリの CLAUDE.md を書き換え防御 AI を乗っ取り — hackerbot-claw 初の AI 対 AI"
 og_lead_en: "Rewriting CLAUDE.md to hijack the defending AI — hackerbot-claw, the first AI-vs-AI attack"
 gap_detected: "This time the defending AI saw the tampered instructions as a suspicious nudge, marked them as not-mergeable and opened a review, and the researchers' threat disclosure plus rapid fixes by each target also worked."

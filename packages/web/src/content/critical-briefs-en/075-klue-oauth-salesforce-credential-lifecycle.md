@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["064-salesloft-drift-oauth-salesforce", "059-vercel-contextai-oauth", "029-github-dev-oauth-token", "006-google-api-key-revocation-lag", "013-coinbase-kyc-insider-breach"]
 status: published
+gate: "permission-change"
 version: "1.0"
 og_lead_ja: "古いテスト認証情報の失効漏れで Salesforce が大量取得 — Klue"
 og_lead_en: "Klue's un-revoked test credential led to mass Salesforce extraction"

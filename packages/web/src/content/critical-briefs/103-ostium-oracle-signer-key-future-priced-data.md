@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["074-taiko-bridge-prover-key-leak", "067-syscoin-bridge-spv-proof-parsing", "001-kelpdao-rseth", "045-humanity-protocol-multisig-key-custody", "023-alephium-tokenbridge", "016-verus-ethereum-bridge"]
 status: published
+gate: "payment-instruction"
 version: "1.0"
 og_lead_ja: "Ostium — オラクル署名鍵1本の侵害で「未来の価格」が有効署名で受理され $18M 流出"
 og_lead_en: "Ostium — one compromised oracle signer key let \"future prices\" be accepted as validly signed, draining $18M"

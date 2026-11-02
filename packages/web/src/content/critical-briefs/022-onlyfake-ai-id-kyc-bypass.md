@@ -12,6 +12,7 @@ related_pack: ["B-regulatory"]
 related_briefs: ["021-wirecard-balance-attestation", "019-construction-engineer-qualification-fraud", "011-synthid-watermark-reverse-engineering", "006-google-api-key-revocation-lag"]
 version: "1.0"
 status: published
+gate: "identity"
 og_lead_ja: "AI 生成 ID で取引所 KYC を突破、画像審査は発行者検証ではない — OnlyFake"
 og_lead_en: "AI-generated IDs bypassed exchange KYC — image review isn't issuer verification — OnlyFake"
 gap_detected: "deepfake 検知・画像フォレンジック・injection 検知は、不正試行の多くを実際に止められた。"

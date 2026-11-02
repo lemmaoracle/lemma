@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["008-discord-scraping", "005-noroboto-lying-fonts", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
+gate: "intake"
 og_lead_ja: "SynthID 透かしが統計的に剥がされた — 成果物に埋めた来歴印は除去も偽造もされうる"
 og_lead_en: "SynthID Watermark, Statistically Stripped — a provenance mark that can be removed and forged"
 gap_detected: "The watermark and detection API still function as an initial filter that labels content at scale as 'likely AI-generated.'"

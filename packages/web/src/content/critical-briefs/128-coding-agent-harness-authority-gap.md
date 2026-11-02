@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["062-claude-code-github-action-bot-trust", "095-amazon-q-mcp-auto-execution", "114-aws-kiro-self-rewriting-mcp-config", "037-agent-config-auto-execution", "099-agentjacking-sentry-mcp", "094-cursor-duneslide-sandbox-escape"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "コーディングエージェント3種を既定構成で突破 — issue 1 件で CI 乗っ取り"
 og_lead_en: "Three coding agents broken in default config — one GitHub issue reaches CI"

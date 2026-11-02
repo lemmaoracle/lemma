@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["067-syscoin-bridge-spv-proof-parsing", "016-verus-ethereum-bridge", "023-alephium-tokenbridge", "074-taiko-bridge-prover-key-leak"]
 status: "published"
+gate: "payment-instruction"
 version: "1.0"
 og_lead_ja: "Secret Network：偽チャネルからの入金が無検証で、裏づけのない wrapped トークンが無限 mint（約$4.67M）"
 og_lead_en: "Secret Network: forged-channel deposits went unverified, minting unbacked wrapped tokens (~$4.67M)"

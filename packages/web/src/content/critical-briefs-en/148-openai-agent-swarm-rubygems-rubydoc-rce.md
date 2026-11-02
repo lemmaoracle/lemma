@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["125-keyv-cacheable-npm-account-takeover", "038-ironworm-npm-self-propagation", "147-gitspawn-ai-coding-agent-git-config-rce"]
 status: published
+gate: "intake"
 version: "2.0"
 og_lead_ja: "RubyDoc.info のドキュメント生成で任意コード実行、RubyGems に悪性パッケージ500超"
 og_lead_en: "RubyDoc.info doc builds ran arbitrary code from 500+ RubyGems spam packages"

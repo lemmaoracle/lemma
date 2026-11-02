@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
 related_briefs: ["105-japro-likeness-voice-ai-provenance", "053-youtube-deepfake-likeness-provenance", "050-grok-deepfake-consent-provenance", "054-sora2-ip-provenance-consent", "011-synthid-watermark-reverse-engineering"]
 status: published
+gate: "none"
 version: "1.0"
 og_lead_ja: "性的ディープフェイク、2026年上半期の把握123件で前年通年超え — 警察庁"
 og_lead_en: "Japanese police identified 123 sexual-deepfake cases in H1 2026, passing all of last year — NPA"

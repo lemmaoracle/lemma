@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [C-agent-governance]
 related_briefs: ["139-agent-framework-trust-boundary-checkpoint"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "GitSpawn：AIコーディングエージェント7種、git設定でコード実行"
 og_lead_en: "GitSpawn: seven AI coding agents run code via git config"

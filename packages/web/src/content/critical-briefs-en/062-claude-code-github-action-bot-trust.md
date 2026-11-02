@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["037-agent-config-auto-execution", "029-github-dev-oauth-token", "048-trapdoor-ai-instruction-provenance", "003-starlette-badhost"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "issue 1 件で AI エージェントにリポジトリを乗っ取られる — Claude Code GitHub Action"
 og_lead_en: "One GitHub issue hijacks the repo via the agent — Claude Code GitHub Action"

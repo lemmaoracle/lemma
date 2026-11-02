@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["025-mcp-stdio-config-to-command-rce", "027-librechat-mcp-url-secrets", "003-starlette-badhost", "037-agent-config-auto-execution", "047-openclaw-agent-phishing"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "Semantic Kernel で、プロンプトインジェクションがホストの RCE に直結した"
 og_lead_en: "In Semantic Kernel, prompt injection led directly to host-level RCE"

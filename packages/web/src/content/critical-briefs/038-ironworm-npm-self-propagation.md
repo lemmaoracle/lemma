@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "028-npm-dependency-confusion-recon", "004-megalodon-github-supply-chain", "006-google-api-key-revocation-lag"]
 status: published
+gate: "identity"
 version: "1.0"
 og_lead_ja: "盗んだ認証情報で自分を再公開する npm ワーム — IronWorm"
 og_lead_en: "A self-propagating npm worm republishes itself with stolen credentials — IronWorm"

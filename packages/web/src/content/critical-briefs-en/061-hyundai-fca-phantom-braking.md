@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["049-tesla-robotaxi-control-attribution", "043-tesla-fsd-self-reported-safety", "012-williams-frt-wrongful-arrest"]
 status: published
+gate: "agent-operation"
 version: "1.0"
 og_lead_ja: "AI の自動ブレーキが危険なく誤作動し追突を招く — Hyundai"
 og_lead_en: "Driver-assist AI braked with no real threat, causing rear-end crashes — Hyundai"

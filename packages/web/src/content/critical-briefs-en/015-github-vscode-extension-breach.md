@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "010-claude-code-leak-lure"]
 version: "1.0"
 status: published
+gate: "intake"
 og_lead_ja: "マーケット掲載 18 分の毒入り VS Code 拡張で開発者を突破 — GitHub 内部侵害"
 og_lead_en: "A poisoned VS Code extension lived 18 minutes on the marketplace — GitHub internal breach"
 gap_detected: "GitHub detected the unauthorized access the next day, rotated critical credentials the same day, and identified and disclosed the scope (internal repositories only, no customer impact)."

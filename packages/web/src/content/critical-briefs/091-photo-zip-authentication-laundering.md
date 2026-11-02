@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["030-stripe-trusted-channel-skimmer", "064-salesloft-drift-oauth-salesforce", "062-claude-code-github-action-bot-trust", "047-openclaw-agent-phishing"]
 status: "published"
+gate: "intake"
 version: "1.0"
 og_lead_ja: "Photo ZIP：認証ランダリングでメール認証を全通過。認証は送信経路を確かめ、作成主体を確かめない"
 og_lead_en: "Photo ZIP: authentication laundering cleared SPF/DKIM/DMARC; email auth verifies the path, not the author"

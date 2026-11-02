@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["047-openclaw-agent-phishing", "024-invisible-unicode-instruction-injection", "005-noroboto-lying-fonts", "027-librechat-mcp-url-secrets"]
 status: published
+gate: "disclosure"
 version: "1.0"
 og_lead_ja: "命令の出所を検証せず AI が社内データを送出 — EchoLeak / M365 Copilot"
 og_lead_en: "AI exfiltrated data without verifying the instruction's origin — EchoLeak"

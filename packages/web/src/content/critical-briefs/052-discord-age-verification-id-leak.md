@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["013-coinbase-kyc-insider-breach", "034-ekyc-camera-feed-provenance", "022-onlyfake-ai-id-kyc-bypass"]
 status: published
+gate: "disclosure"
 version: "1.0"
 og_lead_ja: "年齢証明のため渡した政府 ID 7 万枚が第三者から流出 — Discord"
 og_lead_en: "70k government IDs leaked to prove age — Discord / 5CA"

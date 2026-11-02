@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["004-megalodon-github-supply-chain"]
 version: "1.0"
 status: published
+gate: "identity"
 og_lead_ja: "Host ヘッダー操作で MCP server の認証を回避 — Starlette CVE-2026-48710 (BadHost)"
 og_lead_en: "Host header manipulation bypassed MCP server auth — Starlette CVE-2026-48710 (BadHost)"
 gap_detected: "影響を受けるサーバーを脆弱なバージョンから特定するオンライン点検ツールが、発見者から公開された。"

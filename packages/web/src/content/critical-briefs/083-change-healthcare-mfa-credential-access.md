@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["046-servicenow-unauthenticated-api", "057-deepseek-clickhouse-exposed-db", "056-mchire-paradox-recruiting-auth"]
 status: published
+gate: "identity"
 version: "1.0"
 og_lead_ja: "Change Healthcare：MFA なしの単一 Citrix アカウントへの侵入が米国医療請求の 3 分の 1 を数週間停止"
 og_lead_en: "Change Healthcare: a breach of one Citrix account without MFA halted a third of US medical claims for weeks"

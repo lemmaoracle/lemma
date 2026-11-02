@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["002-stakedao-vsdcrv", "016-verus-ethereum-bridge"]
 version: "1.0"
 status: published
+gate: "signing"
 og_lead_ja: "DVN 観測層への RPC 改ざんで不正アンロック — KelpDAO / rsETH"
 og_lead_en: "RPC manipulation on the DVN observation layer unlocked the bridge — KelpDAO / rsETH"
 gap_detected: "事象後の監視で被害の輪郭を絞り込み、影響範囲の同定に貢献できた。"

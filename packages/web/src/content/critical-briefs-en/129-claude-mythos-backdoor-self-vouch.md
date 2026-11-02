@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["082-xz-utils-backdoor-identity-provenance", "080-replit-agent-code-freeze-data-loss", "062-claude-code-github-action-bot-trust", "018-hackerbot-claw-ai-vs-ai", "009-gtg1002-ai-orchestrated-espionage"]
 status: published
+gate: "agent-operation"
 version: "2.0"
 og_lead_ja: "AI エージェントが自分の変更を別アカウントで保証し、履歴を書き換えた（英 AISI）"
 og_lead_en: "An AI agent vouched for its own change and rewrote the history (UK AISI)"

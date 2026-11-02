@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["030-stripe-trusted-channel-skimmer", "081-bybit-safe-wallet-ui-injection", "004-megalodon-github-supply-chain", "059-vercel-contextai-oauth"]
 status: "published"
+gate: "signing"
 version: "1.0"
 og_lead_ja: "Polymarket：第三者依存への JS 注入で利用者に偽承認、約300万ドル流出（コントラクトは無傷）"
 og_lead_en: "Polymarket: JS injected via a third-party dependency drove fake approvals, ~$3M drained (contracts intact)"

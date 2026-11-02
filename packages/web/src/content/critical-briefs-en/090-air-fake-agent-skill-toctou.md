@@ -11,6 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "082-xz-utils-backdoor-identity-provenance", "030-stripe-trusted-channel-skimmer", "037-agent-config-auto-execution"]
 status: "published"
+gate: "intake"
 version: "1.0"
 og_lead_ja: "AIR：偽のエージェントスキルが全スキャナーを通過。スキャン後に差し替わる外部リンクが盲点だった"
 og_lead_en: "AIR: a fake agent skill cleared every scanner; the blind spot was an external link swapped after the scan"

@@ -12,6 +12,7 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["001-kelpdao-rseth", "002-stakedao-vsdcrv"]
 version: "1.0"
 status: published
+gate: "payment-instruction"
 og_lead_ja: "Merkle Proof は有効でも入出力額の整合が未検証 — Verus-Ethereum ブリッジ $11.58M"
 og_lead_en: "Valid Merkle proof but no verification of source-vs-payout amount — Verus-Ethereum bridge ($11.58M)"
 gap_detected: "Post-incident technical analysis and negotiation with the attacker recovered about 75% of the stolen funds (roughly 4,052 ETH)."
