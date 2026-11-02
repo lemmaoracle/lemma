@@ -1,7 +1,7 @@
 ---
 brief_no: 161
-title: "Orion S.A.：社員が詐欺の標的になり、複数の送金が外部の口座へ出た(米 SEC 提出書類) — 同社が設計上は足りていたとする送金の統制が働かず、送金を照合済みの依頼に結びつける層が無い"
-title_en: "Orion S.A.: An employee was targeted by a criminal scheme, and multiple wire transfers went to outside accounts (US SEC filings) — Wire controls the company believed adequate as designed did not operate, and nothing ties each transfer to a verified request"
+title: "Orion S.A.：社員が詐欺の標的になり、複数の送金が外部の口座へ出た(米 SEC 提出書類)"
+title_en: "Orion S.A.: An employee was targeted by a criminal scheme, and multiple wire transfers went to outside accounts (US SEC filings)"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
@@ -15,11 +15,12 @@ version: "1.0"
 og_lead_ja: "化学メーカー Orion、社員を狙った詐欺で複数の送金が外部の口座へ — 未回収の損失 5,920 万ドル"
 og_lead_en: "Orion: a scheme targeting one employee sent multiple wires to outside accounts — a $59.2M unrecovered loss"
 layout: "report"
+sections: "proof"
+gate: "payment-instruction"
 og_kicker_ja: "サイバー攻撃事例 · 送金詐欺"
 og_kicker_en: "CYBERATTACK · WIRE FRAUD"
 og_headline_ja: "社員を狙った詐欺で、\n送金が何度も外部へ出た。\n<accent>未回収 5,920 万ドル</accent>"
 og_headline_en: "A scheme targeting one employee\nsent wires out again and again.\n<accent>$59.2M unrecovered.</accent>"
-summary_labels: ["What happened", "What is known", "The missing layer"]
 key_figures:
   - value: "$59.2M"
     label: "Booked in Q3 2024 as a loss for unrecovered fraudulently induced transfers (quarterly report)"
@@ -38,7 +39,7 @@ glossary:
 insight:
   slug: "control-designed-but-not-operating"
   label: "Wire controls designed but not operating"
-  quote: "The company reported that it believed its manual wire controls were adequate as designed to prevent or detect unauthorized transfers, but that they did not operate effectively. No mechanism tying each transfer to a verified request is visible in the disclosures."
+  quote: "Once a person follows the steps of a manual wire, a deceived request cannot be told apart from a proper one."
 industries: ["manufacturing"]
 operations: ["approval", "payment-change"]
 controls:
@@ -47,80 +48,49 @@ controls:
   - slug: "audit-trail"
     item: "Record which request was paid, and how it was verified"
 impact: "A scheme targeting an employee sent transfers to third-party accounts; $59.2M was booked as unrecovered (part later recovered)"
-takeaway: "A scheme targeting one employee sent transfers out again and again. Controls the company believed adequate as designed did not operate, and nothing tied each transfer to a verified request."
+takeaway: "A scheme targeting one employee sent transfers out again and again. Execute a wire only once it is tied to a request verified as genuine."
 self_check: "Do you verify that a manual wire request is genuine before executing it?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-In August 2024, carbon black maker Orion S.A. told the US SEC that an employee who is not a named executive officer had been targeted by a criminal scheme, and that multiple fraudulently induced wire transfers had gone to accounts controlled by unknown third parties. It booked a $59.2 million loss for unrecovered transfers in the third quarter and recovered $9.2 million in 2025; most has not come back.
+Orion reported a material weakness in its manual wire controls, which it believed were adequate as designed to prevent or detect unauthorized transfers but which did not operate effectively. The method has not been disclosed; the press calls it business email compromise, but the company's filings do not use the term. Orion identified the problem on August 10, and by then the wires had already gone out many times. <strong>Once a person follows the steps of a manual wire, a deceived request cannot be told apart from a proper one.</strong>
 
-Orion has not disclosed the method. The press calls it business email compromise; the company's filings do not. What is known: Orion reported a material weakness in its manual wire controls, which it believed were adequate as designed to prevent or detect unauthorized transfers but which did not operate effectively.
+## 2. What got through
 
-Orion identified the problem on August 10, after the transfers had already gone out. What failed was the layer that ties each transfer to a verified request.
+- **What got through**: An employee, not a named executive officer, was the target of a criminal scheme, and multiple fraudulently induced wires went to accounts controlled by unknown third parties (8-K of August 12, 2024).
+- **A control that did not operate**: Orion reported that it believed its manual wire controls were adequate as designed to prevent or detect unauthorized transfers, but that they did not operate effectively (quarterly report).
+- **What reached the receiving side**: In general, a wire made by a person following steps arrives as a proper wire once the employee has gone through them. Whether the request is genuine cannot be told from the wire itself.
+- **Not disclosed**: The method (email, phone, who was impersonated). The total, number and dates of the transfers, and the destination countries. Whether the fraudulent transfers themselves were manual (the material weakness concerned controls over manual wires). The targeted employee's role. Which site was involved.
 
-## 2. What happened
+## 3. What to check
 
-- **Party**: Orion S.A., a carbon black maker. Incorporated in Luxembourg; principal executive offices in Spring, Texas, per its SEC filings. Listed on the NYSE.
-- **What happened**: On August 10, 2024, Orion determined that an employee who is not a named executive officer had been the target of a criminal scheme that resulted in multiple fraudulently induced outbound wires to accounts controlled by unknown third parties (8-K of August 12).
-- **Loss**: $59.2 million booked in Q3 2024 for unrecovered transfers; $55.7 million net of recoveries in the 2024 annual report. $9.2 million (€7.9 million) recovered in 2025. Investigation fees were $3.6 million in 2024 and $2.3 million in 2025.
-- **Systems**: No unauthorized access to data or systems was found, and operations were not affected.
-- **Not disclosed**: The method (email, phone, who was impersonated). The total, number and dates of the transfers, and the destination countries. Whether the fraudulent transfers themselves were manual (the material weakness concerned controls over manual wires). The targeted employee's role. Which site was involved. The press calls it business email compromise; the filings do not use the term.
+Whatever the route, the condition for telling them apart is that whoever executes a wire checks, before it goes out and by a means separate from the requester, that it is tied to a request verified as genuine.
 
-As far as disclosed, events ran as follows.
-
-<figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The chain, as far as disclosed</span></div>
-<p class="rx-ex-cap">The stopping point is ②. Had each transfer been tied to a verified request, a deceived request would not produce the transfers in ③. The method in ① has not been disclosed.</p>
-<div class="rx-chain">
-<div class="rx-step crit"><div class="who">Third party</div><div class="no">1</div><b>Targets an employee with a criminal scheme</b><p>Method not disclosed.</p></div>
-<div class="rx-step crit"><div class="who">Orion</div><div class="no">2</div><b>Wire controls do not operate</b><p>The company believes its manual wire controls were adequate as designed.</p></div>
-<div class="rx-step crit"><div class="who">Orion</div><div class="no">3</div><b>Multiple wires go to third-party accounts</b><p>Q3 2024. $59.2M booked as unrecovered.</p></div>
-<div class="rx-step good"><div class="who">Orion</div><div class="no">4</div><b>Identifies the problem and works with law enforcement</b><p>August 10. Pursues recovery, including insurance.</p></div>
-</div>
-</figure>
-
-## 3. Timeline — disclosure and response
-
-- **2024-08-10**: Orion determines an employee was targeted and multiple wires went to third-party accounts.
-- **2024-08-12**: Files an 8-K, expecting a charge of about $60 million absent further recoveries.
-- **2024-11-07**: The Q3 report books a $59.2 million loss and discloses a material weakness in manual wire controls, concluding disclosure controls were not effective at September 30.
-- **2025-02-20**: The 2024 annual report puts the loss at $55.7 million net of recoveries and says the weakness was remediated by year-end.
-- **2026-02-17**: The 2025 annual report discloses a $9.2 million recovery.
-
-> The facts rely on Orion's SEC filings (the 8-K, the Q3 2024 10-Q, and the 2024 and 2025 10-Ks; all primary). The "business email compromise" label comes from the press; the company has not confirmed it.
-
-### After disclosure
-
-- **Orion**: Added controls over cash disbursements, strengthened management's quarterly sub-certifications, expanded employee training and encouraged early escalation. The audit committee engaged a third party to investigate. At December 31, 2024, the company concluded the controls had operated long enough to call the weakness remediated.
-- **Recovery**: Working with law enforcement and pursuing recovery through all legal means, including insurance.
-
-## 4. Why it wasn't stopped
-
-The failure was not missing controls on paper. **Wire controls the company believed adequate as designed did not operate, and nothing tied each transfer to a verified request.**
+- **Who approves**: The person responsible for the request at its origin. The approval is given by a means other than the channel the request arrived on, such as a contact registered in advance.
+- **Where it is checked**: One point just before a manual wire is executed. A wire without a verification result cannot go out. No path is left for sending manual wires outside the system's payment flow.
+- **What is recorded**: Which request was paid and how it was verified, kept with every transfer instead of waiting for a quarterly after-the-fact review.
 
 <figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The gap between detection and proof</span></div>
-<p class="rx-ex-cap">Proof here means checking, before a manual wire goes out, that it is tied to a request verified as genuine, and keeping a record. Detection means noticing fraud after the transfers.</p>
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before a manual wire goes out, that it is tied to a request verified as genuine, and keeping a record. Detection means noticing fraud after the transfers. The dates below are when Orion confirmed or disclosed each point, not when the wires were sent.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Proof layer · absent</b>Tie each wire to a verified request</div>
-<div class="rx-zone gapz"><b>Gap</b><span>$59.2M<br>unrecovered</span></div>
-<div class="rx-zone det"><b>Detection layer · worked</b>Identify the problem and pursue recovery</div>
-<div class="rx-g g1"><div class="t">STEP 1</div><b>Employee targeted</b></div>
-<div class="rx-g g2"><div class="t">STEP 2</div><b>Controls don't operate</b></div>
-<div class="rx-g g3"><div class="t">STEP 3</div><b>Q3 multiple wires</b></div>
-<div class="rx-g g4"><div class="t">STEP 4</div><b>08-10 identified</b></div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Tie each wire to a verified request before it is executed</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Multiple wires to third-party accounts<br>$59.2M booked as unrecovered</span></div>
+<div class="rx-zone det"><b>Detection · worked</b>Identify the problem and pursue recovery</div>
+<div class="rx-g g1"><div class="t">08-10</div><b>Problem identified</b></div>
+<div class="rx-g g2"><div class="t">08-12</div><b>8-K filed</b></div>
+<div class="rx-g g3"><div class="t">11-07</div><b>Loss and weakness disclosed</b></div>
+<div class="rx-g g4"><div class="t">02-20</div><b>Declared remediated</b></div>
 </div>
 </figure>
 
-Orion identified the problem on August 10 and moved to recover funds, but the wires had already gone out. As long as a control depends on people following steps, a deceived person following those steps produces transfers that look compliant. That distance is the **gap between detection and proof**, and it is structural.
+Orion identified the problem on August 10 and moved to recover funds, but the wires had already gone out. A similar case, where a finance employee sent money on a faked CFO's instruction, is [the Hong Kong deepfake meeting fraud](/critical/briefs/084-hong-kong-deepfake-video-call-fraud/).
 
-The same structure appears in [the Hong Kong deepfake meeting fraud](/critical/briefs/084-hong-kong-deepfake-video-call-fraud/) (a finance employee made 15 transfers on a faked CFO's instruction).
+## 4. What Lemma does
 
-## 5. How to counter this
-
-**Execute a manual wire only when it is tied to a request verified as genuine.** Verification should not rest on the judgment of the person sending; it should be done by a means separate from the requester, and its result tied to the transfer. Then a deceived employee following the steps still cannot send money on an unverified request. It sits in front of detection, not in place of it.
+**Lemma builds the check in section 03 into the side that executes manual wires.** It does not look for intrusions; it checks, before a wire goes out, that it is tied to a request verified as genuine.
 
 ### Industries and operations to watch
 
@@ -128,20 +98,21 @@ The same structure appears in [the Hong Kong deepfake meeting fraud](/critical/b
 - **Operation · Approval**: Manual wires made by staff on request, and their approval.
 - **Operation · Bank account changes**: Transfers to first-time recipients, or to new accounts named in a hurry.
 
-### Do today's controls close it?
+### Current controls vs Lemma
 
-| Control | This case | Why |
-| --- | --- | --- |
-| Wire approval steps | Partial | The company believes they were adequate as designed, but says they did not operate. |
-| Management sub-certifications | Ineffective | Quarterly reviews act after the fact, not before a transfer. |
-| Employee training | Partial | Makes deception harder, but does not stop a deceived employee's steps. |
-| Recovery and insurance | Ineffective | After-the-fact remedies that do not stop the transfer. Part was recovered by 2025. |
+Because the method, and whether the fraudulent transfers themselves were manual, have not been disclosed, it is not known which column this case falls in. Column 1 is a manual wire made by an employee on request; column 2 is a wire to a first-time recipient or a new account named in a hurry; column 3 is where the requester's own channel has been taken over.
 
-### What is needed
+| Control | Manual wire | Wire to a new account | Requester's channel taken over |
+| --- | --- | --- | --- |
+| Wire approval steps | Partial | Partial | Not effective |
+| Management sub-certifications (quarterly) | Not effective | Not effective | Not effective |
+| Employee training | Partial | Partial | Not effective |
+| Recovery and insurance | Not effective | Not effective | Not effective |
+| **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-1. **Verify wire requests by a means separate from the requester.** Do not verify inside the channel the request came in on.
-2. **Make it impossible to execute a wire not tied to a verified request.** Even manual wires cannot go without a verification result.
-3. **Record which request was paid, and how it was verified.** Keep it as proof with every transfer, rather than waiting for quarterly after-the-fact reviews.
+The company believes the approval steps were adequate as designed, but says they did not operate. Quarterly reviews act after the fact, not before a transfer. Training makes deception harder, but does not stop a deceived employee's steps. Recovery and insurance are after-the-fact remedies that do not stop the transfer; part was recovered by 2025. Lemma ties the wire to a request verified by a means separate from the requester before it is executed.
+
+Note: Lemma's check works only when it is built in just before manual wires are executed, no path remains to send wires outside the system's payment flow, and the means used for verification is separate from the channel the request arrives on. It passes if the requester's own channel has been taken over. Because the method has not been disclosed, this Brief limits itself to countermeasures that work whatever the route; we will revise it if the method becomes known. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -151,7 +122,26 @@ Three things to confirm about manual wires
 - Is there a step to verify a wire request by a means other than the one it arrived on?
 - Can one employee's judgment alone send several wires in a short time?
 
-Note: if the requester's own channels are compromised, this check can be passed. And because the method has not been disclosed, this Brief limits itself to countermeasures that work whatever the route. We will revise it if the method becomes known.
+## 5. Facts and timeline
+
+- **Party**: Orion S.A., a carbon black maker. Incorporated in Luxembourg; principal executive offices in Spring, Texas, per its SEC filings. Listed on the NYSE.
+- **Loss**: $59.2 million booked in Q3 2024 for unrecovered transfers; $55.7 million net of recoveries in the 2024 annual report. $9.2 million (€7.9 million) recovered in 2025. Investigation fees were $3.6 million in 2024 and $2.3 million in 2025.
+- **Systems**: No unauthorized access to data or systems was found, and operations were not affected.
+
+### Timeline
+
+- **2024-08-10**: Orion determines an employee was targeted and multiple wires went to third-party accounts.
+- **2024-08-12**: Files an 8-K, expecting a charge of about $60 million absent further recoveries.
+- **2024-11-07**: The Q3 report books a $59.2 million loss and discloses a material weakness in manual wire controls, concluding disclosure controls were not effective at September 30.
+- **2025-02-20**: The 2024 annual report puts the loss at $55.7 million net of recoveries and says the weakness was remediated by year-end.
+- **2026-02-17**: The 2025 annual report discloses a $9.2 million recovery.
+
+> The facts rely on Orion's SEC filings (the 8-K, the Q3 2024 10-Q, and the 2024 and 2025 10-Ks; all primary). The "business email compromise" label comes from the press; the company has not confirmed it. What has not been disclosed does not mean there were no controls.
+
+### After disclosure
+
+- **Orion**: Added controls over cash disbursements, strengthened management's quarterly sub-certifications, expanded employee training and encouraged early escalation. The audit committee engaged a third party to investigate. At December 31, 2024, the company concluded the controls had operated long enough to call the weakness remediated.
+- **Recovery**: Working with law enforcement and pursuing recovery through all legal means, including insurance.
 
 ## 6. Sources
 
