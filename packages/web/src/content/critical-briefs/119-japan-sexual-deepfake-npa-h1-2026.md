@@ -21,6 +21,8 @@ industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "未成年の性的ディープフェイク 123 件を半年で把握"
 countries: ["jp"]
+search_title: "性的ディープフェイク123件を把握：警察庁"
+search_description: "警察庁の公表で、性的ディープフェイクの把握件数が半年で123件となり、前年通年を超えた。実在の人物から作られた画像に、来歴を確認する層がない点を整理。"
 ---
 
 ## 1. TL;DR

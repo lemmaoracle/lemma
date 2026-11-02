@@ -20,6 +20,8 @@ gap_fix: "肖像・声を素材とする生成の前に、その利用が権利�
 industries: ["media", "ai"]
 impact: "肖像権侵害疑義の投稿が延べ 4 万件超"
 countries: ["jp"]
+search_title: "声優・芸能人の肖像と声の無断利用：JAPRO調査"
+search_description: "芸能人・声優の肖像と声の無断利用が主要 SNS で4万件超（JAPRO 2025年度調査）。削除率100%を達成したモデルも同じ人物で再投稿された。何が起きたか、来歴を確認する点を整理。"
 ---
 
 ## 1. TL;DR
