@@ -503,8 +503,8 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
                     {ctry && <span class="ix-ctry">{ctry}</span>}
                     {ind && <span class="ix-chip">{ind}</span>}
                     {atk && <span class="ix-chip ix-chip--atk">{atk}</span>}
-                    {fig && <span class="ix-pin-fig"><b>{fig.value}</b>{fig.unit && <i>{fig.unit}</i>}</span>}
                   </span>
+                  {fig && <span class="ix-pin-big"><b>{fig.value}</b>{fig.unit && <i>{fig.unit}</i>}</span>}
                   <span class="ix-pick-t">{shortTitle(b)}</span>
                   <span class="ix-pick-w">{takeawayOf(b)}</span>
                   <span class="ix-more">{labels.readMore}<span aria-hidden="true"> →</span></span>
@@ -952,38 +952,72 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     font-size: 14px;
     font-weight: 600;
   }
-  /* 注目：表紙の画像は付けず、チップ＋数字＋題の小さなカード。新着の表紙と並べて二段の帯に見せない。 */
+  /* 注目：濃い色の大きなカード。大きな数字を先に、題と一文を続ける。新着の表紙より一段目立たせる
+     （2026-11-02）。数字は表紙と同じ役目で、文を重ねない。 */
   .ix-pick--pin {
-    gap: 8px;
-    padding: 16px 18px;
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+    gap: 10px;
+    padding: 22px 26px 20px;
+    border-radius: 14px;
+    color: #f3f6ec;
+    background-color: #263028;
+    background-image:
+      radial-gradient(rgba(207, 216, 196, 0.22) 1px, transparent 1.3px),
+      radial-gradient(70% 90% at 92% 8%, rgba(168, 224, 16, 0.34), rgba(168, 224, 16, 0)),
+      linear-gradient(160deg, #36413a, #283129 60%, #1f2721);
+    background-size: 18px 18px, 100% 100%, 100% 100%;
+    box-shadow: 0 10px 28px rgba(31, 42, 34, 0.18);
+    transition: transform 0.15s, box-shadow 0.15s;
   }
   .ix-pick--pin:hover {
-    border-color: rgba(124, 175, 0, 0.5);
-    box-shadow: 0 6px 18px rgba(31, 42, 34, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px rgba(31, 42, 34, 0.26);
   }
-  .ix-pin-fig {
-    margin-left: auto;
-    display: inline-flex;
+  .ix-pick--pin .ix-ctry {
+    border-color: rgba(201, 239, 90, 0.5);
+    background: transparent;
+    color: #e8eedf;
+  }
+  .ix-pick--pin .ix-chip {
+    background: rgba(243, 246, 236, 0.12);
+    color: #e8eedf;
+  }
+  .ix-pick--pin .ix-chip--atk {
+    background: transparent;
+    border-color: rgba(243, 246, 236, 0.3);
+    color: #cfd8c4;
+  }
+  .ix-pin-big {
+    display: flex;
     align-items: baseline;
-    gap: 3px;
-    padding: 0 10px;
-    border-radius: 999px;
-    background: #1f2a22;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .ix-pin-big b {
+    font-family: var(--font-serif-jp);
+    font-size: 44px;
+    font-weight: 600;
+    line-height: 1.05;
     color: #c9ef5a;
-    line-height: 24px;
   }
-  .ix-pin-fig b {
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .ix-pin-fig i {
+  .ix-pin-big i {
     font-style: normal;
-    font-size: 11px;
+    font-size: 17px;
     font-weight: 600;
+    color: #f3f6ec;
+  }
+  .ix-pick--pin .ix-pick-t {
+    color: #fff;
+  }
+  .ix-pick--pin:hover .ix-pick-t,
+  .ix-pick--pin:focus-visible .ix-pick-t {
+    color: #c9ef5a;
+  }
+  .ix-pick--pin .ix-pick-w {
+    color: #cfd8c4;
+  }
+  .ix-pick--pin .ix-more {
+    color: #c9ef5a;
   }
   .ix-picks-grid--new .ix-cover {
     height: auto;
