@@ -52,6 +52,8 @@ attack_method: "supply-chain"
 takeaway: "預けたデータとそれを開く鍵が読み出されるとき、許された主体と範囲かを確かめる手順が無かった。"
 self_check: "委託先に預けた鍵やパスワードを、一覧で把握しているか。"
 countries: ["jp"]
+search_title: "Studio の不正アクセス：復号鍵も読み出された"
+search_description: "ノーコード Web 制作サービス Studio のクラウド環境が侵害され、暗号化データの復号鍵も同時に読み出された（Studio 発表）。何が起きたか、委託先の環境で確認する点を整理。"
 ---
 
 ## 1. TL;DR
