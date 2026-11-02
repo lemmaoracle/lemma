@@ -1,7 +1,7 @@
 ---
 brief_no: 167
-title: "Zeabur：開発プラットフォームが 2 か月で 2 度侵害され、「入れ替え済み」の後も期限なしの管理者トークンが使われた"
-title_en: "Zeabur: A developer platform was breached twice in two months, and a no-expiry admin token was used after keys were declared rotated"
+title: "Zeabur：開発プラットフォームが 2 か月で 2 度侵害され、鍵の入れ替えを報告した後も期限なしの管理者トークンが使われた"
+title_en: "Zeabur: A developer platform was breached twice in two months, and a no-expiry admin token was used after it reported rotating keys"
 pillar: 03-agent-authority
 primary_category: identity-auth
 secondary_categories: []
@@ -12,15 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["166-litellm-v1107-pypi-compromise", "059-vercel-contextai-oauth", "075-klue-oauth-salesforce-credential-lifecycle", "064-salesloft-drift-oauth-salesforce"]
 status: draft
 version: "1.0"
-og_lead_ja: "Zeabur：「入れ替え済み」の後も、期限なしの管理者トークンが使われた"
-og_lead_en: "Zeabur: a no-expiry admin token still worked after keys were declared rotated"
+og_lead_ja: "Zeabur：入れ替えを報告した後も、期限なしの管理者トークンが使われた"
+og_lead_en: "Zeabur: a no-expiry admin token was used after the company reported rotating keys"
 layout: "report"
 sections: "proof"
 gate: "disclosure"
 og_kicker_ja: "サイバー攻撃事例 · 権限の悪用"
 og_kicker_en: "CYBERATTACK · PRIVILEGE ABUSE"
-og_headline_ja: "「入れ替え済み」の後も、\n期限なしの管理者\nトークンが通った。\n<accent>環境変数 321 万件</accent>"
-og_headline_en: "Keys \"rotated\", yet\nan admin token worked.\n<accent>3.2 million env variables read.</accent>"
+og_headline_ja: "入れ替えを報告した後も、\n期限なしの管理者\nトークンが通った。\n<accent>環境変数 321 万件</accent>"
+og_headline_en: "Keys reported rotated,\nyet an admin token worked.\n<accent>3.2 million env variables read.</accent>"
 key_figures:
   - value: "3,218,965"
     label: "Environment variables read from the platform database (plus data on 321,810 accounts)"
@@ -45,20 +45,20 @@ controls:
     item: "Record which admin credential was used, when, from where and on what scope"
 attack_method: "privilege-abuse"
 impact: "3,218,965 environment variables and data on 321,810 accounts read; root logins to 101 GCP Dedicated Servers"
-takeaway: "A no-expiry admin token still worked after keys were declared rotated. Declaring keys rotated is not enough: unless revocation is checked each time an old credential is used, a key with no expiry keeps working."
+takeaway: "A no-expiry admin token was used after the company reported rotating keys. Reporting keys as rotated is not enough: unless revocation is checked each time an old credential is used, a key with no expiry keeps working."
 self_check: "Do you check, from an inventory, that you have no admin tokens or cloud keys without an expiry?"
 countries: ["tw", "us"]
 ---
 
 ## 1. Summary
 
-After its August breach, the developer platform Zeabur reported that "all internal admin keys have been disabled or rotated", but a no-expiry admin token and other credentials were outside that rotation. In October, that token and an old cloud key were used to get into the shared cluster and Dedicated Servers, and users' environment variables were read from the platform database. Zeabur is shutting down on 31 December. <strong>Declaring keys rotated is not enough: unless revocation is checked each time an old credential is used, a key with no expiry keeps working.</strong>
+After its August breach, the developer platform Zeabur reported that it had disabled or rotated its internal admin keys and other credentials, but a no-expiry admin token and other credentials were outside that rotation. In October, the shared cluster was entered with that token and an internal AWS key, and the GCP Dedicated Servers starting from an old GCP key, and users' environment variables were read from the platform database. Zeabur is shutting down on 31 December. <strong>Reporting keys as rotated is not enough: unless revocation is checked each time an old credential is used, a key with no expiry keeps working.</strong>
 
 ## 2. What got through
 
-- **What got through**: Reading settings and running commands in the shared cluster's admin interface with a no-expiry admin token and an internal AWS key (from 14 October). Root logins to 101 Dedicated Servers starting from an old GCP service-account key. Reading the platform database with an internal read-only account (15 October, after the investigation had begun).
+- **What got through**: Reading settings and running commands in the shared cluster's admin interface with a no-expiry admin token and an internal AWS key (from 14 October). Root logins to 101 Dedicated Servers starting from an old GCP service-account key (Zeabur's assessment). Reading the platform database with an internal read-only account (15 October, after the investigation had begun).
 - **What reaches the receiving side**: In general, what reaches an admin API or a database is a request over a legitimate path with a valid credential. Zeabur says no alert fired for about 36 hours after first use because valid credentials and legitimate paths were used.
-- **Not disclosed**: How the initial credentials were obtained (Zeabur names a possible link to a GitHub App private key leaked in August as a hypothesis, not confirmed), where the old GCP key leaked from, and who the attacker is. Zeabur says access logs are incomplete, so part of the impact cannot be confirmed.
+- **Not disclosed**: How the initial credentials were obtained (Zeabur names a possible link to a GitHub App private key leaked in August as a hypothesis, not confirmed), and where the old GCP key leaked from (Zeabur says neither can be confirmed). No statement identifying the attacker was found. Hetzner and DigitalOcean are said to keep no operation audit logs, and Zeabur says it cannot confirm whether the admin access to some servers was used.
 
 ## 3. What to check
 
@@ -73,9 +73,9 @@ Whatever the route, the condition for telling these apart is that the side recei
 <p class="rx-ex-cap">A pre-execution check means checking, each time an admin credential is used, that it is valid now and allowed for this scope of operation, and keeping a record. Detection means noticing abnormal use after it happens.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check expiry, scope and revocation at every use</div>
-<div class="rx-zone gapz"><b>In between</b><span>After "all rotated", a no-expiry<br>token still got in</span></div>
-<div class="rx-zone det"><b>Detection · worked</b>Investigate after a user report and revoke</div>
-<div class="rx-g g1"><div class="t">2026-08</div><b>"All rotated" reported</b></div>
+<div class="rx-zone gapz"><b>In between</b><span>After the rotation report, a<br>no-expiry token still got in</span></div>
+<div class="rx-zone det"><b>Detection · investigation began ~36 hours later, after a user report</b>No alerts until then; revoked once the investigation began</div>
+<div class="rx-g g1"><div class="t">09-07</div><b>Rotation reported</b></div>
 <div class="rx-g g2"><div class="t">10-14</div><b>Token used</b></div>
 <div class="rx-g g3"><div class="t">10-15</div><b>Investigation begins</b></div>
 <div class="rx-g g4"><div class="t">10-15</div><b>Revocation and sign-out of all users</b></div>
@@ -95,6 +95,8 @@ The token was revoked on the day the investigation began, but in the meantime th
 
 ### Current controls vs Lemma
 
+The three columns correspond, from left to right, to this case's shared-cluster admin API (path A), the read of the platform database, and the login to GCP Dedicated Servers (path B).
+
 | Control | Reads and commands via the admin API | Database and secret exports | Server logins with a password |
 | --- | --- | --- | --- |
 | Rotating keys after a breach | Partial | Partial | Partial |
@@ -105,7 +107,7 @@ The token was revoked on the day the investigation began, but in the meantime th
 
 Rotation does not reach credentials missing from the inventory, and detection struggles to tell apart requests with valid credentials over legitimate paths. Lemma checks the expiry, scope and revocation status of a credential each time it is used.
 
-Note: Lemma's check works only where it is built into the admin API and data-export boundary and credential issuance and revocation are kept in one register. It passes if a credential within its expiry is stolen and used within scope, or if the checking system itself is taken over. Server logins with a password are outside this check. The table compares what each control checks; it does not show whether anything would have stopped this case. Lemma does not detect or prevent intrusion.
+Note: Lemma's check works only where it is built into the admin API and data-export boundary and credential issuance and revocation are kept in one register. For the way in closest to this case (a no-expiry admin token was used), it works only where the register treats credentials without an expiry as invalid and does not let revoked credentials through. It passes if a credential within its expiry is stolen and used within scope, or if the checking system itself is taken over. Server logins with a password are outside this check. The table compares what each control checks; it does not show whether anything would have stopped this case. Lemma does not detect or prevent intrusion.
 
 ### Checklist
 
@@ -118,23 +120,24 @@ Three points for your organisation to check about admin credentials
 ## 5. Facts and timeline
 
 - **Service**: Zeabur is a developer platform for deploying and hosting apps (operated by Zeabur Inc., a Delaware corporation). Users store their apps' environment variables (API keys, database connection details, signing keys and so on) on the platform.
-- **Path A (shared cluster)**: An internal AWS key and the shared cluster's admin token. The token was created with no expiry on 10 January 2024 and written in plain text to a private configuration repository on 20 January 2026. The shared cluster's admin interface was reachable from the public internet and allowed reading every service's settings and running commands in any container. On 15 October, about 53 production secrets were read (including internal-network admin credentials, database accounts and the GitHub App private key).
-- **Path B (GCP Dedicated Servers)**: An old GCP service-account key (where it leaked from has not been confirmed). Zeabur assesses that this key was used to read root passwords stored in plain text in the Dedicated Servers' initial configuration. The plain-text issue had been identified on 3 September but was not fixed at the time of the incident. 101 servers (belonging to 92 users) were logged into as root, and persistent SSH keys were added to 50.
-- **Database read**: On 15 October, from a server entered via path B, the attacker used internal-network admin credentials obtained via path A to add a node to the internal network, and read the platform database with an internal read-only account (16:10–16:47 UTC): 3,218,965 environment variables and data on 321,810 accounts (email addresses, usernames, phone numbers and so on).
-- **Backup key**: The cluster's daily backups contained every secret. A key rotated at 15:40 UTC during the response was captured in the 16:00 backup and used by the attacker at 20:30 UTC.
+- **Path A (shared cluster)**: An internal AWS key and the shared cluster's admin token. The token was created with no expiry on 10 January 2024 and written in plain text to a private configuration repository on 20 January 2026. The shared cluster's admin interface was reachable from the public internet and allowed reading every service's settings and secrets and running commands inside containers. On 15 October, about 53 production secrets were read (including internal-network admin credentials, database accounts and the GitHub App private key).
+- **Path B (GCP Dedicated Servers)**: An old GCP service-account key (where it leaked from has not been confirmed). Zeabur assesses that this key was used to read root passwords stored in plain text in the Dedicated Servers' initial configuration. According to Zeabur's timeline, the plain-text issue had been identified on 3 September but was not fixed at the time of the incident. 101 servers (belonging to 92 users) were logged into as root, and persistent SSH keys were added to 50.
+- **Database read**: At 15:30 UTC on 15 October, the attacker used internal-network admin credentials obtained via path A, from a compromised GCP server, to add a node to the internal network (per Zeabur). From that node it read the platform database with an internal read-only account (16:10–16:47 UTC): 3,218,965 environment variables and data on 321,810 accounts (the profile-page information, such as email addresses, usernames and phone numbers).
+- **Other impact**: Zeabur says the attacker ran commands in 865 database services (not every command succeeded), created 5 virtual machines in Zeabur's GCP project and attached 16 copies of customer server disks to them, and that admin access to 359 Hetzner and 48 DigitalOcean servers was among the affected items, with use of it not confirmable.
+- **Backup key**: The cluster's daily backups contained every secret. A key rotated at 15:40 UTC during the response was captured in the 16:00 backup and used by the attacker at 20:30 UTC, according to Zeabur.
 
 ### Timeline
 
 - **2024-01-10**: The shared cluster's admin token is created with no expiry.
 - **2026-01-20**: The admin token is written in plain text to a configuration repository.
-- **2026-08**: First breach. The report published on 7 September says "all internal admin keys, database passwords and cache passwords have been disabled or rotated." Zeabur later acknowledged this statement was incomplete.
+- **2026-08**: First breach. The report published on 7 September said the internal admin keys, database passwords and cache passwords had been disabled or rotated. The October preliminary report corrects that statement as incomplete: the cluster admin tokens and AWS keys were not covered.
 - **2026-10-14**: The internal AWS key is first used at 01:36 UTC and the admin token at 01:40 UTC. Root logins to GCP Dedicated Servers begin at 13:40 UTC.
 - **2026-10-15**: At 13:56 UTC, an investigation begins after a user report. Production secrets are still read (14:52–16:51), a node is added to the internal network (15:30) and the database is read (16:10–16:47). Admin-interface access is restricted (14:43), the admin token revoked (15:32), the attacker's node removed (17:58), and the login signing key renewed with all users signed out (20:25). The attacker's last activity is at 21:05 UTC.
 - **2026-10-17**: The shutdown is announced.
 - **2026-10-19**: The preliminary report is published.
 - **2026-10-22**: Guidance on migration, balance refunds and claims for breach damage (accepted until 30 November) is published.
 
-> Facts rest on Zeabur's preliminary report (2026-10-19, to be updated), its August breach report, and its shutdown and migration/refund notices (all primary). What is not disclosed does not mean no measure was in place. As of 1 November, no follow-up to the preliminary report has been published.
+> Facts rest on Zeabur's preliminary report (2026-10-19, to be updated), its August breach report, and its shutdown and migration/refund notices (all primary). What is not disclosed does not mean no measure was in place. As of 2 November, no follow-up to the preliminary report appears in Zeabur's blog listing.
 
 ### After disclosure
 
@@ -146,7 +149,7 @@ Three points for your organisation to check about admin credentials
 ## 6. Sources
 
 - **Zeabur (Primary, interim report)**: "Zeabur October 2026 security incident (preliminary report)" (2026-10-19, to be updated) — <https://zeabur.com/blogs/october-2026-security-incident>
-- **Zeabur (Primary, company disclosure)**: "Zeabur August 2026 security incident" (2026-09-07; the "disabled or rotated" statement) — <https://zeabur.com/blogs/august-2026-security-incident>
+- **Zeabur (Primary, company disclosure)**: "Zeabur August 2026 security incident" (2026-09-07; the statement that keys were disabled or rotated) — <https://zeabur.com/blogs/august-2026-security-incident>
 - **Zeabur (Primary, company disclosure)**: "Zeabur is shutting down: what happens next" (2026-10-17) — <https://zeabur.com/blogs/zeabur-is-shutting-down>
 - **Zeabur (Primary, company disclosure)**: "Zeabur service migration, refunds, and security incident claims" (2026-10-22) — <https://zeabur.com/blogs/migration-refunds-and-security-claims>
 - **Zeabur (Primary, terms of service)**: company information (Zeabur Inc., Delaware) — <https://zeabur.com/docs/terms-of-service#company-information>
