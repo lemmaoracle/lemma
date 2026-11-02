@@ -1,13 +1,12 @@
 /**
- * Brief 一覧の「いま読む 3 本」（2026-10-17）。
+ * Brief 一覧の「注目」（ピン・2026-11-02）。
  *
- * 週に一度入れ替える。選び方は、業界と手口が 3 本で重ならないこと
- * （いろいろな業界の読者がどれか 1 本は自分ごととして読めるように）。X に
- * 予約した Brief から選ぶと手間が増えない（X 投稿も「直近 3 本と組み合わせを
- * 重ねない」で選んでいる）。ここに無い・存在しない slug は一覧が黙って飛ばす。
+ * 一覧の上段は、公開日の新しい順に自動で出す「新着」3 本と、ここで選ぶ「注目」1〜2 本。
+ * 新着は触らなくてよい。ここは、読まれているものと、いま世界的に注目されている事案を
+ * 1〜2 本、載せたいときだけ変える（毎週は変えない）。ここに無い・存在しない slug は
+ * 一覧が黙って飛ばす。ここに置いた Brief は新着から外れる（重ねて出さない）。
  */
 export const BRIEF_PICKS: readonly string[] = [
-  "044-arcadia-speecan-raiden-disaster-mail-spoofing",
-  "151-toppan-sompo-japan-misdirected-zip",
+  "169-binance-hot-wallet-unauthorized-withdrawals",
   "032-booking-payout-account-tampering",
 ];

@@ -147,7 +147,7 @@ const latestBriefs = briefsByPublishedDesc.slice(0, LATEST_COUNT);
 const briefById = new Map(allBriefs.map((b) => [b.id, b]));
 
 /* ── 一覧トップ（2026-10-17・承認済みモック v6）────────────────────────
- * いま読む 3 本（config/briefPicks.ts）→ 対策から読む（4 タイル）＋点検の帯
+ * 新着 3 本（自動）→ 注目（config/briefPicks.ts・1〜2 本のピン）→ 対策から読む（4 タイル）＋点検の帯
  * → そのほかの新着（2 列・影響を言葉で）。脅威タイプ（13）と「よく見られて
  * いる」はトップから外した（脅威タイプ別ページは 90 日で計 2 PV）。脅威タイプ
  * の絞り込みはアーカイブ側に残す。 */
@@ -171,12 +171,16 @@ const takeawayOf = (b: AnyBrief): string => {
   const tail = (isJa ? b.data.title : b.data.title_en).split(" — ")[1];
   return tail ?? "";
 };
-const pickBriefs = BRIEF_PICKS.map((id) => briefById.get(id)).filter(
+/* 注目（ピン）：config/briefPicks.ts の 1〜2 本。新着には重ねない。 */
+const pinBriefs = BRIEF_PICKS.map((id) => briefById.get(id)).filter(
   (b): b is AnyBrief => Boolean(b),
 );
-const pickIds = new Set(pickBriefs.map((b) => b.id));
+const pinIds = new Set(pinBriefs.map((b) => b.id));
+/* 新着：公開日の新しい順に自動で 3 本（ピンを除く）。 */
+const newestBriefs = briefsByPublishedDesc.filter((b) => !pinIds.has(b.id)).slice(0, 3);
+const newestIds = new Set(newestBriefs.map((b) => b.id));
 const restLatest = briefsByPublishedDesc
-  .filter((b) => !pickIds.has(b.id))
+  .filter((b) => !pinIds.has(b.id) && !newestIds.has(b.id))
   .slice(0, LATEST_COUNT);
 const controlTiles = BRIEF_CONTROL_SLUGS.map((slug) => ({
   slug,
@@ -318,7 +322,8 @@ const labels = isJa
       heroH1: "攻撃と事故の構造を読む",
       heroDesc:
         "実際に起きたサイバー攻撃と事故を、公表資料から読み解きます。何が正しい操作として通ってしまったか、実行の前に何を照合するかまでを整理する解説レポートです。",
-      picks: "いま読む 3 本",
+      newest: "新着",
+      pinned: "注目",
       controlsH: "対策から読む",
       controlCount: (n: number) => `解説 ${n} 本`,
       restH: "そのほかの新着",
@@ -368,7 +373,8 @@ const labels = isJa
       heroH1: "How attacks and accidents get through",
       heroDesc:
         "Real cyber attacks and incidents, read from public disclosures: what got through as a legitimate operation, and what to check before it runs.",
-      picks: "Read now",
+      newest: "Latest",
+      pinned: "Featured",
       controlsH: "Browse by control",
       controlCount: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
       restH: "More recent briefs",
@@ -414,6 +420,12 @@ const labels = isJa
       archivePageTitle: `Brief archive (all ${briefsCount}) — Lemma Critical Brief`,
       archiveDescription: `All ${briefsCount} Lemma Critical Briefs, grouped by month of publication. Major incidents across AI, cryptographic infrastructure, supply chains, and regulated attributes — filter by threat type or search by keyword.`,
     };
+
+/* 一覧トップの上段：新着（自動）→ 注目（ピン）。 */
+const topSections = [
+  { key: "new", heading: labels.newest, items: newestBriefs },
+  { key: "pin", heading: labels.pinned, items: pinBriefs },
+].filter((sec) => sec.items.length > 0);
 
 const rssHref = `${base}/critical/briefs/feed.xml`;
 const methodologyHref = `${base}/critical/briefs/methodology/`;
@@ -464,11 +476,11 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
           トップ = 2列・件数の横バー（アーカイブへのリンク）。
           アーカイブ = 横並びの小さいチップ（絞り込みボタン）。同じ面が2枚続くと
           「遷移した感じ」が出ないので、アーカイブ側は畳んで一覧を上に出す。 */}
-      {!isArchive && pickBriefs.length > 0 && (
-        <section class="ix-picks" aria-label={labels.picks}>
-          <h2 class="ix-h">{labels.picks}</h2>
-          <div class="ix-picks-grid">
-            {pickBriefs.map((b, i) => {
+      {!isArchive && topSections.map((sec) => (
+        <section class={`ix-picks ix-picks--${sec.key}`} aria-label={sec.heading}>
+          <h2 class="ix-h">{sec.heading}</h2>
+          <div class={`ix-picks-grid ix-picks-grid--${sec.key}`}>
+            {sec.items.map((b, i) => {
               const c = briefCardData(b);
               const ind = industryLabel(b);
               const atk = attackLabel(b);
@@ -490,7 +502,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
             })}
           </div>
         </section>
-      )}
+      ))}
 
       {!isArchive && (
         <section class="ix-controls" aria-label={labels.controlsH}>
@@ -819,7 +831,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
 
   /* ─── 一覧トップ（2026-10-17） ───────────────────────────────────
      承認済みモック v6。ライムは淡い下地と帯のボタンだけ、暗い面は
-     いま読むの表紙と点検の帯だけ。数字は赤くしない（影響は言葉で）。 */
+     新着・注目の表紙と点検の帯だけ。数字は赤くしない（影響は言葉で）。 */
   .ix-h {
     margin: 0;
     font-size: 15px;
@@ -868,6 +880,19 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 28px;
+  }
+  /* 注目（ピン）：新着の下に続ける。2 本なら 2 列。境界線は新着の上と注目の下だけ。 */
+  .ix-picks--new {
+    border-bottom: 0;
+    padding-bottom: 6px;
+  }
+  .ix-picks--pin {
+    margin-top: 0;
+    padding-top: 20px;
+    border-top: 1px dashed #cfd3c8;
+  }
+  .ix-picks-grid--pin {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .ix-pick {
     display: flex;
