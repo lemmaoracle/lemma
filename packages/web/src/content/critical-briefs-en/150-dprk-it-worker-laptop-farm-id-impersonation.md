@@ -1,7 +1,7 @@
 ---
 brief_no: 150
-title: "北朝鮮IT労働者：国内の支援者から提供された身分証の画像でその支援者になりすまし、業務を受注していた(日米豪独7機関の合同文書・国内初のラップトップ・ファーム解体) — 身分証は本物でも、その持ち主と画面の向こうで働く人物を、業務を渡す前に結びつける層が無い"
-title_en: "North Korean IT workers: they won contracts in Japan by posing as local enablers, using ID images the enablers supplied (joint advisory by seven agencies in Japan, the US, Australia and Germany; Japan's first laptop farm dismantled) — the ID was genuine, but nothing tied its holder to the person doing the work before the work was handed over"
+title: "北朝鮮IT労働者：国内の支援者から提供された身分証の画像でその支援者になりすまし、業務を受注していた(日米豪独7機関の合同文書・国内初のラップトップ・ファーム解体)"
+title_en: "North Korean IT workers: they won contracts in Japan by posing as local enablers, using ID images the enablers supplied (joint advisory by seven agencies in Japan, the US, Australia and Germany; Japan's first laptop farm dismantled)"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth]
@@ -11,15 +11,16 @@ authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["141-idscan-net-drivers-license-dark-web-breach", "034-ekyc-liveness-bypass", "084-hong-kong-deepfake-video-call-fraud"]
 status: published
-version: "2.0"
+version: "2.1"
 og_lead_ja: "北朝鮮IT労働者が国内支援者の身分証で業務を受注、国内初のラップトップ・ファーム解体"
 og_lead_en: "North Korean IT workers won contracts in Japan with ID images supplied by local enablers"
 layout: "report"
+sections: "proof"
+gate: "identity"
 og_kicker_ja: "サイバー攻撃事例 · なりすまし"
 og_kicker_en: "CYBERATTACK · IMPERSONATION"
 og_headline_ja: "国内の支援者の\n身分証で、北朝鮮の\n労働者が仕事を受けた。\n<accent>数億円相当を海外へ送金</accent>"
 og_headline_en: "North Korean workers took jobs in Japan with local enablers' IDs.\n<accent>Hundreds of millions of yen sent abroad.</accent>"
-summary_labels: ["What happened", "Why it was hard to tell", "The missing layer"]
 key_figures:
   - value: "Hundreds of millions"
     unit: "yen"
@@ -40,7 +41,7 @@ glossary:
 insight:
   slug: "id-image-not-the-worker"
   label: "The ID holder isn't the worker"
-  quote: "The ID submitted was genuine, but nothing tied its holder to the person actually working on the other side of the screen before the work was handed over."
+  quote: "Even when an ID is genuine, an image cannot show that its holder is the person working on the other side of the screen."
 industries: ["developers"]
 operations: ["account-admin"]
 controls:
@@ -50,100 +51,72 @@ controls:
     item: "Record who was given the work and who was paid"
 attack_method: "impersonation"
 impact: "Japan's first laptop farm dismantled; hundreds of millions of yen sent abroad"
-takeaway: "The ID was genuine, but nothing tied its holder to the person working on the other side of the screen before the work was handed over."
+takeaway: "A genuine ID does not mean its holder is the person doing the work. Before handing over work and access, check this with a method only the person can use."
 self_check: "Before handing over work, can you confirm the outside worker is the same person as the ID holder?"
 countries: ["jp"]
 ---
 
-> **Revision (v2.0 / 2026-10-21)**: Restructured so general readers can follow it, and §5 recast as "How to counter this". The joint advisory was re-read and the harm to clients it describes (published source code, a defaced website) was added. A description of Brief 084 as a "real-time deepfake" was removed to match that Brief's revision (the call was a recording with no dialogue).
+> **Revision (v2.1 / 2026-11-02)**: Reordered so the chapters start from what got through, and dropped the second half of the title. Facts and sources are unchanged.
 
-## 1. TL;DR
+## 1. Summary
 
-On September 18, 2026, Japan's National Police Agency and National Cybersecurity Office, together with US, Australian and German authorities, published the activities of North Korean IT workers. The workers took ID images from enablers living in Japan and, posing as those enablers, won work through crowdsourcing services. Remote-controlled PCs placed in an enabler's home (a laptop farm) were identified and dismantled for the first time in Japan, and hundreds of millions of yen had been sent abroad in crypto and other forms.
+The ID images the enablers supplied were genuine, and the connection came from the enabler's home in Japan. From the client's side, both the document check and the connection check pass correctly. A crypto exchange spotted red flags and declined to hire, and police tracked down the farm. <strong>Even when an ID is genuine, an image cannot show that its holder is the person working on the other side of the screen.</strong>
 
-The ID was genuine and the connection came from the enabler's home in Japan. From the client's side, both the document check and the connection check pass correctly.
+## 2. What got through
 
-A crypto exchange spotted red flags and declined to hire, and police tracked down the farm. What failed was the layer that confirms, before work is handed over, that the ID holder and the person doing the work are the same.
+- **What got through**: An application on a crowdsourcing service backed by an enabler's ID image and a connection from inside Japan, and then the work and access that were handed over. The workers won work by posing as the enablers.
+- **What was stopped**: In May 2025, crypto exchange bitFlyer received an application with a résumé in another person's name, spotted red flags and declined to hire (no harm).
+- **What reached the receiving side**: In general, what reaches a client is an ID image, a connection source and the answers given. An image can be copied and handed over, so it does not show that the holder and the person doing the work are the same. A connection routed through an enabler's home PC or a server the enabler rented also appears to come from inside Japan.
+- **Not disclosed**: The laptop farm's location and when it was dismantled, the number of enablers involved, and the names of Japanese clients.
 
-## 2. What happened
+## 3. What to check
 
-- **Disclosure**: On September 18, 2026, the National Police Agency and National Cybersecurity Office published a joint advisory with the US FBI and DoD Cyber Crime Center (DC3), Australia's ASD's ACSC, and Germany's BND and BfV: seven agencies in all.
-- **Method**: Using ID images supplied by enablers, the workers posed as the enablers and won work. In other cases they took on work the enablers had won, or had pay sent to the enabler's bank account and forwarded on.
-- **Hiding their location**: Remote-controlled PCs in enablers' homes (laptop farms), or VPSs rented by enablers, made the work appear to come from inside Japan.
-- **Money sent**: Hundreds of millions of yen sent abroad in crypto and other forms, including amounts found in related investigations.
-- **Harm to clients**: In one case, after a payment dispute, a worker published the source code they had worked on; in another, a website a worker helped build was later defaced.
-- **Related attacks**: The same advisory covers "WaterPlum", a group that poses as recruiters to get IT professionals to run malware; an estimated 30,000+ devices in over 100 countries and regions were infected. The NPA and FBI assess that WaterPlum and some North Korean IT workers operate under the same command.
+Whatever the route, the condition for telling them apart is that whoever hands over work and access checks, before handing it over, that the person doing the work is the ID holder, not from an image but by a method only that person can use.
 
-<figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">The impersonation scheme the advisory describes</span></div>
-<p class="rx-ex-cap">The point to stop it is ③: before handing over work and access, confirm the person doing it is the same as the ID holder.</p>
-<div class="rx-chain">
-<div class="rx-step"><div class="who">Local enabler</div><div class="no">1</div><b>Hands over their own ID images and hosts a PC at home</b><p>Lends a bank account too.</p></div>
-<div class="rx-step"><div class="who">North Korean IT worker</div><div class="no">2</div><b>Connects through the enabler's PC or a VPS to appear local</b><p>Applies through crowdsourcing.</p></div>
-<div class="rx-step crit"><div class="who">Client</div><div class="no">3</div><b>Checks the ID and connection, and hands over work as if to the enabler</b><p>The document is genuine and the connection is local.</p></div>
-<div class="rx-step crit"><div class="who">Enabler's bank account</div><div class="no">4</div><b>Receives the pay and forwards it to the worker</b><p>Hundreds of millions of yen sent abroad.</p></div>
-</div>
-</figure>
-
-## 3. Timeline — disclosure and response
-
-- **2025-05**: Someone applies for an engineering job at crypto exchange bitFlyer with a résumé in another person's name. The firm, aware it might be a North Korean IT worker, interviews them, spots red flags and declines to hire (no harm).
-- **2026-07-31**: The NPA, Ministry of Foreign Affairs and others publish an alert about North Korean IT workers.
-- **2026-09-18**: The seven agencies publish the joint advisory, including the dismantling of Japan's first laptop farm.
-
-> The primary source is the joint advisory by seven agencies in Japan, the US, Australia and Germany. The laptop farm's location, when it was dismantled, the number of enablers involved and the names of Japanese clients have not been disclosed. "Hundreds of millions of yen" is the advisory's own wording.
-
-### After disclosure
-
-- **For organisations that outsource**: Consider that North Korean IT workers may be involved, including through subcontractors, and make bans on outsourcing and subcontracting explicit in contracts. Keep information and access given to contractors to a minimum, and revoke accounts and sessions as soon as there is suspicion.
-- **Hiring checks**: The advisory lists matching the access IP address with the stated location, checking contact details, asking for concrete explanations of skills, and checking certification numbers.
-- **Legal warning**: Giving work to and paying North Korean IT workers, or helping them earn foreign currency, may violate Japanese law and sanctions on North Korea. Separately, paying someone known to be North Korean, or giving them ID documents (including images), may amount to taking part in a crime.
-
-## 4. Why it wasn't stopped
-
-This case was not a failure to spot forged IDs, nor of careless interviewers. The ID was genuine, and nothing tied its holder to the person actually working on the other side of the screen before the work was handed over.
+- **Who approves**: The ID holder in person. For workers in Japan, a method such as the My Number Card's public certificate, which only the person holding the card and PIN can pass, and which cannot be copied and handed over like an image.
+- **Where it is checked**: The step that hands over work, and the point that accepts each access to repositories and internal systems. The person confirmed at contract time is matched with the person entering, every time, and entry is refused if they do not match. At the first suspicion, accounts and sessions are stopped.
+- **What is recorded**: Who was given the work and who was paid. The payee is aligned with the confirmed person, and the record is kept in a form that can later be shown to a third party.
 
 <figure class="rx-ex">
-<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 2</span><span class="rx-ex-t">The detection–proof gap</span></div>
-<p class="rx-ex-cap">Proof works before work and access are handed over; detection works after red flags surface. In between, the worker is treated as the ID holder.</p>
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means confirming, before work and access are handed over, that the worker is the ID holder, by a method only that person can use, and keeping a record. Detection means noticing red flags in answers or connections afterwards. The dates below are when the agencies or firms confirmed or disclosed a point, not when the impersonation took place.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Proof layer · absent</b>Before handing over work, confirm the worker is the ID holder</div>
-<div class="rx-zone gapz"><b>The gap</b><span>Work and access were handed over.<br>Pay went to the enabler's account</span></div>
-<div class="rx-zone det"><b>Detection layer · noticed</b>Spot red flags in answers or connections</div>
-<div class="rx-g g1"><div class="t">STEP 1</div><b>ID and connection pass</b></div>
-<div class="rx-g g2"><div class="t">STEP 2</div><b>Work and access handed over</b></div>
-<div class="rx-g g3"><div class="t">STEP 3</div><b>Red flags noticed</b></div>
-<div class="rx-g g4"><div class="t">STEP 4</div><b>Account stopped</b></div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before handing over, confirm the worker is the ID holder by a method only that person can use</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Work and access were handed over<br>and pay went to the enabler's account</span></div>
+<div class="rx-zone det"><b>Detection · noticed in some cases</b>Spot red flags in answers or connections</div>
+<div class="rx-g g1"><div class="t">2025-05</div><b>Red flags spotted; hire declined</b></div>
+<div class="rx-g g2"><div class="t">2026-07-31</div><b>Alert published</b></div>
+<div class="rx-g g3"><div class="t">2026-09-18</div><b>Seven agencies publish the advisory</b></div>
+<div class="rx-g g4"><div class="t">2026-09-18</div><b>First laptop farm in Japan dismantled</b></div>
 </div>
 </figure>
 
-Detection worked: bitFlyer declined to hire after mismatches between the résumé and the answers, and police tracked down the farm. But most checks in the advisory look for red flags, and WaterPlum members advised each other to use face-swapping software in interviews for only a few minutes, then turn the video off, blaming the connection. "The ID is genuine" and "the person working is its holder" are separate facts, and once red flags are erased, the first alone gets through. That distance is the **detection–proof gap**, and it is a structural one.
+Red flags can be erased, and most checks in the advisory look for red flags. A similar case, where swapped video passed an identity check, is [eKYC liveness bypass](/critical/briefs/034-ekyc-liveness-bypass/).
 
-The same structure appears in [eKYC liveness bypass](/critical/briefs/034-ekyc-liveness-bypass/) (swapped video passing an identity check).
+## 4. What Lemma does
 
-## 5. How to counter this
-
-**Confirm the person doing the work, not an ID image, before handing over work and access.** An image can be copied and handed over, so it cannot tie the holder to the worker. Confirm it is the same person not only at contract time but every time they enter your systems, and align the payee with the person you confirmed.
+**Lemma builds the check in section 03 into the side that hands over work and access.** It does not look for intrusions; it checks that the person doing the work is the ID holder, before handing over and at every access, by a method only that person can use.
 
 ### Industries and operations to watch
 
 - **Industry · Developers & agent operations**: Organisations that outsource software development or web production through crowdsourcing or contracts. They often hand over source code and credentials.
 - **Operation · Accounts & permissions**: Giving outside workers accounts for repositories and internal systems. Once given, their actions are treated as legitimate.
 
-### Do today's controls close it?
+### Current controls vs Lemma
 
-| Control | This case | Why |
-| --- | --- | --- |
-| Checking ID images | Ineffective | The IDs belonged to real residents of Japan and were genuine. |
-| Checking the connection (IP address) | Ineffective | Connections came from enablers' homes or servers they rented. |
-| Judgement in interviews | Partial | Odd answers gave one case away, but red flags can be erased. |
-| Minimising information and access given | Partial | It limits harm, but who received it remains unknown. |
+The route in this case is column 1 (from application to handing over work) and column 2 (access after handover). Column 3 is the payout, which went to an account in the enabler's name.
 
-### What is needed
+| Control | From application to handover | Access after handover | Payout |
+| --- | --- | --- | --- |
+| Checking ID images | Not effective | Not relevant | Not relevant |
+| Checking the connection (IP address) | Not effective | Not effective | Not relevant |
+| Judgement in interviews | Partial | Not relevant | Not relevant |
+| Minimising information and access given | Not relevant | Partial | Not relevant |
+| **Lemma (pre-execution check)** | Effective | Effective | Partial |
 
-1. **Confirm with a method only the person can use, not an ID image.** For workers in Japan, use something like the My Number Card's public certificate, which only the person holding the card and PIN can pass. Unlike an image, it cannot be copied and handed over.
-2. **Confirm it is the same person at every access.** Check that the person entering repositories and internal systems is the one confirmed at contract time, every time. Revoke accounts and sessions at the first suspicion.
-3. **Record who was given the work and who was paid.** Align the payee with the confirmed person and keep it in a form that can later be shown to a third party: in other words, as proof. It also serves as the client's explanation if questioned over a violation.
+The IDs belonged to real residents of Japan and were genuine. Connections came from enablers' homes or servers they rented. Odd answers gave one case away in interviews, but red flags can be erased. Minimising information and access limits harm, but who received it remains unknown. Lemma checks, before handover and at every access, by a method only the person can use, rather than by an image.
+
+Note: Lemma's check works only when it is built into the step that hands over work and the point that accepts access, and a method only the person can use (such as a public certificate) is available. An ID holder colluding by handing over the card or device itself passes the check. Aligning the payee with the confirmed person leaves a record but does not stop pay going to an account in an enabler's name. Extra confirmation also makes short, small jobs harder to outsource. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -153,7 +126,28 @@ Three things to confirm in your organisation about giving work to outside worker
 - Do your contracts, including subcontracting, let you know who is actually doing the work?
 - Can you stop accounts given to workers at once when suspicion arises?
 
-Note: an ID holder colluding by handing over the card or device itself cannot be stopped by this check. Extra confirmation also makes short, small jobs harder to outsource.
+## 5. Facts and timeline
+
+- **Disclosure**: On September 18, 2026, the National Police Agency and National Cybersecurity Office published a joint advisory with the US FBI and DoD Cyber Crime Center (DC3), Australia's ASD's ACSC, and Germany's BND and BfV: seven agencies in all.
+- **Method**: Using ID images supplied by enablers, the workers posed as the enablers and won work. In other cases they took on work the enablers had won, or had pay sent to the enabler's bank account and forwarded on.
+- **Hiding their location**: Remote-controlled PCs in enablers' homes (laptop farms), or VPSs rented by enablers, made the work appear to come from inside Japan.
+- **Money sent**: Hundreds of millions of yen sent abroad in crypto and other forms, including amounts found in related investigations.
+- **Harm to clients**: In one case, after a payment dispute, a worker published the source code they had worked on; in another, a website a worker helped build was later defaced.
+- **Related attacks**: The same advisory covers "WaterPlum", a group that poses as recruiters to get IT professionals to run malware; an estimated 30,000+ devices in over 100 countries and regions were infected. The NPA and FBI assess that WaterPlum and some North Korean IT workers operate under the same command.
+
+### Timeline
+
+- **2025-05**: Someone applies for an engineering job at crypto exchange bitFlyer with a résumé in another person's name. The firm, aware it might be a North Korean IT worker, interviews them, spots red flags and declines to hire (no harm).
+- **2026-07-31**: The NPA, Ministry of Foreign Affairs and others publish an alert about North Korean IT workers.
+- **2026-09-18**: The seven agencies publish the joint advisory, including the dismantling of Japan's first laptop farm.
+
+> The primary source is the joint advisory by seven agencies in Japan, the US, Australia and Germany. The laptop farm's location, when it was dismantled, the number of enablers involved and the names of Japanese clients have not been disclosed. "Hundreds of millions of yen" is the advisory's own wording. What has not been disclosed does not mean there were no controls.
+
+### After disclosure
+
+- **For organisations that outsource**: Consider that North Korean IT workers may be involved, including through subcontractors, and make bans on outsourcing and subcontracting explicit in contracts. Keep information and access given to contractors to a minimum, and revoke accounts and sessions as soon as there is suspicion.
+- **Hiring checks**: The advisory lists matching the access IP address with the stated location, checking contact details, asking for concrete explanations of skills, and checking certification numbers.
+- **Legal warning**: Giving work to and paying North Korean IT workers, or helping them earn foreign currency, may violate Japanese law and sanctions on North Korea. Separately, paying someone known to be North Korean, or giving them ID documents (including images), may amount to taking part in a crime.
 
 ## 6. Sources
 
