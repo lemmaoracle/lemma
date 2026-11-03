@@ -1,7 +1,7 @@
 ---
 brief_no: 62
-title: "Claude Code GitHub Action：`[bot]` を名乗る 1 件の issue を信頼してエージェントが特権実行した — 起動者の権限と入力の出所が、実行の前に独立検証されない構造（GMO Flatt Security）"
-title_en: "Claude Code GitHub Action: one issue claiming \"[bot]\" led the agent to privileged execution — the trigger's authority and input origin not verified before acting (GMO Flatt Security)"
+title: "Claude Code GitHub Action：名前が `[bot]` で終わる起動者を信頼し、issue からエージェントが特権で動きうると示された(GMO Flatt Security の研究)"
+title_en: "Claude Code GitHub Action: trusting actors whose names end in `[bot]` let an issue drive the agent's privileged run (GMO Flatt Security research)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "ai-decision-integrity"]
@@ -11,94 +11,138 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["037-agent-config-auto-execution", "029-github-dev-oauth-token", "048-trapdoor-ai-instruction-provenance", "003-starlette-badhost"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "agent-operation"
 version: "1.0"
-og_lead_ja: "issue 1 件で AI エージェントにリポジトリを乗っ取られる — Claude Code GitHub Action"
-og_lead_en: "One GitHub issue hijacks the repo via the agent — Claude Code GitHub Action"
-gap_detected: "脆弱性は責任ある開示で報告され、迅速にパッチが提供でき、CI のログには実行が記録されていた。"
-gap_missing: "「いまエージェントを起動した相手は正当な権限を持つか」「読み込んだ内容は信頼できる出所か」を行動の前に確かめる層が無く、`[bot]` を名乗る起動と、依頼文を装った悪意ある指示が素通りした。"
-gap_fix: "エージェントが特権的に動く前に「この起動者は正当な権限を持ち、この入力は信頼できる出所に由来する」ことを Lemma で独立検証して、事前に防ぐ。"
+og_lead_ja: "Claude Code GitHub Action で、`[bot]` を名乗る issue からエージェントが特権で動きうると研究者が報告"
+og_lead_en: "A researcher reports an issue posing as a `[bot]` could drive the Claude Code GitHub Action's privileged run"
+search_title: "claude-code-action：bot 偽装の経緯と対策"
+search_description: "Claude Code GitHub Action が名前の [bot] を信頼し、issue からエージェントが特権で動きうると研究者が報告した（GMO Flatt Security）。何が起きたか、なぜ起動者を照合するか、対策を整理。"
+og_kicker_ja: "脆弱性の開示 · AI エージェントの起動"
+og_kicker_en: "VULNERABILITY DISCLOSURE · AI AGENT TRIGGER"
+og_headline_ja: "bot を名乗る issue で、\nエージェントが特権で\n動きうると研究者が報告。\n<accent>CVSS 7.8・4 日で修正</accent>"
+og_headline_en: "An issue posing as a bot\ncould steer the agent,\na researcher reports.\n<accent>CVSS 7.8, fixed in 4 days</accent>"
+key_figures:
+  - value: "7.8"
+    label: "CVSS 4.0 での深刻度。修正は claude-code-action v1.0.94 に集約された"
+    tone: "alert"
+  - value: "4"
+    unit: "日"
+    label: "研究者が中核の回避を報告してから、Anthropic が修正するまで（2026-01）"
+  - value: "約 50"
+    unit: "件"
+    label: "権限の仕組みを回避する手法として、RyotaK が報告したとする数"
+glossary:
+  - term: "GitHub App とインストールトークン"
+    desc: "GitHub App は、リポジトリに導入して動く連携の仕組み。導入先ごとに発行されるインストールトークンで、issue や PR を作れる。名前の末尾は `[bot]` になる。"
+  - term: "OIDC トークン"
+    desc: "「自分はこのリポジトリで動くこのワークフローだ」を示す署名付きのトークン。Claude Code は、これを Anthropic のバックエンドと交換して、書き込み権限を持つ Claude GitHub App のインストールトークンを得る。"
+  - term: "間接的なプロンプトインジェクション"
+    desc: "AI が読み込む文書やデータ（ここでは issue の本文）に命令を仕込み、AI に指示として実行させる手法。"
+insight:
+  slug: "name-suffix-as-authority"
+  label: "名前の末尾を起動の権限とみなす前提"
+  quote: "エージェントを特権で動かす前に、起動した相手の権限と読み込む入力の出どころを、名前や文面の見た目ではなく別に管理された記録と照合しなければ、誰でも作れる起動と指示が、そのまま特権の操作になる。"
 industries: ["ai", "developers"]
 controls:
   - slug: "ownership-check"
-    item: "起動した相手が、本当に権限を持つ bot か確かめる"
+    item: "起動した相手が、本当に権限を持つ bot か確認する"
 attack_method: "ai-misuse"
+takeaway: "名前が [bot] で終わる起動者を信頼すると、誰でも作れる GitHub App からの issue で、エージェントが特権で動きうると、研究者が示した。"
+self_check: "AI エージェントを特権で動かす前に、起動した相手が正当な権限を持つかを、名前ではなく権限の記録と照合しているか。"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. 要点
 
-2026 年 6 月、研究者 RyotaK（GMO Flatt Security）は、Claude Code GitHub Action が起動者の名前末尾 `[bot]` を無条件に信頼するため、偽装起動とプロンプトインジェクションで悪意ある issue 1 件からリポジトリを乗っ取れる欠陥を公開した。4 日で修正されたが、事後の検出・パッチは起動者の権限や入力の出所を実行の前には立証しない。欠けているのは、特権実行の前に起動者の権限と入力の出所を独立検証する層である。
+GMO Flatt Security の研究者 RyotaK によれば、Claude Code GitHub Action の起動の判定は、名前が `[bot]` で終わるアクターを無条件に信頼していた。GitHub App は誰でも登録でき、そのトークンで任意の公開リポジトリに issue を作れるので、攻撃者の issue が「bot の起動」として通り、本文に仕込んだ指示を、書き込み権限を持つエージェントが実行しうる。研究者が実証したのは自身のテストリポジトリで、修正は公開の前に提供されている。<strong>エージェントを特権で動かす前に、起動した相手の権限と読み込む入力の出どころを、名前や文面の見た目ではなく別に管理された記録と照合しなければ、誰でも作れる起動と指示が、そのまま特権の操作になる。</strong>
 
----
+## 2. 通った操作
 
-## 2. 何が起きたか
+- **通った操作**: 攻撃者が自作の GitHub App で作った issue による、エージェントの起動。起動の判定（`checkWritePermissions`）は名前の末尾 `[bot]` を権限の根拠とみなし、agent モードには tag モードにある人の確認も無かった（RyotaK）。続いて、エラーメッセージに見せかけた issue の本文の命令を、Claude が「復旧」として実行しうる（RyotaK）。
+- **受け付けた側に届くもの**: 一般に、CI で動くエージェントは、ワークフローに渡された秘密情報と、リポジトリへの書き込み権限を持つ。研究者の報告では、環境変数の秘密情報を issue に書き戻させ、OIDC トークンの交換に使う認証情報を奪って交換を再現すると、対象のコード・issue・ワークフローへの書き込み権限に届く。claude-code-action のリポジトリ自体を狙えば、下流が取り込む Action を汚染しうる、とされる。
+- **補助の経路**: Anthropic の例示のワークフローが、誰でも起動できる `allowed_non_write_users: "*"`（ドキュメント上もリスクと明記）を含み、Claude がタスクの要約を公開される実行サマリの欄に出していたため、それを写したリポジトリが同じ穴を引き継いだ。起動の権限の無い攻撃者も、信頼されたユーザーの issue が起動した後、Claude が読む前に編集を差し込めば、内容を「信頼された入力」として紛れ込ませられた（RyotaK）。
+- **公表されていないこと**: この経路が、実環境の標的に使われた事例。研究者の記事は、自身のテストリポジトリでの実証にとどまるとしている。
 
-- **対象**: Anthropic の Claude Code GitHub Action（claude-code-action）。CI/CD に Claude を組み込み、issue の仕分け、ラベル付け、プルリクエストのレビュー、スラッシュコマンド実行を担わせる。既定でリポジトリのコード・issue・PR・ディスカッション・ワークフローファイルに読み書き権限を持つ
-- **識別子と深刻度**: CVSS 4.0 で 7.8。修正版は claude-code-action v1.0.94。Anthropic はバグバウンティを支払い
-- **報告者と経緯**: 研究者 RyotaK（GMO Flatt Security）が中核のバイパスを 2026 年 1 月に Anthropic へ報告。Anthropic は 4 日で修正し、春にかけて追加の堅牢化。公開は 2026-06-04（The Hacker News ほか）
-- **中核の欠陥（起動者の権限）**: トリガ判定（`checkWritePermissions`）が、**名前が `[bot]` で終わるアクターを無条件に信頼**していた（GitHub App は管理者が導入する信頼できるものという前提）。だが誰でも GitHub App を登録し、自分のリポジトリに導入し、そのインストールトークンで任意の公開リポジトリに issue / PR を作成できる。Action は「bot だ」と見て攻撃者の内容を通した。tag モードには人間確認の追加チェックがあったが、agent モードには無く露出した
-- **連鎖（入力の出所）**: 攻撃者は間接的なプロンプトインジェクションを用いる。エラーメッセージを装った issue 本文に命令を仕込み、Claude が「復旧」しようとしてその命令を実行するよう調整する。標的は `/proc/self/environ`（秘密情報を含む環境変数）。Claude は素朴な読み取りを遮断するが、それを迂回させ、値を issue に書き戻させて攻撃者が回収する
-- **最終到達**: 環境変数中の本命は、GitHub Actions が OIDC トークン（「自分はこのリポジトリで動くこのワークフローだ」を証明する署名付きトークン）を要求する認証情報の組。Claude Code はそれを Anthropic バックエンドと交換し、書き込み権限を持つ Claude GitHub App のインストールトークンを得る。この認証情報を奪って交換を再現すれば、対象のコード・issue・ワークフローへの書き込み権限を握れる。claude-code-action リポジトリ自体を狙えば、下流が取り込む Action を汚染しうる
+## 3. 何を照合するか
 
-本事案は、エージェントの起動者の権限と入力の出所が、特権的な行動の前に独立検証されないことに起因する。経路は以下の通り。
+経路を問わず区別できる条件は、エージェントが特権で動く前に、起動した相手がその操作の権限を持つかと、読み込む入力がどこから来て、起動のときから変わっていないかを、名前や文面の見た目とは別に照合することである。
 
-1. **起動者のなりすまし**: 攻撃者が自作の GitHub App を登録・導入し、そのトークンで対象の公開リポジトリに issue を作成する。Action は名前が `[bot]` で終わるアクターを信頼して起動する（agent モードは人間確認を欠く）
-2. **入力へのプロンプトインジェクション**: issue 本文をエラーメッセージに見せかけ、Claude が「復旧」として埋め込まれた命令を実行するよう誘導する。目視の文面と、AI が指示として読む内容が乖離する
-3. **秘密情報の吐き出し**: `/proc/self/environ` を標的に、ガードを迂回させて環境変数（秘密情報を含む）を issue に書き戻させる
-4. **認証情報の奪取と再現**: 環境変数中の OIDC トークン交換用認証情報を奪い、交換を再現して、書き込み権限を持つインストールトークンを得る
-5. **下流への波及**: 対象のコード・issue・ワークフローへ書き込む。claude-code-action リポジトリ自体を狙えば、下流が取り込む Action を汚染しうる（サプライチェーンへの波及）
+- **誰が承認を出すか**: リポジトリの管理者。どの人と、どの導入済みの App に、エージェントの起動を許すかを決める。アクターの名前の末尾や、issue の本文の書きぶりは、承認に使わない。
+- **どこで照合するか**: エージェントが、秘密情報と書き込み権限を持って実行に移る直前。起動した相手が、許された一覧の中にあるかを、名前ではなく権限の記録と照合する。読み込む入力は、起動のときの版と同じかを照合し、照合できない起動と入力は、照合が済むまで実行に移さない。
+- **何が残るか**: 誰が、どの権限でエージェントを起動し、どの版の入力で何を実行したか（または止めたか）の記録。エージェントとは別に、後から示せる形で残す。
 
-補助経路として、Anthropic の例示ワークフローが `allowed_non_write_users: "*"`（誰でも起動可、ドキュメント上もリスクと明記）を同梱し、Claude がタスク要約を**公開される**実行サマリ欄に投稿していたため、これを写したリポジトリが同じ穴を継承した。また、起動権限のない攻撃者も、信頼ユーザーの issue が起動した後・Claude が読む前に編集を差し込めば、ペイロードを「信頼された入力」として紛れ込ませられた。
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
+<p class="rx-ex-cap">実行の前の照合＝エージェントを特権で動かす前に、起動した相手の権限と入力の出どころを照合し、記録に残すこと。検知＝研究者が回避の経路を見つけて報告すること。日付は、報告・修正・公開の日で、経路が使われた日ではない。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>エージェントを特権で動かす前に、起動した相手の権限と入力の出どころを照合する</div>
+<div class="rx-zone gapz"><b>確認されたこと</b><span>[bot] を名乗る起動と issue の指示で<br>エージェントが特権で動きうると示された</span></div>
+<div class="rx-zone det"><b>検知 · 研究者が見つけた</b>RyotaK が報告し、Anthropic が修正した</div>
+<div class="rx-g g1"><div class="t">2026-01</div><b>RyotaK が Anthropic へ報告</b></div>
+<div class="rx-g g2"><div class="t">2026-01</div><b>報告から 4 日で中核を修正</b></div>
+<div class="rx-g g3"><div class="t">2026 春</div><b>追加の堅牢化（v1.0.94 に集約）</b></div>
+<div class="rx-g g4"><div class="t">06-04</div><b>研究記事と報道で公開</b></div>
+</div>
+</figure>
 
----
+脆弱性の発見と、修正の後の公開は働き、Anthropic は報告から 4 日で修正した。CI のログは、何が実行されたかを後からたどれる。効かなかったのは、その手前で、起動した相手の権限と入力の出どころを照合する層である。リポジトリ同梱の設定をエージェントが自動で実行した [Brief 037](https://lemma.frame00.com/ja/critical/briefs/037-agent-config-auto-execution/)、人に見えない命令を AI が読んだ [Brief 048](https://lemma.frame00.com/ja/critical/briefs/048-trapdoor-ai-instruction-provenance/)、奪われたトークンが操作の範囲に絞られていなかった [Brief 029](https://lemma.frame00.com/ja/critical/briefs/029-github-dev-oauth-token/) と同じ形で、エージェントの特権の操作が、起動と入力の照合に結び付いていない。
 
-## 3. 時系列 — 公表と対応
+## 4. Lemma でできること
 
-- 2026-01: RyotaK が中核のバイパスを Anthropic へ報告。Anthropic が 4 日で修正
-- 2026 春: 追加の堅牢化が継続。修正は claude-code-action v1.0.94 に集約
-- 2026-06-04: 脆弱性の詳細が公開（GMO Flatt Security の研究記事、The Hacker News ほか）
+**Lemma は、03 の照合を、エージェントが秘密情報と書き込み権限を持って実行に移る直前に組み込む。** 悪意ある issue やプロンプトインジェクションを見つけるのではなく、起動した相手の権限と、読み込む入力の版を、実行の前に、名前や文面の見た目とは別に照合する。
 
-> 注: 本事案は coordinated disclosure（修正提供後の公開）として処理された。Anthropic 自身の Action を汚染する「この経路そのもの」が実環境の標的に使われた公開された痕跡はなく、RyotaK は自身のテストリポジトリでのみ実証している。一方、同型の構成（AI issue トリアージ＋広い権限＋プロンプトインジェクション）は、2026-02 の Cline の claude-code-action ワークフローで npm 公開トークンが盗まれ不正版が公開された事例など、別系統で現実の被害を生んでいる。RyotaK は権限システムを迂回する手法を約 50 件報告したとしている。
+### 注意したい業界・業務
 
-公表後の対応と業界の動きは次のとおり。
+- **業界 · 開発者・エージェント運用**: CI/CD に AI エージェントを組み込み、issue の仕分け・ラベル付け・PR のレビューを任せている開発・運用のチーム。
+- **業界 · AI**: 実際のトークンとツールを持つエージェントを、外部から届く入力で動かす基盤を運用する組織。
+- **業務 · issue・PR を起点にしたエージェントの実行**: 公開リポジトリで、外部の人や App が作った issue や PR でエージェントが起動する業務。起動の判定と読み込む入力が、そのまま書き込み権限での操作につながる。
 
-- **Anthropic**: 報告から 4 日で中核を修正し、春にかけて堅牢化。修正は claude-code-action v1.0.94 に集約。利用者には、書き込み権限のないユーザーや bot が Claude を起動できるワークフローの監査、未検証入力を扱う場合に Anthropic API キーと `GITHUB_TOKEN` 以外の秘密を渡さないこと、持ち出しに使えるツール・権限の除去を推奨
-- **AI コーディングエージェントの権限設計**: 実トークンと実ツールを持つエージェントが未検証入力で動く構成は、プロンプトインジェクションが未解決である限り、起動者・入力の独立検証を欠くと特権実行に直結する。例示設定の安易な踏襲（`allowed_non_write_users: "*"`、公開サマリ欄への出力）が穴を広げる
-- **業界横断の論点**: 同型の構成（AI issue トリアージ＋広い権限＋プロンプトインジェクション）は、Cline のワークフローでの npm 公開トークン窃取など、別系統で現実の被害を生んでいる。エージェント基盤一般で、「起動者の権限」と「入力の出所」を行動前に独立検証する設計要件が浮上している
+### いまの対策と Lemma の違い
 
-未検証の起動・入力に基づくエージェントの特権実行を、行動前に独立検証する層の不在は、特定製品の問題ではなく、AI を CI/業務に組み込む組織横断の課題として残っている。
+今回の中核の経路は、1 列目の、権限の無い相手による起動である。2 列目は、研究者が補助の経路として報告した起動の後の編集、3 列目は、正当な起動者が渡した入力そのものに指示が含まれる場合を比べる。
 
----
+| 対策 | 権限の無い相手による起動（`[bot]` の名乗り） | 正当な起動の後に差し込まれた入力（起動の後の issue の編集） | 正当な起動者が渡した入力に含まれた指示 |
+| --- | --- | --- | --- |
+| 名前の末尾 `[bot]` による起動の判定（修正の前） | 効かない | 関係しない | 関係しない |
+| 誰や何が起動できるかのワークフローの監査（Anthropic の推奨） | 一部 | 関係しない | 関係しない |
+| 未検証の入力を扱うとき、秘密情報と持ち出しに使えるツール・権限を絞る（Anthropic の推奨） | 一部 | 一部 | 一部 |
+| **Lemma（実行の前の照合）** | 効く | 効く | 効かない |
 
-## 4. なぜ止まらなかったか
+名前の末尾による判定は、誰でも登録できる GitHub App の名前で満たせた（RyotaK）。ワークフローの監査は、誰でも起動できる設定を見つけて外すが、判定の処理そのものに穴があれば残る。秘密情報やツールを絞ることは、どの列でも届く範囲を狭めるが、起動と指示の実行は止めない。Lemma は、起動した相手を、管理者が許した一覧と権限の記録に照合し、読み込む入力を起動のときの版に照合するので、名前だけの起動や、起動の後に差し替わった入力は、実行の前に止まる。一方、正当な起動者が渡した入力そのものに指示が含まれていれば、照合は一致し、そのまま通る。この列は、秘密情報とツールを絞る対策と組み合わせて埋める。
 
-中心的な失敗 primitive は、**エージェントが特権的な行動（広い権限での CI 実行）を起こす前に、「誰がエージェントを起動したか・その起動者は正当な権限を持つか」と「読み込んだ入力の出所は信頼できるか」を独立検証していない**点にある。`[bot]` という名前の接尾辞を権限の証明と取り違え、issue 本文という未検証入力を指示として特権文脈で実行した。
+注：Lemma の照合が働くのは、エージェントの起動の処理に照合を組み込み、起動を許す一覧と権限の記録、入力の版の記録が、エージェントが読む入力とは別に管理されている場合に限る。管理者が許した App や人の鍵が奪われた場合や、許された範囲の中で悪意ある指示が実行される場合は、通りうる。claude-code-action の実装は変えず、入力の内容の善悪も判定しない。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入を検出・防止するものではない。
 
-本事案は [Brief 037](https://lemma.frame00.com/ja/critical/briefs/037-agent-config-auto-execution/)（AI コーディングエージェントがリポジトリ同梱の設定ファイルを無検証で自動実行した）と同型で、**エージェントが、起動・入力の出所を検証しないまま、広い権限で行動する**構造である。037 が同梱設定の自動実行、本事案が外部 issue による起動という入口の違いはあるが、いずれも「エージェントの行動を起こす権限が、起動者・入力の正当性の独立検証と切り離されている」点で一致する。[Brief 048](https://lemma.frame00.com/ja/critical/briefs/048-trapdoor-ai-instruction-provenance/)（AI 指示ファイルに見えない命令）・[Brief 024](https://lemma.frame00.com/ja/critical/briefs/024-invisible-unicode-instruction-injection/)（不可視 Unicode の指示インジェクション）とは、目視の文面と AI が指示として読む内容の乖離という primitive で連なる。[Brief 029](https://lemma.frame00.com/ja/critical/briefs/029-github-dev-oauth-token/)（過剰スコープ OAuth トークンの窃取）とは、奪われたトークンが行動の範囲にスコープされていない点で接続する。
+### 点検チェックリスト
 
-要点は、AI を使うこと自体ではない。AI を CI に組み込む運用は生産性に資する。欠けていたのは、**エージェントが行動を起こす前に、起動者の権限と入力の出所を独立検証する層**である。実トークンと実ツールを持つエージェントは、権限が許す限りどこまでも押し込まれうる。プロンプトインジェクションが未解決である以上、入力の信頼を前提にした設計は、入口ひとつで権限境界が崩れる。
+CI/CD で AI エージェントを issue や PR から起動している組織で確認する 3 項目
 
-脆弱性の発見と coordinated disclosure、迅速なパッチ提供、CI ログの監査は、本事案でも機能し、再発抑止に不可欠である。本 Brief がその役割を否定するものではない。Anthropic は報告から 4 日で修正し、追加の堅牢化を続けた。
+- 使っている claude-code-action が、修正の集約された版（v1.0.94）以降になっているか。
+- 例示のワークフローから、誰でも起動できる設定（`allowed_non_write_users: "*"` など）や、公開される欄への出力を写したままにしていないか。
+- 未検証の入力を扱うワークフローで、エージェントに渡す秘密情報を、必要な分（Anthropic API キーと `GITHUB_TOKEN`）だけにしているか。
 
-一方で、検出は「いまエージェントを起動したアクターが正当な権限を持つか」「いま読み込んだ入力が信頼できる出所か」を、**行動の前に**独立に立証する材料にはならない。`[bot]` を名乗るアクターの起動も、エラーメッセージを装った issue も、システムからは正規のトリガ・正規の入力と区別がつかない。事後のログ解析は「何が実行されたか」を再構成するが、「その実行は、起動者の権限と入力の出所を独立検証したうえで認可されていたか」には答えない。パッチは個別の穴を塞ぐが、プロンプトインジェクションという入力の信頼問題自体は未解決のまま残る。
+## 5. 事実と時系列
 
----
+- **対象**: Anthropic の Claude Code GitHub Action（claude-code-action）。CI/CD に Claude を組み込み、issue の仕分け、ラベル付け、PR のレビュー、スラッシュコマンドの実行を担わせる。既定で、リポジトリのコード・issue・PR・ディスカッション・ワークフローファイルに読み書きの権限を持つ。
+- **深刻度と修正**: CVSS 4.0 で 7.8。修正は claude-code-action v1.0.94 に集約された。Anthropic はバグバウンティを支払った。
+- **報告者**: GMO Flatt Security の研究者 RyotaK。中核の回避を 2026 年 1 月に Anthropic へ報告した。
+- **研究者の報告（起動）**: 起動の判定（`checkWritePermissions`）が、名前が `[bot]` で終わるアクターを無条件に信頼していた（GitHub App は管理者が導入する信頼できるもの、という前提）。誰でも GitHub App を登録して自分のリポジトリに導入し、そのインストールトークンで任意の公開リポジトリに issue や PR を作れる。tag モードには人の確認の追加の判定があったが、agent モードには無かった。
+- **研究者の報告（入力と到達）**: エラーメッセージに見せかけた issue の本文に命令を仕込み、Claude が「復旧」として実行するよう誘導する。環境変数の秘密情報を issue に書き戻させ、OIDC トークンの交換に使う認証情報を奪って交換を再現すると、書き込み権限を持つインストールトークンが得られる。
+- **補助の経路（研究者の報告）**: 例示のワークフローの `allowed_non_write_users: "*"` と、公開される実行サマリの欄への出力を写したリポジトリが、同じ穴を引き継いだ。起動の後、Claude が読む前の issue の編集で、内容を信頼された入力として紛れ込ませられた。
 
-## 5. 証明があれば、何が変わるか
+### 時系列
 
-事前証明（pre-execution attestation）は、エージェントの行動を権限行為として扱い、実行の前に「起動者は正当な権限を持つか」「入力はどの出所に由来し、改ざんがないか」を独立検証可能な証明として要求する設計を採る。`[bot]` という名前ではなく起動者の権限属性を、issue 本文の体裁ではなく入力の来歴を、行為の時点で検証可能にすれば、未検証の起動・入力に基づく特権実行は行動の前に block される。さらに、OIDC トークン交換のような認可は、奪われた認証情報の再現では満たせない、行動ごとにスコープされた証明に置き換えられる。脆弱性の検出（detection 的な「どこに穴があるか」）と権限・入力の証明（「その行動は起動者の権限と入力の出所を独立検証して認可されたか」）は代替ではなく **補完** の関係にある。
+- **2026-01**: RyotaK が中核の回避を Anthropic へ報告。Anthropic が 4 日で修正。
+- **2026 春**: 追加の堅牢化が続き、修正は claude-code-action v1.0.94 に集約。
+- **2026-06-04**: 詳細が公開される（GMO Flatt Security の研究記事、The Hacker News ほか）。
 
-本事象で露呈した検出と証明の落差（エージェントの起動者の権限と入力の出所が、行動の前に独立検証されない）に対して、Lemma は、エージェントの行動を権限行為として証跡化し、実行の前に「誰が・どの権限で起動し、どの出所の入力に基づくか」を独立検証可能な暗号証明として検証する設計を提示している。
+> 本件は、修正の提供の後に公開する、調整された開示として扱われた。手法の事実は GMO Flatt Security の研究記事と The Hacker News の報道に、修正は Anthropic の修正コミットに拠る。Anthropic の Action を汚染する「この経路そのもの」が実環境の標的に使われた公開の痕跡は無く、RyotaK は自身のテストリポジトリでのみ実証したとしている。同じ型の構成（AI による issue の仕分け・広い権限・プロンプトインジェクション）では、2026-02 に Cline の claude-code-action のワークフローで npm の公開トークンが盗まれ、不正な版が公開された事例が、別の経路として報じられている。RyotaK は、権限の仕組みを回避する手法を約 50 件報告したとしている。本 Brief は、再現の手順を載せない。公表されていないことは、対策が無かったことを意味しない。
 
-- **起動者の権限証明**: エージェントを起動するアクターの権限属性を、名前の接尾辞ではなく独立検証可能な証明として検証し、未検証の起動を行動前に弾く
-- **入力の来歴バインド**: エージェントが読み込む入力（issue・設定・データ）を docHash でその出所に来歴バインドし、目視の文面と AI が解釈する内容の同一性・改ざんの有無を行為の時点で検証可能にする
-- **行動ごとのスコープ認可**: OIDC トークン交換等の認可を、奪われた認証情報の再現では満たせない、行動ごとにスコープされ独立検証可能な証明に置き換える（proof-as-auth）
-- **選択的開示**: 内部実装・秘密を出さずに、「この実行は起動者の権限と入力の出所を独立検証して認可された」ことだけを最小開示する
+### 公表後の対応
 
-これにより、行為の時点で固定された証明が、「このエージェントの行動は、正当な権限を持つ起動者と、信頼できる出所の入力に基づくか」を、事後のログ照合に依存せず独立検証可能なトレイルとして機能させる。検出（事後の脆弱性発見・パッチ）は穴の是正に、事前証明（行為時点の権限・入力の独立検証）はエージェント実行の信頼確立に、それぞれ相補的に働く。
-
----
+- **Anthropic**: 報告から 4 日で中核を修正し、春にかけて堅牢化した。修正は claude-code-action v1.0.94 に集約。利用者には、書き込み権限の無いユーザーや bot が Claude を起動できるワークフローの監査、未検証の入力を扱う場合に Anthropic API キーと `GITHUB_TOKEN` 以外の秘密情報を渡さないこと、持ち出しに使えるツールと権限を外すことを勧めている。
+- **例示の設定**: `allowed_non_write_users: "*"` や公開される欄への出力のように、例示の設定をそのまま写すことが、穴を広げうると指摘された。
 
 ## 6. Sources
 
@@ -106,4 +150,4 @@ countries: ["global"]
 - **The Hacker News**: "Claude Code GitHub Action Flaw Let One Malicious Issue Hijack Repositories"（2026-06-04）— <https://thehackernews.com/2026/06/claude-code-github-action-flaw-let-one.html>
 - **Anthropic（一次・修正コミット）**: claude-code-action 修正コミット（v1.0.94 に集約）— <https://github.com/anthropics/claude-code-action/commit/1bbc9e7ff7d48e1299f7fa9698273d248e0cafea>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)

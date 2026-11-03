@@ -1,7 +1,7 @@
 ---
 brief_no: 42
-title: "Waymo：自動運転車が、停止中のスクールバスを止まらずに通り過ぎた — 走行判断が、安全に関わる行動の前に独立検証されない構造（NHTSA）"
-title_en: "Waymo: the robotaxi drove past a stopped school bus — a driving decision not independently verified before a safety-critical action"
+title: "Waymo: robotaxis drove past stopped school buses (NHTSA)"
+title_en: "Waymo: robotaxis drove past stopped school buses (NHTSA)"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["data-provenance", "ai-bias-harm"]
@@ -11,92 +11,136 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["049-tesla-robotaxi-control-attribution", "043-tesla-fsd-self-reported-safety", "012-williams-frt-wrongful-arrest", "035-boeing-787-inspection-records"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "agent-operation"
 version: "1.0"
-og_lead_ja: "自動運転車が停止中のスクールバスを止まらず通過 — Waymo"
-og_lead_en: "A robotaxi drove past a stopped school bus — Waymo"
-gap_detected: "Video footage, a school district report, and the NHTSA crash report made the incident visible after the fact, leading to investigation and recall."
-gap_missing: "Before taking the action of driving past, there was no layer to independently confirm whether the bus ahead was stopped and the stopping obligation was met, so rule compliance was left to a judgment internal to the system."
-gap_fix: "Before taking a safety-critical action such as a stopping obligation, independently verify with Lemma that the driving decision satisfies the safety rules, and prevent it up front."
+og_lead_ja: "Waymo の自動運転車が停止中のスクールバスの脇を通過し、NHTSA が調査、Waymo は 3,067 台のソフトウェアリコールを実施"
+og_lead_en: "Waymo robotaxis drove past stopped school buses; NHTSA opened a probe and Waymo recalled software on 3,067 vehicles"
+og_kicker_ja: "AI の運転判断 · 安全規則"
+og_kicker_en: "AI DRIVING · SAFETY RULES"
+og_headline_ja: "停止中のスクールバスの\n脇を止まらず通過し、\nNHTSA が調査。\n<accent>リコール 3,067 台</accent>"
+og_headline_en: "Robotaxis passed\nstopped school buses;\nNHTSA investigates.\n<accent>3,067 vehicles recalled.</accent>"
+key_figures:
+  - value: "19"
+    unit: "instances"
+    label: "Passings logged by the Austin school district this school year (one just after a child crossed in front of the car)"
+    tone: "alert"
+  - value: "3,067"
+    unit: "vehicles"
+    label: "Covered by the voluntary software recall Waymo conducted with NHTSA (fifth-generation ADS)"
+  - value: "22"
+    unit: "reports"
+    label: "Covered by NHTSA ODI's expanded probe (including collisions with fixed objects and running signals)"
+glossary:
+  - term: "ADS (Automated Driving System)"
+    desc: "The self-driving system. It perceives the surroundings, makes driving decisions such as stopping or passing, and controls the car."
+  - term: "NHTSA ODI"
+    desc: "The Office of Defects Investigation of the US road safety agency (NHTSA). It investigates vehicle defects and leads to recalls."
+  - term: "Stop arm"
+    desc: "The stop sign a school bus swings out from its side while children board or alight. In the US, passing a stopped school bus is illegal."
+  - term: "SGO (Standing General Order)"
+    desc: "The order under which operators report to NHTSA crashes involving automated driving or driver-assistance systems."
+insight:
+  slug: "driving-decision-before-action"
+  label: "Driving decisions not checked before the action"
+  quote: "Without a check, before the action and outside the system that made it, a driving decision bound by a safety rule is carried out as the system's own internal judgment."
 industries: ["ai"]
 attack_method: "ai-misuse"
 impact: "19 instances logged by the Austin school district this year"
+takeaway: "Whether to stop for a stopped school bus was decided inside the system, and the incidents became visible only after the passing, through footage and district reports."
+self_check: "Before an automated action bound by a safety rule runs, is there a mechanism that checks it against conditions outside the system that made the decision?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-A Waymo robotaxi drove past a stopped school bus with red lights on and stop arm out, and NHTSA opened a probe. Footage, district reports, and crash reports made incidents visible, but all act after the action — and continued even after Waymo's fix and recall. What is structurally missing is a layer that verifies, before the car passes, that the bus is stopped and the duty to stop is met. That was left to the system's judgment.
+A Waymo robotaxi drove past a school bus that was stopped with red lights on and its stop arm out, without stopping. NHTSA ODI opened a probe after the footage, and Waymo identified the software fault, updated it, and conducted a voluntary software recall of 3,067 vehicles with NHTSA. The Austin school district says it saw incidents even after the update. Footage, district reports and crash reports all work after the passing. <strong>Without a check, before the action and outside the system that made it, a driving decision bound by a safety rule is carried out as the system's own internal judgment.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: The driving decision, in front of a stopped school bus (red lights on, stop arm deployed), to pass or not to remain stopped. In the US, passing a stopped school bus is illegal — a safety rule tied directly to children boarding and alighting.
+- **What reached the receiving side**: In general, vehicle control runs on the system's own perception and its own application of the rule "I must stop." Passing is executed in the same form as ordinary driving.
+- **Detection route**: Footage reported by the media, school district reports, and crash reports to NHTSA. All of them work after the passing.
+- **Not disclosed**: The sources reviewed do not say where, between perception and applying the rule, the decision went wrong in each incident. Waymo's answers to the questions NHTSA asked it to answer by 2026-01-20, and the conclusions of the expanded probe, have not been published.
 
-- **Subject**: Waymo's self-driving vehicles (ADS-equipped robotaxis, operating in Atlanta, Austin, and elsewhere).
-- **What happened**: Against a stopped school bus (red lights on, stop arm deployed), Waymo vehicles failed to stop and drove past, or did not remain stopped. In the U.S., passing a stopped school bus is illegal — a safety rule tied directly to children boarding and alighting.
-- **Scale**: The Austin school district logged 19 instances this school year, one just after a child had crossed in front of the car; at least 6 more occurred in Atlanta in 2025. NHTSA ODI is also examining 22 reports including collisions with fixed and semi-fixed objects (gates, chains) and parked vehicles, and disregard of signal controls.
-- **Response**: Waymo identified the software fault and deployed an update by 2025-11-17. In December 2025 it conducted a voluntary software recall (3,067 fifth-generation ADS vehicles) with NHTSA. The district reported, however, that incidents continued after the update.
-- **The core**: The recall and software update are after-the-fact remediation. The issue is that **the safety-critical driving judgment — "the bus ahead is stopped and I am obligated to stop" — was not satisfied in an independently verifiable form before the car took the action of passing.**
+## 3. What to check
 
-This incident stems from a self-driving system's driving decision not being independently verified before a safety-critical action. The path by which the failure propagates into a public-space event is as follows.
+Whatever the route, the condition for telling them apart is that a driving decision bound by a safety rule is checked before the action, against conditions outside the system that made it.
 
-1. **Perceiving the situation**: The ADS perceives the bus ahead and its state (red lights, stop arm, children boarding/alighting). Perception and applying the rule "I must stop" are left to the system's internal judgment.
-2. **Deciding the action**: The system decides to stop / pass and controls the car. Whether that decision "satisfies the duty to stop" is not independently verified from outside before the action.
-3. **The rule-violating action**: It passes when obligated to stop. A public-safety rule tied directly to children boarding is violated as a physical action.
-4. **After-the-fact detection**: The incident becomes visible through footage, district reports, and reports to NHTSA. This is an after-the-fact chain that acts after the action.
-5. **Remediation and recurrence**: Waymo updates the software and issues a recall, but incidents were reported even after the update. Remediation is an after-the-fact correction of the judgment, not independent verification before each action.
+- **Who approves**: The side that sets the conditions that create a duty to stop (red lights, stop arm, children boarding) and the actions allowed at that point (the design of the vehicle's safety functions and the operating rules).
+- **Where it is checked**: In front of a stopped school bus, just before a decision to pass or move off is handed to control — against conditions that can be checked from outside, not only the system's self-judgment. When it cannot be checked, the car stays stopped.
+- **What is recorded**: Which decision was made, on which conditions, and the telemetry at the time. Kept outside the system that made the decision, in a form that cannot be rewritten afterwards.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before passing or moving off, whether the decision meets the conditions of the duty to stop, outside the system that made it, and keeping a record. Detection means noticing after the passing, from footage and reports. Dates are those each company, authority or outlet confirmed or published.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check a decision to pass or move off outside the system that made it</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>19 instances in Austin this school year<br>Incidents after the update (district report)</span></div>
+<div class="rx-zone det"><b>Detection · worked after the passing</b>NHTSA opened a probe from footage and district reports, and later widened it</div>
+<div class="rx-g g1"><div class="t">2025-10</div><b>NHTSA ODI opens a probe</b></div>
+<div class="rx-g g2"><div class="t">2025-11-17</div><b>Waymo updates its software</b></div>
+<div class="rx-g g3"><div class="t">2025-12</div><b>Voluntary recall of 3,067 vehicles</b></div>
+<div class="rx-g g4"><div class="t">2026</div><b>NHTSA expands the probe</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+Detection made the passings in front of stopped school buses visible from outside and led to the probe and the recall. It works separately from a check before the action. In the same self-driving cluster, [Brief 049](/critical/briefs/049-tesla-robotaxi-control-attribution/) (Tesla Robotaxi) covers who was in control at the time of a crash and the provenance of the records, and [Brief 043](/critical/briefs/043-tesla-fsd-self-reported-safety/) covers safety figures accepted as reported. A case where an AI determination led directly to a public-space action without an independent check is [Brief 012](/critical/briefs/012-williams-frt-wrongful-arrest/) (a facial-recognition match that led to a wrongful arrest).
 
-- 2025-10: NHTSA ODI opens a probe after footage (media reporting) of a Waymo vehicle passing a stopped school bus in Atlanta.
-- 2025-11-17: Waymo says it identified the software fault and deployed an update.
-- 2025-12-03: NHTSA sends Waymo a letter requesting answers to a set of questions by 2026-01-20.
-- 2025-12: Waymo conducts a voluntary software recall (3,067 fifth-generation ADS vehicles) with NHTSA.
-- After 2025-12: The Austin district reports incidents continued after the update.
-- 2026: NHTSA expands the probe to 22 reports, including failures to remain stopped for buses with red lights and stop/crossing arms deployed, and collisions with fixed objects / running signals. Zoox is separately under investigation over two rear-end crashes from unexpected hard braking.
+## 4. What Lemma does
 
-> Note: The recall count (3,067) and incident counts are based on the NHTSA recall document and reporting. To avoid confusion with Waymo's separate recall (~3,800 vehicles, over driving through flooded roads), this Brief is limited to the school-bus recall.
+**Lemma builds the check in section 03 into the side that hands AI driving decisions to control.** It does not judge whether perception was right or detect violations; it checks, outside the system that made it, whether a decision on an action bound by a safety rule meets conditions set in advance, and keeps a record. It can show only that the conditions were met, without exposing the internal perception model or implementation.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **Waymo / NHTSA**: Waymo identified the software fault and issued an update and a voluntary recall. NHTSA ODI expanded its probe in 2026, continuing to cover failures to remain stopped for school buses and collisions with fixed objects / running signals. Zoox is separately under investigation over rear-end crashes from unexpected hard braking.
-- **The limits-of-remediation question**: That incidents were reported after the software update raises the need to distinguish after-the-fact correction of the decision model from independent verification before each action.
-- **A cross-industry issue**: There is a move to shift the center of gravity of trust design — not relying solely on the operator's after-the-fact telemetry and remediation, but fixing safety-critical driving decisions to an independently verifiable trail at the moment of the act (provenance / pre-execution attestation).
+- **Industry · AI adoption**: Organizations that run systems, such as self-driving, in which AI decisions lead directly to physical actions in public spaces.
+- **Operations · Automated actions bound by safety rules**: Work in which the system's decision executes actions — stopping, passing, moving off — that cannot be undone if the rule is not met.
 
-The structure in which an AI's driving decision leads directly to action without independent verification, in the irreversible space of public roads, is not a problem of a specific company; it remains a trust-design challenge for the whole social deployment of self-driving.
+### Current controls vs Lemma
 
----
+In this case, both columns are routes that got through.
 
-## 4. Why it wasn't stopped
+| Control | The decision to pass a stopped school bus | A record of the decision and its conditions |
+| --- | --- | --- |
+| Software update and voluntary recall (2025-11 to 12) | Partial | Not relevant |
+| **Lemma (pre-execution check)** | Partial | Effective |
 
-The central **failure primitive is "a safety-critical driving decision is not fixed as an independently verifiable trail before the action, and rule-satisfaction is left to the system's internal judgment and its after-the-fact detection."** Applying the safety rule "the duty to stop for a stopped school bus," too, was not independently verified from outside before the car acted.
+The software update changes the tendency of the decisions; it does not check each decision to pass from outside. The district says it saw incidents even after the update. Lemma checks a decision to pass or move off against the set conditions before handing it to control, and keeps, outside the system that made it, which decision met which conditions.
 
-This incident is in the same self-driving cluster as [Brief 049](/critical/briefs/049-tesla-robotaxi-control-attribution/) (Tesla Robotaxi), but a different cross-section. 049 addressed **control attribution and the provenance of records** at the time of a crash (who/what was in control, are the records authentic). This incident addresses a case where the controlling agent is clearly the ADS, yet **the driving decision itself is not independently verified, before the action, against the safety rule.** It is the same shape as [Brief 012](/critical/briefs/012-williams-frt-wrongful-arrest/) (a facial-recognition determination led directly to a coercive administrative disposition without independent verification), moving "an AI decision leads directly to an irreversible public-space action without independent verification" into self-driving. It connects to [Brief 043](/critical/briefs/043-tesla-fsd-self-reported-safety/) (a safety attribute left as self-attestation, unverified) in that the safety claim/decision sits outside independent verification.
+Note: Lemma's check works only when it is built into the driving-control steps and the conditions of the duty to stop are managed outside the system that made the decision. If the perception that feeds the conditions is itself wrong, a wrong decision goes through too. Which conditions could be checked, and how, in the short time while driving is not clear from the sources reviewed. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-That incidents continued after the software update sharpens the point. Remediation is an after-the-fact correction of the decision model — a separate chain from a layer that independently verifies, before each action, that "this action now satisfies the safety rule." An update may improve the decision distribution, but without independent verification before each action, the residual incidents can only be caught inside the detect-and-remediate loop.
+### Checklist
 
-NHTSA ODI's investigation, the district's reports, analysis of onboard telemetry, and Waymo's software update and recall are indispensable for grasping the harm, evaluating safety, and preventing recurrence, and this Brief does not negate that role. Making incidents visible and remediating them is the basis on which society evaluates self-driving safety.
+Three things to confirm for organizations whose AI decisions carry out actions in public spaces
 
-At the same time, detection provides no material to independently establish — **before the action** — whether the driving decision about to be taken satisfies the safety rule. Passing a stopped school bus is an action the system executed as a legitimate driving decision, indistinguishable in its communications and controls from normal operation. After-the-fact telemetry analysis reconstructs "what happened," but not "was that decision independently verified to satisfy the rule before the action." A recall and a model update also correct the decision distribution after the fact, not independently before each action. That incidents continued after the update shows the detect-and-remediate loop alone cannot stop residual risk before the action.
+- Before an action bound by a safety rule, do you check, outside the deciding system, whether the decision meets the rule's conditions?
+- Is there a rule that keeps the action stopped when it cannot be checked?
+- Do you keep decisions, and the conditions and telemetry at the time, in a form that cannot be rewritten afterwards?
 
----
+## 5. Facts and timeline
 
-## 5. What proof would have changed
+- **Subject**: Waymo's self-driving vehicles (ADS-equipped robotaxis operating in Atlanta, Austin and elsewhere).
+- **What happened**: Against a stopped school bus (red lights on, stop arm deployed), Waymo vehicles failed to stop and drove past, or did not remain stopped.
+- **Scale**: The Austin school district logged 19 instances this school year, one just after a child had crossed in front of the car. At least 6 more occurred in Atlanta in 2025. NHTSA ODI is also examining 22 reports, including collisions with fixed and semi-fixed objects (gates, chains, etc.) and parked vehicles, and disregard of signal controls.
+- **Response**: Waymo said it identified the software fault and deployed an update by 2025-11-17. In 2025-12 it conducted a voluntary software recall of 3,067 fifth-generation ADS vehicles with NHTSA. The district says it saw multiple incidents even after the update.
 
-Pre-execution attestation flips a safety-critical driving decision from "verify it by telemetry after the fact" to "fix the satisfaction of the safety rule to an independently verifiable trail before the action." Bind the judgment "I satisfied the duty to stop for a stopped school bus" to a tamper-resistant provenance at the moment of the act, so that whether each action satisfied the rule can be independently verified without depending on after-the-fact record-keeping or remediation. Detecting crashes/violations (the detection-style "what happened") and proving the driving decision ("was that action independently verified to satisfy the safety rule before the action") are not substitutes but **complements**.
+### Timeline
 
-Against the gap this incident exposed (a self-driving system's driving decision is not independently verified before a safety-critical action), Lemma proposes a design that fixes, at the moment of the decision/act, its satisfaction and authorization as an independently verifiable cryptographic proof.
+- **2025-10**: NHTSA ODI opens a probe after footage (media reporting) of a Waymo vehicle passing a stopped school bus in Atlanta.
+- **2025-11-17**: Waymo says it identified the software fault and deployed an update.
+- **2025-12-03**: NHTSA sends Waymo a letter asking it to answer a set of questions by 2026-01-20.
+- **2025-12**: Waymo conducts a voluntary software recall of 3,067 fifth-generation ADS vehicles with NHTSA.
+- **After 2025-12**: The Austin district reports incidents continued after the update.
+- **2026**: NHTSA widens the probe to cover failures to remain stopped for school buses with stop and crossing arms deployed, and 22 reports including collisions with fixed objects and running signals. Zoox is separately under investigation over two rear-end crashes from unexpected hard braking.
 
-- **Provenance binding of the driving decision**: Tie safety-critical driving decisions (satisfying the duty to stop, etc.) to a tamper-resistant provenance at the moment of the act, making "was this action independently verified to satisfy the safety rule" verifiable after the fact.
-- **Record authenticity proof**: Bind driving decisions and telemetry at the moment of issuance via a docHash, making authenticity verifiable without depending on after-the-fact record-keeping.
-- **Independent-verification gate on decisions**: Aim for a design in which a safety-critical action executes not on internal judgment alone, but only when an independently verifiable proof of rule-satisfaction is met.
-- **Selective disclosure**: Without exposing the internal perception model or implementation, disclose only the minimum — that "this action met the safety-rule verification condition" — reconciling independent verification with the protection of sensitive information.
+> The recall count (3,067) and the incident counts rest on the NHTSA recall document and reporting. To avoid confusion with Waymo's separate recall (about 3,800 vehicles, over driving through flooded roads), this Brief is limited to the school-bus recall. The cause and the timing of the update rest on Waymo's account; incidents after the update rest on the district's reports. The investigation is ongoing, and no conclusion is asserted here. This Brief does not blame Waymo. What was not disclosed does not mean controls were absent.
 
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this driving decision satisfied the safety rule before the action," without depending on after-the-fact remediation. Detection (after-the-fact reports, telemetry, recalls) works on social evaluation and remediation; attestation (independent verification of the decision at the moment of the act) works on proving rule-satisfaction — each complementary to the other.
+### After disclosure
 
----
+- **Waymo / NHTSA**: Waymo identified the software fault, updated it and conducted a voluntary recall. NHTSA ODI widened its probe in 2026 and continues to cover failures to remain stopped for school buses and reports including collisions with fixed objects and running signals.
+- **Incidents after remediation**: That incidents were reported after the software update has raised the need to separate correcting the decision model after the fact from checking each action before it is taken.
+- **Industry debate**: There is debate about not relying only on the operator's after-the-fact telemetry and remediation to evaluate self-driving safety, and instead keeping safety-critical driving decisions as records that can be checked from outside at the time of the action.
 
 ## 6. Sources
 
@@ -105,4 +149,4 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 - **CBS News**: "U.S. expands investigation into Waymo over robotaxis driving around stopped school buses" — <https://www.cbsnews.com/news/waymo-investigation-nhtsa-robotaxis-passing-school-bus>
 - **NHTSA**: Standing General Order ADS Incident Reports (primary data of the ADS crash-reporting program) — <https://www.nhtsa.gov/laws-regulations/standing-general-order-crash-reporting>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/#inference), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
