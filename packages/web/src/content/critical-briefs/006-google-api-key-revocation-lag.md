@@ -1,7 +1,7 @@
 ---
 brief_no: 6
-title: "Google API キー削除後 23 分有効 — 認証情報の失効属性の独立検証不在"
-title_en: "Google API Keys Remain Usable for 23 Minutes After Deletion — Independent Verification Gap in Credential Revocation Attributes"
+title: "Google の API キー：削除の後も、しばらく認証に通ったと報告された(Aikido)"
+title_en: "Google API keys: Deleted keys kept authenticating for a while, a security firm reported (Aikido)"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
 secondary_categories: ["identity-auth"]
@@ -12,102 +12,144 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["003-starlette-badhost", "005-noroboto-lying-fonts", "019-construction-engineer-qualification-fraud", "020-type-designation-conformity-fraud", "021-wirecard-balance-attestation", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
+og_lead_ja: "Google の API キーが、削除の後も最長約 23 分、認証に通ったと Aikido が報告した"
+og_lead_en: "Aikido reported that Google API keys kept authenticating for up to about 23 minutes after deletion"
+layout: "report"
+sections: "proof"
 gate: "permission-change"
-og_lead_ja: "削除した API キーが 23 分間も有効、失効が独立検証されない — Google"
-og_lead_en: "Deleted API keys stayed usable for 23 minutes — Google revocation lag"
-gap_detected: "セキュリティ企業 Aikido が失効の遅れ（最長約 23 分）を 10 回 × 2 日かけて計測し、業界全体に可視化できた。"
-gap_missing: "「削除済み」という表示を信じる限り、認証情報を使う前にそれが本当に全サーバーで失効したかを確かめる層が無く、最長 23 分の悪用の余地が残った。"
-gap_fix: "認証情報を使う前に「この鍵は本当に失効済みである」ことを Lemma で独立検証して、事前に防ぐ。"
+og_kicker_ja: "研究者の計測 · API キー"
+og_kicker_en: "RESEARCH · API KEYS"
+og_headline_ja: "削除した API キーが、\n23 分ほど通ったと報告。\n<accent>Google の API キー</accent>"
+og_headline_en: "Deleted Google API keys\nworked up to 23 minutes,\n<accent>Aikido reports.</accent>"
+key_figures:
+  - value: "23"
+    unit: "分"
+    label: "削除の後、最後に認証に通るまでの最長の時間（Aikido の 10 回の試験）"
+    tone: "alert"
+  - value: "16"
+    unit: "分"
+    label: "同じ試験の中央値。最短は約 8 分だった（Aikido の計測）"
+  - value: "約 5"
+    unit: "秒"
+    label: "Google のサービスアカウントキーで、削除が反映されるまでの時間。新しい形式の Gemini API キーは約 1 分（Aikido の計測）"
+glossary:
+  - term: "API キー"
+    desc: "サービスの API を呼び出すときに、呼び出し元を見分けるための文字列。持っている人は、持ち主と同じように API を使える。"
+  - term: "鍵の削除（失効）"
+    desc: "管理画面などで鍵を使えなくする操作。削除した鍵での呼び出しは、受け付ける側で断られる。"
+  - term: "結果整合性（eventual consistency）"
+    desc: "変更が、多くのサーバーに少しずつ広がり、時間をおいてそろう仕組み。そろうまでの間、サーバーによって答えが違う。"
+insight:
+  slug: "revocation-not-yet-propagated"
+  label: "削除の操作と、届くまでの間"
+  quote: "鍵を削除しても、受け付ける側のすべてに届くまでは、その鍵で呼び出しが通る。"
 industries: ["developers"]
 operations: ["account-admin"]
 controls:
   - slug: "limit-and-revoke"
     item: "削除した API キーが、使用の前に失効済みと確認できるようにする"
+search_title: "Google の API キーが削除後も通る問題：計測と対策"
+search_description: "Google の API キーが、削除の後も最長約 23 分、認証に通り続けたと Aikido が報告した（10 回の試験）。何が通ったか、どこで照合するか、鍵を削除したあとの点検を整理。"
+takeaway: "削除の操作が済んだあとも、受け付けるサーバーに届くまでの間、鍵は通り続けた（Aikido の計測）。"
+self_check: "漏れた鍵を削除したあと、その鍵がもう通らなくなったことを、自分で確認しているか。"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. 要点
 
-Google API キーは削除後も最長約 23 分間そのまま認証に通ることが、Aikido の検証で示された。原因は eventual consistency による失効反映の遅延で、削除がまだ伝播していないサーバーに当たれば攻撃者は使い続けられる。Aikido は遅延を計測し可視化したが、検出は失効遅延の構造そのものを変えられない。
+この件はセキュリティ企業の計測で、計測の結果は Aikido の報告に拠る。管理画面で鍵を削除しても、その情報は Google の多くのサーバーに段階的に広がり、まだ届いていないサーバーでは、削除した鍵がそのまま通った。鍵の種類によって、通り続けた時間は数秒から 20 分を超えるまで分かれた。<strong>鍵を削除しても、受け付ける側のすべてに届くまでは、その鍵で呼び出しが通る。</strong>
 
----
+## 2. 通った操作
 
-## 2. 何が起きたか
+- **通った操作**: 管理画面で削除した Google API キーでの、API の呼び出し。Aikido の試験で、削除の後も認証に通った。
+- **短く済んだ操作**: Aikido の計測では、Google のサービスアカウントキーは約 5 秒、新しい形式の Gemini API キーは約 1 分で通らなくなった。
+- **受け付けた側に届くもの**: 一般に、削除の情報がまだ届いていないサーバーには、削除した鍵も、有効な鍵と同じ形で届く。Aikido は、遅れの原因を、削除の情報が段階的に広がる仕組み（結果整合性）によるものと説明している。
+- **公表されていないこと**: 削除の後の時間に、漏れた鍵が実際に使われた事例があるか。Aikido が Google に報告した日。Google 側の、遅れの仕組みについての説明。
 
-- **公開**: 2026-05、Aikido security の Joe Leon 氏、Aikido 公式 blog
-- **公開先**: 「Google API keys keep working after you delete them long enough to be exploited」
-- **影響範囲**: Google API キー全般(Gemini、BigQuery、Maps など Google Cloud API)
-- **失効遅延の計測値**: 最短約 8 分、中央値約 16 分、最長約 23 分(10 回試験 × 2 日)
-- **試験条件**: API キー作成・削除後、1 秒あたり 3-5 リクエストを送り続けて最後の認証成功時点を計測。米東部・西ヨーロッパ・東南アジアの 3 リージョンで追加 5 試験を実施
-- **API 種別による失効速度の差**: 旧 Gemini API キー(最長約 23 分)、新 Gemini API キー形式(約 1 分)、Google サービスアカウントキー(約 5 秒)
-- **Google の対応**: Aikido の報告を「修正しない」「想定通りの動作」「セキュリティ問題ではない」として終了
+## 3. 何を照合するか
 
-事象は次の連鎖で成立している。
+経路を問わず区別できる条件は、鍵を受け付ける側が、呼び出しを通す前に、その鍵がいま失効済みかを、削除の操作を記録した側の記録と照合することである。
 
-1. **Initial state**: 開発者が Google API キーを意図せず漏洩(GitHub commit、log 出力、第三者ツール経由、画面共有等)
-2. **Detection**: 開発者または自動検出ツールが漏洩を認知
-3. **Revocation attempt**: 開発者が Google Cloud 管理画面から API キーを削除する操作を実行
-4. **Eventual consistency window**: Google のインフラ全体に削除情報が段階的に反映される。この期間中、認証サーバーによっては削除済みキーをまだ「有効」と判定する状態が継続
-5. **Continued exploitation**: 攻撃者は漏洩キーを使い続け、削除情報がまだ反映されていないサーバーにヒットすれば認証が成功する。試験では中央値約 16 分、最長約 23 分の悪用窓が確認された
-6. **Impact realization**: Gemini プロジェクトの場合、アップロード済みファイルおよびキャッシュされた会話内容の外部送信が可能になる。データ持ち出し被害として計上される
-7. **Billing escalation**: 課金面では、Google が 2026-04 に導入した利用上限段階制において一定条件で上限が自動引き上げされるため、短時間に数百万円規模の請求事例が複数報告されている
+- **誰が承認を出すか**: 鍵の持ち主（削除の操作をした開発者）と、鍵を発行した側。失効済みかを決めるのは、削除の操作を記録した側の記録で、受け付けるサーバーがそれぞれ持つ状態ではない。
+- **どこで照合するか**: 鍵での呼び出しを受け付け、処理を実行する手前。削除の記録にある鍵は、どのサーバーで受け付けても通さない。
+- **何が残るか**: どの鍵の呼び出しを、どの時点の失効の記録と照合して、通した・断ったかの記録。
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
+<p class="rx-ex-cap">実行の前の照合＝鍵での呼び出しを通す前に、その鍵が失効済みかを記録と照合し、記録に残すこと。検知＝漏れや、削除の後の遅れに、後から気づくこと。下は、鍵が漏れてから通るまでの一般の流れで、Aikido の試験の手順ではない。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>呼び出しを通す前に、失効の記録と照合する</div>
+<div class="rx-zone gapz"><b>確認されたこと</b><span>削除した鍵が、<br>最長約 23 分通った</span></div>
+<div class="rx-zone det"><b>検知 · 計測で見えた</b>Aikido の計測が、削除の後の遅れを示した</div>
+<div class="rx-g g1"><div class="t">STEP 1</div><b>鍵が漏れる</b></div>
+<div class="rx-g g2"><div class="t">STEP 2</div><b>漏れに気づき、削除する</b></div>
+<div class="rx-g g3"><div class="t">STEP 3</div><b>削除が段階的に広がる</b></div>
+<div class="rx-g g4"><div class="t">STEP 4</div><b>届いていないサーバーで通る</b></div>
+</div>
+</figure>
 
-## 3. 時系列 — 公表と対応
+計測は、削除の後の遅れを見えるようにしたが、遅れそのものは変えない。同じように、使えなくなったはずのものが、しばらく通った事案に、[Visa の期限切れのカード](https://lemma.frame00.com/ja/critical/briefs/135-zombie-cards-visa-contactless-expiry/)がある。
 
-- 2026-04: Google が課金ポリシーを改定、利用上限段階制を導入(ただし一定条件で 250 USD から 100K USD まで自動引き上げる仕様が併存)
-- 2026-05-21: The Register が初報「Threat hunters find Google API keys still usable 23 minutes after deletion」
-- 2026-05: Aikido 公式 blog で技術詳細と試験結果を公開、Google への報告と「修正しない」回答の経緯を含む
-- 2026-05-22: GIGAZINE が日本語で続報
+## 4. Lemma でできること
 
-> 注: 固有名・計測値は一次（Aikido security 公式 blog の Joe Leon 氏による試験データ、The Register の初報）に基づき、各 API 種別・実装の失効挙動は時点により異なるため最新情報を参照のこと。本 Brief は研究者による失効遅延の計測結果として扱い、実環境での被害規模を誇張しない。
+**Lemma は、03 の照合を、鍵での呼び出しを受け付ける側の、実行の手前に組み込む。** 漏れや不正な呼び出しを見つけるのではなく、届いた鍵が、削除の記録にある鍵でないかを、呼び出しを通す前に照合する。
 
-公表後の対応と業界の動きは次のとおり。
+### 注意したい業界・業務
 
-- **Aikido security**(Joe Leon 氏): 公式 blog で技術詳細と試験結果を公開、業界に問題を提示。Google Cloud コンソールの「有効なAPIとサービス」から認証情報別のリクエスト状況を確認するモニタリング推奨も併載。「漏洩した Google API キーの削除を『即時完了』ではなく『30 分程度かかる作業』として扱うべき」を業界横断の運用要件として提案
-- **Google**: Aikido の報告に対して「修正しない」「想定通りの動作」「セキュリティ問題ではない」として終了。修正の予定なし。The Register のコメント要求にも記事作成時点で回答なし
+- **業界 · 開発者・エージェント運用**: Gemini・BigQuery・Maps などの Google Cloud の API を、API キーで呼び出す開発者と組織。鍵は、コードやログ、画面の共有などから漏れることがある。
+- **業務 · アカウント・権限の管理**: 漏れた鍵の削除と、削除の後の扱い。削除の操作が済んだ時点を、使えなくなった時点として扱いやすい。
 
-API 種別による失効速度の差が示すこと:
+### いまの対策と Lemma の違い
 
-- 旧 Gemini API キー: 最長約 23 分
-- 新 Gemini API キー形式: 約 1 分
-- Google サービスアカウントキー: 約 5 秒
+今回の経路は 1 列目（削除した鍵での呼び出し）である。2 列目は、その前の段の、鍵が漏れる入口である。
 
-これは「より高速な失効処理は技術的に可能」を示唆しており、Aikido はこの点を業界の論点として提示している。サービスプロバイダー側の credential lifecycle 設計が事業者ごとに異なるため、利用者側で属性の確実性を独立検証する層の必要性が、業界横断の運用課題として浮上している。
+| 対策 | 削除した鍵での呼び出し | 鍵が漏れる入口 |
+| --- | --- | --- |
+| 管理画面での鍵の削除 | 一部 | 関係しない |
+| 削除が速く反映される種類の鍵（サービスアカウントキーなど） | 一部 | 関係しない |
+| 認証情報ごとのリクエストの確認 | 一部 | 関係しない |
+| 漏れの検出（自動の検出ツールなど） | 関係しない | 一部 |
+| **Lemma（実行の前の照合）** | 効く | 関係しない |
 
----
+鍵の削除は、いずれ通らなくなるが、Aikido の計測では、旧い Gemini API キーで最長約 23 分かかった。サービスアカウントキーなどは数秒から 1 分ほどで通らなくなったが、その間は通る。認証情報ごとのリクエストの確認は、Aikido が勧めるもので、使われたことに気づけるが、通った呼び出しは止めない。漏れの検出は、漏れに早く気づくためのもので、削除の後の遅れとは関係しない。Lemma は、呼び出しを通す前に、その鍵を失効の記録と照合する。
 
-## 4. なぜ止まらなかったか
+注：Lemma の照合が働くのは、鍵を受け付ける側（API を提供する事業者や、自社で鍵を発行して受け付けるサービス）が、呼び出しを通す前に照合を組み込み、失効の記録を、受け付けるサーバーとは別に管理している場合に限る。Google の API を呼び出す側だけでは、Google のサーバーに組み込めない。失効の記録そのものが遅れて更新される場合は、通る。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入を検出・防止するものではない。
 
-本事案は、credential の **「失効属性」(有効 / 失効)が独立検証されないまま運用される** という構造の代表事例である。Google API キーの「削除済み」という属性主張が、すべてのサーバーで同時に有効ではないにも関わらず、開発者・ユーザー・規制報告に対しては「失効済み」として presented される。属性の主張と実態の乖離が、検証層なしには可視化できない構造になっている。
+### 点検チェックリスト
 
-Brief 003(Starlette/BadHost)とは別の primitive(本事案では「失効済み」という属性、[Brief 003](https://lemma.frame00.com/ja/critical/briefs/003-starlette-badhost/) では「path-based authn」)だが、共通する構造は同じ:**信頼の assertion が、それを検証する layer と切り離されている**。Brief 005(Noroboto)とも同様の構造を共有し、[Brief 001](https://lemma.frame00.com/ja/critical/briefs/001-kelpdao-rseth/) / 002 / 004 が扱う「メッセージ origin / commit origin の独立検証不在」とは credential lifecycle の横断 layer で隣接する。
+API キーを発行・利用する組織で確認する 3 項目
 
-本事案では Aikido が約 1 分から 23 分の失効遅延を 10 回試験 × 2 日にわたって計測し、業界横断で問題を可視化した。これは検出企業による threat hunting の典型的成功であり、検出企業の役割を本 Brief が否定するものではない。検出は事象の輪郭把握、業界横断の論点提起、組織横断の運用見直しに不可欠な層として引き続き重要である。
+- 漏れた鍵の削除を、すぐ済むものではなく、しばらく通りうる作業として手順に書いているか。
+- 削除の後の時間に、その鍵でのリクエストが来ていないかを見ているか。
+- 自社で鍵を発行して受け付けるサービスで、削除した鍵を、どのサーバーでも通さない形にしているか。
 
-一方で、検出は eventual consistency による失効遅延の構造そのものを変更できない。Google が「修正しない」とした立場である以上、開発者・ユーザーは漏洩 API キーを「削除済み」として扱う限り、最長 23 分間の悪用窓を放置することになる。これは検出層の射程外にある、構造的に独立した層の gap である。
+## 5. 事実と時系列
 
-規制報告・行政手続き・訴訟で「credential を確実に失効させた」と立証する材料として、本事案のような「削除しても 23 分有効」事例では、検出スコアと失効証明の間に独立した層が必要となる。事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にあり、両層の組み合わせで credential lifecycle の trust boundary が確立される。
+- **計測した主体**: セキュリティ企業 Aikido security の Joe Leon 氏。結果を Aikido の公式ブログ「Google API keys keep working after you delete them long enough to be exploited」で公表した。実地の被害ではなく、研究者による計測である。
+- **対象**: Google API キー全般（Gemini、BigQuery、Maps などの Google Cloud の API）。
+- **計測の結果**: 削除の後、最後に認証に通るまでの時間は、最短約 8 分、中央値約 16 分、最長約 23 分（10 回の試験 × 2 日）。
+- **試験の条件**: 鍵を作って削除したあと、1 秒あたり 3〜5 回の呼び出しを続け、最後に認証に通った時点を計った。米国東部・西ヨーロッパ・東南アジアの 3 つの地域で、さらに 5 回の試験をした。
+- **鍵の種類による違い**: 旧い Gemini API キーは最長約 23 分、新しい形式の Gemini API キーは約 1 分、Google のサービスアカウントキーは約 5 秒。
+- **影響**: Gemini のプロジェクトでは、アップロード済みのファイルや、キャッシュされた会話の内容を外に持ち出せる、とされている。
+- **課金**: Google は 2026-04 に課金の方針を改め、利用上限の段階制を入れた。一定の条件で、上限が 250 USD から 100K USD まで自動で引き上げられる仕様がある。
 
----
+### 時系列
 
-## 5. 証明があれば、何が変わるか
+- **2026-04**: Google が課金の方針を改め、利用上限の段階制を入れる。
+- **2026-05**: Aikido が公式ブログで、技術の詳細と試験の結果を公表する。Google への報告と、その回答の経緯を含む。
+- **2026-05-21**: The Register が「Threat hunters find Google API keys still usable 23 minutes after deletion」と報じる。
+- **2026-05-22**: GIGAZINE が日本語で報じる。
 
-Lemma の設計は、credential の失効属性が独立検証されず eventual consistency の遅延窓が残るという本事案の gap に対し、属性を各サーバーの local state から切り離して proof として固定する点で対置される。
+> 本件の固有名と計測の値は、Aikido security の公式ブログ（Joe Leon 氏の試験のデータ）と The Register の報道に拠る。鍵の種類や実装ごとの失効の動きは、時点によって変わるため、最新の情報を参照のこと。研究者による計測として扱い、実地の被害の規模は主張しない。公表されていないことは、対策が無かったことを意味しない。
 
-- **属性の来歴バインド**: credential（API キー、アクセストークン、認証情報）の属性（有効・失効・スコープ・有効期限など）を独立検証可能な暗号証明として commit する。
-- **使用前の認可証明(proof-as-auth)**: credential を使う前に proof を検証する設計であり、各サーバーの「有効」判定に依存せず、失効状態を使用の前段で確定する。
-- **選択的開示**: 属性を proof として固定することで、規制報告者・監査人が鍵そのものを露出させずに「失効済み」という事実だけを独立検証できる。
-- **検出との補完**: Aikido が計測・可視化した失効遅延と、属性を proof として固定する層は、対立軸ではなく二段構成として機能する。
+### 公表後の対応
 
-これは local state ではなく proof として固定された属性を verifier が検証する設計思想であり、検出層を置き換えるものではなく補完する。
-
----
+- **Aikido security**: 公式ブログで技術の詳細と試験の結果を公表した。Google Cloud のコンソールの「有効な API とサービス」で、認証情報ごとのリクエストの状況を確認するよう勧めた。漏れた Google API キーの削除は、「すぐ済むもの」ではなく「30 分ほどかかる作業」として扱うべきだとしている。鍵の種類によって速さが違うことから、より速い失効は技術的にできる、と論点に挙げた。
+- **Google**: Aikido によれば、Google は報告を「修正しない」「想定どおりの動作」「セキュリティの問題ではない」として閉じた。The Register によれば、記事の時点で、同紙のコメントの求めにも答えていない。
 
 ## 6. Sources
 
 - **Aikido security technical analysis**: "Google API keys keep working after you delete them long enough to be exploited" by Joe Leon(2026-05、Aikido 公式 blog、10 回試験 × 2 日の計測データと技術詳細、Google への報告経緯を含む)— https://www.aikido.dev/blog/google-api-keys-deletion
 - **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/#attribute)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)
