@@ -1,7 +1,7 @@
 ---
 /**
  * Proof Gate by Lemma — executive landing page on the existing /cyber/ route.
- * value → mechanism → evidence → trial → gates → consultation CTA → status → technical details.
+ * value → evidence → trial → gates → consultation CTA → status → technical details.
  * Only technical details are collapsed. Enforcement requires an integrated gate.
  */
 import type { Locale, Translations } from "../i18n/translations";
@@ -22,14 +22,6 @@ export interface CyberTemplateProps {
 const { locale, t, base } = Astro.props as CyberTemplateProps;
 const isJa = locale === "ja";
 const L = (path: string) => localePath(base, path);
-const sectionLabels = {
-  value: "01 / VALUE & MECHANISM",
-  evidence: "02 / PUBLIC DEMO",
-  trial: "03 / INTERNAL TRIAL",
-  gates: "04 / GATE EXAMPLES",
-  integration: "05 / INTEGRATION",
-  status: "06 / AVAILABILITY",
-} as const;
 const C = isJa
   ? ({
       title: "Proof Gate by Lemma — 流出しないシステム｜Lemma",
@@ -52,63 +44,32 @@ const C = isJa
       trialSummaryExecuted: "正常依頼を通過",
       trialCaptionLink: "記録の条件を見る ↓",
       call: "導入を相談する",
-      learn: "実行前に止める仕組みを見る",
-      valueTitle: "お金と情報、任せた仕事を守るために",
-      flowTitle: "決めた条件を、実行の条件にする",
-      flowIntro:
-        "管理者が条件を先に決める。実行側は今回の依頼との照合結果を使い、一致する操作を通し、不一致の操作を止める設計。",
-      flowBinding:
-        "事前の許可範囲と今回の操作内容を一緒に確認します。依頼を書き換えたり、別の依頼に元の確認結果を流用したりしても、実行先で通さない設計です。",
-      flowInputs: [
+      learn: "守れるものを見る",
+      valueTitle: "送金も、口座変更も、AIの操作も。ひとつで守る。",
+      valueIntro: "お金と情報を守りながら、人にもAIにも仕事を任せられる。",
+      valueCards: [
         {
-          title: "事前条件",
-          detail: "事前に決めた承認・委任の条件",
+          kind: "transfer",
+          title: "送金を、安心して進める",
+          detail: "承認した相手と金額の範囲で、資金移動を進められます。",
+          stage: "設計段階",
+          stageKind: "design",
         },
         {
-          title: "今回の依頼",
-          detail: "事前の許可範囲に結び付ける今回の操作内容",
-        },
-      ],
-      flowCheck: "実行直前に条件と依頼の結び付きを照合",
-      flowPosition: "対象操作の直前",
-      flowResults: [
-        {
-          title: "通過",
-          condition: "結び付きと条件が一致",
-          detail: "今回の操作を実行",
+          kind: "account",
+          title: "口座変更を、確かに進める",
+          detail: "確認した変更だけを反映し、お金の行き先を守ります。",
+          stage: "設計段階",
+          stageKind: "design",
         },
         {
-          title: "停止",
-          condition: "結び付きや条件が不一致",
-          detail: "今回の操作を実行しない",
+          kind: "agent",
+          title: "AIに、仕事を任せる",
+          detail: "許可した範囲を超えた操作を止め、必要な作業は進めます。",
+          stage: "社内試験",
+          stageKind: "trial",
         },
       ],
-      flowRecord: "何を通し・止めたかを記録",
-      flowRecordDetail: "今回の依頼に対する通過・停止と、停止した場合の理由を残す設計です。",
-      flowPremise:
-        "送金先や会社・担当者の確認、条件の正しさは、業務側で確かめる必要があります。この図は、設計段階の送金ゲートを説明する想定例です。",
-      flowScenario: "説明用の想定例（送金ゲートは設計段階）",
-      flowExampleLabels: ["事前条件", "今回の依頼", "判定の想定と理由"],
-      flowExamples: [
-        {
-          title: "通過",
-          details: [
-            "業務側で確認した送金先・金額・期限と、その内容への承認",
-            "承認された送金先と金額に一致し、期限内の依頼",
-            "承認が今回の操作内容に結び付き、条件にも一致するため、送金処理へ進む想定。",
-          ],
-        },
-        {
-          title: "停止",
-          details: [
-            "同じ承認",
-            "攻撃者が送金先だけを別の口座に差し替え、元の承認を使おうとする依頼。金額と期限は同じ",
-            "元の承認を、書き換えた操作内容には流用できないため、送金処理の直前で止める想定。",
-          ],
-        },
-      ],
-      flowLimit:
-        "保護は確認を組み込んだ実行経路だけで、別経路からの操作や、許可範囲内の悪用は防げない。誤った内容が条件として承認されれば、その条件との一致だけで正しい取引や善意の操作にはならない。",
       gatesLink: "3つのゲートの例を見る",
       gatesTitle: "お金が出ていく前に、行き先と条件を確かめる",
       gatesIntro: "各例は説明用の想定例。各ゲートの提供時期は相談時に案内。",
@@ -290,65 +251,33 @@ const C = isJa
       trialSummaryExecuted: "Valid request executed",
       trialCaptionLink: "See the trial conditions ↓",
       call: "Discuss your integration",
-      learn: "See how the gate works",
-      valueTitle: "Protecting money, information and delegated work.",
-      flowTitle: "Make agreed conditions a requirement for execution.",
-      flowIntro:
-        "An administrator sets the conditions first. The execution path uses the check result to allow a matching action or block a mismatch.",
-      flowBinding:
-        "The design checks the permissions set in advance together with the details of the current action. The execution path is designed to reject attempts to reuse the original check for an altered or different request.",
-      flowInputs: [
+      learn: "See what you can protect",
+      valueTitle: "One way to protect transfers, account changes and AI actions.",
+      valueIntro: "Protect money and information while delegating work to people and AI.",
+      valueCards: [
         {
-          title: "Prior conditions",
-          detail: "Approval and delegation conditions set in advance",
+          kind: "transfer",
+          title: "Move money with confidence",
+          detail: "Proceed with transfers within the approved recipient and amount.",
+          stage: "In design",
+          stageKind: "design",
         },
         {
-          title: "Current request",
-          detail: "Current action details to bind to prior permissions",
-        },
-      ],
-      flowCheck: "Check conditions and request binding immediately before execution",
-      flowPosition: "Immediately before the target action",
-      flowResults: [
-        {
-          title: "Pass",
-          condition: "Binding and conditions match",
-          detail: "Run the current action",
+          kind: "account",
+          title: "Keep account changes on track",
+          detail: "Reflect only verified changes and protect where money goes.",
+          stage: "In design",
+          stageKind: "design",
         },
         {
-          title: "Block",
-          condition: "Binding or conditions do not match",
-          detail: "Do not run the current action",
+          kind: "agent",
+          title: "Delegate real work to AI",
+          detail: "Stop actions beyond the permitted scope while allowing valid work to proceed.",
+          stage: "Internal trial",
+          stageKind: "trial",
         },
       ],
-      flowRecord: "Record which requests passed or were blocked",
-      flowRecordDetail:
-        "The design retains the decision for the current request and the reason when it is blocked.",
-      flowPremise:
-        "The business must verify the recipient, organization and person, and establish trustworthy conditions. This diagram is an illustrative scenario for a transfer gate that is in design.",
-      flowScenario: "Illustrative scenario — transfer gate in design",
-      flowExampleLabels: ["Prior conditions", "Current request", "Expected decision and reason"],
-      flowExamples: [
-        {
-          title: "Pass",
-          details: [
-            "Recipient, amount and expiry checked by the business, with approval for those details",
-            "A request matching the approved recipient and amount, within the expiry",
-            "Expected to proceed because approval is bound to the current action details and the conditions match.",
-          ],
-        },
-        {
-          title: "Block",
-          details: [
-            "The same approval",
-            "An attacker substitutes a different recipient account and tries to reuse the original approval. The amount and expiry are unchanged",
-            "Expected to stop immediately before the transfer because the original approval cannot be reused for the altered action details.",
-          ],
-        },
-      ],
-      flowLimit:
-        "Protection covers only execution paths with the check integrated. Actions through other paths and misuse within approved conditions are outside protection. If incorrect details are approved, matching those conditions does not establish a valid transaction or a well-intentioned action.",
-      gatesLink: "See examples for the three gates",
+      gatesLink: "See examples of the three gates",
       gatesTitle: "Check the destination and conditions before money moves.",
       gatesIntro:
         "These are illustrative scenarios. Availability of each gate will be discussed during consultation.",
@@ -578,88 +507,64 @@ const [publicEvidence, trialEvidence] = C.evidence;
         </figure>
       </section>
 
-      <section id="pg-flow" class="cy-section" aria-labelledby="pg-flow-title">
-        <p class="cy-section-kicker">{sectionLabels.value}</p>
-        <h2 id="pg-flow-title">{C.valueTitle}</h2>
+      <section id="pg-flow" class="cy-section cy-value" aria-labelledby="pg-flow-title">
+        <div class="cy-value-heading">
+          <h2 id="pg-flow-title">{C.valueTitle}</h2>
+          <p>{C.valueIntro}</p>
+        </div>
         <ul class="cy-values" role="list">
           {
-            C.gates.map((gate) => (
+            C.valueCards.map((card) => (
               <li>
-                <div>
-                  <h3>{gate.title}</h3>
-                  <p class:list={["cy-stage", { "cy-stage-trial": gate.stageKind === "trial" }]}>
-                    {gate.stage}
-                  </p>
+                <div class={`cy-value-art cy-value-art-${card.kind}`} aria-hidden="true">
+                  {card.kind === "transfer" && (
+                    <svg viewBox="0 0 320 170" fill="none">
+                      <rect x="30" y="49" width="82" height="72" rx="14" />
+                      <rect x="208" y="49" width="82" height="72" rx="14" />
+                      <path d="M48 72h46M48 88h30M226 72h46M226 88h30" />
+                      <path d="M122 85h76m-14-14 14 14-14 14" class="cy-value-accent-stroke" />
+                      <path d="M160 34c10 7 20 8 20 8v16c0 14-9 23-20 28-11-5-20-14-20-28V42s10-1 20-8Z" class="cy-value-shield" />
+                      <path d="m151 57 6 6 12-13" class="cy-value-accent-stroke" />
+                    </svg>
+                  )}
+                  {card.kind === "account" && (
+                    <svg viewBox="0 0 320 170" fill="none">
+                      <path d="M60 30h82l20 20v90H60V30Z" />
+                      <path d="M142 30v22h20M79 72h47M79 91h64M79 110h40" />
+                      <rect x="190" y="45" width="72" height="80" rx="12" />
+                      <path d="M207 68h38M207 86h28" />
+                      <path d="M164 104h78m-14-14 14 14-14 14" class="cy-value-accent-stroke" />
+                      <circle cx="226" cy="106" r="24" class="cy-value-shield" />
+                      <path d="m215 106 8 8 15-17" class="cy-value-accent-stroke" />
+                    </svg>
+                  )}
+                  {card.kind === "agent" && (
+                    <svg viewBox="0 0 320 170" fill="none">
+                      <circle cx="58" cy="48" r="18" />
+                      <circle cx="58" cy="122" r="18" />
+                      <circle cx="262" cy="85" r="18" />
+                      <path d="M76 48h42M76 122h42M202 85h42" />
+                      <path d="M160 27c23 15 45 17 45 17v37c0 32-20 53-45 64-25-11-45-32-45-64V44s22-2 45-17Z" class="cy-value-shield" />
+                      <path d="M160 52v12m0 42v12m-33-33h12m42 0h12m-55-23 9 9m26 26 9 9m0-44-9 9m-26 26-9 9" class="cy-value-accent-stroke" />
+                      <circle cx="160" cy="85" r="12" class="cy-value-accent-stroke" />
+                    </svg>
+                  )}
                 </div>
-                <p>{gate.value}</p>
+                <div class="cy-value-card-body">
+                  <p class:list={["cy-stage", { "cy-stage-trial": card.stageKind === "trial" }]}>
+                    {card.stage}
+                  </p>
+                  <h3>{card.title}</h3>
+                  <p>{card.detail}</p>
+                </div>
               </li>
             ))
           }
         </ul>
-        <h3 class="cy-mechanism-title">{C.flowTitle}</h3>
-        <p class="cy-section-intro">{C.flowIntro}</p>
-        <p class="cy-section-intro">{C.flowBinding}</p>
-        <figure class="cy-flow-figure">
-          <p class="cy-scenario-label">{C.flowScenario}</p>
-          <div class="cy-flow">
-            <div class="cy-flow-inputs">
-              {
-                C.flowInputs.map((input) => (
-                  <div class="cy-flow-node">
-                    <strong>{input.title}</strong>
-                    <p>{input.detail}</p>
-                  </div>
-                ))
-              }
-            </div>
-            <div class="cy-flow-node cy-flow-gate">
-              <strong>Proof Gate</strong>
-              <p>{C.flowCheck}</p>
-              <p class="cy-flow-position">{C.flowPosition}</p>
-            </div>
-            <div class="cy-flow-results">
-              {
-                C.flowResults.map((result) => (
-                  <div class="cy-flow-node">
-                    <strong>{result.title}</strong>
-                    <p>{result.condition}</p>
-                    <p>{result.detail}</p>
-                  </div>
-                ))
-              }
-            </div>
-            <div class="cy-flow-node cy-flow-record">
-              <strong>{C.flowRecord}</strong>
-              <p>{C.flowRecordDetail}</p>
-            </div>
-          </div>
-          <figcaption class="cy-boundary">{C.scope}</figcaption>
-        </figure>
-        <p class="cy-section-intro">{C.flowPremise}</p>
-        <div class="cy-scenarios">
-          {
-            C.flowExamples.map((example) => (
-              <article class="cy-scenario">
-                <h4>{example.title}</h4>
-                <p class="cy-scenario-label">{C.flowScenario}</p>
-                <dl class="cy-facts">
-                  {example.details.map((detail, index) => (
-                    <div>
-                      <dt>{C.flowExampleLabels[index]}</dt>
-                      <dd>{detail}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </article>
-            ))
-          }
-        </div>
-        <p class="cy-boundary">{C.flowLimit}</p>
         <a class="cy-source" href="#pg-gates">{C.gatesLink} <span aria-hidden="true">↓</span></a>
       </section>
 
       <section id="pg-evidence" class="cy-section cy-evidence" aria-labelledby="pg-evidence-title">
-        <p class="cy-section-kicker">{sectionLabels.evidence}</p>
         <h2 id="pg-evidence-title">{C.evidenceTitle}</h2>
         <p class="cy-evidence-kind">{C.evidenceKindPublic}</p>
         <div class="cy-attack-summary">
@@ -720,7 +625,6 @@ const [publicEvidence, trialEvidence] = C.evidence;
       </section>
 
       <section id="pg-trial" class="cy-section cy-trial" aria-labelledby="pg-trial-title">
-        <p class="cy-section-kicker">{sectionLabels.trial}</p>
         <h2 id="pg-trial-title" class="cy-trial-title">{C.trialTitle}</h2>
         <p class="cy-evidence-kind">{C.evidenceKindTrial}</p>
         <p class="cy-evidence-takeaway">{C.evidenceTakeawayTrial}</p>
@@ -733,8 +637,7 @@ const [publicEvidence, trialEvidence] = C.evidence;
         </a>
       </section>
 
-      <section id="pg-gates" class="cy-section" aria-labelledby="pg-gates-title">
-        <p class="cy-section-kicker">{sectionLabels.gates}</p>
+      <section id="pg-gates" class="cy-section cy-gates-section" aria-labelledby="pg-gates-title">
         <h2 id="pg-gates-title">{C.gatesTitle}</h2>
         <p class="cy-section-intro">{C.gatesIntro}</p>
         <div class="cy-gates">
@@ -769,7 +672,6 @@ const [publicEvidence, trialEvidence] = C.evidence;
       </section>
 
       <section id="cy-start" class="cy-section cy-close" aria-labelledby="cy-close-title">
-        <p class="cy-section-kicker">{sectionLabels.integration}</p>
         <h2 id="cy-close-title">{C.closeTitle}</h2>
         <dl class="cy-consult-items">
           {
@@ -798,7 +700,6 @@ const [publicEvidence, trialEvidence] = C.evidence;
         </div>
       </section>
       <section id="pg-status" class="cy-section cy-status" aria-labelledby="pg-status-title">
-        <p class="cy-section-kicker">{sectionLabels.status}</p>
         <h2 id="pg-status-title">{C.statusTitle}</h2>
         <p class="cy-section-intro">{trialEvidence.status}</p>
         <p class="cy-section-intro">{trialEvidence.scope}</p>
@@ -1070,27 +971,44 @@ const [publicEvidence, trialEvidence] = C.evidence;
     text-decoration: none;
   }
   .cy-section {
-    margin-top: 112px;
-    padding-top: 36px;
-    border-top: 1px solid #3e4435;
-    scroll-margin-top: 100px;
+    --section-bg: #12140e;
+    position: relative;
+    isolation: isolate;
+    margin-top: 0;
+    padding-block: 96px;
+    scroll-margin-top: 80px;
   }
-  .cy-section-kicker {
-    margin: 0 0 16px;
-    color: #a8e010;
-    font: 12px/1.6 "Space Mono", monospace;
-    letter-spacing: 0.12em;
+  .cy-section::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0 calc(50% - 50vw);
+    background: var(--section-bg);
+    pointer-events: none;
   }
-  .cy-section.cy-evidence,
-  .cy-section.cy-trial,
+  .cy-section.cy-value {
+    --section-bg: #eef2e7;
+    color: #12140e;
+    text-align: left;
+  }
+  .cy-section.cy-evidence {
+    --section-bg: #171a12;
+  }
+  .cy-section.cy-trial {
+    --section-bg: #242a1e;
+  }
+  .cy-section.cy-gates-section {
+    --section-bg: #10120d;
+  }
   .cy-section.cy-close {
-    padding: 40px;
-    border: 1px solid #3e4435;
-    border-radius: 12px;
-    background: #171a12;
+    --section-bg: #29311f;
   }
-  .cy-section.cy-close {
-    background: radial-gradient(ellipse at 50% 0%, rgba(168, 224, 16, 0.06), transparent 60%), #171a12;
+  .cy-section.cy-close::before {
+    background: radial-gradient(ellipse at 50% 0%, rgba(168, 224, 16, 0.08), transparent 60%), var(--section-bg);
+  }
+  .cy-section.cy-status {
+    --section-bg: #e3e9dc;
+    color: #12140e;
   }
   .cy-intro,
   .cy-section-intro,
@@ -1120,34 +1038,104 @@ const [publicEvidence, trialEvidence] = C.evidence;
   .cy-scope {
     margin: 0 auto 30px;
   }
+  .cy-value-heading {
+    max-width: 940px;
+    margin: 0 auto 48px;
+  }
+  .cy-page .cy-value-heading h2 {
+    max-width: 900px;
+    margin-bottom: 20px;
+    font-size: clamp(34px, 4.6vw, 56px);
+    line-height: 1.3;
+    letter-spacing: -0.03em;
+  }
+  .cy-value-heading > p {
+    max-width: 680px;
+    margin: 0;
+    color: #46513e;
+    font-size: 18px;
+    line-height: 1.8;
+  }
   .cy-values {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
     padding: 0;
-    margin: 38px 0 64px;
+    margin: 0;
     list-style: none;
     text-align: left;
   }
   .cy-values li {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #d2dbc8;
+    border-radius: 16px;
+    background: #f8faf5;
+    box-shadow: 0 16px 36px -28px rgba(18, 20, 14, 0.55);
+  }
+  .cy-value-art {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
-    align-items: start;
-    gap: 32px;
-    border-top: 1px solid #3e4435;
-    padding-block: 24px;
+    place-items: center;
+    height: 190px;
+    border-bottom: 1px solid #d2dbc8;
+    background: #e4ebda;
+    color: #43513a;
+  }
+  .cy-value-art svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .cy-value-art .cy-value-accent-stroke {
+    stroke: #698f12;
+    stroke-width: 3;
+  }
+  .cy-value-art .cy-value-shield {
+    fill: #f8faf5;
+    stroke: #698f12;
+  }
+  .cy-value-card-body {
+    padding: 24px;
+  }
+  .cy-values .cy-stage {
+    margin: 0 0 18px;
+    border-color: #929c85;
+    color: #3f4a37;
+  }
+  .cy-values .cy-stage-trial {
+    border-color: #698f12;
+    background: #edf5dc;
+    color: #35450d;
   }
   .cy-values h3 {
     margin-bottom: 12px;
+    font-size: 22px;
+    line-height: 1.5;
   }
-  .cy-values li > p {
+  .cy-values .cy-value-card-body > p:last-child {
     margin: 0;
-    color: #bac1af;
+    color: #4b5545;
+    font-size: 15px;
+    line-height: 1.8;
   }
-  .cy-values .cy-stage {
-    margin-bottom: 0;
-    border-color: #929c85;
+  .cy-page .cy-value > .cy-source {
+    display: inline-block;
+    margin-top: 32px;
+    color: #35450d;
+    text-decoration: underline;
+    text-underline-offset: 5px;
   }
-  .cy-page .cy-mechanism-title {
-    font-size: clamp(21px, 2.5vw, 28px);
-    margin-bottom: 24px;
+  .cy-page .cy-status .cy-section-intro {
+    color: #46513e;
+  }
+  .cy-page .cy-value a:focus-visible,
+  .cy-page .cy-status a:focus-visible {
+    outline-color: #35450d;
   }
   .cy-page p,
   .cy-page dd,
@@ -1194,116 +1182,8 @@ const [publicEvidence, trialEvidence] = C.evidence;
   .cy-facts p + p {
     margin-top: 16px;
   }
-  .cy-flow-figure {
-    margin: 38px 0 0;
-  }
-  .cy-flow {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: center;
-    gap: 36px;
-    text-align: left;
-  }
-  .cy-flow-node {
-    position: relative;
-    min-width: 0;
-    padding: 22px 18px;
-    border: 1px solid #69705c;
-    border-radius: 12px;
-    background: #171a12;
-    font-size: 16px;
-    line-height: 1.9;
-  }
-  .cy-flow-node strong {
-    display: block;
-    font-weight: 500;
-  }
-  .cy-flow-node p {
-    margin: 8px 0 0;
-    color: #bac1af;
-  }
-  .cy-flow-inputs,
-  .cy-flow-results {
-    position: relative;
-    display: grid;
-    gap: 22px;
-    min-width: 0;
-  }
-  .cy-flow-inputs::before,
-  .cy-flow-results::before {
-    content: "";
-    position: absolute;
-    top: 25%;
-    bottom: 25%;
-    width: 18px;
-    border-block: 1px solid #929c85;
-  }
-  .cy-flow-inputs::before {
-    right: -18px;
-    border-right: 1px solid #929c85;
-  }
-  .cy-flow-results::before {
-    left: -18px;
-    border-left: 1px solid #929c85;
-  }
-  .cy-flow-inputs::after,
-  .cy-flow-results::after,
-  .cy-flow-record::before {
-    position: absolute;
-    color: #bac1af;
-    font-size: 20px;
-    line-height: 1;
-    text-align: center;
-  }
-  .cy-flow-inputs::after,
-  .cy-flow-results::after {
-    content: "→" / "";
-    top: calc(50% - 10px);
-    width: 18px;
-  }
-  .cy-flow-inputs::after {
-    right: -36px;
-  }
-  .cy-flow-results::after {
-    left: -36px;
-  }
-  .cy-flow-gate {
-    display: flex;
-    flex-direction: column;
-    align-self: stretch;
-    justify-content: center;
-    border-color: #e2e8f0;
-  }
-  .cy-flow-node .cy-flow-position {
-    border-top: 1px solid #69705c;
-    margin-top: 16px;
-    padding-top: 12px;
-    color: #f4f7ef;
-  }
-  .cy-flow-record {
-    grid-column: 2;
-  }
-  .cy-flow-record::before {
-    content: "↓" / "";
-    top: -28px;
-    left: calc(50% - 10px);
-    width: 20px;
-  }
   .cy-boundary {
     margin-top: 24px;
-    text-align: left;
-  }
-  .cy-scenarios {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
-  }
-  .cy-scenario {
-    min-width: 0;
-    border: 1px solid #3e4435;
-    border-radius: 12px;
-    padding: 28px;
-    background: #171a12;
     text-align: left;
   }
   .cy-scenario-label {
@@ -1383,13 +1263,6 @@ const [publicEvidence, trialEvidence] = C.evidence;
   }
   .cy-example-card a:focus-visible {
     outline-color: #1e293b;
-  }
-  .cy-evidence,
-  .cy-trial,
-  .cy-status,
-  .cy-close {
-    border-top: 1px solid #3e4435;
-    padding-top: 64px;
   }
   .cy-evidence-limit {
     border-left: 2px solid #a8e010;
@@ -1526,16 +1399,23 @@ const [publicEvidence, trialEvidence] = C.evidence;
     color: #a8e010;
   }
   .cy-section.cy-status {
-    max-width: 720px;
-    margin: 48px auto 0;
-    padding-top: 32px;
+    margin: 0;
+    padding-block: 64px;
     text-align: left;
   }
-  .cy-page .cy-status h2,
+  .cy-page .cy-status h2 {
+    max-width: 720px;
+    margin: 0 auto 16px;
+    font-size: 19px;
+  }
   .cy-page .cy-trial-title {
     max-width: 640px;
     margin: 0 auto 16px;
     font-size: 19px;
+  }
+  .cy-page .cy-status .cy-section-intro {
+    max-width: 720px;
+    margin-inline: auto;
   }
   .cy-status .cy-section-intro {
     margin-bottom: 12px;
@@ -1710,16 +1590,17 @@ const [publicEvidence, trialEvidence] = C.evidence;
       padding: 12px 20px;
     }
     .cy-section {
-      margin-top: 84px;
+      margin-top: 0;
+      padding-block: 64px;
     }
-    .cy-section.cy-evidence,
-    .cy-section.cy-trial,
-    .cy-section.cy-close {
-      padding: 24px 20px;
+    .cy-value-heading {
+      margin-bottom: 32px;
     }
-    .cy-section-kicker {
-      font-size: 11px;
-      letter-spacing: 0.08em;
+    .cy-values {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .cy-value-art {
+      height: 180px;
     }
     .cy-attack-summary {
       gap: 8px;
@@ -1746,8 +1627,6 @@ const [publicEvidence, trialEvidence] = C.evidence;
     .cy-section-intro {
       text-align: left;
     }
-    .cy-flow,
-    .cy-scenarios,
     .cy-values li,
     .cy-example-card .cy-facts,
     .cy-consult-items {
@@ -1768,49 +1647,8 @@ const [publicEvidence, trialEvidence] = C.evidence;
     .cy-values li {
       gap: 16px;
     }
-    .cy-flow-inputs {
-      padding-left: 18px;
-    }
-    .cy-flow-inputs::before {
-      right: auto;
-      left: 0;
-      width: 18px;
-      border-right: 0;
-      border-left: 1px solid #929c85;
-    }
-    .cy-flow-inputs::after {
-      content: "↓" / "";
-      top: auto;
-      bottom: -28px;
-      right: calc(50% - 10px);
-      width: 20px;
-    }
-    .cy-flow-results::before {
-      display: none;
-    }
-    .cy-flow-results::after {
-      content: "↓" / "";
-      top: -28px;
-      left: calc(50% - 10px);
-      width: 20px;
-    }
-    .cy-flow-record {
-      grid-column: auto;
-    }
-    .cy-scenarios {
-      gap: 15px;
-    }
-    .cy-scenario {
-      padding: 22px 18px;
-    }
     .cy-example-card {
       padding: 25px 20px;
-    }
-    .cy-close,
-    .cy-trial,
-    .cy-status,
-    .cy-evidence {
-      padding-top: 46px;
     }
   }
 </style>
