@@ -1,7 +1,7 @@
 ---
 brief_no: 56
-title: "採用 AI の「誰が正当か」を検証しないまま、6,400 万件に手が届いた — アクセス主体の権限属性が独立検証されない構造（McHire / Paradox.ai）"
-title_en: "No Check on Who Was Authorized — 64 Million Records Within Reach in McDonald's McHire (Paradox.ai)"
+title: "McHire（Paradox.ai）：採用 AI の管理画面から、応募記録に手が届いたと研究者が報告(Ian Carroll・Sam Curry)"
+title_en: "McHire (Paradox.ai): Researchers report reaching applicant records through the hiring AI's admin console (Ian Carroll, Sam Curry)"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["attribute-proof-bypass", "data-provenance", "ai-bias-harm"]
@@ -9,15 +9,36 @@ incident_date: 2025-06-30
 published: 2026-06-15
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
-related_briefs: ["057-deepseek-clickhouse-exposed-db", "013-coinbase-kyc-insider-breach", "034-ekyc-camera-feed-provenance", "022-onlyfake-ai-id-kyc-bypass"]
+related_briefs: ["057-deepseek-clickhouse-exposed-db", "013-coinbase-kyc-insider-breach", "022-onlyfake-ai-id-kyc-bypass"]
 status: published
 gate: "identity"
 version: "1.0"
-og_lead_ja: "採用 AI が権限を検証せず 6,400 万件に到達 — McHire / Paradox.ai"
-og_lead_en: "Hiring AI: 64M records within reach, no authorization check — McHire"
-gap_detected: "External researcher investigation and responsible disclosure surfaced the vulnerability, letting Paradox.ai fix it the same day and launch a bug bounty."
-gap_missing: "There was no layer to check before access whether the accessing party held legitimate authority over a record, so guessable credentials and a sequential reference ID alone were enough to reach the records."
-gap_fix: "Before a high-risk action, independently verify with Lemma that this requesting party legitimately holds authority over data in this scope, and prevent it up front."
+og_lead_ja: "研究者が、McHire（Paradox.ai）の管理画面に試験用アカウントで入り、最大 6,400 万件の応募記録に手が届いたと報告"
+og_lead_en: "Researchers report entering McHire's (Paradox.ai) admin console with a test account and reaching up to 64 million applicant records"
+layout: "report"
+sections: "proof"
+og_kicker_ja: "AI の事例 · 採用 AI の権限"
+og_kicker_en: "AI CASE · HIRING AI ACCESS"
+og_headline_ja: "採用 AI の管理画面から\n応募記録に手が届いたと\n研究者が報告。\n<accent>最大 6,400 万件</accent>"
+og_headline_en: "An admin login opened\napplicant records,\nresearchers report.\n<accent>Up to 64 million.</accent>"
+key_figures:
+  - value: "64"
+    unit: "million"
+    label: "Upper bound of applicant records the researchers report were within reach, including names, contact details and chat transcripts"
+    tone: "alert"
+  - value: "123456"
+    label: "Username and password of a test account, reportedly left active since 2019, that let them in"
+  - value: "Same day"
+    label: "On the day of the report (2025-06-30), Paradox.ai disabled the account and fixed the issue"
+glossary:
+  - term: "IDOR"
+    desc: "Insecure direct object reference: a flaw where swapping a record's ID returns that record without checking whether the requester may read it."
+  - term: "Responsible disclosure"
+    desc: "Telling the affected party about a flaw before making it public, giving them time to fix it."
+insight:
+  slug: "login-is-not-record-authority"
+  label: "Getting in becomes the right to read"
+  quote: "Unless whether a party may read a record is checked before the record is opened, separately from whether it logged in, one weak credential and a swapped ID are enough to reach other people's records."
 industries: ["ai"]
 operations: ["account-admin", "data-access"]
 controls:
@@ -25,79 +46,102 @@ controls:
     item: "At the admin entry, check unguessable credentials and per-record permissions"
   - slug: "limit-and-revoke"
     item: "Remove abandoned test accounts and bind record IDs to permissions"
+impact: "Researchers report up to 64 million applicant records were within reach"
+takeaway: "In the researchers' account, an abandoned test account opened the admin console, and swapping applicant IDs returned other people's records. Before a record is opened, check that the party holds authority over that record."
+self_check: "Before a record is opened in an admin console, do you check that the party may read that record, separately from its login?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-In June 2025, researchers Ian Carroll and Sam Curry found that the admin console of McDonald's AI recruitment platform McHire (Paradox.ai) could be entered with an abandoned test account whose username and password were both "123456," and that via an IDOR, incrementing applicant IDs reached up to 64 million records. The same-day fix and bug bounty — after-the-fact remediation — cannot reach a structure in which the accessing party's authority is not independently verified before access, so reachability became retrieval.
+According to the researchers, the hiring AI's admin console still had a test account that had gone unused for years but remained active, and once inside, swapping the applicant ID returned other applicants' records. Outside researchers found the flaw and reported it, and the company fixed it the same day. Paradox.ai says only the researchers accessed any data. <strong>Unless whether a party may read a record is checked before the record is opened, separately from whether it logged in, one weak credential and a swapped ID are enough to reach other people's records.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: An admin login, followed by lookups of applicant records. According to Ian Carroll and Sam Curry, a test account whose username and password were both guessable let them into the admin console, and incrementing applicant IDs returned other applicants' records (IDOR).
+- **What the receiving side gets**: In general, an admin console receives a session that passed login and the ID of the record to open. Whether that party may read that applicant's record cannot be told from the ID alone. Lookups over the legitimate path are logged in the same form as ordinary access.
+- **Information within reach**: In the researchers' account, names, email addresses, phone numbers, interview (chat) transcripts, IP addresses and more.
+- **Not disclosed**: Whether anyone other than the researchers accessed records (Paradox.ai says no one did). How the test account came to remain. Where and how per-record authority was meant to be decided.
 
-- **Subject**: McHire (McDonald's job-application platform) / Paradox.ai's AI recruiting chatbot "Olivia"
-- **Discoverers**: Ian Carroll, Sam Curry (security researchers)
-- **Entry point**: The admin login had a valid account with username and password both "123456" — a test account left abandoned since 2019
-- **Lateral movement**: After entering the admin side, an IDOR vulnerability allowed sequential enumeration and retrieval of applicant IDs
-- **Exposure scale**: Up to **64 million** application records — names, emails, phone numbers, interview (chat) transcripts, IP addresses, etc.
-- **Response**: Paradox.ai disabled and fixed the account the day it was reported (2025-06-30) and opened a bug bounty. It stated only the researchers accessed any data, and only a small number of records
+## 3. What to check
 
-> Note: This Brief does not assert the presence or absence of actual harm; its object of analysis is the structure of absent authority-attribute verification in AI-system data access.
+The condition that holds whatever the route is this: before a record is opened, check whether the party may read that record, separately from whether it passed login.
 
-This incident stems from a structure in which, for access to the data plane of an AI system, the party's authority attribute is not independently verified.
+- **Who approves**: The owner of the records (the hiring organization), which decides in advance which accounts may read which applicants' records, treating test and system accounts the same way.
+- **Where the check happens**: Just before the admin console returns a record. A lookup with a swapped ID is checked at the same single point. A lookup that does not match the party's authority gets no record.
+- **What remains**: A record of which party opened which record under which authority, so that whether a lookup was legitimate can be traced later without disclosing applicants' personal data.
 
-1. **Initial reach via credentials**: A valid session could be established to the admin interface with a guessable default credential (123456). Whether "this party holds admin authority" is effectively not verified
-2. **Lateral movement via reference ID (IDOR)**: A direct object reference without an authorization check let one reach others' records simply by incrementing the applicant ID. Per-record authority verification is missing
-3. **Reaching sensitive data = retrieving it**: Personal data — names, contacts, interview transcripts, IPs — could be enumerated and retrieved without further verification. Reachability becomes full retrieval
-4. **Lack of visibility**: Because the access uses a legitimate path, illicit enumeration is recorded as ordinary access and is hard to detect as an anomaly
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Figure 1</span><span class="rx-ex-t">"Detection" versus a "pre-execution check"</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before a record is opened, whether the party may read it, and keeping a record. Detection means finding a flaw after it already exists; here, the researchers' investigation and report did that. The dates below follow the disclosures.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check the party's authority before a record is opened</div>
+<div class="rx-zone gapz"><b>What the researchers reported</b><span>A test account got them in, and swapped IDs<br>reached other applicants' records</span></div>
+<div class="rx-zone det"><b>Detection · research and report</b>The researchers find it and report to Paradox.ai and McDonald's</div>
+<div class="rx-g g1"><div class="t">2019</div><b>A test account is created and left in place</b></div>
+<div class="rx-g g2"><div class="t">2025-06-30</div><b>The researchers enter the admin console</b></div>
+<div class="rx-g g3"><div class="t">06-30</div><b>They confirm records are reachable and report it</b></div>
+<div class="rx-g g4"><div class="t">06-30</div><b>Paradox.ai disables the account and fixes it</b></div>
+</div>
+</figure>
 
----
+The researchers' investigation and report showed the flaw concretely and led to a same-day fix, but they found it after the flaw already existed. A case where reads happened with no authority check is [the DeepSeek database](https://lemma.frame00.com/critical/briefs/057-deepseek-clickhouse-exposed-db/) (exposed without authentication). The point that stored personal data itself became the breach surface echoes [the Coinbase KYC breach](https://lemma.frame00.com/critical/briefs/013-coinbase-kyc-insider-breach/).
 
-## 3. Timeline — disclosure and response
+## 4. What Lemma does
 
-- 2025-06-30: Researchers Carroll and Curry access the McHire admin console with "123456," confirm record enumeration via IDOR, and report to Paradox.ai / McDonald's
-- 2025-06-30: Paradox.ai disables and fixes the account the same day and opens a bug bounty
-- Thereafter: Logged in the AI Incident Database as Incident #1179
+**Lemma builds the check in section 3 into the point just before the admin console returns a record.** It does not find intrusions or flaws; it checks, before a record is opened, whether the party holds authority over that record.
 
-> Note: Proper names and CVEs rest on primary sources (research labs, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information.
+### Industries and operations to watch
 
-The response and industry movement after disclosure:
+- **Industry · AI**: AI services that collect applicants' personal data at scale, such as hiring chatbots, and the organizations that deploy them.
+- **Operation · Accounts & permissions**: Issuing and reviewing admin-console accounts, and the credentials of test and system accounts.
+- **Operation · Lookup & data access**: Opening an applicant's record by ID in an admin console.
 
-- **Vendor response**: Paradox.ai disabled and fixed the account the day it was reported and opened a bug bounty, stating only the researchers accessed any data
-- **Industry point**: With the rapid adoption of AI chatbots in recruiting / HR, the protection of **applicants' large-scale, sensitive personal data** and the credential management of system (non-human) identities have become focal points
-- **Regulatory context**: From both the protection of applicants' personal data (national privacy laws) and accountability for AI-driven hiring processes, demand grows to make data-access authorization verifiable
+### Current controls vs Lemma
 
-A picture in which access to the personal data of tens of millions relied on a guessable credential and missing per-record authorization is not one vendor's misconfiguration; it remains an access-authorization design issue for every organization embedding AI into its operations.
+Column 1 is getting into the admin console, and column 2 is opening a record by ID once inside. In the researchers' account, this case went through both columns.
 
----
+| Control | Admin console login | Record lookup by ID |
+| --- | --- | --- |
+| Outside researchers' investigation and report, and a bug bounty | Partial | Partial |
+| Reviewing admin accounts and disabling test accounts | Effective | Not relevant |
+| Per-record authority checks inside the application | Not relevant | Effective |
+| **Lemma (pre-execution check)** | Not relevant | Effective |
 
-## 4. Why it wasn't stopped
+Research and reporting find flaws and prompt fixes, but they work after the flaw already exists. Reviewing accounts removes a leftover test account from the entry, but leaves the separate flaw of swapped IDs. Per-record authority checks are the layer the researchers' second finding points to; where they work, records the party has no authority over are not returned. Lemma checks the party's authority before a record is returned, separately from the application. If it shows only that a lookup was within the party's authority, applicants' personal data need not leave the system.
 
-The central failure primitive is that **in access to an AI system's sensitive data, the party's authority attribute (who, and up to which records, is legitimate) is not independently verified, so reachability connects directly to retrieval.**
+Note: Lemma's check works only when it is built in just before records are returned, and which party may read which records is managed separately from the application. If the credentials of an account that does hold authority over those records are guessed or stolen, the lookup can pass this check. Finding and disabling weak credentials is the job of account reviews; Lemma does not replace them. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-It shares the primitive of missing authority/attribute verification with [Brief 013](/critical/briefs/013-coinbase-kyc-insider-breach/) (the Coinbase KYC insider breach — raw PII whose storage is mandated by regulation became the breach surface). The new cross-section here is that in the domain of **an AI recruiting bot**, a non-human (system) identity's weak credential became the entry point to the personal data of tens of millions. Behind the appearance of "screening with the latest AI," the data-plane authorization relied on a classic access-control flaw. Where [Brief 057](/critical/briefs/057-deepseek-clickhouse-exposed-db/) (DeepSeek) was "the absence of authentication itself," this case is "a guessable credential plus missing per-record authorization" — another manifestation of the same primitive.
+### Checklist
 
-Here the detection chain — external research by the researchers, responsible disclosure, Paradox.ai's same-day fix, and the bug bounty — functioned, and the vulnerability was made visible and remediated before exploitation spread. This is a detection/disclosure success, and this Brief does not deny its role.
+Three items to confirm about admin consoles that hold applicants' or other personal data
 
-But the problem is that no matter how well detection functions, it does not provide the material to independently prove, at the moment of access, "does the party making this access request hold legitimate authority over this record." Strengthening one guessable credential leaves the separate flaw of per-record authorization (IDOR) intact. "Logged in legitimately" or "referenced by ID" is not proof of "having legitimate authority." Because it is enumeration over a legitimate path, after-the-fact log analysis tends to become a trailing sequence that operates only after retrieval has occurred.
+- Do you review admin-console accounts regularly and disable unused test accounts?
+- Do you test, before release, that a lookup with a swapped ID returns no record the party lacks authority over?
+- Do you record which party opened which record under which authority?
 
-At present, in AI-service data access, authority-attribute verification is left to per-implementation access control and is not treated as an independent layer. Pre-execution attestation places, ahead of the sensitive-data access path, an attribute proof that "the requesting party legitimately holds the authority for this scope," and with selective disclosure makes authorization independently verifiable without exposing the personal data itself. Detection (external research, fixes) contributes to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each **complementary**.
+## 5. Facts and timeline
 
----
+- **Target**: McHire (McDonald's job-application platform) and Paradox.ai's AI recruiting chatbot "Olivia."
+- **Discoverers**: Ian Carroll and Sam Curry (security researchers).
+- **Entry**: In the researchers' account, the admin login had a valid account whose username and password were both "123456," reportedly a test account left in place since 2019.
+- **Record lookups**: Once inside the admin console, an IDOR let them retrieve records by incrementing applicant IDs, the researchers report.
+- **Scale**: Up to 64 million application records, including names, email addresses, phone numbers, interview (chat) transcripts and IP addresses (the researchers' account and CSO Online).
+- **Company's account**: Paradox.ai says only the researchers actually accessed any data, and that they viewed only a small number of records.
 
-## 5. What proof would have changed
+### Timeline
 
-Against the gap McHire exposed — for access to an AI system's sensitive data, the party's authority attribute goes unverified and reachability connects directly to retrieval — Lemma proposes a design that fixes the basis for access as an independently verifiable cryptographic proof at that moment.
+- **2019**: The test account is reportedly created and remains active afterward.
+- **2025-06-30**: Ian Carroll and Sam Curry enter the McHire admin console, confirm that applicant records are reachable, and report it to Paradox.ai and McDonald's.
+- **2025-06-30**: Paradox.ai disables and fixes the account the same day and opens a bug bounty.
+- **Thereafter**: The case is logged in the AI Incident Database as Incident #1179.
 
-- **Pre-execution attestation of authority attributes**: Before accessing sensitive data, prove as an independently verifiable attribute that "the requesting party legitimately holds the authority for this scope (this set of records)." Guessable credentials or swapped reference IDs do not pass
-- **Per-record authorization binding**: Bind reference IDs (object references) to the authority scope so that sequential ID enumeration does not pass without authorization
-- **Selective disclosure**: Prove only that "the access was within the scope of authority," with minimal disclosure, without sending the applicants' personal data outside
-- **Proof for non-human identity**: Treat system-account authority, too, as a verifiable attribute rather than a fixed credential
+> The technique and figures rest on the researchers' account (Ian Carroll) and press coverage. The 64 million is the upper bound of records said to be within reach, not a count of records retrieved. Who accessed data and how many records were viewed rest on Paradox.ai's account. This Brief does not assert whether harm occurred and does not blame Paradox.ai or McDonald's. What has not been disclosed does not mean no measures were in place.
 
-Proof fixed at the moment of action functions as evidence that can be independently verified later — without disclosing the personal data — when asked "was this access based on legitimate authority." Detection and disclosure (researcher investigation, fixes) contribute to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each complementary.
+### Response after disclosure
 
----
+- **Paradox.ai**: Disabled and fixed the account on the day of the report and opened a bug bounty. Says only the researchers accessed any data.
+- **Record**: The AI Incident Database logged the case as Incident #1179.
 
 ## 6. Sources
 
@@ -105,4 +149,4 @@ Proof fixed at the moment of action functions as evidence that can be independen
 - **AI Incident Database**: Incident #1179 (McHire / Paradox.ai) — <https://incidentdatabase.ai/cite/1179/>
 - **CSO Online**: "McDonald's AI hiring tool's password '123456' exposed data of 64M applicants" (scale and timeline) — <https://www.csoonline.com/article/4020919/mcdonalds-ai-hiring-tools-password-123456-exposes-data-of-64m-applicants.html>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/#authority), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

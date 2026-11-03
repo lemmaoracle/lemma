@@ -1,7 +1,7 @@
 ---
 brief_no: 62
-title: "Claude Code GitHub Action：`[bot]` を名乗る 1 件の issue を信頼してエージェントが特権実行した — 起動者の権限と入力の出所が、実行の前に独立検証されない構造（GMO Flatt Security）"
-title_en: "Claude Code GitHub Action: one issue claiming \"[bot]\" led the agent to privileged execution — the trigger's authority and input origin not verified before acting (GMO Flatt Security)"
+title: "Claude Code GitHub Action：名前が `[bot]` で終わる起動者を信頼し、issue からエージェントが特権で動きうると示された(GMO Flatt Security の研究)"
+title_en: "Claude Code GitHub Action: trusting actors whose names end in `[bot]` let an issue drive the agent's privileged run (GMO Flatt Security research)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "ai-decision-integrity"]
@@ -11,94 +11,136 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["037-agent-config-auto-execution", "029-github-dev-oauth-token", "048-trapdoor-ai-instruction-provenance", "003-starlette-badhost"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "agent-operation"
 version: "1.0"
-og_lead_ja: "issue 1 件で AI エージェントにリポジトリを乗っ取られる — Claude Code GitHub Action"
-og_lead_en: "One GitHub issue hijacks the repo via the agent — Claude Code GitHub Action"
-gap_detected: "The vulnerability was reported through responsible disclosure, a patch was shipped quickly, and CI logs recorded the execution."
-gap_missing: "There was no layer to check before action whether the party that triggered the agent held legitimate authority or whether the loaded content came from a trusted source, so a trigger claiming to be a `[bot]` and malicious instructions disguised as a request passed straight through."
-gap_fix: "Before an agent acts with privilege, independently verify with Lemma that this trigger comes from a party with legitimate authority and this input originates from a trusted source, and prevent it up front."
+og_lead_ja: "Claude Code GitHub Action で、`[bot]` を名乗る issue からエージェントが特権で動きうると研究者が報告"
+og_lead_en: "A researcher reports an issue posing as a `[bot]` could drive the Claude Code GitHub Action's privileged run"
+og_kicker_ja: "脆弱性の開示 · AI エージェントの起動"
+og_kicker_en: "VULNERABILITY DISCLOSURE · AI AGENT TRIGGER"
+og_headline_ja: "bot を名乗る issue で、\nエージェントが特権で\n動きうると研究者が報告。\n<accent>CVSS 7.8・4 日で修正</accent>"
+og_headline_en: "An issue posing as a bot\ncould steer the agent,\na researcher reports.\n<accent>CVSS 7.8, fixed in 4 days</accent>"
+key_figures:
+  - value: "7.8"
+    label: "Severity under CVSS 4.0. The fixes converge in claude-code-action v1.0.94"
+    tone: "alert"
+  - value: "4"
+    unit: "days"
+    label: "From the researcher's report of the core bypass to Anthropic's fix (January 2026)"
+  - value: "~50"
+    unit: "techniques"
+    label: "Ways of circumventing the permission system that RyotaK says he reported"
+glossary:
+  - term: "GitHub App and installation token"
+    desc: "A GitHub App is an integration installed on repositories. The installation token issued per installation can create issues and PRs. Its actor name ends in `[bot]`."
+  - term: "OIDC token"
+    desc: "A signed token stating \"I am this workflow running in this repository.\" Claude Code exchanges it with Anthropic's backend for an installation token of the Claude GitHub App, which has write access."
+  - term: "Indirect prompt injection"
+    desc: "Planting instructions in documents or data an AI reads (here, an issue body) so that the AI executes them as instructions."
+insight:
+  slug: "name-suffix-as-authority"
+  label: "Treating a name suffix as authority to trigger"
+  quote: "Unless, before an agent runs with privilege, the authority of whoever triggered it and the origin of the input it reads are checked against separately managed records rather than a name or the look of the text, a trigger and instructions anyone can create become privileged operations as they are."
 industries: ["ai", "developers"]
 controls:
   - slug: "ownership-check"
     item: "Confirm the triggering actor is really an authorized bot, not just named '[bot]'"
 attack_method: "ai-misuse"
+takeaway: "A researcher showed that trusting actors whose names end in [bot] let an issue from a GitHub App anyone can create drive the agent's privileged run."
+self_check: "Before an AI agent runs with privilege, do you check that whoever triggered it holds legitimate authority against permission records rather than a name?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-In June 2026, RyotaK (GMO Flatt Security) disclosed a flaw in the Claude Code GitHub Action: the trigger check unconditionally trusted any actor whose name ends in `[bot]`, so a single malicious issue could spoof the trigger, prompt-inject to exfiltrate credentials, and hijack the repository. Disclosure and a four-day patch cannot establish, before execution, whether the launcher holds legitimate authority or where the input comes from. What is structurally missing is a layer verifying the launcher's authority and the input's provenance before privileged execution.
+According to GMO Flatt Security researcher RyotaK, the trigger check in the Claude Code GitHub Action unconditionally trusted any actor whose name ends in `[bot]`. Anyone can register a GitHub App and use its token to create issues on any public repository, so an attacker's issue passes as "a bot trigger," and an agent with write access can execute the instructions planted in its body. The researcher demonstrated this on his own test repositories, and the fix was available before publication. <strong>Unless, before an agent runs with privilege, the authority of whoever triggered it and the origin of the input it reads are checked against separately managed records rather than a name or the look of the text, a trigger and instructions anyone can create become privileged operations as they are.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Triggering the agent with an issue created by the attacker's own GitHub App. The trigger check (`checkWritePermissions`) took the `[bot]` name suffix as grounds for authority, and agent mode lacked the human confirmation that tag mode had (RyotaK). Then Claude could execute, as "recovery," instructions in an issue body disguised as an error message (RyotaK).
+- **What reached the receiving side**: In general, an agent running in CI holds the secrets passed to the workflow and write access to the repository. In the researcher's report, having secrets in environment variables written back into the issue, stealing the credential used for the OIDC token exchange, and replaying the exchange reaches write access to the target's code, issues, and workflows. Aimed at the claude-code-action repository itself, it could poison the Action that downstream consumers pull in.
+- **Secondary paths**: Anthropic's example workflow included `allowed_non_write_users: "*"` (anyone can trigger; flagged as a risk in the docs too), and Claude posted task summaries to the publicly visible run-summary field, so repositories that copied it inherited the same hole. An attacker without trigger rights could also slip content in as "trusted input" by editing a trusted user's issue after it triggered but before Claude read it (RyotaK).
+- **Not disclosed**: Any use of this path against a real-world target. The researcher's write-up says the demonstration was limited to his own test repositories.
 
-- **Target**: Anthropic's Claude Code GitHub Action (claude-code-action), which embeds Claude in CI/CD to triage issues, apply labels, review pull requests, and run slash commands. By default it has read/write access to the repository's code, issues, PRs, discussions, and workflow files.
-- **Identifier and severity**: 7.8 under CVSS 4.0. Fixed in claude-code-action v1.0.94. Anthropic paid a bug bounty.
-- **Reporter and sequence**: Researcher RyotaK (GMO Flatt Security) reported the core bypass to Anthropic in January 2026. Anthropic fixed it within four days, with additional hardening through the spring. Public disclosure on 2026-06-04 (The Hacker News and others).
-- **The core flaw (launcher authority)**: The trigger check (`checkWritePermissions`) **unconditionally trusted any actor whose name ends in `[bot]`** (on the assumption that a GitHub App is trusted, installed by an admin). But anyone can register a GitHub App, install it on their own repo, and use its installation token to create issues / PRs on any public repository. The Action saw "it's a bot" and let the attacker's content through. Tag mode had an extra human-confirmation check; agent mode did not, and was exposed.
-- **The chain (input provenance)**: The attacker uses indirect prompt injection — planting instructions in an issue body disguised as an error message, tuned so Claude executes them while trying to "recover." The target is `/proc/self/environ` (environment variables containing secrets). Claude blocks a naive read, but the attacker routes around it and has the values written back into the issue to be retrieved.
-- **Final reach**: The prize among the environment variables is the credential set that GitHub Actions requires for an OIDC token (a signed token proving "I am this workflow running in this repo"). Claude Code exchanges it with Anthropic's backend for an installation token for the Claude GitHub App, which has write access. Steal that credential and replay the exchange, and you hold write access to the target's code, issues, and workflows. Aim at the claude-code-action repository itself, and you can poison the Action that downstream consumers pull in.
+## 3. What to check
 
-This incident stems from the launching actor's authority and the input's provenance not being independently verified before a privileged action. The path is as follows.
+Whatever the route, the condition for telling them apart is that, before an agent runs with privilege, whether whoever triggered it holds authority for that operation, and where the input it reads came from and whether it has changed since the trigger, are checked separately from a name or the look of the text.
 
-1. **Impersonating the launcher**: The attacker registers and installs their own GitHub App and uses its token to create an issue on the target public repository. The Action launches, trusting an actor whose name ends in `[bot]` (agent mode lacks the human-confirmation step).
-2. **Prompt injection into the input**: The issue body is made to look like an error message, leading Claude to execute the embedded instructions as "recovery." What the human sees and what the AI reads as instructions diverge.
-3. **Exfiltrating secrets**: Targeting `/proc/self/environ`, the guard is bypassed so the environment variables (including secrets) are written back into the issue.
-4. **Stealing and replaying credentials**: The OIDC-token-exchange credential among the environment variables is stolen, the exchange is replayed, and a write-capable installation token is obtained.
-5. **Downstream propagation**: Writes to the target's code, issues, and workflows. Aim at the claude-code-action repository itself, and you can poison the Action downstream consumers pull in (supply-chain propagation).
+- **Who approves**: The repository administrator, who decides which people and which installed Apps may trigger the agent. An actor's name suffix or the wording of an issue body is not used as approval.
+- **Where it is checked**: Immediately before the agent moves to execution holding secrets and write access. Whether the triggering party is on the allowed list is checked against permission records, not a name. The input it reads is checked against the version at trigger time, and a trigger or input that cannot be checked is held until it is.
+- **What is recorded**: Who triggered the agent, under what authority, and what it executed (or held) on which version of the input. Kept separately from the agent, in a form that can be shown later.
 
-As a secondary path, Anthropic's example workflow shipped `allowed_non_write_users: "*"` (anyone can trigger — flagged as a risk in the docs too), and Claude posted task summaries into the **publicly visible** run-summary field, so repositories that copied it inherited the same hole. And an attacker without trigger rights could still slip a payload in as "trusted input" by editing a trusted user's issue after it triggered but before Claude read it.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before an agent runs with privilege, the authority of whoever triggered it and the origin of its input, and keeping a record. Detection means a researcher finding and reporting the bypass. Dates are those of the report, the fix, and publication, not of any use of the path.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before the agent runs with privilege, check the trigger's authority and the input's origin</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>A trigger claiming [bot] and instructions in an issue<br>were shown able to drive the agent's privileged run</span></div>
+<div class="rx-zone det"><b>Detection · a researcher found it</b>RyotaK reported it and Anthropic fixed it</div>
+<div class="rx-g g1"><div class="t">2026-01</div><b>RyotaK reports to Anthropic</b></div>
+<div class="rx-g g2"><div class="t">2026-01</div><b>Core fixed within four days</b></div>
+<div class="rx-g g3"><div class="t">Spring 2026</div><b>Further hardening (in v1.0.94)</b></div>
+<div class="rx-g g4"><div class="t">06-04</div><b>Published in research and press</b></div>
+</div>
+</figure>
 
----
+Discovery of the flaw and publication after the fix worked, and Anthropic fixed it within four days of the report. CI logs let what was executed be traced afterwards. What was missing is the layer before that, which checks the trigger's authority and the input's origin. It has the same shape as [Brief 037](/critical/briefs/037-agent-config-auto-execution/), where an agent auto-executed a repo-bundled config, [Brief 048](/critical/briefs/048-trapdoor-ai-instruction-provenance/), where an AI read instructions invisible to humans, and [Brief 029](/critical/briefs/029-github-dev-oauth-token/), where a stolen token was not scoped to the action: the agent's privileged operation is not tied to a check of its trigger and input.
 
-## 3. Timeline — disclosure and response
+## 4. What Lemma does
 
-- 2026-01: RyotaK reports the core bypass to Anthropic. Anthropic fixes it within four days.
-- 2026 spring: Additional hardening continues. The fixes converge in claude-code-action v1.0.94.
-- 2026-06-04: The vulnerability details are published (GMO Flatt Security's research post, The Hacker News, and others).
+**Lemma builds the check in section 03 in immediately before the agent moves to execution holding secrets and write access.** It does not detect malicious issues or prompt injection; before execution, it checks the authority of whoever triggered the agent and the version of the input it reads, separately from a name or the look of the text.
 
-> Note: This was handled as a coordinated disclosure (published after a fix was available). There is no public trace of "this exact path" poisoning Anthropic's own Action being used against a real-world target; RyotaK demonstrated it only on his own test repositories. That said, the same shape (AI issue triage + broad permissions + prompt injection) has produced real-world damage by other routes — e.g., the February 2026 case in which an npm publish token was stolen via Cline's claude-code-action workflow and a malicious version published. RyotaK has said he reported roughly 50 techniques for circumventing the permission system.
+### Industries and operations to watch
 
-The response and industry movement after disclosure:
+- **Industry · Developers & agent operations**: Development and operations teams that embed AI agents in CI/CD and have them triage issues, apply labels, and review PRs.
+- **Industry · AI**: Organizations operating platforms where agents holding real tokens and tools run on input arriving from outside.
+- **Operation · Agent runs triggered by issues and PRs**: Work in public repositories where issues or PRs created by outside people or Apps trigger the agent. The trigger check and the input read lead straight to operations with write access.
 
-- **Anthropic**: Fixed the core within four days of the report and hardened through the spring; the fixes converge in claude-code-action v1.0.94. It advises users to audit workflows where non-write users or bots can launch Claude, to pass no secrets beyond the Anthropic API key and `GITHUB_TOKEN` when handling unverified input, and to remove tools and permissions usable for exfiltration.
-- **Permission design for AI coding agents**: A setup where an agent holding real tokens and real tools runs on unverified input leads directly to privileged execution when independent verification of the launcher and the input is absent — for as long as prompt injection is unsolved. Casually copying the example config (`allowed_non_write_users: "*"`, output to the public summary field) widens the hole.
-- **A cross-industry issue**: The same shape (AI issue triage + broad permissions + prompt injection) has produced real-world damage by other routes, such as the npm publish-token theft via Cline's workflow. Across agent infrastructure generally, a design requirement is emerging to independently verify "the launcher's authority" and "the input's provenance" before action.
+### Current controls vs Lemma
 
-The absence of a layer that independently verifies, before action, an agent's privileged execution based on an unverified launch or input is not a problem of a specific product; it remains a cross-organizational challenge for any organization embedding AI in CI or operations.
+The core route in this case is the first column: a trigger by a party without authority. The second column is the post-trigger edit the researcher reported as a secondary path; the third compares the case where instructions are contained in input a legitimate trigger supplied.
 
----
+| Control | Trigger by a party without authority (claiming `[bot]`) | Input slipped in after a legitimate trigger (editing the issue after it triggered) | Instructions in input supplied by a legitimate trigger |
+| --- | --- | --- | --- |
+| Trigger check by the `[bot]` name suffix (before the fix) | Not effective | Not relevant | Not relevant |
+| Auditing workflows for who or what can trigger (Anthropic's recommendation) | Partial | Not relevant | Not relevant |
+| Limiting secrets and exfiltration-capable tools and permissions when handling unverified input (Anthropic's recommendation) | Partial | Partial | Partial |
+| **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-## 4. Why it wasn't stopped
+The name-suffix check could be satisfied by the name of a GitHub App anyone can register (RyotaK). Auditing workflows finds and removes settings that let anyone trigger, but a hole in the check itself remains. Limiting secrets and tools narrows what can be reached in every column, but does not stop the trigger or the execution of instructions. Lemma checks the triggering party against the list the administrator allowed and the permission records, and checks the input against its version at trigger time, so a trigger by name alone, or input replaced after the trigger, is held before execution. On the other hand, if instructions are contained in the input a legitimate trigger supplied, the check matches and it passes. That column is covered in combination with limiting secrets and tools.
 
-The central failure primitive is that **before the agent takes a privileged action (a broadly permissioned CI run), it does not independently verify "who launched the agent, and whether that launcher holds legitimate authority" or "whether the provenance of the input it loaded is trustworthy."** It mistook the `[bot]` name suffix for proof of authority and executed an unverified input (the issue body) as instructions in a privileged context.
+Note: Lemma's check works only when it is built into the step that triggers the agent, and the list of allowed triggers, the permission records, and the record of input versions are managed separately from the input the agent reads. If the key of an App or person the administrator allowed is stolen, or malicious instructions are executed within the allowed scope, it can pass. Lemma does not change claude-code-action's implementation and does not judge whether the content of the input is benign. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-This is the same shape as [Brief 037](/critical/briefs/037-agent-config-auto-execution/) (an AI coding agent auto-executed a repo-bundled config file without verification): **the agent acts with broad permissions without verifying the provenance of its launch or its input.** Where 037 was auto-execution of a bundled config and this is launch by an external issue, both share that "the authority to make the agent act is decoupled from independent verification of the launcher's and the input's legitimacy." It connects to [Brief 048](/critical/briefs/048-trapdoor-ai-instruction-provenance/) (invisible instructions in AI instruction files) and [Brief 024](/critical/briefs/024-invisible-unicode-instruction-injection/) (invisible-Unicode instruction injection) through the primitive of divergence between what the human sees and what the AI reads as instructions. It connects to [Brief 029](/critical/briefs/029-github-dev-oauth-token/) (theft of an over-scoped OAuth token) in that the stolen token is not scoped to the action.
+### Checklist
 
-The point is not using AI as such. Embedding AI in CI is a productivity gain. What was missing is **a layer that, before the agent acts, independently verifies the launcher's authority and the input's provenance.** An agent holding real tokens and real tools can be pushed as far as its permissions allow. As long as prompt injection is unsolved, a design that presumes the input is trustworthy collapses at a single entry point.
+Three things to confirm for organizations that trigger AI agents in CI/CD from issues and PRs
 
-Discovery of the vulnerability and coordinated disclosure, the rapid patch, and CI-log auditing all functioned here and are indispensable for deterring recurrence; this Brief does not negate that role. Anthropic fixed the core within four days and continued hardening.
+- Is the claude-code-action you use at or above the version where the fixes converged (v1.0.94)?
+- Have you left in place settings copied from example workflows that let anyone trigger (such as `allowed_non_write_users: "*"`), or output to publicly visible fields?
+- In workflows that handle unverified input, do you pass the agent only the secrets it needs (the Anthropic API key and `GITHUB_TOKEN`)?
 
-At the same time, detection provides no material to independently establish — **before the action** — whether the actor that just launched the agent holds legitimate authority, or whether the input just loaded comes from a trustworthy source. A launch by an actor calling itself `[bot]` and an issue disguised as an error message are indistinguishable, to the system, from a legitimate trigger and legitimate input. After-the-fact log analysis reconstructs "what was executed," but not "was that execution authorized after independently verifying the launcher's authority and the input's provenance." A patch closes a specific hole, but the input-trust problem that is prompt injection remains unsolved.
+## 5. Facts and timeline
 
----
+- **Target**: Anthropic's Claude Code GitHub Action (claude-code-action), which embeds Claude in CI/CD to triage issues, apply labels, review PRs, and run slash commands. By default it has read/write access to the repository's code, issues, PRs, discussions, and workflow files.
+- **Severity and fix**: 7.8 under CVSS 4.0. The fixes converge in claude-code-action v1.0.94. Anthropic paid a bug bounty.
+- **Reporter**: GMO Flatt Security researcher RyotaK, who reported the core bypass to Anthropic in January 2026.
+- **The researcher's report (trigger)**: The trigger check (`checkWritePermissions`) unconditionally trusted any actor whose name ends in `[bot]` (on the assumption that a GitHub App is trusted, installed by an admin). Anyone can register a GitHub App, install it on their own repository, and use its installation token to create issues or PRs on any public repository. Tag mode had an additional human-confirmation check; agent mode did not.
+- **The researcher's report (input and reach)**: Instructions are planted in an issue body disguised as an error message, leading Claude to execute them as "recovery." Having secrets in environment variables written back into the issue, stealing the credential used for the OIDC token exchange, and replaying the exchange yields an installation token with write access.
+- **Secondary paths (the researcher's report)**: Repositories that copied the example workflow's `allowed_non_write_users: "*"` and output to the public run-summary field inherited the same hole. Editing an issue after it triggered, before Claude read it, could slip content in as trusted input.
 
-## 5. What proof would have changed
+### Timeline
 
-Pre-execution attestation treats the agent's action as a privileged act and requires, before execution, an independently verifiable proof of "does the launcher hold legitimate authority" and "what source does the input derive from, and is it untampered." Make the launcher's authority attributes — not the `[bot]` name — and the input's provenance — not the look of the issue body — verifiable at the moment of the act, and privileged execution based on an unverified launch or input is blocked before the action. Further, an authorization like the OIDC token exchange can be replaced with a per-action-scoped proof that a replayed stolen credential cannot satisfy. Detecting the vulnerability (the detection-style "where is the hole") and proving authority and input ("was the action authorized after independently verifying the launcher's authority and the input's provenance") are not substitutes but **complements**.
+- **2026-01**: RyotaK reports the core bypass to Anthropic. Anthropic fixes it within four days.
+- **Spring 2026**: Additional hardening continues; the fixes converge in claude-code-action v1.0.94.
+- **2026-06-04**: The details are published (GMO Flatt Security's research post, The Hacker News, and others).
 
-Against the gap this incident exposed (the agent's launcher authority and input provenance are not independently verified before the action), Lemma proposes a design that records the agent's action as a privileged act and, before execution, verifies "who launched it, under what authority, and on what source of input" as an independently verifiable cryptographic proof.
+> This was handled as a coordinated disclosure, published after a fix was available. Facts about the technique follow GMO Flatt Security's research post and The Hacker News's coverage; the fix follows Anthropic's fix commit. There is no public trace of "this exact path" poisoning Anthropic's Action being used against a real-world target, and RyotaK says he demonstrated it only on his own test repositories. With the same shape of setup (AI issue triage, broad permissions, prompt injection), a February 2026 case in which an npm publish token was stolen via Cline's claude-code-action workflow and a malicious version published has been reported as a separate route. RyotaK says he reported roughly 50 techniques for circumventing the permission system. This Brief does not include reproduction steps. What has not been disclosed does not mean there were no controls.
 
-- **Launcher authority proof**: Verify the authority attributes of the actor launching the agent as an independently verifiable proof — not a name suffix — and reject an unverified launch before the action.
-- **Input provenance binding**: Bind the input the agent loads (issues, configs, data) to its source via a docHash, making the identity between what the human sees and what the AI interprets, and the presence of tampering, verifiable at the moment of the act.
-- **Per-action scoped authorization**: Replace authorizations like the OIDC token exchange with a per-action-scoped, independently verifiable proof that a replayed stolen credential cannot satisfy (proof-as-auth).
-- **Selective disclosure**: Without exposing internal implementation or secrets, disclose only the minimum — that "this execution was authorized after independently verifying the launcher's authority and the input's provenance."
+### After disclosure
 
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this agent's action rests on a launcher with legitimate authority and input from a trustworthy source," without depending on after-the-fact log reconciliation. Detection (after-the-fact vulnerability discovery and patching) works on closing holes; attestation (independent verification of authority and input at the moment of the act) works on establishing trust in agent execution — each complementary to the other.
-
----
+- **Anthropic**: Fixed the core within four days of the report and hardened through the spring; the fixes converge in claude-code-action v1.0.94. It advises users to audit workflows where non-write users or bots can trigger Claude, to pass no secrets beyond the Anthropic API key and `GITHUB_TOKEN` when handling unverified input, and to remove tools and permissions usable for exfiltration.
+- **Example configurations**: Copying example settings as they are, such as `allowed_non_write_users: "*"` or output to publicly visible fields, was pointed out as something that can widen the hole.
 
 ## 6. Sources
 
@@ -106,4 +148,4 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 - **The Hacker News**: "Claude Code GitHub Action Flaw Let One Malicious Issue Hijack Repositories" (2026-06-04) — <https://thehackernews.com/2026/06/claude-code-github-action-flaw-let-one.html>
 - **Anthropic (primary, fix commit)**: claude-code-action fix commit (converging in v1.0.94) — <https://github.com/anthropics/claude-code-action/commit/1bbc9e7ff7d48e1299f7fa9698273d248e0cafea>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/#authority), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
