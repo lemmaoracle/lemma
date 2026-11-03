@@ -1,7 +1,7 @@
 ---
 brief_no: 37
-title: "AI コーディングエージェントが、リポジトリ同梱の設定ファイルを無検証で自動実行した — 承認プロンプトや署名検査では届かない、エージェントの権限・来歴の落差"
-title_en: "When the Assistant Becomes the Trigger — AI Coding Agents Auto-Execute Project-Local Config (SymJack / TrustFall + Miasma)"
+title: "AI コーディングエージェント：リポジトリに同梱の設定ファイルを自動で実行し、マルウェア Miasma に使われた(Adversa AI・StepSecurity)"
+title_en: "AI coding agents: config bundled in repositories ran automatically and was used by the Miasma malware (Adversa AI, StepSecurity)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth"]
@@ -9,95 +9,139 @@ incident_date: 2026-06-05
 published: 2026-06-09
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
-related_briefs: ["014-tanstack-oidc-trusted-publisher", "027-librechat-mcp-url-secrets", "006-google-api-key-revocation-lag", "003-starlette-badhost"]
+related_briefs: ["014-tanstack-oidc-trusted-publisher", "027-librechat-mcp-url-secrets", "006-google-api-key-revocation-lag", "003-starlette-badhost", "147-gitspawn-ai-coding-agent-git-config-rce"]
 status: published
 gate: "agent-operation"
 version: "1.0"
-og_lead_ja: "AI コーディングエージェントが同梱設定を無検証で自動実行 — SymJack / Miasma"
-og_lead_en: "AI coding agents auto-execute project-local config — SymJack / Miasma"
-gap_detected: "不正なコミットは検出でき、GitHub は Microsoft 系 4 組織の 73 リポジトリを一斉に無効化できた。"
-gap_missing: "エージェントが同梱設定を実行する前に、「この設定は正規の作者に由来し、認可された範囲か」を確かめる層が無く、「開いた／信頼した」操作がそのまま実行の根拠になった。"
-gap_fix: "エージェントが同梱設定を実行する前に「この操作は、この主体に、このスコープで認可され、正規の来歴を持つ」ことを Lemma で独立検証して、事前に防ぐ。"
+og_lead_ja: "マルウェア Miasma がリポジトリに AI エージェントの設定ファイルを仕込み、プロジェクトを開いた開発者の環境で実行されたと報告。GitHub は Microsoft 系 4 組織の 73 リポジトリを無効化"
+og_lead_en: "Miasma reportedly planted AI agent config files in repositories that ran when developers opened the project; GitHub disabled 73 repositories across four Microsoft organizations"
+search_title: "AI エージェントの同梱設定の自動実行：経緯と対策"
+search_description: "AI コーディングエージェントが同梱の設定を自動で実行する欠陥を Adversa AI が報告し、Miasma がこれを使ったとされる。GitHub は Microsoft 系 73 リポジトリを無効化。経緯と照合、対策を整理。"
+layout: "report"
+sections: "proof"
+og_kicker_ja: "AI エージェントの脆弱性 · 同梱設定の自動実行"
+og_kicker_en: "AI AGENT FLAW · AUTO-RUN CONFIG"
+og_headline_ja: "リポジトリ同梱の設定が、\n開くと実行されたと報告。\n<accent>73 件を無効化</accent>"
+og_headline_en: "Config bundled in repos\nran on open, per reports.\n<accent>73 repos disabled</accent>"
+key_figures:
+  - value: "73"
+    unit: "件"
+    label: "GitHub が無効化した、Microsoft の 4 組織のリポジトリ（StepSecurity）"
+    tone: "alert"
+  - value: "06-03 → 06-05"
+    label: "Miasma の第 3 波が、AI エージェントの設定ファイルを使った期間（safedep）"
+  - value: "開いたとき"
+    label: "仕込まれた設定が実行された時点：開発者が AI コーディングツールでプロジェクトを開いたとき（safedep）"
+glossary:
+  - term: "MCP サーバー"
+    desc: "AI エージェントに外部の道具やデータをつなぐためのサーバー。プロジェクトの設定に定義を書いておくと、エージェントが起動する。"
+  - term: "フォルダの信頼"
+    desc: "開いたフォルダの設定やコードを動かしてよいかを、利用者に尋ねる確認。Adversa AI は、既定が「信頼する」で、承認した時点でプロジェクト定義の MCP サーバーが自動で起動したと報告している。"
+insight:
+  slug: "bundled-config-runs-on-open"
+  label: "開いただけで動く同梱の設定"
+  quote: "プロジェクトを開いた・フォルダを信頼したという操作は、同梱の設定の出どころを示さない。実行の前に作者と許す範囲を照合しなければ、仕込まれた設定も、ふつうの起動として通る。"
 industries: ["developers", "ai"]
 controls:
   - slug: "hold-unverified"
-    item: "同梱の設定は、作者と中身を確かめるまで実行しない"
+    item: "同梱の設定は、作者と中身を確認するまで実行しない"
 attack_method: "ai-misuse"
 impact: "Microsoft 系 4 組織の 73 リポジトリが無効化"
+takeaway: "リポジトリに仕込まれた AI エージェントの設定ファイルが、開発者がプロジェクトを開いたときに、出どころを照合されないまま実行されたと報告されている。"
+self_check: "AI コーディングエージェントが、リポジトリに同梱の設定を読み込む前に、その作者と許す範囲を照合しているか。"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. 要点
 
-AI コーディングエージェント（Claude Code・Cursor・Gemini CLI 等）が、リポジトリ同梱の設定ファイルを中身も出どころも検証せず自動実行する欠陥（SymJack / TrustFall）が、自己増殖型マルウェア Miasma に武器化された。不正コミットは検出され GitHub は Microsoft 系 4 組織の 73 リポジトリを無効化したが、設定が実行され認証情報が窃取された後の事後措置である。欠けていたのは、実行の前に「この設定は正規の作者に由来し、認可された範囲か」を確かめる層であり、「開いた／信頼した」操作がそのまま実行の根拠になった。
+使われたのは、プロジェクトを開く、フォルダを信頼するという、開発者がふだん行う操作だけだった。研究者の Adversa AI は、主要な AI コーディングエージェントが、リポジトリに同梱の設定（エージェントの設定・MCP サーバーの定義・起動時のフック）を、この操作を十分な許可とみなして自動で実行すると報告した。ベンダーリサーチの safedep と StepSecurity は、自己増殖型のマルウェア Miasma がこの形を使い、プロジェクトを開いた開発者の環境で認証情報を盗み、GitHub が Microsoft の 4 組織の 73 リポジトリを無効化したと報告している。無効化が働いたのは、設定が実行された後だった。<strong>プロジェクトを開いた・フォルダを信頼したという操作は、同梱の設定の出どころを示さない。実行の前に作者と許す範囲を照合しなければ、仕込まれた設定も、ふつうの起動として通る。</strong>
 
----
+## 2. 通った操作
 
-## 2. 何が起きたか
+- **通った操作**: AI コーディングエージェントによる、リポジトリに同梱の設定の読み込みと実行。safedep によれば、Miasma の第 3 波は、リポジトリに Claude Code・Gemini CLI・Cursor の設定ファイルを仕込み、開発者が AI コーディングツールでプロジェクトを開いた時点で、認証情報を盗むプログラムを実行した。
+- **研究者が報告した形**: Adversa AI は、無害なファイルのコピーに見える操作でエージェント自身の設定が書き換えられ、次の起動で攻撃者のコードが動く欠陥（SymJack）と、フォルダの信頼を承認した時点でプロジェクト定義の MCP サーバーが明示の承認なしに起動する欠陥（TrustFall）を報告した。承認の確認も、表示されるファイル操作も、実際に何が実行されるかを正確には伝えない、としている。
+- **受け付けた側に届くもの**: 一般に、エージェントに届くのは、利用者がプロジェクトを開いた、フォルダを信頼したという操作と、リポジトリの中の設定ファイルである。その設定を誰が書いたか、どこまでの実行を許されているかは、ここからは分からない。
+- **実行の結果として届いたもの**: 報告によれば、開発環境が使える GitHub・npm・AWS・Azure・GCP・Vault・Kubernetes などの認証情報。Miasma は、それを使って届く範囲の他のリポジトリやパッケージに同じ形の設定を置き、広がった（safedep・StepSecurity）。
+- **公表されていないこと**: 個々のリポジトリがどの経路で感染したか、どれだけの認証情報が盗まれたか、復元がどこまで進んだか。各ツールがフォルダの信頼の既定値や同梱設定の自動実行をどう改めたかは、本稿の出典からは確認できていない。
 
-- **共通の失敗**: AI コーディングエージェントが、プロジェクトに同梱された設定（agent の settings、MCP サーバー定義、起動時フック）を、「ユーザーがプロジェクトを開いた／フォルダを信頼した」ことを十分な認可と見なして自動実行する
-- **SymJack（研究、Adversa AI、2026-05-26）**: シンボリックリンク偽装により、ユーザーには無害なファイルコピーに見える操作で、実際にはエージェント自身の設定ファイルを上書きし、次回起動時に攻撃者コードを実行させる。Claude Code・Gemini CLI（Antigravity）・Cursor Agent CLI・GitHub Copilot CLI・Grok Build・OpenAI Codex CLI で確認
-- **TrustFall（研究、Adversa AI、2026-05 開示）**: フォルダの信頼プロンプト（既定が「信頼する」）を承認した瞬間に、プロジェクト定義の MCP サーバーが明示承認なしに自動起動し、1 クリックで遠隔コード実行に至る
-- **Miasma 第 3 波（実地、2026-06-03〜05）**: 自己増殖型マルウェア Miasma が、リポジトリに `.claude/settings.json`・`.gemini/settings.json`・Cursor の設定ファイルを仕込み、開発者が AI コーディングツールでプロジェクトを開いた瞬間に認証情報窃取ペイロードを実行。Bun ランタイムを取得して二次ペイロードを起動し、GitHub・npm・AWS・Azure・GCP・Vault・Kubernetes 等の認証情報を掃き出して自己増殖する
-- **実地の規模**: 2026-06-05、GitHub が Microsoft の 4 組織（Azure・Azure-Samples・Microsoft・MicrosoftDocs）のリポジトリ 73 件を無効化。Miasma は TeamPCP が OSS 化した Mini Shai-Hulud の変種
+## 3. 何を照合するか
 
-本事象は、エージェントが同梱設定を行動の前に独立検証しない構造に起因する。失敗が認証情報窃取・横展開へ伝播する経路は以下の通り。
+経路を問わず区別できる条件は、エージェントがリポジトリに同梱の設定を読み込んで実行する前に、その設定が正規の作者に由来するか、実行を許す範囲に収まるかを照合することである。
 
-1. **同梱設定の配置**: 攻撃者が、リポジトリに agent の設定（`.claude/settings.json` 等）・MCP サーバー定義・起動時フックを仕込む。あるいは symlink 偽装で、表示と実体（書き込み先）を乖離させる
-2. **「開く／信頼する」を認可と見なす**: 開発者がプロジェクトを AI コーディングツールで開く、またはフォルダ信頼プロンプトを承認する。エージェントはこの操作を十分な認可と見なし、同梱設定を自動でロード・実行する。承認プロンプトは「何が実行されるか」を正確には伝えない
-3. **実行と窃取**: 設定の実行により、認証情報窃取ペイロードが起動する。Bun ランタイム取得・二次ペイロード起動を経て、開発環境がアクセスできる認証情報（GitHub・npm・クラウド・Vault・Kubernetes 等）が掃き出される
-4. **自己増殖**: 窃取した認証情報を使い、その環境からアクセス可能な他リポジトリ・パッケージに同型の設定を仕込み、信頼された公開・コミット経路を通じて増殖する。1 台の感染が組織全体へ波及する
-5. **検出と無効化**: 不正コミットが検出されると、プラットフォーム側でリポジトリが一斉無効化される。ただしこれは設定が実行され認証情報が窃取された後に作動する事後の措置である
+- **誰が承認を出すか**: 設定を書いた正規の作者と、エージェントにどこまでの実行を許すかを決める利用者・組織。プロジェクトを開く、フォルダを信頼するという操作は、この承認の代わりにならない。
+- **どこで照合するか**: エージェントが同梱の設定を読み込み、MCP サーバーや起動時のフックを動かす前。照合できない設定は、確認できるまで実行しない。
+- **何が残るか**: どの設定を、どの作者の確認で、どの範囲を許して実行した（または止めた）かの記録。あとから、正規の操作と、仕込まれた設定による操作を区別して示せる。
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
+<p class="rx-ex-cap">実行の前の照合＝エージェントが同梱の設定を実行する前に、作者と許す範囲を照合し、記録に残すこと。検知＝実行の後に、研究者の報告や不正なコミットの検出で見つかり、止めること。日付は 05 の時系列に拠る。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>同梱の設定を実行する前に、作者と許す範囲を照合する</div>
+<div class="rx-zone gapz"><b>確認されたこと</b><span>仕込まれた設定が、プロジェクトを開いたときに実行された<br>認証情報が盗まれ、他のリポジトリへ広がった</span></div>
+<div class="rx-zone det"><b>検知 · 実行の後に働いた</b>不正なコミットを検出し、73 リポジトリを無効化した</div>
+<div class="rx-g g1"><div class="t">2026-05 上旬</div><b>TrustFall の報告</b></div>
+<div class="rx-g g2"><div class="t">2026-05-26</div><b>SymJack の報告</b></div>
+<div class="rx-g g3"><div class="t">2026-06-03</div><b>Miasma の第 3 波</b></div>
+<div class="rx-g g4"><div class="t">2026-06-05</div><b>73 リポジトリを無効化</b></div>
+</div>
+</figure>
 
-## 3. 時系列 — 公表と対応
+研究者の報告と、不正なコミットの検出、リポジトリの無効化は働き、手口と感染は外から見えるようになった。ただし、無効化が働いたのは、設定が実行され、認証情報が盗まれた後だった。同じように、外から持ち込まれた設定がそのまま実行に至った [フォルダを開いただけで AI コーディングエージェントがコードを実行した GitSpawn](https://lemma.frame00.com/ja/critical/briefs/147-gitspawn-ai-coding-agent-git-config-rce/)（Brief 147）、利用者が指定した MCP の URL がサーバーの秘密を運び出した [Brief 027](https://lemma.frame00.com/ja/critical/briefs/027-librechat-mcp-url-secrets/)、Host ヘッダーの操作で MCP サーバーの認証が回避された [Brief 003](https://lemma.frame00.com/ja/critical/briefs/003-starlette-badhost/)、有効な署名のまま成果物が悪性だった [Brief 014](https://lemma.frame00.com/ja/critical/briefs/014-tanstack-oidc-trusted-publisher/) がある。
 
-- 2026-05 上旬: Adversa AI が TrustFall（フォルダ信頼承認で MCP サーバーが自動起動し 1 クリック RCE）を開示
-- 2026-05-26: Adversa AI が SymJack（symlink 偽装でエージェント設定を上書きし起動時に実行）を公表。主要な agentic CLI で再現
-- 2026-06-01〜03: Miasma が npm の preinstall フック（第 1 波）・binding.gyp 実行（第 2 波、Phantom Gyp）で展開
-- 2026-06-03〜05: Miasma 第 3 波。リポジトリに AI エージェント設定ファイルを仕込み、プロジェクトを開いた瞬間に認証情報窃取を実行する手口へ
-- 2026-06-05: GitHub が Microsoft の 4 組織のリポジトリ 73 件を無効化。Microsoft は一部リポジトリを一時削除し、審査後に順次復元と説明
-- 2026-06: Red Hat 公式 npm チャンネル経由の Miasma 感染も確認され、波が拡大
+## 4. Lemma でできること
 
-> 注: 個別リポジトリの感染経路・復元状況は調査の進行に依存するため、本文では断定しない。
+**Lemma は、03 の照合を、エージェントが同梱の設定を実行する手順に組み込む。** 感染の後に検出するのではなく、実行の前に、その設定が正規の作者に由来するか、許す範囲に収まるかを照合し、照合できない実行を通さない。
 
-公表後の対応と業界の動きは次のとおり。
+### 注意したい業界・業務
 
-- **ベンダー・プラットフォーム**: GitHub が不正コミットを検出してリポジトリを一斉無効化、Microsoft は一部を一時削除し審査後に復元と説明した。AI コーディングツール各社では、フォルダ信頼の既定値・同梱設定の自動実行・MCP サーバー自動起動の扱いが論点となっている
-- **研究・標準**: 「承認プロンプトの提示＝インフォームド・コンセント」という業界横断の前提が、研究側（Adversa AI）から問い直された。エージェントが実行する操作の表示と実体の整合、project-local 設定の権限スコープの最小化が課題として挙がっている
-- **規制の重心移動**: 規制の重心はデータ開示からコンプライアンス証明へ移りつつある。自律的に動作するエージェントについて、その操作が正規に認可されたものであることを、事後のログではなく行動前に独立検証可能な形で示す要請が強まっている
+- **業界 · 開発者・エージェント運用**: AI コーディングエージェントで、外から受け取ったリポジトリを開く開発者と組織。
+- **業界 · AI導入（業種横断）**: 開発環境に、クラウドやパッケージの公開に使う認証情報を置いたまま、AI コーディングエージェントを使う組織。
 
-エージェントの同梱設定の認可・来歴を、実行の時点で独立検証する層の不在は、特定ツールの問題ではなく、AI コーディングエージェントを採用する組織横断の運用課題として残っている。
+### いまの対策と Lemma の違い
 
----
+今回の経路は、エージェントがプロジェクトを開いたときに同梱の設定を実行する操作と、盗まれた認証情報で他のリポジトリに同じ形の設定が置かれる操作である。
 
-## 4. なぜ止まらなかったか
+| 対策 | 同梱の設定の実行（プロジェクトを開いたとき） | 盗まれた認証情報による他のリポジトリへの広がり |
+| --- | --- | --- |
+| フォルダの信頼の確認（承認の確認） | 効かない | 関係しない |
+| 署名の検査 | 効かない | 効かない |
+| 不正なコミットの検出とリポジトリの無効化 | 効かない | 一部 |
+| **Lemma（実行の前の照合）** | 効く | 一部 |
 
-中心的な失敗 primitive は、**エージェントが、プロジェクトに同梱された設定・アクションを実行する際に、その設定の認可スコープと来歴を行動の前に独立検証しない**点にある。「ユーザーがプロジェクトを開いた／フォルダを信頼した」ことは、同梱設定が安全である・正規の作者に由来するという保証にはならない。承認プロンプト（TrustFall）も、表示されるファイル操作（SymJack）も、実際に何が実行されるかを正確には伝えない。インフォームド・コンセントには、その操作が何をするかの正確な像が必要だが、エージェントの信頼境界はそれを欠いている。
+フォルダの信頼の確認は、Adversa AI の報告では、承認した時点で MCP サーバーが起動し、何が実行されるかを正確には伝えなかった。署名の検査は、リポジトリが有効であることしか示さず、設定が認証情報を盗むかどうかを実行の前に区別できない。広がりは信頼された公開・コミットの経路を通るため、署名の検査は通る。不正なコミットの検出と無効化は、今回の封じ込めの経路で、73 リポジトリを止めたが、設定が実行され認証情報が盗まれた後に働いた。Lemma は、エージェントが同梱の設定を実行する前に、作者と許す範囲を照合する。盗まれた認証情報そのものは失効させないので、広がりの列は一部にとどまる。
 
-[Brief 027](https://lemma.frame00.com/ja/critical/briefs/027-librechat-mcp-url-secrets/)（ユーザー指定の MCP URL がサーバーの秘密を運び出す）、[Brief 003](https://lemma.frame00.com/ja/critical/briefs/003-starlette-badhost/)（Host ヘッダー操作による MCP server 認証回避）、[Brief 014](https://lemma.frame00.com/ja/critical/briefs/014-tanstack-oidc-trusted-publisher/)（有効な署名でも成果物は悪性）と対象は異なるが、共通する primitive は同じである。すなわち、**ある操作・設定の実行が、それを認可・検証する layer と切り離されている**。本事案が示すのは、研究で開示された潜在欠陥（SymJack / TrustFall）が、実地のマルウェア（Miasma 第 3 波）によって Microsoft 規模で武器化されたという、設計上の落差から実害への直結である。また Miasma の再燃について、5 月の感染で使われた認証情報が完全にローテーションされていなかった可能性が指摘されており、認証情報の失効属性の独立検証不在（[Brief 006](https://lemma.frame00.com/ja/critical/briefs/006-google-api-key-revocation-lag/)）とも接続する。
+注：Lemma の照合が働くのは、エージェントが同梱の設定を読み込む処理に照合を組み込み、正規の作者の確認と許す範囲が、エージェントの外で管理されている場合に限る。正規の作者の鍵が盗まれて設定が書かれた場合は、この照合を通りうる。設定の中身が安全かは判定しない。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入を検出・防止するものではない。
 
-本事象では、研究側の開示（Adversa AI）、プラットフォーム側の不正利用対策（GitHub による 73 リポジトリの無効化）、ベンダーリサーチという検出の系列が機能し、手口と感染が外部から可視化された。これは検出の典型的成功であり、本 Brief が検出層の役割を否定するものではない。検出は、手口の公表、感染範囲の特定、無効化と是正に不可欠である。
+### 点検チェックリスト
 
-一方で、検出は「エージェントが実行しようとしている同梱設定が、正規に認可され、正規の作者に由来するか」を、**エージェントがその設定をロード・実行する時点で**独立に立証する材料にはならない。署名検査は「リポジトリは有効」としか見えず、承認プロンプトは「ユーザーが開いた／信頼した」としか見えない。いずれも、設定が認証情報を窃取するか否かを実行前に区別できない。プラットフォームの無効化も、設定が実行された後に作動する事後の系列である。これは検出層の射程外にある、構造的に独立した層の落差である。
+AI コーディングエージェントを使う組織で確認する 3 項目
 
-現状、AI コーディングエージェントの運用モデル全体において、同梱設定の認可・来歴の独立検証は、「ユーザーが開いた／信頼した」という操作への信頼に依存しており、まだ独立した層として扱われていない。事前証明（pre-execution attestation）は、エージェントが設定・アクションを実行する経路に権限証明を 1 段挟むことで、この落差を埋める。事前証明は検出に対する代替ではなく **補完** であり、両層の組み合わせでエージェント操作の trust boundary が確立される。
+- 外から受け取ったリポジトリに同梱の設定（エージェントの設定・MCP サーバーの定義・起動時のフック）を、エージェントが実行する前に、作者を確認しているか。
+- フォルダの信頼の承認が、何を実行するかを示さないまま、同梱の設定の実行を許す既定になっていないか。
+- どの設定を、どの作者の確認で実行したかを、エージェントの外に記録しているか。
 
----
+## 5. 事実と時系列
 
-## 5. 証明があれば、何が変わるか
+- **対象**: リポジトリに同梱の設定を実行する AI コーディングエージェント。Adversa AI は、SymJack を Claude Code・Gemini CLI（Antigravity）・Cursor・GitHub Copilot・Grok Build などで、TrustFall を Claude・Cursor・Gemini CLI・GitHub Copilot で確認したと報告している。
+- **研究者の報告**: Adversa AI は 2026 年 5 月上旬に TrustFall を、5 月 26 日に SymJack を公表した。どちらも、利用者に見える承認や操作と、実際に実行されるものが一致しない点を問題にしている。
+- **実地の悪用**: Microsoft Security Blog は 6 月 2 日、Miasma の認証情報を盗む手口を公表した。safedep によれば、Miasma は npm の preinstall フック（第 1 波）と binding.gyp の実行（第 2 波、Phantom Gyp）で広がった後、第 3 波でリポジトリに AI エージェントの設定ファイルを仕込む形に移った。報告では、Bun のランタイムを取得して次の段のプログラムを起動し、認証情報を集めて自己増殖する。
+- **規模**: StepSecurity によれば、2026 年 6 月 5 日、GitHub が Microsoft の 4 組織（Azure・Azure-Samples・Microsoft・MicrosoftDocs）のリポジトリ 73 件を無効化した。Microsoft は一部のリポジトリを一時的に削除し、審査の後に順に復元すると説明した。
 
-本事象で露呈した落差（エージェントが同梱設定を、その認可・来歴の独立検証から切り離したまま実行する）に対して、Lemma は、エージェントが操作を実行する前に、その操作が認可され正規の来歴を持つことを独立検証可能な暗号証明として要求する設計を提示している。
+### 時系列
 
-- **行動前の認可証明（proof-as-auth）**: エージェントが同梱設定の実行・MCP サーバーの起動・破壊的操作を行う前に、「この操作は、この主体に、このスコープで認可されている」ことを署名付きで証明する。「ユーザーが開いた／信頼した」ことを認可の終点にしない
-- **設定の来歴バインド**: 実行対象の設定・成果物を、その発行元（正規の作者・配布元）に紐付け、来歴を docHash で検証する。表示と実体（symlink の書き込み先など）の乖離を、実行前に検出可能にする
-- **スコープ付き権限**: エージェントに与える権限を操作ごとに最小化し、認可の範囲を超える実行を証明なしには成立させない。エージェントの正規操作と、攻撃者が仕込んだ設定による操作とを、証跡で区別する
-- **選択的開示**: 「この操作が認可スキーマを満たす」ことだけを最小開示し、内部の鍵・資格情報は環境外に出さない
+- **2026-05 上旬**: Adversa AI が TrustFall（フォルダの信頼の承認で MCP サーバーが自動で起動する）を公表する。
+- **2026-05-26**: Adversa AI が SymJack（エージェントの設定が書き換えられ、起動時に実行される）を公表する。
+- **2026-06-01〜03**: Miasma が npm の preinstall フック（第 1 波）と binding.gyp の実行（第 2 波）で広がる。
+- **2026-06-02**: Microsoft Security Blog が、Red Hat の npm を通じた Miasma の認証情報を盗む手口を公表する。
+- **2026-06-03〜05**: Miasma の第 3 波。リポジトリに AI エージェントの設定ファイルを仕込み、プロジェクトを開いた時点で認証情報を盗む形に移る（safedep）。
+- **2026-06-05**: GitHub が Microsoft の 4 組織のリポジトリ 73 件を無効化する（StepSecurity）。
 
-これにより、実行の時点で固定された証明が、「この操作は正規に認可され、正規の来歴を持つか」を、エージェントが同梱設定を実行する前に独立検証可能なトレイルとして機能させる。検出（事後の無効化・ベンダーリサーチ）は発覚後の是正に、事前証明（実行前の認可・来歴検証）はエージェント操作の独立検証に、それぞれ相補的に働く。
+> 個々のリポジトリの感染経路と復元の状況は調査の進み具合によるため、本稿では断定しない。手口の性格づけは Adversa AI・safedep・StepSecurity・Microsoft の報告に拠り、本稿はエージェントの各ベンダーの見解を扱っていない。公表されていないことは、対策が無かったことを意味しない。
 
----
+### 公表後の対応
+
+- **GitHub・Microsoft**: GitHub が不正なコミットを検出してリポジトリを無効化し、Microsoft は一部を一時的に削除して、審査の後に復元すると説明した。
+- **AI コーディングツール**: フォルダの信頼の既定値、同梱設定の自動実行、MCP サーバーの自動起動の扱いが論点になっている。
 
 ## 6. Sources
 
@@ -107,4 +151,4 @@ AI コーディングエージェント（Claude Code・Cursor・Gemini CLI 等�
 - **StepSecurity（ベンダーリサーチ）**: “Miasma Worm Hits Microsoft Again: Azure Functions Action and 72 Other Repositories Disabled”（2026-06、Microsoft 4 組織 73 リポジトリ無効化）— <https://www.stepsecurity.io/blog/miasma-worm-hits-microsoft-again-azure-functions-action-and-72-other-repositories-disabled-after-supply-chain-attack-targeting-ai-coding-agents>
 - **safedep（ベンダーリサーチ）**: “Miasma Worm Targets AI Coding Agents via GitHub Repos”（第 3 波、`.claude/settings.json` 等の設定注入による自動実行）— <https://safedep.io/miasma-worm-ai-coding-agent-config-injection/>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)

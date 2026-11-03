@@ -1,7 +1,7 @@
 ---
 brief_no: 58
-title: "AI エージェントが自分の記憶（チェックポイント）を検証せず読み込み、サーバーを乗っ取られた — エージェントの永続状態が、ロードの前に来歴も完全性も独立検証されない構造（LangGraph）"
-title_en: "From State Store to RCE — When an AI Agent Trusts Its Own Checkpoint (LangGraph)"
+title: "LangGraph：エージェントが保存した状態（チェックポイント）を読み込むときに、コードが実行される経路が示された(Check Point Research)"
+title_en: "LangGraph: Researchers showed code running when an agent loads its saved state (Check Point Research)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "ai-decision-integrity"]
@@ -9,100 +9,134 @@ incident_date: 2026-06-12
 published: 2026-06-16
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
-related_briefs: ["027-librechat-mcp-url-secrets", "025-mcp-stdio-config-to-command-rce", "003-starlette-badhost", "037-agent-config-auto-execution"]
+related_briefs: ["139-agent-framework-trust-boundary-checkpoint", "027-librechat-mcp-url-secrets", "025-mcp-stdio-config-to-command-rce", "003-starlette-badhost", "037-agent-config-auto-execution"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "intake"
 version: "1.0"
-og_lead_ja: "エージェントが自分のチェックポイントを検証せず読み込み RCE — LangGraph"
-og_lead_en: "An agent loads its own checkpoint unverified → RCE — LangGraph"
-gap_detected: "脆弱性スキャナ・依存関係監査・egress 監視が働き、3 件とも修正版が利用可能な状態での協調的開示として処理された。"
-gap_missing: "「いま読み戻している状態は、誰の権限で・改ざんなく書かれた正規の自己状態か」を再構築の前に確かめる層が無く、注入された偽の行が正規の状態と同じ経路で読み戻された。"
-gap_fix: "高リスク行動の前に「このチェックポイントは、認可された実行に由来し、改ざんがない」ことを Lemma で独立検証して、事前に防ぐ。"
+og_lead_ja: "LangGraph のチェックポイントに 3 件の脆弱性、2 件の連鎖で遠隔コード実行"
+og_lead_en: "Three LangGraph checkpoint flaws; two chain into RCE (Check Point)"
+og_kicker_ja: "脆弱性の開示 · エージェント基盤"
+og_kicker_en: "DISCLOSURE · AGENT CHECKPOINTS"
+og_headline_ja: "チェックポイントの\n読み込みで、\nコードが実行される\n<accent>経路を研究者が報告</accent>"
+og_headline_en: "Loading saved agent state\ncan run attacker code,\n<accent>researchers report.</accent>"
+key_figures:
+  - value: "3"
+    unit: "件"
+    label: "Check Point Research の Yarden Porat 氏が公開した LangGraph の脆弱性。うち 2 件の連鎖で遠隔コード実行に至る"
+    tone: "alert"
+  - value: "7.3"
+    unit: "CVSS"
+    label: "3 件のうち最も高い深刻度（CVE-2025-67644・SQLite チェックポイントの SQL インジェクション）"
+  - value: "2026-06-12"
+    label: "3 件の公開。修正版が利用可能な状態での協調的開示だった"
+glossary:
+  - term: "チェックポイント"
+    desc: "エージェントの途中の状態を保存しておき、処理を再開するときに読み込む仕組み。エージェントの「記憶」にあたる。"
+  - term: "デシリアライズ"
+    desc: "保存されたデータを、プログラムが扱える形に戻すこと。読み込む値が安全でないと、データの中身が実行されうる。"
+insight:
+  slug: "self-state-unchecked"
+  label: "読み込む状態の来歴"
+  quote: "エージェントが自分の保存した状態として読み込む値は、来歴と改ざんの有無が照合されなければ、注入された値でもそのまま信頼された処理に渡りうる。"
 industries: ["ai", "developers"]
 controls:
   - slug: "ownership-check"
-    item: "読み込む前に、チェックポイントが自分で保存したものか確かめる"
+    item: "読み込む前に、チェックポイントが自分で保存したものか確認する"
+takeaway: "チェックポイントを読み込む前に、その状態の来歴と改ざんの有無を照合する手順は、公表からは見えない。"
+self_check: "エージェントが保存した状態を読み込む前に、その状態が認可された実行で書かれ、改ざんされていないかを照合できるか。"
+search_title: "LangGraph のチェックポイント脆弱性：経路と対策"
+search_description: "LangGraph のチェックポイントで、SQL インジェクションと安全でないデシリアライズが連鎖し、遠隔コード実行に至る経路が示された（Check Point Research）。何が起きたか、なぜ止まらないか、対策を整理。"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. 要点
 
-2026 年 6 月、Check Point Research の Yarden Porat は、LangChain のエージェント基盤 LangGraph で、SQL インジェクション（CVE-2025-67644）と安全でない msgpack デシリアライズ（CVE-2026-28277）を連鎖させ、攻撃者が状態保存層（チェックポイント＝エージェントの記憶）に偽の行を注入し、エージェントが検証せず読み戻した瞬間に遠隔コード実行に至る脆弱性を公開した。脆弱性スキャナやパッチなど事後の検出は、エージェントが自分の永続状態を来歴も完全性も検証せず特権文脈で再構築する構造には届かない。
+LangChain のエージェント基盤 LangGraph で、エージェントが保存した状態（チェックポイント）を読み込むときに、攻撃者のコードが実行されうる経路が、Check Point Research の研究者によって示された。チェックポイントの照会に混ぜた偽の行が、正規に保存された状態と同じ経路で読み込まれる。対象は自己ホストの構成で、3 件とも修正版が出ている。<strong>エージェントが自分の保存した状態として読み込む値は、来歴と改ざんの有無が照合されなければ、注入された値でもそのまま信頼された処理に渡りうる。</strong>
 
----
+## 2. 通った操作
 
-## 2. 何が起きたか
+- **通った操作**: チェックポイントの照会と読み込み。研究者は、SQLite のチェックポイント実装で filter のキーが検証されずにクエリへ組み込まれる SQL インジェクション（CVE-2025-67644）と、チェックポイントの読み込みでの msgpack の安全でないデシリアライズ（CVE-2026-28277）を連鎖させると、遠隔コード実行に至ると説明している。成立の条件は、アプリが `get_state_history()` を公開し、利用者が制御できる filter 入力を受けることである。Redis のチェックポイント実装には、アクセス制御を回避しうるクエリインジェクション（CVE-2026-27022）が示された。
+- **受け付けた側に届くもの**: エージェントは、照会で返ってきたチェックポイントの行を、自分が正規に保存した状態として読み込む。その行が認可された実行で書かれたものか、照会に注入されたものかは、読み込む側からは区別がつかない。研究者によれば、成立したときに届くのは、エージェントが扱う LLM の API キー・顧客データ・会話履歴と、CRM や社内 API など外部システムの認証情報である。
+- **公表されていないこと**: 実地での悪用の有無。LangGraph 側は CVE-2026-28277 を、チェックポイントの保存層に書き込める権限を前提とする「ポストエクスプロイト」の問題と位置づけている。連鎖による遠隔コード実行は、Check Point Research の説明である。
 
-- **対象**: LangGraph（LangChain が開発するステートフル/マルチエージェント基盤）の自己ホスト構成。SQLite または Redis のチェックポインタを使い、ユーザー由来の filter 入力を受ける構成が影響を受ける
-- **識別子と深刻度**:
-  - CVE-2025-67644（CVSS 7.3）— SQLite チェックポイント実装の SQL インジェクション。metadata の filter キーを通じてクエリを操作できる（`_metadata_predicate()` が filter キーを検証せず f-string に直接展開）。`langgraph-checkpoint-sqlite` 3.0.1 未満が対象
-  - CVE-2026-28277（CVSS 6.8）— 安全でない msgpack デシリアライズ。チェックポイントのロード時に、攻撃者がチェックポイントデータを改変できる場合にオブジェクト再構築が誘発される。`langgraph` 1.0.9 以前が対象
-  - CVE-2026-27022（CVSS 6.5）— `@langchain/langgraph-checkpoint-redis` の RediSearch クエリインジェクション。アクセス制御を回避しうる。1.0.2 未満が対象
-- **連鎖**: CVE-2025-67644 と CVE-2026-28277 を連鎖させると RCE に至る。成立条件は、アプリが `get_state_history()` エンドポイントを公開し、ユーザー制御の filter 入力を受けること
-- **影響範囲の限定**: LangChain のマネージド基盤（LangSmith Deployment、PostgreSQL 構成）は影響を受けない。脆弱性は自己ホスト構成に限られる
-- **流出・到達対象**: 成立時、エージェントが扱う LLM API 鍵、顧客データ、会話履歴、外部システム（CRM・内部 API）の認証情報。LangGraph 側は CVE-2026-28277 を「ポストエクスプロイト」と位置づけ、チェックポイント保存層への書き込み権限を前提とする脅威モデルだと説明している
-- **悪用状況**: 3 件ともパッチ済み。修正版は `langgraph-checkpoint-sqlite` 3.0.1 以降、`langgraph` 1.0.10 以降、`@langchain/langgraph-checkpoint-redis` 1.0.2 以降
+## 3. 何を照合するか
 
-連鎖 RCE は、アプリが `get_state_history()` を公開し、ユーザー制御の filter 入力を受ける自己ホスト構成で成立する。経路は以下の通り。
+経路を問わず区別できる条件は、エージェントが状態を読み込む側で、その状態がどの実行に由来し、改ざんされていないかを、読み込む前に、保存の記録と照合することである。
 
-1. **ペイロードの準備**: 攻撃者は、任意コードを実行する命令を含む msgpack ペイロードを用意する
-2. **SQL インジェクションで偽の行を注入**: 悪性の filter パラメータを送り、SQLite チェックポイント実装の SQL インジェクションを突く。クエリ結果に、`checkpoint` カラムが攻撃者制御のシリアライズ済みデータを持つ「偽のチェックポイント行」を返させる
-3. **デシリアライズの誘発**: アプリがクエリ結果を処理する際、その悪性チェックポイントの BLOB をデシリアライズする
-4. **コード実行**: 安全でない msgpack デシリアライズにより、攻撃者のペイロードがサーバー上で実行される（RCE）
-5. **権限文脈への展開**: エージェントランタイムからアクセスできる秘密（LLM API 鍵・会話履歴）や、ランタイムが到達できる他システム（CRM・内部 API）の認証情報が露出する
+- **誰が承認を出すか**: 状態を書いた、認可された実行の持ち主。承認は、読み込む状態のバイト列とは別に出す。
+- **どこで照合するか**: チェックポイントを読み込み、ランタイムの状態に戻す手前。
+- **何が残るか**: どの状態を、どの実行が書いたものとして、いつ読み込んだかの記録。チェックポイントの保存層とは別に残す。
 
-Check Point は、SQL インジェクションという古典的な脆弱性クラスが、**高い権限と信頼を抱えた AI エージェント基盤の内側で発火すると威力が増す**点を本事案の要点として挙げている。
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
+<p class="rx-ex-cap">実行の前の照合＝チェックポイントを読み込む前に、状態の来歴と改ざんの有無を照合し、記録に残すこと。検知＝脆弱性を見つけて報告し、修正すること。下の並びは、Check Point Research と LangGraph 側の公表による。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>読み込む前に、状態の来歴と改ざんの有無を照合する</div>
+<div class="rx-zone gapz"><b>確認されたこと</b><span>照会に混ぜた偽の行が、<br>正規の状態と同じ経路で読み込まれる</span></div>
+<div class="rx-zone det"><b>検知 · 研究者が見つけ、開示した</b>修正版が利用可能な状態で、協調的開示として公開した</div>
+<div class="rx-g g1"><div class="t">公表前</div><b>3 件の修正版を提供</b></div>
+<div class="rx-g g2"><div class="t">2026-06-12</div><b>Check Point Research が 3 件を公開</b></div>
+<div class="rx-g g3"><div class="t">同日</div><b>LangGraph 側がマネージド構成は対象外と説明</b></div>
+<div class="rx-g g4"><div class="t">その後</div><b>修正版の適用と認証・最小権限が推奨される</b></div>
+</div>
+</figure>
 
----
+検知と修正は働いた。ただ、エージェントが読み込む状態の来歴を、読み込みの時点で照合する手順は、公表からは見えない。エージェント基盤で、設定や状態を記述するデータが高い権限の文脈でそのまま解釈される事案は、[Brief 027](https://lemma.frame00.com/ja/critical/briefs/027-librechat-mcp-url-secrets/)（接続先の設定）や [Brief 025](https://lemma.frame00.com/ja/critical/briefs/025-mcp-stdio-config-to-command-rce/) にもある。同じ LangGraph のチェックポイントを含む、のちの一括発表は [Brief 139](https://lemma.frame00.com/ja/critical/briefs/139-agent-framework-trust-boundary-checkpoint/) が扱っている。
 
-## 3. 時系列 — 公表と対応
+## 4. Lemma でできること
 
-- 2026-06-12: Check Point Research の Yarden Porat が 3 件の脆弱性を公開。CVE-2025-67644 と CVE-2026-28277 を連鎖した RCE の概念実証を含む技術解説を同日公表
-- 同日: The Hacker News ほかが報道。LangGraph メンテナは CVE-2026-28277 をポストエクスプロイト課題と位置づけ、マネージド（LangSmith）構成への影響はないと説明
-- いずれもパッチ済みでの coordinated disclosure（修正版が利用可能な状態での公開）
+**Lemma は、03 の照合を、エージェントがチェックポイントを読み込む操作の手前に組み込む。** 脆弱性そのものを見つけるのではなく、読み込む状態がどの実行に由来し、改ざんされていないかを、読み込む前に、記録と照合する。
 
-> 注: 一部の集約データベースでは関連 CVE 番号（チェックポイント caching 層の pickle デシリアライズ等）に揺れがある。本文は一次の GitHub Security Advisory と Check Point Research の記述に従う。
+### 注意したい業界・業務
 
-公表後の対応と業界の動きは次のとおり。
+- **業界 · AI・開発**: LangGraph などのエージェント基盤を自己ホストで動かし、エージェントを組み立てている組織。
+- **業務 · エージェントの状態保存**: チェックポイントで途中の状態を保存し、処理の再開や履歴の参照のために読み込む業務。
 
-- **LangChain / LangGraph**: 3 件をパッチ済みで公開し、修正版を提供。CVE-2026-28277 をポストエクスプロイト課題（チェックポイント保存層への書き込み権限を前提）と位置づけ、マネージド構成（LangSmith Deployment）には影響しないと説明
-- **推奨される緩和**: 最新パッチの適用、自己ホスト LangGraph サーバーへの認証の実装、長期間有効な静的シークレットの回避、ネットワーク分離、そして **AI エージェントを特権 ID として扱い最小権限（PoLP）を適用する**こと
-- **業界横断の論点**: MCP・エージェント基盤は 2026 年に入り CVE の集中領域になっており（[Brief 003](https://lemma.frame00.com/ja/critical/briefs/003-starlette-badhost/) の Starlette/BadHost、[Brief 025](https://lemma.frame00.com/ja/critical/briefs/025-mcp-stdio-config-to-command-rce/) の MCP リファレンス SDK、[Brief 027](https://lemma.frame00.com/ja/critical/briefs/027-librechat-mcp-url-secrets/) の LibreChat 等）、「エージェント基盤に固有のデータ層（接続設定・永続状態・メモリ）を、どの信頼レベルで扱うか」が共通の設計課題として浮上している
+### いまの対策と Lemma の違い
 
-自己ホスト型エージェント基盤の普及により、「状態・メモリ保存層の来歴と完全性の検証」は LangGraph 固有ではなく、ステートフルなエージェント実装一般の検証項目になりつつある。
+今回の経路は、1 列目（filter 入力を受けるチェックポイントの照会）と 2 列目（照会で返った状態の読み込み）の 2 つである。
 
----
+| 対策 | チェックポイントの照会 | 状態の読み込み |
+| --- | --- | --- |
+| 修正版の適用 | 効く | 効く |
+| 自己ホストのサーバーへの認証 | 一部 | 関係しない |
+| ネットワーク分離 | 一部 | 関係しない |
+| **Lemma（実行の前の照合）** | 関係しない | 効く |
 
-## 4. なぜ止まらなかったか
+修正版の適用は、示された 3 件を塞ぐ。自己ホストのサーバーへの認証とネットワーク分離は、filter 入力を送れる相手を絞るが、届いた照会の中身は変えない。Lemma は照会の組み立てには関わらず、読み込む前に、その状態が認可された実行で書かれ、改ざんされていないかを照合する。
 
-中心的な<strong>失敗 primitive は「エージェントが自分の永続状態（チェックポイント）を、その来歴と完全性を検証しないまま、特権的なランタイム文脈で解釈する」</strong>点にある。チェックポイントはエージェントの「記憶」に相当し、エージェントは処理再開時にそれを正規の自己状態として読み戻す。だが「その状態が、いつ・誰の権限で・改ざんなく書かれたか」を実行前に検証する層がないため、状態保存層に注入された偽の行が、そのままコード実行に転化する。
+注：Lemma の照合が働くのは、チェックポイントの読み込みに照合を組み込み、状態を書いた実行の記録が、保存層とは別に管理されている場合に限る。照合が示せるのは、読み込む状態の来歴と改ざんの有無までで、認可された実行が書いた状態の中身が業務上妥当だったかは示せない。SQL インジェクションやデシリアライズの脆弱性を検出・修正するものではない。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入を検出・防止するものではない。
 
-[Brief 027](https://lemma.frame00.com/ja/critical/briefs/027-librechat-mcp-url-secrets/)（LibreChat）と同じく、エージェント基盤において「設定・状態を記述するデータが、特権文脈で未検証のまま解釈される」構造である。027 はユーザーが指定する**接続先設定**が特権文脈（`process.env`）で展開された事例、本事象はエージェント自身の**永続状態**が検証なくランタイムに再構築された事例で、いずれも「エージェント基盤に固有のデータ層（設定・状態）が、従来の Web アプリで確立していた入力検証の境界を、エージェントの皮をかぶせたまま素通りする」点で共通する。[Brief 003](https://lemma.frame00.com/ja/critical/briefs/003-starlette-badhost/)（Starlette/BadHost）が接続の**入口<strong>（認証回避）、[Brief 025](https://lemma.frame00.com/ja/critical/briefs/025-mcp-stdio-config-to-command-rce/)（MCP SDK 設計）がリファレンス実装の設計に内在する RCE 経路を扱ったのに対し、本事象はエージェントの</strong>状態の出所**に信頼境界が引かれていないことを際立たせる。
+### 点検チェックリスト
 
-エージェント基盤の文脈では、チェックポイントの書き込みと読み戻しは「エージェントに過去の判断と権限文脈を引き継がせる」行為に等しい。その引き継ぎが、状態の作者性・完全性の検証なしに行われるとき、状態保存層ひとつで権限境界が崩れる。
+エージェント基盤を自己ホストで動かす組織で確認する 3 項目
 
-脆弱性スキャナ、依存関係監査、egress の監視、そして CVE への迅速なパッチ適用は、本事案でも機能した。本事象は 3 件ともパッチ済みでの coordinated disclosure として処理されており、本 Brief が検出層やパッチ運用の役割を否定するものではない。
+- チェックポイントを読み込む前に、それが認可された実行で保存されたものか、改ざんされていないかを確認しているか。
+- `get_state_history()` のように、利用者の入力でチェックポイントを照会する入口を、認証なしで公開していないか。
+- エージェントのランタイムが持つ API キーや外部システムの認証情報を、最小権限に絞っているか。
 
-一方で、検出は「エージェントが、いま読み戻している状態を正規の自己状態として信頼してよいか」の判断自体を変えない。本事象の悪用は、エージェントが自分のチェックポイント保存層に対して行う正規のクエリ・デシリアライズの内側で起きる。通信としてはエージェントの通常動作と区別がつかず、注入された偽の行は「正しく保存された状態」と同じ経路で読み戻される。SQL インジェクションのパターン検査は個別の入口を塞ぐが、「この状態は誰の権限で・改ざんなく書かれたか」という状態の来歴・完全性そのものを立証する材料にはならない。監査の観点でも、事後に「どの状態が・いつ・誰の書き込みでランタイムに再構築されたか」を独立に示す証跡は、アプリログの突合以上には残りにくい。
+## 5. 事実と時系列
 
-脆弱性スキャナ・依存関係監査による事後の検知・修正（detection）と、チェックポイントの読み戻しの前にその状態の作者性・完全性を独立検証する事前証明（pre-execution attestation）は代替ではなく **補完** の関係にある。前者は既知の脆弱性の発見とパッチ適用に、後者は注入された偽の状態が正規の自己状態として読み戻されコード実行へ転化する連鎖の遮断に、それぞれ働く。
+- **研究者**: Check Point Research の Yarden Porat 氏が、2026-06-12 に LangGraph の 3 件の脆弱性を公開し、CVE-2025-67644 と CVE-2026-28277 を連鎖させた遠隔コード実行の概念実証を含む技術解説を、同日に公表した。
+- **3 件の内容**: CVE-2025-67644（CVSS 7.3）は SQLite チェックポイント実装の SQL インジェクションで、metadata の filter キーを通じてクエリを操作できる。`langgraph-checkpoint-sqlite` 3.0.1 未満が対象。CVE-2026-28277（CVSS 6.8）は安全でない msgpack デシリアライズで、攻撃者がチェックポイントのデータを改変できる場合に、読み込み時のオブジェクトの再構築が誘発される。`langgraph` 1.0.9 以前が対象。CVE-2026-27022（CVSS 6.5）は `@langchain/langgraph-checkpoint-redis` の RediSearch クエリインジェクションで、アクセス制御を回避しうる。1.0.2 未満が対象。
+- **影響の範囲**: 影響を受けるのは、SQLite または Redis のチェックポイント実装を使い、利用者由来の filter 入力を受ける自己ホストの構成である。LangChain のマネージド基盤（LangSmith Deployment、PostgreSQL の構成）は対象外とされている。
+- **LangGraph 側の位置づけ**: CVE-2026-28277 を、チェックポイントの保存層への書き込み権限を前提とする「ポストエクスプロイト」の問題と説明している。
+- **研究者の見方**: Check Point は、SQL インジェクションという古典的な脆弱性が、高い権限と信頼を持つ AI エージェント基盤の内側で起きると影響が大きくなる点を、本件の要点に挙げている。
 
----
+### 時系列
 
-## 5. 証明があれば、何が変わるか
+- **公表前**: 3 件の修正版が用意され、修正版が利用可能な状態での協調的開示となった。
+- **2026-06-12**: Check Point Research の Yarden Porat 氏が 3 件を公開し、技術解説を公表。
+- **2026-06-12（同日）**: The Hacker News ほかが報道。LangGraph のメンテナは、CVE-2026-28277 をポストエクスプロイトの問題と位置づけ、マネージド（LangSmith）構成には影響しないと説明。
 
-事前証明（pre-execution attestation）は、エージェントの状態の読み戻しを権限行為として扱い、状態が再構築される前に「その状態の作者性（どのエージェント・実行が書いたか）」と「完全性（改ざんがないか）」を独立検証可能な証明として要求する設計を採る。proof が「このチェックポイントは認可された実行に由来し、改ざんがない」ことを満たさなければ、状態のロードは実行前に block される。
+> 一部の集約データベースでは、関連する CVE 番号（チェックポイントのキャッシュ層の pickle デシリアライズなど）に揺れがある。本稿は、GitHub Security Advisory と Check Point Research の記述に従う。実地での悪用の有無は、上の公表からは分からない。本 Brief は、特定の事業者を責めるものではない。公表されていないことは、対策が無かったことを意味しない。
 
-本事象で露呈した落差 — エージェントが自分の永続状態を、来歴と完全性の検証なしに特権文脈で再構築する — に対し、Lemma は状態の書き込み・読み戻しを権限行為として証跡化し、再構築の前に独立検証可能な証明を要求する設計を提示している。
+### 公表後の対応
 
-- **状態の作者性束縛**: チェックポイントを「どのエージェント・どの実行が・どの権限で書いたか」に束縛し、書き込みの認可を検証可能な属性として固定する
-- **完全性の事前検証**: 状態がランタイムに再構築される前に、改ざんがないことを暗号学的に検証する。注入された偽の行は、正規の自己状態と同じ経路では読み戻せない
-- **読み戻しの権限行為化**: 状態のロードを単なる I/O ではなく権限行為として扱い、proof が「このチェックポイントは認可された実行に由来し、改ざんがない」ことを満たさなければ実行前に block する
-- **選択的開示**: 「状態が正規に書かれ改ざんがない」ことだけを最小限で証明し、状態の中身（会話履歴・秘密）は外部に出さない
-
-脆弱性スキャナ・依存関係監査による事後の検知（detection）と、状態の読み戻し前にその作者性・完全性を独立検証する事前証明（pre-execution attestation）は、代替ではなく補完的に働く。
-
----
+- **LangChain / LangGraph**: 3 件を修正した（`langgraph-checkpoint-sqlite` 3.0.1 以降・`langgraph` 1.0.10 以降・`@langchain/langgraph-checkpoint-redis` 1.0.2 以降）。
+- **公表で挙げられた緩和策**: 最新の修正版の適用、自己ホストの LangGraph サーバーへの認証の実装、長く有効な静的シークレットを避けること、ネットワーク分離、AI エージェントを特権を持つ ID として扱い最小権限を適用すること。
 
 ## 6. Sources
 
@@ -112,4 +146,4 @@ Check Point は、SQL インジェクションという古典的な脆弱性ク�
 - **GitHub Security Advisory**: CVE-2026-28277（GHSA-g48c-2wqr-h844）— <https://github.com/langchain-ai/langgraph/security/advisories/GHSA-g48c-2wqr-h844>
 - **The Hacker News**: "LangGraph Flaw Chain Exposes Self-Hosted AI Agents to Remote Code Execution"（2026-06-12）— <https://thehackernews.com/2026/06/langgraph-flaw-chain-exposes-self.html>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)
