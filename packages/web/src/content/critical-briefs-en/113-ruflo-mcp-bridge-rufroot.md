@@ -1,7 +1,7 @@
 ---
 brief_no: 113
-title: "Ruflo の MCP Bridge：一つの無認証リクエストが 233 の高権限ツールを開き、パッチ後も記憶の汚染が残る — 実行の前に、ツール呼び出しの認可と記憶の来歴が独立検証されない"
-title_en: "Ruflo's MCP Bridge: one unauthenticated request opened 233 high-privilege tools, and the memory poisoning survives the patch — tool-call authorization and memory provenance are never verified before execution"
+title: "Ruflo の MCP Bridge：認証の無い要求が高権限のツールを開き、修正の後も記憶の汚染が残りうると報告された(Noma Security の研究、CVE-2026-59726)"
+title_en: "Ruflo's MCP Bridge: an unauthenticated request could open high-privilege tools, and memory poisoning can outlast the patch, researchers report (Noma Security research, CVE-2026-59726)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "data-provenance"]
@@ -11,78 +11,139 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["066-litellm-ai-gateway-privilege-escalation", "088-kestra-auth-filter-bypass-rce", "046-servicenow-unauthenticated-api", "095-amazon-q-mcp-auto-execution", "073-shadowmq-pickle-zmq-pattern"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "agent-operation"
 version: "1.0"
-og_lead_ja: "Ruflo MCP Bridge に無認証 RCE（CVE-2026-59726）、記憶汚染はパッチ後も残る"
-og_lead_en: "Ruflo MCP Bridge unauthenticated RCE: memory poisoning survives the patch"
-gap_detected: "The flaw was found through responsible disclosure and the maintainer shipped a patch and advisory within 24 hours."
-gap_missing: "A layer that independently verifies, before execution, per-call tool-call authorization and the provenance and integrity of the agent's memory (learning store)."
-gap_fix: "Prove tool-call authorization before execution and independently verify agent-memory provenance and integrity, excluding unauthenticated execution and the persistence of poisoning."
+og_lead_ja: "Ruflo の MCP Bridge で、認証の無い要求が高権限のツールを実行できる脆弱性（CVE-2026-59726）を Noma Security が報告。記憶の汚染は修正の後も残りうる"
+og_lead_en: "Noma Security reports a Ruflo MCP Bridge flaw (CVE-2026-59726) that let unauthenticated requests run high-privilege tools; memory poisoning can outlast the patch"
+og_kicker_ja: "脆弱性の開示 · エージェント基盤"
+og_kicker_en: "VULNERABILITY · AGENT PLATFORM"
+og_headline_ja: "認証の無い 1 つの要求が\n233 の高権限ツールを\n開くと研究者が報告。\n<accent>深刻度は CVSS 10.0</accent>"
+og_headline_en: "Unauthenticated calls\ncould open 233 tools,\nresearchers report.\n<accent>Rated CVSS 10.0</accent>"
+key_figures:
+  - value: "10.0"
+    unit: "CVSS"
+    label: "Severity (CVE-2026-59726). Affects versions below 3.16.3; the default docker-compose setup exposed the MCP Bridge with no authentication"
+    tone: "alert"
+  - value: "233"
+    label: "High-privilege tools callable through the unauthenticated MCP Bridge (shell execution, database operations, agent management, memory storage)"
+  - value: "24"
+    unit: "hours"
+    label: "From responsible disclosure on 2026-06-30 to the full fix being merged and a security advisory issued"
+glossary:
+  - term: "MCP Bridge"
+    desc: "The single path every tool call in Ruflo goes through. An Express.js server that accepts tool calls over HTTP at endpoints such as `POST /mcp`."
+  - term: "Learning store (AgentDB pattern store)"
+    desc: "Memory where an agent stores the patterns it has learned and uses them in later responses. Patterns that enter it remain even after the software is updated."
+  - term: "Swarm"
+    desc: "A unit in which multiple AI agents are launched together and work in coordination. Ruflo hosts these for Codex and Claude Code."
+insight:
+  slug: "patch-does-not-clean-memory"
+  label: "Memory a patch does not restore"
+  quote: "Unless every tool call and every memory write is checked against authorization each time, rather than against having arrived, writes that got through stay in memory after the entry point is closed and keep steering later responses."
 industries: ["ai", "developers"]
-countries: ["global"]
 controls:
   - slug: "verify-entry"
-    item: "Check authorization on every tool call instead of running unauthenticated requests"
+    item: "Do not run tool calls unauthenticated; check authorization on every call"
   - slug: "limit-and-revoke"
     item: "Do not bundle shell, key and database access in one bridge; grant each action separately"
   - slug: "check-origin"
-    item: "Let only patterns with a verified origin be written to the agent's memory"
+    item: "Let only patterns whose origin has been confirmed be written to the agent's memory"
+attack_method: "privilege-abuse"
+takeaway: "Researchers reported that unauthenticated requests could reach high-privilege tools, including shell execution and memory writes. Check each tool call and each memory write against who is allowed to perform it."
+self_check: "On your AI agent platform, do you check on every tool call that the caller is allowed to perform that operation?"
+countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-A maximum-severity flaw was found in the MCP Bridge of Ruflo (formerly Claude Flow — an orchestration platform that hosts swarms of AI agents for Codex and Claude Code, maintained by Reuven Cohen). Code-named RufRoot, CVE-2026-59726, CVSS 10.0, affecting versions below 3.16.3. The default docker-compose deployment exposes the MCP Bridge's `POST /mcp` and `POST /mcp/:group` on the network with no authentication, surfacing 233 high-privilege tools (shell execution, database operations, agent management, memory storage), including `terminal_execute`. An unauthenticated network attacker can call `terminal_execute` via `tools/call` and obtain a shell inside the container. The discovery is by Noma Security (Noma Labs); responsible disclosure was 2026-06-30, and the fix shipped within 24 hours. Detection and disclosure worked. **What was missing is the layer that independently verifies, before execution, whether a tool call is authorized and whether the poisoning left in the agent's memory has verified provenance and integrity.**
+According to Noma Security (Noma Labs), in the default setup of Ruflo (formerly Claude Flow), which hosts swarms of AI agents, the MCP Bridge was exposed to every network and passed incoming tool calls to execution with no authentication, no token and no header check. The callable tools include shell execution, database operations, launching agents and saving to memory. The maintainer shipped a fix and an advisory within 24 hours of disclosure, but that advisory states that poisoning already in the learning store is not undone by redeploying a patched version. Whether the flaw was exploited in the wild was not established at the time of disclosure. <strong>Unless every tool call and every memory write is checked against authorization each time, rather than against having arrived, writes that got through stay in memory after the entry point is closed and keep steering later responses.</strong>
 
-## 2. What happened
+## 2. What got through
 
-- The flaw was found by Noma Labs and published as CVE-2026-59726 (CVSS 10.0), affecting Ruflo below 3.16.3. The default docker-compose binds port 3001 to `0.0.0.0`, exposing the MCP Bridge (an Express.js server) on all network interfaces.
-- The MCP Bridge is the single path through which every tool call in Ruflo flows, and it exposes 233 tools over HTTP with no authentication, no token, and no header check. The exposed tools include the shell-executing `terminal_execute`. A dangerous-operation blocklist exists in the autopilot flow, but the `/mcp` endpoint bypasses it entirely.
-- Using the victim's own provider keys and compute, an attacker can spawn attacker-controlled swarms. The core of this incident is that the attacker can further inject poisoned patterns into the AgentDB learning store (pattern store), persisting a steer of future AI responses toward the attacker's instructions.
+- **What got through**: Unauthenticated `tools/call` requests arriving over the network went through as executions of high-privilege tools, including the shell-executing `terminal_execute` (Noma Security). A dangerous-operation blocklist exists in the autopilot flow, but the `/mcp` entry point does not pass through it, according to the report.
+- **What reached the receiving side**: In general, an agent platform holds model providers' keys and compute, conversation data and the agents' memory in one place. Noma reports that a shell inside the container, each provider's keys passed as environment variables, attacker-controlled swarms launched with the victim's keys and compute, and conversation data in an unauthenticated internal database could all be reached. It also reports that poisoned patterns could be placed in the learning store to steer later AI responses toward the attacker's instructions, and calls this the core of the incident.
+- **Not disclosed**: Whether the flaw was exploited in the wild, and the extent of any damage. Not established at the time of disclosure.
 
-The attack succeeds through the following chain.
+## 3. What to check
 
-1. Reconnaissance: call `tools/list` without authentication to enumerate all 233 available tools.
-2. Remote code execution: call `terminal_execute` via `tools/call` to obtain arbitrary shell commands inside the bridge container.
-3. API key theft: because docker-compose passes each provider's keys as environment variables, read the container environment to harvest them.
-4. Agent weaponization: with the victim's keys, call `swarm_init` and `agent_spawn` to launch attacker-controlled swarms.
-5. Memory poisoning: inject poisoned patterns into the learning pipeline via `agentdb_pattern-store`, steering future responses toward the attacker's instructions. The poisoning can remain in the learning store after the patch.
-6. Persistence: exfiltrate conversation data from an unauthenticated database on the internal network and write a backdoor into the container to maintain a foothold across restarts.
+Whatever the route, the condition for telling them apart is that, before a tool runs and before anything is written to memory, the system checks that the requester is allowed to perform that operation now, apart from the request having arrived.
 
-## 3. Timeline — disclosure and response
+- **Who approves**: The operator of the agent platform. Which requester may use which tools (shell execution, keys, databases, saving to memory) is decided by records the operator keeps, not by whether a request can reach the network endpoint.
+- **Where it is checked**: Just before the MCP Bridge passes a tool call to execution, and just before a pattern is written to the learning store. A call that cannot be checked is not run, and a pattern not tied to the record of an allowed requester is not admitted to memory.
+- **What is recorded**: Which requester called which tool under which authorization, and which pattern entered memory as whose write, kept outside the container alone (Noma reports that a backdoor surviving restarts could be written into the container).
 
-- 2026-06-30: Noma Labs discloses responsibly to the maintainer.
-- 2026-06-30 (within hours of disclosure): the maintainer ships a fix. A full patch is merged and a security advisory issued within 24 hours.
-- 2026-07-28 to 29: public disclosure and media reporting. Recorded as CVE-2026-59726 (CVSS 10.0).
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before a tool runs or memory is written, that the requester is allowed to perform the operation, and keeping a record. Detection means researchers finding the flaw and reporting it. The dates are when reports, fixes and disclosure happened, not when anything was exploited.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before a tool runs or memory is written, check the requester's authorization</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Unauthenticated requests were shown to reach<br>high-privilege tools and memory writes</span></div>
+<div class="rx-zone det"><b>Detection · researchers found it</b>Noma Labs reported it and the maintainer fixed it within 24 hours</div>
+<div class="rx-g g1"><div class="t">06-30</div><b>Noma Labs reports to the maintainer</b></div>
+<div class="rx-g g2"><div class="t">Within hours</div><b>First fix</b></div>
+<div class="rx-g g3"><div class="t">Within 24 h</div><b>Full fix and advisory</b></div>
+<div class="rx-g g4"><div class="t">07-28–29</div><b>Public disclosure and reporting</b></div>
+</div>
+</figure>
 
-> Note: the facts here rest on the discoverer's primary publication (Noma Security / Noma Labs) and reporting by established security media. Whether exploitation occurred in the wild, and the scale of any impact, is not fixed as of publication. This Brief does not condemn any specific operator's negligence; it focuses on the structure in which unauthenticated tool calls and the poisoning left in the learning store are not independently verified before execution. The CVE number, CVSS score, affected version, and tool count (233) rest on the primary publication.
+Responsible disclosure and the fix and advisory within 24 hours worked, and the fix closes the exposed entry point. What did not work is the layer before that, which checks the requester's authorization on every tool call and every memory write. As with [LiteLLM's privilege escalation](/critical/briefs/066-litellm-ai-gateway-privilege-escalation/) (passing an earlier layer stood in for authorization), [the Kestra auth-filter bypass](/critical/briefs/088-kestra-auth-filter-bypass-rce/), [ServiceNow's unauthenticated API](/critical/briefs/046-servicenow-unauthenticated-api/), [Amazon Q's MCP auto-execution](/critical/briefs/095-amazon-q-mcp-auto-execution/) (an agent ran tool calls as they came) and [the ShadowMQ pickle/ZMQ pattern](/critical/briefs/073-shadowmq-pickle-zmq-pattern/) (what was brought in at run time persisted), requests that arrived were not tied to a check of authorization at that moment.
 
-Response and industry movement after disclosure are as follows.
+## 4. What Lemma does
 
-- In the fix, the MCP Bridge binds to loopback by default and fails closed if a public bind is attempted without an auth token set. Bearer authentication, defaulting `terminal_execute` off, database authentication on boot, and read-only containers were introduced.
-- The maintainer advised operators of exposed instances to immediately close the ports, rotate all provider keys, and audit the learning store (AgentDB pattern store) for injected entries. It states explicitly that a patched redeploy alone does not undo the poisoning.
+**Lemma builds the check in section 03 in just before the MCP Bridge passes a tool call to execution and just before a write to the learning store.** It does not look for flaws or suspicious requests; it checks, before execution and apart from the request having arrived, that the requester is allowed to perform the operation.
 
-## 4. Why it wasn't stopped
+### Industries and operations to watch
 
-The failure here is not that the flaw was found late, nor that no patch was produced. It is that there was no layer to independently verify, before execution, whether a tool call was authorized right now, and the provenance and integrity of any poisoning injected into the agent's memory. Detection worked: the flaw was found through responsible disclosure, the fix shipped within 24 hours, and an advisory was published. What was missing sits earlier — authorization verification at the instant a tool call completes, and provenance verification of the patterns written into the learning store.
+- **Industry · AI**: Organizations that host swarms of AI agents and handle provider keys, compute, conversation data and agent memory in one place. Tool calls converge on a single path.
+- **Industry · Developers & agent operations**: Development and operations teams that self-host an OSS orchestration platform such as Ruflo for Codex or Claude Code. Running the default setup as-is can leave the entry point open to the network.
 
-An unauthenticated `tools/call` was indistinguishable from a legitimate tool call along the path. A request that reached the bridge was passed straight to `executeTool()` whatever its origin, and high-privilege tools including `terminal_execute` ran as-is. The fact that a call arrived stood in for permission to execute, and whether that call was actually authorized for this operation, right now, was never asked before execution. And once a poisoned pattern is written, it remains in the learning store even after the flaw itself is patched. Simply patching the software does not guarantee restoring trust against memory poisoning left inside the AI system.
+### Current controls vs Lemma
 
-> That the poisoning survives the patch is what separates this incident from an ordinary one-time RCE. Detection and the patch close the exposed execution path. But the patterns left in the learning store keep steering future responses toward the attacker's instructions, and the provenance and integrity of that memory remain unverified. What remains after the path is closed is memory of unknown provenance.
+The entry point here is column 1, running high-privilege tools through unauthenticated requests; column 2 is writing to memory through that route. Column 3 is patterns that entered the learning store before the fix going on to steer later responses.
 
-The same structure connects to [Brief 066 (LiteLLM AI gateway privilege escalation)](/critical/briefs/066-litellm-ai-gateway-privilege-escalation/), [Brief 088 (Kestra auth-filter bypass RCE)](/critical/briefs/088-kestra-auth-filter-bypass-rce/), and [Brief 046 (ServiceNow unauthenticated API)](/critical/briefs/046-servicenow-unauthenticated-api/), where a privilege boundary passed unverified before execution; to [Brief 095 (Amazon Q MCP auto-execution)](/critical/briefs/095-amazon-q-mcp-auto-execution/), where an agent executed a tool call without verification; and to [Brief 073 (ShadowMQ pickle/ZMQ pattern)](/critical/briefs/073-shadowmq-pickle-zmq-pattern/), where poisoning was brought in at execution time and persisted. Each shows that a call arriving on the path, an action being authorized right now, and that memory carrying correct provenance are separate questions.
+| Control | Running high-privilege tools through unauthenticated requests | Writing to memory (the learning store) | Later responses steered by patterns that entered memory before the fix |
+| --- | --- | --- | --- |
+| Dangerous-operation blocklist in the autopilot flow (before the fix) | Not effective | Not effective | Not relevant |
+| Updating to a fixed version (3.16.3 or later) | Partial | Partial | Not effective |
+| Closing exposed ports and rotating provider keys (recommended) | Partial | Partial | Not effective |
+| Auditing the learning store for injected entries (after the fact; recommended) | Not relevant | Not effective | Partial |
+| **Lemma (pre-execution check)** | Effective | Partial | Not effective |
 
-## 5. What proof would have changed
+The blocklist sits in the autopilot flow, and the `/mcp` entry point did not pass through it (Noma Security). The fixed version listens on loopback by default, refuses to expose itself without a token and requires Bearer authentication, closing the reported entry point, but as the maintainer's advisory says, it does not undo poisoning already in place. Closing ports and rotating keys cuts the outside route and the use of stolen keys, but does not reach what remains in memory. An audit finds and removes injected entries afterwards, but does not stop the writes themselves. Lemma checks tool execution against whether the requester is allowed in the operator's records, so execution through unauthenticated requests stops before it runs. Memory writes not tied to the record of an allowed requester are also kept out, but whether a pattern written by an allowed requester is good or bad is not what the check looks at.
 
-Proof-as-auth inserts a layer, ahead of each individual action in which an agent calls a tool or writes to memory, that independently verifies the authorization state and the memory's provenance. Rather than letting the fact that a call arrived stand in for permission to execute, it checks — before the action completes — whether this call is authorized for this operation, in this scope, right now. If the answer is "not authorized" or "provenance unknown," the execution and the write are held in advance. Because a pattern's provenance is verified before it enters the learning store, poisoning is separated out before execution regardless of whether a patch is present.
+Note: Lemma's check works only when it is built in just before the MCP Bridge's execution and before writes to the learning store, and the records of who may use which tools are managed apart from values the requester can specify. It can be passed if an allowed requester's key or machine is stolen, or if code running inside the container opens a path that bypasses the check. Lemma does not delete patterns already in memory and does not rotate keys already exposed. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-The design Lemma offers for this primitive is as follows.
+### Checklist
 
-- **Per-action authorization proof**: bind a `tools/call` not to network reachability, but to an independently verifiable proof of being authorized for the operation now. An unauthenticated tool call does not complete before execution.
-- **Agent-memory provenance and integrity verification**: admit into the learning store (AgentDB and the like) only patterns that have passed provenance verification. Injected poisoned patterns are separated out before the write as lacking provenance, and do not persist after the patch.
-- **Least privilege and secret separation**: separate shell execution, keys, and database access under per-action authorization rather than bundling them into a single bridge — cutting off, by design, the path where one unauthenticated request reaches every privilege.
-- **Selective execution records**: retain a tamper-evident record of which tool was called under what authorization, and which pattern entered memory with what provenance, so the execution path and memory provenance can be independently established after the fact.
+Three things to confirm for organizations that self-host an AI agent platform
 
-Lemma is not a product that patches the flaw itself, nor one that closes an exposed endpoint. Its scope is to verify authorization and provenance before tool calls and memory writes occur, excluding the passage of unauthenticated execution and poisoned patterns before execution. Detection (finding the flaw, patching, closing the path) and pre-execution proof (a record that independently verifies authorization and memory provenance before execution) are complements, not substitutes. The former serves catching and closing the exposed path; the latter serves cutting off, before execution, the memory poisoning that persists after the patch. See [Proof-as-Auth: sign in without sending your key](/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05) and [Agent Authority](/pillars/#authority).
+- Have you updated Ruflo (formerly Claude Flow) to 3.16.3 or later and set the MCP Bridge to listen on loopback only?
+- Do you keep a list of the model provider keys given to your agent platform, with a procedure to rotate them when exposure is suspected?
+- Can you match the patterns in your agents' memory (learning store) against a record of who wrote them and when?
+
+## 5. Facts and timeline
+
+- **Subject**: The MCP Bridge of Ruflo (formerly Claude Flow — an orchestration platform that hosts swarms of AI agents for Codex and Claude Code, maintained by Reuven Cohen). Affects versions below 3.16.3.
+- **Reporter**: Noma Security (Noma Labs). Code-named RufRoot, CVE-2026-59726, CVSS 10.0.
+- **Researchers' report (exposure)**: The default docker-compose bound port 3001 to `0.0.0.0`, exposing the MCP Bridge (an Express.js server) on every network. `POST /mcp` and `POST /mcp/:group` exposed 233 tools with no authentication, no token and no header check. The dangerous-operation blocklist in the autopilot flow does not apply at the `/mcp` entry point.
+- **Researchers' report (what could be reached)**: A shell inside the container, each provider's keys passed as environment variables, attacker-controlled swarms launched with the victim's keys, conversation data in an unauthenticated internal database, and writes to the container that survive restarts.
+- **Researchers' report (memory poisoning)**: Poisoned patterns could be placed in the learning store (AgentDB pattern store) to steer later responses toward the attacker's instructions. The poisoning can remain in the learning store after the fix.
+- **Exploitation**: Whether the flaw was exploited in the wild, and the scale of any impact, was not established at the time of disclosure.
+
+### Timeline
+
+- **2026-06-30**: Noma Labs discloses responsibly to the maintainer.
+- **2026-06-30**: Within hours of disclosure, the maintainer ships a fix. A full fix is merged and a security advisory issued within 24 hours.
+- **2026-07-28–29**: Public disclosure and media reporting (Noma Security's research published on 07-29). Recorded as CVE-2026-59726 (CVSS 10.0).
+
+> The facts here rest on the discoverer's primary publication (Noma Security / Noma Labs) and reporting by security media. The CVE number, CVSS score, affected versions and tool count (233) rest on the primary publication. Whether the flaw was exploited in the wild, and the scale of any impact, was not established at the time of disclosure. This Brief does not assign fault to any specific operator, and does not include steps to reproduce the attack. What has not been disclosed does not mean no countermeasures were in place.
+
+### Response after disclosure
+
+- **Maintainer (fix)**: The MCP Bridge now binds to loopback by default and refuses to start (fail-closed) if a public bind is attempted without an auth token set. Bearer authentication, `terminal_execute` off by default, database authentication on boot and read-only containers were introduced.
+- **Maintainer (advice to operators)**: Operators of exposed instances were advised to close the ports immediately, rotate all provider keys and audit the learning store (AgentDB pattern store) for injected entries. The advisory states explicitly that a patched redeploy alone does not undo the poisoning.
 
 ## 6. Sources
 
@@ -92,4 +153,4 @@ Lemma is not a product that patches the flaw itself, nor one that closes an expo
 - SecurityWeek, “Critical Ruflo Flaw Lets Attackers Spawn Rogue AI Swarms” (2026-07) — <https://www.securityweek.com/critical-ruflo-flaw-lets-attackers-spawn-rogue-ai-swarms/>
 - NVD, “CVE-2026-59726” (2026-07) — <https://nvd.nist.gov/vuln/detail/CVE-2026-59726>
 
-References: [Proof-as-Auth: sign in without sending your key](/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Agent Authority](/pillars/#authority) · [Brief 095 (Amazon Q MCP auto-execution)](/critical/briefs/095-amazon-q-mcp-auto-execution/) · [Brief 066 (LiteLLM privilege escalation)](/critical/briefs/066-litellm-ai-gateway-privilege-escalation/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

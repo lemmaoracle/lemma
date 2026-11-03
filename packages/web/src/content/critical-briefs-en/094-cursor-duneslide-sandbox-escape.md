@@ -1,7 +1,7 @@
 ---
 brief_no: 94
-title: "Cursor（DuneSlide）：Web や連携先に仕込まれた一つの指示が、AI エージェントのサンドボックスを外して任意コードを実行させた（CVE-2026-50548 / 50549）"
-title_en: "Cursor (DuneSlide): a single injected prompt escaped the agent's sandbox and ran arbitrary commands (CVE-2026-50548 / 50549)"
+title: "Cursor（DuneSlide）：仕込まれた指示が、AI エージェントのサンドボックスを外しえた(Cato AI Labs の報告)"
+title_en: "Cursor (DuneSlide): an injected instruction could escape the AI agent's sandbox (Cato AI Labs report)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["ai-decision-integrity", "identity-auth"]
@@ -11,99 +11,138 @@ authors: ["Lemma Critical Team"]
 related_pack: ["C-agent-governance"]
 related_briefs: ["037-agent-config-auto-execution", "039-semantic-kernel-prompt-injection-rce", "027-librechat-mcp-url-secrets", "048-trapdoor-ai-instruction-provenance", "058-langgraph-checkpoint-rce"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "agent-operation"
 version: "1.0"
-og_lead_ja: "Cursor の DuneSlide — 一つの注入指示でサンドボックスが外れ RCE"
-og_lead_en: "Cursor's DuneSlide — one injected prompt escapes the sandbox to RCE"
-gap_detected: "The detection chain worked — researcher disclosure, CVE assignment and CVSS scoring, the vendor fix (Cursor 3.0) and advisory / NVD entries — making the technique and its blast radius externally visible."
-gap_missing: "There is no layer that independently verifies, at the moment the agent acts, where a read-in instruction came from and whether the write it induces is within an authorized scope."
-gap_fix: "Before an agent runs a terminal command or a write, verify the instruction's provenance and the write target's authorization scope — decoupled from the working_directory value or the symlink resolution result — and stop execution when no proof accompanies it, verified independently by Lemma to prevent it up front."
+og_lead_ja: "Cato AI Labs が Cursor の 2 件の脆弱性（DuneSlide）を報告し、Cursor 3.0 で修正された。Web や連携先に仕込まれた指示が、エージェントのサンドボックスを外し、任意のコマンドの実行に至りえた"
+og_lead_en: "Cato AI Labs reported two Cursor vulnerabilities (DuneSlide), fixed in Cursor 3.0, through which instructions planted on the web or in connected services could escape the agent's sandbox and run arbitrary commands"
+og_kicker_ja: "脆弱性の報告 · AI コードエディタ"
+og_kicker_en: "VULNERABILITY · AI CODE EDITOR"
+og_headline_ja: "仕込まれた一つの指示が\nサンドボックスを外しうると\nCato AI Labs が報告。\n<accent>CVSS 9.8・2 件を修正</accent>"
+og_headline_en: "One injected prompt could\nescape Cursor's sandbox,\nCato AI Labs reports.\n<accent>CVSS 9.8, two CVEs fixed</accent>"
+key_figures:
+  - value: "9.8"
+    label: "NVD CVSS 3.1 score of both CVE-2026-50548 and CVE-2026-50549. Both Critical"
+    tone: "alert"
+  - value: "2"
+    label: "Vulnerabilities Cato AI Labs reported under the name \"DuneSlide,\" each reaching writes outside the sandbox through a different hole"
+  - value: "3.0"
+    label: "The Cursor version with the fix (released 2026-04-02). All versions below 3.0 are affected"
+glossary:
+  - term: "Cursor"
+    desc: "An AI code editor. Its agent takes a user's request and runs terminal commands and file operations."
+  - term: "Sandbox"
+    desc: "A mechanism that fences in command execution and limits what it can touch. Since the 2.x line, Cursor runs the terminal commands its agent issues inside one by default."
+  - term: "MCP"
+    desc: "A mechanism for AI agents to connect to external services and tools. The agent reads the data the connected service returns."
+  - term: "Prompt injection"
+    desc: "A technique that slips commands into documents, search results or external data the AI reads, so the AI treats them as instructions."
+insight:
+  slug: "agent-chosen-path-grants-write"
+  label: "Write permission decided directly by what the agent specifies"
+  quote: "Unless the place an agent writes to is checked before execution against a scope decided apart from what the agent specifies or how a link resolves, a single instruction slipped into what it reads can rewrite the safeguard itself."
 industries: ["developers", "ai"]
 controls:
   - slug: "ownership-check"
-    item: "Check where an instruction the agent read came from before it acts on it"
+    item: "Confirm where an instruction the agent read came from before it acts on it"
 attack_method: "ai-misuse"
+takeaway: "Cato AI Labs reported that the agent's write targets were not checked apart from what the agent specified or how a link resolved, so an injected instruction could escape the sandbox."
+self_check: "Before an AI agent writes to a file, do you check that the target is within the permitted scope, apart from what the agent specified?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-A developer merely asking the AI code editor Cursor a normal question could pull in a hidden instruction slipped into web-search results or a connected service (an MCP server); the agent then acts on it — and, as an extension of that, the sandbox meant to fence in command execution is disabled, running arbitrary code on the developer's machine. The two flaws Cato AI Labs named "DuneSlide" (CVE-2026-50548 / CVE-2026-50549, both 9.8 on CVSS 3.1) reach the same move — "get one file written that shouldn't be writable, then use that write to disable the sandbox itself" — through two different holes. It is zero-click, needing no click or approval dialog; once the sandbox is off, the next command runs as the developer, reaching the machine and the cloud / SaaS the editor is signed into. The fix shipped in Cursor 3.0 (released 2026-04-02); there is no report of in-the-wild exploitation — this is a research disclosure. What was missing was a layer that verifies, before execution, where a read-in instruction came from and whether the write target is within an authorized scope.
+According to Cato AI Labs, the attacker does not type into Cursor. They hide an instruction in what the agent reads on the user's behalf (data from an MCP-connected service, or a page returned by a web search), and when the user asks a normal question, the instruction is pulled in with it. Both flaws get one file written that should not be writable and use that write to disable the sandbox, with no click or approval needed. There is no report of in-the-wild exploitation; this is a research disclosure. <strong>Unless the place an agent writes to is checked before execution against a scope decided apart from what the agent specifies or how a link resolves, a single instruction slipped into what it reads can rewrite the safeguard itself.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Writes by the agent to files outside the project. According to Cato AI Labs, in CVE-2026-50548, when the agent set a command's working folder to a non-default path, Cursor added that path to the write allowlist without validation. In CVE-2026-50549, when the step that checks, before writing, whether a link's actual destination is inside the project failed, Cursor trusted the "in-project" path the link pointed to (Cursor's advisory also describes this as a flaw in the fallback of link validation). The write targets were the sandbox helper file and files read when the shell starts.
+- **What reached the receiving side**: In general, commands that run outside the sandbox run with the developer's own privileges. According to Cato AI Labs, once the sandbox is disabled, the next command runs as the developer, and beyond taking over the machine it can reach the cloud and SaaS workspaces the editor is signed into.
+- **Not disclosed**: The number of affected users. The details of the similar flaws in other coding agents that Cato AI Labs says it is disclosing.
 
-- **Subject**: Cursor (an AI code editor). Its agent takes a user's request and runs terminal commands and file operations; the vendor says a majority of the Fortune 500 use it.
-- **Identifiers / codename**: CVE-2026-50548 and CVE-2026-50549, named "DuneSlide" by Cato AI Labs.
+## 3. What to check
+
+Whatever the route, the condition for telling them apart is that, before an agent writes to a file, it checks that the target is within the permitted scope, apart from the path the agent specified or the result of link resolution.
+
+- **Who approves**: The development teams that use the agent, and those who manage the editor. They decide the scope the agent may write to (such as inside the project) apart from what the agent specifies. Writes outside that scope, especially to the editor's own files or startup files, are approved by a person.
+- **Where it is checked**: Just before the editor moves the agent's writes or commands into execution. It checks that the target is within the decided scope, and does not execute writes that cannot be checked. When the check fails, it does not fall back to trusting the original specification.
+- **What is recorded**: Which instruction the agent acted on, and which writes or commands it performed under which permission (or which were stopped). Kept apart from the agent, in a form that can be shown later.
+
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before an agent writes, that the target is within the permitted scope, and keeping a record. Detection means finding, reporting and fixing vulnerabilities. The dates are when the issues were reported, fixed and published, not when the routes were used.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before writing, check that the target is within the permitted scope</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Injected instructions could get writes<br>outside the sandbox through</span></div>
+<div class="rx-zone det"><b>Detection · Cato AI Labs reported, Cursor fixed</b>Vulnerability report, fixed version, publication</div>
+<div class="rx-g g1"><div class="t">02-19</div><b>Cato AI Labs reports both flaws</b></div>
+<div class="rx-g g2"><div class="t">04-02</div><b>Cursor 3.0 with the fix</b></div>
+<div class="rx-g g3"><div class="t">06-05</div><b>CVE IDs assigned</b></div>
+<div class="rx-g g4"><div class="t">07-01</div><b>Published as DuneSlide</b></div>
+</div>
+</figure>
+
+The researcher's report and the fixed version worked, and the two known routes were closed before publication. What did not work was the layer before that, which checks the agent's write targets before execution against a scope decided apart from what the agent specifies. It connects with [Brief 037, where a repository-bundled config was auto-executed](/critical/briefs/037-agent-config-auto-execution/), [Brief 039 on Semantic Kernel, where prompt injection could lead to code execution on the host](/critical/briefs/039-semantic-kernel-prompt-injection-rce/) and [Brief 048, where invisible commands were planted in AI instruction files](/critical/briefs/048-trapdoor-ai-instruction-provenance/), in that the origin of the input the AI reads is not checked before it connects to execution; and with [Brief 027 on LibreChat](/critical/briefs/027-librechat-mcp-url-secrets/) and [Brief 058 on LangGraph](/critical/briefs/058-langgraph-checkpoint-rce/), in that input turns directly into execution in agent infrastructure.
+
+## 4. What Lemma does
+
+**Lemma builds the check in section 03 into the point just before the editor moves the agent's writes or commands into execution.** It does not look for prompt injection; it checks the agent's write targets, before execution, against a permitted scope managed apart from what the agent specifies.
+
+### Industries and operations to watch
+
+- **Industry · Developers**: Development teams that let the agent in an AI code editor such as Cursor run terminal commands and write files. The agent's privileges extend to the developer's own and to the clouds they are signed into.
+- **Industry · AI**: Organizations that build and ship agents reading input whose origin the agent cannot choose, such as MCP-connected services and web-search results.
+
+### Current controls vs Lemma
+
+This incident's CVE-2026-50548 route falls in column 1, and the CVE-2026-50549 route in column 2. Column 3 is not a route in this incident.
+
+| Control | Writes outside the scope through what the agent specifies (such as the working folder) | Writes outside the scope through a failed safety check | Writes or commands within the scope, driven by an injected instruction |
+| --- | --- | --- | --- |
+| Updating to the fixed version (Cursor 3.0) | Partial | Partial | Not relevant |
+| Sandbox (default fence around commands) | Partial | Partial | Not effective |
+| **Lemma (pre-execution check)** | Effective | Effective | Not effective |
+
+Updating to the fixed version closes the two known routes, but if another hole is found, the same shape remains. The sandbox is meant to stop writes outside the scope, but here its permission decision relied on what the agent specified and on the result of link resolution, so a single write could remove it. Lemma checks the write target before execution against a scope managed apart from what the agent specifies, and stops when it cannot be checked, so writes in columns 1 and 2 stop before they run. On the other hand, if writes or commands following an injected instruction happen within the permitted scope, the check matches.
+
+Note: Lemma's check works only when it is built into the editor's execution of the agent's writes and commands, and the scope that may be written to is managed apart from what the agent specifies and the input the agent reads. If the scope is set broadly, malicious writes within it go through. The check neither finds instructions in the input nor fixes flaws in the editor. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+
+### Checklist
+
+Three things to confirm in organizations that use agents in AI code editors
+
+- Is the Cursor you use on a fixed version (3.0 or later)?
+- Do you know the external input the agent reads (MCP-connected services, web search), and keep connections to only those needed?
+- Can you see, apart from the agent, a record of the commands the agent ran and the files it wrote?
+
+## 5. Facts and timeline
+
+- **Subject**: Cursor (an AI code editor). Since the 2.x line, it runs the terminal commands its agent issues inside a sandbox by default.
+- **Identifiers**: CVE-2026-50548 and CVE-2026-50549, named "DuneSlide" by Cato AI Labs.
 - **Severity**: both 9.8 (Critical) on NVD's CVSS 3.1.
-- **The premise**: since the 2.x line, Cursor runs the terminal commands an agent issues inside a sandbox (a mechanism that fences execution and limits what it can touch) by default. DuneSlide is a flaw that escapes that sandbox.
-- **Entry point = prompt injection**: the attacker does not type into Cursor. They hide an instruction in what the agent reads on the user's behalf — a service connected via MCP, or a page returned by a web search. When the user asks a normal question, the hidden instruction is pulled in with it. Because no click or approval is needed, it is "zero-click."
-- **The shared move**: both flaws follow the structure of "get one file written that shouldn't be writable, then use that write to disable the sandbox." The targets are the sandbox helper file itself (on macOS, `/Applications/Cursor.app/Contents/Resources/app/resources/helpers/cursorsandbox`) or a startup file such as `~/.zshrc`.
-  - **CVE-2026-50548 (abusing configuration)**: the sandbox allows writes to a command's working folder. That folder can be set via the optional `working_directory` parameter of the `run_terminal_cmd` tool, and when the agent sets a non-default path, Cursor adds it to the write allowlist without validation. The injected instruction points this at a system file rather than the project.
-  - **CVE-2026-50549 (abusing the safety check)**: before writing, Cursor resolves symlinks and checks that the actual write target is inside the project. The flaw is in the fallback. If the target does not exist, or the attacker removes read permission from a folder along the path, the check fails, and Cursor gives up and trusts the "in-project" path the link points to. The attacker crafts a link pointing outside the project, fails the check, and writes to the same sandbox helper file.
-- **Impact**: once the sandbox is disabled, the next command runs as the developer. Beyond taking over the machine, it reaches the cloud and SaaS workspaces the editor is signed into. It all starts from "one instruction that looks harmless."
-- **Exploitation status**: no report of in-the-wild exploitation; Cato presents it as research, not an active campaign. Public vulnerability records also note "no confirmed exploitation."
+- **Entry point (Cato AI Labs)**: instructions hidden in what the agent reads on the user's behalf, such as data from MCP-connected services or web-search results. "Zero-click," needing no click or approval.
+- **CVE-2026-50548 (Cato AI Labs)**: when the agent set the working folder of a terminal command to a non-default path, Cursor added that path to the write allowlist without validation.
+- **CVE-2026-50549 (Cato AI Labs, Cursor's advisory)**: in the fallback when the step that checks a link's destination before writing failed, Cursor trusted the in-project path the link pointed to.
+- **Impact (Cato AI Labs)**: once the sandbox is disabled, the next command runs as the developer and can reach the machine and the cloud / SaaS the editor is signed into. All versions below 3.0 are affected.
+- **Exploitation status**: no report of in-the-wild exploitation. Cato AI Labs presents it as research, not an active campaign, and public vulnerability records also note "no confirmed exploitation."
 
-This case stems from a structure in which the agent does not independently verify, before acting, "where the instruction it read came from" and "whether the write is authorized." The zero-click path to RCE runs as follows.
+### Timeline
 
-1. **Planting the instruction**: the attacker hides an invisible instruction in content the agent reads on the user's behalf — data from an MCP-connected service, or a page returned by a web search.
-2. **Riding a normal request**: the developer asks Cursor a normal question. The hidden instruction is pulled in with it, and the agent treats it as an instruction to itself. No click or approval has occurred so far.
-3. **Getting one un-writable file written**: the injected instruction has the agent set `working_directory` to a non-default system path (50548), or fail the check via a symlink pointing outside the project (50549). Either way, Cursor permits the write.
-4. **Disabling the sandbox**: the write target is the sandbox helper file itself or a startup file such as `~/.zshrc`. The moment it is overwritten, subsequent commands run outside the sandbox.
-5. **Running as the developer**: the next command after disabling runs with the developer's own privileges. It can escalate to taking over the machine and reaching the cloud / SaaS the editor is signed into.
+- **2026-02-19**: Cato AI Labs reported both flaws to Cursor.
+- **~2026-02-23**: According to Cato AI Labs, Cursor initially declined the report on the grounds that "the threat model does not cover abuse of MCP servers (including standard ones such as the official Linear workspace)."
+- **2026-02-26**: Cato AI Labs escalated again, and Cursor reopened the report and began triage.
+- **2026-04-02**: Cursor 3.0, containing the fix, was released.
+- **2026-06-05**: CVE identifiers were assigned.
+- **2026-07-01**: Cato AI Labs published the flaws as "DuneSlide." Cursor published its advisory for the link flaw (GHSA-3v8f-48vw-3mjx), and the NVD record went public.
 
----
+> The facts in this Brief rest on Cato AI Labs' disclosure, Cursor's GitHub Security Advisory and the NVD entry. The account of how the report was received is Cato AI Labs' description. This Brief does not include reproduction steps. What has not been disclosed does not mean there were no controls.
 
-## 3. Timeline — disclosure and response
+### After disclosure
 
-- 2026-02-19: Cato AI Labs reports both flaws.
-- ~2026-02-23: per Cato, Cursor initially declined the report on the grounds that "the threat model does not cover abuse of MCP servers (including standard ones such as the official Linear workspace)."
-- 2026-02-26: Cato re-escalates; Cursor reopens and triages.
-- 2026-04-02: Cursor 3.0, containing the fix, is released (all versions below 3.0 are affected).
-- 2026-06-05: CVE identifiers are assigned.
-- 2026-07-01: Cato AI Labs publishes as "DuneSlide." Cursor publishes its own advisory for the symlink flaw (GHSA-3v8f-48vw-3mjx), and the NVD record goes public.
-
-> Note: technical facts are based on Cato AI Labs' disclosure, Cursor's GitHub Security Advisory, and the NVD entry. The fix shipped in 3.0 ahead of disclosure, and no in-the-wild exploitation has been confirmed. Refer to the latest primary sources.
-
-The response and industry movement after disclosure:
-
-- **Vendor (Cursor)**: initially declined the report on the grounds that "the threat model does not cover abuse of MCP servers," but after re-escalation triaged it and fixed both flaws in 3.0 (2026-04-02); it published its own advisory (GHSA-3v8f-48vw-3mjx) for the symlink flaw.
-- **Research (Cato AI Labs)**: says it is disclosing similar flaws in other coding agents and that the problem is structural, posing to the industry the question of "once you ship agents that read the web, will you make treating all input as hostile the default, or keep chasing patches?"
-- **Cross-industry**: how to handle "inputs the agent cannot choose the origin of" — MCP-connected services and web-search results — before connecting them to execution. It again showed that one-off guardrails like approval prompts and sandboxes can be removed by a single write from an injected instruction.
-
-The absence of a layer that independently verifies, at execution time, the provenance of the instructions an agent reads and the authorization of the writes those instructions induce remains not a single-tool problem but a cross-organization operational challenge for anyone adopting AI agents that read external content.
-
----
-
-## 4. Why it wasn't stopped
-
-The central failure primitive is that **the agent does not independently verify, before acting, where an externally read-in instruction came from and the authorization scope of the write it performs on that instruction.** Prompt injection succeeds because the agent never checks whether "the string I am reading now is an authorized instruction originating from a legitimate requester." And the sandbox escape succeeds because the basis for permitting a write rests on surface signals the attacker can steer — "what did the agent specify in `working_directory`," "did symlink resolution succeed" — rather than an independent verification of "is this write authorized for this target." Two missing verifications — the instruction's provenance and the write's authorization — combine so that one instruction becomes RCE.
-
-This case is a sequel in the same line as [Brief 037](/critical/briefs/037-agent-config-auto-execution/) (an AI coding agent auto-executes a bundled config without verification). Where 037 was the structure of "treating a config placed in a repository as authorized because it was opened or trusted," DuneSlide treats an instruction inside external content the agent read as authorization, and skips the write target's authorization as an extension of that — the entry point widening from config files to read-in content. [Brief 039](/critical/briefs/039-semantic-kernel-prompt-injection-rce/) (Semantic Kernel, where prompt injection turned into host RCE) and [Brief 048](/critical/briefs/048-trapdoor-ai-instruction-provenance/) (invisible commands planted in AI instruction files) align in that the provenance of the input the AI reads is not verified before it connects to execution. [Brief 027](/critical/briefs/027-librechat-mcp-url-secrets/) (LibreChat, secrets leaked from a user-specified MCP URL) and [Brief 058](/critical/briefs/058-langgraph-checkpoint-rce/) (an AI agent's own checkpoint went unverified and its loading server was hijacked) are continuous in that, in agent infrastructure, "missing input verification equals execution." The shared primitive is the same: **the execution of an instruction or a write is decoupled from the layer that authorizes and verifies it.**
-
-Cato notes it is disclosing similar flaws in other coding agents and that the problem is structural, not a pile of one-offs. Indeed Cursor itself has seen CurXecute (CVE-2025-54135, 2025-08), MCPoison (CVE-2025-54136), and CVE-2026-26268 (2026-02) — flaws that start from poisoned input and end in code execution, each breaking a different guardrail one at a time. The 2.x sandbox was the answer to the prior wave, and DuneSlide is the flaw that removes that answer. The structural implication is not to add one more guardrail, but to require a layer that independently verifies the authorization of instructions and writes before the agent acts.
-
-Here the detection chain worked and made the technique and its scope externally visible: the researcher disclosure (Cato AI Labs), CVE assignment and CVSS severity, and the vendor fix (Cursor 3.0) with its own advisory and NVD entry. This is a textbook detection success, and this Brief does not diminish the role of the detection layer. Detection is indispensable for publicizing the technique, identifying affected versions, and deciding on patching.
-
-But detection is not the material that independently proves, **at the moment the agent follows that instruction and performs that write**, "is the instruction the agent just read an authorized one originating from a legitimate requester" or "is the write it is about to perform authorized for this target." Prompt injection is neither a malware signature nor a known attack pattern; it is a natural-language instruction blended into legitimate content, and the detection side has no formal way to judge it "malicious" before execution. The sandbox's write permission, too, flips on surface signals — the `working_directory` value or whether symlink resolution succeeded — and never looks at authorization for the target itself. Even if anomaly detection fires after execution, the developer-privilege command that runs after the sandbox is off does not stop. This is a structurally independent gap, out of the detection layer's reach.
-
----
-
-## 5. What proof would have changed
-
-Pre-execution attestation fills that gap by inserting one step of authorization / provenance proof into both the path where the agent acts on a read-in instruction and the path that permits a write. For instructions, "does this instruction originate from an authorized requester's intent"; for writes, "is a write to this target within an authorized scope" — verified independently of the `working_directory` value or the symlink resolution result, and blocking execution beforehand when no proof accompanies it. Pre-execution proof is not a substitute for detection but its **complement**, and the two together establish the agent's trust boundary.
-
-Against the gap this case exposed — the agent executing while decoupling the provenance of the instruction it read and the authorization of the write target from independent verification — Lemma proposes a design that, before the agent performs an operation, requires that the operation be authorized and carry legitimate provenance, as an independently verifiable cryptographic proof.
-
-- **Proof-as-auth before the action**: before an agent runs a terminal command or writes a file, prove with a signature that "this operation is authorized for this principal, at this scope." Do not make the `working_directory` value or the symlink resolution result the terminus of write permission.
-- **Authorization-scope verification for the write target**: base the permission to write on a per-target authorization-scope proof, not on the surface of path specification or link resolution the attacker can steer. Writes to "out-of-project, privileged targets" such as the sandbox helper file or startup files do not proceed without proof.
-- **Binding the instruction's provenance**: bind the instruction the agent bases its action on to its origin (a legitimate requester, trusted input), distinguishing an injection blended into external content from the authorization path.
-- **Selective disclosure**: disclose only that "this operation satisfies the authorization schema," keeping internal keys and credentials out of the environment.
-
-This lets a proof fixed at execution time function as an independently verifiable trail for "is this instruction legitimately authorized, and is this write within an authorized scope," before the agent acts. Detection (after-the-fact disclosure, patching, vendor research) works for remediation once discovered, and pre-execution proof (authorization / provenance verification before execution) works for independent verification of agent operations — each complementary.
-
----
+- **Cursor**: fixed both flaws in 3.0 (2026-04-02) and published an advisory (GHSA-3v8f-48vw-3mjx) for the link flaw.
+- **Cato AI Labs**: says it is disclosing similar flaws in other coding agents and argues the problem is structural, posing to the industry the question of "once you ship agents that read the web, will you make treating all input as hostile the default, or keep chasing patches?"
 
 ## 6. Sources
 
@@ -113,4 +152,4 @@ This lets a proof fixed at execution time function as an independently verifiabl
 - **Cursor (vendor advisory)**: GHSA-3v8f-48vw-3mjx (CVE-2026-50549, the symlink-verification fallback) — <https://github.com/cursor/cursor/security/advisories/GHSA-3v8f-48vw-3mjx>
 - **NVD**: CVE-2026-50549 — <https://nvd.nist.gov/vuln/detail/CVE-2026-50549>
 
-References: [“The last layer left in AI-era cyber defense”](https://lemma.frame00.com/blog/detection-is-not-proof/), [“Proof-as-Auth: sign in without ever sending your key”](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/#authority), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
