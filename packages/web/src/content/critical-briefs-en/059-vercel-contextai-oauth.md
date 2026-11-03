@@ -1,7 +1,7 @@
 ---
 brief_no: 59
-title: "AI ツールに渡した「すべて許可」の OAuth が、ベンダー侵害でそのまま侵入経路になった — 標準的に付与される広範・永続の OAuth が、行動ごとにスコープ・検証されない構造（Vercel / Context.ai）"
-title_en: "When \"Allow All\" OAuth to an AI Tool Becomes the Breach Path (Vercel / Context.ai)"
+title: "Vercel：従業員が AI ツール Context.ai に渡した OAuth が、ベンダーの侵害を経て社内への入口になった(Vercel 開示)"
+title_en: "Vercel: An employee's OAuth grant to the AI tool Context.ai became a way into internal systems after the vendor was breached (Vercel disclosure)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "attribute-proof-bypass"]
@@ -9,15 +9,38 @@ incident_date: 2026-04-19
 published: 2026-06-16
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
-related_briefs: ["029-github-dev-oauth-token", "033-f5-bigip-edge-pivot", "047-openclaw-agent-phishing", "006-google-api-key-revocation-lag"]
+related_briefs: ["064-salesloft-drift-oauth-salesforce", "029-github-dev-oauth-token", "033-f5-bigip-edge-pivot", "047-openclaw-agent-phishing", "006-google-api-key-revocation-lag"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "permission-change"
 version: "1.0"
-og_lead_ja: "AI ツールへの「すべて許可」OAuth が侵入経路に — Vercel / Context.ai"
-og_lead_en: "\"Allow all\" OAuth to an AI tool became the breach path — Vercel"
-gap_detected: "The compromised credentials were identifiable in threat-intelligence feeds more than a month before public disclosure, and monitoring and logs captured the activity."
-gap_missing: "There was no layer to check before action whether this access stayed within the originally intended scope, so access operating inside a once-granted 'allow all' consent passed straight through."
-gap_fix: "Before a high-risk action, independently verify with Lemma that this operation is authorized for this party in this scope and is currently valid, and prevent it up front."
+og_lead_ja: "Vercel：従業員が AI ツール Context.ai に「すべて許可」で渡した OAuth が、Context.ai の侵害を経て社内システムへの入口になったと開示"
+og_lead_en: "Vercel: an employee's \"Allow all\" OAuth grant to the AI tool Context.ai became a way into internal systems after Context.ai was breached, Vercel disclosed"
+og_kicker_ja: "サイバー攻撃事例 · サプライチェーン攻撃"
+og_kicker_en: "CYBERATTACK · SUPPLY CHAIN"
+og_headline_ja: "AI ツールに渡した\nOAuth が、ベンダーの\n侵害を経て入口に。\n<accent>Vercel が 4 月に開示</accent>"
+og_headline_en: "An OAuth grant to\nan AI tool became\na way in via its vendor.\n<accent>Vercel disclosed it.</accent>"
+key_figures:
+  - value: "02 → 04-19"
+    label: "From a Context.ai employee's infostealer infection (Hudson Rock) to Vercel's disclosure (2026)"
+  - value: "1+"
+    unit: "month"
+    label: "How long before the disclosure Hudson Rock had identified the infected employee's credentials in its feed"
+  - value: "40+"
+    unit: "tools"
+    label: "Corporate tools Context.ai connects to via OAuth and APIs"
+glossary:
+  - term: "OAuth token"
+    desc: "A pass that lets an app connect to another service on a user's behalf. While it is valid, it can act with the granted permissions without re-entering a password."
+  - term: "Infostealer"
+    desc: "Malware that pulls stored credentials and sessions from an infected device. Here, Lumma Stealer (Hudson Rock)."
+  - term: "Sensitive environment variable"
+    desc: "A Vercel setting that encrypts a value so it cannot be retrieved from the UI. It is opt-in; values not marked are stored in readable form."
+insight:
+  slug: "standing-ai-tool-oauth"
+  label: "Access that passes on a consented OAuth grant alone"
+  quote: "Once broad OAuth has been granted to an AI tool, anyone using its valid token arrives as the person who granted it."
 industries: ["ai", "developers"]
 operations: ["account-admin"]
 controls:
@@ -26,82 +49,105 @@ controls:
   - slug: "limit-and-revoke"
     item: "Scope OAuth grants to the operation, and refuse revoked tokens"
 attack_method: "supply-chain"
+impact: "Unauthorized access to internal systems and some customer credentials (Vercel's disclosure)"
+takeaway: "Nothing checked, before it ran, whether access with the OAuth token granted to an AI tool was within what was allowed; it passed as legitimate access."
+self_check: "Does your organization know the OAuth scope each employee has individually granted to AI tools?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-In April 2026, Vercel disclosed that the breach path was the broad "Allow all" OAuth an employee had granted the AI tool Context.ai, turned into an intrusion route by a vendor breach. Operations via the stolen tokens are formally legitimate access inside an already-granted scope, so hardening revocation or intelligence after the fact does not stop them. What is structurally missing is a layer verifying, before the action, that this operation is authorized for this party in this scope and currently valid.
+The attacker used not a Vercel employee's password but the OAuth grant made when the employee connected the corporate Google Workspace to an AI tool with "Allow all." The token was obtained from the AI tool vendor's side and, through the employee's Workspace identity, reached Vercel's internal systems and the project environment-variable console (per Vercel's disclosure and CSA's analysis). <strong>Once broad OAuth has been granted to an AI tool, anyone using its valid token arrives as the person who granted it.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Access with the compromised token to internal systems via a Vercel employee's Google Workspace, and reading of environment variables not marked "sensitive" (API keys, DB credentials and the like) (April 2026). Reach was per team scope, not a platform-wide exposure (Vercel).
+- **What did not get through**: Environment variables marked "sensitive." They are encrypted against UI retrieval, and Vercel says there is no evidence of access to them.
+- **What reached the receiving side**: In general, access with a consented OAuth token arrives as legitimate access on a user's behalf, without a password being entered. Whether the AI tool or another party that obtained the token is using it cannot be told apart at the moment it is accepted.
+- **Not disclosed**: The detailed path of the infection and token seizure inside Context.ai, and the truth and full scope of the BreachForums claim that the data included internal DBs, API keys and source code (Vercel is investigating and has not independently verified it).
 
-- **Disclosure**: On 2026-04-19, Vercel disclosed unauthorized access to internal systems and a limited set of customer credentials (CEO Guillermo Rauch explained the attack chain on X the same day)
-- **What Context.ai is**: An enterprise AI platform that connects to 40+ corporate tools via OAuth/API, processing organizational data to generate content. Its very value proposition presumes broad access to the corporate identity fabric (a high-privilege third party by design)
-- **Reachable targets**: Vercel's project settings and environment-variable management console. The attacker accessed environment variables not classified as "sensitive" (i.e. stored in readable form). "Sensitive"-marked variables carry encryption that prevents UI retrieval, and Vercel says there is no evidence of access to those. Reach was per team scope, not a platform-wide single-point exposure
-- **Attacker's claims**: An actor claiming to be ShinyHunters posted on BreachForums around 2026-04-19, claiming internal DBs, API keys, GitHub/NPM tokens, source code, etc., and offered ~580 Vercel employee records (names, emails, account status, activity timestamps) as evidence, claiming to sell the data for $2M. ShinyHunters denied involvement (a possible impersonation or splinter; no technical evidence), and Vercel is investigating and has not independently verified the full scope of the claim
+## 3. What to check
 
-This incident shows how broad, long-lived OAuth granted to an AI tool chains downstream from a vendor-side compromise, in three clear hops.
+Whatever the route, the condition for telling them apart is that whoever accepts access from an AI tool checks, before it runs and separately from possession of the token, that the operation is a kind that was allowed and that the token is still valid.
 
-1. **Hop 1 — compromise of the AI vendor's endpoint**: A Context.ai employee is infected with an infostealer. Multiple credentials including Google Workspace, plus admin access to Context.ai's OAuth-app management environment, are stolen
-2. **Hop 2 — seizing the OAuth tokens**: The attacker seizes Context.ai's AWS environment and OAuth authorization fabric. On behalf of users who consented to "Allow all," they can mint/reuse valid OAuth tokens — standing access requiring no password re-entry
-3. **Hop 3 — lateral move to downstream Vercel**: Because a Vercel employee had connected the corporate Workspace to Context.ai with broad OAuth, the attacker uses that token to pivot through the employee's Workspace identity into Vercel's internal systems, reaching the project-settings env-var console and retrieving readable (non-"sensitive") API keys and DB credentials
+- **Who approves**: The administrator of the organization that lets an AI tool connect to its corporate identity. At connection, decide by kind of operation what the tool may do: for example, reading the mail and documents its features need is allowed; reading internal system settings or secret values is not. The breadth of an "Allow all" click on the consent screen alone does not draw this line.
+- **Where it is checked**: The part of Workspace or internal systems that accepts operations from the AI tool's token. It checks whether the operation falls within the decided kinds and whether the token has been revoked, and refuses it if not.
+- **What is recorded**: Which token performed which operation under which permission. What was held and what was let through is kept apart from the AI tool, in a form that can be shown to a third party later.
 
-A contributing factor is a **secret-classification gap**. Vercel's "sensitive environment variable" designation applies encryption readable only at build time, but it is opt-in; by default env-var values are stored readably. If a customer had not marked a variable "sensitive," anyone with project authority — including the attacker who arrived via the compromised OAuth token — can read it. Vercel now supports a team policy that defaults new production/preview variables to sensitive.
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before an operation from an AI tool's token runs, whether it is a kind that was allowed and whether the token is valid, and keeping a record. Detection means finding leaked credentials or a compromise after the fact, revoking the tokens and replacing values. The dates below are those given in the disclosures and analyses by Vercel, Hudson Rock and CSA.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before it runs, check the operation is an allowed kind and the token is valid</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Unauthorized access to internal systems and some customer credentials (Vercel)<br>Non-"sensitive" environment variables were read</span></div>
+<div class="rx-zone det"><b>Detection · identification and revocation</b>Identify leaked credentials, revoke tokens and replace values</div>
+<div class="rx-g g1"><div class="t">02</div><b>Context.ai employee infected with an infostealer</b></div>
+<div class="rx-g g2"><div class="t">03</div><b>Unauthorized access to Context.ai's AWS environment</b></div>
+<div class="rx-g g3"><div class="t">04</div><b>Token used to reach Vercel's internal systems</b></div>
+<div class="rx-g g4"><div class="t">04-19</div><b>Vercel discloses</b></div>
+</div>
+</figure>
 
----
+The material for detection existed: Hudson Rock had identified the infected employee's credentials in its feed more than a month before the disclosure. But connecting that to revoking the token was a later step, and while the token was valid the access passed as legitimate access inside the already-granted broad scope. Similar cases, where a consented integration's OAuth token was the way in, are [Salesloft Drift](/critical/briefs/064-salesloft-drift-oauth-salesforce/) (an integration's tokens used to query companies' Salesforce) and [github.dev](/critical/briefs/029-github-dev-oauth-token/) (theft of an over-scoped OAuth token); on lateral movement with stored credentials it connects to [F5 BIG-IP](/critical/briefs/033-f5-bigip-edge-pivot/), and on revocation lag to [Google API keys](/critical/briefs/006-google-api-key-revocation-lag/) (still valid after deletion).
 
-## 3. Timeline — disclosure and response
+## 4. What Lemma does
 
-- 2026-02: A Context.ai employee is infected with Lumma Stealer (per Hudson Rock, via the employee's personal download of a Roblox-related script/tool). Credentials for Google Workspace, Supabase, Datadog, Authkit, etc. are stolen, including admin access to Context.ai's own OAuth-app management environment
-- 2026-03: Context.ai later discloses unauthorized access to its AWS environment and possible compromise of some users' OAuth tokens. With the authorization fabric of the "Allow all" OAuth apps seized, the attacker can mint/reuse valid tokens on behalf of consenting users
-- 2026-04: The attacker uses the compromised tokens to pivot through the Vercel employee's Google Workspace into the internal environment-variable console
-- 2026-04-19: Vercel discloses publicly; the ShinyHunters-claiming actor posts on BreachForums claiming a $2M sale
+**Lemma builds the check in section 03 into the side that accepts operations from an AI tool's token.** It does not look for intrusions; it checks, before the operation runs, whether the AI tool's operation falls within the kinds allowed at connection and whether the token is still valid.
 
-> Note: The internal infection path / token-seizure details at Context.ai, and the truth of the BreachForums data claim, depend on the ongoing investigation and are not asserted here.
+### Industries and operations to watch
 
-The response and industry movement after disclosure:
+- **Industry · AI adoption (all industries)**: Organizations that connect AI tools reading and writing across mail, documents and internal knowledge to their corporate identity. Because the tools' features ask for broad OAuth scopes, a single compromise on the vendor's side can reach the identities of the organizations connected. Even where procurement review is detailed, the consent screen tends to pass as a routine onboarding step.
+- **Industry · Developers & agent operations**: Development organizations that keep API keys and DB credentials as environment variables in deploy environments. Values stored in readable form can be read by anyone who gains project authority.
+- **Operation · Accounts & permissions**: Employees granting third-party OAuth apps broad rights to the corporate identity outside IT management.
 
-- **Vercel**: Disclosed on April 19 and continues to investigate. Recommends customers review activity logs, immediately migrate secrets to the "sensitive" designation, and rotate non-sensitive values; provides a team policy defaulting new production/preview variables to sensitive
-- **Auditing OAuth in AI-SaaS integration**: A recommended move is to inventory third-party OAuth apps' broad-scope grants in the Google Workspace admin console and prioritize review of apps individually authorized by employees outside IT management. Broad-scope grants are candidates for revocation and re-provisioning at least privilege
-- **Credential operations**: Replacing long-lived static secrets in deploy environments with time/scope-limited credentials — AWS IAM roles, GitHub OIDC federation, runtime-fetched secret managers — structurally narrows the blast radius of a single token theft
-- **Cross-industry point**: This case is one instance of a repeatable pattern — infostealer infection → OAuth token compromise → lateral move to downstream customers (structurally the same shape as the 2024 Snowflake campaign) — and the need to treat AI productivity tools' broad, long-lived access in the same risk class as traditional cloud providers has become a point of debate
+### Current controls vs Lemma
 
-The absence of a design that treats OAuth grants to AI tools not as "standing authority" but as "monitored, revocable, per-action-scoped authorization" is not one vendor's problem; it remains an operational issue across organizations adopting AI SaaS.
+The route in this case is access with a valid token, inside the already-granted broad scope, that reached internal systems and environment variables (an operation beyond the AI tool's purpose, so mainly column 2). Column 3, operations with a revoked token, does not appear in the disclosures.
 
----
+| Control | Operation within the AI tool's purpose, with a valid token | Operation beyond the AI tool's purpose (internal systems, secret values), with a valid token | Operation with a revoked token |
+| --- | --- | --- | --- |
+| Employee multi-factor authentication (MFA) | Not relevant | Not relevant | Not relevant |
+| Inventorying and narrowing third-party OAuth app scopes | Not effective | Partial | Not relevant |
+| Marking environment variables "sensitive" | Partial | Partial | Partial |
+| Identifying leaked credentials and revoking tokens | Partial | Partial | Effective |
+| **Lemma (pre-execution check)** | Not effective | Effective | Effective |
 
-## 4. Why it wasn't stopped
+MFA is not relevant to this route: operations with the token do not go through a password entry. Inventorying can narrow how broad the AI tool's permissions are, but within them any operation passes for whoever holds the token. Marking values "sensitive" keeps them from being read in the UI, but it is opt-in and does not protect unmarked values. Identifying leaks and revoking stops further operations, but not those before it, and values already read are not taken back. Lemma checks and holds operations beyond the AI tool's purpose, and operations with revoked tokens, before they run.
 
-The central **failure primitive is "the OAuth granted to an AI tool persists as broad, long-lived standing authority rather than a dynamic authority scoped, authorized, and verified per action."** AI productivity tools, by their functional requirements (reading and writing across email, documents, internal knowledge), structurally demand broad OAuth scopes. The moment a user authorizes that with a corporate identity, they extend their access posture to the vendor's infrastructure — and to whoever later breaches that vendor.
+Note: Lemma's check works only when the operations allowed for an AI tool are decided by kind, the check is built into the part of Workspace or internal systems that accepts operations from the token, and token validity can be confirmed at the moment of the operation. It passes if an operation within the decided kinds is misused, and loosely decided kinds pass loosely. Lemma does not encrypt, replace or delete environment-variable values. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-As in [Brief 029](/critical/briefs/029-github-dev-oauth-token/) (an over-scoped OAuth token stolen at github.dev), it is a structure in which "the token is not scoped to the act." Where 029 was over-scoping within a single service, this case adds another axis: **an organization-crossing standing token routed through a high-privilege third party — an AI tool.** And the problem [Brief 033](/critical/briefs/033-f5-bigip-edge-pivot/) (F5 BIG-IP) showed — "lateral movement via positional trust plus stored credentials" — recurs here on the OAuth trust surface of AI-SaaS integration rather than a network appliance. The common thread: **a party's access depends not on per-occasion authorization, but on broad trust granted once in the past.**
+### Checklist
 
-OAuth grants to AI tools, even where procurement vendor-risk assessment is detailed, slip past as "a routine onboarding tap" at the consent screen itself — creating an identity bridge that bypasses the assessment process. The employee who granted it did not necessarily have the authority to grant that level of access on the employer's behalf.
+Three things to confirm in your organization about corporate identities connected to AI tools
 
-Infostealer intelligence feeds, OAuth-grant audits, egress monitoring, and EDR are all layers that can function at each stage here, and this Brief does not deny their role. Indeed, Hudson Rock had identified the Context.ai employee's credentials in its feed more than a month before public disclosure. The detection capability existed.
+- Do you regularly review the OAuth scope granted to AI tools and re-grant overly broad grants at the scope actually needed?
+- Are API keys and DB credentials in deploy environments stored so they cannot be read in the UI, and replaced with credentials limited in time and scope?
+- When a connected AI tool's vendor discloses a compromise, is there a set procedure and owner for revoking its tokens and replacing values that may have been read?
 
-At the same time, detection provides no material to independently establish, **before the access executes**, whether "the access being made with this token right now is within the original authorization." The attacker's operations are formally legitimate access via valid OAuth tokens issued on behalf of consenting users. The Workspace-to-Vercel pivot, too, happens inside the already-granted broad scope, so token-validity checks do not stop it. What the Hudson Rock case shows is that what was missing was not the detection capability but **the workflow connecting intelligence to immediate revocation of standing authority.** From an audit standpoint, too, evidence that independently shows "which token executed which action within which authorization" rarely survives beyond reconciling each service's access logs.
+## 5. Facts and timeline
 
-Detecting an infostealer infection or OAuth-token compromise after the fact and revoking or rotating the leaked credentials (detection), and independently verifying the party, scope, and validity of the authorization before the action (pre-execution attestation), are **complements**, not substitutes: the former works on discovering the breach and containing the damage, the latter on breaking the chain by which a compromised standing token converts straight into downstream breach access.
+- **Disclosure**: On 19 April 2026, Vercel disclosed unauthorized access to internal systems and a limited set of customer credentials. CEO Guillermo Rauch explained the attack chain on X the same day.
+- **Context.ai**: An enterprise AI platform that connects to 40+ corporate tools via OAuth and APIs, processing organizational data to generate content. Its features themselves presume broad access to the corporate identity fabric.
+- **What was reached**: Vercel's project settings and environment-variable management console. The attacker accessed environment variables not marked "sensitive" (stored in readable form). Reach was per team scope, not a platform-wide exposure (Vercel).
+- **Route in**: A Context.ai employee's infostealer infection led to the theft of credentials including Google Workspace, plus admin access to Context.ai's OAuth-app management environment. The attacker took hold of Context.ai's AWS environment and OAuth authorization fabric and could mint and reuse valid tokens on behalf of users who had consented with "Allow all." Because a Vercel employee had connected the corporate Workspace to Context.ai with broad OAuth, that token led through the employee's Workspace identity into Vercel's internal systems (per the disclosures and analyses by Vercel, CSA and Hudson Rock).
+- **Attacker's claim**: Someone calling themselves ShinyHunters posted on BreachForums around 19 April 2026, claiming the data included internal DBs, API keys, GitHub/NPM tokens and source code, and offering it for $2M. As evidence they showed records of about 580 Vercel employees (names, emails, account status, activity timestamps). ShinyHunters denied involvement (possibly an impersonation or splinter; no technical evidence).
+- **How environment variables are stored**: Vercel's "sensitive" designation applies encryption readable only at build time, but it is opt-in; by default values are stored in readable form.
 
----
+### Timeline
 
-## 5. What proof would have changed
+- **2026-02**: A Context.ai employee was infected with Lumma Stealer (per Hudson Rock, via the employee's personal download of a Roblox-related script or tool). Credentials for Google Workspace, Supabase, Datadog, Authkit and others were stolen, along with admin access to Context.ai's OAuth-app management environment.
+- **2026-03**: There was unauthorized access to Context.ai's AWS environment. Context.ai later disclosed this and the possible compromise of some users' OAuth tokens.
+- **2026-04**: The attacker used the compromised token to go through a Vercel employee's Google Workspace and reach the internal environment-variable console.
+- **2026-04-19**: Vercel disclosed publicly. Someone calling themselves ShinyHunters posted on BreachForums claiming a $2M sale.
 
-Pre-execution attestation treats authority grants to AI tools not as "broad, long-lived consent" but as authorization scoped and independently verifiable per action (the industry standardization context likewise points toward avoiding user-OAuth pass-through and converting, via RFC 8693 token exchange, into per-operation scoped, auditable tokens). If the proof does not satisfy "this operation is within the granter's authorization and is currently valid," the access is blocked before execution.
+> The three hops (infection of the vendor's endpoint, seizure of the OAuth authorization fabric, lateral move into Vercel) rest on the disclosures and analyses by Vercel, CSA and Hudson Rock. The infection path (a Roblox-related download) and the identification of the credentials more than a month before disclosure are Hudson Rock's assessment. The BreachForums data claim comes from the attacker's side, and Vercel has not independently verified its full scope. The details of the infection and token seizure inside Context.ai depend on the ongoing investigation. What has not been disclosed does not mean there were no controls.
 
-Against the gap this incident exposed — broad, long-lived OAuth to an AI tool persists as standing authority without being scoped, authorized, and verified per action — Lemma proposes a design that backs a tool's or agent's actions not by "presenting a key" but by "a proof of per-action-scoped, independently verifiable authorization."
+### After disclosure
 
-- **Per-action scoping**: Rather than the broad consent at grant time, verify per operation, as a proof, "is this action within the granter's authorization," so broad scope cannot pass straight through
-- **Pre-execution validity verification**: Before execution, independently verify "is that authorization currently valid," cutting off the state in which a compromised or revoked token keeps passing as standing access
-- **Authorization without sending the key**: Move from presenting long-lived static tokens to presenting proofs, so a token theft does not convert straight into downstream breach access
-- **Selective disclosure**: Prove only that "the action was within the scope of authorization," with minimal disclosure, without sending the corporate identity fabric or data itself outside
-
-By verifying the scope and validity of authorization as a proof before an operation executes — rather than relying on the broad consent at grant time — it breaks the chain by which a vendor breach converts a standing token straight into downstream breach access. Detection (after-the-fact breach discovery and revocation) and pre-execution attestation (authorization verification before the action) work as complements.
-
----
+- **Vercel**: Disclosed on 19 April and continues to investigate. It recommended that customers review activity logs, move secrets to the "sensitive" designation and rotate non-sensitive values, and provided a team policy that defaults new production and preview variables to sensitive.
+- **Inventorying AI-SaaS OAuth**: Inventorying broad-scope grants to third-party OAuth apps in the Google Workspace admin console, prioritizing apps individually authorized by employees outside IT management, has been recommended. Broad grants are candidates for revocation and re-granting at the scope needed.
+- **Credential operations**: Replacing long-lived static secrets in deploy environments with credentials limited in time and scope (AWS IAM roles, GitHub OIDC federation, secret managers fetched at runtime) has been pointed to as the direction.
+- **Cross-industry point**: The case has been described as one instance of a repeatable pattern, infostealer infection → OAuth token compromise → lateral move to downstream customers (the same shape as the 2024 Snowflake campaign), and whether AI productivity tools' broad, long-lived access should be treated in the same risk class as traditional cloud providers has become a point of debate.
 
 ## 6. Sources
 
@@ -111,4 +157,4 @@ By verifying the scope and validity of authorization as a proof before an operat
 - **BleepingComputer**: "Vercel confirms breach as hackers claim to be selling stolen data" (2026-04) — <https://www.bleepingcomputer.com/news/security/vercel-confirms-breach-as-hackers-claim-to-be-selling-stolen-data/>
 - **InfoStealers.com (Hudson Rock)**: "Breaking: Vercel Breach Linked to Infostealer Infection at Context.ai" (2026-04) — <https://www.infostealers.com/article/breaking-vercel-breach-linked-to-infostealer-infection-at-context-ai/>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/#authority), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

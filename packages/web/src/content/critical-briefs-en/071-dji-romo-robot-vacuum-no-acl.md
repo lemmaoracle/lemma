@@ -1,7 +1,7 @@
 ---
 brief_no: 71
-title: "1 つの認証で、7,000 台のロボット掃除機のカメラ・マイクに届いた（DJI ROMO） — クラウド基盤が、機体ごとの認可を分離せず、認証済みなら全機の映像・音声を購読できた構造（DJI / The Verge）"
-title_en: "DJI ROMO: one authenticated client reached 7,000 robot vacuums' cameras — the cloud didn't separate per-device authorization (No Broker ACL)"
+title: "DJI ROMO：1 つの認証済みの接続で、他人のロボット掃除機のカメラ・マイクに届いたと研究者が報告した(研究者の報告・Malwarebytes)"
+title_en: "DJI ROMO: A researcher reported that one authenticated connection reached other people's robot vacuum cameras and microphones (researcher's report, Malwarebytes)"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["agent-infrastructure", "attribute-proof-bypass"]
@@ -13,91 +13,134 @@ related_briefs: ["070-unitree-shared-key-robot-identity", "068-universal-robots-
 status: published
 gate: "permission-change"
 version: "1.0"
-og_lead_ja: "1 つの認証で 7,000 台のロボット掃除機のカメラ・マイクに到達 — DJI ROMO"
-og_lead_en: "One authenticated client reached 7,000 robot vacuums' cameras — DJI ROMO"
-gap_detected: "Responsible disclosure by researchers, reporting via the media, DJI's swift fix and bounty, and after-the-fact logs of which connection subscribed to what were all carried out and recorded."
-gap_missing: "There was no layer to check before access whether the party attempting to subscribe held authority over a given device, so a single authenticated connection passed straight through to every device."
-gap_fix: "Before access, independently verify with Lemma that this party holds legitimate authority over this device, and prevent it up front."
+og_lead_ja: "DJI ROMO：研究者の 1 つの接続に、約 7,000 台のロボット掃除機が応答したと報じられた"
+og_lead_en: "DJI ROMO: about 7,000 robot vacuums reportedly responded to one researcher's connection"
+layout: "report"
+sections: "proof"
+og_kicker_ja: "脆弱性の報告 · 家庭用ロボット"
+og_kicker_en: "VULNERABILITY · HOME ROBOTS"
+og_headline_ja: "研究者の 1 つの接続に\n他人の機体が応答したと報告\n<accent>約 7,000 台・24 か国以上</accent>"
+og_headline_en: "One login reached\nothers' robot vacuums,\na researcher reports.\n<accent>~7,000 units, 24+ countries</accent>"
+key_figures:
+  - value: "~7,000"
+    unit: "units"
+    label: "ROMO units reported to have responded to one researcher's connection (Malwarebytes and others)"
+    tone: "alert"
+  - value: "24+"
+    unit: "countries"
+    label: "Countries where responding units were located (Malwarebytes)"
+  - value: "02-08 → 02-10"
+    label: "According to reports, from DJI's initial fix to its supplementary fix"
+glossary:
+  - term: "MQTT broker"
+    desc: "A server that relays messages between devices and apps. Devices publish data to destinations called topics, and apps subscribe to topics to receive it."
+  - term: "ACL (access control list)"
+    desc: "A list that sets which parties may subscribe or publish to which topics."
+  - term: "Authentication vs authorization"
+    desc: "Authentication confirms who the connecting party is. Authorization decides what that party is allowed to do, and on which unit."
+insight:
+  slug: "authenticated-not-authorized-per-device"
+  label: "Authenticated, but no per-unit authorization"
+  quote: "Authenticating a connection without checking which unit it may see lets one connection reach every unit."
 industries: ["manufacturing"]
 operations: ["data-access"]
 controls:
   - slug: "ownership-check"
     item: "Confirm the party subscribing to a unit's feed actually owns that unit"
+takeaway: "One authenticated connection was reportedly able to subscribe to other units' video and audio. Before handing over data, check that the party holds permission for that unit."
+self_check: "For devices with cameras or microphones, have you confirmed with the vendor that its cloud never hands a user data from other users' units?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-When a researcher connected a homemade client to the DJI ROMO robot vacuum's cloud, ~7,000 other people's units (across 24+ countries) responded, exposing live camera video, microphone audio, and home maps. The MQTT broker had no ACL, so one authenticated connection — bound to no specific unit — could subscribe to every unit's topics. Responsible disclosure, a swift fix, and logs cannot confirm, before access, whether the subscribing party holds authority over a given unit. Authentication and per-device authorization were never separated or independently verified.
+The researcher reportedly did nothing more than connect to the cloud as a user, with an app he had built to drive his own unit. Authentication passed, but, according to the technical writeup, which units' data a connection could receive was not separated per unit. Fixes were rolled out, but some reported issues were said to be still unpatched at the time of reporting. <strong>Authenticating a connection without checking which unit it may see lets one connection reach every unit.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Subscribing to unit topics over one authenticated connection. Malwarebytes explained that the MQTT broker had no topic ACL, so an authenticated connection, bound to no specific unit, could also subscribe to other units' topics.
+- **What reached the receiving side**: In general, a broker that allows subscriptions on authentication alone receives the owner's subscription and an unrelated user's subscription as the same "authenticated subscription." According to the researcher's report, live camera video, microphone audio and floor-map data from each unit were reachable by an unrelated user's connection.
+- **Not disclosed**: Whether anyone other than the researcher received other people's unit data by the same route, and whether there is a record of which connection received what (the reports we consulted do not say).
 
-- **Target**: DJI's ROMO robot vacuum, and its device / phone app / cloud backend. A consumer embodied agent placed in the home, handling camera, microphone, and floor maps.
-- **Discovery / disclosure**: found by researcher Sammy Azdoufal. While reverse-engineering the DJI app's protocol (with AI coding tools) to drive his own ROMO with a PS5 controller, he noticed that when his homemade remote-control client connected to DJI's backend, many other units responded. Reported to DJI via The Verge.
-- **Scale**: ~7,000 ROMOs responded (at least 24 countries). Live camera video, microphone audio, and home-mapping data were reachable by an unrelated user.
-- **What it required**: not ownership of individual units, but the ability to connect to the backend as an "authenticated client." Authentication passed, but per-device authorization was not separated out.
-- **Response**: DJI shipped an initial fix on 2026-02-08 and a supplement on 02-10. It paid the finder a $30,000 bounty (for one of his findings); separately, some reported issues — including a PIN bypass on the camera feed — were reported as still unpatched at the time of reporting.
+## 3. What to check
 
-This incident shows a structure in which, because the cloud backend did not separate authentication from authorization and never verified per-device authorization, one authenticated connection reaches the sensors of the whole fleet. As this was a researcher's discovery rather than an external attack, we describe it as a sequence.
+Whatever the route, the condition for telling them apart is that the side handing over unit data checks, before handing it over, whether the receiving party is one the unit's owner has permitted.
 
-1. **A legitimate connection**: to operate his own unit, the researcher connects his homemade client to DJI's cloud backend (the MQTT broker) as an authenticated client.
-2. **Absence of an ACL**: the broker has no ACL, so the authenticated client — unbound to any specific unit — can subscribe to any unit's topics.
-3. **Reaching the fleet**: ~7,000 other units (24+ countries) respond to the connection. Each unit's live video, audio, and mapping data were reachable by the unrelated user's connection.
-4. **The missing authorization check**: the broker never verified "does this user have authority over *this one* unit." Authentication passed; per-device authorization did not exist.
-5. **Report and fix**: the researcher reports to DJI via The Verge; DJI fixes it in the 02-08 / 02-10 updates (an after-the-fact sequence that severs the reach).
+- **Who approves**: The unit's owner (the user), who permits, unit by unit, which accounts or devices may view it. The vendor provides a way to issue that permission per unit.
+- **Where it is checked**: The part of the cloud that relays a unit's video, audio, floor maps and commands (such as the MQTT broker). Before a subscription or command, it checks that the party holds permission for that unit, and does not pass subscriptions that lack it. Having passed authentication is not enough on its own.
+- **What is recorded**: Which party received which data from which unit, under which permission.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before handing over video and audio, that the party holds permission for that unit. Detection means noticing afterwards that other people's units were reachable. The dates below are the reported fix and report dates, not when other people's units became reachable.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before a subscription, check that the party holds permission for that unit</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>One authenticated connection received<br>other units' video and audio (researcher's report)</span></div>
+<div class="rx-zone det"><b>Detection · partial</b>The researcher found it; DJI rolled out fixes</div>
+<div class="rx-g g1"><div class="t">2026-02</div><b>Researcher finds it and tells DJI</b></div>
+<div class="rx-g g2"><div class="t">02-08</div><b>DJI rolls out an initial fix</b></div>
+<div class="rx-g g3"><div class="t">02-10</div><b>DJI completes a supplementary fix</b></div>
+<div class="rx-g g4"><div class="t">02-17</div><b>Press reports</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+The researcher found and reported it, and DJI rolled out fixes. But fixes come after discovery, and video and audio that have already been delivered cannot be taken back. Similar cases are the [DeepSeek database](/critical/briefs/057-deepseek-clickhouse-exposed-db/) (an unauthenticated database was exposed, so reaching it meant reading it) and [Unitree's robots](/critical/briefs/070-unitree-shared-key-robot-identity/) (every unit used the same key, with no per-unit key).
 
-- 2026-02 (prior): the researcher reverse-engineers the app's protocol to drive his ROMO with a PS5 controller, and discovers that on his client's connection many other units respond.
-- 2026-02-08: DJI deploys an initial fix.
-- 2026-02-10: DJI completes a supplementary fix.
-- 2026-02-17 onward: the researcher shares with The Verge, which confirms with DJI; established media report. DJI pays the finder a $30,000 bounty. Some reported issues remain unpatched at the time of reporting.
+## 4. What Lemma does
 
-> Note: This is a researcher discovery and responsible disclosure, not a condemnation of any actor. This Brief states the scale (~7,000 units, 24+ countries) and the fix dates as reported, and avoids assertion. The use of AI coding tools is a fact about the analysis method; this Brief's concern is the absence of authorization separation on the backend.
+**Lemma builds the check in section 03 into the part of the cloud that relays a unit's video, audio and commands.** It does not look for intrusions; it checks, before handing over data, that the subscribing party holds permission from that unit's owner.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **DJI**: resolved the ROMO MQTT broker's authorization-validation issue with an initial fix on 2026-02-08 and a supplement on 02-10, and paid the finder a $30,000 bounty (for one finding). Some reported issues, including a camera-feed PIN bypass, were reported as still unpatched at the time of reporting.
-- **Researcher / The Verge**: reported the finding to DJI via The Verge, establishing the responsible-disclosure path and surfacing the method and impact scope.
-- **For consumer-IoT operators / makers**: the need to separate authentication from authorization in cloud-dependent fleets, and to independently verify per-device authorization (which user has authority over which one unit) at the backend, became the talking point. Broker ACLs / topic isolation are the floor.
-- **A cross-industry issue**: as embodied agents enter homes and living space (vacuums, monitoring devices, etc.), how to independently verify per-device identity and authorization — together with [Brief 070](/critical/briefs/070-unitree-shared-key-robot-identity/) (device identity) — is being shared as a privacy-and-safety requirement.
+- **Industry · Manufacturing & critical infrastructure**: Organizations that build appliances or robots with cameras and microphones and deliver their video and audio to users through the cloud.
+- **Operation · Lookup & data access**: Making a unit's video, audio and floor-map data viewable from the user's app. How far an authenticated party's access extends across units is the deciding point.
 
-The absence of a design that does not mistake reachability for legitimate authority over a unit is not a problem of a specific manufacturer; it is increasingly shared as a cross-industry challenge for spreading cloud-connected embodied agents through society.
+### Current controls vs Lemma
 
----
+The route in this case is column 2 (subscribing to other units' video, audio and floor maps). Column 1, connecting to the cloud, is what the researcher did for his own unit, and authentication passed.
 
-## 4. Why it wasn't stopped
+| Control | Connecting to the cloud | Subscribing to other units' video, audio and floor maps |
+| --- | --- | --- |
+| User authentication | Effective | Not effective |
+| Broker topic ACL | Not relevant | Effective |
+| After-the-fact log analysis | Not relevant | Partial |
+| **Lemma (pre-execution check)** | Not relevant | Effective |
 
-The central **failure primitive is "the cloud backend did not separate 'authenticated?' from 'authorized over this unit?', and never independently verified per-device authorization."** That the MQTT broker has no ACL means "whoever passes authentication can subscribe to any unit's topics" — reachability had become access to every unit's sensors.
+User authentication confirms who the connecting party is, but does not decide which units that party may see. A broker topic ACL limits which topics each party can subscribe to; Malwarebytes explained that there was none. After-the-fact log analysis can, in general, reconstruct which connection subscribed to which topic, but cannot take back video and audio already delivered. Lemma checks, before a subscription, that the party holds permission issued by that unit's owner, and records that the check was made.
 
-It is the sister case to [Brief 070](/critical/briefs/070-unitree-shared-key-robot-identity/) (Unitree — every unit shares one hardcoded key, no per-device identity), forming a physical cluster of agent-authority cases. Where 070 was "no per-device selfhood (identity)," this incident differs in that **authentication worked, but per-device authorization was not separated** — the two are two sides of the same "per-device identity and authorization" question. It is nearly identical to [Brief 057](/critical/briefs/057-deepseek-clickhouse-exposed-db/) (an AI backend with no authentication, where reachability became total retrieval) in the structure where reachability and authorization aren't separated. It connects to [Brief 006](/critical/briefs/006-google-api-key-revocation-lag/) (a credential's revocation attribute not independently verified) in that the accessing party's attribute is not independently verified, and to [Brief 052](/critical/briefs/052-discord-age-verification-id-leak/) (raw IDs handed over for age verification leaked from third-party storage) in that consumers' sensitive data — here camera, mic, floor plan — turns into an exposure surface without being separated and protected.
+Note: Lemma's check works only where the vendor builds it into the part that relays a unit's video and audio, and makes owner permission issuable per unit. It passes if the owner's device or account, or the permission itself, is stolen. Other reported routes, such as the camera PIN bypass, each need their own fix. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-What this incident throws into relief is **how a backend independently verifies, per unit, the authorization of an embodied agent entering the home.** A robot vacuum is a living-space sensor with camera, mic, and floor map; if its per-unit authorization is not separated, one authenticated connection reaches another household's privacy. Being able to reach is different from holding legitimate authority over that unit, and only once per-unit authorization is independently verified before the action can home embodied agents be used with confidence.
+### Checklist
 
-Responsible disclosure by the researcher, the report via The Verge, and DJI's swift fix and bounty are indispensable for correcting the exposure, and this Brief does not negate that role. Rolling out the fix was an important check that severed the reach.
+Three things to confirm for organizations that build or deploy connected devices
 
-At the same time, server-side log monitoring and patches are no material for the backend to independently verify, per unit, **before the access**, "does the party now trying to subscribe hold authority over *this* unit?" The core of this incident is that the broker did not separate authentication from authorization and lacked the per-device authorization check itself. After-the-fact traffic analysis reconstructs "which connection subscribed to which topic," but is no material to independently verify, before the action, "was that subscription based on legitimate authority over this unit." Once it has reached live video/audio, the privacy exposure at that moment cannot be retroactively undone.
+- Does your product's cloud limit the units a connected party can subscribe to or control to the units that party is permitted to use?
+- Do you record which party received video or audio from which unit?
+- Do you have a channel for vulnerability reports from outside researchers, and a procedure for shipping fixes?
 
----
+## 5. Facts and timeline
 
-## 5. What proof would have changed
+- **Target**: DJI's ROMO robot vacuum, with its units, phone app and cloud backend. Placed in homes, it handles a camera, a microphone and floor maps.
+- **Discovery**: Researcher Sammy Azdoufal. While analyzing the app's communications with AI coding tools in order to drive his own ROMO with a PS5 controller, he reportedly noticed that when his homemade app connected to DJI's backend, many other units responded. He told DJI via The Verge.
+- **What was confirmed (researcher's report)**: About 7,000 ROMO units (in at least 24 countries) responded, and live camera video, microphone audio and floor-map data were reachable by an unrelated user.
+- **What it required**: Not owning individual units, but being able to connect to the backend as an "authenticated client."
+- **Explanation of the cause**: Malwarebytes explained that the MQTT broker had no topic ACL, so an authenticated connection, bound to no specific unit, could subscribe to any unit's topics.
 
-Pre-execution attestation treats access to a unit's sensors/topics not as "being authenticated" but as "an independently verifiable proof of authorization, by a subject holding legitimate authority over *this* unit." If actions like subscribing, operating, or pulling video are verified before access against the unit's specific identity and the grantor's authorization, then merely passing authentication no longer reaches other units' topics. Detecting reach (the detection-style "who connected") and proving per-unit authorization ("is this based on authority over this unit") are **complements**, not substitutes; only where the two overlap can home embodied agents be used with confidence (for verifying authorization independently at the moment of the act, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+### Timeline
 
-Against the detection–proof gap this incident exposed (the cloud backend not separating authentication from authorization and not independently verifying per-device authorization), Lemma proposes a design that backs access to a unit's sensors/operations not with "being authenticated" or "having reached" but with "an independently verifiable proof of authorization, by a subject holding legitimate authority over that unit."
+- **2026-02**: The researcher notices that many other units respond to his homemade app's connection, and tells DJI via The Verge.
+- **2026-02-08**: According to reports, DJI rolls out an initial fix.
+- **2026-02-10**: According to reports, DJI completes a supplementary fix.
+- **2026-02-17**: Malwarebytes and DroneXL report.
+- **2026-02-24**: PetaPixel reports.
+- **2026-03-10**: DroneDJ reports the fix and the bounty.
 
-- **Per-device authorization (proof-as-auth)**: independently verify actions like subscribing, operating, or pulling video, before access, against the unit's specific identity and the grantor's authorization. Replace "the fact of having authenticated" with a per-unit, per-action proof.
-- **Separating reachability from authorization**: break the assumption that "reached the backend = may access," separating reachability from authorization (connecting to the reach-equals-total-retrieval structure of [Brief 057](/critical/briefs/057-deepseek-clickhouse-exposed-db/)).
-- **Operated together with per-device identity**: handle each unit's unique selfhood ([Brief 070](/critical/briefs/070-unitree-shared-key-robot-identity/)) and authorization over that unit as one, severing the path by which one authenticated connection reaches the whole fleet.
-- **Selective disclosure**: without exposing unit/user internal data, disclose only the minimum — that "this subject holds legitimate authority over this unit" — reconciling independent verification with privacy protection.
+> The facts here rest on Malwarebytes' technical writeup and on reporting by PetaPixel, DroneXL and DroneDJ. This is a researcher's discovery and disclosure; this Brief blames neither a malicious actor nor the manufacturer. Scale and fix dates are stated as reported. The use of AI coding tools is a fact about the analysis method; this Brief's concern is how per-unit authorization was separated. What has not been disclosed does not mean no controls existed.
 
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this subscription / operation is based on legitimate authority over this unit," without depending on after-the-fact traffic analysis. Detection (after-the-fact analysis, fixes) works on correcting exposure; pre-execution attestation (independent verification of per-unit authorization) works on establishing trust in home embodied agents — each complementary to the other. For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/#authority) and [Trust402](https://lemma.frame00.com/trust402/).
+### Response after disclosure
 
----
+- **DJI**: According to reports, it resolved the ROMO MQTT broker's authorization-validation issue with an initial fix on 2026-02-08 and a supplementary fix on 02-10, and paid the finder a $30,000 bounty (for one finding).
+- **Remaining issues**: Some reported issues, including a camera-feed PIN bypass, were said to be still unpatched at the time of reporting (Malwarebytes, DroneXL).
 
 ## 6. Sources
 
@@ -105,3 +148,5 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 - **PetaPixel**: "Someone Remotely Accessed the Cameras in 7,000 DJI Robot Vacuums" (2026-02-24) — <https://petapixel.com/2026/02/24/someone-remotely-accessed-the-cameras-in-7000-dji-robot-vacuums/>
 - **DroneXL**: "DJI ROMO Security Breach: Researcher Remotely Accessed 7,000 Home Cameras — And One Hole Remains" (2026-02-17) — <https://dronexl.co/2026/02/17/dji-romo-security-breach/>
 - **DroneDJ**: "DJI fixes ROMO security bug that exposed thousands of homes" (2026-03-10, fix and bounty) — <https://dronedj.com/2026/03/10/dji-romo-security-bug-bounty/>
+
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

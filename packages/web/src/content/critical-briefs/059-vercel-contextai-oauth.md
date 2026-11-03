@@ -1,7 +1,7 @@
 ---
 brief_no: 59
-title: "AI ツールに渡した「すべて許可」の OAuth が、ベンダー侵害でそのまま侵入経路になった — 標準的に付与される広範・永続の OAuth が、行動ごとにスコープ・検証されない構造（Vercel / Context.ai）"
-title_en: "When \"Allow All\" OAuth to an AI Tool Becomes the Breach Path (Vercel / Context.ai)"
+title: "Vercel：従業員が AI ツール Context.ai に渡した OAuth が、ベンダーの侵害を経て社内への入口になった(Vercel 開示)"
+title_en: "Vercel: An employee's OAuth grant to the AI tool Context.ai became a way into internal systems after the vendor was breached (Vercel disclosure)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "attribute-proof-bypass"]
@@ -9,15 +9,37 @@ incident_date: 2026-04-19
 published: 2026-06-16
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
-related_briefs: ["029-github-dev-oauth-token", "033-f5-bigip-edge-pivot", "047-openclaw-agent-phishing", "006-google-api-key-revocation-lag"]
+related_briefs: ["064-salesloft-drift-oauth-salesforce", "029-github-dev-oauth-token", "033-f5-bigip-edge-pivot", "047-openclaw-agent-phishing", "006-google-api-key-revocation-lag"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "permission-change"
 version: "1.0"
-og_lead_ja: "AI ツールへの「すべて許可」OAuth が侵入経路に — Vercel / Context.ai"
-og_lead_en: "\"Allow all\" OAuth to an AI tool became the breach path — Vercel"
-gap_detected: "侵害された認証情報は、公開開示の 1 か月以上前に脅威インテリジェンスのフィードで特定できており、監視・ログも記録できていた。"
-gap_missing: "「いまこのアクセスは本来の許可の範囲内か」を行動の前に確かめる層が無く、一度「すべて許可」した同意の内側で動くアクセスは素通りした。"
-gap_fix: "高リスク行動の前に「この操作は、この主体に、この範囲で認可されており、現に有効である」ことを Lemma で独立検証して、事前に防ぐ。"
+og_lead_ja: "Vercel：従業員が AI ツール Context.ai に「すべて許可」で渡した OAuth が、Context.ai の侵害を経て社内システムへの入口になったと開示"
+og_lead_en: "Vercel: an employee's \"Allow all\" OAuth grant to the AI tool Context.ai became a way into internal systems after Context.ai was breached, Vercel disclosed"
+og_kicker_ja: "サイバー攻撃事例 · サプライチェーン攻撃"
+og_kicker_en: "CYBERATTACK · SUPPLY CHAIN"
+og_headline_ja: "AI ツールに渡した\nOAuth が、ベンダーの\n侵害を経て入口に。\n<accent>Vercel が 4 月に開示</accent>"
+og_headline_en: "An OAuth grant to\nan AI tool became\na way in via its vendor.\n<accent>Vercel disclosed it.</accent>"
+key_figures:
+  - value: "02 → 04-19"
+    label: "Context.ai の従業員が infostealer に感染してから（Hudson Rock）、Vercel が公表するまで（2026 年）"
+  - value: "1 か月以上"
+    label: "Hudson Rock が、公表より前に、感染した従業員の認証情報を自社のフィードで特定していた期間"
+  - value: "40 以上"
+    unit: "ツール"
+    label: "Context.ai が OAuth・API で接続する企業ツールの数"
+glossary:
+  - term: "OAuth トークン"
+    desc: "利用者に代わって、アプリが別のサービスへ接続するための通行証。有効なあいだは、パスワードを入れ直さなくても、付与された権限で操作できる。"
+  - term: "infostealer"
+    desc: "感染した端末から、保存された認証情報やセッションを抜き取るマルウェア。今回は Lumma Stealer（Hudson Rock）。"
+  - term: "sensitive 環境変数"
+    desc: "Vercel で、値を画面から取り出せないよう暗号化する指定。指定は任意で、指定しない値は読み取れる形で保存される。"
+insight:
+  slug: "standing-ai-tool-oauth"
+  label: "同意済みの OAuth だけで通るアクセス"
+  quote: "AI ツールに一度広く許した OAuth は、トークンが有効なかぎり、誰が使っても、許した本人のアクセスとして届く。"
 industries: ["ai", "developers"]
 operations: ["account-admin"]
 controls:
@@ -26,82 +48,107 @@ controls:
   - slug: "limit-and-revoke"
     item: "OAuth の許可は操作の範囲に絞り、失効したトークンが通らないようにする"
 attack_method: "supply-chain"
+impact: "社内システムと、一部の顧客の認証情報に不正アクセス（Vercel の開示）"
+takeaway: "AI ツールに渡した OAuth のトークンでのアクセスが、許した範囲の操作かを実行の前に照合する層が働かず、アクセスは正規のものとして通った。"
+search_title: "Vercel／Context.ai の OAuth 侵害と対策"
+search_description: "Vercel は、従業員が AI ツール Context.ai に渡した OAuth が、Context.ai の侵害を経て社内への入口になったと開示した。何が通ったか、何を照合するか、対策を整理。"
+self_check: "従業員が AI ツールに個別に許した OAuth の範囲を、組織で把握しているか。"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. 要点
 
-2026 年 4 月、Vercel は、従業員が AI ツール Context.ai に「すべて許可」で渡した OAuth が、ベンダー侵害で侵入経路になったと開示した。盗まれたトークンによる操作は形式上正規のアクセスで、付与済みの広範スコープ内に起きるため、失効やインテリジェンスを事後に強化しても止まらない。欠けているのは、行動の前に「この操作はこの主体に、この範囲で認可され、現に有効か」を独立検証する層である。
+攻撃者は、Vercel の従業員のパスワードではなく、従業員が AI ツールに企業の Google Workspace を「すべて許可」で接続したときの OAuth を使った。トークンは AI ツールのベンダーの側から手に入れられ、従業員の Workspace の ID を経て、Vercel の社内システムとプロジェクトの環境変数の画面に届いた（Vercel の開示と CSA の分析）。<strong>AI ツールに一度広く許した OAuth は、トークンが有効なかぎり、誰が使っても、許した本人のアクセスとして届く。</strong>
 
----
+## 2. 通った操作
 
-## 2. 何が起きたか
+- **通った操作**: 侵害されたトークンでの、Vercel の従業員の Google Workspace を経た社内システムへのアクセスと、「sensitive」に指定されていない環境変数（API 鍵・DB の認証情報など）の読み取り（2026 年 4 月）。到達はチームの範囲ごとで、プラットフォーム全体の一括の露出ではない（Vercel）。
+- **通らなかったもの**: 「sensitive」に指定された環境変数。画面からの取得を防ぐ暗号化がかかっており、Vercel はそれらへのアクセスの証拠は無いとしている。
+- **受け付けた側に届くもの**: 一般に、同意済みの OAuth トークンでのアクセスは、パスワードの入力を経ない、利用者に代わる正規のアクセスとして届く。トークンを使っているのが AI ツールか、トークンを手に入れた別の主体かは、受け付けた時点では区別がつかない。
+- **公表されていないこと**: Context.ai の中での感染の経路とトークンの掌握の詳しい経緯。BreachForums での「内部 DB・API 鍵・ソースコードを含む」という主張の真偽と全体の範囲（Vercel は調査中で、独立に確認していない）。
 
-- **開示**: 2026-04-19、Vercel が社内システムおよび限定的な顧客認証情報への不正アクセスを開示（CEO Guillermo Rauch が同日 X で攻撃連鎖を説明）
-- **Context.ai の性質**: 40 以上の企業ツールに OAuth/API で接続し、組織データを処理してコンテンツを生成するエンタープライズ AI 基盤。製品の価値提案そのものが、企業 ID 基盤への広範なアクセスを前提とする（設計上、高権限の第三者）
-- **到達対象**: Vercel のプロジェクト設定および環境変数管理画面。攻撃者は「sensitive」に分類されていない（=読み取り可能な形式で保存された）環境変数にアクセスした。「sensitive」指定の変数は UI からの取得を防ぐ暗号化が施されており、Vercel はそれらへのアクセスの証拠はないとしている。到達はチームスコープ単位で、プラットフォーム全体の一括露出ではない
-- **攻撃者の主張**: ShinyHunters を名乗る攻撃者が 2026-04-19 頃に BreachForums へ投稿。内部 DB・API 鍵・GitHub/NPM トークン・ソースコード等を含むとし、証拠として約 580 名分の Vercel 従業員記録（氏名・メール・アカウント状態・活動タイムスタンプ）を提示、データを 200 万ドルで販売すると主張した。なお ShinyHunters は関与を否定しており（模倣または分派の可能性、技術的裏付けはなし）、Vercel は調査中で主張の全範囲は独立検証していない
+## 3. 何を照合するか
 
-本事象は、AI ツールへ付与された広範・永続の OAuth が、ベンダー側の侵害を起点に下流へ連鎖する構造を示す。経路は明確な三段のホップを踏む。
+経路を問わず区別できる条件は、AI ツールからのアクセスを受け付ける側が、その操作が許した種類の操作か、トークンがいまも有効かを、実行する前に、トークンを持っていることとは別に照合することである。
 
-1. **第 1 ホップ — AI ベンダーのエンドポイント侵害**: Context.ai 従業員が infostealer に感染。Google Workspace を含む複数の認証情報と、Context.ai の OAuth アプリ管理環境への管理者アクセスが窃取される
-2. **第 2 ホップ — OAuth トークンの掌握**: 攻撃者が Context.ai の AWS 環境と OAuth 認可基盤を掌握。「すべて許可」で同意したユーザーに代わり、有効な OAuth トークンを生成・再利用できる状態になる。トークンはパスワード再入力を要さない、立ったままの（standing）アクセスを意味する
-3. **第 3 ホップ — 下流 Vercel への横展開**: Vercel 従業員が Context.ai に企業 Workspace を広範な OAuth で接続していたため、攻撃者はそのトークンで従業員の Workspace ID を経由し、Vercel 社内システムへ。プロジェクト設定の環境変数管理画面に到達し、「sensitive」未指定で読み取り可能な API 鍵・DB 認証情報を取得した
+- **誰が承認を出すか**: AI ツールに企業の ID をつなぐことを許す組織の管理者。つなぐときに、AI ツールに許す操作を種類で決める。ツールの機能に要るメールや文書の読み取りは可、社内システムの設定や秘密の値の読み出しは不可、のように。同意画面で「すべて許可」を押した広さだけでは、この区別はつかない。
+- **どこで照合するか**: Workspace や社内システムが、AI ツールのトークンからの操作を受け付ける処理。決めた種類に入るか、トークンが失効していないかを照合し、入らなければ通さない。
+- **何が残るか**: どのトークンが、どの許可で、どの操作をしたかの記録。止めた操作と通した操作を、AI ツールとは別の場所に、後から第三者に示せる形で残す。
 
-補助的な要因として、**シークレット分類の落差**がある。Vercel の「sensitive 環境変数」指定はビルド実行時のみ読める暗号化を施すが、これはオプトインであり、既定では環境変数値は読み取り可能な形式で保存される。顧客が事前に「sensitive」を指定していなければ、プロジェクト権限を得た者——OAuth トークン侵害で到達した攻撃者を含む——に値が読まれる。Vercel は現在、本番/プレビュー環境の新規変数を既定で sensitive にするチーム方針をサポートしている。
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
+<p class="rx-ex-cap">実行の前の照合＝AI ツールのトークンからの操作を実行する前に、許した種類の操作か、トークンが有効かを照合し、記録に残すこと。検知＝漏えいした認証情報や侵害を後から見つけ、トークンを失効させ、値を入れ替えること。下の日付は、Vercel・Hudson Rock・CSA の公表と分析にある月日である。</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>実行の前に、許した種類の操作か、トークンが有効かを照合する</div>
+<div class="rx-zone gapz"><b>確認されたこと</b><span>社内システムと一部の顧客の認証情報に不正アクセス（Vercel）<br>「sensitive」でない環境変数が読まれた</span></div>
+<div class="rx-zone det"><b>検知 · 特定と失効</b>漏えいした認証情報を特定し、トークンを失効させ、値を入れ替える</div>
+<div class="rx-g g1"><div class="t">02</div><b>Context.ai の従業員が infostealer に感染</b></div>
+<div class="rx-g g2"><div class="t">03</div><b>Context.ai の AWS 環境に不正アクセス</b></div>
+<div class="rx-g g3"><div class="t">04</div><b>トークンで Vercel の社内へ</b></div>
+<div class="rx-g g4"><div class="t">04-19</div><b>Vercel が公表</b></div>
+</div>
+</figure>
 
----
+検知の材料はあった。Hudson Rock は、公表の 1 か月以上前に、感染した従業員の認証情報を自社のフィードで特定していた。ただ、それをトークンの失効につなぐのは後の対応で、トークンが有効なあいだ、アクセスは付与済みの広い範囲の内側の正規のアクセスとして通った。同じように、同意済みの連携の OAuth トークンが入口になった事案に [Salesloft Drift](https://lemma.frame00.com/ja/critical/briefs/064-salesloft-drift-oauth-salesforce/)（連携アプリのトークンで各社の Salesforce を照会）と [github.dev](https://lemma.frame00.com/ja/critical/briefs/029-github-dev-oauth-token/)（範囲の広すぎる OAuth トークンの窃取）があり、保存された認証情報での横展開では [F5 BIG-IP](https://lemma.frame00.com/ja/critical/briefs/033-f5-bigip-edge-pivot/)、失効の遅れでは [Google API キー](https://lemma.frame00.com/ja/critical/briefs/006-google-api-key-revocation-lag/)（削除の後も有効だった）とつながる。
 
-## 3. 時系列 — 公表と対応
+## 4. Lemma でできること
 
-- 2026-02: Context.ai 従業員が Lumma Stealer に感染（Hudson Rock によれば感染経路は同従業員による Roblox 関連スクリプト/ツールの個人ダウンロード）。Google Workspace・Supabase・Datadog・Authkit 等の認証情報が窃取され、Context.ai 自身の OAuth アプリ管理環境への管理者アクセスを含んでいた
-- 2026-03: Context.ai が AWS 環境への不正アクセスと、一部利用者の OAuth トークン侵害の可能性を後に開示。「すべて許可」で付与された OAuth アプリの認可基盤を攻撃者が掌握し、同意済みユーザーに代わって有効なトークンを生成・再利用しうる状態に
-- 2026-04: 攻撃者が侵害トークンで Vercel 従業員の Google Workspace を経由し、社内環境変数管理画面に到達
-- 2026-04-19: Vercel が公開開示。ShinyHunters を名乗る攻撃者が BreachForums に投稿、200 万ドルでの販売を主張
+**Lemma は、03 の照合を、AI ツールのトークンからの操作を受け付ける側に組み込む。** 侵入を見つけるのではなく、AI ツールの操作が、つなぐときに許した種類に入るか、トークンがいまも有効かを、実行する前に照合する。
 
-> 注: Context.ai 内部の感染経路・トークン掌握の詳細、および BreachForums のデータ主張の真偽は調査の進行に依存するため、本文では断定しない。
+### 注意したい業界・業務
 
-公表後の対応と業界の動きは次のとおり。
+- **業界 · AI導入（業種横断）**: メール・文書・社内の知識を横断して読み書きする AI ツールを、企業の ID につないでいる組織。ツールの機能が広い OAuth の範囲を求めるので、ベンダー側の侵害ひとつで、つないだ組織の ID にまで届きうる。調達の評価が細かくても、同意画面は日々の導入の一手として通りやすい。
+- **業界 · 開発者・エージェント運用**: デプロイの環境に、API 鍵や DB の認証情報を環境変数として置いている開発の組織。プロジェクトの権限を得た者に、読み取れる形の値が読まれる。
+- **業務 · アカウント・権限の管理**: 従業員が IT の管理の外で、第三者の OAuth アプリに企業の ID への広い権限を与える場面。
 
-- **Vercel**: 4 月 19 日に開示し調査を継続。顧客に対し、活動ログの確認、シークレットの「sensitive」指定への即時移行、非 sensitive な値のローテーションを推奨。本番/プレビュー環境の新規変数を既定で sensitive にするチーム方針を提供
-- **AI SaaS 連携の OAuth 監査**: Google Workspace 管理コンソールで第三者 OAuth アプリの広範スコープ付与を棚卸しし、IT 管理外で従業員が個別に認可したアプリを優先的に見直す動きが推奨されている。広範スコープの付与は失効・再プロビジョニング（必要最小限のスコープでの再付与）の対象
-- **認証情報の運用**: deploy 環境の長期間有効な静的シークレットを、AWS IAM ロール・GitHub OIDC フェデレーション・実行時取得のシークレットマネージャ等の時間/スコープ限定の認証情報へ置き換える方向。単一トークン窃取の被害範囲を構造的に狭める
-- **業界横断の論点**: 本事案は、infostealer 感染 → OAuth トークン侵害 → 下流顧客への横展開という反復可能なパターンの一例であり（2024 年の Snowflake キャンペーンと構造的に同型）、AI 生産性ツールの広範・永続アクセスを、従来のクラウド事業者と同等のリスク区分で扱う必要性が論点になっている
+### いまの対策と Lemma の違い
 
-AI ツールへの OAuth 付与を「立ったままの権限」ではなく「監視され失効可能な、行動ごとにスコープされた認可」として扱う設計の不在は、特定ベンダーの問題ではなく、AI SaaS を採用する組織横断の運用課題として残っている。
+今回の経路は、付与済みの広い範囲の中で、有効なトークンで社内システムと環境変数に届いたアクセスである（AI ツールの用途を超える操作なので、主に 2 列目）。3 列目の、失効させたトークンでの操作は、今回の公表には出てこない。
 
----
+| 対策 | 有効なトークンでの、AI ツールの用途の範囲の操作 | 有効なトークンでの、AI ツールの用途を超える操作（社内システム・秘密の値） | 失効させたトークンでの操作 |
+| --- | --- | --- | --- |
+| 従業員の多要素認証（MFA） | 関係しない | 関係しない | 関係しない |
+| 第三者 OAuth アプリの棚卸し・範囲の絞り込み | 効かない | 一部 | 関係しない |
+| 環境変数の「sensitive」指定 | 一部 | 一部 | 一部 |
+| 漏えいした認証情報の特定と、トークンの失効 | 一部 | 一部 | 効く |
+| **Lemma（実行の前の照合）** | 効かない | 効く | 効く |
 
-## 4. なぜ止まらなかったか
+多要素認証は、トークンでの操作がパスワードの入力を経ないので、この経路に関係しない。棚卸しは、AI ツールが持つ権限の広さを絞れるが、絞った範囲の中の操作は、トークンを持つ者なら誰が実行しても通る。「sensitive」指定は、指定した値を画面から読めなくするが、指定は任意で、指定していない値は守らない。漏えいの特定と失効は、以後の操作を止めるが、失効までの操作は止めず、読まれた値は戻らない。Lemma は、AI ツールの用途を超える操作と、失効したトークンでの操作を、実行の前に照合して止める。
 
-中心的な<strong>失敗 primitive は「AI ツールに付与される OAuth が、行動ごとにスコープ・認可・検証される動的な権限ではなく、広範かつ永続の立ったままの権限（standing authority）として存在し続ける」</strong>点にある。AI 生産性ツールは、その機能要件（メール・ドキュメント・社内ナレッジの横断的な読み書き）ゆえに、構造的に広範な OAuth スコープを要求する。ユーザーが企業 ID でそれを認可した瞬間、自分のアクセス姿勢をベンダーのインフラへ——そして将来そのベンダーを侵害する攻撃者へ——延長することになる。
+注：Lemma の照合が働くのは、AI ツールに許す操作を種類で決め、Workspace や社内システムがトークンからの操作を受け付ける処理に照合を組み込み、トークンの有効性を操作の時点で確認できる場合に限る。決めた種類の中の操作が悪用された場合は、通ってしまう。許す種類の決め方が緩ければ、緩いまま通る。Lemma は、環境変数の値を暗号化したり、入れ替えたり、消したりはしない。表は何を照合しているかの比較で、今回の事案で止まったかどうかを示すものではない。Lemma は、侵入を検出・防止するものではない。
 
-[Brief 029](https://lemma.frame00.com/ja/critical/briefs/029-github-dev-oauth-token/)（github.dev で過剰スコープの OAuth トークンが窃取された）と同じく、「トークンが行為の範囲にスコープされていない」構造である。029 が単一サービス内の過剰スコープだったのに対し、本事象は **AI ツールという高権限の第三者を経由した、組織横断の standing token** という別軸を加える。また [Brief 033](https://lemma.frame00.com/ja/critical/briefs/033-f5-bigip-edge-pivot/)（F5 BIG-IP）が示した「位置的信頼＋保存された認証情報による横展開」と同型の問題が、ここではネットワーク機器ではなく AI SaaS 連携の OAuth 信頼面で再現している。共通するのは、**ある主体のアクセスが、その都度の認可ではなく、過去に一度与えられた広範な信頼に依存している**ことだ。
+### 点検チェックリスト
 
-AI ツールへの OAuth 付与は、調達時のベンダーリスク評価が詳細でも、OAuth 同意画面そのものは「日常的なオンボーディングの一手」として素通りされがちで、評価プロセスを迂回する ID ブリッジを作り出す。権限を与えた従業員が、雇用主に代わってその水準のアクセスを付与する権限を持っていたとは限らない。
+AI ツールにつないだ企業の ID について、組織で確認する 3 項目
 
-infostealer インテリジェンスフィード、OAuth 付与の監査、egress 監視、EDR は、本事案の各段で機能しうる層であり、本 Brief がそれらの役割を否定するものではない。実際、Hudson Rock は Context.ai 従業員の認証情報を公開開示の 1 か月以上前に自社フィードで特定していた。検出能力は存在した。
+- AI ツールに与えた OAuth の範囲を定期的に見直し、広すぎる付与を必要な範囲で付け直しているか。
+- デプロイの環境の API 鍵や DB の認証情報は、画面から読めない形で保管し、期限や範囲の限られた認証情報に置き換えているか。
+- つないだ AI ツールのベンダーが侵害を公表したとき、そのトークンを失効させ、読まれた可能性のある値を入れ替える手順と担当が決まっているか。
 
-一方で、検出は「いまこのトークンで行われているアクセスが、本来の認可の範囲内か」を、**アクセスの実行前に**独立して立証する材料にはならない。攻撃者の操作は、同意済みユーザーに代わって発行された有効な OAuth トークンによる、形式上は正規のアクセスである。Workspace から Vercel への横展開も、付与済みの広範スコープの内側で起きるため、トークンの有効性検査では止まらない。Hudson Rock の事例が示すのは、欠けていたのが検出能力ではなく、**インテリジェンスを「立ったままの権限の即時失効」へ接続するワークフロー**だったことだ。監査の観点でも、事後に「どのトークンが・どの認可の範囲で・どの行動を実行したか」を独立に示す証跡は、各サービスのアクセスログの突合以上には残りにくい。
+## 5. 事実と時系列
 
-infostealer 感染や OAuth トークンの侵害を事後に検知し、漏えい認証情報を失効・ローテーションする検知・修正（detection）と、行動の前に主体・スコープ・認可の有効性を独立検証する事前証明（pre-execution attestation）は代替ではなく **補完** の関係にある。前者は侵害の発見と被害の収束に、後者は侵害された standing token がそのまま下流の侵入権限に転化する連鎖の遮断に、それぞれ働く。
+- **開示**: 2026 年 4 月 19 日、Vercel が社内システムと、限られた顧客の認証情報への不正アクセスを開示した。CEO の Guillermo Rauch が、同じ日に X で攻撃の連鎖を説明した。
+- **Context.ai**: 40 以上の企業ツールに OAuth・API で接続し、組織のデータを処理してコンテンツを作るエンタープライズ向けの AI 基盤。機能そのものが、企業の ID 基盤への広いアクセスを前提にする。
+- **到達した範囲**: Vercel のプロジェクトの設定と、環境変数の管理の画面。攻撃者は「sensitive」に指定されていない（読み取れる形で保存された）環境変数にアクセスした。到達はチームの範囲ごとで、プラットフォーム全体の一括の露出ではない（Vercel）。
+- **侵入の経路**: Context.ai の従業員の infostealer 感染で、Google Workspace などの認証情報と、Context.ai の OAuth アプリの管理環境への管理者のアクセスが盗まれた。攻撃者は Context.ai の AWS 環境と OAuth の認可基盤を押さえ、「すべて許可」で同意した利用者に代わって有効なトークンを作り、再び使える状態になった。Vercel の従業員が企業の Workspace を Context.ai に広い OAuth でつないでいたため、そのトークンで従業員の Workspace の ID を経て Vercel の社内に届いた（Vercel・CSA・Hudson Rock の公表と分析）。
+- **攻撃者の主張**: ShinyHunters を名乗る者が、2026 年 4 月 19 日ごろ BreachForums に投稿し、内部 DB・API 鍵・GitHub/NPM のトークン・ソースコードなどを含むとして、データを 200 万ドルで売ると主張した。証拠として、約 580 名分の Vercel の従業員の記録（氏名・メール・アカウントの状態・活動の時刻）を示した。ShinyHunters は関与を否定している（模倣か分派の可能性があり、技術的な裏付けは無い）。
+- **環境変数の保管**: Vercel の「sensitive」指定は、ビルドの実行のときだけ読める暗号化をかけるが、指定は任意で、既定では値は読み取れる形で保存される。
 
----
+### 時系列
 
-## 5. 証明があれば、何が変わるか
+- **2026-02**: Context.ai の従業員が Lumma Stealer に感染した（Hudson Rock によれば、従業員が個人で Roblox 関連のスクリプト・ツールをダウンロードしたのが経路）。Google Workspace・Supabase・Datadog・Authkit などの認証情報と、Context.ai の OAuth アプリの管理環境への管理者のアクセスが盗まれた。
+- **2026-03**: Context.ai の AWS 環境に不正アクセスがあった。Context.ai は後に、これと一部の利用者の OAuth トークンが侵害された可能性を開示した。
+- **2026-04**: 攻撃者が侵害されたトークンで Vercel の従業員の Google Workspace を経て、社内の環境変数の管理の画面に届いた。
+- **2026-04-19**: Vercel が公表した。ShinyHunters を名乗る者が BreachForums に投稿し、200 万ドルでの販売を主張した。
 
-事前証明（pre-execution attestation）は、AI ツールへの権限付与を「広範・永続の同意」ではなく、行動ごとにスコープされ独立検証可能な認可として扱う設計を採る（業界の標準化文脈でも、ユーザー OAuth のパススルーを避け、RFC 8693 のトークン交換で操作ごとにスコープされた・監査可能なトークンへ変換する方向が示されている）。proof が「この操作は付与者の認可の範囲内であり、現に有効である」ことを満たさなければ、アクセスは実行前に block される。
+> 経路の三段（ベンダーの端末の感染、OAuth の認可基盤の掌握、Vercel の社内への横展開）は、Vercel・CSA・Hudson Rock の公表と分析に拠る。感染の経路（Roblox 関連のダウンロード）と、公表の 1 か月以上前の認証情報の特定は Hudson Rock の見立てである。BreachForums のデータの主張は攻撃者側のもので、Vercel は全体の範囲を独立に確認していない。Context.ai の中での感染とトークンの掌握の詳しい経緯は、調査の進み具合による。公表されていないことは、対策が無かったことを意味しない。
 
-本事象で露呈した落差 — AI ツールへの広範・永続の OAuth が、行動ごとにスコープ・認可・検証されないまま立ったままの権限として存在する — に対し、Lemma はツールやエージェントの行動を「鍵の提示」ではなく「行動ごとにスコープされ独立検証可能な認可の証明」として裏づける設計を提示している。
+### 公表後の対応
 
-- **行動ごとのスコープ**: 付与時の広範な同意ではなく、操作の単位で「この行動は付与者の認可の範囲内か」を証明として検証し、広範スコープの素通りを許さない
-- **有効性の事前検証**: 実行前に「その認可が現に有効か」を独立検証し、侵害・失効済みのトークンが standing access として通り続ける状態を断つ
-- **鍵を送らない認可**: 長期間有効な静的トークンの提示ではなく証明の提示へ移行し、トークン窃取がそのまま下流の侵入権限に転化しないようにする
-- **選択的開示**: 「行動が認可の範囲内であった」ことだけを最小限で証明し、企業 ID 基盤やデータ本体は外部に出さない
-
-付与時の広範な同意ではなく操作の実行前に認可の範囲と有効性を証明として検証することで、ベンダー侵害が standing token を経由してそのまま下流の侵入権限に転化する連鎖を断つ。検出（事後の侵害発見・失効）と事前証明（行動前の認可検証）は補完的に働く。
-
----
+- **Vercel**: 4 月 19 日に開示し、調査を続けている。顧客に、活動の記録の確認、秘密の値の「sensitive」指定への移行、「sensitive」でない値の入れ替えを勧めた。本番・プレビュー環境の新しい変数を既定で「sensitive」にするチームの方針を用意した。
+- **AI SaaS の OAuth の棚卸し**: Google Workspace の管理コンソールで、第三者 OAuth アプリへの広い範囲の付与を棚卸しし、IT の管理の外で従業員が個別に許したアプリを優先して見直すことが勧められている。広い付与は、失効させ、必要な範囲で付け直す対象になる。
+- **認証情報の運用**: デプロイの環境の長く有効な静的な秘密の値を、AWS IAM ロール・GitHub OIDC の連携・実行時に取りに行くシークレットマネージャなど、時間と範囲の限られた認証情報に置き換える方向が示されている。
+- **業界横断の論点**: infostealer 感染 → OAuth トークンの侵害 → 下流の顧客への横展開という、くり返し起こりうる型の一例とされ（2024 年の Snowflake のキャンペーンと同じ形）、AI の生産性ツールの広く長いアクセスを、従来のクラウド事業者と同じリスクの区分で扱うべきかが論点になっている。
 
 ## 6. Sources
 
@@ -111,4 +158,4 @@ infostealer 感染や OAuth トークンの侵害を事後に検知し、漏え�
 - **BleepingComputer**: "Vercel confirms breach as hackers claim to be selling stolen data"（2026-04）— <https://www.bleepingcomputer.com/news/security/vercel-confirms-breach-as-hackers-claim-to-be-selling-stolen-data/>
 - **InfoStealers.com（Hudson Rock）**: "Breaking: Vercel Breach Linked to Infostealer Infection at Context.ai"（2026-04）— <https://www.infostealers.com/article/breaking-vercel-breach-linked-to-infostealer-infection-at-context-ai/>
 
-参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/#authority)、[Trust402](https://lemma.frame00.com/ja/trust402/)
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)
