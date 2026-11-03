@@ -1,7 +1,7 @@
 ---
 brief_no: 5
-title: "Noroboto 攻撃 — フォント偽装による AI 文書レビューの入力 integrity 偽装"
-title_en: "Noroboto: embedded \"lying fonts\" made AI's document review read different text — input-integrity forgery"
+title: "Noroboto：埋め込みフォントの偽装で、AI の文書レビューに別の文章を読ませうることが示された(Tritium Legal Technologies)"
+title_en: "Noroboto: Embedded \"lying fonts\" could make an AI document review read different text (Tritium Legal Technologies)"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["data-provenance"]
@@ -9,94 +9,139 @@ incident_date: 2026-05-25
 published: 2026-05-30
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
-related_briefs: ["003-starlette-badhost", "019-construction-engineer-qualification-fraud"]
+related_briefs: ["024-invisible-unicode-instruction-injection", "003-starlette-badhost", "019-construction-engineer-qualification-fraud"]
 version: "1.0"
 status: published
+layout: "report"
+sections: "proof"
 gate: "intake"
-og_lead_ja: "埋め込みフォント偽装で AI 文書レビューの入力を改ざん — Noroboto 攻撃"
-og_lead_en: "Embedded font forgery silently rewrote what the AI read — Noroboto attack"
-gap_detected: "Output-side AI safety measures (such as hallucination detection) remain usable as a layer that inspects the quality of decisions after the fact."
-gap_missing: "Because the AI processes the given string normally, there was no layer to confirm before the decision whether what the AI read matched what the human saw."
-gap_fix: "Before the AI makes a decision, independently verify with Lemma that the input the AI read matches what the human sees on screen, and prevent it up front."
+og_lead_ja: "Noroboto — 埋め込みフォントの偽装で、人が画面で読む文章と AI が抽出する文字列を別にできることを、Tritium Legal Technologies のミラー氏が公開した"
+og_lead_en: "Noroboto — Tritium Legal Technologies' Drew Miller showed that an embedded font can make the text a person reads on screen differ from the string an AI extracts"
+og_kicker_ja: "攻撃の実証 · AI の文書レビュー"
+og_kicker_en: "ATTACK RESEARCH · AI DOCUMENT REVIEW"
+og_headline_ja: "偽装フォントで、\nAI が別の文章を\n読むと研究者が報告。\n<accent>画面では正常に見える</accent>"
+og_headline_en: "Lying fonts made AI\nread different text,\na researcher reports.\n<accent>Looks normal on screen.</accent>"
+key_figures:
+  - value: "Maryland → Delaware"
+    label: "An example of what a person sees on screen versus the string the AI extracts. The glyphs render normally"
+    tone: "alert"
+  - value: "3"
+    unit: "texts"
+    label: "The texts Miller proposed checking for a match in advance (what is visible on screen, the Unicode string in the file, and the text the AI processes)"
+  - value: "05-25"
+    label: "The day GIGAZINE published a Japanese explainer. The technique was disclosed in May 2026 (Tritium's official blog)"
+glossary:
+  - term: "Embedded font"
+    desc: "A font shipped inside a document file such as a PDF, so the text displays the same way even where the reader lacks that typeface."
+  - term: "Code point and glyph"
+    desc: "A code point is the number Unicode assigns to a character. A glyph is the shape drawn on screen. The font decides which shape is drawn for each number."
+  - term: "Text extraction"
+    desc: "Pulling the string out of a file before an AI or a document-review system reads it. It reads the character numbers in the file, not how they look on screen."
+insight:
+  slug: "rendered-vs-extracted-text"
+  label: "On-screen text vs the string the AI reads"
+  quote: "An AI reads the string extracted from the file, not the glyphs on screen, so unless that string is checked against the text a person sees, the AI can base its judgment on different text even in a document a person has looked over."
 industries: ["ai"]
+operations: ["approval"]
 controls:
   - slug: "ownership-check"
     item: "Confirm the text the AI extracted matches what a human sees on screen"
 attack_method: "ai-misuse"
+takeaway: "An embedded lying font can make the on-screen text and the string the AI reads differ, so check that they match before using the AI's conclusion."
+self_check: "When an AI reviews a document, can you check, before using its conclusion, that the string it reads matches the text a person sees on screen?"
 countries: ["global"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-Noroboto (the Lying Fonts attack) was disclosed: a malicious font embedded in a document shifts the mapping between Unicode code points and rendered glyphs, decoupling what a human reads on screen from the string an AI extracts. Because the AI reasons correctly over the input it receives, output-side hallucination detection is unlikely to fire. What was missing is a layer that, before judgment, independently verifies whether what the AI read matches what the human saw.
+Drew Miller, founder of Tritium Legal Technologies, showed that a font embedded in a document can shift the mapping between Unicode code points and the glyphs drawn on screen, so that the text a person reads on screen and the string an AI extracts become different. In Miller's testing, some AI platforms returned incorrect answers. Because the AI reasons correctly over the string it receives, output-side detection is unlikely to work. <strong>An AI reads the string extracted from the file, not the glyphs on screen, so unless that string is checked against the text a person sees, the AI can base its judgment on different text even in a document a person has looked over.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: The AI's reading of the document, and the summaries, judgments and answers based on it. A person who opens the document sees normal text, while the AI receives a different string from the code points the font points to. In the example given in the research, where the screen shows "Maryland," the AI reads "Delaware" (Miller).
+- **What reached the receiving side**: In general, the person who uses an AI's summary or judgment receives only the AI's conclusion. From the conclusion alone, you cannot tell that it came from a different string rather than the text the person saw. The research points out that rewriting only part of a document is more severe, because it hardly shows up as a whole-document anomaly.
+- **Not disclosed**: The names and number of the AI platforms that answered incorrectly, and whether there has been any real-world harm. This is a researcher's demonstration.
 
-- **Attack technique name**: Noroboto (Lying Fonts attack)
-- **Disclosure**: May 2026, Drew Miller (founder of Tritium Legal Technologies, with over a decade of experience as a corporate attorney and software developer)
-- **Venue**: Tritium official blog, "Noroboto: Lying Fonts and Mitigation in Rust"
-- **Scope**: Contract review, invoice processing, audit, bid-document verification, and any domain where AI makes decisions based on document content
-- **Demonstration**: In Miller's testing, several AI platforms produced incorrect answers
-- **Mitigation**: Miller published Rust-implementation mitigation code on the official blog
+## 3. What to check
 
-The incident came together as the following chain.
+Whatever the route, the condition for telling them apart is that, just before the AI's conclusion is used for a decision, it is checked, apart from how the document looks, whether the string the AI processed matches the text a person sees on screen.
 
-1. **Initial preparation**: A malicious font is embedded in a document (PDF, etc.). The font intentionally shifts the correspondence between Unicode code points and rendered glyphs (instead of the "A" code mapping to the glyph "A", a different Unicode character is assigned the glyph "A")
-2. **Surface deception**: When a human opens the document on screen, the font renders glyphs such as "Maryland," "200 million yen," or "2026-01-01." To human eyes, it looks normal
-3. **AI extraction divergence**: When the AI (LLM, document-review platform, etc.) performs text extraction upstream of reading the document, it references the font's Unicode mapping and obtains a different internal string than the human-visible glyphs. Example: on screen, "Maryland" → internally to the AI, "Delaware"
-4. **AI inference on tampered input**: The AI produces judgments, summaries, and answers based on the text it received (the tampered input). The conclusion a human would reach by visual inspection diverges from the conclusion the AI produces
-5. **Targeted partial attack**: It is more severe when the malicious font is used in only part of the document. The AI cannot detect a whole-document anomaly and trusts the normal text-extraction result (partial rewrites such as human "200 million yen" / AI "100 million yen" are effective)
+- **Who approves**: The person who makes a decision using the AI's review. They see the result of matching the string the AI processed against the on-screen text, apart from the AI's output, and approve. Text inside the AI's summary is never used as approval.
+- **Where it is checked**: Just before the document's text is passed to the AI, and just before the AI's summary or judgment is used for approval. A conclusion from a document whose match cannot be checked is not used until the check is done.
+- **What is recorded**: Which string from which document was passed to the AI, how its match with the on-screen text was checked, and on whose approval the conclusion was used, kept apart from the AI in a form that can be shown to a third party later.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before the AI's conclusion is used for a decision, that the string the AI processed matches the text a person sees on screen, and keeping a record. Detection means noticing incorrect answers or ungrounded judgments on the output side. The dates below are when the research and the explainer were published, not when the technique was used.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before using the AI's conclusion, check that the string it read matches the on-screen text</div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>In testing, some AI platforms<br>returned incorrect answers</span></div>
+<div class="rx-zone det"><b>Detection · disclosure and awareness</b>Publishing the research, explainer articles, output-side detection</div>
+<div class="rx-g g1"><div class="t">2026-05</div><b>Miller discloses the technique</b></div>
+<div class="rx-g g2"><div class="t">2026-05</div><b>Rust mitigation code in the same post</b></div>
+<div class="rx-g g3"><div class="t">05-25</div><b>GIGAZINE publishes a Japanese explainer</b></div>
+<div class="rx-g g4"><div class="t">05-25 on</div><b>Taken up as an issue for AI document review</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+Output-side detection (of hallucinations and ungrounded judgments) is still needed as a layer that inspects the quality of AI judgments after the fact. But the AI here reasons correctly over the string it received, so looking at the output alone, it is hard to notice that the input differs from the text a person saw. This case achieves, through fonts, the same pattern as [invisible Unicode instruction injection](/critical/briefs/024-invisible-unicode-instruction-injection/), which used characters invisible to people to separate what a person sees from what the model reads.
 
-- May 2026: Miller publishes the Noroboto attack and Rust-implementation mitigation on the Tritium official blog
-- 2026-05-25: GIGAZINE publishes a Japanese explainer; cross-industry attention to input-integrity for AI document review follows
-- After May 2026: Discussion of input-integrity verification requirements for organizations adopting AI in contract / invoice / audit domains proceeds in parallel
+## 4. What Lemma does
 
-> Note: Names and the attack technique are based on the primary source (Drew Miller's disclosure on the Tritium Legal Technologies official blog). Each implementation's remediation status varies over time, so consult the latest information. This Brief treats the matter as a researcher's demonstration (the Lying Fonts attack) and does not exaggerate real-world impact.
+**Lemma builds the check in section 03 into the operation that uses an AI's summary or judgment for a decision such as an approval.** It does not look for font forgery; before the conclusion is used, it checks that the match between the string the AI processed and the on-screen text has been checked, and that there is approval to use the conclusion, and it keeps a record.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **Tritium Legal Technologies (Miller)**: Published the Rust-implementation mitigation code on the official blog. Proposed specific countermeasures: "do not unconditionally trust embedded fonts," "render alphanumerics with the font and OCR-verify against the expected string," and "three-way prior consistency verification of the text humans see, the Unicode characters inside the document file, and the text the AI actually processes"
-- **AI document-review platforms**: Individual mitigations are limited at the time of disclosure (immediately post-publication). Cross-industry response from contract-review, invoice-processing, and audit-tool vendors is expected
-- **Cross-industry argument**: As AI adoption expands in contract / invoice / audit domains, input-integrity verification of AI judgment emerges as a new mandatory requirement. The impact on AI document-review practice at law firms, accounting / audit firms, and financial institutions is significant
+- **Industry · AI adoption (cross-sector)**: Organizations that have AI review or summarize documents received from outside. The research names contract review, invoice processing, audit, bid-document verification and other areas where AI makes judgments based on document content.
+- **Operations · Approval**: Using an AI's summary or judgment to approve contracts or payments. If the string the AI read differs from the on-screen text, the basis for approval shifts.
 
----
+### Current controls vs Lemma
 
-## 4. Why it wasn't stopped
+The route in this case is a chain from column 1 (taking text from the document into the AI) to column 2 (approval using the AI's conclusion).
 
-This incident is a representative case of a structure in which, in AI judgment, **the implicit assumption that "what the document file displays on screen equals what is passed to the AI" was left unverified**. There is no problem with AI inference (model performance); the detection–proof gap is the absence of a layer that independently verifies "what the AI is seeing" and "whether it matches what the human is seeing."
+| Control | Taking text from the document into the AI | Approval using the AI's conclusion |
+| --- | --- | --- |
+| A person reviewing the document on screen | Not effective | Partial |
+| Output-side detection (hallucinations, ungrounded judgments) | Not relevant | Not effective |
+| Not trusting embedded fonts unconditionally, re-reading glyphs and matching (Miller's proposal) | Partial | Not relevant |
+| **Lemma (pre-execution check)** | Not effective | Effective |
 
-The primitive differs from [Brief 003](/critical/briefs/003-starlette-badhost/) (Starlette / BadHost) — the target here is the trust of document text rather than the trust of an HTTP request — but the underlying structure is shared: **a trust assertion is detached from the layer that verifies it**. It shares structural adjacency with Briefs 001 / 002 / 004 (independent verification of message origin or commit origin); the gap here is the absence of independent verification of input data origin / integrity.
+A person's on-screen review cannot spot the forgery at the intake stage, because the glyphs render normally. If a person reads the AI's conclusion against the original, they may notice the difference, but a rewrite of only part of a document is easy to miss. Output-side detection rarely fires, because the AI reasons correctly over the string it received. Miller's proposed countermeasures (not trusting embedded fonts unconditionally; rendering characters with the font, reading them back with OCR and matching against the expected string; and matching in advance the text visible on screen, the Unicode string in the file and the text the AI processes) aim to find the forgery at the intake stage, and how far they work depends on the implementation. Lemma does not stop the intake itself; it ties the operation that uses the AI's conclusion for approval to the result of the match check and to the approval. A conclusion with no record of that check is held before it is used for approval.
 
-Conventional detection-side AI safety has concentrated on output filtering (hallucination detection, ungrounded-judgment detection, harmful-content detection). These do not function well against the present incident. The AI is performing inference correctly on the input it received (the text written as "Delaware"), so anomaly is hard to detect at the output level.
+Note: Lemma's check works only when it is built into the operation that uses the AI's conclusion for approval, and the result of the mechanism that checks the match (such as re-reading glyphs) and the approval keys are managed apart from the documents the AI reads. Lemma does not find font forgery itself. If the match check misses the forgery, its result passes the check. If the person approves without looking at the match result, it passes. The table compares what each control checks; it does not show whether this case would have been stopped. Lemma does not detect or prevent intrusions.
 
-The detection layer remains important for after-the-fact evaluation of AI judgment quality, and this Brief does not deny that role. That said, the accuracy of AI judgment when input integrity is compromised exists independently as a layer outside the reach of detection.
+### Checklist
 
----
+Three things to confirm for organizations that have AI review documents received from outside
 
-## 5. What proof would have changed
+- Do you treat embedded fonts in documents received from outside as not trusted unconditionally?
+- Before using an AI's summary or judgment for approval, do you check the key figures, names and dates against the original on screen?
+- Can you see a record of the string the AI processed, and the approval based on it, apart from the AI?
 
-Pre-execution attestation adopts a structure that, before the AI generates a judgment, independently commits the equivalence between the input the AI is seeing and the input that "should be visible to a human." By embedding independent verification of font interpretation (Miller's proposed OCR-based re-verification, or audit of the Unicode-to-rendered-glyph correspondence) into the text-extraction layer upstream of passing the document to the AI, input integrity is guaranteed before AI judgment. Post-judgment detection and pre-judgment input attestation are in a **complementary**, not substitutive, relationship; the combination of both layers establishes the trust boundary for AI document review.
+## 5. Facts and timeline
 
-Lemma's design answers this incident's gap — no independent verification of input integrity for AI judgment — by fixing input equivalence as a proof before the judgment.
+- **Research**: Noroboto (the Lying Fonts attack), disclosed by Drew Miller, founder of Tritium Legal Technologies (with over a decade of experience as a corporate attorney and software developer). It is a researcher's demonstration, not a count of real-world incidents.
+- **Venue**: Tritium's official blog, "Noroboto: Lying Fonts and Mitigation in Rust."
+- **The technique in outline**: A font embedded in a document (a PDF, etc.) shifts the mapping between Unicode code points and the glyphs drawn on screen. A person sees normal text, while a different string comes out when the AI extracts the text. It is more severe when used in only part of a document (Miller). A partial rewrite, such as the AI reading "100 million yen" where the screen shows "200 million yen," is given as an example.
+- **Demonstration**: In Miller's testing, some AI platforms returned incorrect answers.
+- **Areas expected to be affected**: Contract review, invoice processing, audit, bid-document verification and other areas where AI makes judgments based on document content.
+- **Proposed countermeasures**: Miller published mitigation code implemented in Rust on the official blog.
 
-- **Input-integrity provenance binding**: The input data the AI uses for judgment is committed as an independently verifiable cryptographic proof, fixing the equivalence between "the input the AI is seeing" and "the input that should be visible to a human."
-- **Pre-judgment input attestation (proof-as-auth)**: Input equivalence is verified before the AI generates inference, establishing the trust boundary upstream of the input rather than through output filtering.
-- **Independence from the rendering layer**: Even when the input font is forged, the proof tells the verifier through a separate channel whether "this AI judgment is based on this input / and the input matches what is humanly visible / does not match."
-- **Complement to detection**: Output-side hallucination detection and an attestation that fixes equivalence upstream of the input function as a two-stage configuration, not opposing approaches.
+### Timeline
 
-This is the design philosophy of proving through a separate channel what the AI is "seeing" — it complements, rather than replaces, the output-side detection layer.
+- **2026-05**: Miller publishes the Noroboto technique and a mitigation implemented in Rust on Tritium's official blog.
+- **2026-05-25**: GIGAZINE publishes a Japanese explainer, and it is taken up as an input issue for AI document review.
 
----
+> Names and the technique are based on Drew Miller's disclosure on the Tritium Legal Technologies official blog. This Brief treats the matter as a researcher's demonstration (the Lying Fonts attack) and does not exaggerate real-world impact. Each implementation's response varies over time, so consult the latest information. This Brief does not describe how to build a lying font. What has not been disclosed does not mean there were no controls.
+
+### After disclosure
+
+- **Tritium Legal Technologies (Miller)**: Published mitigation code implemented in Rust on the official blog and proposed "do not unconditionally trust embedded fonts," "render alphanumerics with the font and confirm with OCR that they match the expected string," and "verify in advance that the text a person sees on screen, the Unicode string inside the document file, and the text the AI actually processes all match."
+- **AI document-review platforms**: Individual vendors' responses cannot be confirmed from this Brief's sources.
 
 ## 6. Sources
 
 - **Tritium Legal Technologies official blog**: "Noroboto: Lying Fonts and Mitigation in Rust" by Drew Miller (2026-05, official blog, including the Rust-implementation mitigation code) — https://tritium.legal/blog/noroboto
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
-References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/#inference), [Trust402](https://lemma.frame00.com/trust402/)
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)

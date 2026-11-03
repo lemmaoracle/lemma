@@ -1,7 +1,7 @@
 ---
 brief_no: 106
-title: "Figma：AI 学習は個人・小規模チームで既定オン、エンタープライズでは既定オフだった"
-title_en: "Figma — AI content training defaulted on for individuals and small teams, and off for enterprise"
+title: "Figma：AI の学習への利用が、個人・小規模チームでは既定でオン、エンタープライズでは既定でオフだった(同社の公開ドキュメント)"
+title_en: "Figma: AI content training was on by default for individuals and small teams, and off for enterprise (Figma's documentation)"
 pillar: "01-verifiable-origin"
 primary_category: "training-data-provenance"
 secondary_categories: ["data-provenance", "attribute-proof-bypass"]
@@ -11,13 +11,37 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["008-discord-scraping", "036-commonpool-training-data-pii", "079-common-crawl-training-data-live-secrets", "054-sora2-ip-provenance-consent", "052-discord-age-verification-id-leak"]
 status: published
+layout: "report"
+sections: "proof"
 gate: "disclosure"
 version: "1.0"
-og_lead_ja: "Figma — AI 学習は個人・小規模で既定オン、エンタープライズで既定オフ（Khan v. Figma）"
-og_lead_en: "Figma — AI training defaulted on for individuals/small teams, off for enterprise (Khan v. Figma)"
-gap_detected: "The detection chain worked — Figma's explicit statement of the settings in public documentation, its explanation of de-identification and shielding of sensitive information, the administrator toggle, and the published list of third-party vendors — helping users grasp their situation and respond; visibility through litigation and reporting also prompts a reexamination of practice."
-gap_missing: "There is no layer that independently establishes, at the moment content is ingested into training, whether consent was obtained for that use; content entrusted while the default was on is indistinguishable as training data from content entrusted after an admin explicitly switched it on, and turning it off later does not reach earlier ingestions."
-gap_fix: "Before content is ingested into training, verify — decoupled from the default value or the administrator's configuration action, and independently through Lemma — that the use is authorized by the rights holder and that each ingested datum carries a proof of consent, and prevent it up front."
+og_lead_ja: "Figma の公開ドキュメントによれば、AI の学習への利用は Starter・Professional で既定オン、Organization・Enterprise で既定オフ。2025-11-21 に集団訴訟が提起された"
+og_lead_en: "Per Figma's documentation, AI content training is on by default for Starter and Professional and off for Organization and Enterprise; a class action was filed on 2025-11-21"
+og_kicker_ja: "AI の事例 · 学習への利用の既定値"
+og_kicker_en: "AI CASE · TRAINING DEFAULTS"
+og_headline_ja: "AI の学習への利用は\n個人・小規模で既定オン。\n<accent>エンタープライズは既定オフ</accent>"
+og_headline_en: "AI content training was\non by default for small\nteams and individuals.\n<accent>Off for enterprise</accent>"
+key_figures:
+  - value: "2"
+    unit: "plans"
+    label: "Plans on which AI content training is on by default (Starter, Professional); Organization and Enterprise are off by default (Figma's documentation)"
+    tone: "alert"
+  - value: "2024-08-15 → 2025-11-21"
+    label: "From content training taking effect to the filing of the class action Khan v. Figma"
+  - value: "4"
+    unit: "theories"
+    label: "Legal theories the plaintiffs advance; the core ones are breach of contract and trade secret misappropriation (the plaintiffs' claims)"
+glossary:
+  - term: "Content training"
+    desc: "Figma's setting for using content such as design files to train the models behind its AI features. It is held by the team or organization administrator."
+  - term: "Starter, Professional / Organization, Enterprise"
+    desc: "Figma's plans. The first two are for individuals and small teams; the latter two are for organizations and large enterprises."
+  - term: "AB 2013"
+    desc: "California's generative-AI training-data transparency law, requiring developers to publish the sources and contents of their training data. In effect from 2026-01-01."
+insight:
+  slug: "default-is-not-consent"
+  label: "A default is not consent to train"
+  quote: "Unless consent to use entrusted content for training is checked before ingestion, separately from defaults and admin settings, content entrusted with consent and content entrusted without it cannot later be told apart in the training data."
 industries: ["ai"]
 operations: ["disclosure"]
 controls:
@@ -25,82 +49,103 @@ controls:
     item: "Take content into training only when the authorized scope is confirmed, not because a default was on"
   - slug: "audit-trail"
     item: "Record the consent scope and the time of collection for each piece of data taken in"
+impact: "AI content training on by default for two plans, Starter and Professional (Figma's documentation)"
+takeaway: "Per Figma's documentation, whether content is used for training is set by plan defaults and admin settings. Check consent for that use before entrusted content goes into training."
+self_check: "Before using entrusted data to train your own AI, do you check consent for that use separately from default settings?"
 countries: ["us"]
 ---
 
-## 1. TL;DR
+## 1. Summary
 
-The design tool Figma made "content training" (AI training on content) effective on 2024-08-15. According to the company's own public documentation, this setting is **on by default for the Starter and Professional plans** and **off by default for the Organization and Enterprise plans** (the latter cannot currently be switched on at all). In other words, for the same feature of the same product, paying enterprise customers were excluded from training by default, while individual designers and small teams were included by default. Moreover, this setting sits at the team/organization administrator level, so individual users cannot turn it off at their own discretion. On 2025-11-21 a class action, Khan v. Figma (3:25-cv-10054), was filed in the U.S. District Court for the Northern District of California. The complaint alleges that, although Figma had long represented that it would not repurpose users' content for other uses, the default settings and the underlying policy change resulted in customers' design files being used to train generative AI. The plaintiffs' framing sidesteps the copyright fair-use debate, resting instead on breach of contract (the destruction of the original agreement that content would be used only to provide collaboration features) and trade secret misappropriation (the extraction of competitive value from unpublished product plans and workflows contained in design files). Figma denies this, stating that it does not use customer information to train models without permission. This Brief does not adjudicate the merits of either party's claims. What remains as structure is that **the attribute of consent is reduced to "which way the default was tilted" and "whether an administrator opened some settings screen," and is not fixed at the moment of collection as an independently verifiable record.**
+According to the company's public documentation, the setting for using content in AI training is held by the team or organization administrator, and individual users cannot make an independent choice about their own content. The plaintiffs in a class action allege that, contrary to a long-standing representation that content would not be repurposed, the default settings and a policy change led to design files being used for training; the company denies this. The court has not yet ruled on which side is right. <strong>Unless consent to use entrusted content for training is checked before ingestion, separately from defaults and admin settings, content entrusted with consent and content entrusted without it cannot later be told apart in the training data.</strong>
 
----
+## 2. What got through
 
-## 2. What happened
+- **What got through**: Making content that users entrusted, such as design files, subject to model training for AI features. According to Figma's public documentation, content training took effect on 2024-08-15, and is on by default for Starter and Professional and off by default for Organization and Enterprise (which cannot currently enable it).
+- **What the receiving side gets**: In general, the side ingesting data for training receives the content and the state of the team's settings. Whether the person who entrusted the content consented to its use for training does not travel with the content. On Starter and Professional the setting is team-level, and individual users cannot make an independent choice about their own content (Figma's documentation).
+- **Claims in the litigation**: The plaintiffs allege that users entrusted proprietary designs on the premise, as represented, that they would be used only to provide collaboration features, so repurposing them for training breaks the original agreement (breach of contract), and that competitive value was drawn from unreleased product plans and workflows in design files (trade secret misappropriation). Figma denies this, stating that it does not use customer information to train models without permission.
+- **Not disclosed**: Which teams' content, and which content, was actually used for training. It is not in the materials consulted.
 
-- **Subject**: Figma content such as design files (design files, layer properties, text, images), and the model training of the company's AI features that uses them
-- **The actual settings (Figma official documentation)**: content training is on by default on the Starter plan, on by default on the Professional plan, and off by default on the Organization and Enterprise plans. For Organization / Enterprise, the documentation explicitly states it "cannot currently be enabled"
-- **Effective date**: content training became effective on 2024-08-15. The company states that if an administrator switched it off on or after this date, subsequent new content and edits are not used for training
-- **Location of the setting**: content training is a team/organization administrator setting. On Starter and Professional it is a team-level setting, and individual users cannot make an independent choice about their own content
-- **Litigation**: Khan v. Figma, Inc. (U.S. District Court for the Northern District of California, 3:25-cv-10054). A class action filed on 2025-11-21. The complaint alleges that, contrary to the company's long-standing representation that it would not repurpose content for other uses, the default settings and the underlying policy change resulted in customers' design files being used to train generative AI
-- **The plaintiffs' legal framing**: four theories that sidestep the fair-use debate. The core claims are (1) breach of contract = users entrusted their proprietary designs on the premise, as represented, that they would be used only to provide collaboration features, and repurposing them for AI training breaks the original agreement (regardless of whether any output reproduces something in recognizable form); (2) trade secret misappropriation = design files contain confidential product plans, workflows, and unreleased features, and using these to improve AI amounts to drawing competitive value from information for which users had taken reasonable measures to maintain secrecy
-- **Figma's rebuttal**: the company denies the allegations, stating that it does not use customer information to train models without permission. Its public documentation explains that it de-identifies content and shields sensitive information, and that what the model learns is general design patterns and Figma-specific concepts and formats, not users' content or ideas themselves
+## 3. What to check
 
-The incident came together as the following chain.
+The condition that holds whatever the route is this: before entrusted content is ingested into training, check that the content carries the rights holder's consent to be used for training.
 
-1. **Entrustment of content by users**: a user entrusts proprietary design files (including layer properties, text, and images) to Figma on the premise that they are for providing collaboration features. The files may contain confidential product plans, workflows, and unreleased features
-2. **Inclusion in training by default**: with content training becoming effective on 2024-08-15, teams on the Starter and Professional plans are included in training by default. The Organization and Enterprise plans are excluded by default
-3. **Asymmetry in the location of the setting**: content training is a team/organization administrator setting, and individual users cannot make an independent choice about their own content. Unless an administrator reaches this setting, the default is maintained
-4. **Use for model training**: the content that has been included is used to train the models of Figma's AI features. Third-party vendors (such as OpenAI) are involved in the processing
-5. **Later dispute**: users come to recognize the repurposing, and a class action is filed on 2025-11-21. The dispute is placed not on whether any output reproduced something, but on the scope of the agreement at the time of entrustment and the extraction of competitive value from confidential information
+- **Who approves**: The rights holder of the content (the user who entrusted the design file, or their organization). That the default was on, or that an administrator did not turn it off, does not stand in for consent to that use.
+- **Where the check happens**: Just before content is ingested into training data. Content whose consent cannot be checked is not ingested.
+- **What remains**: A record of which content went in, under which scope of consent, and when. By the company's account, if an administrator turns the setting off later, the effect reaches subsequent new content and edits; the record keeps what was ingested before that traceable.
 
----
+<figure class="rx-ex">
+<div class="rx-ex-h"><span class="rx-ex-no">Figure 1</span><span class="rx-ex-t">"Detection" versus a "pre-execution check"</span></div>
+<p class="rx-ex-cap">A pre-execution check means checking, before entrusted content is ingested into training, consent for that use, and keeping a record. Detection means users noticing the repurposing after ingestion, and the issue being raised through lawsuits or reporting.</p>
+<div class="rx-gap">
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check consent to train before ingestion</div>
+<div class="rx-zone gapz"><b>What the plaintiffs allege</b><span>Entrusted design files<br>were used for training (alleged)</span></div>
+<div class="rx-zone det"><b>Detection · worked after ingestion</b>Users' claims reached the court as a class action</div>
+<div class="rx-g g1"><div class="t">2024-08-15</div><b>Content training takes effect</b></div>
+<div class="rx-g g2"><div class="t">AFTERWARDS</div><b>Content of teams set on by default becomes subject to training</b></div>
+<div class="rx-g g3"><div class="t">2025-11-21</div><b>A class action is filed</b></div>
+<div class="rx-g g4"><div class="t">2026</div><b>In litigation; Figma denies</b></div>
+</div>
+</figure>
 
-## 3. Timeline — disclosure and response
+Use for training became a point of dispute in litigation after ingestion. Cases where being public and consent to train came apart include [the Discord message scraping](/critical/briefs/008-discord-scraping/), [personal data in the CommonPool training set](/critical/briefs/036-commonpool-training-data-pii/) and [live credentials in Common Crawl](/critical/briefs/079-common-crawl-training-data-live-secrets/). This case differs in that it concerns non-public content entrusted under a contract, not public data. Placing the check before use echoes [Sora 2 and Japanese IP](/critical/briefs/054-sora2-ip-provenance-consent/) (the switch from opt-out to opt-in).
 
-- 2024-08-15: content training becomes effective. On by default on the Starter and Professional plans, off by default on the Organization and Enterprise plans
-- 2025-11-21: Khan v. Figma, Inc. (3:25-cv-10054) is filed in the U.S. District Court for the Northern District of California. A class action centered on breach of contract, trade secret misappropriation, and related theories
-- 2026: In litigation. Figma denies the allegations
+## 4. What Lemma does
 
-> Note: The default values, effective date, and location of the settings are based on Figma's own public documentation (primary). The factual allegations in the litigation are the plaintiffs' claims, not facts found by a court. Figma denies them. This Brief does not adjudicate the merits of either party's claims or legal liability; it addresses the structure of the settings as can be confirmed from public information. Consult the latest status of the litigation before publication.
+**Lemma builds the check in section 3 into the point just before entrusted content is ingested into training data.** It does not make defaults or the state of a settings screen the condition for ingestion; before ingestion, it checks that the content carries consent to be used for training, and keeps a record.
 
-The response and industry movement after disclosure:
+### Industries and operations to watch
 
-- **Figma's explanation**: the company's public documentation states the default value of content training per plan and shows the administrator's toggle procedure. For data protection, it cites encryption at rest and in transit, access controls, a prohibition on third-party model providers using data to train their own models, and limits on vendors' data-retention periods. It states that for model training it de-identifies content and shields sensitive information, and that what is learned is general design patterns and Figma-specific concepts and formats, not users' content or ideas themselves. It states that data from Figma for Education and Figma for Government is not used for model training
-- **Denial in the litigation**: Figma denies the allegations, stating that it does not use customer information to train models without permission. The plaintiffs seek damages and an order permanently enjoining use of the infringing AI models
-- **Shift in legal framing**: in recent training-data litigation, including this case, the dispute is shifting from the copyright and fair-use debate over "what an output reproduced" to **the provenance of the dataset** — where the training corpus came from, how it was constructed, and whether records exist showing the chain of rights and control. The breach-of-contract and trade-secret framing is one form of this shift
-- **Cross-industry point**: inclusion in training by default is not a design specific to Figma; a similar structure has been pointed out across multiple platforms. In addition, California's generative-AI training-data transparency law (AB 2013) took effect on 2026-01-01, imposing on developers an obligation to publish the sources and contents of their training data. The broader the transparency obligation grows, the greater the need for a record that can distinguish "was disclosed" from "was collected under consent"
+- **Industry · AI**: Organizations that use content entrusted by customers to train or improve their own AI features.
+- **Operation · Disclosure & data release**: Passing entrusted content to their own or third-party model training.
 
-The absence of a layer that verifies, at the moment of collection and independently of default values and configuration actions, the consent status of the content ingested into training is not a problem of a particular product's settings design, but remains a challenge that cuts across any operator that uses customer content to improve its own AI.
+### Current controls vs Lemma
 
----
+This case's route is column 1 (ingesting entrusted content into training). Column 2 is how the substance of ingested content is handled; column 3 is showing, after ingestion, which content went in under which consent.
 
-## 4. Why it wasn't stopped
+| Control | Ingesting entrusted content into training | Handling the substance of ingested content | Showing the scope of consent after ingestion |
+| --- | --- | --- | --- |
+| Admin setting (content training on/off) | Partial | Not relevant | Partial |
+| De-identification and shielding of sensitive information | Not relevant | Partial | Not relevant |
+| **Lemma (pre-execution check)** | Effective | Not relevant | Effective |
 
-The central failure primitive is that **for the content used in training, the attribute of consent is not fixed at the moment of collection as an independently verifiable record, but is reduced to the operational states of the default value and the administrator's configuration action.**
+By the company's account, the admin setting decides what is subject to ingestion at the team or organization level, and turning it off later affects subsequent new content and edits. De-identification and shielding of sensitive information concern how content is handled after ingestion; they do not decide whether the content may be used for training. Lemma checks consent to train before ingestion, and keeps which content went in, under which scope of consent, and when. It does not alter the substance of ingested content, and it does not delete data.
 
-This incident is connected to [Brief No.008](/critical/briefs/008-discord-scraping/) ([Discord scraping](/critical/briefs/008-discord-scraping/)), [Brief No.036](/critical/briefs/036-commonpool-training-data-pii/) ([CommonPool training-data PII](/critical/briefs/036-commonpool-training-data-pii/)), and [Brief No.079](/critical/briefs/079-common-crawl-training-data-live-secrets/) ([live credentials in Common Crawl](/critical/briefs/079-common-crawl-training-data-live-secrets/)) through the structure in which the provenance and consent of training data are not settled at the moment of collection. There is, however, a decisive difference. What 008, 036, and 079 dealt with was the question "may data that is public be ingested for the reason that it is public?" What this case deals with is **non-public content that a customer in a contractual relationship entrusted for a specific purpose.** The point of dispute is not "public ≠ consent" but "entrustment ≠ consent to repurposing." For this reason the dispute moves from copyright and fair use to contract and trade secrets. It shares a common direction with [Brief No.054](/critical/briefs/054-sora2-ip-provenance-consent/) ([Sora 2 × Japanese IP](/critical/briefs/054-sora2-ip-provenance-consent/), the reversal from opt-out to opt-in): re-placing the verification layer before use rather than after. It is adjacent to [Brief No.052](/critical/briefs/052-discord-age-verification-id-leak/) ([ID leak at Discord's age-verification vendor](/critical/briefs/052-discord-age-verification-id-leak/)) in that the handling of an attribute and its proof are not separated.
+Note: Lemma's check works only when it is built in just before ingestion into training data and users' consent is issued and managed separately from the ingesting side's settings. Content that carries consent passes this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
-What is specific to this incident is that **for the same feature of the same product, the default value was tilted in opposite directions depending on the customer segment.** Organization and Enterprise are off by default (and cannot currently be enabled); Starter and Professional are on by default. This asymmetry is explicitly stated in Figma's own public documentation and is an undisputed fact. The structure that can be read from this is that consent is determined not by "what the user agreed to" but by "which contract segment they belong to and whether an administrator reached the settings screen." Customers with bargaining power are given protection by default; users without it are not. The shared primitive is the same: **the use of data is decoupled from the layer that verifies consent to that use.**
+### Checklist
 
-Figma's series of transparency measures — the explicit statement of the settings in public documentation, the explanation of de-identification and the shielding of sensitive information, the provision of an administrator toggle, and the publication of a list of third-party vendors — are indispensable for users to grasp their situation and respond, and this Brief does not deny that role. Visibility through litigation and reporting also functions as an occasion to reexamine industry-wide practice. Detection and disclosure do play their part.
+Three items to confirm for organizations that use entrusted content to train AI
 
-At the same time, these do not provide material to independently establish — **at the moment this content is ingested into training** — whether "this content now being used for training was one for which consent to that use was obtained." Content entrusted while the setting was on by default and content entrusted after an administrator explicitly switched it on are indistinguishable as training data. Even if the setting is turned off later, by the company's own account the effect reaches subsequent new content and edits, and does not retroactively negate an earlier ingestion. As material for an audit to establish "was this training data collected under consent?", the facts "the default was on at the time" and "the administrator did not turn it off" are not an independent record of consent. That the litigation adopts a breach-of-contract and trade-secret framing reflects precisely this point — that even if one detects what an output reproduced, the scope of the agreement at the time of entrustment cannot be settled. This is a gap in a structurally independent layer, outside the reach of the detection and disclosure layer.
+- Do you record, per customer and separately from plan defaults, whether content may be used for training?
+- Do you show the users who entrusted content how the training setting is configured?
+- When use for training is turned off later, can you trace the content ingested before that?
 
----
+## 5. Facts and timeline
 
-## 5. What proof would have changed
+- **Subject**: Figma content such as design files (design files, layer properties, text, images), and the model training of the company's AI features that uses it.
+- **Settings (Figma's public documentation)**: Content training is on by default on Starter and Professional, and off by default on Organization and Enterprise. For Organization and Enterprise, it "cannot currently be enabled."
+- **Effective date**: 2024-08-15. The company states that if an administrator switched it off on or after this date, subsequent new content and edits are not used for training.
+- **Location of the setting**: A team/organization administrator setting. On Starter and Professional it is team-level, and individual users cannot make an independent choice about their own content.
+- **Third-party vendors**: The company publishes a list of third-party vendors involved in processing (such as OpenAI).
+- **Litigation**: Khan v. Figma, Inc. (U.S. District Court for the Northern District of California, 3:25-cv-10054), a class action filed on 2025-11-21.
+- **The plaintiffs' claims**: Contrary to a long-standing representation that content would not be repurposed, the default settings and a policy change led to customers' design files being used to train generative AI. They advance four theories that sidestep the fair-use debate, centered on breach of contract and trade secret misappropriation.
+- **Figma's account**: It denies the allegations, stating that it does not use customer information to train models without permission. Its documentation explains that it de-identifies content and shields sensitive information, and that what the model learns is general design patterns and Figma-specific concepts and formats, not users' content or ideas themselves.
 
-Pre-action attestation fills this gap by inserting one step of proof of the consent attribute into the path by which content is ingested into training. Before ingestion, it verifies — decoupled from the default value or the state of the settings screen — "is the use of this content, for this purpose, authorized by the rights holder?", and it blocks ingestion up front when no proof accompanies it. On top of that, if each ingested datum is bound to a proof of consent in a tamper-resistant form, a third party can later verify that "this training data belongs to the authorized scope." This is not a mechanism to prohibit use, but a mechanism to separate authorized use from unauthorized use at the moment of collection rather than in later litigation. Pre-action attestation is a **complement** to detection, not a substitute, and the combination of the two layers establishes the trust boundary of training-data collection.
+### Timeline
 
-Against the detection–proof gap this event exposed (consent reduced to the operational states of the default value and the administrator's action, and not fixed as a record at the moment of collection), Lemma proposes a design that requires, before content is ingested into training, consent to that use as an independently verifiable cryptographic proof.
+- **2024-08-15**: Content training takes effect. On by default on Starter and Professional, off by default on Organization and Enterprise.
+- **2025-11-21**: Khan v. Figma, Inc. (3:25-cv-10054) is filed in the U.S. District Court for the Northern District of California.
+- **2026-01-01**: California's AB 2013 takes effect.
+- **2026**: In litigation. Figma denies the allegations.
 
-- **Consent-attribute proof before ingestion**: before ingesting content into training, verify that "the use of this content, for this purpose, is authorized." Do not make "the default was on" or "the administrator did not turn it off" the condition permitting ingestion
-- **Provenance binding to training data**: bind each ingested datum, in a tamper-resistant form, to a proof of the scope of consent and the point in time of acquisition. Put it in a state where a third party can later verify that "this training data belongs to the authorized scope," eliminating the need to reconstruct "the settings state at the time" during a dispute
-- **Consistency independent of contract segment**: by tying the proof of consent to the data itself rather than to the contract segment or the administrator's operation history, resolve by design the structure in which the level of protection is split by default value between customers with bargaining power and users without it
-- **Selective disclosure**: disclose at minimum only that "this ingestion satisfies the consent schema," without disclosing the content itself, product plans, unreleased features, or other trade secrets. Reconcile compliance with transparency obligations and the maintenance of confidentiality
+> The default values, effective date and location of the settings are based on Figma's own public documentation (primary). The factual allegations in the litigation are the plaintiffs' claims, not facts found by a court, and Figma denies them. This Brief does not judge the merits of either party's claims or legal liability, and does not blame Figma. Check the latest status of the litigation before publication. What has not been disclosed does not mean no measures were in place.
 
-With this, a proof fixed at the moment of collection makes "was this training data acquired under consent?" function as an independently verifiable trail before ingestion, rather than in later litigation. Detection (after-the-fact disclosure, visibility of settings, dispute through litigation) works on remediation after discovery; pre-action attestation (pre-ingestion consent verification and provenance binding) works on the independent verification of training-data collection — the two work complementarily.
+### Response after disclosure
 
----
+- **Figma's account**: Its documentation states the content-training default per plan and shows how administrators switch it. For data protection, it cites encryption at rest and in transit, access controls, a prohibition on third-party model providers using data to train their own models, and limits on vendors' data-retention periods. It states that data from Figma for Education and Figma for Government is not used for model training.
+- **Litigation**: The plaintiffs seek damages and an order permanently enjoining use of the AI models. Figma denies the allegations.
+- **Regulation**: California's AB 2013 took effect on 2026-01-01, requiring generative-AI developers to publish the sources and contents of their training data.
 
 ## 6. Sources
 
@@ -110,3 +155,5 @@ With this, a proof fixed at the moment of collection makes "was this training da
 - **Bloomberg Law**: "Figma Trained AI on User Data Without Consent, Class Action Says" — <https://news.bloomberglaw.com/litigation/figma-trained-ai-on-user-data-without-consent-class-action-says>
 - **Law360 (case record)**: Khan v. Figma, Inc. (N.D. Cal., 3:25-cv-10054) — <https://www.law360.com/cases/69208e3cd222541266876e83>
 - **Davis+Gilbert (AB 2013 takes effect)**: "AI Legal Updates: California's AI Training Data Transparency Law Takes Effect" — <https://www.dglaw.com/ai-legal-updates-californias-ai-training-data-transparency-law-takes-effect/>
+
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/)
