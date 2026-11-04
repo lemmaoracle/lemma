@@ -117,6 +117,12 @@ const DEFAULT_SUMMARY_LABELS = {
   ja: ["何が起きたか", "なぜ見分けられないか", "欠けていた層"],
   en: ["What happened", "Why it was hard to see", "The missing layer"],
 };
+/* proof の章立ての 01（本人 2026-11-04：要点を 3 行の要旨に）。3 段落で書くと、この
+   ラベルの表になる。最後の行は「なぜ通ったか」（経路を問わず言える一般論の 1 文）。 */
+const PROOF_SUMMARY_LABELS = {
+  ja: ["何が起きたか", "分かったこと", "なぜ通ったか"],
+  en: ["What happened", "What was found", "Why it got through"],
+};
 
 /** 章 num の本文（h2 の次から次の h2 の手前まで）の [start, end)。 */
 function sectionRange(root, num) {
@@ -205,7 +211,7 @@ function deriveExecSummary(root, fm, isEn) {
   const labels =
     Array.isArray(fm.summary_labels) && fm.summary_labels.length
       ? fm.summary_labels.map(String)
-      : DEFAULT_SUMMARY_LABELS[isEn ? "en" : "ja"];
+      : (fm?.sections === "proof" ? PROOF_SUMMARY_LABELS : DEFAULT_SUMMARY_LABELS)[isEn ? "en" : "ja"];
   if (labels.length !== blocks.length) return;
   const lis = blocks.map((p, i) =>
     h("li", i === blocks.length - 1 ? "key" : null, [
@@ -565,11 +571,35 @@ function markWeeklySlot(root, counterNum = 5, proof = false) {
   if (proof) root.splice(i, 0, slot("dataBriefDemoSlot"));
 }
 
+/**
+ * 03 の中の図表 1（手書きの <figure class="rx-ex"> に rx-gap を含むもの）を、01 の終わり
+ * （2 章の直前・TL;DR のあとの入口の目印より前）へ動かす。見つからなければ何もしない。
+ */
+function liftGapFigure(root) {
+  const r3 = sectionRange(root, 3);
+  const r1 = sectionRange(root, 1);
+  if (!r3 || !r1) return;
+  const isGap = (n) =>
+    (n.type === "raw" && /<figure class="rx-ex"[\s\S]*rx-gap/.test(String(n.value ?? ""))) ||
+    (isEl(n, "figure") && /\brx-ex\b/.test(String(n.properties?.className ?? "")) && /rx-gap/.test(JSON.stringify(n)));
+  let fi = -1;
+  for (let i = r3[0]; i < r3[1]; i++) if (isGap(root[i])) { fi = i; break; }
+  if (fi < 0) return;
+  const [fig] = root.splice(fi, 1);
+  // 1 章の終わり。入口の目印（data-brief-weekly-top-slot）があればその前。
+  let at = sectionRange(root, 1)[1];
+  for (let i = r1[0]; i < at; i++) if (root[i]?.properties && "dataBriefWeeklyTopSlot" in root[i].properties) { at = i; break; }
+  root.splice(at, 0, fig);
+}
+
 function applyReportLayout(tree, fm, isEn) {
   const root = tree.children ?? [];
 
   // 0) 普通の markdown から部品を組み立てる（用語メモ・核心を差す前に）。
   deriveReportComponents(root, fm, isEn);
+  // 0b) proof：図表 1（「検知」と「実行の前の照合」の違い）を 01 の直後へ（本人 2026-11-04：
+  //     看板の図を先に見せると全体像が先に入る）。03 には帯と「誰が・どこで・何が残るか」が残る。
+  if (fm?.sections === "proof") liftGapFigure(root);
 
   // 1) 改訂注記の blockquote を外す（最初の h2 より前にあるものだけ）。
   const firstH2 = root.findIndex((c) => c.type === "element" && c.tagName === "h2");
