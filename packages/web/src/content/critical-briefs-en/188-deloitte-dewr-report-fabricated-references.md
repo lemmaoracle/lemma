@@ -59,7 +59,11 @@ countries: ["au"]
 
 ## 1. Summary
 
-The report's conclusions were not what was in question. The footnotes and reference list of the final report the department published contained citations that did not match their sources. The replacement's note says it corrected the citations and reference-list entries that contained errors, and the summary of a court case. It says the findings and recommendations are unaffected. According to press reports, the first version included works that do not exist and a quotation attributed to a Federal Court judge. <strong>A neatly formatted reference list does not show that the works in it exist.</strong>
+The final report by Deloitte that the department published contained citations and reference entries that did not match their sources. According to press reports, the first version also included works that do not exist and a quotation attributed to a Federal Court judge.
+
+The replacement's note says it corrected the citations and reference-list entries that contained errors, and the summary of a court case. The report's conclusions were not in question; the findings and recommendations are unaffected.
+
+<strong>A neatly formatted reference list does not show that the works in it exist.</strong>
 
 ## 2. What got through
 

@@ -117,6 +117,12 @@ const DEFAULT_SUMMARY_LABELS = {
   ja: ["何が起きたか", "なぜ見分けられないか", "欠けていた層"],
   en: ["What happened", "Why it was hard to see", "The missing layer"],
 };
+/* proof の章立ての 01（本人 2026-11-04：要点を 3 行の要旨に）。3 段落で書くと、この
+   ラベルの表になる。最後の行は「なぜ通ったか」（経路を問わず言える一般論の 1 文）。 */
+const PROOF_SUMMARY_LABELS = {
+  ja: ["何が起きたか", "分かったこと", "なぜ通ったか"],
+  en: ["What happened", "What was found", "Why it got through"],
+};
 
 /** 章 num の本文（h2 の次から次の h2 の手前まで）の [start, end)。 */
 function sectionRange(root, num) {
@@ -205,7 +211,7 @@ function deriveExecSummary(root, fm, isEn) {
   const labels =
     Array.isArray(fm.summary_labels) && fm.summary_labels.length
       ? fm.summary_labels.map(String)
-      : DEFAULT_SUMMARY_LABELS[isEn ? "en" : "ja"];
+      : (fm?.sections === "proof" ? PROOF_SUMMARY_LABELS : DEFAULT_SUMMARY_LABELS)[isEn ? "en" : "ja"];
   if (labels.length !== blocks.length) return;
   const lis = blocks.map((p, i) =>
     h("li", i === blocks.length - 1 ? "key" : null, [
