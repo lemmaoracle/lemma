@@ -1,0 +1,235 @@
+---
+/**
+ * 下書きの Brief の「問題なし／修正したい」（2026-11-04・config/briefReview.ts）。
+ *
+ * 本文のあとに 1 枚。押すと CLUBS の受け口へ飛び、名前つきで保存して、この記事に
+ * `?reviewed=ok|fix` で戻る。戻ってきたら「残しました」と出し、この端末に自分の声を
+ * 覚える（CLUBS は別のサイトなので、ここからは読めない）。「修正したい」は 1 行を
+ * 書いてから飛ぶ（CLUBS 側でも直せる）。下書きの記事にだけ出る（呼ぶ側が絞る）。
+ */
+import { BRIEF_REVIEW_URL, BRIEF_REVIEW_CASE } from "../config/briefReview";
+
+export interface BriefDraftReviewProps {
+  locale: "ja" | "en";
+  briefId: string;
+  title: string;
+}
+const { locale, briefId, title } = Astro.props as BriefDraftReviewProps;
+const isJa = locale === "ja";
+const T = isJa
+  ? {
+      head: "この下書き、どうでしたか？",
+      sub: "名前つきで CLUBS の「Critical Brief 作成ルール」に残ります。公開の OK は承認ポイントで。",
+      ok: "問題なし",
+      fix: "修正したい",
+      note: "どこをどう修正したいか（1行・100字まで）",
+      send: "残す",
+      cancel: "やめる",
+      foot: "押すと CLUBS に飛んで保存し、この記事に戻ります。",
+      mine: "あなたの声：",
+      none: "まだありません",
+      saidOk: "「問題なし」を残しました。",
+      saidFix: "「修正したい」を残しました。",
+    }
+  : {
+      head: "How was this draft?",
+      sub: "Saved with your name to CLUBS (Critical Brief rules). The final OK is the approval point.",
+      ok: "Looks good",
+      fix: "Needs a fix",
+      note: "What to fix, and how (one line, up to 100 chars)",
+      send: "Save",
+      cancel: "Cancel",
+      foot: "Opens CLUBS to save, then returns to this article.",
+      mine: "Your voice: ",
+      none: "none yet",
+      saidOk: "Saved “Looks good”.",
+      saidFix: "Saved “Needs a fix”.",
+    };
+---
+
+<section
+  class="bdr"
+  id="brief-review"
+  data-brief-review
+  data-brief={briefId}
+  data-title={title}
+  data-url={BRIEF_REVIEW_URL}
+  data-case={BRIEF_REVIEW_CASE}
+  aria-labelledby="bdr-h"
+>
+  <h2 id="bdr-h">{T.head}</h2>
+  <p class="bdr-sub">{T.sub}</p>
+  <div class="bdr-a">
+    <a class="bdr-btn ok" data-bdr="ok" href="#brief-review">{T.ok}</a>
+    <button type="button" class="bdr-btn" data-bdr="fix">{T.fix}</button>
+  </div>
+  <form class="bdr-fix" hidden>
+    <label>
+      {T.note}
+      <input name="note" maxlength="100" required autocomplete="off" />
+    </label>
+    <div class="bdr-row">
+      <button type="submit" class="bdr-btn ok">{T.send}</button>
+      <button type="button" class="bdr-x" data-bdr="cancel">{T.cancel}</button>
+    </div>
+  </form>
+  <p class="bdr-foot">
+    <span>{T.foot}</span>
+    <span class="bdr-mine">{T.mine}<b data-bdr-mine>{T.none}</b></span>
+  </p>
+  <p class="bdr-said" role="status" data-bdr-said hidden></p>
+</section>
+
+<script is:inline define:vars={{ T }}>
+  (() => {
+    var box = document.querySelector("[data-brief-review]");
+    if (!box) return;
+    var id = box.dataset.brief;
+    var KEY = "lemma:brief-review:" + id;
+    var mine = box.querySelector("[data-bdr-mine]");
+    var said = box.querySelector("[data-bdr-said]");
+    var form = box.querySelector(".bdr-fix");
+    var back = location.origin + location.pathname;
+    var href = function (v, note) {
+      var q = new URLSearchParams({
+        case: box.dataset.case,
+        id: id,
+        title: box.dataset.title,
+        v: v,
+        back: back,
+      });
+      if (note) q.set("note", note);
+      return box.dataset.url + "?" + q.toString();
+    };
+    var show = function (v) {
+      if (!v) return;
+      mine.textContent = v === "ok" ? T.ok : T.fix;
+      box.classList.add("is-" + v);
+    };
+    /* 戻ってきた（?reviewed=）。覚えて、住所から外す。 */
+    var p = new URLSearchParams(location.search);
+    var r = p.get("reviewed");
+    if (r === "ok" || r === "fix") {
+      try { localStorage.setItem(KEY, r); } catch (e) {}
+      said.textContent = r === "ok" ? T.saidOk : T.saidFix;
+      said.hidden = false;
+      try { history.replaceState(null, "", location.pathname + "#brief-review"); } catch (e) {}
+    }
+    try { show(localStorage.getItem(KEY)); } catch (e) {}
+    box.querySelector('[data-bdr="ok"]').href = href("ok");
+    box.querySelector('[data-bdr="fix"]').addEventListener("click", function () {
+      form.hidden = false;
+      form.querySelector("input").focus();
+    });
+    box.querySelector('[data-bdr="cancel"]').addEventListener("click", function () {
+      form.hidden = true;
+    });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var note = form.querySelector("input").value.trim();
+      if (!note) return;
+      location.href = href("fix", note);
+    });
+  })();
+</script>
+
+<style>
+  .bdr {
+    margin: 36px 0 8px;
+    padding: 18px 20px 16px;
+    border: 1.5px dashed #4a90b8;
+    border-radius: 14px;
+    background: #f3f8fb;
+    color: #12140e;
+  }
+  .bdr h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .bdr-sub {
+    margin: 4px 0 12px;
+    font-size: 12.5px;
+    color: #5c6156;
+  }
+  .bdr-a,
+  .bdr-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .bdr-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid #cfd3c9;
+    border-radius: 999px;
+    background: #fff;
+    color: #12140e;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .bdr-btn.ok {
+    background: #12140e;
+    border-color: #12140e;
+    color: #fff;
+  }
+  .bdr-btn:hover {
+    border-color: #4a90b8;
+  }
+  .bdr-fix {
+    margin-top: 12px;
+    display: grid;
+    gap: 8px;
+  }
+  .bdr-fix label {
+    display: grid;
+    gap: 6px;
+    font-size: 12.5px;
+    color: #5c6156;
+  }
+  .bdr-fix input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid #cfd3c9;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 14px;
+    color: #12140e;
+    background: #fff;
+  }
+  .bdr-x {
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 13px;
+    color: #5c6156;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .bdr-foot {
+    margin: 12px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    font-size: 12px;
+    color: #5c6156;
+  }
+  .bdr-mine b {
+    color: #2f6f93;
+    font-weight: 700;
+  }
+  .bdr.is-fix .bdr-mine b {
+    color: #b8336a;
+  }
+  .bdr-said {
+    margin: 10px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #2f6f93;
+  }
+</style>

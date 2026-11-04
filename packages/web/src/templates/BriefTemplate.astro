@@ -38,6 +38,7 @@ import CiteBriefBox from "../components/CiteBriefBox.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
 import BriefNextRead from "../components/BriefNextRead.astro";
 import BriefWeeklyCta from "../components/BriefWeeklyCta.astro";
+import BriefDraftReview from "../components/BriefDraftReview.astro";
 import { briefFacetTiles, hasFacetTiles } from "../lib/briefNextRead";
 import { getTranslations, type Locale } from "../i18n/translations";
 import { getEnBriefMap } from "../data/getEnBriefMap";
@@ -673,6 +674,9 @@ const labels = isJa
         <article class:list={["brief-body", isReport && "is-report"]}>
           <Content />
         </article>
+
+        {/* 下書きの記事だけ：「問題なし／修正したい」（CLUBS の受け口へ・2026-11-04）。 */}
+        {isDraftBrief(brief) && <BriefDraftReview locale={locale} briefId={brief.id} title={mainTitle} />}
 
         {/* 似た事例を一覧で読む。本文の途中（5 章の直前）の 1 行と、Sources の直前の
             ブロック。どちらもページを開いたときに本文の中の目印へ移す。 */}
