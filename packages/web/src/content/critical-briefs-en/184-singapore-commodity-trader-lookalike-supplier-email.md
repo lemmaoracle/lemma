@@ -37,7 +37,7 @@ glossary:
 insight:
   slug: "new-account-lookalike-sender"
   label: "New account, lookalike sender"
-  quote: "A request to pay a new account goes through just like a genuine one, even from a lookalike address, unless someone checks through the supplier's registered contact, not the email that arrived, that the supplier approved that account."
+  quote: "A payment to a new account goes through, even on a request from a lookalike address, unless the account is checked with the supplier's registered contact."
 industries: ["supply-chain"]
 operations: ["payment-change", "approval"]
 controls:
@@ -58,7 +58,7 @@ search_description: "シンガポールの商品取引会社が、仕入先に�
 
 ## 1. Summary
 
-According to the police, the email appeared to come from a supplier and asked for payment for goods to a new account. The sender's address differed from the supplier's by one character, and staff did not notice. The firm found out only when the real supplier said it had not been paid. Most of the money was later frozen through cross-border cooperation, but the transfer itself went through. <strong>A request to pay a new account goes through just like a genuine one, even from a lookalike address, unless someone checks through the supplier's registered contact, not the email that arrived, that the supplier approved that account.</strong>
+According to the police, the email appeared to come from a supplier and asked for payment for goods to a new account. The sender's address differed from the supplier's by one character, and staff did not notice. The firm found out only when the real supplier said it had not been paid. Most of the money was later frozen through cross-border cooperation, but the transfer itself went through. <strong>A payment to a new account goes through, even on a request from a lookalike address, unless the account is checked with the supplier's registered contact.</strong>
 
 ## 2. What got through
 
@@ -104,7 +104,7 @@ The firm noticed four days after the transfer. A similar case of paying on a req
 
 The route in this case is column 1 (a request to pay a new account from an address made to look like the supplier's). Column 2 covers the same request arriving from the supplier's genuine, compromised email; nothing disclosed says that happened here. Column 3 covers a takeover of the supplier's registered contact itself.
 
-| Control | Request for a new account from a lookalike address | Request for a new account from the supplier's genuine email | Takeover of the supplier's registered contact |
+| Control | Request from a lookalike address | Request from the supplier's genuine email | Takeover of the registered contact |
 | --- | --- | --- | --- |
 | Checking the sender's address (reading the display) | Partial | Not effective | Not effective |
 | Reviewing what the payment is for | Partial | Partial | Not effective |
