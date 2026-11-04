@@ -14,6 +14,7 @@ import Footer from "../../../../components/FooterRenewal.astro";
 import { getTranslations } from "../../../../i18n/translations";
 import { isDraftBrief, showDrafts } from "../../../../lib/briefDrafts";
 import type { BriefEntry } from "../../../../data/criticalBriefs";
+import { BRIEF_REVIEW_URL, BRIEF_REVIEW_CASE } from "../../../../config/briefReview";
 
 export function getStaticPaths() {
   return showDrafts ? [{ params: { p: undefined } }] : [];
@@ -53,18 +54,20 @@ const head = (title: string) => title.split(" — ")[0];
       <p class="dr-lead">
         {drafts.length > 0 ? `${drafts.length} 本` : "いま回覧する下書きはありません。"}
         {drafts.length > 0 && (
-          <span class="dr-how">記事の下の「問題なし／修正したい」で声を残せます（CLUBS に名前つきで残り、公開の OK は承認ポイントで）。</span>
+          <span class="dr-how">読んだら「問題なし」を一覧から残せます。「修正したい」は記事の下で（どちらも CLUBS に名前つきで残り、公開の OK は承認ポイントで）。</span>
         )}
       </p>
-      <ul class="dr-list">
+      <ul class="dr-list" data-url={BRIEF_REVIEW_URL} data-case={BRIEF_REVIEW_CASE}>
         {
           drafts.map((b) => (
-            <li data-brief={b.id}>
+            <li data-brief={b.id} data-title={b.data.title}>
               <a href={`${base}/critical/briefs/${b.id}/`}>
                 <small>No. {pad(b.data.brief_no)} · 公開予定 {day(b.data.published)}</small>
                 <b>{head(b.data.title)}</b>
               </a>
               <span class="dr-mine" data-dr-mine hidden></span>
+              <em class="dr-read" data-dr-read hidden>開いた</em>
+              <a class="dr-ok" data-dr-ok href="#" hidden>問題なし</a>
               <span class="dr-en">
                 {enIds.has(b.id) ? <a href={`/critical/briefs/${b.id}/`}>EN</a> : "EN なし"}
               </span>
@@ -78,16 +81,48 @@ const head = (title: string) => title.split(" — ")[0];
 </Layout>
 
 <script is:inline>
-  /* この端末で残した声（記事の下の部品が localStorage に覚える）。CLUBS は読めないので、自分の分だけ。 */
+  /* この端末で残した声と「開いた」（記事の下の部品が localStorage に覚える）。CLUBS は読めないので、
+     自分の分だけ。自分の声があれば「開いた」はその言葉に変わる。一覧からも「問題なし」を残せる
+     （CLUBS の受け口へ飛んで保存し、この一覧に戻る・ブログの回覧と同じ）。 */
   (() => {
+    var list = document.querySelector(".dr-list");
+    if (!list) return;
+    var back = location.origin + location.pathname;
+    /* 受け口から戻ってきた（?reviewed=ok&b=…）。覚えて、住所から外す。 */
+    var p = new URLSearchParams(location.search);
+    var r = p.get("reviewed");
+    var b = p.get("b");
+    if (b && (r === "ok" || r === "fix")) {
+      try { localStorage.setItem("lemma:brief-review:" + b, r); } catch (e) {}
+      try { history.replaceState(null, "", location.pathname); } catch (e) {}
+    }
     document.querySelectorAll(".dr-list li[data-brief]").forEach(function (li) {
+      var id = li.dataset.brief;
       var v = null;
-      try { v = localStorage.getItem("lemma:brief-review:" + li.dataset.brief); } catch (e) {}
-      if (v !== "ok" && v !== "fix") return;
-      var el = li.querySelector("[data-dr-mine]");
-      el.textContent = v === "ok" ? "問題なし" : "修正したい";
-      el.classList.add("is-" + v);
-      el.hidden = false;
+      var opened = false;
+      try { v = localStorage.getItem("lemma:brief-review:" + id); } catch (e) {}
+      try { opened = localStorage.getItem("lemma:brief-opened:" + id) === "1"; } catch (e) {}
+      var mine = li.querySelector("[data-dr-mine]");
+      var read = li.querySelector("[data-dr-read]");
+      var ok = li.querySelector("[data-dr-ok]");
+      if (v === "ok" || v === "fix") {
+        mine.textContent = v === "ok" ? "問題なし" : "修正したい";
+        mine.classList.add("is-" + v);
+        mine.hidden = false;
+      } else if (opened) {
+        read.hidden = false;
+      }
+      if (v !== "ok") {
+        var q = new URLSearchParams({
+          case: list.dataset.case,
+          id: id,
+          title: li.dataset.title,
+          v: "ok",
+          back: back + "?b=" + encodeURIComponent(id),
+        });
+        ok.href = list.dataset.url + "?" + q.toString();
+        ok.hidden = false;
+      }
     });
   })();
 </script>
@@ -173,6 +208,32 @@ const head = (title: string) => title.split(" — ")[0];
   .dr-mine.is-fix {
     color: #b8336a;
     border-color: #ecc3d3;
+  }
+  .dr-read {
+    flex: none;
+    margin-left: auto;
+    font-size: 12px;
+    font-style: normal;
+    color: var(--muted);
+  }
+  .dr-mine[hidden],
+  .dr-read[hidden],
+  .dr-ok[hidden] {
+    display: none;
+  }
+  .dr-ok {
+    flex: none;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #2f6f93;
+    border: 1px solid #c9dde8;
+    border-radius: 999px;
+    padding: 4px 12px;
+    background: #fff;
+    text-decoration: none;
+  }
+  .dr-ok:hover {
+    background: #eef5f9;
   }
   .dr-en {
     flex: none;
