@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="口座案内と折り返し確認の記録の照合図。裏付けのない案内は登録に進めない。">
+  <rect x="0" y="0" width="640" height="360" rx="8" fill="#f3f4f1"/>
+  <text x="32" y="44" font-family="sans-serif" font-size="17" font-weight="700" fill="#12140e">取引先からの口座案内</text>
+  <rect x="32" y="58" width="272" height="130" rx="4" fill="#ffffff" stroke="#e1e3dd"/>
+  <text x="52" y="92" font-family="sans-serif" font-size="12" fill="#5c6156">件名 【重要】お振込先変更のお願い</text>
+  <text x="52" y="118" font-family="sans-serif" font-size="13" fill="#12140e">今月分から、こちらの口座へ</text>
+  <text x="52" y="142" font-family="sans-serif" font-size="12" fill="#5c6156">差出人 tantou@torihiki.example</text>
+  <text x="52" y="166" font-family="sans-serif" font-size="12" fill="#5c6156">添付あり（案内の文書）</text>
+  <text x="336" y="44" font-family="sans-serif" font-size="17" font-weight="700" fill="#12140e">折り返し確認の記録</text>
+  <rect x="336" y="58" width="272" height="130" rx="4" fill="#ffffff" stroke="#e1e3dd"/>
+  <text x="356" y="92" font-family="sans-serif" font-size="12" fill="#5c6156">登録済みの電話番号へ折り返し</text>
+  <text x="356" y="118" font-family="sans-serif" font-size="13" fill="#12140e">担当者 「その案内は出していない」</text>
+  <text x="356" y="142" font-family="sans-serif" font-size="12" fill="#5c6156">日時 11月4日 10:42・記録あり</text>
+  <rect x="356" y="152" width="150" height="20" rx="10" fill="#fbe9e6"/>
+  <text x="431" y="166" font-family="sans-serif" font-size="11" font-weight="700" fill="#c25438" text-anchor="middle">裏付けなし</text>
+  <rect x="32" y="214" width="576" height="114" rx="4" fill="#12140e"/>
+  <text x="52" y="248" font-family="sans-serif" font-size="14" font-weight="700" fill="#f4f7ef">照合の結果</text>
+  <text x="52" y="274" font-family="sans-serif" font-size="13" fill="#b9c4ad">裏付けのない案内のため、登録に進めない</text>
+  <rect x="380" y="288" width="208" height="26" rx="13" fill="none" stroke="#c25438" stroke-width="2"/>
+  <text x="484" y="306" font-family="sans-serif" font-size="13" font-weight="700" fill="#e8927f" text-anchor="middle">担当者の確認へ</text>
+</svg>

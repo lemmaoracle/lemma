@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="登録済みの口座と届いた依頼の口座の照合図。書き換えが疑われる送金は経理の確認へ回る。">
+  <rect x="0" y="0" width="640" height="360" rx="8" fill="#f3f4f1"/>
+  <text x="32" y="44" font-family="sans-serif" font-size="17" font-weight="700" fill="#12140e">登録済みの取引先の情報</text>
+  <rect x="32" y="58" width="272" height="130" rx="4" fill="#ffffff" stroke="#e1e3dd"/>
+  <text x="52" y="92" font-family="sans-serif" font-size="12" fill="#5c6156">振込先の口座</text>
+  <text x="52" y="118" font-family="monospace, sans-serif" font-size="16" font-weight="700" fill="#12140e">**** 1234</text>
+  <text x="52" y="142" font-family="sans-serif" font-size="12" fill="#5c6156">名義 オオショウジ</text>
+  <rect x="52" y="152" width="120" height="20" rx="10" fill="#eef6d8"/>
+  <text x="112" y="166" font-family="sans-serif" font-size="11" font-weight="700" fill="#4e7a00" text-anchor="middle">照合ずみ</text>
+  <text x="336" y="44" font-family="sans-serif" font-size="17" font-weight="700" fill="#12140e">届いた送金の依頼</text>
+  <rect x="336" y="58" width="272" height="130" rx="4" fill="#ffffff" stroke="#c25438" stroke-width="2"/>
+  <text x="356" y="92" font-family="sans-serif" font-size="12" fill="#5c6156">振込先の口座</text>
+  <text x="356" y="118" font-family="monospace, sans-serif" font-size="16" font-weight="700" fill="#c25438">**** 9876</text>
+  <text x="356" y="142" font-family="sans-serif" font-size="12" fill="#5c6156">差出人 keiri@oo-shoji.example</text>
+  <rect x="356" y="152" width="150" height="20" rx="10" fill="#fbe9e6"/>
+  <text x="431" y="166" font-family="sans-serif" font-size="11" font-weight="700" fill="#c25438" text-anchor="middle">一致しません</text>
+  <rect x="32" y="214" width="576" height="114" rx="4" fill="#12140e"/>
+  <text x="52" y="248" font-family="sans-serif" font-size="14" font-weight="700" fill="#f4f7ef">照合の結果</text>
+  <text x="52" y="274" font-family="sans-serif" font-size="13" fill="#b9c4ad">振込先の書き換えが疑われるため、送金を実行しない</text>
+  <rect x="380" y="288" width="208" height="26" rx="13" fill="none" stroke="#c25438" stroke-width="2"/>
+  <text x="484" y="306" font-family="sans-serif" font-size="13" font-weight="700" fill="#e8927f" text-anchor="middle">経理の確認へ</text>
+</svg>
