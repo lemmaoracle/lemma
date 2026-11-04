@@ -41,8 +41,9 @@ glossary:
     desc: "An online edition that reproduces the printed page layout as it is."
 insight:
   slug: "bought-content-not-reviewed"
+  stop: true
   label: "A syndicated section runs without newsroom review"
-  quote: "Syndicated content a paper has purchased still reaches readers as something the paper has checked once it runs in its pages."
+  quote: "Before running purchased syndicated content, match it to an editorial approval, not to the decision of the department that bought it."
 industries: ["media"]
 operations: ["delivery"]
 controls:
@@ -61,7 +62,7 @@ countries: ["us"]
 
 ## 1. Summary
 
-The paper's newsroom did not make the section. The circulation department purchased it from King Features, a Hearst syndicator, and it ran in the Sunday print edition and the e-paper without newsroom review and without a credit saying a third party produced it (the paper's statement and review). According to King Features, a freelance writer used an AI agent to build the section and did not disclose it. The CEO of Chicago Public Media, which runs the paper, described a chain of human mistakes between the distributor and the paper's pages. <strong>Syndicated content a paper has purchased still reaches readers as something the paper has checked once it runs in its pages.</strong>
+The paper's newsroom did not make the section. The circulation department purchased it from King Features, a Hearst syndicator. It ran in the Sunday print edition and the e-paper without newsroom review. It carried no credit saying a third party produced it (the paper's statement and review). According to King Features, a freelance writer used an AI agent to build the section and did not disclose it. The CEO of Chicago Public Media, which runs the paper, described a chain of human mistakes between the distributor and the paper's pages. <strong>Syndicated content a paper has purchased still reaches readers as something the paper has checked once it runs in its pages.</strong>
 
 ## 2. What got through
 
@@ -72,10 +73,10 @@ The paper's newsroom did not make the section. The circulation department purcha
 
 ## 3. What to check
 
-The condition that holds regardless of route: before content received from outside goes out under the organization's own name, check, separately from the department that received it, where it came from, who made it and whether it went through the organization's editorial review.
+The condition that holds regardless of route: before content received from outside runs, check its origin and its editorial approval, separately from the department that received it.
 
 - **Who approves**: The editorial side of the publishing paper. Even for purchased content, approval to run it comes from an editor, not from the department that signs the purchase (here, circulation).
-- **Where to check**: Just before content is placed into the print or digital edition. For each item, check that the distributor and writer, the AI-use declaration and the editorial approval are all present, and that the approval was given for the same content going into the edition. Items that do not line up stay out.
+- **Where to check**: Just before content is placed into the print or digital edition. For each item, check that the distributor and writer, the AI-use declaration and an editorial approval are in place. The approval must cover the same content going into the edition. Items that do not line up stay out.
 - **What is recorded**: For each edition, which content came from which distributor and who reviewed and released it. This also backs the label telling readers that content came from outside.
 
 <figure class="rx-ex">
@@ -116,7 +117,7 @@ This case took the route in column 1 (purchased syndicated content running witho
 
 Labeling tells readers content came from outside, but by itself does not show whether it was reviewed. The distributor's AI policy works only if the writer discloses (King Features says the writer did not; per the paper's review, the writer said the contracts had no AI policy). Newsroom fact-checking catches errors in content, but only in content that reaches it. Lemma checks, before running, whether content entered the review path. It does not judge accuracy, so it does nothing about errors left after review.
 
-Note: Lemma's check works only when it is built into the step that places content into an edition or send, and when the editorial side, separately from the department that signs purchases, registers who may give editorial approval. If the approver did not look at the content closely, wrong content still passes. Lemma does not delete content or recall printed papers. Checking that content is factual is the newsroom's job. The table compares what each control checks; it does not show whether anything would have been stopped in this case. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the step that places content into an edition, and when the editorial side, not the purchasing department, registers who may give editorial approval. If the approver did not look at the content closely, wrong content still passes. Lemma does not delete content or recall printed papers. Checking that content is factual is the newsroom's job. The table compares what each control checks; it does not show whether anything would have been stopped in this case. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -142,7 +143,7 @@ Three things to check in your organization about syndicated content purchased fr
 - **2025-05-20**: The paper issues a statement: the reading list was created with an AI tool and recommended books that do not exist. It removes the section from the e-paper and says subscribers will not be charged for this premium edition.
 - **2025-05-29**: The paper publishes its review.
 
-> The facts here rest on the Chicago Sun-Times statement (2025-05-20) and the review written by its reporters (2025-05-29). The account of AI use and of the writer comes from King Features as reported by the paper; the path from distributor to page is the account of the paper and Chicago Public Media. The CEO of Chicago Public Media described a chain of human mistakes spanning the writer, King Features, the Sun-Times and Chicago Public Media; this Brief does not assess the fault of any person or organization. The AI tool used, the result of King Features' internal review, and what happened on the Philadelphia Inquirer's side have not been disclosed. What has not been disclosed does not mean there were no controls.
+> The facts here rest on the Chicago Sun-Times statement (2025-05-20) and the review written by its reporters (2025-05-29). The account of AI use and of the writer comes from King Features as reported by the paper. The path from distributor to page is the account of the paper and Chicago Public Media. The CEO of Chicago Public Media described a chain of human mistakes spanning the writer, King Features, the Sun-Times and Chicago Public Media. This Brief does not assess the fault of any person or organization. The AI tool used, the result of King Features' internal review, and what happened on the Philadelphia Inquirer's side have not been disclosed. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

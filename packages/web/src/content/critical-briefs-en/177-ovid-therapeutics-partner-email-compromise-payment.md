@@ -38,8 +38,9 @@ glossary:
     desc: "A deficiency in internal control over financial reporting that creates a reasonable possibility that a material misstatement will not be prevented or detected on time. Listed companies must disclose it."
 insight:
   slug: "partner-mailbox-is-not-the-partner"
+  stop: true
   label: "A partner's mailbox is not the partner"
-  quote: "Once a vendor's own mailbox is taken over, a payment request sent from it cannot be told apart from a genuine request from that vendor."
+  quote: "Before paying, check the change to the vendor's bank account with the vendor's registered contact, not the email that delivered it."
 industries: ["healthcare"]
 operations: ["payment-change", "approval"]
 controls:
@@ -57,7 +58,7 @@ countries: ["us"]
 
 ## 1. Summary
 
-The mailbox that was taken over belonged not to the company but to one of its development partners. The company assessed itself as having material weaknesses in its readiness for impersonation and in its controls over changes to vendor payment information, and reported that these led it not to identify and prevent the scheme. The funds were fully recovered in January 2025. <strong>Once a vendor's own mailbox is taken over, a payment request sent from it cannot be told apart from a genuine request from that vendor.</strong>
+The mailbox that was taken over belonged not to the company but to one of its development partners. The company assessed that it had material weaknesses in its readiness for impersonation and in its controls over changes to vendor payment information. It reported that these weaknesses led it not to identify and prevent the scheme. The funds were fully recovered in January 2025. <strong>Once a vendor's own mailbox is taken over, a payment request sent from it cannot be told apart from a genuine request from that vendor.</strong>
 
 ## 2. What got through
 
@@ -67,9 +68,9 @@ The mailbox that was taken over belonged not to the company but to one of its de
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that, when a vendor's bank account is changed, whoever pays checks that the change came from the vendor, by a means other than the vendor's email, before using it for payment.
+Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, before paying, that the change to its bank account was approved by that vendor through its registered contact, not through the email that delivered it.
 
-- **Who approves**: The vendor. It approves the account change through its registered contact. Because the email itself may be compromised, that contact must be something other than the email that delivered the change (a registered phone number, a signature with the vendor's key, and so on).
+- **Who approves**: The vendor. It approves the account change through its registered contact. That contact must be something other than the email that delivered the change (a registered phone number, a signature with the vendor's key, and so on), because the email itself may be compromised.
 - **Where it is checked**: The step that changes vendor payment information, and the approval before the first payment to a changed account. Changes that cannot be matched to the vendor's approval are held and not used for payment.
 - **What is recorded**: Which change was used for payment, who checked it, and how, so you can show what was checked before paying for recovery, investigation, insurance or audit.
 
@@ -111,7 +112,7 @@ The route in this case began with the takeover of a development partner's email 
 
 Training helps people notice unusual requests, but requests from a genuine, compromised address are hard to spot. Transfer approval cannot tell a request apart by its contents when the name and amount match a real transaction. The company says it strengthened both as part of its remediation. Lemma does not deal with the takeover of the vendor's email; it confirms, before paying, that a changed account could be matched to the vendor's approval.
 
-Note: Lemma's check works only when it is built into the step that changes payment information and the approval before payment, and the vendor's approval is received through a registered contact or key other than the email that delivered the change. It passes if that email is the only registered contact, or if the registered contact itself has been altered. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the step that changes payment information and the approval before payment, and the vendor's approval is received through a registered contact or key other than the email that delivered the change. It passes if that email is the only registered contact. It also passes if the registered contact itself has been altered. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -138,7 +139,7 @@ Three things to confirm about payments to vendors
 - **2025-01-15**: The company recovers the full $1.8 million.
 - **2025-03-11**: The company reports the full recovery and the remediation in its annual report (10-K).
 
-> The facts rely on Ovid Therapeutics' SEC filings (primary). The filings do not name the development partner. The transfer date, the date of discovery, how the payment information changed and how the funds came back have not been disclosed. The material weaknesses are management's own assessment. What has not been disclosed does not mean there were no controls.
+> The facts rely on Ovid Therapeutics' SEC filings (primary). The filings do not name the development partner. The transfer date and the date of discovery have not been disclosed. Nor have how the payment information changed or how the funds came back. The material weaknesses are management's own assessment. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

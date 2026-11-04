@@ -36,8 +36,9 @@ glossary:
     desc: "A one-off loss booked separately from ordinary business results. Here it is to be booked as a remittance-fraud loss at an overseas subsidiary."
 insight:
   slug: "payee-change-not-approved-by-vendor"
+  stop: true
   label: "Payee change not matched to vendor approval"
-  quote: "Even when an instruction to change the payee arrives in a vendor's name, unless you check that the vendor approved the change through its registered contact, the next payment goes to the new account."
+  quote: "Before transferring, check the payee change with the vendor's registered contact, not the email that instructed it."
 industries: ["manufacturing", "supply-chain"]
 operations: ["payment-change", "approval"]
 controls:
@@ -56,7 +57,7 @@ countries: ["jp", "us"]
 
 ## 1. Summary
 
-The instruction was not to pay, but to change where to pay. The transaction itself can be real; once the payee changes, the next transfer goes to the new account. According to the disclosure, another US subsidiary had a similar case in 2020 and measures were taken afterwards, yet a similar instruction got a transfer through again. <strong>Even when an instruction to change the payee arrives in a vendor's name, unless you check that the vendor approved the change through its registered contact, the next payment goes to the new account.</strong>
+The instruction was not to pay, but to change where to pay. The transaction and the amount stay the same. Once the payee changes, the next transfer goes to the new account. According to the company's disclosure, another US subsidiary had a similar case in 2020. Measures were taken afterwards, yet a similar instruction got a transfer through again. <strong>Even when an instruction to change the payee arrives in a vendor's name, unless you check that the vendor approved the change through its registered contact, the next payment goes to the new account.</strong>
 
 ## 2. What got through
 
@@ -66,15 +67,15 @@ The instruction was not to pay, but to change where to pay. The transaction itse
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, through the vendor's registered contact rather than the instructing email and before paying the new account, that the vendor approved the payee change.
+Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, before transferring, that the payee change was approved by that vendor through its registered contact, not through the instructing email.
 
-- **Who approves**: The vendor. When a payee is newly registered or changed, it approves the account through its registered contact (not a contact given in the instructing email).
-- **Where it is checked**: Both the step that accepts and activates a payee change and the step before a transfer is carried out. Whatever channel the instruction arrives through, an account that does not match an approval is not activated, and transfers to it are held.
-- **What is recorded**: Which vendor's payee change arrived through which channel, and who approved and activated it through which contact, so that when a similar instruction arrives later you can show how earlier changes were checked.
+- **Who approves**: The vendor. When a payee is newly registered or changed, it approves the account through its registered contact. A contact given in the instructing email is not used.
+- **Where it is checked**: Both the step that activates a payee change and the step before a transfer. Whatever channel the instruction arrives through, an account that does not match an approval is not activated. Transfers to it are held.
+- **What is recorded**: Which vendor's payee change arrived through which channel, and who approved and activated it through which contact. When a similar instruction arrives later, this shows how earlier changes were checked.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means confirming, before activating a payee change and paying the new account, that the vendor approved it through its registered contact, and keeping a record. Detection means noticing after the transfer that the instruction was false. The transfer dates and the date it was noticed have not been disclosed. Months are from the company's disclosure.</p>
+<p class="rx-ex-cap">A pre-execution check means confirming, before activating a payee change and before paying the new account, that the vendor approved it through its registered contact, and keeping a record. Detection means noticing after the transfer that the instruction was false. The transfer dates and the date it was noticed have not been disclosed. Months are from the company's disclosure.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check the payee change with the vendor's registered contact before activating it</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>An email posing as a vendor's representative instructed a payee change<br>The subsidiary sent a total of $519K</span></div>
@@ -112,7 +113,7 @@ The route in this case is column 1 (a payee change instructed by an email posing
 
 Checking the contents does not settle it: a payee change leaves the transaction and amount unchanged. Checking the sender can catch a lookalike address but not an email sent from the vendor's own account (which applied here has not been disclosed). Confirming the facts after the transfer led here to suspecting the instruction and consulting investigators, but it acts after the transfer, and whether funds were recovered has not been disclosed. Lemma checks the new payee, not the email or the invoice, against approval through the vendor's registered contact before paying.
 
-Note: Lemma's check works only when it is built into the step that activates payee changes and the step before transfers, when changes arriving by email, phone or paper all go through the same check, and when the contact used for approval is managed apart from the system that receives instructions. Where a parent and its subsidiaries run separate procedures, it has to be built into each subsidiary. It passes if the vendor's registered contact itself has been taken over. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent spoofed emails.
+Note: Lemma's check works only when it is built into the step that activates payee changes and the step before transfers, and when changes arriving by email, phone or paper all go through the same check. The contact used for approval is managed apart from the system that receives instructions. Where a parent and its subsidiaries run separate procedures, it is built into each subsidiary. It passes if the vendor's registered contact itself has been taken over. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent spoofed emails.
 
 ### Checklist
 
@@ -138,7 +139,7 @@ Three things to confirm about vendor payee changes
 - **After the transfers (date not disclosed)**: The instruction is suspected to be false; local investigators are consulted and a report is filed.
 - **2024-04-26**: The company discloses the incident in a timely disclosure on the Tokyo Stock Exchange.
 
-> The facts rely on Okabe's timely disclosure (primary). The impersonated vendor, how the email arrived, the number and dates of transfers, what prompted the realisation and whether funds were recovered have not been disclosed. Nor have the contents of the measures taken after 2020 or the improvements drawn up after this case. What has not been disclosed does not mean there were no controls.
+> The facts rely on Okabe's timely disclosure (primary). The impersonated vendor and how the email arrived have not been disclosed. Nor have the number and dates of transfers, what prompted the realisation, or whether funds were recovered. The contents of the measures taken after 2020 and of the improvements drawn up after this case have not been disclosed either. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

@@ -40,8 +40,9 @@ glossary:
     desc: "A certificate authority invalidating a certificate it issued, so that signatures made with its key are no longer trusted."
 insight:
   slug: "valid-key-not-sole-holder"
+  stop: true
   label: "A genuine key that was not the owner's alone"
-  quote: "A signature that verifies under a genuine key does not show that the owner made it, unless the owner is the only one who holds that key."
+  quote: "Before a root signs an intermediate CA's public key, check the public key in the request against the approved ceremony record, not the key's label."
 industries: ["developers", "supply-chain"]
 operations: ["approval"]
 controls:
@@ -60,7 +61,7 @@ countries: ["in"]
 
 ## 1. Summary
 
-The keys were not stolen. According to Mozilla's report, intermediate CA private keys generated at an April 2025 key ceremony lacked sufficient randomness, and anyone could recover them from the public keys in a short time. According to eMudhra, a flaw in the ceremony script created a second, weak key pair, and because the labels were similar, those keys were sent for signing by the root and for cross-signing. The researcher who reported it demonstrated signatures with the recovered keys, and those signatures verify as valid signatures by genuine intermediate CA keys. <strong>A signature that verifies under a genuine key does not show that the owner made it, unless the owner is the only one who holds that key.</strong>
+The keys were not stolen. According to Mozilla's report, intermediate CA private keys generated at an April 2025 key ceremony lacked sufficient randomness. Anyone could recover them from the public keys in a short time. According to eMudhra, a flaw in the ceremony script created a second, weak key pair. Because the labels were similar, those keys were sent for signing by the root and for cross-signing. The researcher who reported it demonstrated signatures with the recovered keys. Those signatures verify as valid signatures by genuine intermediate CA keys. <strong>A signature that verifies under a genuine key does not show that the owner made it, unless the owner is the only one who holds that key.</strong>
 
 ## 2. What got through
 
@@ -70,15 +71,15 @@ The keys were not stolen. According to Mozilla's report, intermediate CA private
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that, before a root signs an intermediate's public key, it checks that the key is recorded as generated under the approved script and device, separately from the key's label.
+Whatever the route, the condition for telling them apart is that, before a root signs an intermediate's public key, it checks the public key in the request against the approved ceremony record, not the key's label.
 
-- **Who approves**: The ceremony lead and witnesses, who record the public key and its fingerprint along with the device and script version used, and approve it. A matching key label, or the action of the person who submitted the request, does not count as this approval.
-- **Where it is checked**: Before the root signs the intermediate's request, and before asking another CA to cross-sign. When the public key in the request cannot be tied to the approved ceremony record, signing is held.
-- **What is recorded**: Which key was generated on which device, under which script, and with whose approval it went for signing, so that you can later separate the intermediates made the same way and set the scope of investigation and revocation.
+- **Who approves**: The ceremony lead and witnesses. They record the public key and its fingerprint with the device and script version used, and approve it. A matching key label, or the action of the person who submitted the request, does not count as this approval.
+- **Where it is checked**: Before the root signs the intermediate's request, and before asking another CA to cross-sign. If the public key in the request cannot be tied to the approved ceremony record, signing is held.
+- **What is recorded**: Which key was generated on which device, under which script, and with whose approval it went for signing. Later, this separates the intermediates made the same way and sets the scope of investigation and revocation.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means confirming, before a root signs an intermediate's public key, that the key is recorded as generated under the approved procedure and device, and keeping a record. Detection means noticing the weak keys or their misuse after they have been signed and published. Dates are from Mozilla's report and the Bugzilla record (UTC).</p>
+<p class="rx-ex-cap">A pre-execution check means matching the public key in the request to the approved ceremony record before a root signs an intermediate's public key, and keeping a record. Detection means noticing the weak keys or their misuse after they have been signed and published. Dates are from Mozilla's report and the Bugzilla record (UTC).</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before signing, match the request's public key to the approved ceremony record</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Weak keys were signed by the root and cross-signed<br>and trusted while anyone could recover them</span></div>
@@ -115,7 +116,7 @@ In this case, the first column put signatures on weak keys, and in the second co
 
 The ceremony, per eMudhra, ran under an approved deviation, yet the mistakenly created keys were used for the requests and later audits did not find them. Scanning for weak keys found these keys through the researcher's work, but per Chrome, earlier checks did not cover small-value elliptic curve keys and left out intermediates that had issued no certificates. Revocation and blocking worked quickly in browsers, but per a Bugzilla participant, clients that do not check revocation can still accept signatures third parties made after disclosure. Lemma checks, before signing, that the request's public key is tied to the approved ceremony record. It does not stop signatures once a key is in third-party hands, and it does not revoke keys, but the record of how each key was made helps set the scope of investigation and revocation.
 
-Note: Lemma's check works only when the approved ceremony record (public key fingerprint, device, script version) is managed apart from the people submitting requests, and the check is built in before root signing and cross-signing requests. It passes if the key approved at the ceremony is itself weak, or if the record was made with the wrong key. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent weak keys or intrusions, and it does not revoke keys or certificates.
+Note: Lemma's check works only when the approved ceremony record (public key fingerprint, device, script version) is managed apart from the people submitting requests, and is built in before root signing and cross-signing requests. It passes if the approved key is itself weak, or if the record was made with the wrong key. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent weak keys or intrusions, and it does not revoke keys or certificates.
 
 ### Checklist
 
@@ -145,7 +146,7 @@ Three things to confirm for organisations that generate signing keys and put the
 - **2026-10-27**: The date the new Chrome Root Store was expected to land in Stable.
 - **2026-11-02**: eMudhra says it has appointed KPMG for an independent review and will file the full report by 11-09.
 
-> The facts rely on Mozilla's Bugzilla record, with entries from Mozilla, Chrome, eMudhra, Sectigo and the researcher, and on Mozilla's security blog (primary). How the keys came to be weak is eMudhra's account, and the investigation continues. The third-party certificate logging is a Bugzilla participant's report. The statement that there is no evidence of misuse comes from BleepingComputer and is not in the primary sources. What has not been disclosed does not mean there were no controls.
+> The facts rely on Mozilla's Bugzilla record, with entries from Mozilla, Chrome, eMudhra, Sectigo and the researcher, and on Mozilla's security blog (primary). How the keys came to be weak is eMudhra's account. The investigation continues. The third-party certificate logging is a Bugzilla participant's report. The statement that there is no evidence of misuse comes from BleepingComputer and is not in the primary sources. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

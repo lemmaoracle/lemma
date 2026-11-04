@@ -36,8 +36,9 @@ glossary:
     desc: "A third party gets into someone's email account and can send and receive as that person. The emails come from the genuine address and the genuine mail server."
 insight:
   slug: "genuine-mailbox-wrong-account"
+  stop: true
   label: "Genuine mailbox, wrong account"
-  quote: "When an invoice comes from the vendor's genuine mailbox and describes a real transaction, no amount of reading the email or the invoice tells you whether the bank account belongs to the vendor."
+  quote: "Before transferring, check the bank account on the invoice against the vendor's registered account, not against the email that arrived."
 industries: ["healthcare", "supply-chain"]
 operations: ["payment-change", "approval"]
 controls:
@@ -56,7 +57,7 @@ countries: ["jp", "us"]
 
 ## 1. Summary
 
-The invoice did not come from a lookalike address. It came from the vendor contact's genuine email account, through the vendor's own mail server, and it billed for work that had actually been delivered. Only the bank account was different, and it was noticed only after the vendor's accounting team billed again for the same job. <strong>When an invoice comes from the vendor's genuine mailbox and describes a real transaction, no amount of reading the email or the invoice tells you whether the bank account belongs to the vendor.</strong>
+The invoice did not come from a lookalike address. It came from the vendor contact's genuine email account, through the vendor's own mail server. It billed for work that had actually been delivered. Only the bank account was different. It was noticed only after the vendor's accounting team billed again for the same job. <strong>When an invoice comes from the vendor's genuine mailbox and describes a real transaction, no amount of reading the email or the invoice tells you whether the bank account belongs to the vendor.</strong>
 
 ## 2. What got through
 
@@ -66,15 +67,15 @@ The invoice did not come from a lookalike address. It came from the vendor conta
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, apart from the email received and before paying, that the bank account on the invoice matches that vendor's registered account.
+Whatever the route, the condition for telling them apart is that, before paying and apart from the email received, the bank account on the invoice is checked against that vendor's registered account.
 
-- **Who approves**: The vendor. When an account is newly registered or changed, it approves through its registered contact. Because the vendor's email itself can be taken over, as here, the approval comes through a channel other than email.
-- **Where it is checked**: The step before accounting carries out the transfer. Whether the contents (transaction and amount) are right and whether the account is the vendor's registered account are checked separately. Transfers to accounts that cannot be matched are held.
+- **Who approves**: The vendor. When an account is newly registered or changed, it approves through its registered contact. The vendor's email itself can be taken over, as here, so the approval comes through a channel other than email.
+- **Where it is checked**: The step before accounting carries out the transfer. The bank account is matched to the vendor's registered account, separately from reviewing the invoice's contents (transaction and amount). Transfers to accounts that cannot be matched are held.
 - **What is recorded**: Which invoice was paid to which account, and how it was checked, so you can show what was checked when dealing with bank refunds, loss-sharing talks with the vendor and insurance claims.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means confirming, before paying a vendor and apart from email, that the invoice's bank account matches that vendor's registered account, and keeping a record. Detection means noticing after the transfer that the account was fake. The transfer date and the date it was noticed have not been disclosed. Months are from the company's disclosure.</p>
+<p class="rx-ex-cap">A pre-execution check means matching, before the transfer and apart from email, the invoice's bank account to the vendor's registered account, and keeping a record. Detection means noticing after the transfer that the account was fake. The transfer date and the date it was noticed have not been disclosed. Months are from the company's disclosure.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Before paying, match the bank account to the vendor's registered account</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>An invoice came from the vendor's genuine email<br>Accounting paid the fraudster's account</span></div>
@@ -113,7 +114,7 @@ The route in this case is column 1 (an invoice for a real transaction from the v
 
 Checking the contents does not settle it: the invoice was for work actually delivered, so the more accurate it was, the more genuine it looked. Checking the sender cannot tell it apart, because the email came from the vendor's genuine account and mail server. Two-factor authentication on your own email, which the company lists among its measures, protects your own accounts; the account taken over was the vendor's. Checking after the transfer and freezing the account led to recovering most of the amount here, but it acts after the transfer. Lemma checks the bank account, not the email or the invoice's contents, against the vendor's registered account before paying.
 
-Note: Lemma's check works only when it is built into the step before the transfer and the vendor's registered account is managed apart from the invoice email. It passes if the registered account itself has been altered, or if account changes are approved through the hijacked email itself. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent email account takeovers.
+Note: Lemma's check works only when it is built into the step before the transfer and the vendor's registered account is kept apart from the invoice email. It passes if the registered account itself has been altered. The same applies if account changes are approved through the hijacked email. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent email account takeovers.
 
 ### Checklist
 
@@ -140,7 +141,7 @@ Three things to confirm about invoices that vendors send by email
 - **Discovery date (not disclosed)**: Company A's accounting bills again; checking the transfer shows the destination was the fraudster's account. The account is frozen.
 - **2025-01-06**: The company discloses the incident in a timely disclosure on the Tokyo Stock Exchange.
 
-> The facts rely on Modalis's timely disclosure (primary). The disclosure gives the year with the order in early 2023 and describes delivery and the payment request as following it; we read the months that way. That the fraudster watched the correspondence is the company's inference. The amount transferred, the amount recovered, the loss-sharing ratio and the insurance payout have not been disclosed. What has not been disclosed does not mean there were no controls.
+> The facts rely on Modalis's timely disclosure (primary). The disclosure gives the year once, with the order in early 2023, and we read the months of delivery and the payment request as falling in the same year. That the fraudster watched the correspondence is the company's inference. The amount transferred, the amount recovered, the loss-sharing ratio and the insurance payout have not been disclosed. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

@@ -38,8 +38,9 @@ glossary:
     desc: "Australia's federal police, which investigates cybercrime and crime across state lines."
 insight:
   slug: "vendor-form-account-not-approved"
+  stop: true
   label: "Complete form, unapproved account"
-  quote: "Even when a bank-detail change arrives complete and in a vendor's name, the payment goes to another account unless someone checks that the account was approved through the vendor's registered contact."
+  quote: "Before paying, check the new bank details on the form with the vendor's registered contact, not the email or form that arrived."
 industries: ["public-sector"]
 operations: ["payment-change", "account-admin"]
 controls:
@@ -60,7 +61,7 @@ search_description: "豪ノーザンテリトリー準州政府の機関が、�
 
 ## 1. Summary
 
-According to the Australian Federal Police (AFP), the agency received an email from someone it believed to be a construction contractor, with a completed vendor identification form carrying updated bank details. The sender appeared to copy in other addresses from the company, which were allegedly created to make the scam look legitimate. The agency paid an account it believed belonged to the real contractor. <strong>Even when a bank-detail change arrives complete and in a vendor's name, the payment goes to another account unless someone checks that the account was approved through the vendor's registered contact.</strong>
+According to the Australian Federal Police (AFP), the agency received an email in the name of its construction contractor, with a completed vendor identification form carrying new bank details. Other addresses from the company were copied in. The AFP alleges those addresses were created to make the scam look legitimate. The agency paid an account it believed belonged to the real contractor. <strong>Even when a bank-detail change arrives complete and in a vendor's name, the payment goes to another account unless someone checks that the account was approved through the vendor's registered contact.</strong>
 
 ## 2. What got through
 
@@ -71,11 +72,11 @@ According to the Australian Federal Police (AFP), the agency received an email f
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, before paying, that a bank-detail change was approved by that vendor through its registered contact, not through the email or form making the request.
+Whatever the route, the condition for telling them apart is that the vendor's approval of the bank-detail change on the form is checked with its registered contact, not the email or form that arrived, before paying.
 
-- **Who approves**: The vendor. When an account is newly registered or changed, it approves the account through its registered contact (not a contact given in the email or form requesting the change).
-- **Where it is checked**: Both the step that accepts a vendor form and changes the bank details, and the approval step before payment. An account that does not match the approval is not activated, and payments to it are held. This is checked separately from reviewing the form's contents or how the email looks.
-- **What is recorded**: Which vendor's bank-detail change arrived from which address, and who approved it through which contact before it was used for payment. That record is reviewed before paying.
+- **Who approves**: The vendor. When an account is registered or changed, it approves the account through its registered contact. A contact given in the email or form is not used.
+- **Where it is checked**: Both the step that accepts a vendor form and changes the bank details, and the approval step before payment. An account that does not match the vendor's approval is not activated, and payments to it are held. This is separate from reviewing the form's contents or the look of the email.
+- **What is recorded**: Which vendor's bank-detail change arrived from which address, and who checked it with which contact before using it for payment. That record is reviewed before paying.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
@@ -84,7 +85,7 @@ Whatever the route, the condition for telling them apart is that whoever pays a 
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check bank-detail changes through the vendor's registered contact before paying</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>A$3,583,363 paid to another account<br>A$3,571,760 recovered</span></div>
 <div class="rx-zone det"><b>Detection · worked after the payment</b>A bank reports a suspected BEC incident and quick action recovers most of the money</div>
-<div class="rx-g g1"><div class="t">2024-11-07</div><b>A contractor impostor's email and form arrive</b></div>
+<div class="rx-g g1"><div class="t">2024-11-07</div><b>An email and form in the contractor's name arrive</b></div>
 <div class="rx-g g2"><div class="t">Afterwards</div><b>The agency pays another account</b></div>
 <div class="rx-g g3"><div class="t">2024-11</div><b>A bank reports; the AFP investigates</b></div>
 <div class="rx-g g4"><div class="t">Afterwards</div><b>The bank's action recovers most funds</b></div>
@@ -115,7 +116,7 @@ The route in this case is column 1 (a bank-detail change form sent in the vendor
 
 Reviewing the email and the form is hard to rely on here: according to the AFP, the sender appeared to copy in other company addresses created for the scam (police also allege a business resembling the real contractor was registered). Detection and recovery by the bank brought back A$3,571,760 of A$3,583,363 in this case, but it acts after the payment and does not help if noticed too late. Lemma checks the destination account, not the look of the email or form, against the vendor's approval through its registered contact before paying.
 
-Note: Lemma's check works only when it is built into both the step that accepts vendor forms and the approval step before payment, changes arriving by email or any other route go through the same check, and the contact used for approval is managed apart from the system that takes changes. It passes if the registered contact itself has been taken over. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, and it does not recover funds.
+Note: Lemma's check works only when it is built into both the step that accepts vendor forms and the approval step before payment, and the contact used for approval is managed apart from the system that takes changes. Forms arriving by email and changes arriving by any other route go through the same check. It passes if the registered contact itself has been taken over. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, and it does not recover funds.
 
 ### Checklist
 
@@ -129,7 +130,7 @@ Three things to confirm about vendor bank-detail changes and payments
 
 - **Party**: An agency of the Northern Territory Government, Australia (the AFP did not name the agency). The vendor was a construction contractor, also not named.
 - **Loss**: The agency paid A$3,583,363 to an account it believed belonged to the legitimate contractor. After quick action and preventative measures by the bank, A$3,571,760 was recovered (AFP).
-- **What was confirmed**: According to the AFP, the email to the agency carried a completed vendor identification form with updated bank details. The sender appeared to copy in other company addresses, which were allegedly created to make the scam appear legitimate.
+- **What was confirmed**: According to the AFP, the email to the agency carried a completed vendor identification form with updated bank details. Other company addresses were copied in. The AFP alleges those addresses were created to make the scam appear legitimate.
 - **Investigation**: The AFP charged a 38-year-old man from Lurnea, NSW, with dealing with proceeds of crime worth A$1 million or more. Police will allege he registered a business resembling the legitimate contractor, opened the receiving account and withdrew cash on several occasions. These are allegations (AFP).
 
 ### Timeline

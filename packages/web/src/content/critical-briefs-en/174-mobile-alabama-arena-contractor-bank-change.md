@@ -36,8 +36,9 @@ glossary:
     desc: "A US federal agency. Besides protecting officials, it investigates financial crimes."
 insight:
   slug: "invoice-real-account-not-approved"
+  stop: true
   label: "Real invoice, unapproved account"
-  quote: "Even when a payment request carries the same contents as a genuine invoice, it goes to another account unless someone checks that the destination account was approved through the vendor's registered contact."
+  quote: "Before paying, check the destination account with the vendor's registered contact, not the email or call that made the request."
 industries: ["public-sector"]
 operations: ["payment-change", "approval"]
 controls:
@@ -53,12 +54,12 @@ takeaway: "A party posing as the arena contractor dealt with the Finance Departm
 self_check: "When bank details arrive in a vendor's name, do you check them through that vendor's registered contact before using them for payment?"
 countries: ["us"]
 search_title: "モービル市の振込詐欺：1,470万ドルが別口座へ送られた経緯"
-search_description: "米アラバマ州モービル市で、アリーナの施工会社を装う相手の依頼により、1,470 万ドル（約 22 億円相当）が別の口座へ送られた（市の公表）。何が起きたか、なぜ通ったか、対策を整理。"
+search_description: "米アラバマ州モービル市で、アリーナの施工会社を名乗る相手の依頼により、1,470 万ドル（約 22 億円相当）が別の口座へ送られた（市の公表）。何が起きたか、なぜ通ったか、対策を整理。"
 ---
 
 ## 1. Summary
 
-According to the mayor, the fraudster impersonated a legitimate vendor and built trust with employees over months through emails, documents and phone calls. The city says its IT systems were not compromised and that this was not the result of an employee clicking a bad link. According to press reports, the payment request was built from a genuine invoice's details and looked like a routine monthly arena payment. <strong>Even when a payment request carries the same contents as a genuine invoice, it goes to another account unless someone checks that the destination account was approved through the vendor's registered contact.</strong>
+According to the mayor, the person posed as a legitimate vendor and dealt with employees over months through emails, documents and phone calls. According to the city, its IT systems were not compromised, and this was not the result of an employee clicking a bad link. According to press reports, the payment request was built from a genuine invoice's details. It looked like a routine monthly arena payment. <strong>Even when a payment request carries the same contents as a genuine invoice, it goes to another account unless someone checks that the destination account was approved through the vendor's registered contact.</strong>
 
 ## 2. What got through
 
@@ -69,11 +70,11 @@ According to the mayor, the fraudster impersonated a legitimate vendor and built
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, before paying, that the destination account was approved by that vendor through its registered contact, not through the email or call making the request.
+Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, before paying, that the destination account was approved by that vendor through its registered contact, not through the email or call that made the request.
 
 - **Who approves**: The vendor. When an account is newly registered or changed, it approves the account through its registered contact (not a contact given in the request's emails, documents or calls).
-- **Where it is checked**: Both the step that accepts a vendor's bank details and the approval step before payment. Whatever route the details arrive by, an account that does not match the approval is not activated, and payments to it are held. This is checked separately from reviewing the invoice.
-- **What is recorded**: Which vendor's bank details arrived by which route, and who approved them through which contact before they were used for payment. That record is reviewed before paying.
+- **Where it is checked**: Both the step that accepts a vendor's bank details and the approval step before payment. Whatever route the details arrive by, they go through the same check. An account that does not match the approval is not activated, and payments to it are held. This is checked separately from reviewing the invoice.
+- **What is recorded**: Which vendor's bank details arrived by which route, and who checked them through which contact before they were used for payment. That record is reviewed before paying.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
@@ -89,7 +90,7 @@ Whatever the route, the condition for telling them apart is that whoever pays a 
 </div>
 </figure>
 
-According to the press report, the contractor asked about nonpayment on October 7 and followed up on October 13. The loss was noticed only after the payment had gone through. Similar cases, where a vendor's payments were pointed at an impostor, are the [Portland Water Bureau](/critical/briefs/158-portland-water-bureau-vendor-bank-change/) (bank details switched via a password-reset link) and the [City of Baltimore](/critical/briefs/160-baltimore-workday-supplier-contact-bank-change/) (a fake contact was added to a supplier's account).
+According to the press report, the contractor asked about nonpayment on October 7 and followed up on October 13. The loss was noticed only after the payment had gone through. Similar cases, where a vendor's payments were pointed at someone posing as the vendor, are the [Portland Water Bureau](/critical/briefs/158-portland-water-bureau-vendor-bank-change/) (bank details switched via a password-reset link) and the [City of Baltimore](/critical/briefs/160-baltimore-workday-supplier-contact-bank-change/) (a fake contact was added to a supplier's account).
 
 ## 4. What Lemma does
 
@@ -114,7 +115,7 @@ The route in this case is column 1 (the May request to note banking information)
 
 Reviewing the invoice cannot tell the request apart, because it was built from a genuine invoice's details (the mayor said the genuine invoice helped it pass review, per the press). IT defences do not apply to this route, since the mayor says the systems were not compromised; a takeover of the vendor's contact also happens outside the city's systems. Recovery through banks and law enforcement acts after the payment, and whether any funds were recovered has not been disclosed. Lemma checks the destination account, not the invoice contents, against the vendor's approval through its registered contact before paying.
 
-Note: Lemma's check works only when it is built into both the step that accepts bank details and the approval step before payment, bank details arriving by email, document or phone all go through the same check, and the contact used for approval is managed apart from the system that takes requests. It passes if the registered contact itself has been taken over. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into both the step that accepts bank details and the approval step before payment, and the contact used for approval is managed apart from the system that takes requests. Bank details arriving by email, document or phone all go through the same check. It passes if the registered contact itself has been taken over. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -128,7 +129,7 @@ Three things to confirm about vendor accounts and payments
 
 - **Party**: The City of Mobile, Alabama. B.L. Harbert International is building its arena (Regions Arena). The mayor said large projects like the $300 million arena attract fraud (press).
 - **Loss**: $14.7 million in city funds went to a fraudulent entity (city). The city says its reserves and other contingencies mean there is no effect on its financial stability, services or capital project timelines.
-- **What was confirmed**: According to the mayor, the fraudster impersonated a legitimate vendor and built trust with employees through emails, documents and phone calls. The city's IT systems were not compromised, and it was not the result of an employee clicking a bad link. The mayor says nothing suggests an "inside job".
+- **What was confirmed**: According to the mayor, the person posed as a legitimate vendor and dealt with employees through emails, documents and phone calls. The city's IT systems were not compromised, and it was not the result of an employee clicking a bad link. The mayor says nothing suggests an "inside job".
 - **Employees**: The city terminated one employee and placed two on paid administrative leave pending further investigation. It will not release their names or positions, citing their safety (city).
 
 ### Timeline
@@ -143,7 +144,7 @@ Three things to confirm about vendor accounts and payments
 - **2026-10-26**: The mayor issues an update on the investigation.
 - **2026-10-27**: The mayor and the finance director brief the City Council (press).
 
-> The $14.7 million figure, the notification of law enforcement, the statement that IT systems were not compromised, and the personnel actions rely on the city's statements (primary). The sequence from late May, the events of October 2, 7, 13 and 16, and the August attempt rely on FOX10's report of the mayor's and finance director's council briefing and are not confirmed in city documents. Whether the vendor's bank details were changed in the city's records after the May request has not been disclosed. What has not been disclosed does not mean there were no controls.
+> The $14.7 million figure, the notification of law enforcement, the statement that IT systems were not compromised, and the personnel actions rely on the city's statements (primary). The sequence from late May, the events of October 2, 7, 13 and 16, and the August attempt rely on FOX10's report of the mayor's and finance director's council briefing. They are not confirmed in city documents. Whether the vendor's bank details were changed in the city's records after the May request has not been disclosed. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

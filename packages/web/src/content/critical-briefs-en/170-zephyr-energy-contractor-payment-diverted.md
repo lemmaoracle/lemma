@@ -36,8 +36,9 @@ glossary:
     desc: "A payment meant for its intended recipient is sent to a different account. The method (altered invoice, hijacked correspondence and so on) varies by case."
 insight:
   slug: "right-payee-not-checked"
+  stop: true
   label: "Right payment, wrong recipient"
-  quote: "Even when a payment rests on a genuine transaction, it goes to another account unless someone checks that the destination account belongs to that vendor."
+  quote: "Before paying, check the destination account against the vendor's registered account, not the payment request or invoice."
 industries: ["supply-chain"]
 operations: ["payment-change", "approval"]
 controls:
@@ -53,7 +54,7 @@ countries: ["gb", "us"]
 
 ## 1. Summary
 
-What was diverted was a single payment meant for a genuine contractor. The company says it uses industry-standard practices for its technology and payment systems. The method, and at what stage the payment was pointed at another account, have not been disclosed. <strong>Even when a payment rests on a genuine transaction, it goes to another account unless someone checks that the destination account belongs to that vendor.</strong>
+What was diverted was a single payment meant for a genuine contractor. The company says it uses industry-standard practices for its technology and payment systems. The method has not been disclosed. Nor has the stage at which the payment was pointed at another account. <strong>Even when a payment rests on a genuine transaction, it goes to another account unless someone checks that the destination account belongs to that vendor.</strong>
 
 ## 2. What got through
 
@@ -63,15 +64,15 @@ What was diverted was a single payment meant for a genuine contractor. The compa
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, before paying, that the destination account matches that vendor's registered account.
+Whatever the route, the condition for telling them apart is checking the destination account against the vendor's registered account before paying.
 
-- **Who approves**: The vendor. When an account is newly registered or changed, it approves through its registered contact (not a contact written in the payment request or invoice).
-- **Where it is checked**: The approval step before the payment is carried out. Whether the contents (name and amount) are right and whether the destination account belongs to the vendor are checked separately. Payments to accounts that cannot be matched are held.
+- **Who approves**: The vendor. When an account is newly registered or changed, it approves that account through its registered contact (not a contact written in the payment request or invoice).
+- **Where it is checked**: The approval step before the payment is carried out. Whether the destination account belongs to the vendor is checked separately from the contents (name and amount). A payment whose account cannot be matched to the registered account is held.
 - **What is recorded**: Which payment went to which account, and how it was checked, so you can show what was checked before paying for recovery, investigation or insurance.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means confirming, before paying a vendor, that the destination account matches that vendor's registered account, and keeping a record. Detection means noticing the diversion after the payment. The payment date and the date of discovery have not been disclosed. The date shown is the company's disclosure.</p>
+<p class="rx-ex-cap">A pre-execution check means matching the destination account to the vendor's registered account before paying, and keeping a record. Detection means noticing the diversion after the payment. The payment date and the date of discovery have not been disclosed. The date shown is the company's disclosure.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before paying, match the destination account to the vendor's registered account</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>A single contractor payment was diverted<br>About £700K went to a third-party account</span></div>
@@ -107,7 +108,7 @@ The route in this case is the destination account of a contractor payment. At wh
 
 Checking the contents does not settle it, because the payment was for a genuine contractor and the name and amount cannot tell it apart. Recovery through banks and law enforcement is under way, but it acts after the payment, and whether any funds were recovered has not been disclosed. Lemma checks the destination account, not the contents, against the vendor's registered account before paying.
 
-Note: Lemma's check works only when it is built into the approval step before payment and the vendor's registered account and contact are managed apart from the payment request or invoice. It passes if the registered account or contact itself has been altered. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the approval step before payment, and the vendor's registered account and contact are managed apart from the payment request or invoice. If the registered account or contact itself has been altered, the check can pass. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -131,7 +132,7 @@ Three things to confirm about payments to vendors
 - **Discovery date (not disclosed)**: The company notices the diversion and notifies law enforcement.
 - **2026-04-09**: The company discloses the incident through a London Stock Exchange regulatory announcement (RNS 7163Z).
 
-> The facts rely on Zephyr Energy's disclosure (primary). Press coverage (TechCrunch, The Register) repeats the disclosure; we found no further facts. Statements in the coverage that an invoice's bank details were altered, or that this was a typical business email compromise, are inferences; the company has not disclosed the method. What has not been disclosed does not mean there were no controls.
+> The facts rely on Zephyr Energy's disclosure (primary). Press coverage (TechCrunch, The Register) repeats the disclosure; we found no further facts. Statements in the coverage that an invoice's bank details were altered, or that this was a typical business email compromise, are inferences. The company has not disclosed the method. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

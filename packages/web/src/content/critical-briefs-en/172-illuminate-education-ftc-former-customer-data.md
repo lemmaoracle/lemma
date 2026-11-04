@@ -39,8 +39,9 @@ glossary:
     desc: "An order the FTC issues by agreement with a company. Each violation can bring a civil penalty."
 insight:
   slug: "former-customer-data-in-scope"
+  stop: true
   label: "Ended contracts, data still exposed"
-  quote: "Personal data that is not deleted after a contract ends is taken just like current customers' data when someone gets into the system."
+  quote: "Before reading student data, check the key owner's employment and the contract's deadline against a separate register, not against whether the key is valid."
 industries: ["public-sector"]
 operations: ["data-access"]
 controls:
@@ -59,7 +60,7 @@ countries: ["us"]
 
 ## 1. Summary
 
-The FTC's complaint alleges two things. One is the entry point: a cloud key with administrator rights, belonging to an employee who had left three and a half years earlier, was used without ever having been disabled or rotated. The other is retention: with no retention limits or deletion rules, data that contracts required to be deleted was kept, so old student data from former client school districts was part of the breach. The FTC says this retention failure "further exacerbated the severity" of the breach. <strong>Personal data that is not deleted after a contract ends is taken just like current customers' data when someone gets into the system.</strong>
+The FTC's complaint alleges two things. One is the entry point: a cloud access key with administrator rights, belonging to an employee who had left three and a half years earlier, was used. The key had never been disabled or rotated. The other is retention: there were no retention limits or deletion rules, and data that contracts required to be deleted was kept. So old student data from former client school districts was part of the breach. The FTC says this "further exacerbated the severity" of the breach. <strong>Personal data that is not deleted after a contract ends is taken just like current customers' data when someone gets into the system.</strong>
 
 ## 2. What got through
 
@@ -70,15 +71,15 @@ The FTC's complaint alleges two things. One is the entry point: a cloud key with
 
 ## 3. What to check
 
-The condition that holds whatever the route is this: before personal data is read, check, apart from the reader, that the key's owner is still an authorised person, and that the data is within a current contract and its retention deadline.
+The condition that holds whatever the route is this: before student data is read, check the key owner's employment and the data's contract and retention deadline against a register kept apart from the reader.
 
 - **Who approves**: The organisation holding the personal data. For each key it decides whose key it is and until when it can be used. For each kind of data and each client it decides how long to keep it, and records that in a register.
-- **Where the check sits**: In front of reads of student data and its backups. Check the key owner's employment and the client's contract and retention deadline, and hold anything that falls outside until the check is done.
+- **Where the check sits**: In front of reads of student data and its backups. Check the key owner's employment and the client's contract and retention deadline. Hold any read that falls outside until the check is done.
 - **What is left behind**: A record of which key read whose data, kept in a form that later shows which districts must be told when there is a breach.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Figure 1</span><span class="rx-ex-t">Detection vs. a pre-execution check</span></div>
-<p class="rx-ex-cap">Pre-execution check = before student data is read, checking that the key's owner is still authorised and that the data is within its contract and retention deadline, and recording it. Detection = noticing after the read has happened. Dates come from the FTC's complaint and announcements.</p>
+<p class="rx-ex-cap">Pre-execution check = before student data is read, checking the key owner's employment and the data's contract and retention deadline, and recording it. Detection = noticing after the read has happened. Dates come from the FTC's complaint and announcements.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before a read, check the key owner's employment and the data's retention deadline</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Personal data of 10.1M+ students<br>including former clients' data</span></div>
@@ -90,7 +91,7 @@ The condition that holds whatever the route is this: before personal data is rea
 </div>
 </figure>
 
-The entry key and how long data is kept are separate controls; when one works, the gap in the other remains. A case where keeping former subscribers' data was found unlawful by a regulator is [Free Mobile and Free](/critical/briefs/171-free-mobile-cnil-former-subscriber-retention/); a case where customer data remained in an environment past its purpose is [Awa Bank](/critical/briefs/142-awa-bank-test-environment-repurposed-leak/).
+The entry key and how long data is kept are separate controls. When one works, the gap in the other remains. A case where keeping former subscribers' data was found unlawful by a regulator is [Free Mobile and Free](/critical/briefs/171-free-mobile-cnil-former-subscriber-retention/); a case where customer data remained in an environment past its purpose is [Awa Bank](/critical/briefs/142-awa-bank-test-environment-repurposed-leak/).
 
 ## 4. What Lemma does
 
@@ -115,7 +116,7 @@ The entry point in this case is column 2 (the former employee's key); the FTC al
 
 Setting retention deadlines and deleting stops holding data with no reason to keep it and shrinks what is exposed after a break-in (the FTC's order requires deleting unneeded data and following a published retention schedule). Disabling keys on the last day would make this key unusable. Multi-factor authentication was bypassed here: with administrator rights, the attacker created a new user that did not pass it (as alleged by the FTC). Anomaly detection, according to the FTC, did not flag use of the former employee's key, and the company noticed only after sites went down. Lemma checks, before a read, the key owner's employment and the data's retention deadline.
 
-Note: Lemma's check works only when it is built into the path through which student data and backups are read, and the key owners' employment and each data set's contract and retention deadline are managed apart from the reader. If administrator rights are used to change the checked path itself, or storage is read directly, the check is not passed through. Deleting data is the job of the organisation that holds it; Lemma does not reduce what is stored. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the path through which student data and backups are read, and the key owners' employment and each data set's contract and retention deadline are managed apart from the reader. If administrator rights are used to change the checked path itself, the check is not passed through. The same holds if storage is read directly. Deleting data is the job of the organisation that holds it. Lemma does not reduce what is stored. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -145,7 +146,7 @@ Three questions about personal data you hold for clients
 - **2025-12-01**: The FTC announces its complaint and proposed order (2–0).
 - **2026-06-05**: After public comment, the FTC finalises a modified order (2–0).
 
-> The facts here rest on the FTC's complaint and announcements. The complaint states the FTC's allegations; this Brief does not assess the company's handling. The FTC's publications do not include the company's account. How the former employee's key was obtained, and how much of the total the former clients' data made up, have not been disclosed. What has not been disclosed does not mean there were no controls.
+> The facts here rest on the FTC's complaint and announcements. The complaint states the FTC's allegations. This Brief does not assess the company's handling. The FTC's publications do not include the company's account. How the former employee's key was obtained, and how much of the total the former clients' data made up, have not been disclosed. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

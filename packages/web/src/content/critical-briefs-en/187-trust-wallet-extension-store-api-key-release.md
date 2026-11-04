@@ -39,8 +39,9 @@ glossary:
     desc: "The internal flow of approving and manually reviewing a new version before publishing it. Per Trust Wallet, the tampered version was published outside this flow."
 insight:
   slug: "release-by-key-alone"
+  stop: true
   label: "Releases shipped on a key alone"
-  quote: "If holding the publishing key is enough to ship a new version, a version that never went through internal approval still reaches users as a genuine extension update."
+  quote: "Before publishing to the store, check the build about to ship against the internally approved version, not the publishing key."
 industries: ["finance", "developers"]
 operations: ["delivery", "approval"]
 controls:
@@ -58,7 +59,7 @@ countries: ["global"]
 
 ## 1. Summary
 
-The tampered version did not come from a fake site or a fake app. It arrived from the official Chrome Web Store as an update to the genuine extension users already had installed. According to Trust Wallet, the attacker submitted the tampered build directly with a leaked store API key; it skipped internal approval and manual review and was published automatically after passing store review. Unlike cases where a company's withdrawal keys or multisig signers are broken, what was broken here was the channel that delivers the software holding keys on users' devices. <strong>If holding the publishing key is enough to ship a new version, a version that never went through internal approval still reaches users as a genuine extension update.</strong>
+The tampered version did not come from a fake site or a fake app. It arrived from the official Chrome Web Store as an update to the genuine extension users already had installed. According to Trust Wallet, the attacker submitted the tampered build directly with a leaked store API key. The build skipped internal approval and manual review, and was published automatically after passing store review. What was broken here was not a company's withdrawal keys or signers, but the channel that delivers software handling keys on users' devices. <strong>If holding the publishing key is enough to ship a new version, a version that never went through internal approval still reaches users as a genuine extension update.</strong>
 
 ## 2. What got through
 
@@ -68,15 +69,15 @@ The tampered version did not come from a fake site or a fake app. It arrived fro
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is checking, before a new version is published to the store, that the version went through internal approval and review, separately from the publishing API key.
+Whatever the route, the condition for telling them apart is checking, before publication to the store, that the version about to ship went through internal approval, separately from the publishing API key.
 
-- **Who approves**: A registered internal approver for releases, who approves which version (build) ships using a key or device held apart from the publishing key. Holding the publishing key, or actions by an automated publishing pipeline, do not count as this approval.
-- **Where it is checked**: Before submission and publication to the store. The pipeline checks that the build it is about to submit matches the approved build; when it does not (no approval record, different contents), submission is held.
-- **What is recorded**: Which version went to which store, with whose approval, so that you can later separate versions in distribution that were approved from those that came from outside the process.
+- **Who approves**: A registered internal approver for releases. They approve which version (build) ships, using a key or device held apart from the publishing key. Holding the publishing key, or an action by an automated publishing pipeline, does not count as this approval.
+- **Where it is checked**: Before submission and publication to the store. The pipeline checks the build it is about to submit against the approved build. If they do not match (no approval record, different contents), submission is held.
+- **What is recorded**: Which version went to which store, with whose approval. This later separates versions in distribution that were approved from those that came from outside the process.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means confirming, before a new version is published to the store, that it went through internal approval, separately from the publishing key, and keeping a record. Detection means noticing drained funds or a suspicious version after publication. Dates are from Trust Wallet's disclosure (the 12-26 time is UTC).</p>
+<p class="rx-ex-cap">A pre-execution check means confirming, before publication to the store, that the version went through internal approval, separately from the publishing key, and keeping a record. Detection means noticing drained funds or a suspicious version after publication. Dates are from Trust Wallet's disclosure (the 12-26 time is UTC).</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Before publishing, match the build to internal approval</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>A tampered build was sent with a leaked key<br>It shipped as a genuine extension update</span></div>
@@ -114,7 +115,7 @@ The route in this case runs from the first column through the second to the thir
 
 Store review looks at the contents of the submitted build; per Trust Wallet, the tampered version passed it. It does not look at whether the build went through the developer's internal process. Internal approval and manual review, per the company, were not passed through by a version submitted directly with the API key; where a key alone can publish, versions can ship without this step. Alerts and rollback surfaced the draining and delivered a rolled-back version, but only after the tampered version had been loaded. Lemma checks, before store submission, that the version about to be published is tied to internal approval. It does not stop behaviour on users' devices once an update has arrived, or transactions. It does not revoke leaked keys or recover drained funds.
 
-Note: Lemma's check works only when it is built into the store submission and publishing pipeline and the publishing API key is placed where only the checked submission path can use it. It passes if the publishing key can be used outside the check, or if an approver's key or device is itself taken over. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, revoke keys or recover funds.
+Note: Lemma's check works only when it is built into the store submission and publishing pipeline, and the publishing API key is placed where only that pipeline can use it. A build can pass if the publishing key is usable outside the pipeline, or if an approver's key or device is itself taken over. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, revoke keys or recover funds.
 
 ### Checklist
 
@@ -141,7 +142,7 @@ Three things to confirm for organisations that ship apps or extensions through s
 - **2025-12-29**: BleepingComputer reports the CEO saying v2.68 was not released through the internal manual process and was likely submitted with a leaked API key.
 - **2025-12-30**: Trust Wallet publishes its incident update (updated 2026-07-17).
 
-> The facts rely on Trust Wallet's blog disclosure (primary), which says the investigation is ongoing and figures may change. The address count (2,596), loss figure (~$7 million), publication time and the pausing of release APIs are BleepingComputer's statements and differ from the company's own figures (2,520; ~$8.5 million). What has not been disclosed does not mean there were no controls.
+> The facts rely on Trust Wallet's blog disclosure (primary). The company says the investigation is ongoing and figures may change. The address count (2,596), loss figure (~$7 million), publication time and pausing of release APIs come from BleepingComputer's reporting. Its figures differ from the company's (2,520; ~$8.5 million). What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

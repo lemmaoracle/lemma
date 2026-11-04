@@ -40,8 +40,9 @@ glossary:
     desc: "Bringing retained data to a state where there is no serious possibility of re-identifying a person. Removing names alone may not achieve this."
 insight:
   slug: "names-removed-not-anonymous"
+  stop: true
   label: "What remains after names are removed"
-  quote: "Deleting names and contact details does not always stop someone being traced if purchase history and IP addresses remain."
+  quote: "Before using data of members who have left, check each retained field against the reason and deadline set for it, not the keeper's explanation."
 industries: ["retail"]
 operations: ["data-access"]
 controls:
@@ -57,7 +58,7 @@ countries: ["ca"]
 
 ## 1. Summary
 
-This is not a breach. It is a regulator's findings on how data of members who closed their accounts was handled. On closure, Loblaw deleted name, email, phone and address, but kept purchase history, usage records, public IP addresses, device information and more. Canada's OPC found that removing names and contact details alone does not anonymize the data, and that this contravenes the principle on information that is no longer needed. Loblaw disagrees with that finding but agreed to a third-party assessment. <strong>Deleting names and contact details does not always stop someone being traced if purchase history and IP addresses remain.</strong>
+This is not a breach. It is a regulator's findings on how data of members who closed their accounts was handled. On closure, Loblaw deleted name, email, phone and address. It kept purchase history, usage records, public IP addresses, device information and more. Canada's OPC found that removing names and contact details alone does not anonymize the data, and that this contravenes the principle on information that is no longer needed. Loblaw disagrees with that finding but agreed to a third-party assessment. <strong>Deleting names and contact details does not always stop someone being traced if purchase history and IP addresses remain.</strong>
 
 ## 2. What got through
 
@@ -68,15 +69,15 @@ This is not a breach. It is a regulator's findings on how data of members who cl
 
 ## 3. What to check
 
-The condition that holds regardless of route: when data of people who have left is kept, set a reason and a deadline for each field, and have a party separate from the one keeping the data assess and record whether the data can re-identify anyone once names are removed.
+The condition that holds regardless of route: before fields kept after closure are used, check them against the reason and deadline set for each field, and against an assessment, made separately from the keeper, of whether they can re-identify anyone.
 
 - **Who approves**: The organization that manages the personal information. It decides which fields to keep, for what, and until when. Whether the data counts as anonymized is assessed by someone other than the keeper (in this case's recommendation, a third party).
 - **Where to check**: Before the data kept after closure is used, for analytics or anything else. Check that the retained fields are within the decided scope and deadline.
-- **What is recorded**: For each member, what was deleted and what was kept at closure, in a form that lets manual errors be found later (per the OPC, one complainant's name ended up in a dummy address).
+- **What is recorded**: For each member, what was deleted and what was kept at closure, in a form that lets manual errors be found later. Per the OPC, one complainant's name ended up in a dummy address.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Figure 1</span><span class="rx-ex-t">Detection vs. a pre-execution check</span></div>
-<p class="rx-ex-cap">Pre-execution check = before data kept from people who have left is used, checking that the field is within its reason and deadline and cannot identify anyone, and recording it. Detection = finding out later through member complaints or a regulator's investigation. The dates below are the month complaints started and the date of the OPC findings.</p>
+<p class="rx-ex-cap">Pre-execution check = before data kept after closure is used, checking that the field is within its reason and deadline and cannot identify anyone, and recording the result. Detection = finding out later through member complaints or a regulator's investigation. The dates below are the month complaints started and the date of the OPC findings.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not visible from the disclosure</b>Before using retained data, check its reason, deadline, and whether it can identify anyone</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Purchase history and IP addresses kept after closure<br>Removing names alone found not enough</span></div>
@@ -113,7 +114,7 @@ Two columns were at issue in this case. Column 1 is what is kept after closure. 
 
 Per the OPC, deleting name and contact details on closure is not enough on its own to anonymize (it cited combining public IP addresses with transaction records, email domains that remained, a manual error, and more). Deleting on or shortly after closure removes the retained data itself. A third-party assessment looks, separately from the keeper, at whether there is a serious possibility of re-identification, but its result and the measures that follow are still to come. The login-credential review deletes credentials when no other account uses them, and does not reach purchase history. Lemma checks that reads of retained data stay within the decided scope and keeps a record of who read what (the OPC said access controls over retained data were insufficiently documented).
 
-Note: Lemma's check works only when it is built into the path that reads retained data, and when the allowed purpose, scope and deadline are managed separately from the reader. Reads from outside that path do not go through the check. Deleting or anonymizing data is the job of the organization that holds it; Lemma does not reduce what is stored. The table compares what each control checks; it does not show whether anything happened or was stopped in this case. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the path that reads retained data, with the allowed purpose, scope and deadline managed separately from the reader. Reads from outside that path do not go through it. Deleting or anonymizing data is the job of the organization that holds it; Lemma does not reduce what is stored. The table compares what each control checks; it does not show whether anything happened or was stopped in this case. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -140,7 +141,7 @@ Three things to check in your organization about data of people who have left
 - **2024-05 to 07**: Deletion requests were delayed and some inquiries went unanswered (OPC finding).
 - **2026-03-05**: The OPC issues its findings (PIPEDA Findings #2026-001).
 
-> The facts here rest on the OPC findings. The contraventions are the OPC's findings; this Brief does not assess the company's handling. Loblaw disagrees with the anonymization finding and says the retained data is no longer associated with an identifiable person. How long data is kept, how many accounts were closed, and the result of the third-party assessment have not been disclosed. What has not been disclosed does not mean there were no controls.
+> The facts here rest on the OPC findings. The contraventions are the OPC's findings; this Brief does not assess the company's handling. Loblaw disagrees with the anonymization finding. According to the company, the retained data is no longer associated with an identifiable person. How long data is kept, how many accounts were closed, and the result of the third-party assessment have not been disclosed. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 
