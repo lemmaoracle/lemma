@@ -68,7 +68,7 @@ A software fault could make the Forward Collision-Avoidance (FCA) automatic brak
 - **Detection route**: Owner reports, complaints to NHTSA, the ODI inquiry and the recall. All of them act after the harm and the reports.
 - **Not disclosed**: The sources reviewed do not give the details of the conditions under which the fault occurs, whether the vehicle had another mechanism that could stop the activation, or a breakdown of the reports beyond the four rear-end crashes.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever executes an automatic braking action that cuts into human driving checks, before it runs and outside the camera and software that perceived and judged, that the activation is needed.
 

@@ -63,7 +63,7 @@ The launch policy left confirmation of permission not to before generation, but 
 - **CODA's position**: CODA treated reproduction during training as potentially infringing and flagged outputs closely resembling One Piece, Demon Slayer, Pokémon, Mario, and the like. It said the opt-out model inverts the burden of consent and runs counter to Japan's copyright principle of prior permission (CODA).
 - **Not disclosed**: The specific composition of the training data and the status of individual permissions.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is checking, before generating with copyrighted works, whether the rightsholder has permitted this use of that material, separately from whether a refusal has been filed.
 

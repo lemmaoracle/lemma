@@ -63,7 +63,7 @@ These were not the official SDKs of Paysafe, Skrill, or Neteller but separate pa
 - **What was targeted**: Paysafe API keys, AWS keys, GitHub tokens, npm tokens, hostnames, usernames, and API-usage data (Socket).
 - **Not disclosed**: How many environments installed the packages, and whether the keys were actually abused.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before a developer or CI pulls in a dependency, it checks that the package comes from the official publisher.
 

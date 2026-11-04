@@ -61,7 +61,7 @@ Researchers showed how injected content can reach trusted processing inside agen
 - **What reached the receiving side**: In general, a framework's internal logic accepts the state it loads, and calls to an exposed endpoint, as trusted operations. From the loading side or the receiving side, it cannot tell whether a value came from an authorized run or from input an attacker can control.
 - **Not disclosed**: Whether any in-the-wild exploitation occurred (none is reported). For CVE-2026-28277, the vendor advisory presupposes privileged write access to stored checkpoints and states that no practical exploitation path in existing deployments is known. The chained remote code execution is Check Point Research's account.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the side that loads internal state or exposes an endpoint checks, before running it, the value's provenance and authorization against a record.
 

@@ -67,7 +67,7 @@ The employee suspected the first message of being phishing, but a call full of f
 - **What reached the receiving side**: In general, faces seen and voices heard on a video call reach a payment process as a sign that the person giving the instruction approved it. Whether the video and voices are genuine cannot be told from the meeting screen.
 - **Not disclosed**: The date of the video call, and how many people appeared in it (reports differ). As of October 2026, no arrests or recovery of funds in this case have been reported.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever executes a payment checks, before it goes out, that the instruction is genuine, on a channel other than the one it came in on, through a contact registered in advance.
 

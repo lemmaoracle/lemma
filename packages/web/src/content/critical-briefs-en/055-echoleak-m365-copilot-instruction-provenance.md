@@ -63,7 +63,7 @@ Aim Labs demonstrated, and disclosed in June 2025, that one crafted email from a
 - **Reach**: Copilot's entire access scope (OneDrive files, SharePoint content, Teams messages, chat history and preloaded organizational data).
 - **Not disclosed**: Whether it was exploited in the wild. Microsoft says there is no evidence of exploitation in the wild. Because it is zero-click and uses legitimate paths, it rarely shows up as an anomaly in ordinary usage logs (Aim Labs).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, just before an AI assistant reads internal data and sends it out, it is checked, apart from how the content looks, whether that operation came from the user's own command or from text inside data it took in.
 

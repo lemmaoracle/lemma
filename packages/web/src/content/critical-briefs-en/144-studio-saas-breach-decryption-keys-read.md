@@ -66,7 +66,7 @@ The keys needed to decrypt the data stored encrypted were read in the same unaut
 - **How it looks to the receiving side**: in general, reading keys and data from inside an environment arrives as a read by the environment's own legitimate mechanisms. If data and keys sit in the same environment, reading a key is not told apart from reading data.
 - **Not disclosed**: the kind of vulnerability and the entry point (which function, which vulnerability), what was actually retrieved, secondary harm, the findings of an outside investigator, the number of affected users and records, and what triggered confirmation.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever lets data and decryption keys be read checks, before the read and apart from the authority held inside the environment, that the read is within the permitted party and scope.
 

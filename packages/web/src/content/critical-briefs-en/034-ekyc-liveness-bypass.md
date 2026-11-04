@@ -69,7 +69,7 @@ To the app, the swapped video arrives by the same route as a real camera's. The 
 - **What reached the receiving side**: In general, a virtual camera's video arrives at the app by the same route as a real camera's. However much the content looks like the person, it cannot be told from the content whether it was taken live by a real camera.
 - **Not disclosed**: The number of victims and success rates of the kits, and whether any firm's safeguards were in fact breached.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever accepts identity-check video checks, before accepting it and separately from the video's content, that it was taken live by a real camera.
 

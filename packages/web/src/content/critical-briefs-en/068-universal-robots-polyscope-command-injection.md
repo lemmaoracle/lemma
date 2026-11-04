@@ -63,7 +63,7 @@ CISA warned that PolyScope 5 (before 5.25.1), the control software for collabora
 - **What was stopped**: On robots running the fixed release (PolyScope 5.25.1), the flaw is fixed (per Universal Robots). Network segmentation and blocking exposure of the Dashboard Server port were also given as mitigations.
 - **Not disclosed**: Exploitation in the wild (none reported at the time of writing). Altered control logic or disrupted operation after code execution on the robot OS are plausible impacts, not confirmed harm.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever carries out a command that leads to physical motion checks, before it runs, that the sender is allowed to operate the machine, wherever on the network the command came from.
 

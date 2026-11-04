@@ -62,7 +62,7 @@ The researcher reportedly did nothing more than connect to the cloud as a user, 
 - **What reached the receiving side**: In general, a broker that allows subscriptions on authentication alone receives the owner's subscription and an unrelated user's subscription as the same "authenticated subscription." According to the researcher's report, live camera video, microphone audio and floor-map data from each unit were reachable by an unrelated user's connection.
 - **Not disclosed**: Whether anyone other than the researcher received other people's unit data by the same route, and whether there is a record of which connection received what (the reports we consulted do not say).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the side handing over unit data checks, before handing it over, whether the receiving party is one the unit's owner has permitted.
 

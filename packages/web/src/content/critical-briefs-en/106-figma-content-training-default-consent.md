@@ -66,7 +66,7 @@ According to the company's public documentation, the setting for using content i
 - **Claims in the litigation**: The plaintiffs allege that users entrusted proprietary designs on the premise, as represented, that they would be used only to provide collaboration features, so repurposing them for training breaks the original agreement (breach of contract), and that competitive value was drawn from unreleased product plans and workflows in design files (trade secret misappropriation). Figma denies this, stating that it does not use customer information to train models without permission.
 - **Not disclosed**: Which teams' content, and which content, was actually used for training. It is not in the materials consulted.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before entrusted content is ingested into training, check that the content carries the rights holder's consent to be used for training.
 

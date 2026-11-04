@@ -72,7 +72,7 @@ According to the city, its IT systems were not compromised, and this was not the
 - **What reached the paying side**: In general, the side processing a payment sees the vendor's name, the invoice contents, the amount and the destination account. If the name and contents match a real transaction, only the destination differs. The mayor said "the only difference was where it was going" (press).
 - **Not disclosed**: Whether the vendor's bank details were changed in the city's vendor records after the May request, or a different account appeared only in the payment request. The receiving account and bank. Whether any funds were recovered. What the city's new safeguards are.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, before paying, that the destination account was approved by that vendor through its registered contact, not through the email or call that made the request.
 

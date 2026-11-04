@@ -66,7 +66,7 @@ Tenet Threat Labs showed, in a controlled environment, that when an AI coding ag
 - **Reach**: Once execution succeeds, the full set of environment variables, Git credentials, private repository URLs and the developer's identity can pass to the attacker (Tenet).
 - **Not disclosed**: Whether real-world harm occurred, and how much. The figures of 2,388 organizations, 85% and 100+ organizations are observations from Tenet's controlled tests.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, just before the agent runs a command, the origin of that procedure is checked, apart from how the content looks, to see whether it came from content the legitimate system generated or from content written in from the outside.
 

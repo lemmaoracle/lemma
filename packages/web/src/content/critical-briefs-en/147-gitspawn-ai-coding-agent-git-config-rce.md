@@ -66,7 +66,7 @@ AI coding agents ran, at startup, commands written in a repository's own setting
 - **What it reached**: The command runs as the user, with no approval prompt and nothing shown on screen, reaching SSH keys, cloud credentials in the environment, tokens in shell configuration, every repository on disk, and a foothold on the machine (Manifold Security).
 - **Not disclosed**: The name of the config key behind Claude Code's `ultrareview` path (Manifold withheld it to avoid enabling abuse). Fixes for Grok Build and for Claude Code's `ultrareview` path could not be confirmed as of this writing.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before an agent runs settings or code brought in from outside such as a repository, it checks outside the agent whether they come from a verified publisher and fall within the scope that may run.
 

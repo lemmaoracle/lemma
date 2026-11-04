@@ -70,7 +70,7 @@ The company assessed that it had material weaknesses in its readiness for impers
 - **What reached the paying side**: In general, when a vendor's email is compromised, the paying side receives requests from the usual address, or as a continuation of an existing thread. Neither the sender nor the wording tells them apart from a genuine request. The company names controls over changes to vendor payment information among its weaknesses.
 - **Not disclosed**: The development partner's name. The transfer date and the date of discovery. By what route, and how, the payment information changed (whether a change request arrived by email). The payment method (ACH or wire). How the funds came back (from a frozen account, or through insurance).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, before paying, that the change to its bank account was approved by that vendor through its registered contact, not through the email that delivered it.
 

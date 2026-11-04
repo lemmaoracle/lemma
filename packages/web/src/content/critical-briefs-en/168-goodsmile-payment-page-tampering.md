@@ -58,7 +58,7 @@ The company did not store card numbers, but a program placed on its payment page
 - **What reached the receiving side**: Customers' browsers received the usual payment screen from the genuine site. In general, neither the appearance nor the connection to the site shows that the code inside the page has been changed.
 - **Not disclosed**: The type of vulnerability used to get in, whether the program ran in the browser or was a server-side change, where intercepted data was sent, and any fraudulent card use.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever serves the payment page matches the code running on it against the approved version before card details are entered.
 

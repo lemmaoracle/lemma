@@ -63,7 +63,7 @@ Merely loading a malicious model repository ran arbitrary Python on the user's m
 - **What reached the receiving side**: In general, the side loading a model receives a name, a model card, a download count, and the fetched files. None of those show the provenance of the code about to run. The substitution happens inside the trusted distribution path itself.
 - **Not disclosed**: Whether, and in how many environments, a malicious repository was actually loaded. As of this Brief's publication, no widespread in-the-wild exploitation has been reported.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, after the fetch completes and immediately before execution, the side loading the model checks that the code and weights actually loading are the ones that were checked, issued unaltered by the publisher they claim.
 

@@ -62,7 +62,7 @@ Nothing beyond actions developers take every day was involved: opening a project
 - **What execution delivered**: According to the reports, the credentials available to the development environment for GitHub, npm, AWS, Azure, GCP, Vault, Kubernetes, and more. Miasma used them to place the same kind of config in other repositories and packages within reach, and spread (safedep, StepSecurity).
 - **Not disclosed**: Which path infected each repository, how many credentials were stolen, and how far restoration has progressed. How each tool changed its folder-trust defaults or the automatic execution of bundled config could not be confirmed from this Brief's sources.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that can be told apart whatever the route is this: before an agent loads and executes config bundled in a repository, check whether that config comes from its legitimate author and stays within the scope it is allowed to run in.
 

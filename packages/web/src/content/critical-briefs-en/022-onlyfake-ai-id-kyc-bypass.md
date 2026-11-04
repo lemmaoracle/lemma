@@ -65,7 +65,7 @@ The generated images mimic the texture of the shots commonly used in KYC capture
 - **Operator claims**: An anonymous operator (self-styled "John Wick") claimed the service could clear KYC at major exchanges and crypto-friendly neobanks, and said a "neural network" generated the images. 404 Media said it could not verify the AI-use claim itself.
 - **Not disclosed**: How many accounts were opened with generated images, and whether they were used for fraud or money laundering. At which stage OKX's review accepted the image.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before opening an account, the side accepting KYC checks whether the issuer issued the submitted ID, separately from how the image looks.
 

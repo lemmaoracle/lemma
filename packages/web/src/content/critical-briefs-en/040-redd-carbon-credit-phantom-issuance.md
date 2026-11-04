@@ -67,7 +67,7 @@ According to the Federal Police, credits were generated for these areas while ti
 - **Detection route**: Investigative reporting by Mongabay journalist Fernanda Wenzel (2024-05) and the satellite-imagery analysis CCCA conducted on its commission flagged a mismatch between declared logging volume and satellite estimates. The Federal Police then investigated. All of these acted after issuance and sale.
 - **Not disclosed**: The sources reviewed give no confirmed figures for individual issuance lots, cancellations or buy-backs, and do not describe how the declarations were compared with which records during issuance. The charges are at the investigation stage; no one has been convicted.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that declared conservation area and logging volume, and the attribution of the area, are checked against source data held outside the declarant before credits are issued.
 

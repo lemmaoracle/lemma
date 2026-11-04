@@ -63,7 +63,7 @@ The login at the entry point used a stolen ID and password and was outwardly ind
 - **What the receiving side sees**: In general, an entry point that accepts a password alone receives an ID and a password. A legitimate user's login and a login with stolen credentials look the same to it.
 - **Not disclosed**: How the credentials were obtained (phishing, info-stealing malware or a dark-web purchase are possible, but the path has not been disclosed). The intrusion date is an estimate.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds regardless of route is that the entry point checks, before accepting a login and separately from the password match, that the party logging in is the holder with authority over that scope.
 

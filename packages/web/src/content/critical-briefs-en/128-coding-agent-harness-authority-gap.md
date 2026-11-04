@@ -62,7 +62,7 @@ Security firm Novee Security tested Anthropic's Claude Code, Google's Gemini CLI
 - **What reached the receiving side**: According to Novee, environment variables holding CI secrets, the workflow's `ANTHROPIC_API_KEY` and `GITHUB_TOKEN`, and the instructions for the next agent run. Anthropic says exploitation required getting untrusted content into a Claude Code context.
 - **Not disclosed**: How many workflows at organizations other than the three vendors' own repositories, using the same default configuration, were affected. This Brief does not include the details of the chains (the shape of the input or the sending technique).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before an agent moves to a more privileged action (launching a container, running a command, loading instructions), it checks where the value used for that action came from and whether the action is within the permitted scope, apart from the "safe" mark an earlier stage applied.
 

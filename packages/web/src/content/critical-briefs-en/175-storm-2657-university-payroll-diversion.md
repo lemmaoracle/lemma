@@ -72,7 +72,7 @@ The changes arrived from the employee's own account, through the real screens. M
 - **What reached the receiving side**: In general, the HR system sees a deposit change from a session signed in to the employee's account. A successful login does not show that the employee made the change.
 - **Not disclosed**: The universities. The losses, and how many deposits were actually changed and salaries sent elsewhere. Whether any pay was recovered. Whether a check beyond login was required for the deposit change. The order and interval between registering the device and changing the deposit.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before a salary deposit change is confirmed, it is checked as the employee's own against the key or contact registered before the change.
 

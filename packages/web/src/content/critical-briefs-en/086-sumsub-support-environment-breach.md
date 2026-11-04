@@ -68,7 +68,7 @@ The core of identity verification was protected. Face and ID images were not exp
 - **What reached the receiving side**: In general, an attachment to an enquiry arrives as part of ordinary support traffic. Data in an environment support staff can read sits outside the core, so what is stored there and who can read it must be managed separately from the core's protection.
 - **Not disclosed**: The ticketing service's name, the number of people affected (the company says "a limited number of customer accounts"), affected clients other than Ndax and Bitpanda, any regulator notification, and why discovery took so long (still being assessed).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever places personal data in an environment outside the core, such as support, or lets someone read it, checks beforehand, both before storing it and before letting anyone read it, that the field is needed and the reader is within the range allowed, against a list decided in advance.
 

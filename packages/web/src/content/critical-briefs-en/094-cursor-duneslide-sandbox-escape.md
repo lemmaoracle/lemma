@@ -62,7 +62,7 @@ According to Cato AI Labs, the attacker does not type into Cursor. They hide an 
 - **What reached the receiving side**: In general, commands that run outside the sandbox run with the developer's own privileges. According to Cato AI Labs, once the sandbox is disabled, the next command runs as the developer, and beyond taking over the machine it can reach the cloud and SaaS workspaces the editor is signed into.
 - **Not disclosed**: The number of affected users. The details of the similar flaws in other coding agents that Cato AI Labs says it is disclosing.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before an agent writes to a file, it checks that the target is within the permitted scope, apart from the path the agent specified or the result of link resolution.
 

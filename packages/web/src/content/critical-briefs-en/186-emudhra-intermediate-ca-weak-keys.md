@@ -73,7 +73,7 @@ According to eMudhra, a flaw in the ceremony script created a second, weak key p
 - **What reached the signing side**: In general, a root or another CA asked to sign receives the public key in the certificate signing request (CSR) and the name on it. How and on which device the key was generated, and whether anyone else holds it, does not reach the signer. Browsers and other verifiers likewise see a valid signature by a genuine intermediate key and cannot tell who made it.
 - **Not disclosed**: Which part of the script was flawed, and how (eMudhra says it is investigating, has appointed KPMG for an independent review, and will file its full report by 11-09). Whether anyone recovered the keys and signed with them before the report. How the weak keys could be created inside the device (participants asked on Bugzilla; no answer yet).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before a root signs an intermediate's public key, it checks the public key in the request against the approved ceremony record, not the key's label.
 

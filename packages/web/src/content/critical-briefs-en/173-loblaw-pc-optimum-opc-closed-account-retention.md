@@ -71,7 +71,7 @@ Canada's OPC found that removing names and contact details alone does not anonym
 - **What the receiving side sees**: In general, a closure process ends once set fields are deleted. Whether the remaining fields can identify someone is not visible from the deleting step alone.
 - **Not disclosed**: How long retained data is kept, how many accounts were closed, how much data was retained, and who the third-party assessor is and when it will report.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds regardless of route: before fields kept after closure are used, check them against the reason and deadline set for each field, and against an assessment, made separately from the keeper, of whether they can re-identify anyone.
 

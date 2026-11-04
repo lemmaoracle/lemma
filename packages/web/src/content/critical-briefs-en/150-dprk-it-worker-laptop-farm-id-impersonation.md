@@ -69,7 +69,7 @@ The ID images the enablers supplied were genuine, and the connection came from t
 - **What reached the receiving side**: In general, what reaches a client is an ID image, a connection source and the answers given. An image can be copied and handed over, so it does not show that the holder and the person doing the work are the same. A connection routed through an enabler's home PC or a server the enabler rented also appears to come from inside Japan.
 - **Not disclosed**: The laptop farm's location and when it was dismantled, the number of enablers involved, and the names of Japanese clients.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever hands over work and access checks, before handing it over, that the person doing the work is the ID holder, not from an image but by a method only that person can use.
 

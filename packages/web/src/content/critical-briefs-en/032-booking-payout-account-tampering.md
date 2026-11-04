@@ -70,7 +70,7 @@ Polaris Holdings says payout accounts at several hotels were switched, and that 
 - **Spillover to guests**: Phishing messages reached guests booked at some hotels. The company is looking into whether booking data taken from the admin screen was used, or whether it leaked from an external booking-management system.
 - **Not disclosed**: How the attacker got in (under investigation at disclosure), and whether the payout to one hotel came before or after the anomaly was detected.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever applies a payout-account or bank-account change checks, before it takes effect, whether someone other than the person who made the change approved it through a path separate from the login.
 

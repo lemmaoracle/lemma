@@ -63,7 +63,7 @@ No key was stolen, and no malware entered the wallet app. Per SecondFi's disclos
 - **What reached the receiving side**: In general, a blockchain checks whether a signature is valid for the address's key. Which code produced the signature, and whether the nonce was generated safely, do not reach it. The attackers' transactions were signed with the reconstructed legitimate keys, so they cannot be told apart from the users' own. Per SecondFi, the vulnerability sits at the address level, so the compromise persists even if the same recovery phrase is imported into another wallet.
 - **Not disclosed**: How, and on whose approval, the signing code was swapped. SecondFi's or EMURGO's position on the swap finding. EMURGO had not published a postmortem as of this Brief's writing.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before the signer starts signing, the code it uses is checked to be the same as the build that passed audit and was approved.
 

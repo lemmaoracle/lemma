@@ -63,7 +63,7 @@ The researcher reports extracting the pattern that acts as the watermark's key w
 - **What reached the receiving side**: In general, what reaches the party receiving an image is the image itself, and an image whose mark was stripped cannot be told from one that never had a mark by whether the mark is there. Once the pattern can be extracted, the inverse, applying the mark to a non-AI image (misattribution), can also hold on the same principle.
 - **Not disclosed**: Any case in which a stripped or forged image passed at an actual point of acceptance (moderation, regulatory reporting, litigation). An official statement from Google DeepMind (none confirmed through official channels).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is checking, before an image is accepted, a signature issued by the party that generated it, separately from the mark inside the image.
 

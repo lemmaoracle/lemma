@@ -66,7 +66,7 @@ The official Docker image of Gitea, a self-hosted Git service, defaulted to trea
 - **What could follow once admin was reached**: Reading all private repositories, adding an SSH key for persistent access, changing webhooks to send later pushes outside, taking CI/CD secrets, and reaching the server's interior via SSRF through webhooks. These are possible impacts, not confirmed harm.
 - **Not disclosed**: Whether any instance had admin rights taken in the field. Sysdig detected the first probing 13 days after disclosure, but reported it was at the initial-reconnaissance stage with no progression to an attack (The Hacker News). How many of the roughly 6,200 exposed instances had reverse-proxy authentication enabled.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the side running an operation with admin authority checks, before running it and apart from the name written in the request, that the principal behind the request is an administrator.
 

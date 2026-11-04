@@ -69,7 +69,7 @@ When the impostor first emailed a request to change the bank account, the city s
 - **Who was impersonated**: A proposal manager at MWH, listed as the contract contact in the city's vendor database (press, citing the city's lawsuit). The city does not believe the employee committed the theft; the name was used.
 - **Not disclosed**: Whether the impostor had broken into the contractor's email (ENR says the case probably started with an email breach through phishing; speculation), and whether the reset link went to an address imitating the contractor's. No arrests had been made as of September 2025.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever activates a supplier's bank account matches the change to the supplier's request, through the registered contact rather than any address the requester supplies, before it takes effect.
 

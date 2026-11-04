@@ -67,7 +67,7 @@ The attacker used no customer password; it authenticated as an app a customer's 
 - **What reached the receiving side**: In general, authentication with an app identity's credential needs no customer password and arrives as a legitimate action by the app, within the permissions the app holds. At the time of authentication it cannot be told apart from an action by another party that holds the credential.
 - **Not disclosed**: How the credential was exposed (unknown), whether a product vulnerability contributed ("has not been established", per ConnectWise), and whether the self-granted admin rights and the sign-ins were the same attacker.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever accepts an app identity's actions checks, before the action runs and separately from the credential, that it is a kind of action allowed at install.
 

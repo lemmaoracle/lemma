@@ -69,7 +69,7 @@ According to the company's disclosure, another US subsidiary had a similar case 
 - **What reached the paying side**: In general, a payee change arrives with the vendor's name, a contact's name and new bank details. The transaction and amount do not change, so reading the invoice does not tell you whether the instruction came from the vendor.
 - **Not disclosed**: The vendor and the representative who were impersonated. Whether the email came from the vendor's address or a lookalike. The number, dates and amounts of the transfers. What prompted the realisation and when. Whether any funds were recovered. What the measures taken after 2020, and the improvements made after this case, consist of.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever pays a vendor checks, before transferring, that the payee change was approved by that vendor through its registered contact, not through the instructing email.
 

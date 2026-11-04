@@ -63,7 +63,7 @@ According to the researchers, the hiring AI's admin console still had a test acc
 - **Information within reach**: In the researchers' account, names, email addresses, phone numbers, interview (chat) transcripts, IP addresses and more.
 - **Not disclosed**: Whether anyone other than the researchers accessed records (Paradox.ai says no one did). How the test account came to remain. Where and how per-record authority was meant to be decided.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before a record is opened, check whether the party may read that record, separately from whether it passed login.
 

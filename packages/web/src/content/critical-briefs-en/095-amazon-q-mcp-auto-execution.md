@@ -62,7 +62,7 @@ According to Wiz Research, when a developer opened a malicious repository in Vis
 - **What reached the receiving side**: According to Wiz Research, the started process inherited the developer's environment variables wholesale. For developers who work with the cloud, that often includes AWS credentials (access key, secret and session token), cloud-CLI tokens, API keys and the SSH-agent socket. In Wiz's demonstration, a planted command sent the AWS session's identity information to an external server, showing that the AWS session could be taken over with no action beyond opening the folder and enabling Amazon Q. Wiz says this can also lead to persistence in the cloud, reaching internal services, and lateral movement using a developer with production access as a foothold.
 - **Not disclosed**: The number of affected users. Whether any repository actually used this route before the fix (there is no report of exploitation).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before an AI coding tool starts a process from a repository's config, it checks the config's origin, the scope of the launch and the scope of the credentials passed, apart from the fact that a folder was opened.
 

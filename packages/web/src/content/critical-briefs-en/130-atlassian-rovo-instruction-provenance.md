@@ -68,7 +68,7 @@ Researchers showed that Atlassian's AI assistant Rovo, by two paths, ran instruc
 - **Reach**: Rovo can read Jira, Confluence, Bitbucket, Slack, Google Workspace, Microsoft 365, databases and more, and connects to over 50 services (Varonis). In the demonstrations, Confluence pages, Jira tickets and SharePoint content containing personal data were taken (SecurityWeek).
 - **Not disclosed**: Whether any real-world harm or exploitation occurred.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever calls the tool that opens an outside URL or sends data out checks, before running it, that the operation came from the user's request, against a record of that request.
 

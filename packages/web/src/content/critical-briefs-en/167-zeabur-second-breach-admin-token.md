@@ -58,7 +58,7 @@ After its August breach, the developer platform Zeabur reported that it had disa
 - **What reaches the receiving side**: In general, what reaches an admin API or a database is a request over a legitimate path with a valid credential. Zeabur says no alert fired for about 36 hours after first use because valid credentials and legitimate paths were used.
 - **Not disclosed**: How the initial credentials were obtained (Zeabur names a possible link to a GitHub App private key leaked in August as a hypothesis, not confirmed), and where the old GCP key leaked from (Zeabur says neither can be confirmed). No statement identifying the attacker was found. Hetzner and DigitalOcean are said to keep no operation audit logs, and Zeabur says it cannot confirm whether the admin access to some servers was used.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling these apart is that the side receiving admin operations and data exports checks, before execution, the expiry, scope and revocation status of the credential used.
 

@@ -59,7 +59,7 @@ Researchers at Check Point Research showed a path by which attacker code can run
 - **What reached the receiving side**: The agent loads the checkpoint rows a query returns as state it legitimately saved itself. From the loading side, it cannot tell whether a row was written by an authorized run or injected through the query. According to the researchers, on success the attacker reaches the LLM API keys, customer data and conversation history the agent handles, and credentials for external systems such as a CRM or internal APIs.
 - **Not disclosed**: Whether any in-the-wild exploitation occurred. LangGraph frames CVE-2026-28277 as a "post-exploitation" issue that presumes write access to the checkpoint store. The chained remote code execution is Check Point Research's account.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the side loading the state checks, before loading it, which run the state came from and whether it was tampered with, against the record of how it was saved.
 

@@ -65,7 +65,7 @@ It was not a cyberattack. When building address labels from an Excel list, staff
 - **Information involved**: The names of 770 residents' association heads of Tokyo public housing. The release does not say addresses leaked.
 - **Not disclosed**: Which column was mistaken, whether any step matched the labels to the source list, and whether there was secondary leakage or misuse.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever dispatches notices from address labels matches each label's destination to a row of the source list, just before dispatch, by a means other than the operator's eyes.
 

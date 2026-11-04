@@ -65,7 +65,7 @@ According to the investigation, the videos were built from AI-generated, manipul
 - **What the receiving side gets**: In general, the side accepting an upload receives an account and video data; that alone does not show whether the person on screen is real or whether the publisher is an independent creator. A label attaches only when provenance metadata survives the path.
 - **Not disclosed**: Whether the videos examined carried provenance labels. Whether action was taken on the 28 accounts beyond the two CNA shared, or on the videos. The operator or paying client, and whether the operation was commercial or state-linked (CNA did not identify or determine these).
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before a video lines up in front of viewers, check that the publication was issued, unaltered, by the creator it claims, separately from the account name or how the persona looks.
 

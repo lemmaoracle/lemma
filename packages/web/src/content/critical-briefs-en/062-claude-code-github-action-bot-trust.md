@@ -63,7 +63,7 @@ According to GMO Flatt Security researcher RyotaK, the trigger check in the Clau
 - **Secondary paths**: Anthropic's example workflow included `allowed_non_write_users: "*"` (anyone can trigger; flagged as a risk in the docs too), and Claude posted task summaries to the publicly visible run-summary field, so repositories that copied it inherited the same hole. An attacker without trigger rights could also slip content in as "trusted input" by editing a trusted user's issue after it triggered but before Claude read it (RyotaK).
 - **Not disclosed**: Any use of this path against a real-world target. The researcher's write-up says the demonstration was limited to his own test repositories.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before an agent runs with privilege, whether whoever triggered it holds authority for that operation, and where the input it reads came from and whether it has changed since the trigger, are checked separately from a name or the look of the text.
 

@@ -65,7 +65,7 @@ ZUU disclosed that the payment followed its existing rules and processes. The la
 - **What reached the receiving side**: In general, an instruction received in chat arrives as a request from that executive's account. A taken-over genuine account and a fake account can both look, from the receiving side, like the executive's own instruction.
 - **Not disclosed**: Which chat service was used. Whether an executive's account was taken over or a fake account was created (the investigation cites insufficient vigilance against fake accounts and similar attacks). Who approved the payment. Whether the payee was new.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever executes the payment checks, before paying, that the instruction came from the person who gave it, by a means other than the one it arrived on.
 

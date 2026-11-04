@@ -74,7 +74,7 @@ By Ibermutua's account, as cited in the AEPD decision, one line of code was comm
 - **How it was found**: On 2024-07-15, one user company told Ibermutua that its weekly notification included data on people outside the company (same source).
 - **Not disclosed**: When the change went in, how many runs it affected, and what testing was done before the change.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds regardless of route: before sending, and separately from the process that assembled it, check that every person in the attachment belongs to the recipient company.
 

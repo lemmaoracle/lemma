@@ -73,7 +73,7 @@ The complaint also alleges that there were no retention limits or deletion rules
 - **What reaches the receiving side**: In general, the cloud environment receives operations from a valid key. Whether the key's owner has left, or whether the data being read should still be kept, cannot be told from the key's operations alone.
 - **Not disclosed**: How the attacker obtained the former employee's key; how much of the total the former clients' data made up; the company's own account (the FTC's publications do not include it).
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before student data is read, check the key owner's employment and the data's contract and retention deadline against a register kept apart from the reader.
 

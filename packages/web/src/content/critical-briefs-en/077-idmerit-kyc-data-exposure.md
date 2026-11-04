@@ -69,7 +69,7 @@ IDMerit denied that it owns, controls or stores customer data or the data held b
 - **What reached the receiving side**: In general, identity-check data flows across vendors, data sources and the links between them. When an open database is found, whose custody it is in cannot be told from the database itself.
 - **Not disclosed**: Records, such as hostnames, that directly identify the database's owner; how the ports IDMerit acknowledged could have been open relate to the database that was found; any regulator finding. The figures and contents are Cybernews's claims and have not been independently confirmed.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever places data checks, before placing it, whose custody the data is in and under which contract it was entrusted, against the ledger kept by the party that entrusted it, and records where it was placed.
 

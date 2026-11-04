@@ -65,7 +65,7 @@ The head of accounting received a call from scammers posing as police on a perso
 - **What reached the receiving side**: In general, a fund move that has passed through approval, or a transfer that has passed the real person's authentication, arrives as a legitimate request. Whether the request has been faked cannot be told from its text and its approval path.
 - **Not confirmed**: No sign of personal or customer data being taken. The report says it cannot rule out that the scammers saw information on screen during remote control.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever executes a transfer or fund move checks, before executing it, that the request has a documented reason separate from the text of the request (an invoice, a payroll schedule), by a path other than the person who made the request.
 

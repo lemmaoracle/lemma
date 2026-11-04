@@ -66,7 +66,7 @@ The company says it uses industry-standard practices for its technology and paym
 - **What reached the paying side**: In general, the side making a payment sees the vendor's name, the amount and the destination account. If the account has been swapped but the name and amount match a real transaction, the contents cannot tell it apart.
 - **Not disclosed**: The method and the route of intrusion. The payment date and the date of discovery. The names of the contractor and of the receiving account. Which subsidiary. Whether any funds were recovered. Whether any data was taken. The company describes the incident as "highly sophisticated".
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is checking the destination account against the vendor's registered account before paying.
 

@@ -68,7 +68,7 @@ According to the National Police Agency, nine in ten victims are junior- or seni
 - **Relationship to the perpetrator**: Close to 70% of perpetrators were classmates or students at the same school as the victim (NPA). The source photographs are close at hand, and the places they are posted to are in everyday use.
 - **Not disclosed**: For the cases in the statistics, the breakdown of generation tools and of posting and sharing venues. How the source photographs in the Metropolitan Police case were obtained is reported to be under investigation.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before generating from a real person's photograph, and before the output is published, check that the person pictured authorized the use, separately from whether the material can be obtained.
 

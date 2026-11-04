@@ -75,7 +75,7 @@ According to King Features, a freelance writer used an AI agent to build the sec
 - **At the distributor**: According to King Features, it has a policy barring staff and freelancers from using AI, and the writer did not disclose AI use. The CEO of Chicago Public Media said King Features likely did not thoroughly fact-check or copy edit the work (the paper's review).
 - **Not disclosed**: The name of the AI tool used. The result of King Features' internal review. Where the errors were first pointed out. When the Philadelphia Inquirer ran the section and how it was handled there.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds regardless of route: before content received from outside runs, check its origin and its editorial approval, separately from the department that received it.
 

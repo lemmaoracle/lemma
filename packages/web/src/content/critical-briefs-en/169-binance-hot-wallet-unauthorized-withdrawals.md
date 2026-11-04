@@ -66,7 +66,7 @@ Binance's initial investigation said a compromised DevOps engineer's laptop may 
 - **What reaches the receiving side**: In general, a blockchain executes any transaction signed with the right key. A valid signature does not show that the withdrawal was based on a customer request or an internal approval.
 - **Not disclosed**: The root cause, how the intrusion happened, what the additional points of breach were, and where in the signing system the requests arrived.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the signing side checks, before signing and somewhere other than the service that made the request, that the withdrawal is based on a customer request or an internal approval.
 

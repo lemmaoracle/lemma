@@ -70,7 +70,7 @@ Atlassian の AI アシスタント Rovo は、2 つの経路で、文書やリ�
 - **届く範囲**: Rovo は Jira・Confluence・Bitbucket・Slack・Google Workspace・Microsoft 365・データベースなどを読め、コネクタで 50 を超えるサービスにつながる（Varonis）。実証では、Confluence のページ、Jira のチケット、個人データを含む SharePoint の中身が持ち出された（SecurityWeek）。
 - **公表されていないこと**: 実際の被害の有無、悪用されたかどうか。
 
-## 3. 何を照合するか
+## 3. 実行前の照合
 
 経路を問わず区別できる条件は、AI アシスタントが外の URL を開く・外へ送る道具を呼ぶ側が、その操作が利用者の依頼から出たかを、実行の前に、依頼の記録と照合することである。
 

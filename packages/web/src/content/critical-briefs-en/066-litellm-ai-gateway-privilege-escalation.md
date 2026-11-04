@@ -63,7 +63,7 @@ According to Obsidian Security, LiteLLM's authorization was split between a laye
 - **What reached the receiving side**: In general, an AI gateway holds model providers' API keys and the conversations passing through it in one place. Obsidian reports that a successful chain can reach the admin key (`LITELLM_MASTER_KEY`), database credentials, each provider's API keys, MCP and agent credentials, and the prompts and responses passing through. It also reports that a compromised gateway can rewrite responses between agent and model and make an agent (such as Claude Code in auto-approve mode) execute forged tool calls, and it demonstrated commands being run on a developer's machine.
 - **Not disclosed**: Any case of this chain being used against a real target. None had been reported as of writing.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before a privileged operation such as changing a role or registering code, the handler itself checks that the requester is allowed to perform it, apart from having passed an earlier layer and apart from the scope written in the key.
 

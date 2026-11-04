@@ -60,7 +60,7 @@ CSA AI Safety Initiative disclosed that when instructions are encoded in Unicode
 - **What reached the receiving side**: In general, the model receives not the string a human saw on screen but the string itself, invisible characters included. In the flow CSA described, credential theft, external transmission and out-of-scope operations that follow the instructions can run as the agent's own operations. Because what the human reviewed and what the model followed diverge, explaining or reproducing "why it acted that way" afterward is difficult.
 - **Not disclosed**: Any specific incident of real-world harm from this technique. CSA's publication is a technique disclosure, and Snyk's figures are results of an audit of skills in general.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, just before a skill or tool definition reaches the model, it is checked, apart from how it looks on screen, that it came from the legitimate distributor and has not changed from the version a human reviewed.
 

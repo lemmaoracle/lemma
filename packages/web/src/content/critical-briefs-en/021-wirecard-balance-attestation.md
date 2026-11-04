@@ -67,7 +67,7 @@ The cash was said to sit in escrow accounts at two Philippine banks (BDO and BPI
 - **Regulatory reach**: According to the Wikipedia summary, regulator BaFin's powers extended only to the company's banking subsidiary, not to the payments parent or to accounting practice.
 - **Not disclosed**: Who produced the confirmation documents at which stage, and by what route they reached the auditor. Which periods' disclosures relied on which documents.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before an audit opinion or a disclosure, the side accepting a balance checks whether the issuing bank actually issued the confirmation, separately from the letter that arrived.
 

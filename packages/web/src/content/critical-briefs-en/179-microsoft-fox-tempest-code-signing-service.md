@@ -73,7 +73,7 @@ According to Microsoft, no signing keys were stolen. The customers included grou
 - **What reached the receiving side**: In general, the side that receives a signed file sees a valid signature and the name on the certificate. A valid signature shows the file was signed under that certificate's access; it does not show whether the person who obtained that access was the organisation it claimed to be.
 - **Not disclosed**: Which steps of identity validation were passed, and how. The number and names of infected organisations. The names of the defendants and the claims in the lawsuit (not stated in Microsoft's blog posts).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is to check, before granting signing access, that the applicant is the organisation it claims to be, with that organisation's registered contact rather than the documents submitted. The receiving side checks, before running the software, that the signer is the organisation registered as its publisher, not only that the signature is valid.
 

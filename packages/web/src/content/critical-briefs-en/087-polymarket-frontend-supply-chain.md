@@ -65,7 +65,7 @@ The attacker compromised a third-party vendor dependency loaded by Polymarket's 
 - **What reached the receiving side**: In general, a browser runs a script served from the real domain as that site's code. What users see is the site's screen and the wallet's approval screen. Whether the code asking for approval is what the operator shipped cannot be told from the screen.
 - **Not disclosed**: Which vendor's dependency was compromised, and how. When the injection began and how long the script ran (reporting estimates "before 2026-06-26"). Attribution: no high-confidence attribution to a specific actor has been made.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before asking users for approval, the site checks, separately from whether the domain is real, that the code running in the browser is what its operator shipped and that the transaction to be approved was created through the legitimate business flow.
 

@@ -67,7 +67,7 @@ A human attacker directed frontier AI models and attack-specific agentic framewo
 - **What reaches the receiving side**: In general, the secrets manager and the cloud receive a request carrying a valid token or key. Whether that key was stolen, and whether the actor may take the action, cannot be told from the key's validity.
 - **Not disclosed**: The victim's name and industry, the date of the attack, the attacker's identity, and the nature of any ransom demand. How the public web service was breached.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is to check, before each action and separately from whether a key or token is valid, whether this actor may take this action.
 

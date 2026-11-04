@@ -62,7 +62,7 @@ The city really owed that vendor exactly the amount requested, and says the genu
 - **What reached the receiving side**: In general, a payment request arrives as an amount, a vendor name and a sender display. When the amount matches a real debt, the contents cannot tell it apart. A lookalike domain is hard to spot by sight.
 - **Not disclosed**: The transfer date, the vendor's name, whether the request named a new bank account, who approved it, and whether any money was recovered. How the attacker learned of the vendor and the amount owed (for example, whether the vendor's email was compromised). The city says it cannot give details during the investigation.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever wires money on a payment request checks, before paying and through a channel other than the email, that the request really came from that vendor, using the vendor's registered contact.
 

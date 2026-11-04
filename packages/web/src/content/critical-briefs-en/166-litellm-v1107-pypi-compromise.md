@@ -59,7 +59,7 @@ LiteLLM v1.107.0, an AI gateway release, was built from an attacker's fork by Li
 - **What reaches the receiving side**: in general, a consumer sees the name, version, tag, signature and provenance. According to LiteLLM, v1.107.0 carried a valid signature (cosign) from the then-genuine key and valid Trusted Publishing provenance.
 - **Not disclosed**: the actual amount of data taken, and the attacker's identity.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the consumer checks, before pulling, that the artifact is an approved build from the official repository's tag.
 

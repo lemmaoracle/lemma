@@ -63,7 +63,7 @@ According to Cyera's researchers, products using Pyodide (Python on WebAssembly)
 - **What reached the receiving side**: In general, once code inside a sandbox reaches the host, whatever the host environment can do becomes the impact. Cyera says that means filesystem, process, and environment APIs on Node.js; publishing tokens, signing keys, and source in CI/CD; and API credentials, internal services, and databases in AI-agent environments.
 - **Not disclosed**: Whether this path was actually exploited at any product. This Brief covers a research demonstration and does not assert real damage at any product.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before untrusted code runs with host privileges, which host capabilities its runtime can reach (files, processes, credentials, exposed functions) is checked against a scope decided outside the runtime, not against a list of blocked modules.
 
