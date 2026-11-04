@@ -510,24 +510,31 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   .cy-hero-copy::before {
     content: "";
     position: absolute;
-    inset: -20px -56px;
+    inset: -32px -72px;
     z-index: -1;
     background: radial-gradient(
-      ellipse 62% 62% at 50% 42%,
-      #12140ed9 8%,
-      #12140ea6 42%,
-      transparent 78%
+      ellipse 72% 72% at 50% 44%,
+      #12140ef2 10%,
+      #12140ede 38%,
+      #12140ea8 58%,
+      transparent 84%
     );
     pointer-events: none;
   }
-  .cy-hero h1,
+  .cy-hero h1 {
+    text-shadow:
+      0 1px 12px #12140ef2,
+      0 4px 40px #12140ee0,
+      0 10px 96px #12140ed4;
+  }
   .cy-hero .cy-claim,
   .cy-hero .cy-intro,
   .cy-hero .cy-herosub,
   .cy-hero .cy-availability {
     text-shadow:
       0 1px 10px #12140ee6,
-      0 3px 32px #12140ecc;
+      0 3px 32px #12140ecc,
+      0 8px 72px #12140ea6;
   }
   .cy-hero .cy-claim {
     margin-bottom: 24px;
@@ -1527,7 +1534,7 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
       align-items: start;
     }
     .cy-hero-copy::before {
-      inset: -12px -20px;
+      inset: -16px -28px;
     }
     .cy-page h1 {
       font-size: 80px;
