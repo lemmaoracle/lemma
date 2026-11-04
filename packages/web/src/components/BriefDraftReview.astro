@@ -5,7 +5,9 @@
  * 本文のあとに 1 枚。押すと CLUBS の受け口へ飛び、名前つきで保存して、この記事に
  * `?reviewed=ok|fix` で戻る。戻ってきたら「残しました」と出し、この端末に自分の声を
  * 覚える（CLUBS は別のサイトなので、ここからは読めない）。「修正したい」は 1 行を
- * 書いてから飛ぶ（CLUBS 側でも直せる）。下書きの記事にだけ出る（呼ぶ側が絞る）。
+ * 書いてから飛ぶ（CLUBS 側でも直せる）。書いた 1 行は飛ぶ前にこの端末に控え、
+ * 戻ってきたら「あなたの声」の横に出す（CLUBS 側で直した文は映らない・本人 2026-11-04）。
+ * 下書きの記事にだけ出る（呼ぶ側が絞る）。
  */
 import { BRIEF_REVIEW_URL, BRIEF_REVIEW_CASE } from "../config/briefReview";
 
@@ -30,6 +32,8 @@ const T = isJa
       none: "まだありません",
       saidOk: "「問題なし」を残しました。",
       saidFix: "「修正したい」を残しました。",
+      qo: "「",
+      qc: "」",
     }
   : {
       head: "How was this draft?",
@@ -44,6 +48,8 @@ const T = isJa
       none: "none yet",
       saidOk: "Saved “Looks good”.",
       saidFix: "Saved “Needs a fix”.",
+      qo: "“",
+      qc: "”",
     };
 ---
 
@@ -75,7 +81,7 @@ const T = isJa
   </form>
   <p class="bdr-foot">
     <span>{T.foot}</span>
-    <span class="bdr-mine">{T.mine}<b data-bdr-mine>{T.none}</b></span>
+    <span class="bdr-mine">{T.mine}<b data-bdr-mine>{T.none}</b><i class="bdr-note" data-bdr-note hidden></i></span>
   </p>
   <p class="bdr-said" role="status" data-bdr-said hidden></p>
 </section>
@@ -86,9 +92,19 @@ const T = isJa
     if (!box) return;
     var id = box.dataset.brief;
     var KEY = "lemma:brief-review:" + id;
+    /* 「修正したい」の 1 行（飛ぶ前は :pending に控え、戻ってきたら :note に移す）。 */
+    var NOTE = KEY + ":note";
+    var PENDING = NOTE + ":pending";
+    var store = function (k, v) {
+      try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {}
+    };
+    var read = function (k) {
+      try { return localStorage.getItem(k); } catch (e) { return null; }
+    };
     /* 開いた（一覧の「開いた」に出す・この端末だけ）。 */
-    try { localStorage.setItem("lemma:brief-opened:" + id, "1"); } catch (e) {}
+    store("lemma:brief-opened:" + id, "1");
     var mine = box.querySelector("[data-bdr-mine]");
+    var noteEl = box.querySelector("[data-bdr-note]");
     var said = box.querySelector("[data-bdr-said]");
     var form = box.querySelector(".bdr-fix");
     var back = location.origin + location.pathname;
@@ -107,17 +123,27 @@ const T = isJa
       if (!v) return;
       mine.textContent = v === "ok" ? T.ok : T.fix;
       box.classList.add("is-" + v);
+      var note = v === "fix" ? read(NOTE) : null;
+      noteEl.textContent = note ? T.qo + note + T.qc : "";
+      noteEl.hidden = !note;
     };
-    /* 戻ってきた（?reviewed=）。覚えて、住所から外す。 */
+    /* 戻ってきた（?reviewed=）。覚えて、住所から外す。「修正したい」なら控えた 1 行を本物にする。 */
     var p = new URLSearchParams(location.search);
     var r = p.get("reviewed");
     if (r === "ok" || r === "fix") {
-      try { localStorage.setItem(KEY, r); } catch (e) {}
+      store(KEY, r);
+      if (r === "fix") {
+        var pending = read(PENDING);
+        if (pending) store(NOTE, pending);
+      } else {
+        store(NOTE, null);
+      }
+      store(PENDING, null);
       said.textContent = r === "ok" ? T.saidOk : T.saidFix;
       said.hidden = false;
       try { history.replaceState(null, "", location.pathname + "#brief-review"); } catch (e) {}
     }
-    try { show(localStorage.getItem(KEY)); } catch (e) {}
+    show(read(KEY));
     box.querySelector('[data-bdr="ok"]').href = href("ok");
     box.querySelector('[data-bdr="fix"]').addEventListener("click", function () {
       form.hidden = false;
@@ -130,6 +156,7 @@ const T = isJa
       e.preventDefault();
       var note = form.querySelector("input").value.trim();
       if (!note) return;
+      store(PENDING, note);
       location.href = href("fix", note);
     });
   })();
@@ -227,6 +254,11 @@ const T = isJa
   }
   .bdr.is-fix .bdr-mine b {
     color: #b8336a;
+  }
+  .bdr-note {
+    margin-left: 6px;
+    font-style: normal;
+    color: #12140e;
   }
   .bdr-said {
     margin: 10px 0 0;
