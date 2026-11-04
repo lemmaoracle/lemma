@@ -316,13 +316,22 @@ function deriveCounter(root, isEn, roles = sectionRoles({})) {
     // 対策の表: 状態語だけのセルをチップに（1列目は対策の名前なので除く）。操作の種類ごとに
     // 列を分けた表（proof の章立て・2026-10-31）でも、どの列の状態語もチップになる。
     if (isEl(node, "table")) {
+      // 列の見出し（スマホ幅では見出し行を隠すので、各セルに data-h で持たせ、
+      // 3 列以上の表ではチップの前に小さく出す・2026-11-04）。
+      const heads = [];
+      visitElements(node, (th) => {
+        if (th.tagName === "th") heads.push(textOf(th).trim());
+      });
       visitElements(node, (row) => {
         if (row.tagName !== "tr") return;
-        for (const cell of row.children.filter((c) => isEl(c, "td")).slice(1)) {
+        const cells = row.children.filter((c) => isEl(c, "td"));
+        cells.slice(1).forEach((cell, i) => {
           const word = textOf(cell).trim();
           const cls = STATUS.get(word.toLowerCase());
           if (cls) cell.children = [h("span", `bx-st ${cls}`, [txt(word)])];
-        }
+          const head = heads[i + 1];
+          if (head) cell.properties = { ...(cell.properties ?? {}), dataH: head };
+        });
       });
       continue;
     }
