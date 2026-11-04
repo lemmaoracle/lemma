@@ -83,6 +83,13 @@ const C =
           "FBI IC3への申告額（詐欺等を含む）。世界全体やAI起因だけの被害額ではありません。",
         source: "出典：FBI Internet Crime Report 2025, p.4",
         bridge: "ログインが通った後も、操作の内容を確かめる必要があります。",
+        bandValue: "約9割",
+        bandLabel: "国内大企業のAIエージェント導入で、課題を実感",
+        bandNote:
+          "テックタッチ調べ（2025年）。Q9「活用する上で課題を感じますか」に「非常に感じる」30.7%・「やや感じる」59.1%（n=257・AIエージェント活用者。母集団は生成AIを業務で活用する大企業の会社員429名）。",
+        bandSource: "出典：",
+        bandSourcePr: "PRTimesの発表",
+        bandSourceDoc: "テックタッチの調査資料",
       }
     : {
         title: "A key alone cannot protect every action",
@@ -101,6 +108,13 @@ const C =
           "Losses reported to FBI IC3, including fraud. Not a global total or limited to AI-related crime.",
         source: "Source: FBI Internet Crime Report 2025, p.4",
         bridge: "Even after login, the action itself still needs to be checked.",
+        bandValue: "About 9 in 10",
+        bandLabel: "Large Japanese firms feel issues in adopting AI agents",
+        bandNote:
+          "Techtouch survey (2025). Q9 “Do you feel issues in using AI agents?”: “strongly” 30.7%, “somewhat” 59.1% (n=257 AI-agent users; base: 429 employees of large firms using generative AI at work).",
+        bandSource: "Sources: ",
+        bandSourcePr: "PRTimes release",
+        bandSourceDoc: "Techtouch survey materials",
       };
 ---
 
@@ -298,6 +312,27 @@ const C =
     </figure>
   </div>
   <p class="bridge">{C.bridge}</p>
+  <div class="tech-band">
+    <p class="tech-value">{C.bandValue}</p>
+    <p class="tech-label">{C.bandLabel}</p>
+    <p class="tech-note">{C.bandNote}</p>
+    <p class="tech-sources">
+      {C.bandSource}
+      <a
+        data-cy-ev="cy_issue_source"
+        href="https://prtimes.jp/main/html/rd/p/000000290.000048939.html"
+        target="_blank"
+        rel="noopener">{C.bandSourcePr} <span aria-hidden="true">↗</span></a
+      >
+      <span aria-hidden="true">・</span>
+      <a
+        data-cy-ev="cy_issue_doc"
+        href="https://techtouch.jp/resources/survey-aiagent-2025/"
+        target="_blank"
+        rel="noopener">{C.bandSourceDoc} <span aria-hidden="true">↗</span></a
+      >
+    </p>
+  </div>
 </section>
 
 <style>
@@ -481,6 +516,42 @@ const C =
     line-height: 1.9;
     color: #dce6cf;
     text-wrap: balance;
+  }
+  .tech-band {
+    max-width: 660px;
+    margin: 36px auto 0;
+    padding: 28px 28px 24px;
+    border: 1px solid #3e4435;
+    border-radius: 4px;
+    background: #171a12;
+    text-align: left;
+  }
+  .tech-value {
+    margin: 0;
+    color: #c5e987;
+    font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+  .tech-label {
+    margin: 8px 0 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #dce6cf;
+    line-height: 1.8;
+  }
+  .tech-note {
+    margin: 10px 0 0;
+    font-size: 11px;
+    line-height: 1.9;
+    color: #929c85;
+  }
+  .tech-sources {
+    margin: 10px 0 0;
+    font-size: 12px;
+    color: #929c85;
   }
   @media (max-width: 600px) {
     .problem {
