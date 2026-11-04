@@ -3166,6 +3166,9 @@ const labels = isJa
     color: var(--muted);
     font-weight: 400;
     background: none;
+    /* 上の .brief-body th の nowrap を戻す（3 列以上の表で見出しが重なる・032）。 */
+    white-space: normal;
+    overflow-wrap: anywhere;
     padding: 8px 12px 8px 0;
     border-top: 1px solid var(--tx);
     border-bottom: 1px solid var(--line-2);
@@ -3184,8 +3187,20 @@ const labels = isJa
     color: var(--tx);
     width: 30%;
   }
-  .brief-body.is-report :global(table:has(.bx-st) td:nth-child(2)) {
+  /* 2 列（対策・状態）の表は状態の列を狭く。3 列以上（経路ごと）の表は列を等分し、
+     1 列目を潰さない（184 で長い見出しが 1 列目を 3 字幅まで押し込んだ・2026-11-04）。 */
+  .brief-body.is-report :global(table:has(.bx-st):not(:has(td:nth-child(3))) td:nth-child(2)) {
     width: 110px;
+  }
+  .brief-body.is-report :global(table:has(.bx-st):has(td:nth-child(3))) {
+    table-layout: fixed;
+  }
+  .brief-body.is-report :global(table:has(.bx-st):has(td:nth-child(3)) th:first-child) {
+    width: 28%;
+  }
+  .brief-body.is-report :global(table:has(.bx-st):has(td:nth-child(3)) th) {
+    vertical-align: bottom;
+    padding-right: 10px;
   }
   .brief-body.is-report :global(.bx-st) {
     display: inline-flex;

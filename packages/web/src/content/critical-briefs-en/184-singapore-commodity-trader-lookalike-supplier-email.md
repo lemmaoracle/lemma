@@ -104,7 +104,7 @@ The firm noticed four days after the transfer. A similar case of paying on a req
 
 The route in this case is column 1 (a request to pay a new account from an address made to look like the supplier's). Column 2 covers the same request arriving from the supplier's genuine, compromised email; nothing disclosed says that happened here. Column 3 covers a takeover of the supplier's registered contact itself.
 
-| Control | Request for a new account from a lookalike address | Request for a new account from the supplier's genuine email | Takeover of the supplier's registered contact |
+| Control | Request from a lookalike address | Request from the supplier's genuine email | Takeover of the registered contact |
 | --- | --- | --- | --- |
 | Checking the sender's address (reading the display) | Partial | Not effective | Not effective |
 | Reviewing what the payment is for | Partial | Partial | Not effective |
