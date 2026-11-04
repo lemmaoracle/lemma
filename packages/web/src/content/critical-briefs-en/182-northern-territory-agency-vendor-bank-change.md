@@ -74,7 +74,7 @@ Other addresses from the company were copied in. The AFP alleges those addresses
 - **What reached the receiving side**: In general, whoever processes vendor records sees the vendor's name, the form, the new bank account and the sender's address. If the name and form match the real vendor's, only the account and the sender differ.
 - **Not disclosed**: The names of the agency and the contractor. The steps between receiving the form and paying, and the payment date. Whether there was one payment or several. The receiving bank and how it noticed. Any procedures the agency changed afterwards.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the vendor's approval of the bank-detail change on the form is checked with its registered contact, not the email or form that arrived, before paying.
 

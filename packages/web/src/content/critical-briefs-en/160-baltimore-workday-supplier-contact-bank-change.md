@@ -66,7 +66,7 @@ The city approved both the new contact and the bank change. But the rules at the
 - **What reached the receiving side**: In general, an action by someone added to the account arrives as the supplier's own. Supporting documents such as a forged voided check can also be indistinguishable from real ones to the approver. Here, both approvers said they did not recall seeing the voided check.
 - **Not disclosed**: How the impostor obtained the supplier employee's details.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever adds a contact to a supplier account, and whoever activates a bank change, checks before it takes effect that the request came from the supplier, through the supplier's registered contact rather than the requester or a contact given in the request.
 

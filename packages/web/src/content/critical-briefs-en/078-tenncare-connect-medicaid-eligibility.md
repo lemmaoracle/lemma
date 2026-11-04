@@ -62,7 +62,7 @@ TennCare Connect, an eligibility system built by Deloitte and others on which Te
 - **How it was detected**: According to reporting, the errors were contested only after the terminations, when recipients appealed and a class action was filed in 2020.
 - **Not disclosed**: The reporting reviewed does not say which data failed to load or by what route, what review steps existed before termination, or the status of disputes and remediation after the ruling.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds regardless of the route is to check, before cutting off benefits on an automated decision, that the inputs and household-composition assumptions the decision used match the source records.
 

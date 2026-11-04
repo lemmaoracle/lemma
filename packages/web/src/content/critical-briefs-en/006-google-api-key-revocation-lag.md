@@ -64,7 +64,7 @@ This is a security firm's measurement, and the results rest on Aikido's report. 
 - **What reaches the receiving side**: In general, a server the deletion has not yet reached receives a deleted key in the same form as a valid one. Aikido attributes the lag to the deletion spreading in stages (eventual consistency).
 - **Not disclosed**: Whether any leaked key was actually used during the window after deletion; the date Aikido reported to Google; any explanation from Google of how the lag works.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that tells the cases apart, whatever the route, is that the side receiving a key checks, before letting a call through, whether the key is now revoked against the record kept by the side that recorded the deletion.
 

@@ -64,7 +64,7 @@ In a class action, plaintiffs allege that an AI applicant-screening service sort
 - **What was alleged and what the court decided**: On 2026-06-22, Judge Rita F. Lin held that Workday is not merely a "tool provider" but may fall within the reach of discrimination liability, and allowed the FEHA claims and part of the ADA proxy-discrimination claims to proceed. The ruling declined to dismiss those claims; it is not a finding that discrimination occurred.
 - **Not disclosed**: The factors the decisions used, and whether a person or a separate layer reviewed a decision before a rejection was sent. They are not in the sources reviewed. A May 2026 order found Workday's bias-testing data protected by privilege, and its production to plaintiffs was not compelled.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds regardless of the route is to check, before an AI decision is used to return an adverse outcome to a person (such as a rejection), that the decision is tied to a record of its grounds and to the approval of the person who reviewed it.
 

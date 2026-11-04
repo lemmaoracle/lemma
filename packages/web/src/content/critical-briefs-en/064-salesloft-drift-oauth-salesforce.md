@@ -67,7 +67,7 @@ The attacker used not users' passwords but the OAuth tokens of Drift, an integra
 - **What reached the receiving side**: In general, a query with a valid OAuth token arrives as legitimate integration access on a user's behalf. Whether the integration or another party holding the token is using it cannot be told apart at the moment it is accepted.
 - **Not disclosed**: A confirmed number of exfiltrated records (the "1.5 billion records from 760 companies" from an extortion group calling itself ShinyHunters is an extortion claim, not independently confirmed), and whether credentials taken from Cases were used on other systems.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever accepts operations from an integration checks, before they run and separately from possession of the token, that the operation is a kind within the granted scope and that the token is still valid.
 

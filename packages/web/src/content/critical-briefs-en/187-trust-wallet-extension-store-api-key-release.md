@@ -71,7 +71,7 @@ According to Trust Wallet, the attacker submitted the tampered build directly wi
 - **What reached the receiving side**: In general, the store receives a submission authenticated by the developer's API key, plus the contents of the build. Whether the build went through the developer's internal approval and review cannot be told from the key. Users, too, receive a new store-published version of the genuine extension, indistinguishable by its delivery channel. Per Trust Wallet, once loaded, the tampered version let the attacker access sensitive wallet data and execute transactions without authorisation.
 - **Not disclosed**: Who the attacker is. Where and how the API key was stored in the development environment. What store review checked. When the tampered build was submitted (press reported publication at 12:32 UTC on 12-24). How much was taken from addresses not linked to Trust Wallet (the company says it is still tracking this).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is checking, before publication to the store, that the version about to ship went through internal approval, separately from the publishing API key.
 

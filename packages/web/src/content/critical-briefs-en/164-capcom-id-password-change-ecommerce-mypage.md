@@ -67,7 +67,7 @@ Capcom says no leak of passwords members set themselves has been confirmed. Even
 - **What reached the receiving side**: In general, a password change arrives either as an action from a logged-in session or as one that passed the reset procedure. Passing the procedure does not show that the account's owner made the change.
 - **Not disclosed**: The method of intrusion (the company says it has identified it), when the intrusion began, which procedure changed the passwords (the reset flow or another function), whether owners were notified of the change, whether multi-factor authentication was in place, and why it was 196 accounts.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever applies password and email changes matches each change to the owner, using a contact or key registered before the change, before it takes effect.
 

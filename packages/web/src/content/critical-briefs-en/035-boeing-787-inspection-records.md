@@ -64,7 +64,7 @@ According to reporting, Boeing told the FAA that some mandatory inspections at t
 - **Detection route**: In April 2024, Boeing voluntarily reported to the FAA that some inspections recorded as complete may not have been performed (reporting). The FAA announced an investigation on 2024-05-06.
 - **Not disclosed**: The reporting reviewed does not describe which system produced the inspection records, which reviews they went through, or how the mismatch between record and act was found inside the company.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that an inspection's completion record is checked, separately from the declaration of whoever recorded it, against the measurement or work records showing the inspection was performed, before the item moves to the next stage.
 

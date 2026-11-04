@@ -61,7 +61,7 @@ According to AI Now Institute's research, a developer need only ask an agent to 
 - **What it reached**: The PoC demonstrates arbitrary code execution (RCE) on the host and stops at the first code execution. The paper notes that this could be used as a foothold to chain through known sandbox-escape flaws (CVE-2026-39861, CVE-2026-25725) toward theft of authorization keys, persistence, and evasion of network restrictions (AI Now Institute).
 - **Not disclosed**: How the two companies responded after the researchers contacted them, and whether anything changed on the product side. No exploitation or harm in the wild has been reported as of this writing.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before an agent runs a script or binary inside code it has taken in, it checks — separately from how the content looks and from the model's judgment — whether that code comes from the reviewed library's legitimate distributor or was added from outside.
 

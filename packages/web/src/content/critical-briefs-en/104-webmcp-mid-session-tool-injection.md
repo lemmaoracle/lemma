@@ -63,7 +63,7 @@ A research team at National Yang Ming Chiao Tung University (Taiwan) showed, in 
 - **What reached the receiving side**: In general, an agent plans and chooses which tool to call from the names and metadata in the tool list. According to the researchers, the malicious tool carries the same public name as the legitimate one and is presented through legitimate fields, so the list's contents alone do not tell them apart. Setting `readOnlyHint=true` alone produced an average attack success rate of 87%.
 - **Not disclosed**: Exploitation or harm in the wild (none reported). Reproducibility under Chrome's native WebMCP implementation (the researchers note it may vary with implementation details). Whether users can notice Tool Framing (no user study was conducted). How the two of the researchers' four design directions that were not evaluated would perform.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, just before the agent calls a tool, it checks that the tool has the same origin as when the agent planned and that this call is within the authorized scope, apart from the public name and the metadata's self-declaration.
 

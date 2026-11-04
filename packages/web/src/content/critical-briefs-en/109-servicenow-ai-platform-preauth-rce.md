@@ -67,7 +67,7 @@ ServiceNow's advisory says it is "not currently aware of exploitation against Se
 - **What was stopped**: Cloud instances were mitigated within 24 hours of the report (per ServiceNow). The fixed releases immediately apply a "single expression only" restriction (Guarded Script) to pre-login traffic.
 - **Not disclosed**: Any actual compromise (none reported, and the CVE is not in CISA's Known Exploited Vulnerabilities catalog as of 2026-10-20), and when the self-hosted fixes arrived (reports disagree: June or July 13).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever carries out a permission-changing action, such as creating an admin, checks before it runs who authorised that action, whichever entry point it came through.
 

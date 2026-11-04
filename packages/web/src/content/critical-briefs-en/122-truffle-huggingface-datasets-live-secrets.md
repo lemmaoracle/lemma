@@ -65,7 +65,7 @@ According to Truffle Security's study, the Hugging Face platform was scanning pu
 - **The key owners**: Of the Hugging Face tokens Truffle Security could trace, about 700 had been scraped in from someone else's corpus; 63 were leaked by the token's own owner. The firm says a notification only helps if someone acts on it, and the rate of action falls well short of 100%.
 - **Not disclosed**: Whether the keys found were actually misused (Truffle Security says this is not a report of widespread exploitation). The names of individuals, companies and datasets. The contents of the repositories whose scans did not complete.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before a dataset is ingested for training or republished, check the origin and terms of use of its data.
 

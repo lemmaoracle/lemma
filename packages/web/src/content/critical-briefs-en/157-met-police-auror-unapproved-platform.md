@@ -69,7 +69,7 @@ Officers and staff created accounts on Auror, a retail-crime information-sharing
 - **What reached the receiving side**: In general, a sign-up with a work email reaches the operator as a registration by that organisation's staff. Whether the organisation approved the platform cannot be told from the sign-up or from the upload.
 - **Not disclosed**: Statements from the Met and Auror on the action; whether the uploaded data was deleted on Auror's side. Use from March 2023 is "possible" but not proven (per the ICO).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever accepts outside sign-ups with work email, and uploads of personal data to outside platforms, checks before the sign-up or upload that the platform is on the organisation's approved list and that each field is needed for the purpose.
 

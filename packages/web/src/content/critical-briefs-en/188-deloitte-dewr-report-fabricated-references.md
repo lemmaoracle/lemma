@@ -73,7 +73,7 @@ The replacement's note says it corrected the citations and reference-list entrie
 - **The AI note**: Appendix C of the replacement (technical review methodology) says that the assessment of whether system code could be mapped to business requirements used a generative AI tool chain (Azure OpenAI GPT-4o) licensed by the department and hosted in its Azure tenancy. This note does not appear in the July version's PDF. The department's page does not mention AI.
 - **Not disclosed**: In which part of the work the faulty citations were produced, whether AI was used to write the citations or references, and what checks were done before delivery. Deloitte did not answer when asked whether AI generated the errors (AP).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that each cited work or judgment is checked against the record of the original before delivery, for whether it exists there and whether the quoted words match.
 

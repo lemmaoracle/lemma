@@ -67,7 +67,7 @@ Being technically able to retrieve data through a public API is not the same as 
 - **The research team's account**: It says the purpose of distribution is "to make it available for other research teams to use for research on mental health and politics or to train bots," and that it rewrote usernames and hashed and truncated IDs and messages.
 - **Not disclosed**: An official statement from Discord (none confirmed at the time of publication), and whether the dataset was used downstream for AI training.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is checking, before data is distributed and before it is ingested for training, where it came from and under what usage terms it was collected, separately from the content of the data.
 

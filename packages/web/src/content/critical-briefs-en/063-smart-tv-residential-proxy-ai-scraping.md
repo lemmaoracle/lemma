@@ -67,7 +67,7 @@ According to the researchers' analysis, an SDK embedded in free apps turned devi
 - **What reaches the receiving side**: Scraped sites generally receive requests that look like ordinary traffic from a home IP address. The peer channel carrying relay jobs is said to lack meaningful authentication, to bypass a configured VPN on iOS, and largely not to appear in ordinary app-monitoring tools (Include Security). Whoever receives the collected data gets scraping results sourced from residential IPs, not whose data was gathered or under what consent.
 - **Not disclosed**: Which apps on the public partner list contain the SDK today (the researchers caution that being listed shows only a past collaboration). Which organizations used the relayed data for AI training. Bright Data's view on the analysis is not included in this Brief's sources.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before data is taken into AI training, check from which source, under which consent and over which path it was collected, separately from what the collector declares.
 

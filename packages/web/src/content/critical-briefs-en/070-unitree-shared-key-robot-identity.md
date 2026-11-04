@@ -65,7 +65,7 @@ The researchers showed that every unit used the same encryption key, and that a 
 - **Spread to other units**: The researchers say a compromised robot could look for other Unitree robots within Bluetooth range and take them over automatically.
 - **Not disclosed**: Real-world exploitation (the reports we consulted describe none), and whether the fix updates had shipped (not confirmed as of IEEE Spectrum's article, updated 2025-11).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever accepts connections at an entry point such as setup checks the connecting party, before accepting it, against a key or certificate unique to that unit.
 

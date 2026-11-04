@@ -61,7 +61,7 @@ When a data backend is exposed to the internet with no authentication, reaching 
 - **What was found**: Over a million log lines (the `log_stream` table), plaintext user chat history, API keys, secret access tokens, and backend operational data (Wiz Research).
 - **Not disclosed**: Whether third parties illicitly retrieved the data (this Brief does not assert it), and whether the exposed API keys and tokens were used on other systems.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the data backend, before it accepts a query, checks whether the party holds authority over this scope of data, separately from whether it reached the network.
 

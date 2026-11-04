@@ -74,7 +74,7 @@ Around the time the disaster-alert platform that municipalities use was breached
 > "@raiden.ktaiwork.jp" is part of the genuine sender address used by Shizuoka City's disaster mail. The mail confirmed this time misused it to impersonate, and was not sent by the credit-card company.
 > — Shizuoka City (our translation)
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that a person who receives a notice and is about to act can check, before acting and apart from the sender display, that the municipality issued it.
 

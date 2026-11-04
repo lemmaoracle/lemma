@@ -67,7 +67,7 @@ In work where several insurers' ZIPs sit in the same folder, only the operator's
 - **What reached the receiving side**: In general, a file transfer arrives as an operation sending the ZIP the operator chose to the recipient the operator chose. Whether the ZIP's contents belong to that recipient cannot be told from the act of sending.
 - **Scope of disclosure**: The count may include the same policyholder more than once and may fall after review (per TOPPAN and Sompo Japan).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the mechanism that sends the file checks, before sending and apart from the operator's actions, that the ZIP's contents belong to the recipient company.
 

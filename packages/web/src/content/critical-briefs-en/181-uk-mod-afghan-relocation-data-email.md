@@ -72,7 +72,7 @@ It came to light about 18 months later, when some people's details appeared onli
 - **How it came to light**: In mid-August 2023, details of nine people from the file appeared online and ministers at the time learned of the loss (per the government), about 18 months after the email.
 - **Not disclosed**: The recipient, why the file differed from what was intended, and how it spread after the send. Because the safety of the people affected is at stake, this Brief does not go into individuals or the content of applications.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the file's record count and fields are checked against the approved scope, not the sender's own judgement, before the file is sent out.
 

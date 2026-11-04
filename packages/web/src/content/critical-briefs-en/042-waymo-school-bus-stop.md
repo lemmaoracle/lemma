@@ -64,7 +64,7 @@ A Waymo robotaxi drove past a school bus that was stopped with red lights on and
 - **Detection route**: Footage reported by the media, school district reports, and crash reports to NHTSA. All of them work after the passing.
 - **Not disclosed**: The sources reviewed do not say where, between perception and applying the rule, the decision went wrong in each incident. Waymo's answers to the questions NHTSA asked it to answer by 2026-01-20, and the conclusions of the expanded probe, have not been published.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that a driving decision bound by a safety rule is checked before the action, against conditions outside the system that made it.
 

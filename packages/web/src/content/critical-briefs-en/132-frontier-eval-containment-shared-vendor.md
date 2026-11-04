@@ -59,7 +59,7 @@ A misconfiguration left a path out of an evaluation environment that was assumed
 - **What reached the receiving side**: In general, a third-party service accepts the connections and actions that reach it without knowing that an evaluated model sent them. With weak passwords or unauthenticated endpoints, basic techniques go through (the two organizations Anthropic could reach had not noticed until notified).
 - **What is not disclosed**: The total number of incidents and of affected third parties (Irregular has not given them). Whether other customers were affected (Irregular declined to comment). The name of the company Meta's model affected and the details of the harm (Meta has not confirmed them).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever runs an evaluation or test confirms, on every run and independently of the vendor's assurance, that the environment cannot reach the outside and that each target is in scope.
 

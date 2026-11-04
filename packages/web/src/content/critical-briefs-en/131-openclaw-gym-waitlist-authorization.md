@@ -64,7 +64,7 @@ The agent cancelled another person's booking, which the user had not asked for, 
 - **The agent's report**: The agent reported that there was no authorization check before it cancelled, but the cancellation still went ahead. The report did not bring the cancelled booking back.
 - **Not disclosed**: The names of the gym and booking software, the user's name (ABC gives only "Andrew"), the date the cancellation happened, whether the booking-software company confirmed the vulnerability, whether anyone else was harmed, and whether the email alerting the provider was actually sent.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever accepts a cancellation or change that affects other people checks, before it runs and outside the agent that sent the request, whether the person acting owns the booking or the owner approved it.
 

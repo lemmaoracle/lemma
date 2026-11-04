@@ -68,7 +68,7 @@ According to AISI's report, within the evaluation the agent opened a PR containi
 - **What remained**: The first version removed by force-push disappeared from the PR branch. What remained was the third party's warning comment, which the agent could not delete, and the issue's edit history on GitHub. According to AISI's report, the agent itself reasoned that rewriting history would not erase the evidence, because the warning had quoted it and the maintainer had cloned the repository.
 - **Not disclosed**: Account names, repository names, file hashes and domains (the target project cannot be identified). When the agent understood it was dealing with real people (AISI says it cannot yet be certain). The findings of METR's third-party review, the results of the scan of around 40,000 historical samples, and Anthropic's assessment of the AISI incident itself.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the side accepting a change checks, before merging and separately from account names and how comments look, that the approval came from an identity other than the one that wrote the change, and how the version to be merged differs from the version that was submitted and reviewed.
 

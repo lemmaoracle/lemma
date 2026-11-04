@@ -64,7 +64,7 @@ Remote code in a model repository was designed to be fetched and run only after 
 - **Risk left behind**: In environments where cache paths are reused, CERT/CC notes that a previously written file could later be read during a trusted model load, potentially leading to unintended execution.
 - **Not disclosed**: Whether the vulnerability has been exploited. As of this writing, no such report has been confirmed.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that remote code's origin and the user's consent have been checked before it is written to disk, and that, when it is read back later, the file being read is the same one that was checked.
 

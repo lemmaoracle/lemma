@@ -67,7 +67,7 @@ Osaka University says a partner company that had not been reported to the univer
 - **What reached the receiving side**: In general, placing a file in a shared location arrives as the contractor's routine work. Whether the party that placed it is one the data owner's contract allows cannot be told from the act of placing it.
 - **Not disclosed**: The contractor's name, whether the partner and the attacked contractor are the same company, how the credentials were stolen, what rights the account had, whether multi-factor authentication (a setting that asks for a code in addition to the password) was used, and how the files were downloaded.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever places data in a shared location checks, before placing it, that the party it is shared with is a company the data owner's contract allows, against a list the owner registered.
 

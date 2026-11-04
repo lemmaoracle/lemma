@@ -66,7 +66,7 @@ countries: ["global"]
 - **How far it reached**: Fedora Rawhide and parts of Debian testing / unstable. It was caught before reaching major stable releases. No evidence that the attack was actually used has been confirmed.
 - **Not disclosed**: Who "Jia Tan" is. Analysis of time zones, commit timestamps, and similar features has led to discussion of nation-state-level involvement, but attribution is not confirmed.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is checking, before release or signing authority is handed over, that the key-holder corresponds to a real person the project approved.
 

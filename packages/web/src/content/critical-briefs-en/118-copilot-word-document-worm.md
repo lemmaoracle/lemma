@@ -61,7 +61,7 @@ On July 28, 2026, researcher Håkon Måløy published "Context Collapse, Part 3,
 - **What reached the receiving side**: A document indistinguishable in appearance from a correctly generated report. According to the researcher, in the financial-report demonstration Copilot did not mention that it had halved the figures. Because the instructions are copied into the generated document as hidden text, each time it is shared or re-edited inside the organization, the next user's Copilot can read them.
 - **Not disclosed**: Any real-world incident of harm from this technique. The researcher's publication is a research demonstration following coordinated disclosure, not a report that actual corporate documents were altered. This Brief does not cover the modified payload used to reproduce the chain at publication.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before a document is fed into generation and before a generated document is shared, it is checked, apart from how it looks, which source material, which input documents and whose instructions it was built from.
 

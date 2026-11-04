@@ -64,7 +64,7 @@ For the claims its AI sorting had marked for human inspection, the Fund set a ta
 - **What the receiving side gets**: The review system keeps a record that the screen was displayed for at least one second, and that record counts toward the inspection-rate numerator (the Fund). In general, a display-time record cannot distinguish whether a person looked at the content. The aggregated rate was used in describing progress to stakeholders.
 - **Not disclosed**: How many claims were marked confirmed by the tool alone, and how large the difference was between the rate described and reality; this Brief has not been able to confirm either.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that can be distinguished is this: before a claim is finalized as "confirmed," check that the confirmation is tied to which reviewer issued it and to the content of which claim.
 

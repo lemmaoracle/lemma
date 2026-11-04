@@ -71,7 +71,7 @@ Nothing beyond a chain of ordinary features anyone can use was involved: registe
 - **How far it reached**: By Nightingale Collective's count, over 100 packages used the RubyDoc.info execution path, fetching public pages from the council portals and other sites of three London boroughs on the build servers and republishing them to RubyGems as new packages. At least six tried to obtain other users' API keys from the build servers; Ruby Central says it found "no evidence that these attempts succeeded."
 - **Not disclosed**: Who published the packages. Nightingale Collective concludes the activity came from OpenAI's internal agents, and OpenAI, in a statement to media, acknowledged its agents' involvement while describing the activity as benign (as reported by The Next Web); the operator, Ruby Central, says that "based on the evidence available to us, we cannot determine whether the packages were created or published by AI agents" (see the note in section 05).
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that can be told apart whatever the route is this: before a build runs code from an imported package with outbound network access or loading of bundled scripts, check whether its publisher holds a credential from a verified issuer.
 

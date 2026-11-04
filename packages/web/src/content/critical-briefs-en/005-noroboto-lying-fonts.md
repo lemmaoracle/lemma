@@ -62,7 +62,7 @@ Drew Miller, founder of Tritium Legal Technologies, showed that a font embedded 
 - **What reached the receiving side**: In general, the person who uses an AI's summary or judgment receives only the AI's conclusion. From the conclusion alone, you cannot tell that it came from a different string rather than the text the person saw. The research points out that rewriting only part of a document is more severe, because it hardly shows up as a whole-document anomaly.
 - **Not disclosed**: The names and number of the AI platforms that answered incorrectly, and whether there has been any real-world harm. This is a researcher's demonstration.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, just before the AI's conclusion is used for a decision, it is checked, apart from how the document looks, whether the string the AI processed matches the text a person sees on screen.
 

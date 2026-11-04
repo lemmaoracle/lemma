@@ -64,7 +64,7 @@ A7A5 was created in 2025 with the reported involvement of Ilan Shor and Promsvya
 - **What was learned afterward**: Analytics firms and authorities traced the flows on the public chain and identified the scale and the entities involved. Sanctions designations (SDN additions) and exchange designations do not undo transfers that have already settled.
 - **Not disclosed**: Who sent and received individual transfers, and what checks the receiving side performed, and when.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before accepting a transfer, check whether the sender and the source of funds fall under sanctions, separately from whether the transaction can be traced.
 

@@ -69,7 +69,7 @@ According to Awa Bank, the test environment had not been retired after its devel
 - **What reached the receiving side**: In general, getting in from outside with an ID and password arrives as legitimate use. Whether the party who got in is still someone who should be in that environment cannot be told from the login itself.
 - **Not disclosed**: When the intrusion happened, and how the ID and password were obtained. The bank is investigating with the police.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, when an environment's use changes, whoever runs it decides afresh, apart from the previous use, which data may be in it and who may get in from outside, and checks what is left against that before it goes on being used.
 

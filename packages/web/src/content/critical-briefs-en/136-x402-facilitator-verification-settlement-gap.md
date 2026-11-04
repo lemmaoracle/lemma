@@ -63,7 +63,7 @@ In x402, verification of payment and execution of on-chain settlement are delega
 - **What reached the receiving side**: In general, x402 merchants do not check on-chain state themselves; they release service based on the facilitator's response. For ten high-risk cases, the researchers classified actual loss as turning on whether a merchant releases service without waiting for settlement.
 - **Not disclosed**: Which facilitator carries which violation (the paper anonymizes its table, naming only some behavior). The extent of real-world harm (what the team showed is that the paths exist).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before a merchant releases service, it checks that the payment has settled on-chain and has not been used before, independently of the facilitator's response.
 

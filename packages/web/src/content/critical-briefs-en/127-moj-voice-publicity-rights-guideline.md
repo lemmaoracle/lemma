@@ -68,7 +68,7 @@ The report states that voice can fall within publicity rights, applies the same 
 - **Remedies the report sets out**: Damages and injunctions, and for content on the internet, a takedown demand that can be made of the platform operator that manages and runs it. An injunction is framed as being "to remove an infringement now being carried out, or to prevent an infringement that would otherwise arise," so it starts from an infringing act (Ministry of Justice report).
 - **Not disclosed**: The summary document (marked "in preparation" at the time of writing). The parties, post counts and revenue figures in the reported suit by a voice actor against a video-platform operator (this Brief could not confirm it from a primary source).
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the scenario is this: before a person's voice is used to generate a work, and before that work is distributed or monetised, check that the use falls within the voice owner's own consent — whose voice, what scope, until when.
 

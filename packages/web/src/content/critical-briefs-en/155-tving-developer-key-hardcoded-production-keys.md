@@ -73,7 +73,7 @@ On September 3, 2026, South Korea's Ministry of Science and ICT (MSIT) published
 - **What reached the receiving side**: A production key lets its holder through with the owner's rights. Whose work the use is for is not part of the condition at the time of use.
 - **Not disclosed**: How the first development key was stolen. Investigators examined phishing, malware, supply-chain attack, key sharing and vulnerabilities, and could not determine it.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, when a production key performs a high-impact operation (creating a virtual server, bulk-reading data), the use is checked before it happens against whose work it is for, separately from the fact of holding the key.
 

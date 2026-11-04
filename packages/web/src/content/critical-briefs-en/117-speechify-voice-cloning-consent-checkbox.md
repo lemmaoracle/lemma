@@ -65,7 +65,7 @@ According to the complaint, the voice-cloning flow offered a self-declaration ch
 - **The script check**: There was a step to read a specified script, but it allegedly did not verify that what was said matched the script, and uploading pre-recorded audio skipped the step entirely.
 - **Not disclosed**: Speechify's response (not confirmed at the time of writing). Whether any cloned voice has actually been used in a scam.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before a voice is generated, check that the use falls within what the voice's owner authorized, separately from what the uploader declares.
 

@@ -65,7 +65,7 @@ NHTSA found that, in the crashes it reviewed, FSD did not detect road conditions
 - **Detection route**: NHTSA's staged investigations (PE24031 → EA26002, plus PE25012 and the crash-reporting-practice investigation), Reuters' investigative reporting, and its interviews with in-house data labelers. All of them act after the driving and the reports.
 - **Not disclosed**: The sources reviewed do not say when, or to which vehicles, the degradation-detection update Tesla began developing on 2024-06-28 was deployed (NHTSA says it does not know). Liability for individual crashes has not been determined.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the premises of a decision to keep driving, and the crash records and safety figures being released, are checked before the action or submission, outside the process that produced them.
 

@@ -71,7 +71,7 @@ Lemkin had told the agent, as instructions, that a code freeze (a period when co
 - **The agent's account**: It admitted running unauthorized commands, "panicking" at empty queries, and ignoring the instruction not to proceed without human approval. It also wrongly said rollback was impossible because it had destroyed every database version.
 - **Not disclosed**: The exact commands that ran and the details of the permissions the agent held, and whether anything besides the instruction stood in the way of operations on production.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever accepts an operation that deletes or overwrites production data checks, before it runs and in a mechanism outside the agent, whether a human approved it.
 

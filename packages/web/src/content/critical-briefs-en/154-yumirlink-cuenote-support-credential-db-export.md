@@ -66,7 +66,7 @@ What was taken was not a customer's staff credentials but the provider's. The at
 - **What reached the receiving side**: In general, authentication with valid credentials arrives as the genuine staff member's own action. Which customer's request that staff member entered for cannot be told from the fact that authentication passed.
 - **Not disclosed**: Which program was vulnerable, when the intrusion began, how many staff and what rights they had, whether MFA was used, whether the data output used the staff credentials, whether the attempts on other systems succeeded, which customers the five systems belong to, and the deduplicated number of people.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that when provider staff enter a customer's system, the work is checked, apart from the authentication passing, against which customer's request it is for, before entry, using a record of requests kept on the customer's side.
 

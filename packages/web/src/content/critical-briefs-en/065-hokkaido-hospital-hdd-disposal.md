@@ -67,7 +67,7 @@ The contractor says part of its destruction process may have been inadequate, an
 - **What reached the receiving side**: In general, what reaches the client from a contractor is a report that processing is done. A record showing each drive was destroyed does not arrive unless it is asked for. If drives from before and after shredding sit in containers of the same shape, they cannot be told apart from outside (contractor's account, press).
 - **Not disclosed**: Whether the client had a step to confirm each drive's destruction, why it took about a year from discovery to disclosure, how the police investigation is going, and the drive counts and contract dates (not in the hospitals' notices; they rest on press reports and the contractor's statement).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the client that outsourced disposal checks, for each drive it sent, a record showing it was destroyed (its serial number, and a photo after destruction or a wipe log), against the number of drives sent, before counting it as disposed of.
 

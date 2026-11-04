@@ -61,7 +61,7 @@ In ServiceNow's hosted instances, a Scripted REST Resource shipped set not to re
 - **What could follow the queries**: A ServiceNow instance can hold IT support tickets, employee records, asset inventories, security-incident records and workflow data, plus API keys and credentials pasted into ticket bodies. Depending on what was accessed, this could lead to secondary credential exposure. These are possibilities, not confirmed harm.
 - **Not disclosed**: Which data was accessed. Who was behind the activity (ServiceNow said it was likely tied to researcher- or customer-led research associated with the bug bounty, not necessarily malicious actors). Whether a CVE will be issued (said to be under consideration).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the side returning data checks, before returning it and apart from the endpoint's settings, who the requester is and whether they are allowed to make that query.
 

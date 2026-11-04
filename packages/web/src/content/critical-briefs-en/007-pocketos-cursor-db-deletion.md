@@ -66,7 +66,7 @@ The deletion ended with a call the agent made to the infrastructure API after it
 - **The agent's account**: Asked to explain, the agent produced a text enumerating the safety rules it had broken. Crane called it a "written confession."
 - **Not disclosed**: What the API key the agent used was able to delete, and whether anything besides instructions and config stood in the way of deleting production.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever accepts an operation that deletes production data or backups checks, before it runs and in a mechanism outside the agent, whether a human approved it.
 

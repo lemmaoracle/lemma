@@ -65,7 +65,7 @@ This is a research demonstration, and no real-world loss is claimed. In Visa's c
 - **What reached the receiving side**: In general, a value the terminal reads that sits outside the card's signature can be rewritten on the way without the signature check noticing. If it is not bound to the value in another field of the authorization request, the rewritten value reaches the issuer in the same form as a correct one.
 - **Not disclosed**: The number of cards or transactions tested, success rates, which banks approved, and whether Visa or the banks have mitigated it (none was confirmed at publication).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the issuer that approves a payment checks, before approving, the expiry and status in its own record of that card (number and generation), not the expiry the terminal sent.
 

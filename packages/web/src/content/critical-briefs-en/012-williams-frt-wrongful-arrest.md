@@ -65,7 +65,7 @@ An arrest on a theft charge started from a facial-recognition candidate produced
 - **What the lawsuit alleged**: The ACLU alleged that the match result was carried into a photo lineup without independent corroborating evidence and treated as the basis for the arrest. The 2024 settlement includes a ban on arrests and lineups based on match results alone, and a duty of independent corroboration.
 - **Not disclosed**: The match score and the name of the algorithm used. They are not in the sources reviewed.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds regardless of the route is to check, before moving to an action on the basis of an AI match, that the result is tied to corroboration independent of the AI and to the approval of the person who authorizes the action.
 

@@ -69,7 +69,7 @@ According to the SFO and reporting, the company's director altered legitimate ce
 - **Detection route**: In 2023, an airline asked Safran whether a part was genuine, and the certificate was found to be fake. Safran reported it to the authorities, and the CAA, FAA and EASA issued safety warnings. All of these acted after the sales.
 - **Not disclosed**: The sources reviewed do not describe how the companies that received the parts checked the certificates, or how many of the parts with forged certificates were installed on aircraft.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the issuer, the subject part and the fact of issuance on a part's accompanying certificate are checked, separately from the seller's documents, against the records of the party said to have issued it, before the part is accepted.
 

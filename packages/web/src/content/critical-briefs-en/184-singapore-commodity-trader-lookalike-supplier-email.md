@@ -71,7 +71,7 @@ The firm found out only when the real supplier said it had not been paid. Most o
 - **What reached the paying side**: In general, the paying side sees the supplier's name, the sender's address, what the payment is for and the destination account. An address that differs by one character is hard to spot from the display alone. According to the police, staff did not notice the difference.
 - **Not disclosed**: The names of the firm and the supplier. Whether the requested amount matched a real transaction. Who approved the payment to the new account, and through what steps. How the fraudsters learned of the transaction and the supplier (whether the supplier's or the firm's email was compromised). How much was finally returned to the firm, and when.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever pays a supplier checks, before transferring, that a new account named in the request was approved by that supplier through its registered contact, not through the email that arrived.
 

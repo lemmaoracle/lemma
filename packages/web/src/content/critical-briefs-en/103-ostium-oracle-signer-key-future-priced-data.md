@@ -65,7 +65,7 @@ The attacker compromised an oracle signer key and submitted price reports carryi
 - **Detection**: The security firm Blockaid detected the attack while it was in progress. Ostium grasped it within minutes and halted trading within an hour. On-chain anomaly monitoring also helped confine the loss to about five minutes.
 - **Not disclosed**: How the signer key was compromised (leak, theft, custody failure, etc.). The confirmed total loss, the root cause, the final post-mortem and any compensation plan.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before outside data is reflected in a payout, it is checked, separately from the validity of the signature, not only that the signature is valid but also that the signer is legitimate, uncompromised and authorized for this scope right now, and that the data is authentic and within its plausibility bounds (timestamp consistency, acceptable price range).
 

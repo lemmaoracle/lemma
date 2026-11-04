@@ -66,7 +66,7 @@ According to Noma Security (Noma Labs), in the default setup of Ruflo (formerly 
 - **What reached the receiving side**: In general, an agent platform holds model providers' keys and compute, conversation data and the agents' memory in one place. Noma reports that a shell inside the container, each provider's keys passed as environment variables, attacker-controlled swarms launched with the victim's keys and compute, and conversation data in an unauthenticated internal database could all be reached. It also reports that poisoned patterns could be placed in the learning store to steer later AI responses toward the attacker's instructions, and calls this the core of the incident.
 - **Not disclosed**: Whether the flaw was exploited in the wild, and the extent of any damage. Not established at the time of disclosure.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before a tool runs and before anything is written to memory, the system checks that the requester is allowed to perform that operation now, apart from the request having arrived.
 

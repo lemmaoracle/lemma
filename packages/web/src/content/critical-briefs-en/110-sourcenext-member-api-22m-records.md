@@ -65,7 +65,7 @@ As far as the disclosures show, what was used was the API's lawful function of r
 - **What reached the receiving side**: In general, once a key or token passes, an API call arrives as a call that returns data as the function is built to. Whether the call is within the permitted party, purpose and volume cannot be told from the call itself.
 - **Not disclosed**: How authentication was passed, which vulnerability was used, how passwords were stored (hashed or not), and whether the data has been misused. An outside forensic investigation is under way, so the actual count may change. The official notice says "member-information API" while the FAQ says "unauthorised access to servers"; the wording does not match.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever returns member data checks, before returning it and apart from the caller, that the API call is within the permitted party, purpose and volume.
 

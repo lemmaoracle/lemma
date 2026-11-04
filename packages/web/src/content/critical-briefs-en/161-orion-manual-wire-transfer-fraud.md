@@ -64,7 +64,7 @@ Orion reported a material weakness in its manual wire controls, which it believe
 - **What reached the receiving side**: In general, a wire made by a person following steps arrives as a proper wire once the employee has gone through them. Whether the request is genuine cannot be told from the wire itself.
 - **Not disclosed**: The method (email, phone, who was impersonated). The total, number and dates of the transfers, and the destination countries. Whether the fraudulent transfers themselves were manual (the material weakness concerned controls over manual wires). The targeted employee's role. Which site was involved.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever executes a wire checks, before it goes out and by a means separate from the requester, that it is tied to a request verified as genuine.
 

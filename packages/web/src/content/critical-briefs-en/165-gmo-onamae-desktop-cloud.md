@@ -58,7 +58,7 @@ Onamae.com Desktop Cloud is used to keep FX and other trading tools running, and
 - **What reaches the receiving side**: In general, a trading tool connects to the securities or FX firm with the stored account login, and its orders arrive as operations made with a valid login. The company says the stored logins may have been obtained and misused (second notice).
 - **Not disclosed**: The intrusion route, how the trades customers did not make were carried out, and how the securities and FX firms authenticate.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the side receiving orders checks, before execution and separately from the login, the scope the account holder set and the holder's approval.
 

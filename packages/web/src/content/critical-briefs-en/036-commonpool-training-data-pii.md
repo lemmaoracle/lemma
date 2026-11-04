@@ -66,7 +66,7 @@ According to the research team's audit, image-text pairs collected from the publ
 - **After-the-fact filters**: Automatic face blurring was applied, but over 800 faces in the sample escaped detection. Filters for known PII strings such as emails and Social Security numbers were not applied, the research team reports.
 - **Not disclosed**: How much personal data actually reached downstream generative models and derivatives. The size of the problem across the whole dataset (estimated from a sample; not counted in full).
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is this: before material goes into a dataset, check that it has the provenance and consent to be used for training.
 

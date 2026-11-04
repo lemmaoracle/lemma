@@ -64,7 +64,7 @@ ASOS said it was investigating unauthorised activity involving outside platforms
 - **What reached the receiving side**: In general, a notification from an official app arrives under the official name. The person receiving it cannot tell, from how it looks, whether it is an approved send or something sent by someone who got into the delivery service.
 - **Not disclosed**: Whether the outside platforms are the ones that sent the notification, whether the login was used to send it, which employee and what rights, whether multi-factor authentication (a setting that asks for a code in addition to the password) was used, when access began, and how many customers' data was involved. ASOS has not named the platform.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever sends a mass notification to customers checks, before sending, that it is in a send schedule approved inside the company, separately from the login of the person who wrote it.
 

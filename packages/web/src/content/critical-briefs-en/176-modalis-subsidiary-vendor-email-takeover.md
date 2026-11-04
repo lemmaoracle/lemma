@@ -69,7 +69,7 @@ It was noticed only after the vendor's accounting team billed again for the same
 - **What reached the paying side**: In general, a payment request arrives with the vendor's name, the transaction, the amount and a bank account. Here the sender's address and the sending mail server were also the vendor's genuine ones. The company infers that after taking over the account, the fraudster watched the correspondence for some time and understood the commercial terms, the relationship and the payment timing before sending.
 - **Not disclosed**: The subsidiary's name and location. How Company A's account was taken over. The amount and date of the transfer, and the amount recovered. Whether the account on the invoice differed from earlier transactions. The loss-sharing ratio and the insurance payout. Investigators have not identified the fraudster.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before paying and apart from the email received, the bank account on the invoice is checked against that vendor's registered account.
 

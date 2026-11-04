@@ -64,7 +64,7 @@ On 2026-06-25, the Microsoft Defender Security Research Team disclosed "Photo ZI
 - **What reached the receiving side**: In Microsoft's report, the link downloads a ZIP file; opening the LNK file inside that looks like a photo leads, via PowerShell, to fetching a legitimate Node.js runtime from nodejs.org, on which the implant TonRAT runs. TonRAT persists in two registry locations and communicates with the attacker's domains. After compromise, establishing communication, forced shutdowns, and compiling executables were observed. Reservation and front-desk machines (with device names containing `reception-`, `frontdesk-`, `accueil`, `recepcja`, and so on) were selectively targeted.
 - **Not disclosed**: The number of organizations intruded upon and the breakdown by country, the ultimate objective, and attribution to a known actor. From the effort invested in obfuscation and persistence, Microsoft assesses it as a staging phase for later activity.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before a message is handled as a booking or guest communication and its links or attachments are opened, whether its author is the counterparty it claims to be is checked separately from authentication of the sending path.
 

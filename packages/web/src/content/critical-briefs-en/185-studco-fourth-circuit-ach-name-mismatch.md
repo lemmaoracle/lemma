@@ -71,7 +71,7 @@ Per the opinion, the credit union's system generated a name-mismatch warning for
 - **What reached the receiving side**: Per the opinion, the beneficiary's bank deposits ACH orders automatically by account number, without anyone reading the order. When the name differs from the account holder, its system generates a warning, but it notified no one, and the reports were not reviewed as a matter of course. On the paying side, per the opinion, emails in the name of the supplier's account manager announced a bank change and supplied new account details.
 - **Not disclosed**: How Studco's email system was intruded upon. The date and amount of each of the four transfers (the opinion says payments began a few days after the first email). How the account change was registered and approved internally. What happened after remand, and whether Studco sought recovery from its own bank or others.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the paying side checks, before transferring, that a changed account is the vendor's, through the vendor's registered contact and not the email that arrived. It cannot rely on the receiving bank to match the name.
 

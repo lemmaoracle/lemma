@@ -66,7 +66,7 @@ The attacker used not a Vercel employee's password but the OAuth grant made when
 - **What reached the receiving side**: In general, access with a consented OAuth token arrives as legitimate access on a user's behalf, without a password being entered. Whether the AI tool or another party that obtained the token is using it cannot be told apart at the moment it is accepted.
 - **Not disclosed**: The detailed path of the infection and token seizure inside Context.ai, and the truth and full scope of the BreachForums claim that the data included internal DBs, API keys and source code (Vercel is investigating and has not independently verified it).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that whoever accepts access from an AI tool checks, before it runs and separately from possession of the token, that the operation is a kind that was allowed and that the token is still valid.
 

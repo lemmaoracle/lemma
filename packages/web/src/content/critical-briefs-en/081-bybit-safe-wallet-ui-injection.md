@@ -63,7 +63,7 @@ The cryptography was not broken. The attacker compromised a Safe{Wallet} develop
 - **What reached the receiving side**: In general, what a multisig contract checks is that the set number of legitimate keys signed the transaction. What the signers saw on screen when they approved does not reach the contract. On the signers' side, whether what the screen displays is the same as the bytes actually being signed cannot be told from the screen.
 - **Not disclosed**: The specific route by which the developer machine was compromised. Details of how the injected code was (reportedly) built to run only on Bybit's screens. How much of the drained funds could be frozen.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before signing, the content of the transaction is checked against the intended approval flow, separately from the screen that asks for the signature.
 

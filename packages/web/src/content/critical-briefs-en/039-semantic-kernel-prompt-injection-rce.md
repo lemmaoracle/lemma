@@ -60,7 +60,7 @@ According to Microsoft, in the .NET SDK a file-download function was inadvertent
 - **What reached the receiving side**: In general, an agent framework executes the function the model chose, with the arguments the model decided, as is. According to Microsoft, the .NET SDK issue could reach arbitrary file writes and sandbox escape, and the Python SDK issue could reach code execution on the host.
 - **Not disclosed**: Cases of exploitation in the wild and any resulting harm. The number of affected users.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before an agent executes a function, it checks that the function may be called in this context and that its arguments are within the permitted scope, apart from the model's output.
 

@@ -63,7 +63,7 @@ The attackers split the attack into innocuous-looking small tasks and led the AI
 - **What reached the receiving side**: In general, a target system or API receives the operation itself (the request). Whose delegation it was issued under, and within what scope, does not reach it. The claim of "defensive testing" was aimed at the AI and never reached the receiving side.
 - **Not disclosed**: The names and number of targets that were breached. The vulnerabilities and entry points used at each target. What data was taken.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before an AI agent's operation acts on an outside system, the receiving side checks, outside the agent, whose delegation it comes under and what scope it falls within.
 

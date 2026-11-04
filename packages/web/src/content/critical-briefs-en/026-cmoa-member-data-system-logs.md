@@ -63,7 +63,7 @@ In its third report, NTT Solmare said some system log files had also been read a
 - **As disclosed**: The logs are said to have been "read and taken"; the company has not said they were altered.
 - **Not disclosed**: The entry route and method (identified, not disclosed), when the intrusion began, the scope and contents of the stolen logs, the count, the password hashing method, and any independent third-party findings.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the mechanism that writes logs checks what it writes against a list of allowed fields decided in advance, and that kept logs can be checked against a record outside the breached environment to see that they are as written.
 

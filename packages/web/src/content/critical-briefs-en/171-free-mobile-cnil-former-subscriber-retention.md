@@ -72,7 +72,7 @@ The other is former subscribers' data: there was no way to sort it, and millions
 - **What reaches the receiving side**: In general, a login through the VPN arrives as a connection from a legitimate internal user. How much subscriber data that connection may read cannot be told from the login alone.
 - **Not disclosed**: How the attacker got through the VPN (for example, how credentials were obtained), how the data was read out, whether former subscribers' data was included, how many years and how many records of former subscribers' data were kept, the split between the two companies, and the number of IBANs.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the route is that a read of personal data is checked, apart from the reader and before it runs, against the permitted party, purpose and volume and the retention deadline.
 

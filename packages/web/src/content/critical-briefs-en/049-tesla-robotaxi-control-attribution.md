@@ -69,7 +69,7 @@ Until the redaction was lifted, outsiders could not tell which crashes involved 
 - **Detection route**: Tesla's unredacted refiling on 2026-05-15 and the Electrek and TechCrunch reporting on it. Both act after the crashes and the initial reports.
 - **Not disclosed**: The sources reviewed do not describe the procedure or authorization for handing control to a teleoperator, or why the redaction was lifted. No fault has been determined for individual crashes.
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, when control passes from an automated system to a person, who received it and under what authorization is checked at that moment outside the operating process, and the records filed with the regulator are bound to that check.
 

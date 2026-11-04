@@ -68,7 +68,7 @@ JAPRO's survey is not one incident but a count of a full year. It reports that m
 - **Where takedown worked**: With a talent agency's cooperation, takedown requests were filed against 20 models using a certain actor's likeness, and all 20 were removed. Takedown acts on a model already published; it does not act before the next model is created and published. JAPRO concludes that a single round of takedowns is not the end, and that a regular monitoring regime, including rapid response to reposting, is essential.
 - **Not disclosed**: The actor's name, how many new models were posted after the takedowns, and whether they came from the same creator as the removed ones. What checks platforms run when they accept posts or model uploads.
 
-## 3. What to check
+## 3. Pre-execution check
 
 The condition that holds whatever the scenario is this: before a model using someone's likeness or voice is created and published, and before generated works are posted, check that the use falls within that person's consent — whose likeness or voice, what scope, until when.
 

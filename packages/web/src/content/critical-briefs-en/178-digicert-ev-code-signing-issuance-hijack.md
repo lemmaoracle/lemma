@@ -70,7 +70,7 @@ Validation of the applying organisations went through the normal process, and th
 - **What reached the issuing side**: In DigiCert's report, pickup checks the initialization code and the approved order it belongs to. The code works for whoever holds it; whether the person picking up belongs to the validated organisation does not reach the CA. In general, the side running signed software also sees a valid signature issued in a genuine organisation's name, and cannot tell it apart from the contents.
 - **Not disclosed**: Who the attacker is. Where the signed malware reached, and how many users. When the certificates were used (DigiCert says it does not track misuse dates). Why the second workstation had no endpoint sensor (DigiCert says the logs that would show this are past their retention period).
 
-## 3. What to check
+## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that the pickup request is checked against a registered administrator of the validated subscriber, apart from the initialization code, before the certificate is released.
 
