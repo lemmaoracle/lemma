@@ -95,7 +95,7 @@ The first emailed request was stopped by a check with the contact on file, but n
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that activates a supplier's bank account change.** It does not look for intrusions; it confirms, before activation, that the change rests on the supplier's request, through the registered contact.
+**Lemma builds the pre-execution check into the side that activates a supplier's bank account change.** It does not look for intrusions; it confirms, before activation, that the change rests on the supplier's request, through the registered contact.
 
 ### Industries and operations to watch
 

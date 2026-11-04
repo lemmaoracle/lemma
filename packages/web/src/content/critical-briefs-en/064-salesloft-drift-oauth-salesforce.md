@@ -93,7 +93,7 @@ Detection and revocation worked: the investigation traced which records were que
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that accepts queries from an integration.** It does not look for intrusions; it checks, before the query runs, whether the integration's query falls within the kinds allowed at install and whether the token is still valid.
+**Lemma builds the pre-execution check into the side that accepts queries from an integration.** It does not look for intrusions; it checks, before the query runs, whether the integration's query falls within the kinds allowed at install and whether the token is still valid.
 
 ### Industries and operations to watch
 

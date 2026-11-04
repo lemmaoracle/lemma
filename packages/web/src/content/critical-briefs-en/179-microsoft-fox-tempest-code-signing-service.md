@@ -99,7 +99,7 @@ Microsoft was finding and revoking abused certificates, but revocation came afte
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that grants signing access and the side that accepts signed software.** It does not look for malware; before execution, it confirms that an application for access could be matched to the named organisation's approval and to issuer-signed attributes, and that the signer matches the registered publisher.
+**Lemma builds the pre-execution check into the side that grants signing access and the side that accepts signed software.** It does not look for malware; before execution, it confirms that an application for access could be matched to the named organisation's approval and to issuer-signed attributes, and that the signer matches the registered publisher.
 
 ### Industries and operations to watch
 

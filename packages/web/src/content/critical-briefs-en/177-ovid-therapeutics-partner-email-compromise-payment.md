@@ -96,7 +96,7 @@ The scheme was noticed only after the transfer had gone through. Similar cases, 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the step that changes vendor payment information and the approval before a payment is carried out.** It does not look for intrusions or impersonating emails; it confirms, before the payment, that a changed account is one that could be matched to the vendor's approval.
+**Lemma builds the pre-execution check into the step that changes vendor payment information and the approval before a payment is carried out.** It does not look for intrusions or impersonating emails; it confirms, before the payment, that a changed account is one that could be matched to the vendor's approval.
 
 ### Industries and operations to watch
 

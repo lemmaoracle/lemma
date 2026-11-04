@@ -97,7 +97,7 @@ Registration was closed within days and 500+ packages were yanked, but packages 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the steps by which a build executes imported code.** It does not watch for surges in registrations or uploads; before execution, it checks whether the publisher holds a credential from a verified issuer and which operations that package may perform, and does not let through executions that cannot be checked.
+**Lemma builds the pre-execution check into the steps by which a build executes imported code.** It does not watch for surges in registrations or uploads; before execution, it checks whether the publisher holds a credential from a verified issuer and which operations that package may perform, and does not let through executions that cannot be checked.
 
 ### Industries and operations to watch
 

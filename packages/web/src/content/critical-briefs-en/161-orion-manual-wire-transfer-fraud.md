@@ -90,7 +90,7 @@ Orion identified the problem on August 10 and moved to recover funds, but the wi
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that executes manual wires.** It does not look for intrusions; it checks, before a wire goes out, that it is tied to a request verified as genuine.
+**Lemma builds the pre-execution check into the side that executes manual wires.** It does not look for intrusions; it checks, before a wire goes out, that it is tied to a request verified as genuine.
 
 ### Industries and operations to watch
 

@@ -94,7 +94,7 @@ Detection made visible how many occurred and led to the recall and the camera re
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that executes an AI decision cutting into human driving (automatic braking and the like).** It does not judge whether the perception or decision itself was right; before the action runs, it checks, outside the process that made the decision, whether the activation meets a condition set in advance, and keeps a record.
+**Lemma builds the pre-execution check into the side that executes an AI decision cutting into human driving (automatic braking and the like).** It does not judge whether the perception or decision itself was right; before the action runs, it checks, outside the process that made the decision, whether the activation meets a condition set in advance, and keeps a record.
 
 ### Industries and operations to watch
 

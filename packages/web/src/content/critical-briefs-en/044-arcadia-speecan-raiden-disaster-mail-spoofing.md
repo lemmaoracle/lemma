@@ -100,7 +100,7 @@ Other cases where a genuine route stood in for a genuine author are [Photo ZIP](
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into both the sending and the receiving side of notices.** It does not look for intrusions; it checks, before anyone acts, that a delivery instruction lies within what was authorised and that a notice reaching a person was issued by the municipality. The mechanism is needed both at the municipality that contracts out delivery and in the recipient's hands. What can be added today is a single place to check genuine notices, announced to registrants in advance.
+**Lemma builds the pre-execution check into both the sending and the receiving side of notices.** It does not look for intrusions; it checks, before anyone acts, that a delivery instruction lies within what was authorised and that a notice reaching a person was issued by the municipality. The mechanism is needed both at the municipality that contracts out delivery and in the recipient's hands. What can be added today is a single place to check genuine notices, announced to registrants in advance.
 
 ### Industries and operations to watch
 

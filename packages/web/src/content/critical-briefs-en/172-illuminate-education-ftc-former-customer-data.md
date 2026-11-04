@@ -99,7 +99,7 @@ The entry key and how long data is kept are separate controls. When one works, t
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 in front of reads of student data.** It neither deletes data nor looks for intrusions; it checks, before execution, that the owner of the key used and the data's retention deadline are within what is allowed.
+**Lemma builds the pre-execution check in front of reads of student data.** It neither deletes data nor looks for intrusions; it checks, before execution, that the owner of the key used and the data's retention deadline are within what is allowed.
 
 ### Industries and operations to watch
 

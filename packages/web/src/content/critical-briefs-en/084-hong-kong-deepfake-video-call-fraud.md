@@ -93,7 +93,7 @@ Whatever the route, the condition for telling them apart is that whoever execute
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that executes payments.** It does not look for intrusions; it checks, before a payment goes out, that the instruction rests on the person's approval, through a registered contact.
+**Lemma builds the pre-execution check into the side that executes payments.** It does not look for intrusions; it checks, before a payment goes out, that the instruction rests on the person's approval, through a registered contact.
 
 ### Industries and operations to watch
 

@@ -89,7 +89,7 @@ Watermark detection has practical value as a layer for sorting AI-generated-ness
 
 ## 4. What Lemma does
 
-**Lemma places the check in section 03 just before an image is accepted.** It does not detect watermarks or judge AI-generated-ness; before acceptance, it checks whether an image was made by a legitimate generator, against the generator's signature held outside the image.
+**Lemma places the pre-execution check just before an image is accepted.** It does not detect watermarks or judge AI-generated-ness; before acceptance, it checks whether an image was made by a legitimate generator, against the generator's signature held outside the image.
 
 ### Industries and operations to watch
 

@@ -95,7 +95,7 @@ The internal report worked and the Met blocked access, but it noticed after the 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into outside sign-ups with work email and the point just before personal data leaves.** It does not look for intrusions; it checks, before the sign-up or upload, whether the platform is on the organisation's approved list.
+**Lemma builds the pre-execution check into outside sign-ups with work email and the point just before personal data leaves.** It does not look for intrusions; it checks, before the sign-up or upload, whether the platform is on the organisation's approved list.
 
 ### Industries and operations to watch
 

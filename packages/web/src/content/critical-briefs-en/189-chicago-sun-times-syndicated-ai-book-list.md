@@ -101,7 +101,7 @@ Detection worked. Two days after publication the paper issued a statement and re
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the step that places content into an edition or a send.** It does not judge whether a story is accurate. Before content runs, it checks, item by item, that the origin declaration and an editorial approval are in place and that the approval was given for the same content being placed.
+**Lemma builds the pre-execution check into the step that places content into an edition or a send.** It does not judge whether a story is accurate. Before content runs, it checks, item by item, that the origin declaration and an editorial approval are in place and that the approval was given for the same content being placed.
 
 ### Industries and operations to watch
 

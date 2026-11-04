@@ -98,7 +98,7 @@ According to the press report, the contractor asked about nonpayment on October 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that accepts vendors' bank details and uses them for payment.** It does not look for intrusions; it checks, before paying, that the destination account was approved through the vendor's registered contact.
+**Lemma builds the pre-execution check into the side that accepts vendors' bank details and uses them for payment.** It does not look for intrusions; it checks, before paying, that the destination account was approved through the vendor's registered contact.
 
 ### Industries and operations to watch
 

@@ -92,7 +92,7 @@ The fixed releases and the observation of probing deal with the weakness found a
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that runs operations with admin authority.** It does not look for weaknesses or intrusions; it checks, before running and apart from the name written in a header, that the principal behind the request is allowed to perform that operation.
+**Lemma builds the pre-execution check into the side that runs operations with admin authority.** It does not look for weaknesses or intrusions; it checks, before running and apart from the name written in a header, that the principal behind the request is allowed to perform that operation.
 
 ### Industries and operations to watch
 

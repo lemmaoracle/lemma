@@ -90,7 +90,7 @@ The suspected disadvantage was taken up only after rejections arrived, through l
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the step that sends a rejection based on an AI decision.** It does not judge whether the decision itself is fair; before the rejection is sent, and outside the AI, it checks that the decision is tied to a record of its grounds and the reviewer's approval, and keeps a record.
+**Lemma builds the pre-execution check into the step that sends a rejection based on an AI decision.** It does not judge whether the decision itself is fair; before the rejection is sent, and outside the AI, it checks that the decision is tied to a record of its grounds and the reviewer's approval, and keeps a record.
 
 ### Industries and operations to watch
 

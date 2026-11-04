@@ -89,7 +89,7 @@ Logs becoming the place data leaks from also shows up in [DeepSeek](/critical/br
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that writes and keeps logs.** It does not look for intrusions; it checks, before logs are written, against the allowed fields, and checks kept logs against a record outside the breached environment.
+**Lemma builds the pre-execution check into the side that writes and keeps logs.** It does not look for intrusions; it checks, before logs are written, against the allowed fields, and checks kept logs against a record outside the breached environment.
 
 ### Industries and operations to watch
 

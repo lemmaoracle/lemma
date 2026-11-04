@@ -91,7 +91,7 @@ Detection worked while the attack was under way and helped confine the loss to a
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the step that reflects outside data in a payout.** It is not a replacement for signature verification; after it, and before the payout, it checks, separately from the validity of the signature, whether the signer is legitimate, uncompromised and authorized right now and whether the data is within its plausibility bounds.
+**Lemma builds the pre-execution check into the step that reflects outside data in a payout.** It is not a replacement for signature verification; after it, and before the payout, it checks, separately from the validity of the signature, whether the signer is legitimate, uncompromised and authorized right now and whether the data is within its plausibility bounds.
 
 ### Industries and operations to watch
 

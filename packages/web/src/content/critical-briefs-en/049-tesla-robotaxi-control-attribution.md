@@ -95,7 +95,7 @@ Detection made the teleoperator crashes visible from outside. It works separatel
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that hands control to a person and the side that files crash records with the regulator.** It does not detect crashes or judge whether a driving decision was right or who was at fault; it checks, outside the operating process, whether the person who took control was authorized and whether the control attribution in the record filed matches the record made at handover, and keeps a record.
+**Lemma builds the pre-execution check into the side that hands control to a person and the side that files crash records with the regulator.** It does not detect crashes or judge whether a driving decision was right or who was at fault; it checks, outside the operating process, whether the person who took control was authorized and whether the control attribution in the record filed matches the record made at handover, and keeps a record.
 
 ### Industries and operations to watch
 

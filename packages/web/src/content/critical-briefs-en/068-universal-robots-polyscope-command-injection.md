@@ -89,7 +89,7 @@ The advisory and the fixed release address the flaw that was found; they are not
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that carries out commands leading to physical motion.** It does not look for flaws or intrusions; it checks, before a command runs and whatever the network path, whether its sender is allowed to operate the machine.
+**Lemma builds the pre-execution check into the side that carries out commands leading to physical motion.** It does not look for flaws or intrusions; it checks, before a command runs and whatever the network path, whether its sender is allowed to operate the machine.
 
 ### Industries and operations to watch
 

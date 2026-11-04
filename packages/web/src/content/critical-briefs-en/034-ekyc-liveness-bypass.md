@@ -95,7 +95,7 @@ Detection is getting stronger, but detecting synthetic traces is a race against 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that accepts identity-check video.** It does not look for intrusions; it checks, before the video is accepted and separately from it, that it was taken live by a real camera.
+**Lemma builds the pre-execution check into the side that accepts identity-check video.** It does not look for intrusions; it checks, before the video is accepted and separately from it, that it was taken live by a real camera.
 
 ### Industries and operations to watch
 

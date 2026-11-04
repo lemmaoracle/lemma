@@ -95,7 +95,7 @@ Detection worked, but it was not the bank but an outside security firm that noti
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before an environment goes on being used, or starts being used for new work.** It does not look for intrusions; it checks, before use, whether the data left in the environment and who can get in from outside match the registered use.
+**Lemma builds the pre-execution check into the point just before an environment goes on being used, or starts being used for new work.** It does not look for intrusions; it checks, before use, whether the data left in the environment and who can get in from outside match the registered use.
 
 ### Industries and operations to watch
 

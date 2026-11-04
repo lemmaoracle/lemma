@@ -89,7 +89,7 @@ Like [OpenClaw](/critical/briefs/047-openclaw-agent-phishing/), where an email-r
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before an AI assistant reads internal data and sends it out.** It does not look for intrusions or injections; it checks, before running and apart from how the content looks, the origin and authority of the instruction behind the operation.
+**Lemma builds the pre-execution check into the point just before an AI assistant reads internal data and sends it out.** It does not look for intrusions or injections; it checks, before running and apart from how the content looks, the origin and authority of the instruction behind the operation.
 
 ### Industries and operations to watch
 

@@ -93,7 +93,7 @@ Blocking and resetting are remedies after the fact. Account details being change
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that applies password and email changes.** It does not look for intrusions; it confirms, before a change takes effect, that the change rests on the owner's approval.
+**Lemma builds the pre-execution check into the side that applies password and email changes.** It does not look for intrusions; it confirms, before a change takes effect, that the change rests on the owner's approval.
 
 ### Industries and operations to watch
 

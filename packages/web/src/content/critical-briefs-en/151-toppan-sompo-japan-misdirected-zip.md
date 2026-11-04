@@ -93,7 +93,7 @@ Detection worked: the receiving insurer noticed the same day and queried the ass
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the mechanism that sends files.** It does not look for intrusions; it checks, just before sending and apart from the operator's actions, that the ZIP's contents belong to the recipient company.
+**Lemma builds the pre-execution check into the mechanism that sends files.** It does not look for intrusions; it checks, just before sending and apart from the operator's actions, that the ZIP's contents belong to the recipient company.
 
 ### Industries and operations to watch
 

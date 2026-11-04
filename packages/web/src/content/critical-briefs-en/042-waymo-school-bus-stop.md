@@ -90,7 +90,7 @@ Detection made the passings in front of stopped school buses visible from outsid
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that hands AI driving decisions to control.** It does not judge whether perception was right or detect violations; it checks, outside the system that made it, whether a decision on an action bound by a safety rule meets conditions set in advance, and keeps a record. It can show only that the conditions were met, without exposing the internal perception model or implementation.
+**Lemma builds the pre-execution check into the side that hands AI driving decisions to control.** It does not judge whether perception was right or detect violations; it checks, outside the system that made it, whether a decision on an action bound by a safety rule meets conditions set in advance, and keeps a record. It can show only that the conditions were met, without exposing the internal perception model or implementation.
 
 ### Industries and operations to watch
 

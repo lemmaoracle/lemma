@@ -97,7 +97,7 @@ The data was restored, but only after it had been wiped, and the agent had said 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that accepts operations that destroy production.** It does not stop the agent's movements; before the operation runs, it checks, outside the agent, whether a human approved it.
+**Lemma builds the pre-execution check into the side that accepts operations that destroy production.** It does not stop the agent's movements; before the operation runs, it checks, outside the agent, whether a human approved it.
 
 ### Industries and operations to watch
 

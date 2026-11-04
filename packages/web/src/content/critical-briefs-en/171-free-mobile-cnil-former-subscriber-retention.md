@@ -98,7 +98,7 @@ Entry-point authentication and how long data is kept are separate controls; when
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 in front of reads of subscriber data.** It neither deletes data nor looks for intrusions; it checks, before execution, that a read is within the permission and the retention deadline.
+**Lemma builds the pre-execution check in front of reads of subscriber data.** It neither deletes data nor looks for intrusions; it checks, before execution, that a read is within the permission and the retention deadline.
 
 ### Industries and operations to watch
 

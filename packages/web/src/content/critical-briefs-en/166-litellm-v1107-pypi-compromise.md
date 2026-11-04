@@ -85,7 +85,7 @@ What detection stopped was the published release, not the environments that had 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point where packages and images are pulled.** It does not look for intrusions; it checks whether the artifact about to be pulled is an approved build.
+**Lemma builds the pre-execution check into the point where packages and images are pulled.** It does not look for intrusions; it checks whether the artifact about to be pulled is an approved build.
 
 ### Industries and operations to watch
 

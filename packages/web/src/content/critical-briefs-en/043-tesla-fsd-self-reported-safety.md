@@ -91,7 +91,7 @@ Detection made the driving-decision failures, the possible under-reporting and t
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that executes AI decisions and the side that releases crash records and safety figures.** It does not judge whether perception was right or detect crashes; it checks, outside the process that produced them, whether the premises of a decision and the records and figures being released meet conditions and definitions set in advance, and keeps a record.
+**Lemma builds the pre-execution check into the side that executes AI decisions and the side that releases crash records and safety figures.** It does not judge whether perception was right or detect crashes; it checks, outside the process that produced them, whether the premises of a decision and the records and figures being released meet conditions and definitions set in advance, and keeps a record.
 
 ### Industries and operations to watch
 

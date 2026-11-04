@@ -92,7 +92,7 @@ Use for training became a point of dispute in litigation after ingestion. Cases 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before entrusted content is ingested into training data.** It does not make defaults or the state of a settings screen the condition for ingestion; before ingestion, it checks that the content carries consent to be used for training, and keeps a record.
+**Lemma builds the pre-execution check into the point just before entrusted content is ingested into training data.** It does not make defaults or the state of a settings screen the condition for ingestion; before ingestion, it checks that the content carries consent to be used for training, and keeps a record.
 
 ### Industries and operations to watch
 

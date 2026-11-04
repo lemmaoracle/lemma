@@ -91,7 +91,7 @@ A recall request and a police report are remedies after the payment; they do not
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that executes payments.** It does not look for intrusions; it confirms, before paying, that an incoming payment instruction rests on the approval of the person who gave it.
+**Lemma builds the pre-execution check into the side that executes payments.** It does not look for intrusions; it confirms, before paying, that an incoming payment instruction rests on the approval of the person who gave it.
 
 ### Industries and operations to watch
 

@@ -100,7 +100,7 @@ Detection worked. A receiving company noticed and reported it, and Ibermutua not
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the system that sends notifications.** It does not find intrusions or code errors. Just before sending, and separately from the processing code, it checks that every person in the finished attachment belongs to the recipient company.
+**Lemma builds the pre-execution check into the system that sends notifications.** It does not find intrusions or code errors. Just before sending, and separately from the processing code, it checks that every person in the finished attachment belongs to the recipient company.
 
 ### Industries and operations to watch
 

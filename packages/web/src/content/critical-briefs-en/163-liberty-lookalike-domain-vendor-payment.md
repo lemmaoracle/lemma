@@ -88,7 +88,7 @@ Detection worked, but only after the payment had gone through. A similar case, w
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that wires money on a payment request.** It does not look for intrusions; it confirms, before the payment, that the request is one that could be confirmed through the vendor's registered contact.
+**Lemma builds the pre-execution check into the side that wires money on a payment request.** It does not look for intrusions; it confirms, before the payment, that the request is one that could be confirmed through the vendor's registered contact.
 
 ### Industries and operations to watch
 

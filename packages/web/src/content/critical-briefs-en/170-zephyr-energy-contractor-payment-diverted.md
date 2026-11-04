@@ -92,7 +92,7 @@ The diversion was noticed only after the payment had gone through. Similar cases
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that pays vendors.** It does not look for intrusions; it confirms, before the payment, that the destination account is one that could be matched to the vendor's registered account.
+**Lemma builds the pre-execution check into the side that pays vendors.** It does not look for intrusions; it confirms, before the payment, that the destination account is one that could be matched to the vendor's registered account.
 
 ### Industries and operations to watch
 

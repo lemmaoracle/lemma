@@ -89,7 +89,7 @@ The researchers' investigation and report showed the flaw concretely and led to 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before the admin console returns a record.** It does not find intrusions or flaws; it checks, before a record is opened, whether the party holds authority over that record.
+**Lemma builds the pre-execution check into the point just before the admin console returns a record.** It does not find intrusions or flaws; it checks, before a record is opened, whether the party holds authority over that record.
 
 ### Industries and operations to watch
 

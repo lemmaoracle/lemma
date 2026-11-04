@@ -90,7 +90,7 @@ The consent mechanism was running and did stop execution. What was missing is th
 
 ## 4. What Lemma does
 
-**Lemma puts the check in section 03 before remote code is fetched and written, and before it is run.** It does not tell malicious code from safe code or judge whether code is dangerous; before each action, it checks that the origin of the code being fetched, written or run, and the user's consent, have been cleared.
+**Lemma puts the pre-execution check before remote code is fetched and written, and before it is run.** It does not tell malicious code from safe code or judge whether code is dangerous; before each action, it checks that the origin of the code being fetched, written or run, and the user's consent, have been cleared.
 
 ### Industries and operations to watch
 

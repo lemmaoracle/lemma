@@ -91,7 +91,7 @@ The platform's scanning and Truffle Security's study counted valid keys concrete
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before a dataset is ingested or republished.** It does not search data for keys or revoke keys; it checks the origin and terms of use of the data before ingestion.
+**Lemma builds the pre-execution check into the point just before a dataset is ingested or republished.** It does not search data for keys or revoke keys; it checks the origin and terms of use of the data before ingestion.
 
 ### Industries and operations to watch
 

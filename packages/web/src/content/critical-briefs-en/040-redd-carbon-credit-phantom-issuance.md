@@ -93,7 +93,7 @@ Detection made the mismatch between declarations and reality visible from outsid
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that issues credits and the side that accepts an area's registration as a basis.** It does not detect fraud or judge whether a conservation methodology is sound; it checks, outside the declarant, whether declared values match the values recorded by the source of the data and meet methodology requirements set in advance, and keeps a record. It can also show only that the requirements are met, without releasing internal data such as coordinates or contracts.
+**Lemma builds the pre-execution check into the side that issues credits and the side that accepts an area's registration as a basis.** It does not detect fraud or judge whether a conservation methodology is sound; it checks, outside the declarant, whether declared values match the values recorded by the source of the data and meet methodology requirements set in advance, and keeps a record. It can also show only that the requirements are met, without releasing internal data such as coordinates or contracts.
 
 ### Industries and operations to watch
 

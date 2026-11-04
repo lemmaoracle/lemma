@@ -89,7 +89,7 @@ They were flagged within about six minutes, but in an environment that installed
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the step that pulls in dependencies.** It does not watch packages; before one is pulled in, it checks that its publisher is the official one and does not pull in what cannot be checked.
+**Lemma builds the pre-execution check into the step that pulls in dependencies.** It does not watch packages; before one is pulled in, it checks that its publisher is the official one and does not pull in what cannot be checked.
 
 ### Industries and operations to watch
 

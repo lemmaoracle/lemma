@@ -99,7 +99,7 @@ Detection did work: Firefox blocked the intermediates within three hours of the 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the step where a root signs an intermediate's public key.** It does not replace assurance of the key-generation device or scanning published keys for weakness; ahead of those, it confirms before signing that the key sent for signing is tied to the approved ceremony record.
+**Lemma builds the pre-execution check into the step where a root signs an intermediate's public key.** It does not replace assurance of the key-generation device or scanning published keys for weakness; ahead of those, it confirms before signing that the key sent for signing is tied to the approved ceremony record.
 
 ### Industries and operations to watch
 

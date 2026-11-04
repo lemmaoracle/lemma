@@ -93,7 +93,7 @@ Detection worked: Huntress told the self-elevation apart using clues such as an 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side of the tenant that accepts administrative actions.** It does not look for intrusions; it checks, before the action runs, whether an app identity's action falls within the kinds allowed at install.
+**Lemma builds the pre-execution check into the side of the tenant that accepts administrative actions.** It does not look for intrusions; it checks, before the action runs, whether an app identity's action falls within the kinds allowed at install.
 
 ### Industries and operations to watch
 

@@ -89,7 +89,7 @@ Detection worked after the drain and carried forward fund tracing, cross-exchang
 
 ## 4. What Lemma does
 
-**Lemma puts the check in section 03 at the step where signers sign.** It does not replace the multisig threshold or the signers' review of the screen; on top of them, it checks, separately from the screen that asks for signatures, that the bytes to be signed were created through the intended approval flow.
+**Lemma puts the pre-execution check at the step where signers sign.** It does not replace the multisig threshold or the signers' review of the screen; on top of them, it checks, separately from the screen that asks for signatures, that the bytes to be signed were created through the intended approval flow.
 
 ### Industries and operations to watch
 

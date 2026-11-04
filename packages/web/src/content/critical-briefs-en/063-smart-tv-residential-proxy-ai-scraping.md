@@ -93,7 +93,7 @@ The analysis and the blocking measures showed concretely that household devices 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before data is taken into AI training.** It does not find relaying devices or block traffic; it checks, before intake, whether the data carries a checkable record of its origin and consent.
+**Lemma builds the pre-execution check into the point just before data is taken into AI training.** It does not find relaying devices or block traffic; it checks, before intake, whether the data carries a checkable record of its origin and consent.
 
 ### Industries and operations to watch
 

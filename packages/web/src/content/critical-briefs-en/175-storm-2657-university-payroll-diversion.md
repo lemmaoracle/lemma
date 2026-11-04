@@ -98,7 +98,7 @@ Change notifications go to the hijacked mailbox. Once inbox rules hide them, the
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that confirms salary deposit changes.** It does not look for intrusions; it checks, before confirming, that an incoming change was approved with a key the employee had registered before the change.
+**Lemma builds the pre-execution check into the side that confirms salary deposit changes.** It does not look for intrusions; it checks, before confirming, that an incoming change was approved with a key the employee had registered before the change.
 
 ### Industries and operations to watch
 

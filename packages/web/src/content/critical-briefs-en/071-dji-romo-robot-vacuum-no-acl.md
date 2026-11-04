@@ -88,7 +88,7 @@ The researcher found and reported it, and DJI rolled out fixes. But fixes come a
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the part of the cloud that relays a unit's video, audio and commands.** It does not look for intrusions; it checks, before handing over data, that the subscribing party holds permission from that unit's owner.
+**Lemma builds the pre-execution check into the part of the cloud that relays a unit's video, audio and commands.** It does not look for intrusions; it checks, before handing over data, that the subscribing party holds permission from that unit's owner.
 
 ### Industries and operations to watch
 

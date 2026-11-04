@@ -91,7 +91,7 @@ Detection is getting stronger. But detection that looks for traces of generation
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the side that accepts KYC.** It does not look for fake images; before an account is opened, it checks whether the person's attributes were issued with the issuer's signature, and receives only the attributes the requirement needs.
+**Lemma builds the pre-execution check into the side that accepts KYC.** It does not look for fake images; before an account is opened, it checks whether the person's attributes were issued with the issuer's signature, and receives only the attributes the requirement needs.
 
 ### Industries and operations to watch
 

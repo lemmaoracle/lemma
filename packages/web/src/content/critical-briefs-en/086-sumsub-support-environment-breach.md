@@ -94,7 +94,7 @@ Detection worked, but it found the intrusion about 18 months later. A similar ca
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that stores personal data in, or lets people read it from, an environment outside the core, such as support.** It does not look for intrusions; it checks, before storing and before reading, whether the field and the reader match the list.
+**Lemma builds the pre-execution check into the side that stores personal data in, or lets people read it from, an environment outside the core, such as support.** It does not look for intrusions; it checks, before storing and before reading, whether the field and the reader match the list.
 
 ### Industries and operations to watch
 

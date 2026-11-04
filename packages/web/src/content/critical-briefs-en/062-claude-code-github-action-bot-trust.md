@@ -89,7 +89,7 @@ Discovery of the flaw and publication after the fix worked, and Anthropic fixed 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 in immediately before the agent moves to execution holding secrets and write access.** It does not detect malicious issues or prompt injection; before execution, it checks the authority of whoever triggered the agent and the version of the input it reads, separately from a name or the look of the text.
+**Lemma builds the pre-execution check in immediately before the agent moves to execution holding secrets and write access.** It does not detect malicious issues or prompt injection; before execution, it checks the authority of whoever triggered the agent and the version of the input it reads, separately from a name or the look of the text.
 
 ### Industries and operations to watch
 

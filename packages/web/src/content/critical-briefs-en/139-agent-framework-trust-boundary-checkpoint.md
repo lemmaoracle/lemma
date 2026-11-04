@@ -87,7 +87,7 @@ Detection worked. But a step that checks, at load time, the provenance of what t
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before a framework loads internal state or exposes an endpoint.** It does not look for the vulnerability itself; it checks the value's provenance and authorization against a record before the operation runs.
+**Lemma builds the pre-execution check into the point just before a framework loads internal state or exposes an endpoint.** It does not look for the vulnerability itself; it checks the value's provenance and authorization against a record before the operation runs.
 
 ### Industries and operations to watch
 

@@ -99,7 +99,7 @@ Detection worked. A researcher who read the published report noticed the errors,
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the procedure for delivering a report.** It does not find errors in the prose or detect AI use. Before delivery, and separately from the author or tool, it checks that each citation in the report is linked to the record of its original.
+**Lemma builds the pre-execution check into the procedure for delivering a report.** It does not find errors in the prose or detect AI use. Before delivery, and separately from the author or tool, it checks that each citation in the report is linked to the record of its original.
 
 ### Industries and operations to watch
 

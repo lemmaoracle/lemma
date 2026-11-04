@@ -90,7 +90,7 @@ Email authentication worked and correctly judged that the mail was sent from Cal
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 in immediately before the front desk handles a message as a booking or guest communication.** It does not detect malicious mail or files; it checks, separately from the email authentication result, whether a message is tied to the records of a party it was decided to accept.
+**Lemma builds the pre-execution check in immediately before the front desk handles a message as a booking or guest communication.** It does not detect malicious mail or files; it checks, separately from the email authentication result, whether a message is tied to the records of a party it was decided to accept.
 
 ### Industries and operations to watch
 

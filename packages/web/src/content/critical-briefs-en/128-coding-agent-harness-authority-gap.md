@@ -88,7 +88,7 @@ Each vendor had allowlists, command checks and sandboxes, and the researcher's r
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before the harness passes a value on to a more privileged action.** It does not judge whether input is malicious; it checks, before execution, the value's origin and whether the action is within the permitted scope, against permissions managed apart from the agent.
+**Lemma builds the pre-execution check into the point just before the harness passes a value on to a more privileged action.** It does not judge whether input is malicious; it checks, before execution, the value's origin and whether the action is within the permitted scope, against permissions managed apart from the agent.
 
 ### Industries and operations to watch
 

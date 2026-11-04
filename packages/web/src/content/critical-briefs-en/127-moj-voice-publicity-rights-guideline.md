@@ -94,7 +94,7 @@ The test the report sets out turns on use "solely for the purpose of exploiting 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before a voice is used in generation and distribution.** It does not judge whether voices sound alike, and it does not find and remove works; it makes which of the owner's grants a use rests on checkable before distribution and monetisation, by the receiving side and without querying the issuer.
+**Lemma builds the pre-execution check into the point just before a voice is used in generation and distribution.** It does not judge whether voices sound alike, and it does not find and remove works; it makes which of the owner's grants a use rests on checkable before distribution and monetisation, by the receiving side and without querying the issuer.
 
 ### Industries and operations to watch
 

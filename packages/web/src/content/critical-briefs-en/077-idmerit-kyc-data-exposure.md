@@ -95,7 +95,7 @@ Detection worked, and the database was closed the day after notification. But "a
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that places and stores data.** It does not look for intrusions; before the data is placed, it checks the custodian and contract against the ledger and keeps that record in a form a third party can verify later.
+**Lemma builds the pre-execution check into the side that places and stores data.** It does not look for intrusions; before the data is placed, it checks the custodian and contract against the ledger and keeps that record in a form a third party can verify later.
 
 ### Industries and operations to watch
 

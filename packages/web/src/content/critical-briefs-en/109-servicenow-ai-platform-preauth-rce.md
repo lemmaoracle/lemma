@@ -93,7 +93,7 @@ Detection worked. The patch closed the entry hole, but a patch closes the hole t
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that carries out permission-changing actions.** It does not look for holes or intrusions; it checks, before the action runs and whatever the entry point, whether it rests on a permission.
+**Lemma builds the pre-execution check into the side that carries out permission-changing actions.** It does not look for holes or intrusions; it checks, before the action runs and whatever the entry point, whether it rests on a permission.
 
 ### Industries and operations to watch
 

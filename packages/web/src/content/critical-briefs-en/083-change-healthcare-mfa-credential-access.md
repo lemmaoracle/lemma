@@ -89,7 +89,7 @@ Detection limited the damage by shutting systems down, but it came about 9 days 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the remote-access entry point.** It does not look for intrusions; it checks before the login, separately from the password match, that the party logging in is the authorized holder.
+**Lemma builds the pre-execution check into the remote-access entry point.** It does not look for intrusions; it checks before the login, separately from the password match, that the party logging in is the authorized holder.
 
 ### Industries and operations to watch
 

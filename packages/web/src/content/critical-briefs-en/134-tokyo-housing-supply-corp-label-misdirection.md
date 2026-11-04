@@ -91,7 +91,7 @@ Detection worked, but only 15 days after mailing. A similar case, where the cont
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that dispatches notices from address labels.** It does not look for intrusions; it checks, before dispatch, that each label's destination matches a row of the source list.
+**Lemma builds the pre-execution check into the side that dispatches notices from address labels.** It does not look for intrusions; it checks, before dispatch, that each label's destination matches a row of the source list.
 
 ### Industries and operations to watch
 

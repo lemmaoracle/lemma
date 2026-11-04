@@ -88,7 +88,7 @@ The researcher's report and the fixed version worked, and the two known routes w
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before the editor moves the agent's writes or commands into execution.** It does not look for prompt injection; it checks the agent's write targets, before execution, against a permitted scope managed apart from what the agent specifies.
+**Lemma builds the pre-execution check into the point just before the editor moves the agent's writes or commands into execution.** It does not look for prompt injection; it checks the agent's write targets, before execution, against a permitted scope managed apart from what the agent specifies.
 
 ### Industries and operations to watch
 

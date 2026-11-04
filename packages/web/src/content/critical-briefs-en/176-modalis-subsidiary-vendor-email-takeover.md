@@ -95,7 +95,7 @@ The fake account was found only after the transfer had gone through. Similar cas
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that pays vendors.** It does not look for hijacked mailboxes; it confirms, before the transfer, that the invoice's bank account is one that could be matched to the vendor's registered account.
+**Lemma builds the pre-execution check into the side that pays vendors.** It does not look for hijacked mailboxes; it confirms, before the transfer, that the invoice's bank account is one that could be matched to the vendor's registered account.
 
 ### Industries and operations to watch
 

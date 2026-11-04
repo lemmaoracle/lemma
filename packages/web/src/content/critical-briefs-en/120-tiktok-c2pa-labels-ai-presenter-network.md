@@ -91,7 +91,7 @@ The newsroom identified the fabrication from artifacts such as pinned heads, lip
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before a video lines up in front of viewers.** It does not judge whether information is true or detect the artifacts of AI generation; it checks, before distribution, that the publication was issued, unaltered, by the creator it claims.
+**Lemma builds the pre-execution check into the point just before a video lines up in front of viewers.** It does not judge whether information is true or detect the artifacts of AI generation; it checks, before distribution, that the publication was issued, unaltered, by the creator it claims.
 
 ### Industries and operations to watch
 

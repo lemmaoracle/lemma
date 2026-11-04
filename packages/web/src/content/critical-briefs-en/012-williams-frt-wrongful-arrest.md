@@ -91,7 +91,7 @@ The error was corrected only after the arrest and detention, through the lawsuit
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the step that moves from an AI match to an action.** It does not judge whether the match itself is right; before the action, and outside the AI, it checks that the result is tied to independent corroboration and approval, and keeps a record.
+**Lemma builds the pre-execution check into the step that moves from an AI match to an action.** It does not judge whether the match itself is right; before the action, and outside the AI, it checks that the result is tied to independent corroboration and approval, and keeps a record.
 
 ### Industries and operations to watch
 

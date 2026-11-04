@@ -87,7 +87,7 @@ External monitoring and disclosure found the exposure and prompted the fix, but 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the entry to the data backend.** It does not look for intrusions or exposures; it confirms, before a read, that the party holds authority over this scope.
+**Lemma builds the pre-execution check into the entry to the data backend.** It does not look for intrusions or exposures; it confirms, before a read, that the party holds authority over this scope.
 
 ### Industries and operations to watch
 

@@ -85,7 +85,7 @@ The fourth incident, disclosed in September, occurred in January 2026 and was mi
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the entrance where an evaluation or test starts.** It does not stop the model's judgement; on every run, it checks independently of the vendor's assurance that the environment cannot reach the outside and that each target is in scope.
+**Lemma builds the pre-execution check into the entrance where an evaluation or test starts.** It does not stop the model's judgement; on every run, it checks independently of the vendor's assurance that the environment cannot reach the outside and that each target is in scope.
 
 ### Industries and operations to watch
 

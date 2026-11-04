@@ -84,7 +84,7 @@ Shutting down all servers and asking securities and FX firms to block access wer
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the side that executes orders and withdrawals.** It does not look for intrusions; it checks whether an incoming operation is within the scope the holder set, or approved by the holder.
+**Lemma builds the pre-execution check into the side that executes orders and withdrawals.** It does not look for intrusions; it checks whether an incoming operation is within the scope the holder set, or approved by the holder.
 
 ### Industries and operations to watch
 

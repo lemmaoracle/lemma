@@ -92,7 +92,7 @@ It was found before reaching stable releases, but by then the signed releases ha
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the steps that hand over authority and pull in releases.** It does not watch for anomalous behavior; before authority is handed over and before a release is pulled in, it checks that the key-holder is an approved real person, and does not let through what cannot be checked.
+**Lemma builds the pre-execution check into the steps that hand over authority and pull in releases.** It does not watch for anomalous behavior; before authority is handed over and before a release is pulled in, it checks that the key-holder is an approved real person, and does not let through what cannot be checked.
 
 ### Industries and operations to watch
 

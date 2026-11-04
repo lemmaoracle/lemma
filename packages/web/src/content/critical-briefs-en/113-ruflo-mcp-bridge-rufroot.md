@@ -92,7 +92,7 @@ Responsible disclosure and the fix and advisory within 24 hours worked, and the 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 in just before the MCP Bridge passes a tool call to execution and just before a write to the learning store.** It does not look for flaws or suspicious requests; it checks, before execution and apart from the request having arrived, that the requester is allowed to perform the operation.
+**Lemma builds the pre-execution check in just before the MCP Bridge passes a tool call to execution and just before a write to the learning store.** It does not look for flaws or suspicious requests; it checks, before execution and apart from the request having arrived, that the requester is allowed to perform the operation.
 
 ### Industries and operations to watch
 
