@@ -95,6 +95,129 @@ const resolveFromIndividualEnvVars = (_?: undefined): ResolvedLemmaConfig | unde
 };
 
 /**
+ * Build the Lemma extension registered on the base server.
+ *
+ * The extension is a value: the submission handler it closes over is created
+ * here, so the constructor can select "extend or not" with a ternary instead
+ * of an early-return `if`.
+ */
+const createLemmaExtension = (config: ResolvedLemmaConfig) => {
+  const submissionHandler = createLemmaSubmissionHandler(config);
+
+  return {
+    key: "lemma",
+    enrichSettlementResponse: (
+      _declaration: unknown,
+      context: SettleResultContext,
+    ): Promise<unknown> => {
+      // imperative: sync + async boundary — errors are caught via
+      // Promise `.catch` (no try-catch) so a proof-generation failure is
+      // non-fatal to the already-successful settlement.
+      const buildExtData = async (_p?: undefined): Promise<unknown> => {
+        const settlementResult = context.result;
+
+        // Wire-format view: the settle context is parsed from facilitator
+        // JSON. Core types mark these fields as required, but older spec
+        // versions may omit them on the wire, so they are viewed as
+        // optional here instead of guarded with linter-suppressed
+        // "unnecessary" conditions.
+        const wire = context.requirements as Readonly<{
+          extra?: Record<string, unknown>;
+          payTo?: string;
+          amount?: string;
+        }>;
+        const wireResult = settlementResult as Readonly<{
+          transaction?: string;
+        }>;
+
+        // Build submission context from settlement data
+        const _docHash =
+          (wire.extra?.docHash as string | undefined) ??
+          wireResult.transaction ??
+          "unknown";
+
+        const schema = (wire.extra?.schema as string | undefined) ?? "default";
+
+        // Extract payment details for proof witness
+        // The circuit expects specific inputs matching X402Payment circuit
+        const txHash = (wireResult.transaction ?? "").replace(/^0x/, "");
+        const bn128Prime = BigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+        
+        // Split 256-bit tx hash into 2 field elements (128-bit each)
+        const txHashLow = txHash.length >= 32 
+          ? (BigInt(`0x${txHash.slice(-32)}`) % bn128Prime).toString()
+          : "0";
+        const txHashHigh = txHash.length >= 64 
+          ? (BigInt(`0x${txHash.slice(0, -32)}`) % bn128Prime).toString()
+          : (BigInt(`0x${txHash}`) % bn128Prime).toString();
+        
+        // Recipient address (payTo) - split into low/high
+        const payTo = (wire.payTo ?? "").replace(/^0x/, "").padStart(40, "0");
+        const recipientLow = (BigInt(`0x${payTo.slice(-16)}`) % bn128Prime).toString();
+        const recipientHigh = (BigInt(`0x${payTo.slice(0, -16) || "0"}`) % bn128Prime).toString();
+        
+        // Amount (USDC has 6 decimals, x402 uses smallest unit)
+        const amount = wire.amount ?? "1000";
+        
+        // Timestamp - use current time for freshness
+        const timestamp = Math.floor(Date.now() / 1000).toString();
+        const timestampMax = (parseInt(timestamp) + 3600).toString();
+        
+        // Min amount
+        const minAmount = amount;
+        
+        // Commitment = Poseidon6(txHashPacked[0], txHashPacked[1], recipientLow, amount, timestamp, minAmount)
+        const commitment = poseidon6([
+          BigInt(txHashLow),
+          BigInt(txHashHigh),
+          BigInt(recipientLow),
+          BigInt(amount),
+          BigInt(timestamp),
+          BigInt(minAmount),
+        ]).toString();
+        
+        const witness = {
+          txHashPacked: [txHashLow, txHashHigh],
+          recipientLow,
+          recipientHigh,
+          amount,
+          timestamp,
+          minAmount,
+          commitment,
+          minAmountPublic: minAmount,
+          timestampMax,
+        };
+
+        const proofOutput = await submissionHandler({
+          docHash: txHash,
+          schema: schema,
+          issuerId: "lemma-x402",
+          witness,
+          metadata: {
+            payer: settlementResult.payer,
+            transaction: settlementResult.transaction,
+            network: settlementResult.network,
+          },
+        });
+
+        const extData = {
+          proof: proofOutput.proof,
+          inputs: proofOutput.inputs,
+          circuitId: config.circuitId,
+          generatedAt: Date.now(),
+        };
+        return extData;
+      };
+      return buildExtData(undefined).catch((err: unknown): undefined => {
+        // Non-fatal -- settlement succeeded even if proof submission fails.
+        console.error("[Lemma] enrichSettlementResponse error:", err);
+        return undefined;
+      });
+    },
+  };
+};
+
+/**
  * Augmented version of x402ResourceServer.
  *
  * Subclasses the original to auto-attach Lemma hooks. The subclass does NOT
@@ -105,7 +228,7 @@ const resolveFromIndividualEnvVars = (_?: undefined): ResolvedLemmaConfig | unde
  *
  * imperative: extends upstream OOP SDK class — no functional alternative
  */
-/* eslint-disable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-this-expressions */
+/* eslint-disable functional/no-classes, functional/no-class-inheritance, functional/no-this-expressions */
 class LemmaResourceServer extends BaseResourceServer {
   constructor(
     facilitatorClient?: FacilitatorClient | FacilitatorClient[],
@@ -114,129 +237,14 @@ class LemmaResourceServer extends BaseResourceServer {
     super(facilitatorClient);
 
     const config = resolveLemmaConfig(lemmaConfig);
-    // No Lemma config available -- skip wiring (fallback: delegate to base class only)
-    if (!config) return;
-
-    const submissionHandler = createLemmaSubmissionHandler(config);
-
-    // Register Lemma extension to enrich settlement response with proof data.
-    // enrichSettlementResponse runs BEFORE createSettlementHeaders, so
-    // extensions.lemma is included in the PAYMENT-RESPONSE header.
-    // Bind the registration so it is not a bare non-void expression statement
-    // (functional/no-expression-statements).
-    const _registeredExtension = this.registerExtension({
-      key: "lemma",
-      enrichSettlementResponse: (
-        _declaration: unknown,
-        context: SettleResultContext,
-      ): Promise<unknown> => {
-        // imperative: sync + async boundary — errors are caught via
-        // Promise `.catch` (no try-catch) so a proof-generation failure is
-        // non-fatal to the already-successful settlement.
-        const buildExtData = async (_p?: undefined): Promise<unknown> => {
-          const settlementResult = context.result;
-
-          // Wire-format view: the settle context is parsed from facilitator
-          // JSON. Core types mark these fields as required, but older spec
-          // versions may omit them on the wire, so they are viewed as
-          // optional here instead of guarded with linter-suppressed
-          // "unnecessary" conditions.
-          const wire = context.requirements as Readonly<{
-            extra?: Record<string, unknown>;
-            payTo?: string;
-            amount?: string;
-          }>;
-          const wireResult = settlementResult as Readonly<{
-            transaction?: string;
-          }>;
-
-          // Build submission context from settlement data
-          const _docHash =
-            (wire.extra?.docHash as string | undefined) ??
-            wireResult.transaction ??
-            "unknown";
-
-          const schema = (wire.extra?.schema as string | undefined) ?? "default";
-
-          // Extract payment details for proof witness
-          // The circuit expects specific inputs matching X402Payment circuit
-          const txHash = (wireResult.transaction ?? "").replace(/^0x/, "");
-          const bn128Prime = BigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
-          
-          // Split 256-bit tx hash into 2 field elements (128-bit each)
-          const txHashLow = txHash.length >= 32 
-            ? (BigInt(`0x${txHash.slice(-32)}`) % bn128Prime).toString()
-            : "0";
-          const txHashHigh = txHash.length >= 64 
-            ? (BigInt(`0x${txHash.slice(0, -32)}`) % bn128Prime).toString()
-            : (BigInt(`0x${txHash}`) % bn128Prime).toString();
-          
-          // Recipient address (payTo) - split into low/high
-          const payTo = (wire.payTo ?? "").replace(/^0x/, "").padStart(40, "0");
-          const recipientLow = (BigInt(`0x${payTo.slice(-16)}`) % bn128Prime).toString();
-          const recipientHigh = (BigInt(`0x${payTo.slice(0, -16) || "0"}`) % bn128Prime).toString();
-          
-          // Amount (USDC has 6 decimals, x402 uses smallest unit)
-          const amount = wire.amount ?? "1000";
-          
-          // Timestamp - use current time for freshness
-          const timestamp = Math.floor(Date.now() / 1000).toString();
-          const timestampMax = (parseInt(timestamp) + 3600).toString();
-          
-          // Min amount
-          const minAmount = amount;
-          
-          // Commitment = Poseidon6(txHashPacked[0], txHashPacked[1], recipientLow, amount, timestamp, minAmount)
-          const commitment = poseidon6([
-            BigInt(txHashLow),
-            BigInt(txHashHigh),
-            BigInt(recipientLow),
-            BigInt(amount),
-            BigInt(timestamp),
-            BigInt(minAmount),
-          ]).toString();
-          
-          const witness = {
-            txHashPacked: [txHashLow, txHashHigh],
-            recipientLow,
-            recipientHigh,
-            amount,
-            timestamp,
-            minAmount,
-            commitment,
-            minAmountPublic: minAmount,
-            timestampMax,
-          };
-
-          const proofOutput = await submissionHandler({
-            docHash: txHash,
-            schema: schema,
-            issuerId: "lemma-x402",
-            witness,
-            metadata: {
-              payer: settlementResult.payer,
-              transaction: settlementResult.transaction,
-              network: settlementResult.network,
-            },
-          });
-
-          const extData = {
-            proof: proofOutput.proof,
-            inputs: proofOutput.inputs,
-            circuitId: config.circuitId,
-            generatedAt: Date.now(),
-          };
-          return extData;
-        };
-        return buildExtData(undefined).catch((err: unknown): undefined => {
-          // Non-fatal -- settlement succeeded even if proof submission fails.
-          console.error("[Lemma] enrichSettlementResponse error:", err);
-          return undefined;
-        });
-      },
-    });
+    // No Lemma config available -- skip wiring (fallback: delegate to the base
+    // class only). The result is bound so the registration is not a bare non-void
+    // expression statement (functional/no-expression-statements).
+    const _registeredExtension = config
+      ? this.registerExtension(createLemmaExtension(config))
+      : undefined;
   }
 }
-/* eslint-enable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-this-expressions */
+/* eslint-enable functional/no-classes, functional/no-class-inheritance, functional/no-this-expressions */
 
 export { LemmaResourceServer as x402ResourceServer };
