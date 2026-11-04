@@ -11,7 +11,6 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import CyberProblem from "../components/CyberProblem.astro";
-import CyberHeroCard from "../components/CyberHeroCard.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { localePath } from "../lib/urls";
 import "@fontsource/space-grotesk/latin-500.css";
@@ -37,6 +36,17 @@ const C = isJa
       call: "個別に相談する",
       doc: "資料を受け取る",
       factLink: "攻撃実験の結果を見る →",
+      gateTitle: "実行ゲート",
+      gateSample: "イメージ",
+      gateCheck: "照合",
+      gateLabel: "実行ゲートの表示イメージ",
+      gateRows: [
+        { op: "振込の指示", check: "登録済みの取引先情報", status: "確認へ", held: true },
+        { op: "口座変更の受付", check: "テキスト未改変", status: "確認へ", held: true },
+        { op: "AIの操作", check: "権限の範囲", status: "実行", held: false },
+        { op: "振込の指示", check: "登録済みの取引先情報", status: "実行", held: false },
+      ],
+      gateNote: "表示はイメージです",
       introTitle: "最後の関門を、置く。",
       introBody: "鍵が盗まれても、指示が偽でも、実行の直前で確かめ直す。通らないものは止めます。",
       introQuote: "自分の情報を相手に渡さずに本人であることを証明",
@@ -148,6 +158,17 @@ const C = isJa
       call: "Talk to us",
       doc: "Get the materials",
       factLink: "See the test results →",
+      gateTitle: "Execution gate",
+      gateSample: "Sample",
+      gateCheck: "Check",
+      gateLabel: "Sample illustration of the execution gate",
+      gateRows: [
+        { op: "Transfer instruction", check: "registered partner record", status: "To review", held: true },
+        { op: "Account change notice", check: "unmodified text", status: "To review", held: true },
+        { op: "AI action", check: "permission scope", status: "Executed", held: false },
+        { op: "Transfer instruction", check: "registered partner record", status: "Executed", held: false },
+      ],
+      gateNote: "Sample illustration, not actual records.",
       introTitle: "Place the final gate.",
       introBody:
         "Even with a stolen key or a forged instruction, re-check immediately before execution. What does not pass is stopped.",
@@ -283,7 +304,6 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   <main class="cy-page">
     <div class="cy-container">
       <section class="cy-hero" aria-labelledby="cy-title">
-        <CyberHeroCard />
         <div class="cy-hero-copy">
           <h1 id="cy-title">ProofGate</h1>
           <p class="cy-claim">{C.headline.map((line) => <span>{line}</span>)}</p>
@@ -301,6 +321,27 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
             <a class="cy-factlink" data-cy-ev="cy_hero_fact" href="#fact">{C.factLink}</a>
           </p>
           <p class="cy-availability">{C.availability}</p>
+        </div>
+        <div class="cy-gate" role="img" aria-label={C.gateLabel}>
+          <div class="cy-gate-head">
+            <span class="cy-gate-title">{C.gateTitle}</span>
+            <span class="cy-gate-sample">{C.gateSample}</span>
+          </div>
+          <ul class="cy-gate-rows">
+            {
+              C.gateRows.map((row) => (
+                <li class={row.held ? "cy-gate-row is-held" : "cy-gate-row"}>
+                  <span class="cy-gate-dot" aria-hidden="true" />
+                  <span class="cy-gate-main">
+                    <strong>{row.op}</strong>
+                    <small>{`${C.gateCheck}${isJa ? "：" : ": "}${row.check}`}</small>
+                  </span>
+                  <span class="cy-gate-status">{row.status}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="cy-gate-note">{C.gateNote}</p>
         </div>
       </section>
 
@@ -495,55 +536,125 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   }
   .cy-hero {
     position: relative;
-    isolation: isolate;
     display: grid;
+    grid-template-columns: 1.02fr 0.98fr;
     align-items: center;
+    gap: clamp(32px, 4.5vw, 64px);
     min-height: calc(100svh - var(--navh, 74px));
     margin-inline: -32px;
-    padding: 80px 32px 96px;
+    padding: 72px 32px 88px;
+    text-align: left;
   }
   .cy-hero-copy {
-    position: relative;
-    z-index: 1;
     width: 100%;
-  }
-  .cy-hero-copy::before {
-    content: "";
-    position: absolute;
-    inset: -32px -72px;
-    z-index: -1;
-    background: radial-gradient(
-      ellipse 72% 72% at 50% 44%,
-      #12140ef2 10%,
-      #12140ede 38%,
-      #12140ea8 58%,
-      transparent 84%
-    );
-    pointer-events: none;
-  }
-  .cy-hero h1 {
-    text-shadow:
-      0 1px 12px #12140ef2,
-      0 4px 40px #12140ee0,
-      0 10px 96px #12140ed4;
-  }
-  .cy-hero .cy-claim,
-  .cy-hero .cy-intro,
-  .cy-hero .cy-herosub,
-  .cy-hero .cy-availability {
-    text-shadow:
-      0 1px 10px #12140ee6,
-      0 3px 32px #12140ecc,
-      0 8px 72px #12140ea6;
+    min-width: 0;
   }
   .cy-hero .cy-claim {
-    margin-bottom: 24px;
+    margin: 0 0 20px;
   }
   .cy-hero .cy-intro {
-    margin-bottom: 24px;
+    margin: 0 0 28px;
   }
-  .cy-hero .cy-ghost {
-    background: #12140ecf;
+  .cy-hero .cy-actions {
+    justify-content: flex-start;
+  }
+  .cy-gate {
+    min-width: 0;
+    border: 1px solid #3e4435;
+    border-radius: 12px;
+    background: #171a12;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+  }
+  .cy-gate-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #3e4435;
+  }
+  .cy-gate-title {
+    color: #d8ddd1;
+    font-family: "Space Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+  }
+  .cy-gate-sample {
+    color: #929c85;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    border: 1px solid #3e4435;
+    border-radius: 4px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+  .cy-gate-rows {
+    list-style: none;
+    margin: 0;
+    padding: 8px 10px 2px;
+  }
+  .cy-gate-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+  }
+  .cy-gate-row + .cy-gate-row {
+    border-top: 1px solid #3e4435;
+    border-radius: 0;
+  }
+  .cy-gate-dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #bac1af;
+  }
+  .cy-gate-row.is-held .cy-gate-dot {
+    background: #a8e010;
+    box-shadow: 0 0 10px rgba(168, 224, 16, 0.7);
+  }
+  .cy-gate-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .cy-gate-main > strong {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.7;
+    color: #f4f7ef;
+  }
+  .cy-gate-main > small {
+    font-size: 11px;
+    line-height: 1.7;
+    color: #929c85;
+  }
+  .cy-gate-status {
+    flex: none;
+    font-size: 11px;
+    line-height: 1.6;
+    white-space: nowrap;
+    color: #bac1af;
+    border: 1px solid #3e4435;
+    border-radius: 4px;
+    padding: 4px 12px;
+  }
+  .cy-gate-row.is-held .cy-gate-status {
+    color: #c5e987;
+    border-color: #8cad55;
+    background: #1d2415;
+  }
+  .cy-gate-note {
+    margin: 0;
+    padding: 10px 20px 14px;
+    font-size: 10px;
+    line-height: 1.9;
+    color: #929c85;
   }
   .cy-page h1 {
     font-family: "Space Grotesk", sans-serif;
@@ -577,6 +688,17 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   }
   .cy-claim > span + span {
     margin-left: 0.35em;
+  }
+  .cy-hero h1 {
+    font-size: clamp(38px, 4.6vw, 60px);
+    letter-spacing: -0.04em;
+    margin-bottom: 16px;
+  }
+  .cy-hero .cy-claim {
+    color: #f4f7ef;
+    font-size: clamp(21px, 2.6vw, 30px);
+    font-weight: 500;
+    line-height: 1.6;
   }
   .cy-actions {
     display: flex;
@@ -1481,6 +1603,16 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     }
   }
 
+  @media (max-width: 900px) {
+    .cy-hero {
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: 40px;
+    }
+    .cy-gate {
+      max-width: 560px;
+    }
+  }
   @media (max-width: 600px) {
     .cy-workflow-tabs {
       gap: 6px;
@@ -1530,14 +1662,15 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     }
     .cy-hero {
       margin-inline: -20px;
-      padding: 64px 20px 72px;
+      padding: 56px 20px 64px;
       align-items: start;
+      gap: 36px;
     }
-    .cy-hero-copy::before {
-      inset: -16px -28px;
+    .cy-hero h1 {
+      font-size: 38px;
     }
-    .cy-page h1 {
-      font-size: 80px;
+    .cy-gate-row {
+      padding: 10px 12px;
     }
     .cy-claim {
       max-width: 24em;
