@@ -36,8 +36,9 @@ glossary:
     desc: "INTERPOL's Global Rapid Intervention of Payments, a mechanism for quickly stopping payments across borders. Launched in 2022 (INTERPOL)."
 insight:
   slug: "new-account-lookalike-sender"
+  stop: true
   label: "New account, lookalike sender"
-  quote: "A payment to a new account goes through, even on a request from a lookalike address, unless the account is checked with the supplier's registered contact."
+  quote: "Before transferring, check the new account in the request with the supplier's registered contact, not the email that arrived."
 industries: ["supply-chain"]
 operations: ["payment-change", "approval"]
 controls:

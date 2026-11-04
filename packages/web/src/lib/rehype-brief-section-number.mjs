@@ -619,7 +619,16 @@ function applyReportLayout(tree, fm, isEn) {
           j + 1,
           0,
           h("figure", "rx-key", [
-            h("figcaption", null, [txt(isEn ? "The core of this case" : "この事案の核心")]),
+            // insight.stop の Brief は、帯が「止める点」（どの操作の前に何を何と照合すれば
+            // 止まるか・本人 2026-11-04・184 から）。「なぜ通ったか」は 01 の太字が持つ。
+            // 付いていない Brief は「この事案の核心」のまま（書き直した Brief から付ける）。
+            h("figcaption", null, [
+              txt(
+                fm.insight?.stop
+                  ? isEn ? "Where to stop" : "止める点"
+                  : isEn ? "The core of this case" : "この事案の核心",
+              ),
+            ]),
             h("blockquote", null, [txt(quote)]),
           ]),
         );
