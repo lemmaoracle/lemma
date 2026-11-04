@@ -48,24 +48,56 @@ const C = isJa
         { op: "AIの操作（社内議事録の要約）", check: "委任された権限の範囲内", status: "実行許可", held: false },
       ],
       gateNote: "ブロックチェーンと先端暗号技術による実行直前の照合ログ（イメージ）",
+      introEyebrow: "ARCHITECTURE // ZKP × BLOCKCHAIN GATE",
       introTitle: "実行の直前で、止める",
       introLead:
         "鍵が盗まれても、AIが想定外の動きをしても。日常の業務を止めることなく、最後の関門で確かめます。ProofGateは、改ざんできないブロックチェーンとゼロ知識証明（ZKP）などの暗号技術を掛け合わせ、機密データを外部へ渡さずに「条件を満たす事実」だけを照合します。",
+      introTags: [
+        "生データの外部送信 0件",
+        "既存システムへのAPI追加のみ",
+        "改ざん不能な監査証跡",
+      ],
+      archDiagram: {
+        headerTitle: "PROOFGATE INTERCEPT PIPELINE",
+        headerSub: "ZKP × BLOCKCHAIN VERIFICATION ARCHITECTURE",
+        zone1Tag: "01 / INTERNAL PERIMETER",
+        zone1Title: "社内環境（機密データは社内に留まる）",
+        zone1Items: ["会計・送金システム / 社内AI", "取引先口座マスタ・顧客DB・権限設定"],
+        zone1Badge: "生データは外部へ出ない",
+        proofPacket: "暗号証明（ZKP）のみ送出",
+        zone2Tag: "02 / EXECUTION GATE",
+        zone2Title: "ProofGate 実行直前ゲート",
+        zone2Step1Title: "ゼロ知識証明（ZKP）照合",
+        zone2Step1Desc: "生データを見ずに「条件合致の事実」だけを数学的に検証",
+        zone2Step2Title: "ブロックチェーン証跡記録",
+        zone2Step2Desc: "誰が・いつ・どの条件で判定したかを不可逆な台帳へ刻印",
+        zone3Tag: "03 / GATE DECISION",
+        outPassLabel: "PASS — 条件合致",
+        outPassTitle: "そのまま即時実行（業務を止めない）",
+        outHoldLabel: "HOLD — 条件不一致・未証明",
+        outHoldTitle: "実行前に遮断し、担当者の確認へ回送",
+      },
       introCards: [
         {
-          icon: "shield",
+          num: "01",
+          code: "API OVERLAY",
           title: "運用の手間を増やさずに保護",
           body: "既存の会計システムや社内AIツールを置き換える必要はありません。承認や実行の直前にAPIとして重ね、通らない操作だけを担当者の確認へ回します。",
+          spec: "ERP / 銀行API / AI Agent ──▶ [ProofGate API]",
         },
         {
-          icon: "zkp",
+          num: "02",
+          code: "ZERO-KNOWLEDGE PROOF",
           title: "機密を預けないゼロ知識照合",
           body: "顧客データや口座番号などの生データを外部へ送信しません。社内環境に置いたまま、ゼロ知識証明（ZKP）によって条件合致の事実だけを検証します。",
+          spec: "Raw Secret: Local Only │ Verification: ZKP Proof",
         },
         {
-          icon: "chain",
+          num: "03",
+          code: "BLOCKCHAIN AUDIT",
           title: "改ざん不能な実行の監査証跡",
           body: "誰が・いつ・どの条件で操作を実行または保留したかをブロックチェーン上に記録。内部不正の抑止と、監査・コンプライアンス対応の工数を削減します。",
+          spec: "Execution Log ──▶ Immutable Ledger Anchor",
         },
       ],
       featuresTitle: "3つの場面で、不正な実行を確実に止める",
@@ -207,24 +239,56 @@ const C = isJa
         { op: "AI action (Internal doc summary)", check: "Within delegated permission scope", status: "Executed", held: false },
       ],
       gateNote: "Cryptographic & blockchain pre-execution verification log (illustrative)",
+      introEyebrow: "ARCHITECTURE // ZKP × BLOCKCHAIN GATE",
       introTitle: "Stop it right before execution",
       introLead:
         "Even when credentials are stolen or AI agents behave unpredictably, verify right before execution without disrupting daily operations. ProofGate combines immutable blockchain audit trails with Zero-Knowledge Proofs (ZKP) to verify qualifying facts without exposing raw secrets.",
+      introTags: [
+        "Zero raw data transmitted",
+        "Drop-in API overlay",
+        "Immutable blockchain audit log",
+      ],
+      archDiagram: {
+        headerTitle: "PROOFGATE INTERCEPT PIPELINE",
+        headerSub: "ZKP × BLOCKCHAIN VERIFICATION ARCHITECTURE",
+        zone1Tag: "01 / INTERNAL PERIMETER",
+        zone1Title: "Your Environment (Raw Secrets Stay Local)",
+        zone1Items: ["ERP / Payout Systems / Internal AI", "Partner Bank Registry / Customer DB / Scopes"],
+        zone1Badge: "Raw data never leaves perimeter",
+        proofPacket: "Emits ZKP cryptographic proof only",
+        zone2Tag: "02 / EXECUTION GATE",
+        zone2Title: "ProofGate Pre-Execution Gate",
+        zone2Step1Title: "Zero-Knowledge Proof (ZKP) Check",
+        zone2Step1Desc: "Mathematically verifies policy compliance without seeing raw data",
+        zone2Step2Title: "Blockchain Audit Anchoring",
+        zone2Step2Desc: "Records who, when, and under what proof an action was evaluated",
+        zone3Tag: "03 / GATE DECISION",
+        outPassLabel: "PASS — Policy Verified",
+        outPassTitle: "Executes immediately without friction",
+        outHoldLabel: "HOLD — Mismatch or Unverified",
+        outHoldTitle: "Intercepted before execution & routed to human review",
+      },
       introCards: [
         {
-          icon: "shield",
+          num: "01",
+          code: "API OVERLAY",
           title: "Protect without operational friction",
           body: "No need to replace your existing ERP, accounting tools, or AI frameworks. Layer ProofGate as an API right before execution and route only anomalies to human review.",
+          spec: "ERP / Banking API / AI Agent ──▶ [ProofGate API]",
         },
         {
-          icon: "zkp",
+          num: "02",
+          code: "ZERO-KNOWLEDGE PROOF",
           title: "Zero-knowledge verification",
           body: "Never transmit raw customer records or bank numbers externally. Keep sensitive data inside your perimeter while cryptographically verifying that conditions are met.",
+          spec: "Raw Secret: Local Only │ Verification: ZKP Proof",
         },
         {
-          icon: "chain",
+          num: "03",
+          code: "BLOCKCHAIN AUDIT",
           title: "Tamper-proof blockchain audit trails",
           body: "Record who authorized or held every critical action on an immutable ledger. Deter internal fraud and dramatically cut compliance audit overhead.",
+          spec: "Execution Log ──▶ Immutable Ledger Anchor",
         },
       ],
       featuresTitle: "Stop unauthorized actions across three critical fronts",
@@ -376,113 +440,195 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   <HubSpotDrawer />
   <main class="cy-page">
     <!-- =====================================================================
-         CHAPTER 1: HERO + INTRO (Overlapping Stage in High-Contrast Lemma Tone)
-         Pale Stone Top Canvas (#eef1eb) -> Overlapping Deep Obsidian Stage (#121611)
+         CHAPTER 1A: HERO (Pale Stone Canvas #eef1eb + Execution Monitor)
          ===================================================================== -->
-    <div class="cy-hero-intro-wrapper">
-      <!-- Hero Area -->
-      <section class="cy-hero-sec" aria-labelledby="cy-title">
-        <div class="cy-container cy-hero-grid">
-          <div class="cy-hero-copy">
-            <span class="cy-hero-badge">{C.badge}</span>
-            <h1 id="cy-title" class="cy-hero-h1">{C.headline}</h1>
-            <p class="cy-hero-lead">{C.intro}</p>
-            <div class="cy-hero-btns">
-              <a
-                class="cy-btn cy-btn-lime"
-                data-cy-ev="cy_hero_consult"
-                href={DISCOVERY_CALL_URL[locale]}
-                target="_blank"
-                rel="noopener"
-              >
-                {C.call} <span aria-hidden="true">↗</span>
-              </a>
-              <a class="cy-btn cy-btn-outline-dark" data-cy-ev="cy_hero_fact" href="#fact">
-                {C.factBtn}
-              </a>
+    <section class="cy-hero-sec" aria-labelledby="cy-title">
+      <div class="cy-container cy-hero-grid">
+        <div class="cy-hero-copy">
+          <span class="cy-hero-badge">{C.badge}</span>
+          <h1 id="cy-title" class="cy-hero-h1">{C.headline}</h1>
+          <p class="cy-hero-lead">{C.intro}</p>
+          <div class="cy-hero-btns">
+            <a
+              class="cy-btn cy-btn-lime"
+              data-cy-ev="cy_hero_consult"
+              href={DISCOVERY_CALL_URL[locale]}
+              target="_blank"
+              rel="noopener"
+            >
+              {C.call} <span aria-hidden="true">↗</span>
+            </a>
+            <a class="cy-btn cy-btn-outline-dark" data-cy-ev="cy_hero_fact" href="#fact">
+              {C.factBtn}
+            </a>
+          </div>
+        </div>
+
+        <div class="cy-hero-visual-col">
+          <div class="cy-gate-card" role="img" aria-label={C.gateLabel}>
+            <div class="cy-gate-head">
+              <div class="cy-gate-dots" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="cy-gate-title">{C.gateTitle}</span>
+              <span class="cy-gate-live">{C.gateSample}</span>
+            </div>
+            <ul class="cy-gate-list">
+              {
+                C.gateRows.map((row) => (
+                  <li class={row.held ? "cy-gate-row is-held" : "cy-gate-row is-ok"}>
+                    <span class="cy-gate-indicator" aria-hidden="true" />
+                    <div class="cy-gate-main">
+                      <strong>{row.op}</strong>
+                      <small>{`${C.gateCheck}${isJa ? "：" : ": "}${row.check}`}</small>
+                    </div>
+                    <span class="cy-gate-pill">{row.status}</span>
+                  </li>
+                ))
+              }
+            </ul>
+            <div class="cy-gate-foot">
+              <span>{C.gateNote}</span>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Right Visual: Overlaps into the top-right of the Deep Obsidian Stage below -->
-          <div class="cy-hero-visual-col">
-            <div class="cy-gate-card" role="img" aria-label={C.gateLabel}>
-              <div class="cy-gate-head">
-                <div class="cy-gate-dots" aria-hidden="true">
-                  <span></span><span></span><span></span>
-                </div>
-                <span class="cy-gate-title">{C.gateTitle}</span>
-                <span class="cy-gate-live">{C.gateSample}</span>
+    <!-- =====================================================================
+         CHAPTER 1B: INTRO — ARCHITECTURAL BLUEPRINT & INTERCEPT PIPELINE
+         Benchmarks: Vercel Security / Geist (1px Blueprint Grid + Crosshairs)
+                     & Stripe Radar (Live Intercept Pipeline Diagram)
+         Full-Bleed Deep Obsidian (#121611) + 28px Engineering Grid
+         ===================================================================== -->
+    <section class="cy-arch-sec" aria-labelledby="cy-intro-title">
+      <div class="cy-arch-pgrid" aria-hidden="true"></div>
+      <div class="cy-container">
+        <div class="cy-arch-frame">
+          <!-- Corner Crosshairs (+) -->
+          <span class="cy-crosshair is-tl" aria-hidden="true">+</span>
+          <span class="cy-crosshair is-tr" aria-hidden="true">+</span>
+          <span class="cy-crosshair is-bl" aria-hidden="true">+</span>
+          <span class="cy-crosshair is-br" aria-hidden="true">+</span>
+
+          <!-- Upper Split: Editorial Manifesto (Left) + Intercept Pipeline Schematic (Right) -->
+          <div class="cy-arch-upper">
+            <div class="cy-arch-editorial">
+              <div class="cy-arch-eyebrow">
+                <span class="cy-arch-pulse" aria-hidden="true"></span>
+                <span>{C.introEyebrow}</span>
               </div>
-              <ul class="cy-gate-list">
+              <h2 id="cy-intro-title" class="cy-arch-h2">{C.introTitle}</h2>
+              <p class="cy-arch-lead">{C.introLead}</p>
+
+              <ul class="cy-arch-tags" aria-label={isJa ? "アーキテクチャの要点" : "Key architecture traits"}>
                 {
-                  C.gateRows.map((row) => (
-                    <li class={row.held ? "cy-gate-row is-held" : "cy-gate-row is-ok"}>
-                      <span class="cy-gate-indicator" aria-hidden="true" />
-                      <div class="cy-gate-main">
-                        <strong>{row.op}</strong>
-                        <small>{`${C.gateCheck}${isJa ? "：" : ": "}${row.check}`}</small>
-                      </div>
-                      <span class="cy-gate-pill">{row.status}</span>
+                  C.introTags.map((tag) => (
+                    <li>
+                      <span class="cy-arch-tag-check" aria-hidden="true">✓</span>
+                      <span>{tag}</span>
                     </li>
                   ))
                 }
               </ul>
-              <div class="cy-gate-foot">
-                <span>{C.gateNote}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Intro Stage: Deep Obsidian Rounded Container (#121611) -->
-      <section class="cy-intro-outer" aria-labelledby="cy-intro-title">
-        <div class="cy-container">
-          <div class="cy-intro-stage">
-            <div class="cy-intro-top">
-              <div class="cy-intro-copy">
-                <h2 id="cy-intro-title">{C.introTitle}</h2>
-                <p>{C.introLead}</p>
-              </div>
             </div>
 
-            <div class="cy-intro-pillars">
-              {
-                C.introCards.map((card) => (
-                  <div class="cy-pillar-item">
-                    <div class="cy-pillar-icon" aria-hidden="true">
-                      {card.icon === "shield" && (
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                          <path d="m9 12 2 2 4-4" />
-                        </svg>
-                      )}
-                      {card.icon === "zkp" && (
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                          <circle cx="12" cy="16" r="1" />
-                        </svg>
-                      )}
-                      {card.icon === "chain" && (
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                          <polyline points="14 2 14 8 20 8" />
-                          <line x1="16" y1="13" x2="8" y2="13" />
-                          <line x1="16" y1="17" x2="8" y2="17" />
-                        </svg>
-                      )}
-                    </div>
-                    <h3>{card.title}</h3>
-                    <p>{card.body}</p>
+            <!-- Right: Stripe Radar-style Live Intercept Pipeline Schematic -->
+            <div class="cy-arch-diagram" aria-hidden="true">
+              <div class="cy-pipe-head">
+                <span class="cy-pipe-title">{C.archDiagram.headerTitle}</span>
+                <span class="cy-pipe-sub">{C.archDiagram.headerSub}</span>
+              </div>
+
+              <div class="cy-pipe-body">
+                <!-- Zone 1: Internal Perimeter (Raw Secrets Stay Local) -->
+                <div class="cy-pipe-zone is-perimeter">
+                  <div class="cy-pipe-zone-top">
+                    <span class="cy-pipe-ztag">{C.archDiagram.zone1Tag}</span>
+                    <span class="cy-pipe-zbadge">{C.archDiagram.zone1Badge}</span>
                   </div>
-                ))
-              }
+                  <div class="cy-pipe-ztitle">{C.archDiagram.zone1Title}</div>
+                  <div class="cy-pipe-chips">
+                    {C.archDiagram.zone1Items.map((it) => <span class="cy-pipe-chip">{it}</span>)}
+                  </div>
+                </div>
+
+                <!-- Connector 1: Emits ZKP Proof Packet Only -->
+                <div class="cy-pipe-connector">
+                  <span class="cy-pipe-line"></span>
+                  <span class="cy-pipe-packet">{C.archDiagram.proofPacket}</span>
+                  <span class="cy-pipe-arrow">▼</span>
+                </div>
+
+                <!-- Zone 2: ProofGate Execution Gate (ZKP x Blockchain) -->
+                <div class="cy-pipe-zone is-gate">
+                  <div class="cy-pipe-zone-top">
+                    <span class="cy-pipe-ztag is-lime">{C.archDiagram.zone2Tag}</span>
+                    <strong class="cy-pipe-gname">{C.archDiagram.zone2Title}</strong>
+                  </div>
+                  <div class="cy-pipe-dual">
+                    <div class="cy-pipe-engine">
+                      <div class="cy-pipe-engine-top">
+                        <span class="cy-pipe-etag">ZKP</span>
+                        <strong>{C.archDiagram.zone2Step1Title}</strong>
+                      </div>
+                      <p>{C.archDiagram.zone2Step1Desc}</p>
+                    </div>
+                    <div class="cy-pipe-engine">
+                      <div class="cy-pipe-engine-top">
+                        <span class="cy-pipe-etag">CHAIN</span>
+                        <strong>{C.archDiagram.zone2Step2Title}</strong>
+                      </div>
+                      <p>{C.archDiagram.zone2Step2Desc}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Connector 2: Bifurcated Decision -->
+                <div class="cy-pipe-connector is-split">
+                  <span class="cy-pipe-ztag">{C.archDiagram.zone3Tag}</span>
+                </div>
+
+                <!-- Zone 3: Bifurcated Gate Decision (Pass vs Hold) -->
+                <div class="cy-pipe-outcomes">
+                  <div class="cy-pipe-out is-pass">
+                    <span class="cy-pipe-out-label">
+                      <i class="dot-pass"></i> {C.archDiagram.outPassLabel}
+                    </span>
+                    <strong>{C.archDiagram.outPassTitle}</strong>
+                  </div>
+                  <div class="cy-pipe-out is-hold">
+                    <span class="cy-pipe-out-label">
+                      <i class="dot-hold"></i> {C.archDiagram.outHoldLabel}
+                    </span>
+                    <strong>{C.archDiagram.outHoldTitle}</strong>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- Lower 3-Column Spec Matrix (Vercel Geist 1px Structural Grid) -->
+          <div class="cy-arch-specs">
+            {
+              C.introCards.map((card) => (
+                <article class="cy-spec-cell">
+                  <div class="cy-spec-head">
+                    <span class="cy-spec-num">{card.num}</span>
+                    <span class="cy-spec-code">{card.code}</span>
+                  </div>
+                  <h3 class="cy-spec-title">{card.title}</h3>
+                  <p class="cy-spec-body">{card.body}</p>
+                  <div class="cy-spec-foot" aria-hidden="true">
+                    <code>{card.spec}</code>
+                  </div>
+                </article>
+              ))
+            }
+          </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
 
     <!-- =====================================================================
          CHAPTER 2: FEATURES (Deep Charcoal Stage #191d17 with 3 Crisp White Cards)
@@ -950,29 +1096,23 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   }
 
   /* ==========================================================================
-     CHAPTER 1: HERO + OVERLAPPING INTRO STAGE
+     CHAPTER 1A: HERO (Pale Stone #eef1eb Canvas)
      ========================================================================== */
-  .cy-hero-intro-wrapper {
-    position: relative;
-    /* Top portion is Pale Stone (#eef1eb), transitioning to pure white (#ffffff) partway down the Intro Stage */
-    background: linear-gradient(180deg, var(--pale-stone) 0%, var(--pale-stone) 68%, #ffffff 68%, #ffffff 100%);
-    padding-bottom: 48px;
-  }
-
   .cy-hero-sec {
-    padding: 72px 0 40px;
+    background: var(--pale-stone);
+    padding: 76px 0 84px;
+    border-bottom: 1px solid #d5dbd0;
   }
 
   .cy-hero-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    align-items: start;
-    gap: 48px;
+    align-items: center;
+    gap: 52px;
   }
 
   .cy-hero-copy {
-    padding-top: 12px;
-    padding-bottom: 36px;
+    padding: 8px 0;
   }
 
   .cy-hero-badge {
@@ -1012,18 +1152,15 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     gap: 14px;
   }
 
-  /* Hero Visual Card that overlaps into the top-right of the Intro Stage on desktop */
   .cy-hero-visual-col {
     position: relative;
-    z-index: 3;
-    margin-bottom: -150px;
   }
 
   .cy-gate-card {
     background: #ffffff;
     border: 1px solid #cfd5c9;
-    border-radius: 20px;
-    box-shadow: 0 24px 60px rgba(18, 20, 14, 0.18);
+    border-radius: 16px;
+    box-shadow: 0 20px 48px rgba(18, 20, 14, 0.12);
     overflow: hidden;
   }
 
@@ -1159,77 +1296,467 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     color: var(--muted);
   }
 
-  /* Deep Obsidian Intro Stage (#121611) */
-  .cy-intro-outer {
+  /* ==========================================================================
+     CHAPTER 1B: INTRO — ARCHITECTURAL BLUEPRINT & INTERCEPT PIPELINE
+     Benchmarks: Vercel Security / Geist (1px Blueprint Grid + Crosshairs)
+                 & Stripe Radar (Live Intercept Pipeline Diagram)
+     ========================================================================== */
+  .cy-arch-sec {
     position: relative;
-    z-index: 2;
-  }
-
-  .cy-intro-stage {
     background: var(--obsidian-stage);
     color: #f4f7ef;
-    border-radius: 28px;
-    padding: 64px 56px;
-    box-shadow: 0 24px 60px rgba(18, 20, 14, 0.16);
+    padding: 88px 0 96px;
+    border-top: 3px solid var(--lime);
+    overflow: hidden;
   }
 
-  .cy-intro-top {
+  /* Subtle 28px Engineering Grid (from Lemma top-v47 .pgrid) */
+  .cy-arch-pgrid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.032) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.032) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+  }
+
+  .cy-arch-frame {
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(20, 25, 19, 0.88);
+  }
+
+  /* Precision Corner Crosshairs (+) inspired by Vercel Geist */
+  .cy-crosshair {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    line-height: 1;
+    color: var(--lime);
+    pointer-events: none;
+    user-select: none;
+    z-index: 3;
+  }
+  .cy-crosshair.is-tl {
+    top: -8px;
+    left: -5px;
+  }
+  .cy-crosshair.is-tr {
+    top: -8px;
+    right: -5px;
+  }
+  .cy-crosshair.is-bl {
+    bottom: -8px;
+    left: -5px;
+  }
+  .cy-crosshair.is-br {
+    bottom: -8px;
+    right: -5px;
+  }
+
+  .cy-arch-upper {
     display: grid;
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-    gap: 48px;
-    margin-bottom: 64px;
+    grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
   }
 
-  .cy-intro-copy h2 {
-    font-family: var(--font-heading);
-    font-size: clamp(28px, 3.6vw, 40px);
+  .cy-arch-editorial {
+    padding: 56px 48px;
+    border-right: 1px solid rgba(255, 255, 255, 0.16);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cy-arch-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.25;
-    color: #ffffff;
-    margin: 0 0 20px;
-    text-wrap: balance;
-  }
-
-  .cy-intro-copy p {
-    font-size: 15.5px;
-    line-height: 1.85;
-    color: #c7cfc0;
-    margin: 0;
-  }
-
-  .cy-intro-pillars {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 36px;
-    padding-top: 48px;
-    border-top: 1px solid rgba(255, 255, 255, 0.14);
-  }
-
-  .cy-pillar-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: var(--lime);
-    color: var(--ink);
-    display: grid;
-    place-items: center;
+    letter-spacing: 0.12em;
+    color: var(--lime);
     margin-bottom: 20px;
   }
 
-  .cy-pillar-item h3 {
-    font-size: 19px;
+  .cy-arch-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lime);
+  }
+
+  .cy-arch-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(32px, 4.2vw, 48px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.18;
+    color: #ffffff;
+    margin: 0 0 24px;
+    text-wrap: balance;
+  }
+
+  .cy-arch-lead {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #cfd6c8;
+    margin: 0 0 32px;
+  }
+
+  .cy-arch-tags {
+    list-style: none;
+    margin: 0;
+    padding: 24px 0 0;
+    border-top: 1px dashed rgba(255, 255, 255, 0.16);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+  }
+
+  .cy-arch-tags li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #eef2ea;
+  }
+
+  .cy-arch-tag-check {
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: rgba(168, 224, 16, 0.16);
+    border: 1px solid rgba(168, 224, 16, 0.45);
+    color: var(--lime);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  /* Right Column: Stripe Radar-style Intercept Pipeline Diagram */
+  .cy-arch-diagram {
+    padding: 36px 40px;
+    background: #0d100c;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cy-pipe-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    font-family: var(--font-mono);
+  }
+
+  .cy-pipe-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #ffffff;
+  }
+
+  .cy-pipe-sub {
+    font-size: 11px;
+    color: #96a08e;
+    letter-spacing: 0.06em;
+  }
+
+  .cy-pipe-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cy-pipe-zone {
+    padding: 16px 18px;
+    border-radius: 8px;
+  }
+
+  .cy-pipe-zone.is-perimeter {
+    background: #171c15;
+    border: 1px dashed rgba(255, 255, 255, 0.25);
+  }
+
+  .cy-pipe-zone.is-gate {
+    background: #161f12;
+    border: 1.5px solid var(--lime);
+  }
+
+  .cy-pipe-zone-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .cy-pipe-ztag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #9ca694;
+  }
+
+  .cy-pipe-ztag.is-lime {
+    color: var(--lime);
+  }
+
+  .cy-pipe-zbadge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: #d8e2cf;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 3px 9px;
+    border-radius: 4px;
+  }
+
+  .cy-pipe-ztitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+
+  .cy-pipe-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .cy-pipe-chip {
+    font-size: 12px;
+    color: #cfd6c8;
+    background: #0d100c;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 5px 10px;
+    border-radius: 4px;
+  }
+
+  .cy-pipe-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 4px 0;
+  }
+
+  .cy-pipe-packet {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--lime);
+    background: rgba(168, 224, 16, 0.12);
+    border: 1px solid rgba(168, 224, 16, 0.35);
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  .cy-pipe-arrow {
+    font-size: 11px;
+    color: var(--lime);
+  }
+
+  .cy-pipe-gname {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .cy-pipe-dual {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .cy-pipe-engine {
+    background: #0e130c;
+    border: 1px solid rgba(168, 224, 16, 0.28);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+
+  .cy-pipe-engine-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .cy-pipe-etag {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    background: var(--lime);
+    color: var(--ink);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+
+  .cy-pipe-engine-top strong {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .cy-pipe-engine p {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #b8c2b0;
+    margin: 0;
+  }
+
+  .cy-pipe-outcomes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .cy-pipe-out {
+    padding: 12px 14px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .cy-pipe-out.is-pass {
+    background: rgba(168, 224, 16, 0.08);
+    border: 1px solid rgba(168, 224, 16, 0.35);
+  }
+
+  .cy-pipe-out.is-hold {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+  }
+
+  .cy-pipe-out-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .cy-pipe-out.is-pass .cy-pipe-out-label {
+    color: var(--lime);
+  }
+
+  .cy-pipe-out.is-hold .cy-pipe-out-label {
+    color: #fca5a5;
+  }
+
+  .dot-pass,
+  .dot-hold {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot-pass {
+    background: var(--lime);
+  }
+
+  .dot-hold {
+    background: #ef4444;
+  }
+
+  .cy-pipe-out strong {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.4;
+  }
+
+  /* Lower 3-Column Spec Matrix (Vercel Geist 1px Structural Grid) */
+  .cy-arch-specs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cy-spec-cell {
+    padding: 36px 36px 32px;
+    border-right: 1px solid rgba(255, 255, 255, 0.16);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cy-spec-cell:last-child {
+    border-right: none;
+  }
+
+  .cy-spec-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .cy-spec-num {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--lime);
+    line-height: 1;
+  }
+
+  .cy-spec-code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #96a08e;
+  }
+
+  .cy-spec-title {
+    font-size: 20px;
     font-weight: 700;
     color: #ffffff;
     margin: 0 0 12px;
     line-height: 1.4;
   }
 
-  .cy-pillar-item p {
+  .cy-spec-body {
     font-size: 14.5px;
-    line-height: 1.75;
+    line-height: 1.8;
     color: #c7cfc0;
-    margin: 0;
+    margin: 0 0 24px;
+    flex-grow: 1;
+  }
+
+  .cy-spec-foot {
+    padding: 10px 12px;
+    background: #0d100c;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+  }
+
+  .cy-spec-foot code {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: #dce3d5;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* ==========================================================================
@@ -2119,20 +2646,33 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
       grid-template-columns: minmax(0, 1fr);
       gap: 32px;
     }
-    .cy-hero-visual-col {
-      margin-bottom: 0;
-    }
-    .cy-intro-top {
+    .cy-arch-upper {
       grid-template-columns: minmax(0, 1fr);
-      margin-bottom: 40px;
     }
-    .cy-intro-pillars,
+    .cy-arch-editorial {
+      border-right: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 40px 28px;
+    }
+    .cy-arch-diagram {
+      padding: 28px 24px;
+    }
+    .cy-arch-specs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .cy-spec-cell {
+      border-right: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 28px 24px;
+    }
+    .cy-spec-cell:last-child {
+      border-bottom: none;
+    }
     .cy-features-grid,
     .cy-steps-grid {
       grid-template-columns: minmax(0, 1fr);
       gap: 24px;
     }
-    .cy-intro-stage,
     .cy-features-stage,
     .cy-fact-stage,
     .cy-close-stage {
@@ -2142,9 +2682,15 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
 
   @media (max-width: 640px) {
     .cy-hero-sec {
-      padding: 48px 0 28px;
+      padding: 48px 0 48px;
     }
-    .cy-intro-stage,
+    .cy-arch-sec {
+      padding: 56px 0 64px;
+    }
+    .cy-pipe-dual,
+    .cy-pipe-outcomes {
+      grid-template-columns: minmax(0, 1fr);
+    }
     .cy-features-stage,
     .cy-fact-stage,
     .cy-close-stage {
