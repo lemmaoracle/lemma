@@ -40,8 +40,9 @@ glossary:
     desc: "Turning a line of code into a comment so it no longer runs. It has the same effect as deleting the line."
 insight:
   slug: "content-assembled-not-matched"
+  stop: true
   label: "Assembled contents not matched to the recipient"
-  quote: "Even when the recipient is right, a change in how the contents are assembled lets other companies' data ride along in the same send."
+  quote: "Before sending a notification, check that every person in the attachment belongs to the recipient company, using the data holder's membership records rather than the process that assembled it."
 industries: ["finance", "healthcare"]
 operations: ["delivery"]
 controls:
@@ -60,7 +61,7 @@ countries: ["es"]
 
 ## 1. Summary
 
-No one sent to the wrong address. In the weekly notification that the employer portal sends automatically, one line of code was commented out during a change to the process, so the Excel attachment was no longer reset for each notification. Excel files built earlier in the same day's run for other companies were added to each later notification (Ibermutua's account, as cited in the AEPD decision). Each email went to the address that company had set. <strong>Even when the recipient is right, a change in how the contents are assembled lets other companies' data ride along in the same send.</strong>
+No one sent to the wrong address. The employer portal sends a weekly notification automatically. During a change to the process, one line of code was commented out. The Excel attachment was no longer reset for each notification. Excel files built earlier in the same day's run for other companies were added to each later notification (Ibermutua's account, as cited in the AEPD decision). Each email went to the address that company had set. <strong>Even when the recipient is right, a change in how the contents are assembled lets other companies' data ride along in the same send.</strong>
 
 ## 2. What got through
 
@@ -71,10 +72,10 @@ No one sent to the wrong address. In the weekly notification that the employer p
 
 ## 3. What to check
 
-The condition that holds regardless of route: the sending system checks, before sending and separately from the code that built it, that every person in the assembled attachment belongs to the recipient company.
+The condition that holds regardless of route: before sending, and separately from the process that assembled it, check that every person in the attachment belongs to the recipient company.
 
 - **Who approves**: The party holding the data (here, Ibermutua). It registers which company may receive which employees' data, from its membership and benefit records. This is not decided in the processing code.
-- **Where to check**: Just before each notification goes out. For each attachment, check that each person's employer matches the recipient company, and hold any notification with someone who does not match or whose employer is unknown. Among the measures it ordered, the AEPD also cites mechanisms that link the people in the data to the entities entitled to see it.
+- **Where to check**: Just before each notification goes out. For each attachment, check that each person's employer matches the recipient company. Hold any notification that includes someone who does not match or whose employer is unknown. Among the measures it ordered, the AEPD also cites mechanisms that link the people in the data to the entities entitled to see it.
 - **What is recorded**: For each send, which recipient got whose data and what it was checked against, kept in a form that lets results be compared before and after a change to the process.
 
 <figure class="rx-ex">
@@ -117,7 +118,7 @@ This case took the route in column 1 (a routine send by a changed process). Colu
 
 All four are measures Ibermutua told the AEPD it put in place after the incident. Testing each change and testing a sample add chances to catch an error, but errors outside what was tested still pass. Blocking multiple attachments and matching attachment IDs catch the shape seen here, where whole files for other companies were added, but not a single file with other companies' people mixed into its rows. Lemma matches each person's employer in the attachment against the recipient company. If the address itself is registered wrongly, the company and the contents still match, so it helps only as far as it can check who approved the registration change.
 
-Note: Lemma's check works only when it is built into the sending system, and when the party holding the data registers which company may receive which people's data, separately from the processing code. If that registered mapping is wrong, a wrong send also passes. Lemma does not delete data or retrieve it from recipients. Limiting the fields in a notification is the job of the organization holding the data (in setting the fine, the AEPD also weighed the large amount of data sent per person). The table compares what each control checks; it does not show whether anything would have been stopped in this case. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the sending system and the party holding the data registers, apart from the processing code, which company may receive which people's data. If that registered mapping is wrong, a wrong send also passes. Lemma does not delete data or retrieve it from recipients. Limiting the fields in a notification is the job of the organization holding the data (in setting the fine, the AEPD also weighed the amount of data sent per person). The table compares what each control checks; it does not show whether anything would have been stopped in this case. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -146,7 +147,7 @@ Three things to check in your organization about routine sends whose contents ar
 - **2025-02-17**: Ibermutua admits liability, waives administrative appeal, and pays €600,000.
 - **Afterwards**: The AEPD issues its decision ending the proceedings, confirming the breach and ordering measures.
 
-> The facts here rest on the AEPD decision (PS-00540-2024, file EXP202412881). The cause and the measures are Ibermutua's account as cited in the decision; the breach is the AEPD's finding. Ibermutua admitted liability and paid the fine; this Brief does not assess the company's handling beyond that. The decision does not state its own date in the text (payment was on 2025-02-17). When the change went in, how many runs it affected, and whether recipients made any further use of the data have not been disclosed. What has not been disclosed does not mean there were no controls.
+> The facts here rest on the AEPD decision (PS-00540-2024, file EXP202412881). The cause and the measures are Ibermutua's account as cited in the decision. The breach is the AEPD's finding. Ibermutua admitted liability and paid the fine. This Brief does not assess the company's handling beyond that. The decision itself is undated in its text (payment was on 2025-02-17). When the change went in, how many runs it affected, and whether recipients made any further use of the data have not been disclosed. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

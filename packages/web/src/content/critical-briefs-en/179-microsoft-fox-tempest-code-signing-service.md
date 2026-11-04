@@ -39,8 +39,9 @@ glossary:
     desc: "Microsoft's name for the group that ran this signing service."
 insight:
   slug: "signing-access-by-fake-identity"
+  stop: true
   label: "Genuine signing access, obtained with fake identities"
-  quote: "Even if no signing key is stolen, unless the applicant's identity is checked when signing access is granted, signatures made with access obtained under a fake identity pass as genuine."
+  quote: "Before granting signing access, check that the applicant belongs to the organisation with that organisation's registered contact, not the documents submitted."
 industries: ["developers"]
 operations: ["account-admin", "delivery"]
 controls:
@@ -59,7 +60,7 @@ countries: ["global"]
 
 ## 1. Summary
 
-According to Microsoft, Fox Tempest did not steal signing keys. It obtained genuine access to Microsoft's signing service with fake identities and by impersonating legitimate organisations, used the resulting certificates to sign malware its customers brought in, and the signed malware was passed off as legitimate software. Microsoft says the customers included groups that deploy ransomware. <strong>Even if no signing key is stolen, unless the applicant's identity is checked when signing access is granted, signatures made with access obtained under a fake identity pass as genuine.</strong>
+According to Microsoft, Fox Tempest did not steal signing keys. It obtained genuine access to Microsoft's signing service with fake identities and by impersonating legitimate organisations. With the resulting certificates, it signed malware its customers brought in. The signed malware was distributed as legitimate software. According to Microsoft, the customers included groups that deploy ransomware. <strong>Even if no signing key is stolen, unless the applicant's identity is checked when signing access is granted, signatures made with access obtained under a fake identity pass as genuine.</strong>
 
 ## 2. What got through
 
@@ -70,7 +71,7 @@ According to Microsoft, Fox Tempest did not steal signing keys. It obtained genu
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that whoever grants signing access checks, before granting it and separately from the documents submitted, that the applicant is the organisation it claims to be and has that organisation's authority to sign. On the receiving side, check before running software not only that the signature is valid but that the signer is the organisation registered as that software's publisher.
+Whatever the route, the condition for telling them apart is to check, before granting signing access, that the applicant is the organisation it claims to be, with that organisation's registered contact rather than the documents submitted. The receiving side checks, before running the software, that the signer is the organisation registered as its publisher, not only that the signature is valid.
 
 - **Who approves**: The organisation being named. It approves the application for signing access through its registered contact (not a contact written in the application). An individual's identity is shown with attributes signed by their issuer, not self-asserted by the applicant.
 - **Where it is checked**: Before signing access is granted (the issuing side), and before signed software is run or distributed inside an organisation (the receiving side). The receiving side checks that the signer's name matches the name registered as that software's publisher, and does not run it if it does not match.
@@ -115,7 +116,7 @@ The route in this case is the first column (granting signing access). The second
 
 Microsoft's disclosure shows that identity validation can be passed with fake or stolen identities (the use of stolen identities is Microsoft's assessment). Revocation works once abuse is known, but may come too late for files signed and distributed before it. Endpoint anti-malware stops a file it recognises as malware, but a validly signed file arrives carrying a signal of trust. Lemma checks an application for access against the named organisation's approval, and on the receiving side checks the signer against the registered publisher.
 
-Note: Lemma's check works only when it is built into the process for granting signing access and the named organisation's registered contact, or issuer-signed attributes, are managed apart from the application. It can pass when a genuine stolen identity or genuine credential is used, or when the organisation's registered contact itself has been taken over. The receiving-side check works only where the software's publisher has been registered. Lemma does not revoke certificates or remove malware. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the process for granting signing access, and the named organisation's registered contact or issuer-signed attributes are managed apart from the application. It can be passed with a genuine stolen identity or a genuine credential. It can also be passed when the organisation's registered contact itself has been taken over. The receiving-side check works only where the software's publisher has been registered. Lemma does not revoke certificates or remove malware. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -145,7 +146,7 @@ Three things to confirm about signing and signed software
 - **2026-02**: As accounts were disabled and certificates revoked, the operators move to virtual machines hosted by a third party, and later try to move customers to another code signing service (Microsoft).
 - **2026-05-19**: Microsoft unseals a lawsuit in the U.S. District Court for the Southern District of New York, seizes the site signspace[.]cloud and takes offline hundreds of virtual machines used in the operation (Microsoft).
 
-> The facts rely on Microsoft's disclosures (the Digital Crimes Unit blog and Microsoft Threat Intelligence's write-up). Fox Tempest's conduct and its links to customers are Microsoft's findings and allegations in its lawsuit, not findings of the court. The lawsuit targets Fox Tempest's infrastructure and names Vanilla Tempest as a co-conspirator (Microsoft). The defendants' names, the claims and the dates of any court orders are not stated in the blog posts. The use of stolen identities is Microsoft's assessment. The October 2025 revocation relies on press reports, and whether Microsoft counts those certificates among Fox Tempest's 1,000+ has not been disclosed. What has not been disclosed does not mean there were no controls.
+> The facts rely on Microsoft's disclosures (the Digital Crimes Unit blog and Microsoft Threat Intelligence's write-up). Fox Tempest's conduct and its links to customers are Microsoft's findings and allegations in its lawsuit, not findings of the court. The lawsuit targets Fox Tempest's infrastructure and names Vanilla Tempest as a co-conspirator (Microsoft). The defendants' names, the claims and the dates of any court orders are not stated in the blog posts. The use of stolen identities is Microsoft's assessment. The October 2025 revocation relies on press reports. Whether Microsoft counts those certificates among Fox Tempest's 1,000+ has not been disclosed. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

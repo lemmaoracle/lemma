@@ -38,8 +38,9 @@ glossary:
     desc: "A mailbox setting that automatically moves or deletes incoming mail that meets given conditions."
 insight:
   slug: "payroll-change-not-tied-to-owner"
+  stop: true
   label: "A payroll change not tied to the employee"
-  quote: "Even when a login succeeds in the employee's name, a change to where their salary is paid cannot be confirmed as theirs unless it is approved with a key that was already theirs before the change."
+  quote: "Before changing a salary deposit account, check that the change is the employee's own with the key registered before it, not a newly registered device."
 industries: ["public-sector"]
 operations: ["payment-change", "account-admin"]
 controls:
@@ -58,7 +59,7 @@ countries: ["us"]
 
 ## 1. Summary
 
-What was changed was not a payment to a vendor but employees' own salary deposits. According to Microsoft, the attacker registered their own phone as an authentication device on the hijacked accounts and hid the change notification emails with inbox rules. The changes therefore arrived from the employee's own account, through the real screens. Microsoft says this does not represent a vulnerability in Workday's products. The universities and the losses have not been disclosed. <strong>Even when a login succeeds in the employee's name, a change to where their salary is paid cannot be confirmed as theirs unless it is approved with a key that was already theirs before the change.</strong>
+What was changed was not a payment to a vendor but employees' own salary deposits. According to Microsoft, the attacker registered their own phone as an authentication device on the hijacked accounts. They changed the salary deposit and hid the change notification emails with inbox rules. The changes arrived from the employee's own account, through the real screens. Microsoft says this does not represent a vulnerability in Workday's products. The universities and the losses have not been disclosed. <strong>Even when a login succeeds in the employee's name, a change to where their salary is paid cannot be confirmed as theirs unless it is approved with a key that was already theirs before the change.</strong>
 
 ## 2. What got through
 
@@ -69,10 +70,10 @@ What was changed was not a payment to a vendor but employees' own salary deposit
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that the side confirming a salary deposit change checks, before confirming, that the change is the employee's, using the key or contact the employee had registered before the change.
+Whatever the route, the condition for telling them apart is that, before a salary deposit change is confirmed, it is checked as the employee's own against the key or contact registered before the change.
 
-- **Who approves**: The employee, with a key (such as a passkey) or contact registered before the change, approving with the new deposit account shown. The approval is issued in a form that a newly added authentication device, or the screen that accepted the change, cannot produce.
-- **Where it is checked**: The HR or payroll system that confirms deposit changes. Changes made right after a new authentication device is registered, or that do not match an approval, are held rather than confirmed, and matched to the employee before the next payroll cutoff.
+- **Who approves**: The employee. They approve the new deposit account, shown to them, with a key (such as a passkey) or contact registered before the change. The approval takes a form that a newly added authentication device or the screen that accepted the change cannot produce.
+- **Where it is checked**: The HR or payroll system that confirms deposit changes. A change made right after a new authentication device is registered is held rather than confirmed. A change that does not match an approval is held the same way, and matched to the employee before the next payroll cutoff.
 - **What is recorded**: Whose deposit changed, through which step, approved by which device, and when it was confirmed.
 
 <figure class="rx-ex">
@@ -89,7 +90,7 @@ Whatever the route, the condition for telling them apart is that the side confir
 </div>
 </figure>
 
-Change notifications go to the hijacked mailbox, so once inbox rules hide them they never reach the employee. Registration details being changed through real screens without checking the owner is common to [Booking.com payout account tampering](/critical/briefs/032-booking-payout-account-tampering/) (a hotel's payout account was changed in its admin screen) and the [City of Baltimore](/critical/briefs/160-baltimore-workday-supplier-contact-bank-change/) (a supplier's bank account was switched in Workday). Here the target was not a vendor but employees' own pay.
+Change notifications go to the hijacked mailbox. Once inbox rules hide them, they never reach the employee. Registration details being changed through real screens without checking the owner is common to [Booking.com payout account tampering](/critical/briefs/032-booking-payout-account-tampering/) (a hotel's payout account was changed in its admin screen) and the [City of Baltimore](/critical/briefs/160-baltimore-workday-supplier-contact-bank-change/) (a supplier's bank account was switched in Workday). Here the target was not a vendor but employees' own pay.
 
 ## 4. What Lemma does
 
@@ -114,7 +115,7 @@ The route in this case is column 1 (salary deposit changes) and column 2 (authen
 
 Phishing-resistant MFA protects sign-in; it does not look at what happens after sign-in succeeds. Notification emails help the employee notice later, and if the receiving mailbox is hijacked, inbox rules can hide them. Detection and reverting act after the fact. Lemma checks the deposit change itself, not the sign-in, against the employee's existing key before it is confirmed. The same check can be built into device registration, but an employee's first registration, with no existing key, passes.
 
-Note: Lemma's check works only when it is built into the HR or payroll system that confirms deposit changes, and the approving key was registered before the change and is separate from the screen accepting the change and from any newly added device. It passes if the existing key itself is stolen, and for changes HR staff make on an employee's behalf unless the check is built in there too. Takeovers and outgoing phishing are not stopped by this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the HR or payroll system that confirms deposit changes. The approving key must have been registered before the change, apart from the screen accepting the change and from any newly added device. It passes if the existing key itself is stolen. Changes HR staff make on an employee's behalf also pass unless the check is built in there too. Takeovers and outgoing phishing are not stopped by this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -142,7 +143,7 @@ Three things to confirm about staff salary deposit changes
 - **First half of 2025**: A campaign targeting Workday profiles is observed (Microsoft).
 - **2025-10-09**: Microsoft publishes its report on Storm-2657.
 
-> The facts rely on Microsoft Threat Intelligence's report (primary). It gives the number of compromised accounts and universities but not the universities' names, the losses, or how many deposits were actually changed. Washington State University's announcement (primary) concerns a separate case of the same kind; no link to Microsoft's report is shown. What has not been disclosed does not mean there were no controls.
+> The facts rely on Microsoft Threat Intelligence's report (primary). It gives the number of compromised accounts and universities. It does not give the universities' names, the losses, or how many deposits were actually changed. Washington State University's announcement (primary) concerns a separate case of the same kind. No link to Microsoft's report is shown. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

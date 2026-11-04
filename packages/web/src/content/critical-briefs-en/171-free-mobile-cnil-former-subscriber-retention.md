@@ -41,8 +41,9 @@ glossary:
     desc: "An internationally used bank account number, used for direct debits."
 insight:
   slug: "retained-data-in-scope"
+  stop: true
   label: "Data kept though unused"
-  quote: "Personal data you hold, even if unused, is within reach of anyone who gets into the system."
+  quote: "Before reading subscriber data, check the read against the permitted range and the retention deadline, not the entry-point login."
 industries: ["retail"]
 operations: ["data-access"]
 controls:
@@ -58,7 +59,7 @@ countries: ["fr"]
 
 ## 1. Summary
 
-In this sanction CNIL found two different kinds of failing. One concerns the entry point and detection: authentication for the remote-work VPN was not robust enough, and detection of abnormal behaviour was ineffective. The other is that there was no way to sort former subscribers' data, and millions of pieces of data were kept without justification (FREE MOBILE only). Whether former subscribers' data was among what was accessed has not been disclosed. <strong>Personal data you hold, even if unused, is within reach of anyone who gets into the system.</strong>
+CNIL found two different things in this sanction. One is the entry point and detection: authentication for the remote-work VPN was not robust enough, and detection of abnormal behaviour was ineffective. The other is former subscribers' data: there was no way to sort it, and millions of pieces of data were kept without justification (FREE MOBILE only). Whether former subscribers' data was among what was accessed has not been disclosed. <strong>Personal data you hold, even if unused, is within reach of anyone who gets into the system.</strong>
 
 ## 2. What got through
 
@@ -69,10 +70,10 @@ In this sanction CNIL found two different kinds of failing. One concerns the ent
 
 ## 3. What to check
 
-The condition that holds whatever the route is that, before personal data is read out, a check separate from the reader confirms the read is within the permitted party, purpose and volume, and that the data in question is still within its reason and deadline for being kept.
+The condition that holds whatever the route is that a read of personal data is checked, apart from the reader and before it runs, against the permitted party, purpose and volume and the retention deadline.
 
-- **Who approves**: The organisation that manages the personal data. For each kind of data it decides and records who may read what range, for what purpose, and how long the data is kept. For former subscribers, only items with a reason to keep them, such as accounting, are kept, with a deadline.
-- **Where the check sits**: In front of reads of subscriber data. Cap the number of records and the range one read can reach, and hold reads beyond the permission or past the retention deadline until checked.
+- **Who approves**: The organisation that manages the personal data. For each kind of data, it decides and records the permitted party, purpose and range of reads, and the retention deadline. For former subscribers it keeps only items with a reason, such as accounting, with a deadline.
+- **Where the check sits**: In front of reads of subscriber data. Cap the number of records and the range one read can reach. Hold reads beyond the permission or past the retention deadline until checked.
 - **What is left behind**: A record of which permission each read relied on and whose data was read, kept apart from the reader's own actions in a form that can later be shown to a third party.
 
 <figure class="rx-ex">
@@ -113,7 +114,7 @@ The disclosed route in this case is column 2 (entry-point login); how the data w
 
 Sorting and deleting former subscribers' data stops holding data with no reason to keep it and shrinks what can be read after a break-in, but does not stop reads of the current subscribers' data that is kept (CNIL ordered FREE MOBILE to finish within six months). Stronger VPN authentication narrows who can get in, but lets through anyone holding legitimate credentials. Detecting abnormal behaviour can work at both the entry and the read, but notices after the fact, and CNIL found it ineffective here. Lemma checks a read against the permission and the retention deadline before it runs.
 
-Note: Lemma's check works only when it is built into the path through which subscriber data is read, and the permitted party, purpose and volume, and the retention deadline, are managed apart from the reader. Reads from outside that path, such as reading the database directly, do not pass through the check. Deleting data is the job of the organisation that holds it; Lemma does not reduce what is stored. How the attacker got through the entry point and how the data was read have not been disclosed; this Brief will be revised if a later report discloses them. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the path through which subscriber data is read, with the permitted party, purpose and volume and the retention deadline managed apart from the reader. Reads from outside that path, such as reading the database directly, do not pass through it. Deleting data is the job of the organisation that holds it; Lemma does not reduce what is stored. How the attacker got through the entry point and how the data was read have not been disclosed; this Brief will be revised if a later report discloses them. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 

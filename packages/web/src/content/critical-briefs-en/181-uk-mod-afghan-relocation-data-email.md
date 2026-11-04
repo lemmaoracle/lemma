@@ -40,8 +40,9 @@ glossary:
     desc: "A court order that bars not only reporting but also reporting that the order exists. Here it ran from 2023-09-01 to 2025-07-15."
 insight:
   slug: "contents-differ-from-intent"
+  stop: true
   label: "A file that differs from what the sender thinks"
-  quote: "When a file holds more than the sender thinks, the difference shows up only after it is out, unless its records and fields are checked before sending."
+  quote: "Before sending outside, check the file's record count and fields against the scope the data holder approved, not the sender's own judgement."
 industries: ["public-sector"]
 operations: ["delivery"]
 controls:
@@ -58,7 +59,7 @@ countries: ["gb"]
 
 ## 1. Summary
 
-The sender believed they were sending the names of 150 applicants. What went out was the casework file itself, with applicants' names and contact details and, in some cases, family members (per the government). The government called it a serious departmental error in clear breach of strict data protection protocols. It came to light about 18 months later, when some people's details appeared online. <strong>When a file holds more than the sender thinks, the difference shows up only after it is out, unless its records and fields are checked before sending.</strong>
+The sender believed they were sending the names of 150 applicants. What went out was the casework file itself. It held applicants' names and contact details and, in some cases, family members (per the government). The government called it a serious departmental error in clear breach of strict data protection protocols. It came to light about 18 months later, when some people's details appeared online. <strong>When a file holds more than the sender thinks, the difference shows up only after it is out, unless its records and fields are checked before sending.</strong>
 
 ## 2. What got through
 
@@ -69,10 +70,10 @@ The sender believed they were sending the names of 150 applicants. What went out
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that the mechanism sending data out checks the file's record count and fields before sending, apart from the sender's own judgement.
+Whatever the route, the condition for telling them apart is that the file's record count and fields are checked against the approved scope, not the sender's own judgement, before the file is sent out.
 
-- **Who approves**: The organisation that holds the data. It decides which fields of the casework data, how many records, and which recipients may receive them, instead of leaving it to the sender's judgement alone.
-- **Where it is checked**: Where casework data is exported, and where it leaves the organisation. Just before sending, the mechanism reads the file's record count, columns and source dataset, checks them against the approved scope (here, "the names of 150 applicants"), and stops a send that does not match.
+- **Who approves**: The organisation that holds the data. It decides which fields of the casework data, how many records, and which recipients may receive them. The sender's judgement alone does not decide.
+- **Where it is checked**: Where casework data is exported, and where it leaves the organisation. Just before sending, the mechanism reads the file's record count, columns and source dataset. It checks them against the approved scope (here, "the names of 150 applicants") and holds a send that does not match.
 - **What is recorded**: Which file went out, on whose approval, and what it was checked against, kept so that data found outside later can be traced to the send it came from.
 
 <figure class="rx-ex">
@@ -114,7 +115,7 @@ The route in this case is column 1 (a file larger than intended). Column 2 is th
 
 A handling rule sets the route, but per the government the file was sent outside it. The sender's check does not look for differences inside the file while the sender believes it holds 150 names. Recipient warnings help with a wrong recipient but say nothing about the size of the contents. Automated scanning by count can catch a send containing a lot of personal data, but does not know how many records were approved. Lemma checks the approved contents (record count, fields, source) against the file's actual contents just before sending.
 
-Note: Lemma's check works only when it is built in where casework data is exported or where it leaves the organisation, and the data holder registers which fields, how many records and which recipients may go out. A send made outside the route the check is built into does not pass through it. Whether it applies when data is sent outside authorised systems, as here, depends on where the check sits. If the registered scope is itself wrong, a wrong send still goes through. Lemma does not delete or recall data that has already gone out. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built in where casework data is exported or where it leaves the organisation, and the data holder registers which fields, how many records and which recipients may go out. A send made outside that route does not pass through it. Whether it applies when data is sent outside authorised systems, as here, depends on where it sits. If the registered scope is itself wrong, a wrong send still goes through. Lemma does not delete or recall data that has already gone out. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -142,7 +143,7 @@ Three things to confirm in your organisation about sending application or case l
 - **2025-06**: The independent review reports to ministers.
 - **2025-07-15**: The superinjunction is lifted and the Defence Secretary makes a statement to the House of Commons. The ARR is closed.
 
-> Facts rest on the Defence Secretary's statement to the House of Commons on 15 July 2025 (primary). The error is described, as in the statement, as a departmental error; this Brief does not go into the individual official. Because the safety of the people affected is at stake, details that could identify individuals or the content of applications are left out. The recipient, why the file differed from what was intended, and the checks before sending are not described in the statement. What has not been disclosed does not mean there were no controls.
+> Facts rest on the Defence Secretary's statement to the House of Commons on 15 July 2025 (primary). The error is described, as in the statement, as a departmental error; this Brief does not go into the individual official. Because the safety of the people affected is at stake, details that could identify individuals or the content of applications are left out. The statement does not describe the recipient, why the file differed from what the sender intended, or the checks before sending. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

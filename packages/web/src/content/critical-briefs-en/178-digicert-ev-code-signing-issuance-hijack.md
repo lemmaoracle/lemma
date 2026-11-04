@@ -38,8 +38,9 @@ glossary:
     desc: "A certificate authority invalidating a certificate it issued, so that signatures made with it are no longer trusted."
 insight:
   slug: "pickup-by-code-alone"
+  stop: true
   label: "Certificates released on a code alone"
-  quote: "If holding a pickup code is enough to receive a certificate, the certificate can end up with someone other than the party that was validated, however sound the validation was."
+  quote: "Before releasing a certificate, check the pickup request with a registered administrator of the validated subscriber, not with the initialization code."
 industries: ["developers", "supply-chain"]
 operations: ["delivery", "account-admin"]
 controls:
@@ -57,7 +58,7 @@ countries: ["us"]
 
 ## 1. Summary
 
-Validation of the applying organisations went through the normal process. According to DigiCert's report, the attacker got onto support analysts' workstations and, from the support portal, read the initialization codes for EV code signing orders that had been approved and were waiting for pickup. The code plus an approved order was enough to obtain the certificate, so certificates were issued in the names of genuine organisations, and some were used to sign malware. Validation itself was not broken; what was intercepted was the final handover. <strong>If holding a pickup code is enough to receive a certificate, the certificate can end up with someone other than the party that was validated, however sound the validation was.</strong>
+Validation of the applying organisations went through the normal process. According to DigiCert's report, the attacker got onto support analysts' workstations and read initialization codes from the support portal. The codes belonged to EV code signing orders that had been approved and were waiting for pickup. The code plus an approved order was enough to obtain a certificate. Certificates were issued in the names of genuine organisations, and some were used to sign malware. Validation itself was not broken; what was intercepted was the final handover. <strong>If holding a pickup code is enough to receive a certificate, the certificate can end up with someone other than the party that was validated, however sound the validation was.</strong>
 
 ## 2. What got through
 
@@ -67,9 +68,9 @@ Validation of the applying organisations went through the normal process. Accord
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that the CA checks, before issuing and releasing a certificate, that the pickup request comes from a registered administrator of the validated subscriber, separately from the initialization code.
+Whatever the route, the condition for telling them apart is that the pickup request is checked against a registered administrator of the validated subscriber, apart from the initialization code, before the certificate is released.
 
-- **Who approves**: A registered administrator of the validated subscriber, who approves that the pickup request is theirs through a contact or device registered apart from the order and the code. Actions by the CA's support staff, or by anyone merely holding the code, do not count as this approval.
+- **Who approves**: A registered administrator of the validated subscriber. They confirm that the pickup request is theirs through a contact or device registered apart from the order and the code. Actions by the CA's support staff, or by anyone merely holding the code, do not count as this approval.
 - **Where it is checked**: Before the certificate is generated against the approved order and delivered to a token. When a pickup request cannot be tied to the subscriber's approval (for example, only the code was used), issuance is held.
 - **What is recorded**: Which order's certificate went to which pickup request, with whose approval, so that you can later separate certificates that reached the subscriber from those that did not, and set the scope of revocation.
 
@@ -113,7 +114,7 @@ The route in this case runs from the first column into the second. If the first 
 
 Validation confirms that the applying organisation is genuine; here it was passed legitimately, and it does not check who picks up. Endpoint monitoring, per DigiCert's report, found and contained the first compromise, but the second workstation had no sensor; it looks for intrusions, not at the pickup request itself. Researchers' reports and revocation invalidated the certificates, but only after they had been used to sign. Lemma checks, before issuance, that the pickup request is tied to the validated subscriber's approval. It does not stop signatures once a certificate is out, and it does not revoke certificates, but the record of which certificates went through the subscriber's approval helps set the scope of revocation.
 
-Note: Lemma's check works only when it is built into the CA's handover step and the subscriber's registered administrators and contacts are managed apart from the support portal and order data. It passes if the subscriber's administrator account itself is taken over, or the registered contact has been altered. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, and it does not revoke certificates.
+Note: Lemma's check works only when it is built into the CA's handover step and the subscriber's registered administrators and contacts are managed apart from the support portal and order data. It passes if the subscriber's administrator account itself is taken over. The same applies if the registered contact has been altered. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, and it does not revoke certificates.
 
 ### Checklist
 
@@ -145,7 +146,7 @@ Three things to confirm for services that hand over certificates, keys or accoun
 - **2026-04-28**: DigiCert posts its full incident report (revised on 05-04 and 05-05).
 - **2026-07-09**: DigiCert reports all action items complete and requests closure.
 
-> The facts rely on DigiCert's incident report on Mozilla's Bugzilla and its later replies (primary). On the second workstation, DigiCert first described the sensor as malfunctioning, then revised this on 05-04 and 05-05 to say it was not installed. Help Net Security links Zhong Stealer to Chinese e-crime and cryptocurrency theft and reports that a researcher's report helped uncover the second workstation; these are the outlet's statements and are not in DigiCert's report. What has not been disclosed does not mean there were no controls.
+> The facts rely on DigiCert's incident report on Mozilla's Bugzilla and its later replies (primary). On the second workstation, DigiCert first described the sensor as malfunctioning, then revised this on 05-04 and 05-05 to say it was not installed. Help Net Security links Zhong Stealer to Chinese e-crime and cryptocurrency theft. It also reports that a researcher's report helped uncover the second workstation. These are the outlet's statements and are not in DigiCert's report. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

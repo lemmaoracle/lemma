@@ -38,8 +38,9 @@ glossary:
     desc: "The US Supreme Court declining to review a lower court's decision, which then stands."
 insight:
   slug: "receiving-bank-reads-the-number"
+  stop: true
   label: "The receiving bank deposits by number"
-  quote: "A receiving bank may deposit by account number alone and will not necessarily stop a deposit when the name differs. Whether the name and account belong to the real vendor is for the paying side to check before sending."
+  quote: "Before transferring to a changed account, check that account with the vendor's registered contact, not the email that delivered it."
 industries: ["manufacturing", "finance"]
 operations: ["payment-change", "approval"]
 controls:
@@ -58,7 +59,7 @@ countries: ["us"]
 
 ## 1. Summary
 
-Each payment was deposited into the account number written on the payment order. The account belonged not to the supplier but to an individual customer of the receiving credit union. The court found that the credit union's system generated a name-mismatch warning for every deposit, but that such warnings ran to hundreds or thousands a day and no one read them. The Fourth Circuit held that under the Uniform Commercial Code (UCC) a beneficiary's bank may rely on the account number and is not liable unless it actually knew the name and number did not match. The Supreme Court declined review, so that holding stands. <strong>A receiving bank may deposit by account number alone and will not necessarily stop a deposit when the name differs. Whether the name and account belong to the real vendor is for the paying side to check before sending.</strong>
+Each payment was deposited into the account number written on the payment order. The account belonged not to the supplier but to an individual customer of the receiving credit union. The credit union's system generated a name-mismatch warning for every deposit. Per the opinion, such warnings ran to hundreds or thousands a day, and no one read them. The Fourth Circuit held that under the Uniform Commercial Code (UCC) a beneficiary's bank may rely on the account number. Unless it actually knew that the name and number did not match, it is not liable. The Supreme Court declined review, so that holding stands. <strong>A receiving bank may deposit by account number alone and will not necessarily stop a deposit when the name differs. Whether the name and account belong to the real vendor is for the paying side to check before sending.</strong>
 
 ## 2. What got through
 
@@ -68,9 +69,9 @@ Each payment was deposited into the account number written on the payment order.
 
 ## 3. What to check
 
-Whatever the route, the condition for telling them apart is that, when a vendor's bank account is changed, the paying side checks that the account really belongs to the vendor, by a means other than the email that announced the change, before paying. It cannot rely on the receiving bank to match the name.
+Whatever the route, the condition for telling them apart is that the paying side checks, before transferring, that a changed account is the vendor's, through the vendor's registered contact and not the email that arrived. It cannot rely on the receiving bank to match the name.
 
-- **Who approves**: The vendor. It approves the account change through its registered contact. That contact must be one registered beforehand (a registered phone number, a signature with the vendor's key, and so on), not the email that delivered the change or a number written in it.
+- **Who approves**: The vendor. It approves the account change through its registered contact. That contact is one registered beforehand, such as a registered phone number or a signature with the vendor's key, not the email that delivered the change or a number written in it.
 - **Where it is checked**: The step that changes a payee account, and the approval before the first transfer to a changed account. Accounts that cannot be matched to the vendor's approval are held and not used for payment.
 - **What is recorded**: Which account change was used for payment, who checked it, and how, so you can show what was checked before sending for recovery, investigation, insurance or litigation.
 
@@ -114,7 +115,7 @@ The route in this case ran through column 1 (an account change delivered by emai
 
 Checking the sender is hard when a domain is made to resemble the real one. Transfer approval cannot tell a request apart by its contents when the beneficiary name and amount match a real transaction. As for the receiving bank's name matching, per the opinion the warnings were generated but no one was notified, and under the UCC the bank had no duty to check. Lemma does not work on the receiving bank's side and does not deal with the intrusion into the sender's email; it confirms on the paying side, before the transfer, that a changed account could be matched to the vendor's approval.
 
-Note: Lemma's check works only when it is built into the step that changes accounts and the approval before transfer, and the vendor's approval is received through a registered contact or key other than the email that delivered the change. It passes if the vendor's registered contact itself has been altered, or if the check uses a contact given in the change email. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the step that changes accounts and the approval before transfer, with the vendor's approval received through a registered contact or key other than the email that delivered the change. It can be passed if the registered contact itself has been altered, or if the check uses a contact given in the change email. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -148,7 +149,7 @@ Three things to confirm about payments to vendors
 - **2025-04-22**: The Fourth Circuit denies rehearing (per the Supreme Court docket).
 - **2025-10-06**: The Supreme Court denies Studco's petition for certiorari (No. 25-80).
 
-> The facts rely on the US Court of Appeals for the Fourth Circuit's opinion (primary) and the US Supreme Court docket (primary). The events of 4 and 25 October and 5 and 13 November rely on the record cited in Judge Wynn's concurrence; the majority does not give these dates. How the email system was intruded upon and how the account change was handled internally have not been disclosed. The ruling's conclusion concerns the receiving bank's liability. What has not been disclosed does not mean there were no controls.
+> The facts rely on the US Court of Appeals for the Fourth Circuit's opinion (primary) and the US Supreme Court docket (primary). The events of 4 and 25 October and 5 and 13 November rely on the record cited in Judge Wynn's concurrence. The majority does not give these dates. How the email system was intruded upon and how the account change was handled internally have not been disclosed. The ruling's conclusion concerns the receiving bank's liability. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 

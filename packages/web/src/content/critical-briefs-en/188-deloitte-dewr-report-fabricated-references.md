@@ -39,8 +39,9 @@ glossary:
     desc: "A version posted on the department's page in place of the earlier one. The page states the date of the version it replaced."
 insight:
   slug: "citation-not-matched-to-source"
+  stop: true
   label: "Citations delivered without matching them to sources"
-  quote: "A neatly formatted reference list does not show that the works in it exist."
+  quote: "Before delivering a report, check each cited work or judgment against the record of the original, not against the report's own reference list."
 industries: ["public-sector", "ai"]
 operations: ["delivery", "approval"]
 controls:
@@ -58,7 +59,7 @@ countries: ["au"]
 
 ## 1. Summary
 
-The report's conclusions were not what was in question. The footnotes and reference list of the final report the department published contained citations that did not match their sources. The replacement's note says it corrected the citations and reference-list entries that contained errors and the summary of a court case, and that the findings and recommendations are unaffected. According to press reports, the first version included works that do not exist and a quotation attributed to a Federal Court judge. <strong>A neatly formatted reference list does not show that the works in it exist.</strong>
+The report's conclusions were not what was in question. The footnotes and reference list of the final report the department published contained citations that did not match their sources. The replacement's note says it corrected the citations and reference-list entries that contained errors, and the summary of a court case. It says the findings and recommendations are unaffected. According to press reports, the first version included works that do not exist and a quotation attributed to a Federal Court judge. <strong>A neatly formatted reference list does not show that the works in it exist.</strong>
 
 ## 2. What got through
 
@@ -70,7 +71,7 @@ The report's conclusions were not what was in question. The footnotes and refere
 
 ## 3. What to check
 
-The condition that holds regardless of route: before delivery, and separately from whoever or whatever wrote the text, check for each citation in the report that the cited work or judgment exists in the record of the original and that the quoted words match it.
+Whatever the route, the condition for telling them apart is that each cited work or judgment is checked against the record of the original before delivery, for whether it exists there and whether the quoted words match.
 
 - **Who approves**: A reviewer on the delivering side who did not write the report. Each citation is approved together with the original record it was checked against (a bibliographic record, a court record, and so on). It is not decided by the author or by the tool that produced the text.
 - **Where to check**: Just before the report is delivered, and just before the receiving side publishes it. Hold any report that still has a citation not linked to an original record, or a quotation that does not match the original. The receiving side also checks, before publishing, that a record of the citation checks is attached.
@@ -116,7 +117,7 @@ The errors reported were mainly in column 1 (citations and references matching t
 
 A peer review catches the errors the reader notices, but unless each citation is looked up, a well-formed fictitious citation passes. A reference manager keeps the bibliographic form of citations built from its records, but a wrong record becomes a wrong citation. A policy on AI use narrows where AI-written text can enter, but it does not check the citations produced within that scope. Lemma checks, citation by citation, that each is linked to the record of its original. If the original exists but the summary or interpretation of it is wrong, the check passes.
 
-Note: Lemma's check works only when it is built into the delivery procedure, and when the records of the originals (bibliographic records, court records, and so on) can be looked up on a side separate from the author or tool. Material with no original record (interviews, internal documents) needs a separate record of approval. Lemma does not rewrite text or withdraw published documents. Judging whether the analysis and conclusions are right is the job of the organizations that write and receive the report. The table compares what each control checks; it does not show whether anything would have been stopped in this case. Lemma does not detect or prevent intrusions.
+Note: Lemma's check works only when it is built into the delivery procedure and the records of the originals (bibliographic records, court records, and so on) can be looked up apart from the author or tool. Material with no original record (interviews, internal documents) needs a separate record of approval. Lemma does not rewrite text or withdraw published documents. Judging whether the analysis and conclusions are right is the job of the organizations that write and receive the report. The table compares what each control checks; it does not show whether anything would have been stopped in this case. Lemma does not detect or prevent intrusions.
 
 ### Checklist
 
@@ -147,7 +148,7 @@ Three things to check in your organization about reports you deliver or receive
 - **2025-10-07**: Refund of the final instalment reported (AP).
 - **2026-02-03**: According to the department's page, the report is updated again, replacing the 26 September version.
 
-> The facts here rest on the department's page (Internet Archive captures of 2025-11-25 and 2026-10-07) and on the PDFs of two versions of the report (dated 2025-07-04 and 2025-09-26). The department's site could not be opened directly at the time of writing, so archived copies were used. The number and content of the errors, the researcher's findings, and the refund amount come from press reports. Neither the report nor the department's page says in which part of the work the faulty citations were produced, and this Brief does not treat the errors as produced by AI. The page does not describe what the February 2026 update changed. At which stage the errors entered, and what checks were done before delivery and after receipt, have not been disclosed. What has not been disclosed does not mean there were no controls.
+> The facts here rest on the department's page (Internet Archive captures of 2025-11-25 and 2026-10-07) and on the PDFs of two versions of the report (dated 2025-07-04 and 2025-09-26). The department's site could not be opened directly at the time of writing, so archived copies were used. The number and content of the errors, the researcher's findings, and the refund amount come from press reports. Neither the report nor the department's page says in which part of the work the faulty citations were produced. This Brief does not treat the errors as produced by AI. The page does not describe what the February 2026 update changed. At which stage the errors entered, and what checks were done before delivery and after receipt, have not been disclosed. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 
