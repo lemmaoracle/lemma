@@ -619,7 +619,17 @@ function applyReportLayout(tree, fm, isEn) {
           j + 1,
           0,
           h("figure", "rx-key", [
-            h("figcaption", null, [txt(isEn ? "The core of this case" : "この事案の核心")]),
+            // insight.stop の Brief は、帯が「実行前のゲート」（どの操作の前に何を何と照合
+            // するか・本人 2026-11-04・184 から）。小見出しが場所、1文が条件。「なぜ通ったか」は
+            // 01 の太字が持つ。「ゲート」の語は製品を特定しないので使ってよい（個別のゲート名は
+            // 製品ページが出るまで出さない）。付いていない Brief は「この事案の核心」のまま。
+            h("figcaption", null, [
+              txt(
+                fm.insight?.stop
+                  ? isEn ? "Pre-execution gate" : "実行前のゲート"
+                  : isEn ? "The core of this case" : "この事案の核心",
+              ),
+            ]),
             h("blockquote", null, [txt(quote)]),
           ]),
         );

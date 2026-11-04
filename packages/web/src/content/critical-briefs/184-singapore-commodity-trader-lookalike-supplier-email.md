@@ -37,8 +37,9 @@ glossary:
     desc: "INTERPOL（国際刑事警察機構）の、国をまたいで支払いを素早く止めるための仕組み。2022 年に始まった（INTERPOL）。"
 insight:
   slug: "new-account-lookalike-sender"
+  stop: true
   label: "新しい口座、似せた送り主"
-  quote: "新しい口座への支払いは、その口座を仕入先の登録済みの連絡先で照合しない限り、似せたアドレスからの依頼でも通る。"
+  quote: "送金の前に、依頼の新しい口座を、届いたメールではなく仕入先の登録済みの連絡先で照合する。"
 industries: ["supply-chain"]
 operations: ["payment-change", "approval"]
 controls:

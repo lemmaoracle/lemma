@@ -167,6 +167,17 @@ keep it to one short line — it is drawn as a lime tag); `og_headline_ja/en` sa
 scale of harm as one lime line in `<accent>…</accent>`). og:description opens
 with `insight.quote`.
 
+**The band (`insight.quote`)** is written as the **"Pre-execution gate"**: one sentence
+saying before which operation, what is checked against what, with `insight.stop: true`
+(e.g. "Before transferring, check the new account in the request with the supplier's
+registered contact, not the email that arrived."; the caption becomes "Pre-execution gate";
+2026-11-04, from 184). The caption names the place, the sentence the condition. The general
+statement of why it got through belongs in the bold sentence of 01, not in the band. Do not
+use "prevent" or "stop". The word "gate" does not name the product and may be used; the
+individual gate names (payment-instruction etc.) stay out until the product page exists.
+Without `stop` the band stays the one-sentence core of the case; Briefs moved to the proof
+layout get rewritten and flagged as they are revised.
+
 ### Index fields (2026-10, any layout)
 
 The index (`/critical/briefs/`) is built as "Latest (4, automatic by publication date; same-day ties go to the higher number) → Featured (1–2 pinned) → Browse by control → More recent briefs".
