@@ -1,7 +1,7 @@
 ---
 brief_no: 189
-title: "Chicago Sun-Times：外部から買った夏の特集が、編集部の確認を経ずに紙面に載り、存在しない本を推薦していた(同紙の声明と検証)"
-title_en: "Chicago Sun-Times: Purchased content ran without review and recommended books that do not exist (the paper's statement and review)"
+title: "Chicago Sun-Times：配信会社から購入した特集が編集部の確認を経ずに載り、存在しない本を推薦図書に挙げた(同紙の声明と検証)"
+title_en: "Chicago Sun-Times: A syndicated section ran without newsroom review and listed books that do not exist (the paper's statement and review)"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [ai-decision-integrity]
@@ -12,15 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["188-deloitte-dewr-report-fabricated-references", "060-withers-aberdeen-ai-hallucinated-precedent", "053-youtube-deepfake-likeness-provenance"]
 status: draft
 version: "1.0"
-og_lead_ja: "Chicago Sun-Times、外部から買った夏の特集が確認を経ずに載り、推薦図書の多くが存在しない本だった"
-og_lead_en: "Chicago Sun-Times ran purchased content without review; most books on its reading list did not exist"
+og_lead_ja: "Chicago Sun-Times、配信会社から購入した特集（シンジケート記事）が編集部の確認を経ずに載り、推薦図書の多くが存在しない本だった"
+og_lead_en: "Chicago Sun-Times ran a syndicated section without newsroom review; most books on its reading list did not exist"
 layout: "report"
 sections: "proof"
 gate: "delivery"
 og_kicker_ja: "AI の誤用事例 · 外部の記事の掲載"
 og_kicker_en: "AI MISUSE · SYNDICATED CONTENT"
 og_headline_ja: "買った特集の推薦図書は、\n存在しない本だった。\n<accent>15 冊中 10 冊</accent>"
-og_headline_en: "Purchased content\nrecommended fake books.\n<accent>10 of 15 titles</accent>"
+og_headline_en: "Syndicated content\nrecommended fake books.\n<accent>10 of 15 titles</accent>"
 key_figures:
   - value: "10 / 15"
     unit: "books"
@@ -41,31 +41,31 @@ glossary:
     desc: "An online edition that reproduces the printed page layout as it is."
 insight:
   slug: "bought-content-not-reviewed"
-  label: "Purchased content runs without review"
-  quote: "Content purchased from outside still reaches readers as something the paper has checked once it runs in the paper's pages."
+  label: "A syndicated section runs without newsroom review"
+  quote: "Syndicated content a paper has purchased still reaches readers as something the paper has checked once it runs in its pages."
 industries: ["media"]
 operations: ["delivery"]
 controls:
   - slug: "check-origin"
-    item: "Before running purchased content, check its distributor, its writer and whether AI was used"
+    item: "Before running purchased syndicated content, check its distributor, its writer and whether AI was used"
   - slug: "hold-unverified"
-    item: "Keep purchased content out of print and digital editions until it is matched to an editorial approval"
+    item: "Keep purchased syndicated content out of print and digital editions until it is matched to an editorial approval"
   - slug: "audit-trail"
     item: "Record, for each edition, which content came from where and who reviewed and released it"
 attack_method: "ai-misuse"
 impact: "10 of 15 books on the reading list did not exist; the section ran in two papers"
-takeaway: "Content purchased from a syndicator ran in the paper's own pages without going through newsroom review. Match outside content to an editorial approval before it goes out."
-self_check: "Do you match content purchased from outside to an editorial approval before they go into print or digital editions?"
+takeaway: "A section purchased from a syndicator ran in the paper's own pages without going through newsroom review. Match syndicated content to an editorial approval before it goes out."
+self_check: "Do you match syndicated content you purchase to an editorial approval before it goes into print or digital editions?"
 countries: ["us"]
 ---
 
 ## 1. Summary
 
-The paper's newsroom did not make the section. The circulation department purchased it from King Features, a Hearst syndicator, and it ran in the Sunday print edition and the e-paper without newsroom review and without saying a third party produced it (the paper's statement and review). According to King Features, a freelance writer used an AI agent to build the section and did not disclose it. The CEO of Chicago Public Media, which runs the paper, described a chain of human mistakes between the distributor and the paper's pages. <strong>Content purchased from outside still reaches readers as something the paper has checked once it runs in the paper's pages.</strong>
+The paper's newsroom did not make the section. The circulation department purchased it from King Features, a Hearst syndicator, and it ran in the Sunday print edition and the e-paper without newsroom review and without a credit saying a third party produced it (the paper's statement and review). According to King Features, a freelance writer used an AI agent to build the section and did not disclose it. The CEO of Chicago Public Media, which runs the paper, described a chain of human mistakes between the distributor and the paper's pages. <strong>Syndicated content a paper has purchased still reaches readers as something the paper has checked once it runs in its pages.</strong>
 
 ## 2. What got through
 
-- **What went through**: The routine placement of a 64-page section, "Heat Index," purchased from a distributor as a paid premium edition, in the Sunday print edition and e-paper of 2025-05-18. The paper's circulation department dealt with King Features, and the section was packaged under the Sun-Times banner (the paper's statement and review).
+- **What went through**: The routine placement of a 64-page section, "Heat Index," purchased from a distributor as a paid premium edition, in the Sunday print edition and e-paper of 2025-05-18. The paper's circulation department dealt with King Features, and the section was packaged under the Sun-Times masthead (the paper's statement and review).
 - **What the receiving side sees**: In general, readers get it as their usual newspaper. Who made each story and how far it was checked is not visible from the page. The paper also says the section ran without saying a third party produced it.
 - **At the distributor**: According to King Features, it has a policy barring staff and freelancers from using AI, and the writer did not disclose AI use. The CEO of Chicago Public Media said King Features likely did not thoroughly fact-check or copy edit the work (the paper's review).
 - **Not disclosed**: The name of the AI tool used. The result of King Features' internal review. Where the errors were first pointed out. When the Philadelphia Inquirer ran the section and how it was handled there.
@@ -105,9 +105,9 @@ Detection worked. Two days after publication the paper issued a statement and re
 
 ### Current controls vs Lemma
 
-This case took the route in column 1 (purchased content running without editorial review). Column 2 is errors left in content that did go through review, which was not the route here.
+This case took the route in column 1 (purchased syndicated content running without editorial review). Column 2 is errors left in content that did go through review, which was not the route here.
 
-| Control | Outside content running without review | Errors left after review |
+| Control | Syndicated content running without review | Errors left after review |
 | --- | --- | --- |
 | Labeling third-party content and its origin (the paper's post-incident policy) | Partial | Not relevant |
 | The distributor's policy barring AI (King Features' account) | Partial | Partial |
@@ -120,7 +120,7 @@ Note: Lemma's check works only when it is built into the step that places conten
 
 ### Checklist
 
-Three things to check in your organization about content purchased from outside and published under your name
+Three things to check in your organization about syndicated content purchased from outside and published under your name
 
 - For purchased content, is there an agreement that the distributor declares who wrote it and whether AI was used?
 - When the department receiving purchased content is not the newsroom, is there a rule to send it through editorial review?
