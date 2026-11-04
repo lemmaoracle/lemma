@@ -86,6 +86,8 @@ const T = isJa
     if (!box) return;
     var id = box.dataset.brief;
     var KEY = "lemma:brief-review:" + id;
+    /* 開いた（一覧の「開いた」に出す・この端末だけ）。 */
+    try { localStorage.setItem("lemma:brief-opened:" + id, "1"); } catch (e) {}
     var mine = box.querySelector("[data-bdr-mine]");
     var said = box.querySelector("[data-bdr-said]");
     var form = box.querySelector(".bdr-fix");
