@@ -565,11 +565,35 @@ function markWeeklySlot(root, counterNum = 5, proof = false) {
   if (proof) root.splice(i, 0, slot("dataBriefDemoSlot"));
 }
 
+/**
+ * 03 の中の図表 1（手書きの <figure class="rx-ex"> に rx-gap を含むもの）を、01 の終わり
+ * （2 章の直前・TL;DR のあとの入口の目印より前）へ動かす。見つからなければ何もしない。
+ */
+function liftGapFigure(root) {
+  const r3 = sectionRange(root, 3);
+  const r1 = sectionRange(root, 1);
+  if (!r3 || !r1) return;
+  const isGap = (n) =>
+    (n.type === "raw" && /<figure class="rx-ex"[\s\S]*rx-gap/.test(String(n.value ?? ""))) ||
+    (isEl(n, "figure") && /\brx-ex\b/.test(String(n.properties?.className ?? "")) && /rx-gap/.test(JSON.stringify(n)));
+  let fi = -1;
+  for (let i = r3[0]; i < r3[1]; i++) if (isGap(root[i])) { fi = i; break; }
+  if (fi < 0) return;
+  const [fig] = root.splice(fi, 1);
+  // 1 章の終わり。入口の目印（data-brief-weekly-top-slot）があればその前。
+  let at = sectionRange(root, 1)[1];
+  for (let i = r1[0]; i < at; i++) if (root[i]?.properties && "dataBriefWeeklyTopSlot" in root[i].properties) { at = i; break; }
+  root.splice(at, 0, fig);
+}
+
 function applyReportLayout(tree, fm, isEn) {
   const root = tree.children ?? [];
 
   // 0) 普通の markdown から部品を組み立てる（用語メモ・核心を差す前に）。
   deriveReportComponents(root, fm, isEn);
+  // 0b) proof：図表 1（「検知」と「実行の前の照合」の違い）を 01 の直後へ（本人 2026-11-04：
+  //     看板の図を先に見せると全体像が先に入る）。03 には帯と「誰が・どこで・何が残るか」が残る。
+  if (fm?.sections === "proof") liftGapFigure(root);
 
   // 1) 改訂注記の blockquote を外す（最初の h2 より前にあるものだけ）。
   const firstH2 = root.findIndex((c) => c.type === "element" && c.tagName === "h2");
