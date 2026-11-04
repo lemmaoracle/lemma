@@ -54,7 +54,11 @@ countries: ["gb", "us"]
 
 ## 1. Summary
 
-What was diverted was a single payment meant for a genuine contractor. The company says it uses industry-standard practices for its technology and payment systems. The method has not been disclosed. Nor has the stage at which the payment was pointed at another account. <strong>Even when a payment rests on a genuine transaction, it goes to another account unless someone checks that the destination account belongs to that vendor.</strong>
+At a US subsidiary, a payment meant for a genuine contractor was sent to a third-party account (company disclosure).
+
+The company says it uses industry-standard practices for its technology and payment systems. Neither the method nor the stage at which the payment was pointed at another account has been disclosed.
+
+<strong>Even when a payment rests on a genuine transaction, it goes to another account unless someone checks that the destination account belongs to that vendor.</strong>
 
 ## 2. What got through
 

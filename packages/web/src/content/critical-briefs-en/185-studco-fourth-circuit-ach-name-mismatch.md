@@ -59,7 +59,11 @@ countries: ["us"]
 
 ## 1. Summary
 
-Each payment was deposited into the account number written on the payment order. The account belonged not to the supplier but to an individual customer of the receiving credit union. The credit union's system generated a name-mismatch warning for every deposit. Per the opinion, such warnings ran to hundreds or thousands a day, and no one read them. The Fourth Circuit held that under the Uniform Commercial Code (UCC) a beneficiary's bank may rely on the account number. Unless it actually knew that the name and number did not match, it is not liable. The Supreme Court declined review, so that holding stands. <strong>A receiving bank may deposit by account number alone and will not necessarily stop a deposit when the name differs. Whether the name and account belong to the real vendor is for the paying side to check before sending.</strong>
+Each payment was deposited into the account number written on the payment order. The account belonged not to the supplier but to an individual customer of the receiving credit union.
+
+Per the opinion, the credit union's system generated a name-mismatch warning for every deposit, but such warnings ran to hundreds or thousands a day and no one read them. The Fourth Circuit held that under the Uniform Commercial Code (UCC) a beneficiary's bank may rely on the account number and is not liable unless it actually knew that the name and number did not match. The Supreme Court declined review, so that holding stands.
+
+<strong>A receiving bank may deposit by account number alone and will not necessarily stop a deposit when the name differs. Whether the name and account belong to the real vendor is for the paying side to check before sending.</strong>
 
 ## 2. What got through
 

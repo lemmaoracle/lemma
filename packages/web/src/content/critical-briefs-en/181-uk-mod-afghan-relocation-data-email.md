@@ -59,7 +59,11 @@ countries: ["gb"]
 
 ## 1. Summary
 
-The sender believed they were sending the names of 150 applicants. What went out was the casework file itself. It held applicants' names and contact details and, in some cases, family members (per the government). The government called it a serious departmental error in clear breach of strict data protection protocols. It came to light about 18 months later, when some people's details appeared online. <strong>When a file holds more than the sender thinks, the difference shows up only after it is out, unless its records and fields are checked before sending.</strong>
+The sender believed they were sending the names of some applicants; what went out was the casework file itself. It held applicants' names and contact details and, in some cases, family members (per the government).
+
+It came to light about 18 months later, when some people's details appeared online. The government called it a serious departmental error in clear breach of strict data protection protocols.
+
+<strong>When a file holds more than the sender thinks, the difference shows up only after it is out, unless its records and fields are checked before sending.</strong>
 
 ## 2. What got through
 

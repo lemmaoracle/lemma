@@ -59,7 +59,11 @@ search_description: "米アラバマ州モービル市で、アリーナの施�
 
 ## 1. Summary
 
-According to the mayor, the person posed as a legitimate vendor and dealt with employees over months through emails, documents and phone calls. According to the city, its IT systems were not compromised, and this was not the result of an employee clicking a bad link. According to press reports, the payment request was built from a genuine invoice's details. It looked like a routine monthly arena payment. <strong>Even when a payment request carries the same contents as a genuine invoice, it goes to another account unless someone checks that the destination account was approved through the vendor's registered contact.</strong>
+According to the mayor, the person posed as a legitimate vendor and dealt with employees over months through emails, documents and phone calls. According to press reports, the payment request was built from a genuine invoice's details and looked like a routine monthly arena payment.
+
+According to the city, its IT systems were not compromised, and this was not the result of an employee clicking a bad link.
+
+<strong>Even when a payment request carries the same contents as a genuine invoice, it goes to another account unless someone checks that the destination account was approved through the vendor's registered contact.</strong>
 
 ## 2. What got through
 

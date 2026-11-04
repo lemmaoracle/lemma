@@ -57,7 +57,11 @@ countries: ["jp", "us"]
 
 ## 1. Summary
 
-The instruction was not to pay, but to change where to pay. The transaction and the amount stay the same. Once the payee changes, the next transfer goes to the new account. According to the company's disclosure, another US subsidiary had a similar case in 2020. Measures were taken afterwards, yet a similar instruction got a transfer through again. <strong>Even when an instruction to change the payee arrives in a vendor's name, unless you check that the vendor approved the change through its registered contact, the next payment goes to the new account.</strong>
+The instruction that reached the US subsidiary was not to pay, but to change where to pay. The transaction and the amount stay the same, and once the payee changes, the next transfer goes to the new account.
+
+According to the company's disclosure, another US subsidiary had a similar case in 2020. Measures were taken afterwards, yet a similar instruction got a transfer through again.
+
+<strong>Even when an instruction to change the payee arrives in a vendor's name, unless you check that the vendor approved the change through its registered contact, the next payment goes to the new account.</strong>
 
 ## 2. What got through
 

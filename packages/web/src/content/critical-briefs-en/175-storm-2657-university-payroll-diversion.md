@@ -59,7 +59,11 @@ countries: ["us"]
 
 ## 1. Summary
 
-What was changed was not a payment to a vendor but employees' own salary deposits. According to Microsoft, the attacker registered their own phone as an authentication device on the hijacked accounts. They changed the salary deposit and hid the change notification emails with inbox rules. The changes arrived from the employee's own account, through the real screens. Microsoft says this does not represent a vulnerability in Workday's products. The universities and the losses have not been disclosed. <strong>Even when a login succeeds in the employee's name, a change to where their salary is paid cannot be confirmed as theirs unless it is approved with a key that was already theirs before the change.</strong>
+What was changed was not a payment to a vendor but employees' own salary deposits. According to Microsoft, the attacker registered their own phone as an authentication device on the hijacked accounts. They changed the salary deposit and hid the change notification emails with inbox rules.
+
+The changes arrived from the employee's own account, through the real screens. Microsoft says this does not represent a vulnerability in Workday's products. The universities and the losses have not been disclosed.
+
+<strong>Even when a login succeeds in the employee's name, a change to where their salary is paid cannot be confirmed as theirs unless it is approved with a key that was already theirs before the change.</strong>
 
 ## 2. What got through
 

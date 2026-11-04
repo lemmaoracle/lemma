@@ -61,7 +61,11 @@ countries: ["es"]
 
 ## 1. Summary
 
-No one sent to the wrong address. The employer portal sends a weekly notification automatically. During a change to the process, one line of code was commented out. The Excel attachment was no longer reset for each notification. Excel files built earlier in the same day's run for other companies were added to each later notification (Ibermutua's account, as cited in the AEPD decision). Each email went to the address that company had set. <strong>Even when the recipient is right, a change in how the contents are assembled lets other companies' data ride along in the same send.</strong>
+The weekly notification that the employer portal sends automatically carried, one after another, the Excel files built earlier in the same day's run for other companies. No one sent to the wrong address: each email went to the address that company had set.
+
+By Ibermutua's account, as cited in the AEPD decision, one line of code was commented out during a change to the process, and the Excel attachment was no longer reset for each notification.
+
+<strong>Even when the recipient is right, a change in how the contents are assembled lets other companies' data ride along in the same send.</strong>
 
 ## 2. What got through
 

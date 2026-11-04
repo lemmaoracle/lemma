@@ -59,7 +59,11 @@ search_description: "シンガポールの商品取引会社が、仕入先に�
 
 ## 1. Summary
 
-According to the police, the email appeared to come from a supplier and asked for payment for goods to a new account. The sender's address differed from the supplier's by one character, and staff did not notice. The firm found out only when the real supplier said it had not been paid. Most of the money was later frozen through cross-border cooperation, but the transfer itself went through. <strong>A payment to a new account goes through, even on a request from a lookalike address, unless the account is checked with the supplier's registered contact.</strong>
+According to the police, the email appeared to come from a supplier and asked for payment for goods to a new account. The sender's address differed from the supplier's by one character, and staff did not notice.
+
+The firm found out only when the real supplier said it had not been paid. Most of the money was later frozen through cross-border cooperation, but the transfer itself went through.
+
+<strong>A payment to a new account goes through, even on a request from a lookalike address, unless the account is checked with the supplier's registered contact.</strong>
 
 ## 2. What got through
 

@@ -58,7 +58,11 @@ countries: ["us"]
 
 ## 1. Summary
 
-Validation of the applying organisations went through the normal process. According to DigiCert's report, the attacker got onto support analysts' workstations and read initialization codes from the support portal. The codes belonged to EV code signing orders that had been approved and were waiting for pickup. The code plus an approved order was enough to obtain a certificate. Certificates were issued in the names of genuine organisations, and some were used to sign malware. Validation itself was not broken; what was intercepted was the final handover. <strong>If holding a pickup code is enough to receive a certificate, the certificate can end up with someone other than the party that was validated, however sound the validation was.</strong>
+According to DigiCert's report, the attacker got onto support analysts' workstations and read, from the support portal, initialization codes for EV code signing orders that had been approved and were waiting for pickup. Certificates were issued in the names of genuine organisations, and some were used to sign malware.
+
+Validation of the applying organisations went through the normal process, and the code plus an approved order was enough to obtain a certificate. Validation itself was not broken; what was intercepted was the final handover.
+
+<strong>If holding a pickup code is enough to receive a certificate, the certificate can end up with someone other than the party that was validated, however sound the validation was.</strong>
 
 ## 2. What got through
 

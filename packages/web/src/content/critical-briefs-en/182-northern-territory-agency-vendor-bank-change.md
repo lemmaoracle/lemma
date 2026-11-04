@@ -61,7 +61,11 @@ search_description: "豪ノーザンテリトリー準州政府の機関が、�
 
 ## 1. Summary
 
-According to the Australian Federal Police (AFP), the agency received an email in the name of its construction contractor, with a completed vendor identification form carrying new bank details. Other addresses from the company were copied in. The AFP alleges those addresses were created to make the scam look legitimate. The agency paid an account it believed belonged to the real contractor. <strong>Even when a bank-detail change arrives complete and in a vendor's name, the payment goes to another account unless someone checks that the account was approved through the vendor's registered contact.</strong>
+According to the Australian Federal Police (AFP), the agency received an email in the name of its construction contractor, with a completed vendor identification form carrying new bank details. The agency paid an account it believed belonged to the real contractor.
+
+Other addresses from the company were copied in. The AFP alleges those addresses were created to make the scam look legitimate.
+
+<strong>Even when a bank-detail change arrives complete and in a vendor's name, the payment goes to another account unless someone checks that the account was approved through the vendor's registered contact.</strong>
 
 ## 2. What got through
 

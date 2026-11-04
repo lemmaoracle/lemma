@@ -62,7 +62,11 @@ countries: ["us"]
 
 ## 1. Summary
 
-The paper's newsroom did not make the section. The circulation department purchased it from King Features, a Hearst syndicator. It ran in the Sunday print edition and the e-paper without newsroom review. It carried no credit saying a third party produced it (the paper's statement and review). According to King Features, a freelance writer used an AI agent to build the section and did not disclose it. The CEO of Chicago Public Media, which runs the paper, described a chain of human mistakes between the distributor and the paper's pages. <strong>Syndicated content a paper has purchased still reaches readers as something the paper has checked once it runs in its pages.</strong>
+The paper's newsroom did not make the section; the circulation department purchased it from King Features, a Hearst syndicator. It ran in the Sunday print edition and the e-paper without newsroom review, and carried no credit saying a third party produced it (the paper's statement and review).
+
+According to King Features, a freelance writer used an AI agent to build the section and did not disclose it. The CEO of Chicago Public Media, which runs the paper, described a chain of human mistakes between the distributor and the paper's pages.
+
+<strong>Syndicated content a paper has purchased still reaches readers as something the paper has checked once it runs in its pages.</strong>
 
 ## 2. What got through
 

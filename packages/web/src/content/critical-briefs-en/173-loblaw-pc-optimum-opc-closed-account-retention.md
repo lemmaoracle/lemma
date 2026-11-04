@@ -58,7 +58,11 @@ countries: ["ca"]
 
 ## 1. Summary
 
-This is not a breach. It is a regulator's findings on how data of members who closed their accounts was handled. On closure, Loblaw deleted name, email, phone and address. It kept purchase history, usage records, public IP addresses, device information and more. Canada's OPC found that removing names and contact details alone does not anonymize the data, and that this contravenes the principle on information that is no longer needed. Loblaw disagrees with that finding but agreed to a third-party assessment. <strong>Deleting names and contact details does not always stop someone being traced if purchase history and IP addresses remain.</strong>
+This is not a breach. It is a regulator's findings on how data of members who closed their accounts was handled. On closure, Loblaw deleted name, email, phone and address, and kept purchase history, usage records, public IP addresses, device information and more.
+
+Canada's OPC found that removing names and contact details alone does not anonymize the data, and that this contravenes the principle on information that is no longer needed. Loblaw disagrees with that finding but agreed to a third-party assessment.
+
+<strong>Deleting names and contact details does not always stop someone being traced if purchase history and IP addresses remain.</strong>
 
 ## 2. What got through
 

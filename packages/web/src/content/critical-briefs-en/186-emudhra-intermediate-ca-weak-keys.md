@@ -61,7 +61,11 @@ countries: ["in"]
 
 ## 1. Summary
 
-The keys were not stolen. According to Mozilla's report, intermediate CA private keys generated at an April 2025 key ceremony lacked sufficient randomness. Anyone could recover them from the public keys in a short time. According to eMudhra, a flaw in the ceremony script created a second, weak key pair. Because the labels were similar, those keys were sent for signing by the root and for cross-signing. The researcher who reported it demonstrated signatures with the recovered keys. Those signatures verify as valid signatures by genuine intermediate CA keys. <strong>A signature that verifies under a genuine key does not show that the owner made it, unless the owner is the only one who holds that key.</strong>
+The keys were not stolen. According to Mozilla's report, intermediate CA private keys generated at the key ceremony lacked sufficient randomness, and anyone could recover them from the public keys in a short time. The researcher who reported it demonstrated signatures with the recovered keys, and those signatures verify as valid signatures by genuine intermediate CA keys.
+
+According to eMudhra, a flaw in the ceremony script created a second, weak key pair. Because the labels were similar, those keys were sent for signing by the root and for cross-signing.
+
+<strong>A signature that verifies under a genuine key does not show that the owner made it, unless the owner is the only one who holds that key.</strong>
 
 ## 2. What got through
 

@@ -58,7 +58,11 @@ countries: ["us"]
 
 ## 1. Summary
 
-The mailbox that was taken over belonged not to the company but to one of its development partners. The company assessed that it had material weaknesses in its readiness for impersonation and in its controls over changes to vendor payment information. It reported that these weaknesses led it not to identify and prevent the scheme. The funds were fully recovered in January 2025. <strong>Once a vendor's own mailbox is taken over, a payment request sent from it cannot be told apart from a genuine request from that vendor.</strong>
+The mailbox that was taken over belonged not to the company but to one of its development partners. A payment then went to a party posing as that partner.
+
+The company assessed that it had material weaknesses in its readiness for impersonation and in its controls over changes to vendor payment information, and reported that because of them it did not identify the scheme and the payment went through. The funds were fully recovered in January 2025.
+
+<strong>Once a vendor's own mailbox is taken over, a payment request sent from it cannot be told apart from a genuine request from that vendor.</strong>
 
 ## 2. What got through
 
