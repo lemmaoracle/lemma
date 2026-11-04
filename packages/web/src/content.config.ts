@@ -226,8 +226,8 @@ const briefSchema = z
         label: z.string().min(1),
         quote: z.string().min(1),
         /**
-         * quote を「止める点」（どの操作の前に何を何と照合すれば止まるか・1文）として
-         * 書いた Brief に true（2026-11-04・184 から）。帯の小見出しが「止める点」になる。
+         * quote を「実行前のゲート」（どの操作の前に何を何と照合するか・1文）として
+         * 書いた Brief に true（2026-11-04・184 から）。帯の小見出しが「実行前のゲート」になる。
          * 無い Brief の帯は「この事案の核心」のまま（proof に移した Brief も、書き直すまで）。
          */
         stop: z.boolean().optional(),
