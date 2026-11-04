@@ -52,15 +52,19 @@ const head = (title: string) => title.split(" — ")[0];
       <h1>回覧する下書きの Brief</h1>
       <p class="dr-lead">
         {drafts.length > 0 ? `${drafts.length} 本` : "いま回覧する下書きはありません。"}
+        {drafts.length > 0 && (
+          <span class="dr-how">記事の下の「問題なし／修正したい」で声を残せます（CLUBS に名前つきで残り、公開の OK は承認ポイントで）。</span>
+        )}
       </p>
       <ul class="dr-list">
         {
           drafts.map((b) => (
-            <li>
+            <li data-brief={b.id}>
               <a href={`${base}/critical/briefs/${b.id}/`}>
                 <small>No. {pad(b.data.brief_no)} · 公開予定 {day(b.data.published)}</small>
                 <b>{head(b.data.title)}</b>
               </a>
+              <span class="dr-mine" data-dr-mine hidden></span>
               <span class="dr-en">
                 {enIds.has(b.id) ? <a href={`/critical/briefs/${b.id}/`}>EN</a> : "EN なし"}
               </span>
@@ -72,6 +76,21 @@ const head = (title: string) => title.split(" — ")[0];
   </main>
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
+
+<script is:inline>
+  /* この端末で残した声（記事の下の部品が localStorage に覚える）。CLUBS は読めないので、自分の分だけ。 */
+  (() => {
+    document.querySelectorAll(".dr-list li[data-brief]").forEach(function (li) {
+      var v = null;
+      try { v = localStorage.getItem("lemma:brief-review:" + li.dataset.brief); } catch (e) {}
+      if (v !== "ok" && v !== "fix") return;
+      var el = li.querySelector("[data-dr-mine]");
+      el.textContent = v === "ok" ? "問題なし" : "修正したい";
+      el.classList.add("is-" + v);
+      el.hidden = false;
+    });
+  })();
+</script>
 
 <style>
   .dr {
@@ -134,6 +153,26 @@ const head = (title: string) => title.split(" — ")[0];
   .dr-list b {
     font-size: 15px;
     line-height: 1.6;
+  }
+  .dr-how {
+    display: block;
+    margin-top: 4px;
+    font-size: 12.5px;
+  }
+  .dr-mine {
+    flex: none;
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 700;
+    color: #2f6f93;
+    border: 1px solid #c9dde8;
+    border-radius: 999px;
+    padding: 2px 10px;
+    background: #fff;
+  }
+  .dr-mine.is-fix {
+    color: #b8336a;
+    border-color: #ecc3d3;
   }
   .dr-en {
     flex: none;
