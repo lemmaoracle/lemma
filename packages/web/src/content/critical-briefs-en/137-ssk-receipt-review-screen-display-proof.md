@@ -90,7 +90,7 @@ The internal investigation identified the tool's users and the staff for whom mi
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before a claim is finalized as confirmed.** It does not find tool use afterwards; it makes which reviewer and which claim a "confirmed" record rests on checkable before finalization and at the point of aggregation.
+**Lemma builds the pre-execution check into the point just before a claim is finalized as confirmed.** It does not find tool use afterwards; it makes which reviewer and which claim a "confirmed" record rests on checkable before finalization and at the point of aggregation.
 
 ### Industries and operations to watch
 

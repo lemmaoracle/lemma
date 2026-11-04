@@ -89,7 +89,7 @@ Finding the flaws and publishing after the fixes worked, and BerriAI fixed them 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 in just before the handlers that run the gateway's privileged operations.** It does not look for flaws or suspicious calls; it checks, before execution and apart from having passed an earlier layer, that the requester is allowed to perform the operation.
+**Lemma builds the pre-execution check in just before the handlers that run the gateway's privileged operations.** It does not look for flaws or suspicious calls; it checks, before execution and apart from having passed an earlier layer, that the requester is allowed to perform the operation.
 
 ### Industries and operations to watch
 

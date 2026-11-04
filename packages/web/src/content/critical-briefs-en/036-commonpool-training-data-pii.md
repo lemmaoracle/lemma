@@ -92,7 +92,7 @@ The research team's audit showed concretely what after-the-fact filters had fail
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before material is ingested into a dataset.** It does not search for personal data after the fact; it checks, before ingestion, that the material has the provenance and consent to be used for training.
+**Lemma builds the pre-execution check into the point just before material is ingested into a dataset.** It does not search for personal data after the fact; it checks, before ingestion, that the material has the provenance and consent to be used for training.
 
 ### Industries and operations to watch
 

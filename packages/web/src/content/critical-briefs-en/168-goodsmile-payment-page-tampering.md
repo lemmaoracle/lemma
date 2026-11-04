@@ -84,7 +84,7 @@ Closing the site also stopped the program, but what was noticed was the unauthor
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the system that serves the payment page.** It does not look for intrusions; it confirms that the page code being served now is the approved version.
+**Lemma builds the pre-execution check into the system that serves the payment page.** It does not look for intrusions; it confirms that the page code being served now is the approved version.
 
 ### Industries and operations to watch
 

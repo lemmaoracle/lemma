@@ -87,7 +87,7 @@ Blocking the specific payloads reported stops known techniques and raises attack
 
 ## 4. What Lemma does
 
-**Lemma builds the check in 03 in front of the operations that feed a document into generation and that share a generated document.** It does not look for hidden text or injection phrasing; before a document is passed on, it checks, apart from how it looks, the record of which source material and whose instructions the document was built from.
+**Lemma builds the pre-execution check in front of the operations that feed a document into generation and that share a generated document.** It does not look for hidden text or injection phrasing; before a document is passed on, it checks, apart from how it looks, the record of which source material and whose instructions the document was built from.
 
 ### Industries and operations to watch
 

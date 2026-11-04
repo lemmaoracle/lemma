@@ -86,7 +86,7 @@ Vulnerability disclosure and the fixed versions worked, and the two known routes
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before the agent framework moves a function into execution.** It does not look for prompt injection; it checks the function and arguments the model chose, before execution, against a permitted scope managed apart from the model's output.
+**Lemma builds the pre-execution check into the point just before the agent framework moves a function into execution.** It does not look for prompt injection; it checks the function and arguments the model chose, before execution, against a permitted scope managed apart from the model's output.
 
 ### Industries and operations to watch
 

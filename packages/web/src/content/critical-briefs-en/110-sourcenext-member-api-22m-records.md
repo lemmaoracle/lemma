@@ -91,7 +91,7 @@ Detection worked, but it noticed about four days after retrieval began. Similar 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 in front of the API that returns member data.** It does not look for intrusions; it checks, before returning, whether the call is within the permitted party, purpose and volume.
+**Lemma builds the pre-execution check in front of the API that returns member data.** It does not look for intrusions; it checks, before returning, whether the call is within the permitted party, purpose and volume.
 
 ### Industries and operations to watch
 

@@ -98,7 +98,7 @@ Detection worked, but about 18 months after the send. Other cases where what was
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the route by which casework data is exported and sent out.** It does not look for intrusions; just before sending, and apart from the sender's judgement, it checks that the file's record count and fields match the approved contents.
+**Lemma builds the pre-execution check into the route by which casework data is exported and sent out.** It does not look for intrusions; just before sending, and apart from the sender's judgement, it checks that the file's record count and fields match the approved contents.
 
 ### Industries and operations to watch
 

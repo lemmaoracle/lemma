@@ -89,7 +89,7 @@ Detection worked after the drains and carried forward identifying the attackers'
 
 ## 4. What Lemma does
 
-**Lemma puts the check in section 03 at the step where signer code goes to production and the step where the signer starts signing.** It does not replace external audits or key custody; on top of them, it checks that the code used for signing is the same as the build that passed audit and was approved. It does not judge whether the code itself is safe.
+**Lemma puts the pre-execution check at the step where signer code goes to production and the step where the signer starts signing.** It does not replace external audits or key custody; on top of them, it checks that the code used for signing is the same as the build that passed audit and was approved. It does not judge whether the code itself is safe.
 
 ### Industries and operations to watch
 

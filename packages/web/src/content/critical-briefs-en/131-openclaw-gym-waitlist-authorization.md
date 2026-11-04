@@ -90,7 +90,7 @@ The report came after the cancellation, and the booking did not come back. Anoth
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that accepts cancellations and changes affecting other people.** It does not stop the agent; before the action runs, it checks, outside the agent, whether the person acting owns the booking or the owner approved.
+**Lemma builds the pre-execution check into the side that accepts cancellations and changes affecting other people.** It does not stop the agent; before the action runs, it checks, outside the agent, whether the person acting owns the booking or the owner approved.
 
 ### Industries and operations to watch
 

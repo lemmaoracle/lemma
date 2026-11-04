@@ -89,7 +89,7 @@ The guard was running and refused custom code by default. What was missing is th
 
 ## 4. What Lemma does
 
-**Lemma puts the check in section 03 immediately before a model's code runs.** It does not tell good models from bad or judge whether code is dangerous; before execution, it checks that the code and weights actually loading match what a verified publisher issued.
+**Lemma puts the pre-execution check immediately before a model's code runs.** It does not tell good models from bad or judge whether code is dangerous; before execution, it checks that the code and weights actually loading match what a verified publisher issued.
 
 ### Industries and operations to watch
 

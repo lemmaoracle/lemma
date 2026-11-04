@@ -91,7 +91,7 @@ The bank's query and restriction came early, but it took about 23 hours for with
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that executes transfers and fund moves.** It does not look for intrusions; it checks, before execution and by a path other than the requester's, that the request has a documented reason.
+**Lemma builds the pre-execution check into the side that executes transfers and fund moves.** It does not look for intrusions; it checks, before execution and by a path other than the requester's, that the request has a documented reason.
 
 ### Industries and operations to watch
 

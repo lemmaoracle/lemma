@@ -88,7 +88,7 @@ Researchers' reports, detection of malicious commits, and the disabling of repos
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the steps by which an agent executes bundled config.** It does not detect after infection; before execution, it checks whether the config comes from its legitimate author and stays within the allowed scope, and does not let through executions that cannot be checked.
+**Lemma builds the pre-execution check into the steps by which an agent executes bundled config.** It does not detect after infection; before execution, it checks whether the config comes from its legitimate author and stays within the allowed scope, and does not let through executions that cannot be checked.
 
 ### Industries and operations to watch
 

@@ -97,7 +97,7 @@ Detection did work: the draining surfaced the day after publication through aler
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the step where a developer publishes a new version to the store.** It does not replace store review or intrusion detection in the development environment; before them, it confirms that the version about to be published is tied to internal approval.
+**Lemma builds the pre-execution check into the step where a developer publishes a new version to the store.** It does not replace store review or intrusion detection in the development environment; before them, it confirms that the version about to be published is tied to internal approval.
 
 ### Industries and operations to watch
 

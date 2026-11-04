@@ -92,7 +92,7 @@ The material for detection existed: Hudson Rock had identified the infected empl
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that accepts operations from an AI tool's token.** It does not look for intrusions; it checks, before the operation runs, whether the AI tool's operation falls within the kinds allowed at connection and whether the token is still valid.
+**Lemma builds the pre-execution check into the side that accepts operations from an AI tool's token.** It does not look for intrusions; it checks, before the operation runs, whether the AI tool's operation falls within the kinds allowed at connection and whether the token is still valid.
 
 ### Industries and operations to watch
 

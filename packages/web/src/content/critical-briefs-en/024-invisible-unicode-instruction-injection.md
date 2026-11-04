@@ -86,7 +86,7 @@ Stripping invisible characters, flagging decode behavior and auditing skills sto
 
 ## 4. What Lemma does
 
-**Lemma builds the check in 03 in front of the operation where an agent passes a skill or tool definition to the model.** It does not look for invisible characters; it checks, before passing the input, its distributor and that it matches the version a human reviewed, apart from how it looks.
+**Lemma builds the pre-execution check in front of the operation where an agent passes a skill or tool definition to the model.** It does not look for invisible characters; it checks, before passing the input, its distributor and that it matches the version a human reviewed, apart from how it looks.
 
 ### Industries and operations to watch
 

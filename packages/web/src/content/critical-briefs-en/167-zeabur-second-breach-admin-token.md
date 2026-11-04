@@ -84,7 +84,7 @@ The token was revoked on the day the investigation began, but in the meantime th
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the boundary that receives admin operations and data exports.** It does not look for intrusions; it checks that the credential on an incoming request is valid now and within the scope it was given.
+**Lemma builds the pre-execution check into the boundary that receives admin operations and data exports.** It does not look for intrusions; it checks that the credential on an incoming request is valid now and within the scope it was given.
 
 ### Industries and operations to watch
 

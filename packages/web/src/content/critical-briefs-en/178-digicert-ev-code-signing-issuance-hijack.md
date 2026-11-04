@@ -96,7 +96,7 @@ Detection did work: the first workstation was found and contained the next day, 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the step where a CA releases the certificate for an approved order.** It does not replace validation of the applicant or intrusion detection on endpoints; after them, it confirms before issuance that the pickup request is tied to the validated subscriber's approval.
+**Lemma builds the pre-execution check into the step where a CA releases the certificate for an approved order.** It does not replace validation of the applicant or intrusion detection on endpoints; after them, it confirms before issuance that the pickup request is tied to the validated subscriber's approval.
 
 ### Industries and operations to watch
 

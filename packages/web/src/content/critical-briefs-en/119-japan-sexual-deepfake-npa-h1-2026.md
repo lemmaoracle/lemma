@@ -94,7 +94,7 @@ The NPA's statistics and the Metropolitan Police investigation made visible the 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before generating from a real person's photograph, and just before the output is posted or shared.** It does not judge whether an image is fake or file takedown requests on anyone's behalf; it checks, before they succeed, that generation and publication carry the pictured person's own authorization.
+**Lemma builds the pre-execution check into the point just before generating from a real person's photograph, and just before the output is posted or shared.** It does not judge whether an image is fake or file takedown requests on anyone's behalf; it checks, before they succeed, that generation and publication carry the pictured person's own authorization.
 
 ### Industries and operations to watch
 

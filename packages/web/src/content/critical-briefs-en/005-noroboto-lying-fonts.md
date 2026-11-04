@@ -88,7 +88,7 @@ Output-side detection (of hallucinations and ungrounded judgments) is still need
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the operation that uses an AI's summary or judgment for a decision such as an approval.** It does not look for font forgery; before the conclusion is used, it checks that the match between the string the AI processed and the on-screen text has been checked, and that there is approval to use the conclusion, and it keeps a record.
+**Lemma builds the pre-execution check into the operation that uses an AI's summary or judgment for a decision such as an approval.** It does not look for font forgery; before the conclusion is used, it checks that the match between the string the AI processed and the on-screen text has been checked, and that there is approval to use the conclusion, and it keeps a record.
 
 ### Industries and operations to watch
 

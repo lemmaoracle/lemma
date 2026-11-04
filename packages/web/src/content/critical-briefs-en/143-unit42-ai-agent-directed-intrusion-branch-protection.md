@@ -93,7 +93,7 @@ The one place that held did not ask whether the key was valid; it asked for appr
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 in front of the operations an agent can reach.** It does not find intrusions; before each operation, it checks whether this actor may perform it, separately from whether the key is valid.
+**Lemma builds the pre-execution check in front of the operations an agent can reach.** It does not find intrusions; before each operation, it checks whether this actor may perform it, separately from whether the key is valid.
 
 ### Industries and operations to watch
 

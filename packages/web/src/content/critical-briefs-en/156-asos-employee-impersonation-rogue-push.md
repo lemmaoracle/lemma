@@ -90,7 +90,7 @@ Detection worked, and ASOS restricted access and disclosed the same day, but the
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that carries out mass notifications to customers.** It does not look for intrusions; it checks, before sending, whether the notification rests on an approved send.
+**Lemma builds the pre-execution check into the side that carries out mass notifications to customers.** It does not look for intrusions; it checks, before sending, whether the notification rests on an approved send.
 
 ### Industries and operations to watch
 

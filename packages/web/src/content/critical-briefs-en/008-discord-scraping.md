@@ -93,7 +93,7 @@ The reporting showed that the collection and publication existed and widened the
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 in just before a dataset is distributed and before it is ingested for training.** It does not look for scraping; it checks where the data came from and under what usage terms it was collected, before distribution or ingestion.
+**Lemma builds the pre-execution check in just before a dataset is distributed and before it is ingested for training.** It does not look for scraping; it checks where the data came from and under what usage terms it was collected, before distribution or ingestion.
 
 ### Industries and operations to watch
 

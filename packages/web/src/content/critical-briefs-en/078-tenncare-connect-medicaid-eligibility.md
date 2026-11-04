@@ -88,7 +88,7 @@ The errors were contested only after the terminations, through appeals and litig
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the step that cuts off benefits on an automated decision.** It does not decide whether the decision itself is correct or fair; outside the system that makes the decision, it checks that the inputs and household assumptions the decision used match the source records, and keeps a record.
+**Lemma builds the pre-execution check into the step that cuts off benefits on an automated decision.** It does not decide whether the decision itself is correct or fair; outside the system that makes the decision, it checks that the inputs and household assumptions the decision used match the source records, and keeps a record.
 
 ### Industries and operations to watch
 

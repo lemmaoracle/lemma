@@ -96,7 +96,7 @@ The anomaly was noticed after the change had taken effect. Other cases where "ar
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that applies payout-account and bank-account changes.** It does not look for intrusions; it confirms, before a change takes effect, that it rests on another person's approval. Because this change happened inside the booking site's admin screen, the place to build it in is the booking or payment service. What a user can add is a stop after the change and before the first payout (the hold in 03, and the checklist below).
+**Lemma builds the pre-execution check into the side that applies payout-account and bank-account changes.** It does not look for intrusions; it confirms, before a change takes effect, that it rests on another person's approval. Because this change happened inside the booking site's admin screen, the place to build it in is the booking or payment service. What a user can add is a stop after the change and before the first payout (the hold in 03, and the checklist below).
 
 ### Industries and operations to watch
 

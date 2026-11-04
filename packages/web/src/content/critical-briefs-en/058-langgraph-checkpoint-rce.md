@@ -85,7 +85,7 @@ Detection and fixing worked. But a step that checks, at load time, the provenanc
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before an agent loads a checkpoint.** It does not look for the vulnerability itself; it checks, before loading, which run the state came from and whether it was tampered with, against a record.
+**Lemma builds the pre-execution check into the point just before an agent loads a checkpoint.** It does not look for the vulnerability itself; it checks, before loading, which run the state came from and whether it was tampered with, against a record.
 
 ### Industries and operations to watch
 

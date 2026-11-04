@@ -89,7 +89,7 @@ Per-output violation judgments and a channel for rightsholder objections are nee
 
 ## 4. What Lemma does
 
-**Lemma places the check in section 03 just before the generation service runs a generation.** It does not judge whether output resembles a copyrighted work; it checks, before generation, whether the rightsholder has permitted this use of the material being used.
+**Lemma places the pre-execution check just before the generation service runs a generation.** It does not judge whether output resembles a copyrighted work; it checks, before generation, whether the rightsholder has permitted this use of the material being used.
 
 ### Industries and operations to watch
 

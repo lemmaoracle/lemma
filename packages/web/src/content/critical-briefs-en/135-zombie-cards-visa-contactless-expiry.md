@@ -91,7 +91,7 @@ Banks that checked the card's status against their record declined; where the te
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before the issuer approves a payment.** It does not look for intrusions or relays; it checks, before approval, that the expiry the terminal read matches the expiry and status of that card in the issuer's record.
+**Lemma builds the pre-execution check into the point just before the issuer approves a payment.** It does not look for intrusions or relays; it checks, before approval, that the expiry the terminal read matches the expiry and status of that card in the issuer's record.
 
 ### Industries and operations to watch
 

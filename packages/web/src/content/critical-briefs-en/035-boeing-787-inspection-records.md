@@ -90,7 +90,7 @@ Detection made the mismatch between record and act visible from outside, and mov
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the procedure that records an inspection as complete and the procedure that hands an aircraft to the next stage.** It does not detect inspection lapses or inspect aircraft; it checks, outside the department that creates the records, whether a completion record matches the measurement record of who measured what and when, and keeps a record. It can also show only that the check was completed, without releasing detailed information such as measured values.
+**Lemma builds the pre-execution check into the procedure that records an inspection as complete and the procedure that hands an aircraft to the next stage.** It does not detect inspection lapses or inspect aircraft; it checks, outside the department that creates the records, whether a completion record matches the measurement record of who measured what and when, and keeps a record. It can also show only that the check was completed, without releasing detailed information such as measured values.
 
 ### Industries and operations to watch
 

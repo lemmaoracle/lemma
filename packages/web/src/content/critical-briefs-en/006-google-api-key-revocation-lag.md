@@ -90,7 +90,7 @@ The measurements made the lag after deletion visible, but they do not change the
 
 ## 4. What Lemma does
 
-**Lemma builds the check in 03 into the side that receives calls made with a key, just before they are carried out.** It does not look for leaks or bad calls; it checks, before letting a call through, that the key received is not one in the deletion record.
+**Lemma builds the pre-execution check into the side that receives calls made with a key, just before they are carried out.** It does not look for leaks or bad calls; it checks, before letting a call through, that the key received is not one in the deletion record.
 
 ### Industries and operations to watch
 

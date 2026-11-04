@@ -95,7 +95,7 @@ The instruction was found to be false only after the transfers. Similar cases, w
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that accepts payee changes and pays.** It does not look for spoofed emails; it checks, before the transfer, that the new payee was approved through the vendor's registered contact.
+**Lemma builds the pre-execution check into the side that accepts payee changes and pays.** It does not look for spoofed emails; it checks, before the transfer, that the new payee was approved through the vendor's registered contact.
 
 ### Industries and operations to watch
 

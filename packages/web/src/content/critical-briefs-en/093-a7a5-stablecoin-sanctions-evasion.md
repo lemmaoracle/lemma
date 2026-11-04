@@ -90,7 +90,7 @@ Chain analysis identified A7A5's flows and the entities involved and led to sanc
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the procedure for accepting and settling a transfer.** It does not trace flows or compile sanctions lists; before acceptance, it checks that a verified conclusion of "not sanctioned" exists for the sender and the source of funds, and stops transfers that cannot be checked.
+**Lemma builds the pre-execution check into the procedure for accepting and settling a transfer.** It does not trace flows or compile sanctions lists; before acceptance, it checks that a verified conclusion of "not sanctioned" exists for the sender and the source of funds, and stops transfers that cannot be checked.
 
 ### Industries and operations to watch
 

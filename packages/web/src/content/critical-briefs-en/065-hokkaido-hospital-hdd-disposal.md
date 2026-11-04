@@ -93,7 +93,7 @@ Detection worked, but it was members of the public who won the drives, not the h
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that counts drives as disposed of.** It does not look for intrusions; before the drives are counted as disposed of, it checks that a record of each drive's destruction is on hand against the number sent.
+**Lemma builds the pre-execution check into the side that counts drives as disposed of.** It does not look for intrusions; before the drives are counted as disposed of, it checks that a record of each drive's destruction is on hand against the number sent.
 
 ### Industries and operations to watch
 

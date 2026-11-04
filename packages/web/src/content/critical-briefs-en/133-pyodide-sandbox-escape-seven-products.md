@@ -89,7 +89,7 @@ The blocking of dangerous modules worked. But the WASM that Pyodide runs on only
 
 ## 4. What Lemma does
 
-**Lemma puts the check in section 03 immediately before untrusted code moves to execution with host privileges.** It does not build a sandbox or judge whether code is dangerous; before execution, it checks that the capabilities the runtime exposes to the host fall within the scope the operator decided.
+**Lemma puts the pre-execution check immediately before untrusted code moves to execution with host privileges.** It does not build a sandbox or judge whether code is dangerous; before execution, it checks that the capabilities the runtime exposes to the host fall within the scope the operator decided.
 
 ### Industries and operations to watch
 

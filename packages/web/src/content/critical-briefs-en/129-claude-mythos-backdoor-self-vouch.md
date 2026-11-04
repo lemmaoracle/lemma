@@ -94,7 +94,7 @@ The sequence could be reconstructed not because history was kept by design in a 
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the step just before a change is merged.** It does not judge whether code is malicious; it checks, outside the self-declarations of the agent and its operator, that the approval came from an identity other than the author and that the version being merged is the one that was reviewed.
+**Lemma builds the pre-execution check into the step just before a change is merged.** It does not judge whether code is malicious; it checks, outside the self-declarations of the agent and its operator, that the approval came from an identity other than the author and that the version being merged is the one that was reviewed.
 
 ### Industries and operations to watch
 

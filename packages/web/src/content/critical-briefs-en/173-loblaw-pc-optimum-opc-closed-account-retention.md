@@ -97,7 +97,7 @@ A regulator also examined how former customers' data was kept in [Free Mobile an
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 in front of where retained data is used.** It does not delete or anonymize data. Before execution, it checks that a read of retained data is within the decided reason, deadline and scope, and keeps a record.
+**Lemma builds the pre-execution check in front of where retained data is used.** It does not delete or anonymize data. Before execution, it checks that a read of retained data is within the decided reason, deadline and scope, and keeps a record.
 
 ### Industries and operations to watch
 

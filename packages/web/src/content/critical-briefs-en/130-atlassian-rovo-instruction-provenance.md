@@ -94,7 +94,7 @@ The existing control of turning off web search did not stop the file-borne path,
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before an AI assistant opens an outside URL or sends data out.** It does not look for intrusions; it checks, before the operation runs, that it came from the user's request, against a record of that request.
+**Lemma builds the pre-execution check into the point just before an AI assistant opens an outside URL or sends data out.** It does not look for intrusions; it checks, before the operation runs, that it came from the user's request, against a record of that request.
 
 ### Industries and operations to watch
 

@@ -89,7 +89,7 @@ The researchers' testing surfaced violations at all 15. What was missing is the 
 
 ## 4. What Lemma does
 
-**Lemma puts the check in section 03 immediately before a merchant releases service.** It does not fix facilitator implementations or detect violations; before service is released, it checks that payment has settled and has not been used before, independently of the intermediary's response.
+**Lemma puts the pre-execution check immediately before a merchant releases service.** It does not fix facilitator implementations or detect violations; before service is released, it checks that payment has settled and has not been used before, independently of the intermediary's response.
 
 ### Industries and operations to watch
 

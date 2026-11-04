@@ -94,7 +94,7 @@ The takedown testing showed that takedown operations work, but only after the mo
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before a model using a likeness or voice is published and a generated work is posted.** It does not find and remove similar faces or voices; it makes which of the person's grants a use rests on checkable by the receiving side, before publication and posting.
+**Lemma builds the pre-execution check into the point just before a model using a likeness or voice is published and a generated work is posted.** It does not find and remove similar faces or voices; it makes which of the person's grants a use rests on checkable by the receiving side, before publication and posting.
 
 ### Industries and operations to watch
 

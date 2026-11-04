@@ -92,7 +92,7 @@ Detection worked: Yumirlink cut the servers off and removed the staff informatio
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side where provider staff enter a customer's system.** It does not look for intrusions; it checks, before entry, whether the authentication rests on a customer's request.
+**Lemma builds the pre-execution check into the side where provider staff enter a customer's system.** It does not look for intrusions; it checks, before entry, whether the authentication rests on a customer's request.
 
 ### Industries and operations to watch
 

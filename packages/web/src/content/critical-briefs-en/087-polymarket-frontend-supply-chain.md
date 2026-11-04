@@ -91,7 +91,7 @@ Detection worked after the drain and carried forward the scoping of the damage a
 
 ## 4. What Lemma does
 
-**Lemma puts the check in section 03 at the step where users are asked for approval.** It does not replace checking that the domain is real; on top of that, before asking for approval, it checks that the code running in the browser is what the operator shipped and that the transaction to be approved came through the legitimate flow.
+**Lemma puts the pre-execution check at the step where users are asked for approval.** It does not replace checking that the domain is real; on top of that, before asking for approval, it checks that the code running in the browser is what the operator shipped and that the transaction to be approved came through the legitimate flow.
 
 ### Industries and operations to watch
 

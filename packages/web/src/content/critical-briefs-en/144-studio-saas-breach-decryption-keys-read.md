@@ -92,7 +92,7 @@ Detection worked, but it came 12–13 days after the access. Earlier cases where
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 in front of the reads of data and keys.** It does not look for intrusions; it checks, before the read, whether it is within the permitted party and scope, and keeps the record apart from the provider's operations, in a form the customer can see.
+**Lemma builds the pre-execution check in front of the reads of data and keys.** It does not look for intrusions; it checks, before the read, whether it is within the permitted party and scope, and keeps the record apart from the provider's operations, in a form the customer can see.
 
 ### Industries and operations to watch
 

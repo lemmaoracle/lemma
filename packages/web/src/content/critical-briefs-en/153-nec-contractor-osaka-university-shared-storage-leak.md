@@ -93,7 +93,7 @@ Detection worked, but only after the download. A similar case, where customer da
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that places data in a shared location.** It does not look for intrusions; it checks, before the file is placed, whether the party it is shared with is on the list the owner registered.
+**Lemma builds the pre-execution check into the side that places data in a shared location.** It does not look for intrusions; it checks, before the file is placed, whether the party it is shared with is on the list the owner registered.
 
 ### Industries and operations to watch
 

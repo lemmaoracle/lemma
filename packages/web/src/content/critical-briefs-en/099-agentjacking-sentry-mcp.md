@@ -92,7 +92,7 @@ An instruction arriving by a route that looks legitimate was run as it was, whic
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before the agent runs a command.** It does not look for intrusions; it checks, before running, the origin of the procedure and the authorization of its execution, apart from how the content looks.
+**Lemma builds the pre-execution check into the point just before the agent runs a command.** It does not look for intrusions; it checks, before running, the origin of the procedure and the authorization of its execution, apart from how the content looks.
 
 ### Industries and operations to watch
 

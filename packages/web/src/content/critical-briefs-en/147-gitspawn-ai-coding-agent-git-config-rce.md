@@ -92,7 +92,7 @@ All eight findings came with reproductions, two received CVEs, and five overlapp
 
 ## 4. What Lemma does
 
-**Lemma puts the check in section 03 before an agent runs a repository's settings or code.** It does not stop the agent; before the settings run, it checks, outside the agent, whether they come from a verified publisher and fall within the scope that may run.
+**Lemma puts the pre-execution check before an agent runs a repository's settings or code.** It does not stop the agent; before the settings run, it checks, outside the agent, whether they come from a verified publisher and fall within the scope that may run.
 
 ### Industries and operations to watch
 

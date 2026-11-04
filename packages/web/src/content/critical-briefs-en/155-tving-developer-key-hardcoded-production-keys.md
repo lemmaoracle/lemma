@@ -99,7 +99,7 @@ Detection stopped the first attempt, but it watched only CPU load. On the second
 
 ## 4. What Lemma does
 
-**Lemma builds the check in 03 into the side that carries out production operations.** It does not find intrusions; it checks, before a key is used, whether the use ties to a requested piece of work.
+**Lemma builds the pre-execution check into the side that carries out production operations.** It does not find intrusions; it checks, before a key is used, whether the use ties to a requested piece of work.
 
 ### Industries and operations to watch
 

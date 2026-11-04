@@ -89,7 +89,7 @@ Detection worked on the provider's side and led to mapping the scope and stoppin
 
 ## 4. What Lemma does
 
-**Lemma puts the check in section 03 on the side that accepts an AI agent's operations.** It does not correct the AI's judgment; before execution and outside the agent, it checks whose delegation an operation comes under and what scope it falls within.
+**Lemma puts the pre-execution check on the side that accepts an AI agent's operations.** It does not correct the AI's judgment; before execution and outside the agent, it checks whose delegation an operation comes under and what scope it falls within.
 
 ### Industries and operations to watch
 

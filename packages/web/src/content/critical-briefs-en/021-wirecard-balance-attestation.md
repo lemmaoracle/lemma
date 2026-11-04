@@ -93,7 +93,7 @@ Detection is essential for raising the question, driving the investigation and s
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that accepts a balance as the basis for an audit or a disclosure.** It does not find forged documents; it checks, before acceptance, whether the balance was stated under the issuing financial institution's signature, and keeps a record. It can also show only that the balance is at or above a threshold, without the account originals leaving the company.
+**Lemma builds the pre-execution check into the side that accepts a balance as the basis for an audit or a disclosure.** It does not find forged documents; it checks, before acceptance, whether the balance was stated under the issuing financial institution's signature, and keeps a record. It can also show only that the balance is at or above a threshold, without the account originals leaving the company.
 
 ### Industries and operations to watch
 

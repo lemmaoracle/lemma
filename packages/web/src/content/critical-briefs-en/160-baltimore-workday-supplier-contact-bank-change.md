@@ -92,7 +92,7 @@ The city learned of it from the receiving bank; the second payment came back, an
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that activates a new contact and a bank change.** It does not look for intrusions; it checks, before activation, that the request came from the supplier, through its registered contact.
+**Lemma builds the pre-execution check into the side that activates a new contact and a bank change.** It does not look for intrusions; it checks, before activation, that the request came from the supplier, through its registered contact.
 
 ### Industries and operations to watch
 

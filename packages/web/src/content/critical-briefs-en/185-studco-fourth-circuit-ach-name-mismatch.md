@@ -97,7 +97,7 @@ The name mismatch was recorded by the receiving bank's system with each deposit,
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the step that changes a vendor's bank account and the approval before a transfer is carried out.** It does not look for intrusions or impersonating emails; it confirms on the paying side, before the transfer, that a changed account is one that could be matched to the vendor's approval.
+**Lemma builds the pre-execution check into the step that changes a vendor's bank account and the approval before a transfer is carried out.** It does not look for intrusions or impersonating emails; it confirms on the paying side, before the transfer, that a changed account is one that could be matched to the vendor's approval.
 
 ### Industries and operations to watch
 

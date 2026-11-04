@@ -91,7 +91,7 @@ The independent testing showed concretely that the steps were nominal, but it fo
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 into the point just before a voice is generated.** It does not judge voice quality or detect scam scripts; it checks, before generation, that the generation falls within what the voice's owner authorized.
+**Lemma builds the pre-execution check into the point just before a voice is generated.** It does not judge voice quality or detect scam scripts; it checks, before generation, that the generation falls within what the voice's owner authorized.
 
 ### Industries and operations to watch
 

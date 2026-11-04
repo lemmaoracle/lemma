@@ -92,7 +92,7 @@ Stopping withdrawals and freezing funds were measures taken after discovery. Exe
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 3 in as a checking side that holds part of what is needed to sign.** It does not look for intrusions; before signing, it checks whether an incoming signing request is based on a customer request or an authorised approval.
+**Lemma builds the pre-execution check in as a checking side that holds part of what is needed to sign.** It does not look for intrusions; before signing, it checks whether an incoming signing request is based on a customer request or an authorised approval.
 
 ### Industries and operations to watch
 

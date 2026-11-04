@@ -95,7 +95,7 @@ Red flags can be erased, and most checks in the advisory look for red flags. A s
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that hands over work and access.** It does not look for intrusions; it checks that the person doing the work is the ID holder, before handing over and at every access, by a method only that person can use.
+**Lemma builds the pre-execution check into the side that hands over work and access.** It does not look for intrusions; it checks that the person doing the work is the ID holder, before handing over and at every access, by a method only that person can use.
 
 ### Industries and operations to watch
 

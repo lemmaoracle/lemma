@@ -87,7 +87,7 @@ Publishing the research, demonstrating transfer, proposing mitigations, and cont
 
 ## 4. What Lemma does
 
-**Lemma puts the check in section 03 before an agent runs a script or binary inside code it has taken in.** It does not look for injections; before execution and outside the agent, it checks whether the code about to run comes from a legitimate distributor and whether running it falls within the permitted scope.
+**Lemma puts the pre-execution check before an agent runs a script or binary inside code it has taken in.** It does not look for injections; before execution and outside the agent, it checks whether the code about to run comes from a legitimate distributor and whether running it falls within the permitted scope.
 
 ### Industries and operations to watch
 

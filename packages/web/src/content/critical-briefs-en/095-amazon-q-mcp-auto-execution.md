@@ -88,7 +88,7 @@ The researcher's report and the shipped fix worked, and the known route was clos
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before the extension starts an MCP server.** It does not look for malicious configs; it checks, before execution, the origin of the config about to be started and the scope of the launch and the environment passed, against permissions managed apart from what is in the repository.
+**Lemma builds the pre-execution check into the point just before the extension starts an MCP server.** It does not look for malicious configs; it checks, before execution, the origin of the config about to be started and the scope of the launch and the environment passed, against permissions managed apart from what is in the repository.
 
 ### Industries and operations to watch
 

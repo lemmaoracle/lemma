@@ -97,7 +97,7 @@ The firm noticed four days after the transfer. A similar case of paying on a req
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that transfers money on payment requests.** It does not look for spoofed emails; it checks, before transferring, that the account named in a request was approved through the supplier's registered contact.
+**Lemma builds the pre-execution check into the side that transfers money on payment requests.** It does not look for spoofed emails; it checks, before transferring, that the account named in a request was approved through the supplier's registered contact.
 
 ### Industries and operations to watch
 

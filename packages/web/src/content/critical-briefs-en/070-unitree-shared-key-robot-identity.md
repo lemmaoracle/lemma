@@ -91,7 +91,7 @@ Researchers found and reported it, and Unitree worked on fixes, but fixes come a
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that accepts connections at setup and similar entry points.** It does not look for intrusions; it checks, before the connection is accepted, that the connecting party holds the key unique to that unit.
+**Lemma builds the pre-execution check into the side that accepts connections at setup and similar entry points.** It does not look for intrusions; it checks, before the connection is accepted, that the connecting party holds the key unique to that unit.
 
 ### Industries and operations to watch
 

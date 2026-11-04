@@ -87,7 +87,7 @@ Detecting the activity and changing the setting work after a state has arisen in
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that returns data.** It does not look for weaknesses or anomalous activity; it checks, before data is returned and apart from the endpoint's settings, that the requester is allowed to make that query.
+**Lemma builds the pre-execution check into the side that returns data.** It does not look for weaknesses or anomalous activity; it checks, before data is returned and apart from the endpoint's settings, that the requester is allowed to make that query.
 
 ### Industries and operations to watch
 

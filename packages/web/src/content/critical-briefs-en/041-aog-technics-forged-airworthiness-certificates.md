@@ -95,7 +95,7 @@ Detection made the parts with forged certificates visible from outside, and move
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the side that accepts parts and into the installation procedure.** It does not detect forgery or inspect the condition of parts; it checks, outside the seller, whether the issuer, the subject part and the fact of issuance on a certificate received match the issuer's records, and keeps a record. It can also show only that the check was completed, without releasing sensitive information such as trading terms.
+**Lemma builds the pre-execution check into the side that accepts parts and into the installation procedure.** It does not detect forgery or inspect the condition of parts; it checks, outside the seller, whether the issuer, the subject part and the fact of issuance on a certificate received match the issuer's records, and keeps a record. It can also show only that the check was completed, without releasing sensitive information such as trading terms.
 
 ### Industries and operations to watch
 

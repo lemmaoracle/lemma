@@ -89,7 +89,7 @@ The researchers hold that research inspecting tool behavior before and after use
 
 ## 4. What Lemma does
 
-**Lemma builds the check in section 03 into the point just before an agent calls a tool and hands over data.** It does not look for attack techniques; it checks the tool's identifier and origin, and the scope of the call, before the operation runs, apart from the public name and the metadata's self-declaration.
+**Lemma builds the pre-execution check into the point just before an agent calls a tool and hands over data.** It does not look for attack techniques; it checks the tool's identifier and origin, and the scope of the call, before the operation runs, apart from the public name and the metadata's self-declaration.
 
 ### Industries and operations to watch
 
