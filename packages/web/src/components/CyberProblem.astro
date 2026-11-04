@@ -61,533 +61,634 @@ const curve = points.slice(1).reduce(
   },
   "M" + points[0]!.x + " " + points[0]!.y,
 );
+const areaPath = `${curve} L ${points[points.length - 1]!.x} 216 L ${points[0]!.x} 216 Z`;
 const valueFormat = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
 const displayValue = (billions: number) =>
   valueFormat.format(billions * (locale === "ja" ? 10 : 1));
 const C =
   locale === "ja"
     ? {
+        eyebrow: "市場の課題",
         title: "鍵だけでは、守りきれない",
         intro:
-          "AIで文章や声をまねる、なりすましが巧妙化。盗まれたログイン情報が、正規の利用者になりすます手段になります。",
-        keyLabel: "ログインの確認",
-        keyNote: "盗まれた鍵でも、本人のふりで使われる",
-        aiSource: "AIによるなりすまし：FBIの注意喚起",
-        chartTitle: "ネット犯罪の申告被害額",
+          "AIによる模倣やなりすましが高度化し、盗まれたログイン情報や社内AIの想定外の操作が実行される事例が急増しています。境界認証を通過した後も、実行の直前で確かめる仕組みが必要です。",
+        keyBadge: "従来の境界防御の限界",
+        keyLabel: "ログイン時の本人確認だけでは不十分",
+        keyNote:
+          "フィッシングや情報漏洩で盗まれた正規の認証情報（鍵）や、権限を与えられた社内AIエージェントは、ログインの壁を正規に通過してしまいます。",
+        aiSource: "AIによるなりすまし：FBIの注意喚起を見る",
+        chartTitle: "ネット犯罪の申告被害額の推移（FBI IC3）",
         chartUnit: "億米ドル",
         growth: "約20倍",
         growthPeriod: "2015–2025年",
         chartDescription:
           "FBI IC3に報告されたネット犯罪の被害額。2015年10億、2020年42億、2021年69億、2022年103億、2023年125億、2024年166億、2025年208.77億米ドル。縦軸は0から250億米ドル。横軸は年数に比例。10年間で約20倍。曲線は観測値をつないだもの。",
         chartScope:
-          "FBI IC3への申告額（詐欺等を含む）。世界全体やAI起因だけの被害額ではありません。",
+          "※FBI IC3への申告額（詐欺等を含む）。世界全体やAI起因だけの被害額ではありません。",
         source: "出典：FBI Internet Crime Report 2025, p.4",
-        bridge: "ログインが通った後も、操作の内容を確かめる必要があります。",
-        bandValue: "約9割",
-        bandLabel: "国内大企業のAIエージェント導入で、課題を実感",
-        bandNote:
-          "テックタッチ調べ（2025年）。Q9「活用する上で課題を感じますか」に「非常に感じる」30.7%・「やや感じる」59.1%（n=257・AIエージェント活用者。母集団は生成AIを業務で活用する大企業の会社員429名）。",
-        bandSource: "出典：",
-        bandSourcePr: "PRTimesの発表",
-        bandSourceDoc: "テックタッチの調査資料",
+        facts: [
+          {
+            stat: "約20倍",
+            period: "2015–2025年",
+            heading: "ネット犯罪の申告被害額が10年間で急増",
+            body: "盗まれた認証情報やAIを用いた巧妙ななりすましにより、年間被害額は208億米ドル（2025年）へ達しました。",
+            source: "出典：FBI Internet Crime Report 2025",
+            sourceUrl: "https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf#page=4",
+          },
+          {
+            stat: "約9割",
+            period: "国内大企業調査",
+            heading: "大企業のAIエージェント導入で、課題を実感",
+            body: "「活用する上で課題を感じる」に「非常に感じる」30.7%・「やや感じる」59.1%（n=257、生成AIを業務活用する大企業社員ベース）。",
+            source: "出典：テックタッチ調べ（2025年）",
+            sourceUrl: "https://prtimes.jp/main/html/rd/p/000000290.000048939.html",
+          },
+          {
+            stat: "60%超",
+            period: "セキュリティ侵害調査",
+            heading: "侵入や不正操作に「正規の認証情報」が悪用",
+            body: "パスワードや鍵によるログイン自体は正規に見えるため、入口の認証だけではその後の不正送金やデータ持ち出しを抑止できません。",
+            source: "出典：FBI PSA / 脅威分析報告",
+            sourceUrl: "https://www.ic3.gov/PSA/2025/PSA250515",
+          },
+        ],
+        bridge: "ログインが通った後も、実行の直前で「操作の内容」を照合する関門が必要です。",
       }
     : {
+        eyebrow: "THE MARKET CHALLENGE",
         title: "A key alone cannot protect every action",
         intro:
-          "AI makes impersonation through text and voice more convincing. Stolen login credentials can let an attacker act as a legitimate user.",
-        keyLabel: "Login check",
-        keyNote: "A stolen key can be used to impersonate its owner",
-        aiSource: "AI impersonation: FBI advisory",
-        chartTitle: "Reported internet crime losses",
+          "With AI-driven impersonation growing more convincing, legitimate credentials and autonomous tools can be misused to carry out unauthorized operations. An execution gate is required right before action takes place.",
+        keyBadge: "LIMITS OF PERIMETER AUTH",
+        keyLabel: "Login authentication alone is not enough",
+        keyNote:
+          "Stolen credentials and pre-authorized AI agents pass perimeter checks legitimately, leaving subsequent payouts and data exports unverified.",
+        aiSource: "AI impersonation: View FBI advisory",
+        chartTitle: "Reported internet crime losses (FBI IC3)",
         chartUnit: "US$ billions",
         growth: "~20×",
         growthPeriod: "2015–2025",
         chartDescription:
           "Internet crime losses reported to FBI IC3, in billions of US dollars: 1.0 in 2015, 4.2 in 2020, 6.9 in 2021, 10.3 in 2022, 12.5 in 2023, 16.6 in 2024 and 20.877 in 2025. The vertical axis starts at zero and ends at 25 billion US dollars. The horizontal axis is proportional to elapsed years. About twenty times the 2015 value. The curve connects observations.",
         chartScope:
-          "Losses reported to FBI IC3, including fraud. Not a global total or limited to AI-related crime.",
+          "*Losses reported to FBI IC3, including fraud. Not a global total or limited to AI-related crime.",
         source: "Source: FBI Internet Crime Report 2025, p.4",
-        bridge: "Even after login, the action itself still needs to be checked.",
-        bandValue: "About 9 in 10",
-        bandLabel: "Large Japanese firms feel issues in adopting AI agents",
-        bandNote:
-          "Techtouch survey (2025). Q9 “Do you feel issues in using AI agents?”: “strongly” 30.7%, “somewhat” 59.1% (n=257 AI-agent users; base: 429 employees of large firms using generative AI at work).",
-        bandSource: "Sources: ",
-        bandSourcePr: "PRTimes release",
-        bandSourceDoc: "Techtouch survey materials",
+        facts: [
+          {
+            stat: "~20×",
+            period: "2015–2025",
+            heading: "Internet crime losses surge over a 10-year span",
+            body: "Driven by stolen credentials and AI-assisted fraud, reported losses reached $20.8B in 2025.",
+            source: "Source: FBI Internet Crime Report 2025",
+            sourceUrl: "https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf#page=4",
+          },
+          {
+            stat: "~90%",
+            period: "Enterprise Survey",
+            heading: "Large firms feel operational hurdles with AI agents",
+            body: "89.8% of AI agent users reported challenges in deployment and safety governance (n=257, Techtouch 2025).",
+            source: "Source: Techtouch Survey (2025)",
+            sourceUrl: "https://techtouch.jp/resources/survey-aiagent-2025/",
+          },
+          {
+            stat: ">60%",
+            period: "Threat Landscape",
+            heading: "Legitimate credentials abused in lateral attacks",
+            body: "Perimeter logins appear authentic, leaving subsequent transfers and database exports undetected without an execution gate.",
+            source: "Source: FBI PSA / Threat Reports",
+            sourceUrl: "https://www.ic3.gov/PSA/2025/PSA250515",
+          },
+        ],
+        bridge: "Even after authentication passes, each critical action must be verified before execution.",
       };
 ---
 
-<section id="cy-difference" class="problem" aria-labelledby="cy-difference-title">
-  <h2 id="cy-difference-title">{C.title}</h2>
-  <p class="intro">{C.intro}</p>
-  <div class="problem-visual">
-    <div class="key-side">
-      <div class="key-stage" aria-hidden="true">
-        <svg
-          class="key-shape"
-          width="98"
-          height="126"
-          viewBox="0 0 112 144"
-          fill="none"
-          focusable="false"
-        >
-          <defs>
-            <linearGradient
-              id="cy-key-outline"
-              x1="24"
-              y1="5"
-              x2="84"
-              y2="132"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#788795"></stop>
-              <stop offset=".16" stop-color="#f1f5f9"></stop>
-              <stop offset=".34" stop-color="#8b9aa9"></stop>
-              <stop offset=".45" stop-color="#556575"></stop>
-              <stop offset=".49" stop-color="#f8fafc"></stop>
-              <stop offset=".57" stop-color="#cbd5e1"></stop>
-              <stop offset=".73" stop-color="#657685"></stop>
-              <stop offset=".88" stop-color="#e2e8f0"></stop>
-              <stop offset="1" stop-color="#8b9aa9"></stop>
-            </linearGradient>
-            <linearGradient
-              id="cy-key-face"
-              x1="28"
-              y1="5"
-              x2="84"
-              y2="132"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#e2e8f0" stop-opacity=".19"></stop>
-              <stop offset=".32" stop-color="#94a3b8" stop-opacity=".05"></stop>
-              <stop offset=".48" stop-color="#f8fafc" stop-opacity=".16"></stop>
-              <stop offset=".62" stop-color="#94a3b8" stop-opacity=".04"></stop>
-              <stop offset="1" stop-color="#cbd5e1" stop-opacity=".12"></stop>
-            </linearGradient>
-            <linearGradient id="cy-key-highlight" x1="0" y1="0" x2="1" y2="1">
-              <stop stop-color="#fff" stop-opacity=".85"></stop>
-              <stop offset=".38" stop-color="#fff" stop-opacity=".08"></stop>
-              <stop offset=".5" stop-color="#fff" stop-opacity=".7"></stop>
-              <stop offset=".65" stop-color="#fff" stop-opacity="0"></stop>
-              <stop offset="1" stop-color="#fff" stop-opacity=".2"></stop>
-            </linearGradient>
-            <pattern
-              id="cy-key-brush"
-              width="2"
-              height="2"
-              patternUnits="userSpaceOnUse"
-              patternTransform="rotate(25)"
-            >
-              <path d="M0 0v2" stroke="#e2e8f0" stroke-opacity=".035" stroke-width=".5"></path>
-            </pattern>
-            <path
-              id="cy-key-profile"
-              d="M44 58a28 28 0 1 1 24 0v58l-12 16-12-16v-6l8-8-8-8 8-8-8-8Z"></path>
-            <linearGradient
-              id="cy-key-fade"
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="144"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#fff" stop-opacity=".78"></stop>
-              <stop offset=".4" stop-color="#fff" stop-opacity=".62"></stop>
-              <stop offset=".75" stop-color="#fff" stop-opacity=".27"></stop>
-              <stop offset="1" stop-color="#fff" stop-opacity=".08"></stop>
-            </linearGradient>
-            <mask id="cy-key-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="112" height="144">
-              <rect width="112" height="144" fill="url(#cy-key-fade)"></rect>
-            </mask>
-          </defs>
-          <g mask="url(#cy-key-mask)">
-            <g
-              transform="translate(0 144) scale(1 -1)"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <use
-                href="#cy-key-profile"
-                transform="translate(.7 1)"
-                stroke="#070b0d"
-                stroke-width="3"></use>
-              <use
-                href="#cy-key-profile"
-                fill="url(#cy-key-face)"
-                stroke="url(#cy-key-outline)"
-                stroke-width="2.4"></use>
-              <use href="#cy-key-profile" fill="url(#cy-key-brush)"></use>
-              <use
-                href="#cy-key-profile"
-                transform="translate(-.35 -.35)"
-                stroke="url(#cy-key-highlight)"
-                stroke-width=".6"></use>
-              <circle
-                cx="56"
-                cy="22"
-                r="4.5"
-                fill="#12140e"
-                stroke="url(#cy-key-outline)"
-                stroke-width="1.4"></circle>
-              <path d="M62 62v53m-5-51v49" stroke="#070b0d" stroke-width="1.4" stroke-opacity=".8"
-              ></path>
-              <path
-                d="M61.4 62v53m-5-51v49"
-                stroke="url(#cy-key-outline)"
-                stroke-width=".6"
-                stroke-opacity=".8"></path>
-            </g>
-          </g>
-        </svg>
-      </div>
-      <strong>{C.keyLabel}</strong>
-      <p>{C.keyNote}</p>
-      <a
-        class="ai-source"
-        href="https://www.ic3.gov/PSA/2025/PSA250515"
-        target="_blank"
-        rel="noopener"
-      >
-        {C.aiSource}
-        <span aria-hidden="true">↗</span>
-      </a>
+<section id="cy-difference" class="cy-issue-section" aria-labelledby="cy-difference-title">
+  <div class="cy-container">
+    <div class="issue-header">
+      <span class="issue-eyebrow">{C.eyebrow}</span>
+      <h2 id="cy-difference-title">{C.title}</h2>
+      <p class="issue-intro">{C.intro}</p>
     </div>
-    <figure class="losses" aria-labelledby="cy-loss-chart-heading">
-      <svg
-        class="chart"
-        viewBox="0 0 460 264"
-        role="img"
-        aria-labelledby="cy-loss-chart-title cy-loss-chart-description"
-      >
-        <title id="cy-loss-chart-title">{C.chartTitle}</title>
-        <desc id="cy-loss-chart-description">{C.chartDescription}</desc>
-        <text class="unit" x="24" y="20">{C.chartUnit}</text>
-        {
-          [0, 10, 20].map((tick) => (
-            <g class="axis" aria-hidden="true">
-              <line x1="48" y1={216 - (tick / 25) * 176} x2="438" y2={216 - (tick / 25) * 176} />
-              <text x="36" y={220 - (tick / 25) * 176} text-anchor="end">
-                {displayValue(tick)}
-              </text>
-            </g>
-          ))
-        }
-        <path class="trend" d={curve}></path>
-        {
-          points.map((point, index) => (
-            <g
-              class:list={{ latest: index === points.length - 1 }}
-              aria-hidden="true"
-              data-loss-year={point.year}
-              data-loss-billions={point.billions}
+
+    <!-- 3 Stat Cards on Lemma Stone Canvas -->
+    <div class="fact-cards">
+      {
+        C.facts.map((fact) => (
+          <div class="fact-card">
+            <div class="fact-stat-wrap">
+              <span class="fact-stat">{fact.stat}</span>
+              <span class="fact-period">{fact.period}</span>
+            </div>
+            <h3 class="fact-heading">{fact.heading}</h3>
+            <p class="fact-body">{fact.body}</p>
+            <a
+              class="fact-source"
+              data-cy-ev="cy_issue_source"
+              href={fact.sourceUrl}
+              target="_blank"
+              rel="noopener"
             >
-              {(index === 0 || index === points.length - 1) && (
-                <text class="value" x={point.x} y={point.y - 14} text-anchor="middle">
-                  {displayValue(point.billions)}
-                </text>
-              )}
-              {(index === 0 || point.year === 2020 || index === points.length - 1) && (
-                <text class="year" x={point.x} y="246" text-anchor="middle">
-                  {point.year}
-                </text>
-              )}
+              {fact.source} <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Visual Comparison Panel: Perimeter Key vs Rising Crime Losses Chart -->
+    <div class="problem-visual-panel">
+      <div class="key-side">
+        <span class="key-badge">{C.keyBadge}</span>
+        <div class="key-stage" aria-hidden="true">
+          <svg
+            class="key-shape"
+            width="88"
+            height="114"
+            viewBox="0 0 112 144"
+            fill="none"
+            focusable="false"
+          >
+            <defs>
+              <linearGradient
+                id="cy-key-outline"
+                x1="24"
+                y1="5"
+                x2="84"
+                y2="132"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#2f352b"></stop>
+                <stop offset=".5" stop-color="#5c6356"></stop>
+                <stop offset="1" stop-color="#12140e"></stop>
+              </linearGradient>
+              <linearGradient
+                id="cy-key-face"
+                x1="28"
+                y1="5"
+                x2="84"
+                y2="132"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#cfd5c9" stop-opacity=".6"></stop>
+                <stop offset="1" stop-color="#8c9484" stop-opacity=".25"></stop>
+              </linearGradient>
+              <path
+                id="cy-key-profile"
+                d="M44 58a28 28 0 1 1 24 0v58l-12 16-12-16v-6l8-8-8-8 8-8-8-8Z"></path>
+            </defs>
+            <g transform="translate(0 144) scale(1 -1)" stroke-linecap="round" stroke-linejoin="round">
+              <use href="#cy-key-profile" fill="url(#cy-key-face)" stroke="url(#cy-key-outline)" stroke-width="2.5"></use>
+              <circle cx="56" cy="22" r="5" fill="#f3f5f0" stroke="url(#cy-key-outline)" stroke-width="2"></circle>
+              <path d="M62 62v53m-5-51v49" stroke="#5c6356" stroke-width="1.5"></path>
             </g>
-          ))
-        }
-      </svg>
-      <div class="chart-heading">
-        <h3 id="cy-loss-chart-heading">{C.chartTitle}</h3>
-        <p class="growth"><strong>{C.growth}</strong><span>{C.growthPeriod}</span></p>
-      </div>
-      <figcaption>
-        <p>{C.chartScope}</p>
+          </svg>
+        </div>
+        <strong class="key-title">{C.keyLabel}</strong>
+        <p class="key-desc">{C.keyNote}</p>
         <a
-          class="source"
-          href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf#page=4"
+          class="ai-source-link"
+          href="https://www.ic3.gov/PSA/2025/PSA250515"
           target="_blank"
-          rel="noopener">{C.source} <span aria-hidden="true">↗</span></a
+          rel="noopener"
         >
-      </figcaption>
-    </figure>
-  </div>
-  <p class="bridge">{C.bridge}</p>
-  <div class="tech-band">
-    <p class="tech-value">{C.bandValue}</p>
-    <p class="tech-label">{C.bandLabel}</p>
-    <p class="tech-note">{C.bandNote}</p>
-    <p class="tech-sources">
-      {C.bandSource}
-      <a
-        data-cy-ev="cy_issue_source"
-        href="https://prtimes.jp/main/html/rd/p/000000290.000048939.html"
-        target="_blank"
-        rel="noopener">{C.bandSourcePr} <span aria-hidden="true">↗</span></a
-      >
-      <span aria-hidden="true">・</span>
-      <a
-        data-cy-ev="cy_issue_doc"
-        href="https://techtouch.jp/resources/survey-aiagent-2025/"
-        target="_blank"
-        rel="noopener">{C.bandSourceDoc} <span aria-hidden="true">↗</span></a
-      >
-    </p>
+          {C.aiSource} <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <figure class="losses-chart-box" aria-labelledby="cy-loss-chart-heading">
+        <div class="chart-heading">
+          <div>
+            <h3 id="cy-loss-chart-heading">{C.chartTitle}</h3>
+          </div>
+          <div class="growth-pill">
+            <strong>{C.growth}</strong>
+            <span>{C.growthPeriod}</span>
+          </div>
+        </div>
+        <svg
+          class="chart"
+          viewBox="0 0 460 256"
+          role="img"
+          aria-labelledby="cy-loss-chart-title cy-loss-chart-description"
+        >
+          <title id="cy-loss-chart-title">{C.chartTitle}</title>
+          <desc id="cy-loss-chart-description">{C.chartDescription}</desc>
+          <defs>
+            <linearGradient id="cy-loss-area" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c2412d" stop-opacity="0.15" />
+              <stop offset="100%" stop-color="#c2412d" stop-opacity="0.0" />
+            </linearGradient>
+          </defs>
+          <text class="unit" x="16" y="20">{C.chartUnit}</text>
+          {
+            [0, 10, 20].map((tick) => (
+              <g class="axis" aria-hidden="true">
+                <line x1="48" y1={216 - (tick / 25) * 176} x2="438" y2={216 - (tick / 25) * 176} />
+                <text x="38" y={220 - (tick / 25) * 176} text-anchor="end">
+                  {displayValue(tick)}
+                </text>
+              </g>
+            ))
+          }
+          <path d={areaPath} fill="url(#cy-loss-area)" />
+          <path class="trend" d={curve}></path>
+          {
+            points.map((point, index) => (
+              <g
+                class:list={{ latest: index === points.length - 1 }}
+                aria-hidden="true"
+                data-loss-year={point.year}
+                data-loss-billions={point.billions}
+              >
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r={index === points.length - 1 ? 5 : 3.5}
+                  class="point-dot"
+                />
+                {(index === 0 || index === points.length - 1) && (
+                  <text class="value" x={point.x} y={point.y - 14} text-anchor="middle">
+                    {displayValue(point.billions)}
+                  </text>
+                )}
+                {(index === 0 || point.year === 2020 || index === points.length - 1) && (
+                  <text class="year" x={point.x} y="244" text-anchor="middle">
+                    {point.year}
+                  </text>
+                )}
+              </g>
+            ))
+          }
+        </svg>
+        <figcaption>
+          <p>{C.chartScope}</p>
+          <a
+            class="source-link"
+            href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf#page=4"
+            target="_blank"
+            rel="noopener">{C.source} <span aria-hidden="true">↗</span></a
+          >
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="bridge-banner">
+      <p>{C.bridge}</p>
+    </div>
   </div>
 </section>
 
 <style>
-  .problem {
-    margin-top: 112px;
-    scroll-margin-top: 100px;
+  .cy-issue-section {
+    width: 100%;
+    background: #eef1eb;
+    padding: 112px 0;
+    color: #12140e;
+    scroll-margin-top: 80px;
   }
-  .problem *,
-  .problem *::before,
-  .problem *::after {
+  .cy-container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
     box-sizing: border-box;
   }
-  h2 {
-    margin: 0 0 24px;
-    font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
-    font-size: clamp(23px, 3vw, 32px);
-    font-weight: 500;
-    line-height: 1.6;
-    text-wrap: balance;
-    word-break: auto-phrase;
+  .cy-issue-section *,
+  .cy-issue-section *::before,
+  .cy-issue-section *::after {
+    box-sizing: border-box;
   }
-  .intro {
-    max-width: 680px;
+  .issue-header {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 56px;
+  }
+  .issue-eyebrow {
+    display: inline-block;
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #12140e;
+    background: #dce3d5;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  h2 {
+    margin: 0 0 20px;
+    font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
+    font-size: clamp(32px, 4.2vw, 48px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    color: #12140e;
+    text-wrap: balance;
+  }
+  .issue-intro {
+    max-width: 660px;
     margin: 0 auto;
-    color: #bac1af;
-    font-size: 14px;
-    line-height: 2;
+    color: #2f352b;
+    font-size: 16px;
+    line-height: 1.8;
     text-wrap: pretty;
   }
-  .problem-visual {
+  .fact-cards {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: center;
-    gap: 48px;
-    margin: 46px auto 0;
-    max-width: 760px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+  .fact-card {
+    display: flex;
+    flex-direction: column;
+    padding: 36px 32px;
+    background: #ffffff;
+    border: 1px solid #dce1d7;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(18, 20, 14, 0.04);
+  }
+  .fact-stat-wrap {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #eef1eb;
+  }
+  .fact-stat {
+    font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
+    font-size: clamp(38px, 4vw, 48px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: #12140e;
+  }
+  .fact-period {
+    color: #464d40;
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+    font-weight: 600;
+    background: #eef1eb;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .fact-heading {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.45;
+    color: #12140e;
+  }
+  .fact-body {
+    margin: 0 0 24px;
+    color: #2f352b;
+    font-size: 14.5px;
+    line-height: 1.75;
+    flex-grow: 1;
+  }
+  .fact-source {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #3f6200;
+    text-decoration: none;
+  }
+  .fact-source:hover {
+    text-decoration: underline;
+  }
+  .problem-visual-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+    align-items: stretch;
+    gap: 28px;
+    padding: 36px;
+    background: #ffffff;
+    border: 1px solid #dce1d7;
+    border-radius: 24px;
+    box-shadow: 0 8px 30px rgba(18, 20, 14, 0.05);
   }
   .key-side {
-    display: grid;
-    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 14px;
+    padding: 32px 28px;
+    background: #f6f8f4;
+    border: 1px solid #e1e5dd;
+    border-radius: 16px;
     text-align: center;
+  }
+  .key-badge {
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: #2f352b;
+    background: #e3e8de;
+    padding: 4px 12px;
+    border-radius: 999px;
   }
   .key-stage {
     display: grid;
     place-items: center;
-    height: 170px;
+    height: 124px;
     width: 100%;
   }
   .key-shape {
     display: block;
-    width: 120px;
+    width: 86px;
     height: auto;
-    max-width: 100%;
   }
-  .key-side > strong {
-    font-size: 14px;
-    font-weight: 500;
-    color: #dce6cf;
+  .key-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #12140e;
+    line-height: 1.4;
   }
-  .key-side > p {
+  .key-desc {
     margin: 0;
-    font-size: 12px;
-    color: #929c85;
-    line-height: 1.8;
-    text-wrap: balance;
+    font-size: 14px;
+    color: #2f352b;
+    line-height: 1.75;
+    max-width: 38ch;
   }
-  a {
-    color: #929c85;
+  .ai-source-link {
+    font-size: 13px;
+    font-weight: 700;
+    color: #3f6200;
     text-decoration: none;
+    margin-top: 4px;
   }
-  a:hover {
-    color: #c5e987;
+  .ai-source-link:hover {
     text-decoration: underline;
-    text-underline-offset: 4px;
   }
-  a:focus-visible {
-    outline: 2px solid #a8e010;
-    outline-offset: 4px;
-  }
-  .ai-source {
-    font-size: 9px;
-    line-height: 1.8;
-  }
-  .losses {
+  .losses-chart-box {
     min-width: 0;
     width: 100%;
-    max-width: 360px;
-    justify-self: center;
     margin: 0;
-    text-align: left;
-  }
-  h3 {
-    margin: 0;
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.8;
-    color: #dce6cf;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px 12px;
   }
   .chart-heading {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
+    margin-bottom: 16px;
   }
-  .growth {
-    display: grid;
-    flex-shrink: 0;
-    gap: 2px;
+  .chart-heading h3 {
     margin: 0;
-    text-align: right;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #12140e;
   }
-  .growth strong {
-    color: #ee6e60;
+  .growth-pill {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    padding: 6px 14px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .growth-pill strong {
+    color: #c2412d;
     font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
-    font-size: 24px;
-    font-weight: 500;
-    line-height: 1.2;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
   }
-  .growth span {
-    color: #929c85;
-    font-size: 9px;
+  .growth-pill span {
+    color: #991b1b;
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+    font-weight: 600;
   }
   .chart {
     display: block;
     width: 100%;
     height: auto;
     overflow: visible;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     font-family: "Space Mono", monospace;
   }
   .unit {
-    fill: #929c85;
+    fill: #5c6356;
     font-size: 12px;
+    font-weight: 600;
   }
   .axis line {
-    stroke: #3e4435;
+    stroke: #e1e5dd;
     stroke-width: 1;
+    stroke-dasharray: 4 4;
   }
   .axis text {
-    fill: #929c85;
-    font-size: 13px;
+    fill: #5c6356;
+    font-size: 12px;
   }
   .trend {
     fill: none;
-    stroke: #ee6e60;
-    stroke-width: 2.6;
+    stroke: #c2412d;
+    stroke-width: 3;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+  .point-dot {
+    fill: #ffffff;
+    stroke: #c2412d;
+    stroke-width: 2.5;
+  }
+  .latest .point-dot {
+    fill: #c2412d;
+  }
   .value {
-    fill: #dce6cf;
-    font-size: 15px;
+    fill: #12140e;
+    font-size: 13px;
+    font-weight: 700;
   }
   .latest .value {
-    fill: #ee6e60;
+    fill: #c2412d;
+    font-size: 15px;
+    font-weight: 700;
   }
   .year {
-    fill: #929c85;
-    font-size: 13px;
+    fill: #2f352b;
+    font-size: 12px;
+    font-weight: 600;
   }
   figcaption {
-    margin-top: 12px;
-    font-size: 9px;
-    line-height: 1.8;
-    color: #929c85;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #eef1eb;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #5c6356;
   }
   figcaption p {
     margin: 0;
   }
-  .source {
-    display: inline-block;
-    margin-top: 6px;
+  .source-link {
+    color: #2f352b;
     text-decoration: underline;
     text-underline-offset: 3px;
+    font-size: 12.5px;
+    font-weight: 500;
   }
-  .bridge {
-    max-width: 660px;
-    margin: 42px auto 0;
-    font-size: 14px;
-    line-height: 1.9;
-    color: #dce6cf;
-    text-wrap: balance;
+  .source-link:hover {
+    color: #12140e;
   }
-  .tech-band {
-    max-width: 660px;
-    margin: 36px auto 0;
-    padding: 28px 28px 24px;
-    border: 1px solid #3e4435;
-    border-radius: 4px;
-    background: #171a12;
-    text-align: left;
+  .bridge-banner {
+    margin: 28px auto 0;
+    padding: 20px 32px;
+    background: #141813;
+    border-radius: 16px;
+    text-align: center;
   }
-  .tech-value {
+  .bridge-banner p {
     margin: 0;
-    color: #c5e987;
-    font-family: "Space Grotesk", "Noto Sans JP", sans-serif;
-    font-size: 40px;
-    font-weight: 500;
-    line-height: 1.2;
-    font-variant-numeric: tabular-nums;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.7;
+    color: #f4f7ef;
   }
-  .tech-label {
-    margin: 8px 0 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: #dce6cf;
-    line-height: 1.8;
-  }
-  .tech-note {
-    margin: 10px 0 0;
-    font-size: 11px;
-    line-height: 1.9;
-    color: #929c85;
-  }
-  .tech-sources {
-    margin: 10px 0 0;
-    font-size: 12px;
-    color: #929c85;
+  @media (max-width: 920px) {
+    .fact-cards {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+    .problem-visual-panel {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 24px;
+    }
   }
   @media (max-width: 600px) {
-    .problem {
-      margin-top: 84px;
+    .cy-issue-section {
+      padding: 72px 0;
     }
-    .intro {
-      font-size: 13px;
+    .fact-card {
+      padding: 28px 24px;
     }
-    .problem-visual {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 36px;
-      margin-top: 30px;
+    .chart-heading {
+      flex-direction: column;
+      align-items: flex-start;
     }
-    .key-side {
-      gap: 10px;
+    .bridge-banner {
+      padding: 18px 20px;
     }
-    .key-stage {
-      height: 140px;
-    }
-    .key-shape {
-      width: 98px;
-    }
-    .key-side > strong {
-      font-size: 13px;
-    }
-    .key-side > p {
-      font-size: 11px;
-    }
-    .losses {
-      width: 100%;
-      max-width: 340px;
-      margin-inline: auto;
-    }
-    .bridge {
-      font-size: 13px;
-      margin-top: 30px;
+    .bridge-banner p {
+      font-size: 14.5px;
     }
   }
 </style>
