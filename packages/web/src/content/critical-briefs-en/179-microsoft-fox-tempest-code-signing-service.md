@@ -60,7 +60,11 @@ countries: ["global"]
 
 ## 1. Summary
 
-According to Microsoft, Fox Tempest did not steal signing keys. It obtained genuine access to Microsoft's signing service with fake identities and by impersonating legitimate organisations. With the resulting certificates, it signed malware its customers brought in. The signed malware was distributed as legitimate software. According to Microsoft, the customers included groups that deploy ransomware. <strong>Even if no signing key is stolen, unless the applicant's identity is checked when signing access is granted, signatures made with access obtained under a fake identity pass as genuine.</strong>
+According to Microsoft, Fox Tempest obtained genuine access to Microsoft's signing service with fake identities and by impersonating legitimate organisations. With the resulting certificates, it signed malware its customers brought in, and the signed malware was distributed as legitimate software.
+
+According to Microsoft, no signing keys were stolen. The customers included groups that deploy ransomware.
+
+<strong>Even if no signing key is stolen, unless the applicant's identity is checked when signing access is granted, signatures made with access obtained under a fake identity pass as genuine.</strong>
 
 ## 2. What got through
 

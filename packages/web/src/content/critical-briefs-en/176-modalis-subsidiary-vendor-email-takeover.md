@@ -57,7 +57,11 @@ countries: ["jp", "us"]
 
 ## 1. Summary
 
-The invoice did not come from a lookalike address. It came from the vendor contact's genuine email account, through the vendor's own mail server. It billed for work that had actually been delivered. Only the bank account was different. It was noticed only after the vendor's accounting team billed again for the same job. <strong>When an invoice comes from the vendor's genuine mailbox and describes a real transaction, no amount of reading the email or the invoice tells you whether the bank account belongs to the vendor.</strong>
+The invoice came from the vendor contact's genuine email account, through the vendor's own mail server, not from a lookalike address. It billed for work that had actually been delivered; only the bank account was different.
+
+It was noticed only after the vendor's accounting team billed again for the same job.
+
+<strong>When an invoice comes from the vendor's genuine mailbox and describes a real transaction, no amount of reading the email or the invoice tells you whether the bank account belongs to the vendor.</strong>
 
 ## 2. What got through
 

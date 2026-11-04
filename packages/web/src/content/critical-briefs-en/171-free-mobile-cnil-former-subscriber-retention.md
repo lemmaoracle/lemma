@@ -59,7 +59,11 @@ countries: ["fr"]
 
 ## 1. Summary
 
-CNIL found two different things in this sanction. One is the entry point and detection: authentication for the remote-work VPN was not robust enough, and detection of abnormal behaviour was ineffective. The other is former subscribers' data: there was no way to sort it, and millions of pieces of data were kept without justification (FREE MOBILE only). Whether former subscribers' data was among what was accessed has not been disclosed. <strong>Personal data you hold, even if unused, is within reach of anyone who gets into the system.</strong>
+In October 2024 an attacker got into both companies' information systems and accessed subscriber personal data (CNIL). CNIL found two different things in this sanction. One is the entry point and detection: authentication for the remote-work VPN was not robust enough, and detection of abnormal behaviour was ineffective.
+
+The other is former subscribers' data: there was no way to sort it, and millions of pieces of data were kept without justification (FREE MOBILE only). Whether former subscribers' data was among what was accessed has not been disclosed.
+
+<strong>Personal data you hold, even if unused, is within reach of anyone who gets into the system.</strong>
 
 ## 2. What got through
 

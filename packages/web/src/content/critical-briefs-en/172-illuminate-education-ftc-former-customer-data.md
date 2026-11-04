@@ -60,7 +60,11 @@ countries: ["us"]
 
 ## 1. Summary
 
-The FTC's complaint alleges two things. One is the entry point: a cloud access key with administrator rights, belonging to an employee who had left three and a half years earlier, was used. The key had never been disabled or rotated. The other is retention: there were no retention limits or deletion rules, and data that contracts required to be deleted was kept. So old student data from former client school districts was part of the breach. The FTC says this "further exacerbated the severity" of the breach. <strong>Personal data that is not deleted after a contract ends is taken just like current customers' data when someone gets into the system.</strong>
+The FTC's complaint alleges that a cloud access key with administrator rights, belonging to an employee who had left the company, was used to get into its environment. The key had never been disabled or rotated.
+
+The complaint also alleges that there were no retention limits or deletion rules, and that data which contracts required to be deleted was kept. So old student data from former client school districts was part of the breach; the FTC says this "further exacerbated the severity" of the breach.
+
+<strong>Personal data that is not deleted after a contract ends is taken just like current customers' data when someone gets into the system.</strong>
 
 ## 2. What got through
 

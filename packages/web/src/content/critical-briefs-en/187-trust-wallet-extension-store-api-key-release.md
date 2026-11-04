@@ -59,7 +59,11 @@ countries: ["global"]
 
 ## 1. Summary
 
-The tampered version did not come from a fake site or a fake app. It arrived from the official Chrome Web Store as an update to the genuine extension users already had installed. According to Trust Wallet, the attacker submitted the tampered build directly with a leaked store API key. The build skipped internal approval and manual review, and was published automatically after passing store review. What was broken here was not a company's withdrawal keys or signers, but the channel that delivers software handling keys on users' devices. <strong>If holding the publishing key is enough to ship a new version, a version that never went through internal approval still reaches users as a genuine extension update.</strong>
+The tampered version arrived from the official Chrome Web Store as an update to the genuine extension users already had installed. It did not come from a fake site or a fake app.
+
+According to Trust Wallet, the attacker submitted the tampered build directly with a leaked store API key. The build skipped internal approval and manual review, and was published automatically after passing store review. What was broken here was not a company's withdrawal keys or signers, but the channel that delivers software handling keys on users' devices.
+
+<strong>If holding the publishing key is enough to ship a new version, a version that never went through internal approval still reaches users as a genuine extension update.</strong>
 
 ## 2. What got through
 
