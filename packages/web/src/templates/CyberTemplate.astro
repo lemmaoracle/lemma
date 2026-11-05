@@ -120,7 +120,7 @@ const C = isJa
         zoneLegacyEnd: "▲ 従来の防御はここまで（正規の鍵・権限内のAI操作は通過）",
         zoneGateBadge: "ProofGate",
         zoneGateSub: "新しく加わる「実行直前」の関門",
-        branchTitle: "実行をストップ → 担当者の確認へ",
+        branchTitle: "実行をストップ",
         branchSub: "口座不一致・未証明の変更・範囲外のAI操作を保留",
         protectedLabel: "照合を通過した操作のみ実行",
         layers: [
@@ -344,7 +344,7 @@ const C = isJa
         zoneLegacyEnd: "▲ Traditional defense ends here (stolen valid keys & authorized AI pass through)",
         zoneGateBadge: "ProofGate",
         zoneGateSub: "New pre-execution verification gate",
-        branchTitle: "Execution Stopped → Routed to Human Review",
+        branchTitle: "Execution stopped",
         branchSub: "Holds account mismatches, unverified changes & out-of-scope AI calls",
         protectedLabel: "Only verified operations execute",
         layers: [
@@ -1049,25 +1049,25 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 points={isoPoly([[0, -100, 0], [880, -100, 0], [880, 100, 0], [0, 100, 0]])}
                 fill="#151a14"
                 stroke="#2c3529"
-                stroke-width="1.5"
+                stroke-width="1"
               />
               <!-- Main Deck Front-Left Bevel Thickness (v = 100, z: 0..-16) -->
               <polygon
                 points={isoPoly([[0, 100, 0], [880, 100, 0], [880, 100, -16], [0, 100, -16]])}
                 fill="#0d110c"
                 stroke="#232b20"
-                stroke-width="1"
+                stroke-width="0.75"
               />
               <!-- Main Deck Front-Right Bevel Thickness (u = 880, z: 0..-16) -->
               <polygon
                 points={isoPoly([[880, -100, 0], [880, 100, 0], [880, 100, -16], [880, -100, -16]])}
                 fill="#090c08"
                 stroke="#232b20"
-                stroke-width="1"
+                stroke-width="0.75"
               />
 
               <!-- Isometric Deck Grid Lines -->
-              <g stroke="rgba(255,255,255,0.045)" stroke-width="1">
+              <g stroke="rgba(255,255,255,0.04)" stroke-width="0.75">
                 {
                   floorGridU.map((u) => (
                     <line
@@ -1095,19 +1095,19 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 points={isoPoly([[480, 100, 0], [640, 100, 0], [640, 235, 0], [480, 235, 0]])}
                 fill="#211614"
                 stroke="#7f2d22"
-                stroke-width="1.5"
+                stroke-width="1"
               />
               <polygon
                 points={isoPoly([[480, 235, 0], [640, 235, 0], [640, 235, -16], [480, 235, -16]])}
                 fill="#140c0b"
                 stroke="#5c2119"
-                stroke-width="1"
+                stroke-width="0.75"
               />
               <polygon
                 points={isoPoly([[640, 100, 0], [640, 235, 0], [640, 235, -16], [640, 100, -16]])}
                 fill="#0f0908"
                 stroke="#5c2119"
-                stroke-width="1"
+                stroke-width="0.75"
               />
 
               <!-- =========================================================
@@ -1118,6 +1118,7 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 points={isoPoly([[80, -86, 1], [435, -86, 1], [435, 86, 1], [80, 86, 1]])}
                 fill="rgba(255, 255, 255, 0.03)"
                 stroke="rgba(255, 255, 255, 0.14)"
+                stroke-width="0.85"
                 stroke-dasharray="5 4"
               />
 
@@ -1125,16 +1126,16 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
               <polygon
                 points={isoPoly([[475, -88, 1], [635, -88, 1], [635, 88, 1], [475, 88, 1]])}
                 fill="rgba(168, 224, 16, 0.1)"
-                stroke="rgba(168, 224, 16, 0.5)"
-                stroke-width="1.5"
+                stroke="rgba(168, 224, 16, 0.45)"
+                stroke-width="1"
               />
 
               <!-- Zone C: Execution Core Carpet (u: 710..860) -->
               <polygon
                 points={isoPoly([[710, -86, 1], [860, -86, 1], [860, 86, 1], [710, 86, 1]])}
                 fill="rgba(168, 224, 16, 0.05)"
-                stroke="rgba(168, 224, 16, 0.28)"
-                stroke-width="1"
+                stroke="rgba(168, 224, 16, 0.25)"
+                stroke-width="0.85"
               />
 
               <!-- Floor Track Center Guide Rail (u: 25..750, v: 0, z: 2) -->
@@ -1144,7 +1145,7 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 x2={iso(750, 0, 2).x}
                 y2={iso(750, 0, 2).y}
                 stroke="rgba(255,255,255,0.14)"
-                stroke-width="3"
+                stroke-width="1.5"
               />
 
               <!-- =========================================================
@@ -1155,9 +1156,10 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 points={isoPoly([[18, -22, 0], [46, -22, 0], [46, 22, 0], [18, 22, 0]])}
                 fill="#252c22"
                 stroke="#4a5544"
+                stroke-width="0.85"
               />
-              <circle cx={iso(32, 0, 44).x} cy={iso(32, 0, 44).y} r="7" fill="#a8e010" />
-              <circle cx={iso(32, 0, 44).x} cy={iso(32, 0, 44).y} r="13" fill="none" stroke="#a8e010" stroke-opacity="0.45" stroke-width="1.5" />
+              <circle cx={iso(32, 0, 44).x} cy={iso(32, 0, 44).y} r="6.5" fill="#a8e010" />
+              <circle cx={iso(32, 0, 44).x} cy={iso(32, 0, 44).y} r="12" fill="none" stroke="#a8e010" stroke-opacity="0.45" stroke-width="1" />
 
               <!-- Beam Segment 0 -> Gate 1 (u: 32..148, v: 0, z: 44) -->
               <line
@@ -1166,8 +1168,8 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 x2={iso(148, 0, 44).x}
                 y2={iso(148, 0, 44).y}
                 stroke="#94a386"
-                stroke-width="3.5"
-                stroke-dasharray="6 4"
+                stroke-width="1.8"
+                stroke-dasharray="5 4"
               />
 
               <!-- GATE 01: 境界防御層 (WAF / Pattern Match) at u: 136..162, v: -72..+72, z: 0..96 -->
@@ -1177,57 +1179,57 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                   points={isoPoly([[128, -78, 0], [170, -78, 0], [170, 78, 0], [128, 78, 0]])}
                   fill="#222920"
                   stroke="#465241"
+                  stroke-width="0.85"
                 />
                 <!-- Back-Right Face Outline -->
                 <polygon
                   points={isoPoly([[136, -72, 0], [136, 72, 0], [136, 72, 96], [136, -72, 96]])}
                   fill="rgba(45, 54, 42, 0.35)"
                   stroke="#495443"
-                  stroke-width="1"
+                  stroke-width="0.75"
                 />
                 <!-- Top Thickness Face (z = 96) -->
                 <polygon
                   points={isoPoly([[136, -72, 96], [162, -72, 96], [162, 72, 96], [136, 72, 96]])}
                   fill="#495643"
                   stroke="#788870"
-                  stroke-width="1.2"
+                  stroke-width="0.9"
                 />
                 <!-- Front-Left Thickness Face (v = 72) -->
                 <polygon
                   points={isoPoly([[136, 72, 0], [162, 72, 0], [162, 72, 96], [136, 72, 96]])}
                   fill="#2a3226"
                   stroke="#63705c"
-                  stroke-width="1.2"
+                  stroke-width="0.9"
                 />
                 <!-- Wide Front Portal Face (u = 162) -->
                 <polygon
                   points={isoPoly([[162, -72, 0], [162, 72, 0], [162, 72, 96], [162, -72, 96]])}
                   fill="rgba(54, 65, 50, 0.72)"
                   stroke="#7d8d75"
-                  stroke-width="1.5"
+                  stroke-width="1"
                 />
                 <!-- Inner Pattern-Matching Filter Screen (u = 162, v: -44..+44, z: 16..80) -->
                 <polygon
                   points={isoPoly([[162, -44, 16], [162, 44, 16], [162, 44, 80], [162, -44, 80]])}
                   fill="rgba(18, 22, 17, 0.78)"
                   stroke="#95a58c"
-                  stroke-width="1.2"
+                  stroke-width="0.85"
                 />
                 <!-- Isometric Pattern Scan Grid Lines inside Aperture -->
-                <line x1={iso(162, -44, 37).x} y1={iso(162, -44, 37).y} x2={iso(162, 44, 37).x} y2={iso(162, 44, 37).y} stroke="rgba(255,255,255,0.22)" stroke-width="1" />
-                <line x1={iso(162, -44, 59).x} y1={iso(162, -44, 59).y} x2={iso(162, 44, 59).x} y2={iso(162, 44, 59).y} stroke="rgba(255,255,255,0.22)" stroke-width="1" />
-                <line x1={iso(162, -15, 16).x} y1={iso(162, -15, 16).y} x2={iso(162, -15, 80).x} y2={iso(162, -15, 80).y} stroke="rgba(255,255,255,0.22)" stroke-width="1" />
-                <line x1={iso(162, 15, 16).x} y1={iso(162, 15, 16).y} x2={iso(162, 15, 80).x} y2={iso(162, 15, 80).y} stroke="rgba(255,255,255,0.22)" stroke-width="1" />
+                <line x1={iso(162, -44, 37).x} y1={iso(162, -44, 37).y} x2={iso(162, 44, 37).x} y2={iso(162, 44, 37).y} stroke="rgba(255,255,255,0.18)" stroke-width="0.75" />
+                <line x1={iso(162, -44, 59).x} y1={iso(162, -44, 59).y} x2={iso(162, 44, 59).x} y2={iso(162, 44, 59).y} stroke="rgba(255,255,255,0.18)" stroke-width="0.75" />
+                <line x1={iso(162, -15, 16).x} y1={iso(162, -15, 16).y} x2={iso(162, -15, 80).x} y2={iso(162, -15, 80).y} stroke="rgba(255,255,255,0.18)" stroke-width="0.75" />
+                <line x1={iso(162, 15, 16).x} y1={iso(162, 15, 16).y} x2={iso(162, 15, 80).x} y2={iso(162, 15, 80).y} stroke="rgba(255,255,255,0.18)" stroke-width="0.75" />
                 <!-- Portal Aperture Node at (162, 0, 44) -->
-                <ellipse cx={iso(162, 0, 44).x} cy={iso(162, 0, 44).y} rx="10" ry="14" fill="rgba(168,224,16,0.14)" stroke="#b8c4ae" stroke-width="1.5" />
+                <ellipse cx={iso(162, 0, 44).x} cy={iso(162, 0, 44).y} rx="10" ry="14" fill="rgba(168,224,16,0.14)" stroke="#b8c4ae" stroke-width="1" />
 
                 <!-- Floating Callout Header above Gate 01 -->
                 <g transform={`translate(${iso(149, -20, 128).x}, ${iso(149, -20, 128).y})`}>
-                  <line x1="0" y1="8" x2="0" y2="28" stroke="#8b9982" stroke-width="1.5" stroke-dasharray="2 2" />
-                  <rect x="-86" y="-40" width="172" height="48" rx="8" fill="#1d231b" stroke="#5b6854" stroke-width="1.5" />
-                  <text x="-74" y="-21" fill="#a8e010" font-family="Space Mono, monospace" font-size="11" font-weight="700">01</text>
-                  <text x="-52" y="-20" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="13" font-weight="700">{C.guardrail.layers[0]!.name}</text>
-                  <text x="-74" y="-3" fill="#b8c2b0" font-family="Noto Sans JP, sans-serif" font-size="11">{C.guardrail.layers[0]!.sub}</text>
+                  <line x1="0" y1="8" x2="0" y2="28" stroke="#8b9982" stroke-width="1" stroke-dasharray="2 2" />
+                  <rect x="-82" y="-40" width="164" height="48" rx="8" fill="#1d231b" stroke="#5b6854" stroke-width="1" />
+                  <text x="-70" y="-20" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="13" font-weight="700">{C.guardrail.layers[0]!.name}</text>
+                  <text x="-70" y="-3" fill="#b8c2b0" font-family="Noto Sans JP, sans-serif" font-size="11">{C.guardrail.layers[0]!.sub}</text>
                 </g>
               </g>
 
@@ -1241,8 +1243,8 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 x2={iso(338, 0, 44).x}
                 y2={iso(338, 0, 44).y}
                 stroke="#94a386"
-                stroke-width="3.5"
-                stroke-dasharray="6 4"
+                stroke-width="1.8"
+                stroke-dasharray="5 4"
               />
 
               <!-- GATE 02: 本人認証・権限層 (Passwords / API Keys) at u: 326..352, v: -72..+72, z: 0..96 -->
@@ -1252,60 +1254,60 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                   points={isoPoly([[318, -78, 0], [360, -78, 0], [360, 78, 0], [318, 78, 0]])}
                   fill="#222920"
                   stroke="#465241"
+                  stroke-width="0.85"
                 />
                 <!-- Back-Right Face -->
                 <polygon
                   points={isoPoly([[326, -72, 0], [326, 72, 0], [326, 72, 96], [326, -72, 96]])}
                   fill="rgba(45, 54, 42, 0.35)"
                   stroke="#495443"
-                  stroke-width="1"
+                  stroke-width="0.75"
                 />
                 <!-- Top Thickness Face -->
                 <polygon
                   points={isoPoly([[326, -72, 96], [352, -72, 96], [352, 72, 96], [326, 72, 96]])}
                   fill="#495643"
                   stroke="#788870"
-                  stroke-width="1.2"
+                  stroke-width="0.9"
                 />
                 <!-- Front-Left Thickness Face -->
                 <polygon
                   points={isoPoly([[326, 72, 0], [352, 72, 0], [352, 72, 96], [326, 72, 96]])}
                   fill="#2a3226"
                   stroke="#63705c"
-                  stroke-width="1.2"
+                  stroke-width="0.9"
                 />
                 <!-- Wide Front Portal Face (u = 352) -->
                 <polygon
                   points={isoPoly([[352, -72, 0], [352, 72, 0], [352, 72, 96], [352, -72, 96]])}
                   fill="rgba(54, 65, 50, 0.72)"
                   stroke="#7d8d75"
-                  stroke-width="1.5"
+                  stroke-width="1"
                 />
                 <!-- Inner Auth Verification Screen (u = 352, v: -44..+44, z: 16..80) -->
                 <polygon
                   points={isoPoly([[352, -44, 16], [352, 44, 16], [352, 44, 80], [352, -44, 80]])}
                   fill="rgba(18, 22, 17, 0.8)"
                   stroke="#95a58c"
-                  stroke-width="1.2"
+                  stroke-width="0.85"
                 />
                 <!-- Auth Key Ring Geometry at (352, 0, 44) -->
-                <ellipse cx={iso(352, 0, 44).x} cy={iso(352, 0, 44).y} rx="18" ry="23" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1.2" stroke-dasharray="4 3" />
-                <ellipse cx={iso(352, 0, 44).x} cy={iso(352, 0, 44).y} rx="10" ry="14" fill="rgba(168,224,16,0.14)" stroke="#b8c4ae" stroke-width="1.5" />
+                <ellipse cx={iso(352, 0, 44).x} cy={iso(352, 0, 44).y} rx="18" ry="23" fill="none" stroke="rgba(255,255,255,0.24)" stroke-width="0.85" stroke-dasharray="4 3" />
+                <ellipse cx={iso(352, 0, 44).x} cy={iso(352, 0, 44).y} rx="10" ry="14" fill="rgba(168,224,16,0.14)" stroke="#b8c4ae" stroke-width="1" />
 
                 <!-- Floating Callout Header above Gate 02 ("これまでここで終わり") -->
                 <g transform={`translate(${iso(339, -20, 134).x}, ${iso(339, -20, 134).y})`}>
-                  <line x1="0" y1="22" x2="0" y2="36" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="2 2" />
-                  <rect x="-92" y="-48" width="184" height="68" rx="8" fill="#1d231b" stroke="#d97706" stroke-width="1.5" />
-                  <rect x="-82" y="-40" width="128" height="17" rx="4" fill="rgba(245, 158, 11, 0.2)" />
-                  <text x="-76" y="-28" fill="#fcd34d" font-family="Noto Sans JP, sans-serif" font-size="10.5" font-weight="700">{C.guardrail.layers[1]!.tag}</text>
-                  <text x="-82" y="-8" fill="#a8e010" font-family="Space Mono, monospace" font-size="11" font-weight="700">02</text>
-                  <text x="-60" y="-7" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="13" font-weight="700">{C.guardrail.layers[1]!.name}</text>
-                  <text x="-82" y="10" fill="#b8c2b0" font-family="Noto Sans JP, sans-serif" font-size="11">{C.guardrail.layers[1]!.sub}</text>
+                  <line x1="0" y1="22" x2="0" y2="36" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2 2" />
+                  <rect x="-88" y="-48" width="176" height="68" rx="8" fill="#1d231b" stroke="#d97706" stroke-width="1" />
+                  <rect x="-76" y="-40" width="128" height="17" rx="4" fill="rgba(245, 158, 11, 0.2)" />
+                  <text x="-70" y="-28" fill="#fcd34d" font-family="Noto Sans JP, sans-serif" font-size="10.5" font-weight="700">{C.guardrail.layers[1]!.tag}</text>
+                  <text x="-76" y="-7" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="13" font-weight="700">{C.guardrail.layers[1]!.name}</text>
+                  <text x="-76" y="10" fill="#b8c2b0" font-family="Noto Sans JP, sans-serif" font-size="11">{C.guardrail.layers[1]!.sub}</text>
                 </g>
               </g>
 
               <!-- =========================================================
-                   5. LEGACY DEFENSE BOUNDARY LINE ("従来の防御はここまで")
+                   5. LEGACY DEFENSE BOUNDARY LINE
                    ========================================================= -->
               <line
                 x1={iso(440, -98, 2).x}
@@ -1313,16 +1315,9 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 x2={iso(440, 108, 2).x}
                 y2={iso(440, 108, 2).y}
                 stroke="#f59e0b"
-                stroke-width="2.5"
-                stroke-dasharray="7 5"
+                stroke-width="1.2"
+                stroke-dasharray="6 4"
               />
-              <!-- Boundary Callout Pill on Front Edge of Floor -->
-              <g transform={`translate(${iso(260, 118, -8).x}, ${iso(260, 118, -8).y})`}>
-                <rect x="-155" y="-14" width="310" height="26" rx="13" fill="#231c12" stroke="#d97706" stroke-width="1.2" />
-                <text x="0" y="3" text-anchor="middle" fill="#fde68a" font-family="Noto Sans JP, sans-serif" font-size="11" font-weight="700">
-                  {C.guardrail.zoneLegacy}
-                </text>
-              </g>
 
               <!-- =========================================================
                    6. PAINTER'S ORDER LAYER 3: BEAM 2->3 & GATE 03 (PROOFGATE)
@@ -1334,8 +1329,8 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 x2={iso(545, 0, 44).x}
                 y2={iso(545, 0, 44).y}
                 stroke="#d97706"
-                stroke-width="3.5"
-                stroke-dasharray="6 4"
+                stroke-width="1.8"
+                stroke-dasharray="5 4"
               />
 
               <!-- GATE 03: PROOFGATE 実行照合層 (Hero Armored Lime Gate) at u: 526..568, v: -84..+84, z: 0..122 -->
@@ -1345,42 +1340,42 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                   points={isoPoly([[514, -90, 0], [580, -90, 0], [580, 90, 0], [514, 90, 0]])}
                   fill="#21310c"
                   stroke="#a8e010"
-                  stroke-width="1.8"
+                  stroke-width="1.1"
                 />
                 <!-- Back-Right Face -->
                 <polygon
                   points={isoPoly([[526, -84, 0], [526, 84, 0], [526, 84, 122], [526, -84, 122]])}
                   fill="rgba(34, 52, 12, 0.55)"
                   stroke="#6f9c00"
-                  stroke-width="1.2"
+                  stroke-width="0.85"
                 />
                 <!-- Top Thickness Face (Bright Lemma Lime) -->
                 <polygon
                   points={isoPoly([[526, -84, 122], [568, -84, 122], [568, 84, 122], [526, 84, 122]])}
                   fill="#a8e010"
                   stroke="#d9f99d"
-                  stroke-width="1.5"
+                  stroke-width="1"
                 />
                 <!-- Front-Left Thickness Face -->
                 <polygon
                   points={isoPoly([[526, 84, 0], [568, 84, 0], [568, 84, 122], [526, 84, 122]])}
                   fill="#364f08"
                   stroke="#a8e010"
-                  stroke-width="1.5"
+                  stroke-width="1"
                 />
                 <!-- Wide Front Portal Face (u = 568) -->
                 <polygon
                   points={isoPoly([[568, -84, 0], [568, 84, 0], [568, 84, 122], [568, -84, 122]])}
                   fill="rgba(25, 38, 12, 0.88)"
                   stroke="#a8e010"
-                  stroke-width="2.2"
+                  stroke-width="1.35"
                 />
                 <!-- Inner Cryptographic Gate Screen (u = 568, v: -52..+52, z: 16..102) -->
                 <polygon
                   points={isoPoly([[568, -52, 16], [568, 52, 16], [568, 52, 102], [568, -52, 102]])}
                   fill="rgba(12, 18, 9, 0.9)"
                   stroke="#a8e010"
-                  stroke-width="1.5"
+                  stroke-width="1"
                 />
                 <!-- Cryptographic ZKP & Blockchain Shield Rings at (568, 0, 52) -->
                 <ellipse
@@ -1391,8 +1386,8 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                   ry="34"
                   fill="none"
                   stroke="#a8e010"
-                  stroke-width="1.8"
-                  stroke-dasharray="6 4"
+                  stroke-width="1.1"
+                  stroke-dasharray="5 4"
                 />
                 <ellipse
                   class="cy-pg-ring-inner"
@@ -1402,7 +1397,7 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                   ry="19"
                   fill="rgba(168, 224, 16, 0.25)"
                   stroke="#d9f99d"
-                  stroke-width="2"
+                  stroke-width="1.2"
                 />
                 <!-- Intercept Shockwave Ring (Flashes when blocking an attack) -->
                 <ellipse
@@ -1413,22 +1408,21 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                   ry="24"
                   fill="none"
                   stroke="#ef4444"
-                  stroke-width="3"
+                  stroke-width="1.8"
                 />
 
                 <!-- Prominent Hero Beacon Callout above Gate 03 ("ProofGate") -->
                 <g transform={`translate(${iso(547, -25, 162).x}, ${iso(547, -25, 162).y})`}>
-                  <line x1="0" y1="22" x2="0" y2="40" stroke="#a8e010" stroke-width="2.5" />
-                  <rect x="-110" y="-54" width="220" height="74" rx="10" fill="#131c0d" stroke="#a8e010" stroke-width="2.2" />
-                  <rect x="-98" y="-44" width="84" height="20" rx="5" fill="#a8e010" />
-                  <text x="-88" y="-30" fill="#12140e" font-family="Space Grotesk, Noto Sans JP, sans-serif" font-size="11.5" font-weight="800">
+                  <line x1="0" y1="22" x2="0" y2="40" stroke="#a8e010" stroke-width="1.2" />
+                  <rect x="-102" y="-54" width="204" height="74" rx="10" fill="#131c0d" stroke="#a8e010" stroke-width="1.35" />
+                  <rect x="-90" y="-44" width="84" height="20" rx="5" fill="#a8e010" />
+                  <text x="-80" y="-30" fill="#12140e" font-family="Space Grotesk, Noto Sans JP, sans-serif" font-size="11.5" font-weight="800">
                     {C.guardrail.zoneGateBadge}
                   </text>
-                  <text x="-98" y="-7" fill="#a8e010" font-family="Space Mono, monospace" font-size="12" font-weight="700">03</text>
-                  <text x="-74" y="-6" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="14" font-weight="700">
+                  <text x="-90" y="-6" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="14" font-weight="700">
                     {C.guardrail.layers[2]!.name}
                   </text>
-                  <text x="-98" y="11" fill="#d9f99d" font-family="Noto Sans JP, sans-serif" font-size="11">
+                  <text x="-90" y="11" fill="#d9f99d" font-family="Noto Sans JP, sans-serif" font-size="11">
                     {C.guardrail.layers[2]!.sub}
                   </text>
                 </g>
@@ -1443,8 +1437,8 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 d={isoPath([[555, 0, 44], [555, 95, 28], [560, 175, 18]])}
                 fill="none"
                 stroke="#ef4444"
-                stroke-width="3.5"
-                stroke-dasharray="7 4"
+                stroke-width="1.8"
+                stroke-dasharray="6 4"
               />
               <!-- 3D Holding Terminal Cube on the Side-Branch Platform (u: 525..595, v: 155..205, z: 0..28) -->
               <g class="cy-iso-hold-box">
@@ -1452,28 +1446,25 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                   points={isoPoly([[525, 155, 28], [595, 155, 28], [595, 205, 28], [525, 205, 28]])}
                   fill="#451a16"
                   stroke="#f87171"
-                  stroke-width="1.5"
+                  stroke-width="1"
                 />
                 <polygon
                   points={isoPoly([[525, 205, 0], [595, 205, 0], [595, 205, 28], [525, 205, 28]])}
                   fill="#2c100e"
                   stroke="#ef4444"
-                  stroke-width="1.2"
+                  stroke-width="0.85"
                 />
                 <polygon
                   points={isoPoly([[595, 155, 0], [595, 205, 0], [595, 205, 28], [595, 155, 28]])}
                   fill="#220c0a"
                   stroke="#ef4444"
-                  stroke-width="1.2"
+                  stroke-width="0.85"
                 />
-                <!-- Callout Banner on Side-Branch Platform -->
-                <g transform={`translate(${iso(560, 215, 0).x}, ${iso(560, 215, 0).y + 18})`}>
-                  <rect x="-132" y="-16" width="264" height="44" rx="8" fill="#281210" stroke="#ef4444" stroke-width="1.5" />
-                  <text x="0" y="1" text-anchor="middle" fill="#fecaca" font-family="Noto Sans JP, sans-serif" font-size="12" font-weight="700">
+                <!-- Compact Single-Line Callout Banner on Side-Branch Platform -->
+                <g transform={`translate(${iso(560, 215, 0).x}, ${iso(560, 215, 0).y + 14})`}>
+                  <rect x="-68" y="-14" width="136" height="28" rx="7" fill="#281210" stroke="#ef4444" stroke-width="1" />
+                  <text x="0" y="4" text-anchor="middle" fill="#fecaca" font-family="Noto Sans JP, sans-serif" font-size="12" font-weight="700">
                     {C.guardrail.branchTitle}
-                  </text>
-                  <text x="0" y="18" text-anchor="middle" fill="#fca5a5" font-family="Noto Sans JP, sans-serif" font-size="10.5">
-                    {C.guardrail.branchSub}
                   </text>
                 </g>
               </g>
@@ -1489,8 +1480,8 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                 x2={iso(748, 0, 44).x}
                 y2={iso(748, 0, 44).y}
                 stroke="#a8e010"
-                stroke-width="3.5"
-                stroke-dasharray="6 4"
+                stroke-width="1.8"
+                stroke-dasharray="5 4"
               />
 
               <!-- LAYER 04: 実行層 (SQL / Banking APIs / Master DB Monoliths) at u: 735..840, v: -75..+75 -->
@@ -1500,34 +1491,33 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                   points={isoPoly([[722, -82, 0], [852, -82, 0], [852, 82, 0], [722, 82, 0]])}
                   fill="#1c2617"
                   stroke="#6f9c00"
-                  stroke-width="1.5"
+                  stroke-width="1"
                 />
 
                 <!-- 3D Monolith 1: Back-Right Cube (SQL / DB) v: -66..-26, u: 748..816, z: 0..78 -->
-                <polygon points={isoPoly([[748, -66, 78], [816, -66, 78], [816, -26, 78], [748, -26, 78]])} fill="#3a4a32" stroke="#84a96c" stroke-width="1.2" />
-                <polygon points={isoPoly([[748, -26, 0], [816, -26, 0], [816, -26, 78], [748, -26, 78]])} fill="#253020" stroke="#648253" stroke-width="1.2" />
-                <polygon points={isoPoly([[816, -66, 0], [816, -26, 0], [816, -26, 78], [816, -66, 78]])} fill="#1d2618" stroke="#648253" stroke-width="1.2" />
+                <polygon points={isoPoly([[748, -66, 78], [816, -66, 78], [816, -26, 78], [748, -26, 78]])} fill="#3a4a32" stroke="#84a96c" stroke-width="0.85" />
+                <polygon points={isoPoly([[748, -26, 0], [816, -26, 0], [816, -26, 78], [748, -26, 78]])} fill="#253020" stroke="#648253" stroke-width="0.85" />
+                <polygon points={isoPoly([[816, -66, 0], [816, -26, 0], [816, -26, 78], [816, -66, 78]])} fill="#1d2618" stroke="#648253" stroke-width="0.85" />
                 <text x={iso(782, -46, 84).x} y={iso(782, -46, 84).y} text-anchor="middle" fill="#d9f99d" font-family="Space Mono, monospace" font-size="10" font-weight="700">SQL</text>
 
                 <!-- 3D Monolith 2: Center Cube (Banking / Payout API) v: -18..+22, u: 748..816, z: 0..88 -->
-                <polygon points={isoPoly([[748, -18, 88], [816, -18, 88], [816, 22, 88], [748, 22, 88]])} fill="#465c3b" stroke="#a8e010" stroke-width="1.4" />
-                <polygon points={isoPoly([[748, 22, 0], [816, 22, 0], [816, 22, 88], [748, 22, 88]])} fill="#2c3b25" stroke="#7ea366" stroke-width="1.2" />
-                <polygon points={isoPoly([[816, -18, 0], [816, 22, 0], [816, 22, 88], [816, -18, 88]])} fill="#222e1c" stroke="#7ea366" stroke-width="1.2" />
+                <polygon points={isoPoly([[748, -18, 88], [816, -18, 88], [816, 22, 88], [748, 22, 88]])} fill="#465c3b" stroke="#a8e010" stroke-width="1" />
+                <polygon points={isoPoly([[748, 22, 0], [816, 22, 0], [816, 22, 88], [748, 22, 88]])} fill="#2c3b25" stroke="#7ea366" stroke-width="0.85" />
+                <polygon points={isoPoly([[816, -18, 0], [816, 22, 0], [816, 22, 88], [816, -18, 88]])} fill="#222e1c" stroke="#7ea366" stroke-width="0.85" />
                 <text x={iso(782, 2, 94).x} y={iso(782, 2, 94).y} text-anchor="middle" fill="#a8e010" font-family="Space Mono, monospace" font-size="10" font-weight="700">API</text>
 
                 <!-- 3D Monolith 3: Front-Left Cube (Master Records) v: +30..+70, u: 748..816, z: 0..72 -->
-                <polygon points={isoPoly([[748, 30, 72], [816, 30, 72], [816, 70, 72], [748, 70, 72]])} fill="#3a4a32" stroke="#84a96c" stroke-width="1.2" />
-                <polygon points={isoPoly([[748, 70, 0], [816, 70, 0], [816, 70, 72], [748, 70, 72]])} fill="#253020" stroke="#648253" stroke-width="1.2" />
-                <polygon points={isoPoly([[816, 30, 0], [816, 70, 0], [816, 70, 72], [816, 30, 72]])} fill="#1d2618" stroke="#648253" stroke-width="1.2" />
+                <polygon points={isoPoly([[748, 30, 72], [816, 30, 72], [816, 70, 72], [748, 70, 72]])} fill="#3a4a32" stroke="#84a96c" stroke-width="0.85" />
+                <polygon points={isoPoly([[748, 70, 0], [816, 70, 0], [816, 70, 72], [748, 70, 72]])} fill="#253020" stroke="#648253" stroke-width="0.85" />
+                <polygon points={isoPoly([[816, 30, 0], [816, 70, 0], [816, 70, 72], [816, 30, 72]])} fill="#1d2618" stroke="#648253" stroke-width="0.85" />
                 <text x={iso(782, 50, 78).x} y={iso(782, 50, 78).y} text-anchor="middle" fill="#d9f99d" font-family="Space Mono, monospace" font-size="10" font-weight="700">DB</text>
 
                 <!-- Floating Callout Header above Layer 04 -->
                 <g transform={`translate(${iso(790, -25, 134).x}, ${iso(790, -25, 134).y})`}>
-                  <line x1="0" y1="8" x2="0" y2="28" stroke="#a8e010" stroke-width="1.5" stroke-dasharray="2 2" />
-                  <rect x="-92" y="-42" width="184" height="50" rx="8" fill="#182213" stroke="#7da82b" stroke-width="1.5" />
-                  <text x="-80" y="-23" fill="#a8e010" font-family="Space Mono, monospace" font-size="11" font-weight="700">04</text>
-                  <text x="-58" y="-22" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="13" font-weight="700">{C.guardrail.layers[3]!.name}</text>
-                  <text x="-80" y="-4" fill="#c7d6b8" font-family="Noto Sans JP, sans-serif" font-size="11">{C.guardrail.layers[3]!.sub}</text>
+                  <line x1="0" y1="8" x2="0" y2="28" stroke="#a8e010" stroke-width="1" stroke-dasharray="2 2" />
+                  <rect x="-88" y="-42" width="176" height="50" rx="8" fill="#182213" stroke="#7da82b" stroke-width="1" />
+                  <text x="-76" y="-22" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="13" font-weight="700">{C.guardrail.layers[3]!.name}</text>
+                  <text x="-76" y="-4" fill="#c7d6b8" font-family="Noto Sans JP, sans-serif" font-size="11">{C.guardrail.layers[3]!.sub}</text>
                 </g>
               </g>
 
@@ -1536,7 +1526,7 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                    ========================================================= -->
               <!-- Attack / Rogue AI Packet: Enters -> Passes Gate 01 -> Passes Gate 02 -> Intercepted at Gate 03 ProofGate -> Diverted to Hold Platform -->
               <g class="cy-packet-attack" filter="url(#isoGlowRed)">
-                <circle r="9" fill="#ef4444" stroke="#fecaca" stroke-width="2">
+                <circle r="8" fill="#ef4444" stroke="#fecaca" stroke-width="1.2">
                   <animateMotion
                     dur="5.6s"
                     repeatCount="indefinite"
@@ -1550,7 +1540,7 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
 
               <!-- Normal Verified Business Packet: Enters -> Gate 01 -> Gate 02 -> Verified at Gate 03 ProofGate -> Executes at Layer 04 (SQL / API) -->
               <g class="cy-packet-normal" filter="url(#isoGlowLime)">
-                <circle r="8" fill="#a8e010" stroke="#ffffff" stroke-width="2">
+                <circle r="7.5" fill="#a8e010" stroke="#ffffff" stroke-width="1.2">
                   <animateMotion
                     dur="5.6s"
                     repeatCount="indefinite"
@@ -1577,7 +1567,6 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
                     <span class="cy-bird-step-fill"></span>
                   </div>
                   <div class="cy-bird-step-head">
-                    <span class="cy-bird-step-num">{layer.step}</span>
                     <strong class="cy-bird-step-title">{layer.name}</strong>
                     {idx === 1 && <span class="cy-bird-mini-badge is-warn">{layer.tag}</span>}
                     {idx === 2 && <span class="cy-bird-mini-badge is-lime">{layer.tag}</span>}
@@ -3854,7 +3843,6 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
     font-size: 12px;
     color: #9ca694;
     line-height: 1.4;
-    padding-left: 24px;
   }
 
   @media (max-width: 1024px) {
