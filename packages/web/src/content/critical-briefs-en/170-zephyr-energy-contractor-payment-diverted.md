@@ -46,6 +46,7 @@ controls:
     item: "Hold payments until the destination account can be matched to the vendor's registered details"
   - slug: "audit-trail"
     item: "Record which payment went to which account, and how it was checked"
+attack_method: "impersonation"
 impact: "A single contractor payment was diverted, sending about £700K to a third-party account"
 takeaway: "One payment meant for a genuine contractor went to a third-party account. Before paying, check that the destination account matches the vendor's registered details."
 self_check: "Before paying a vendor, do you check that the destination account matches that vendor's registered account?"

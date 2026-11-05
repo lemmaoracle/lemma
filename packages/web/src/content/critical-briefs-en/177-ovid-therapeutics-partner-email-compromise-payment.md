@@ -50,6 +50,7 @@ controls:
     item: "Hold payments to a changed account until the vendor's confirmation is in hand"
   - slug: "audit-trail"
     item: "Record which change was used for payment, who checked it, and how"
+attack_method: "impersonation"
 impact: "$1.8M was sent to a third party posing as a development partner (fully recovered in January 2025)"
 takeaway: "A development partner's email was compromised and a payment went to a party posing as that partner. Check changes to a vendor's bank account through a registered contact other than its email before using them."
 self_check: "When a vendor sends a bank account change, do you check it through a registered contact other than that vendor's email before paying?"

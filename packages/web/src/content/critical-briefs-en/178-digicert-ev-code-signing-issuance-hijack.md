@@ -50,6 +50,7 @@ controls:
     item: "Hold issuance when a pickup request cannot be matched to the subscriber"
   - slug: "audit-trail"
     item: "Record which order's certificate was picked up, by whom and where"
+attack_method: "account-takeover"
 impact: "Pickup codes for approved orders were taken and 60 EV code signing certificates were revoked (27 tied to the attacker)"
 takeaway: "Validation went through as normal; the certificate was intercepted at the final handover. Before releasing a certificate, check that the pickup request comes from the validated subscriber."
 self_check: "When you hand over certificates or keys, do you check that the recipient is the validated party, separately from the pickup code?"

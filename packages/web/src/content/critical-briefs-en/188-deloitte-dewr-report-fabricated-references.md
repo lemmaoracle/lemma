@@ -51,6 +51,7 @@ controls:
     item: "Hold a report before delivery while any citation cannot be matched to its original"
   - slug: "audit-trail"
     item: "Record, for each version, which citation was checked against what and what was corrected"
+attack_method: "ai-misuse"
 impact: "A report delivered to the department had errors in its references and a court-case summary, and a replacement was posted; the contract's final instalment was refunded (press reports)"
 takeaway: "A reference list can look right without showing that the works exist. Before delivering a report, match each citation against its original."
 self_check: "For reports you deliver externally, do you check before delivery that the works and judgments cited exist in the original sources?"
