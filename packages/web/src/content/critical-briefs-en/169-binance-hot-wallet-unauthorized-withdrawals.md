@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["081-bybit-safe-wallet-ui-injection", "155-tving-developer-key-hardcoded-production-keys"]
 status: published
-version: "1.0"
+version: "1.1"
 og_lead_ja: "Binance から約 63 億ドルが流出、秘密鍵の漏えいは見つかっていない"
 og_lead_en: "About US$6.3 billion taken from Binance, with no sign the private keys leaked"
 layout: "report"
@@ -34,8 +34,9 @@ key_figures:
     label: "Blockchains the funds left from (TRM Labs)"
 insight:
   slug: "valid-signature-not-approved-request"
+  stop: true
   label: "A valid signature vs an approved request"
-  quote: "Even if the keys never leak, whoever can get the system to sign can move funds with valid signatures."
+  quote: "Before signing a withdrawal, check that the request rests on a customer request or an internal approval, on a separately run checking side rather than in the service that made the request."
 industries: ["finance"]
 operations: ["approval"]
 controls:
@@ -44,27 +45,34 @@ controls:
   - slug: "audit-trail"
     item: "Record, outside the requesting service, which request or approval each signed withdrawal was based on"
 attack_method: "privilege-abuse"
-impact: "About USD 6.3 billion taken (Binance's estimate); about USD 2.7 billion frozen"
+impact: "About USD 6.3 billion taken (Binance's estimate); about USD 2.85 billion frozen or intercepted (Binance's 3 November report)"
 takeaway: "Even if the keys never leak, whoever can get the system to sign can move funds with valid signatures."
 self_check: "Before signing a withdrawal, do you check that a matching customer request or internal approval exists?"
 countries: ["global"]
 ---
 
+> **Revision (v1.1 / 2026-11-05)**: Binance's initial findings report of 3 November disclosed the intrusion route (a tampered Homebrew installer, a fake job interview, an internal AI tool, a container deployment token and the signing service), so sections 01, 02 and 05 were extended and the band was rewritten as a pre-execution gate. The outflow and freeze figures are unchanged.
+
 ## 1. Summary
 
-Binance's initial investigation said a compromised DevOps engineer's laptop may have let an attacker reach a service container and submit unauthorised withdrawal transactions; it later said it had found additional points of breach. The company says it has found no evidence that private keys leaked. TRM Labs puts the outflow at about USD 6.36 billion from ten chains, most of it within about 20 minutes. <strong>Even if the keys never leak, whoever can get the system to sign can move funds with valid signatures.</strong>
+About USD 6.3 billion in crypto left Binance's hot wallets across ten chains (the company's estimate). Most of it left in about 20 minutes from 20:05 UTC on 29 October (TRM Labs).
+
+According to the company's initial findings of 3 November, a tampered Homebrew installer and a fake job interview compromised two engineers' work machines; through an internal AI tool and a container deployment token, the attacker reached the internal signing service and submitted transactions outside the normal withdrawal process. The company says there is no evidence that private keys leaked. About USD 2.85 billion was frozen or intercepted, and the company said it would absorb the losses.
+
+<strong>Even if the keys never leak, whoever can get the system to sign can move funds with valid signatures.</strong>
 
 ## 2. What got through
 
-- **What got through**: Withdrawals from Binance's hot wallet (the always-online wallet used for withdrawals). Binance says unauthorised withdrawal transactions were submitted. TRM Labs gives as the most likely explanation that the attacker "gained the ability to make Binance's hot wallet signing system sign transactions of its choosing across chains".
+- **What got through**: Withdrawals from Binance's hot wallet (the always-online wallet used for withdrawals). Binance says that, through unauthorised access to its internal signing service, transactions were initiated "outside the normal withdrawal process" (3 November report). TRM Labs gives as the most likely explanation that the attacker "gained the ability to make Binance's hot wallet signing system sign transactions of its choosing across chains".
+- **Intrusion route** (Binance's initial findings, 3 November): In June, Engineer A of Wallet DevOps installed an AI coding tool found through a search engine, via a tampered Homebrew installer. The company detected the anomaly, replaced the device and rotated credentials, but A's role and colleagues on the wallet infrastructure team were exposed to the attacker. In September, Engineer B was approached through a job-hunting platform and ran the "assignment" repository of a fake job interview on a work machine; a pyenv component was replaced with malware (the company says the endpoint security tools of the time did not detect it). On 20 October, the attacker used B's machine and an internal AI tool to gain control of Engineers A's and C's machines and found A's container deployment permission token. From 17:15 to 19:56 UTC on 29 October, the attacker logged into C's machine, deployed a container with A's credentials and triggered a script to launch the attack.
 - **How it ran on Ethereum** (TRM Labs; the specification points are EIP-7702):
   1. The attacker used a signature that hands control of the hot wallet to an attacker's program (an EIP-7702 delegation).
-  2. Each wallet transaction carries a running number, and such a signature works only at one number. The number is public, but on a busy wallet it moves on before a transaction is included. So the attacker had the wallet sign 50 of them in advance, one for each of 50 consecutive numbers, and sent them in a single transaction.
+  2. Each wallet transaction carries a running number, and such a signature works only at one number. The number is public, but on a busy wallet it moves on before a transaction is included. So the attacker had the wallet sign 50 of them in advance, one for each of 50 consecutive numbers, and sent them in a single transaction (Binance also says 50 signing transactions were submitted to manipulate the account nonce).
   3. Under the specification, signatures with the wrong number are simply skipped and the transaction carries on. The one that matched took effect.
   4. The attacker's program then sent the balance to an attacker address. The delegation is not rolled back even if the transaction's execution fails, so it stayed in place: funds arriving over the next few hours were swept again.
 - **Other chains**: On the other nine chains the funds left through ordinary signed transfers (TRM Labs).
 - **What reaches the receiving side**: In general, a blockchain executes any transaction signed with the right key. A valid signature does not show that the withdrawal was based on a customer request or an internal approval.
-- **Not disclosed**: The root cause, how the intrusion happened, what the additional points of breach were, and where in the signing system the requests arrived.
+- **Not disclosed**: How the internal AI tool led to control of other engineers' machines. Where in the signing service the requests arrived, and why requests outside the normal process were signed. Binance says some technical details will remain confidential and that its findings are subject to independent review.
 
 ## 3. Pre-execution check
 
@@ -112,7 +120,7 @@ Stopping withdrawals and freezing funds were measures taken after discovery. Exe
 
 This compares the case where the keys do not leak. Key custody protects the keys, and cold wallets cap the loss at what sits in the hot wallet. Machine protection guards the entry point. A signing policy enforces the rules it was given, such as destination allowlists, limits and approval quorums, but for automated withdrawals it often does not check whether a request that fits the rules really came from a customer. Stopping and freezing work after discovery. Lemma checks the origin of each request before signing and keeps the record outside the requesting service.
 
-Note: Lemma's check works only where the checking side holds part of what is needed to sign, the approval keys are separate from the requesting service and developers' machines, and every kind of signing request, not just withdrawals, passes through the check. If the checking side itself is manipulated, or the approval rights themselves are taken, it passes. TRM Labs assesses that the signing system could be made to sign arbitrary transactions; if the check sat inside that same system, that falls under the right-hand column. The table compares what each control checks; it does not show whether anything would have stopped this case. Lemma does not detect or prevent intrusion.
+Note: Lemma's check works only where the checking side holds part of what is needed to sign, the approval keys are separate from the requesting service and developers' machines, and every kind of signing request, not just withdrawals, passes through the check. If the checking side itself is manipulated, or the approval rights themselves are taken, it passes. TRM Labs assesses that the signing system could be made to sign arbitrary transactions, and Binance says transactions outside the normal withdrawal process were initiated through unauthorised access to the signing service; if the check sat inside that same system, that falls under the right-hand column. The table compares what each control checks; it does not show whether anything would have stopped this case. Lemma does not detect or prevent intrusion.
 
 ### Checklist
 
@@ -126,29 +134,38 @@ Four points for crypto exchanges, custodians and payment firms to check
 ## 5. Facts and timeline
 
 - **Exchange**: Binance, a crypto exchange.
-- **Binance's account**: Its initial investigation said a compromised DevOps engineer's laptop may have let an attacker reach a service container and submit unauthorised withdrawal transactions, and that it has found no evidence of a private-key leak. It later said it had uncovered additional points of breach. Co-CEO Richard Teng said on X that the attacker did not simply use one engineer's permissions and that this was not a single "one-click" action, and that the investigation does not place blame on any individual (BleepingComputer). Binance has not published a root cause.
+- **Binance's account**: Its initial investigation of 30 October said a compromised DevOps engineer's laptop may have let an attacker reach a service container and submit unauthorised withdrawal transactions, and it later said it had uncovered additional points of breach. It has found no evidence of a private-key leak. Co-CEO Richard Teng said on X that the attacker did not simply use one engineer's permissions and that this was not a single "one-click" action, and that the investigation does not place blame on any individual (BleepingComputer). On 3 November its initial findings report set out the route: the tampered Homebrew installer in June, the fake job interview in September, control of machines through the internal AI tool on 20 October, and the container deployment and unauthorised access to the signing service on 29 October. Because the hot wallet ran on MPC (keys held in parts), there was no single private key that could revoke the delegation at once, and building and running a revocation procedure took time, it says.
+- **What left** (Binance's 3 November report): Between 20:05 and 20:09 UTC, five hot wallets sent 233.46 million XRP to an attacker address; hot wallets on Solana and Optimism sent about 970,500 SOL and 44.2 million OP, and a hot wallet sent 18,270 BTC. On Ethereum, an EIP-7702 delegation gave an attacker-controlled contract partial execution rights over a hot wallet; the last unauthorised transfer, 2,961.9 ETH, finalised at 23:56 UTC.
 - **Outflow**: About USD 6.36 billion at the time of each transfer, from ten chains — Ethereum, Bitcoin, Tron, XRP Ledger, Solana, Arbitrum, Avalanche, Optimism, Base and Polygon (TRM Labs). Binance's estimate is about USD 6.3 billion and Chainalysis' about USD 6.4 billion, so estimates range from USD 6.3 to 6.4 billion by source.
-- **Freezes**: Tether, Circle, Ripple and World Liberty Financial froze about USD 2.67 billion in stablecoins, and Arbitrum's Security Council forced about USD 30 million out of the attacker's wallet, for about USD 2.7 billion in total (TRM Labs). Binance says about USD 3 billion has been frozen.
-- **Covering losses**: Binance said it would cover the losses from part of SAFU (its user-protection fund), part of its futures insurance fund and company funds. On 31 October it said its top ten assets were fully backed again and about 90% of the overall impact was covered.
+- **Freezes**: Tether, Circle, Ripple and World Liberty Financial froze about USD 2.67 billion in stablecoins, and Arbitrum's Security Council forced about USD 30 million out of the attacker's wallet, for about USD 2.7 billion in total (TRM Labs). Binance said on 31 October that about USD 3 billion had been frozen, and in its 3 November report that about USD 2.85 billion of about USD 6.34 billion had been frozen or intercepted.
+- **Covering losses**: Binance said it would cover the losses from part of SAFU (its user-protection fund), part of its futures insurance fund and company funds. On 31 October it said its top ten assets were fully backed again and about 90% of the overall impact was covered. On 4 November it said about 98% had been replenished, with the remainder being less liquid tokens it is buying on the market and over the counter.
 - **Attribution**: TRM Labs and Chainalysis attribute the theft to North Korea's TraderTraitor. On 31 October the FBI issued an alert, with the US Secret Service (USSS) and IRS Criminal Investigation (IRS-CI), attributing it to North Korea's TraderTraitor. Binance has not named any group in its announcements.
 
 ### Timeline
 
+- **2026-06**: Engineer A of Wallet DevOps installs an AI coding tool through a tampered Homebrew installer. Binance detects the anomaly, replaces the device and rotates credentials (Binance's 3 November report).
+- **2026-09**: Engineer B is approached through a job-hunting platform and runs the "assignment" repository of a fake job interview on a work machine; a pyenv component is replaced with malware (same source).
+- **2026-10-20**: The attacker uses B's machine and an internal AI tool to gain control of Engineers A's and C's machines and finds A's container deployment token (same source).
 - **2026-10-28**: Attacker funds start moving from Tornado Cash to an operator wallet; staging began at least 36 hours before the theft (TRM Labs).
-- **2026-10-29**: Most of the outflow in about 20 minutes from around 20:05 UTC; the Ethereum delegation transaction at 20:20 UTC (TRM Labs). A second wave hit Avalanche and Polygon around 23:05 UTC; on Ethereum the delegation stayed in place and sweeps continued until 23:56 UTC (TRM Labs). Binance pauses withdrawals on some chains, then all withdrawals (deposits remain operational, Binance says). TRM Labs attributes the theft to TraderTraitor.
-- **2026-10-30**: Binance sets out its initial findings (compromised laptop, service container, unauthorised withdrawal transactions) in official announcements, and in a follow-up says it found additional points of breach. Chainalysis attributes the theft to TraderTraitor.
+- **2026-10-29**: From 17:15 to 19:56 UTC the attacker logs into C's machine, deploys a container with A's credentials and triggers the attack script (Binance). Most of the outflow in about 20 minutes from around 20:05 UTC; the Ethereum delegation transaction at 20:20 UTC (TRM Labs). A second wave hit Avalanche and Polygon around 23:05 UTC; on Ethereum the delegation stayed in place and sweeps continued until 23:56 UTC (TRM Labs). Binance pauses withdrawals on some chains, then all withdrawals (deposits remain operational, Binance says). TRM Labs attributes the theft to TraderTraitor.
+- **2026-10-30**: At 00:10 UTC Binance executes an authorisation from the Binance14 hot wallet to the zero address, clearing the EIP-7702 delegation code (Binance). It sets out its initial findings (compromised laptop, service container, unauthorised withdrawal transactions) in official announcements, and in a follow-up says it found additional points of breach. Chainalysis attributes the theft to TraderTraitor.
 - **2026-10-31**: Binance says about 90% of the impact is covered, publishes a Proof of Reserves snapshot, and aims to reopen withdrawals on Sunday 1 November. The FBI attributes the theft to North Korea (TraderTraitor).
 - **2026-11-01**: In Recovery Update #4, Binance says about 95% is covered and withdrawals reopen in phases. Phase 1 started between 06:00 and 09:00 UTC on 15 networks (BTC, ETH, BNB, XRP, SOL and others). The remaining ~5% is tokens outside the top ten with thin market liquidity. Deposits were not affected.
+- **2026-11-03**: Binance publishes its initial findings report (Initial Findings and Response Update): the intrusion route, what left, why clearing the delegation took time, and the remediation completed. It says about USD 2.85 billion was frozen or intercepted and that its findings are subject to independent review.
+- **2026-11-04**: In Recovery Update #7, Binance says about 98% has been replenished and extends its Proof of Reserves snapshot to 44 tokens.
 
-> Facts rest on Binance's official announcements, TRM Labs' and Chainalysis' analyses and the FBI alert; the co-CEO's remarks are as quoted by the press from his X post. The root cause has not been disclosed. What is not disclosed does not mean no measure was in place. Written as of 2 November.
+> Facts rest on Binance's official announcements and its initial findings report of 3 November, TRM Labs' and Chainalysis' analyses and the FBI alert; the co-CEO's remarks are as quoted by the press from his X post. The intrusion route was disclosed in the 3 November report, but the investigation continues and some technical details are being kept confidential. What is not disclosed does not mean no measure was in place. Written as of 5 November.
 
 ### After disclosure
 
 - **Stopping and revoking**: Stopped withdrawals and revoked the affected address authorisation; working with blockchain-intelligence firms and law enforcement.
-- **Covering and reporting**: Published a Proof of Reserves snapshot on 31 October, with a full attestation expected around 3 November. On 1 November it said the top ten assets are 100% backed, and that it will publish a post-mortem once the investigation is complete, with no date given.
+- **Covering and reporting**: Published a Proof of Reserves snapshot on 31 October and said on 1 November that the top ten assets are 100% backed. Published its initial findings report on 3 November and said on 4 November that about 98% had been replenished.
+- **Rebuilding** (3 November report): Rebuilt the affected wallet system in a new environment, and rebuilt the affected internal AI tool and its access controls. Replaced the affected devices, decommissioned the related credentials and tokens, and completed enhanced security scans on all employee devices. It says it has strengthened AI-based behavioural anomaly detection and wallet-service risk controls, and is reviewing its incident response process, signing policy coverage and hot wallet controls. An independent third-party security review and a security research fund are planned.
 
 ## 6. Sources
 
+- **Binance (Primary, company report)**: "29 October 2026 Binance Security Incident: Initial Findings and Response Update" (2026-11-03) — <https://www.binance.com/en/blog/community/3229153443759566763>
+- **Binance (Primary, company announcement)**: "Security Incident | Recovery Update #7: 98% of Stolen Assets Replenished and New PoR Snapshot With Expanded Coverage" (2026-11-04) — <https://www.binance.com/en/support/announcement/detail/c6ba9aa726974fc6b9332a2c8f63b405>
 - **Binance (Primary, company announcement)**: "Security Incident Update" (2026-10-30) — <https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7>
 - **Binance (Primary, company announcement)**: "Security Incident Update #2" (2026-10-30) — <https://www.binance.com/en/support/announcement/detail/d3306d9dca5243548c813b605e1d1751>
 - **Binance (Primary, company announcement)**: "Security Incident | Recovery Update #4: Withdrawals Resume in Phases" (2026-11-01) — <https://www.binance.com/en/support/announcement/detail/73911fb819b240f88b88256bdd318eda>
