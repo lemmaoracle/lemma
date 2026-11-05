@@ -1,8 +1,7 @@
 ---
 /**
- * ProofGate LP v2 — Persuade Mode
- * Structure benchmark: 1Password Business Security (Overlapping stage, 3 white cards in dark stage, stat cards + chart)
- * Color & Brand Tone: Lemma High-Contrast Palette (Stone #eef1eb / Pure White #ffffff / Deep Obsidian #121611 / Lemma Lime #a8e010)
+ * ProofGate LP (/cyber/, /ja/cyber/)
+ * Brand Tone: Lemma High-Contrast Palette (Stone #eef1eb / Pure White #ffffff / Deep Obsidian #121611 / Lemma Lime #a8e010)
  * Attacker-matrix values: example-cyber-attack/README.md (6 models × 5 scenarios = 30 tests: 18/30 succeeded without check -> 0/30 with check).
  */
 import type { Locale, Translations } from "../i18n/translations";
@@ -48,8 +47,8 @@ const C = isJa
         { op: "AIの操作（社内議事録の要約）", check: "委任された権限の範囲内", status: "実行許可", held: false },
       ],
       gateNote: "ブロックチェーンと先端暗号技術による実行直前の照合ログ（イメージ）",
-      introEyebrow: "なぜ、流出しないのか",
-      introTitle: "実行の直前で、止める",
+      introEyebrow: "企業資産と信用の保護",
+      introTitle: "企業の信用と資産を守る、実行直前の統制",
       introLead:
         "鍵が盗まれても、AIが想定外の動きをしても。日常の業務を止めることなく、最後の関門で確かめます。ProofGateは、改ざんできないブロックチェーンとゼロ知識証明（ZKP）などの暗号技術を掛け合わせ、機密データを外部へ渡さずに「条件を満たす事実」だけを照合します。",
       introCompare: {
@@ -80,7 +79,7 @@ const C = isJa
           body: "誰が・いつ・どの条件で操作を実行または保留したかをブロックチェーン上に記録。内部不正の抑止と、監査対応の工数を大幅に削減します。",
         },
       ],
-      featuresTitle: "3つの場面で、不正な実行を確実に止める",
+      featuresTitle: "AI・資金・取引先情報を守る",
       featuresIntro:
         "確認に追われている場面から。現在の業務フローを変えることなく、必要な箇所から重ねて導入できます。",
       features: [
@@ -109,6 +108,59 @@ const C = isJa
           linkText: "口座変更の確認例を見る",
         },
       ],
+      guardrail: {
+        eyebrow: "既存のセキュリティとの関係",
+        title: "パターン検知や認証の「その先」で、実行を止める",
+        lead:
+          "WAFなどのパターンマッチや、パスワード・APIキーによる認証は「入口」を守るためのガードレールです。しかし、正規の鍵が盗まれたり、権限内のAIが想定外の操作を行った場合、従来の仕組みでは素通りしてSQLやAPIが実行されてしまいます。ProofGateは既存の防御を置き換えるのではなく、実行の直前に「最後の関門」を加えます。",
+        modeAttack: "不正操作・AI暴走を止める動き",
+        modeNormal: "通常業務がそのまま通る動き",
+        zoneLegacy: "従来のガードレール（入口の防御：これまでここで終わり）",
+        zoneLegacyEnd: "▲ 従来の防御はここまで（正規の鍵・権限内のAI操作は通過）",
+        zoneGateBadge: "ProofGate",
+        zoneGateSub: "新しく加わる「実行直前」の関門",
+        branchTitle: "実行をストップ → 担当者の確認へ",
+        branchSub: "口座不一致・未証明の変更・範囲外のAI操作を保留",
+        protectedLabel: "照合を通過した操作のみ実行",
+        layers: [
+          {
+            step: "01",
+            name: "境界防御層",
+            sub: "WAF・パターンマッチ",
+            tag: "古典的ガードレール ①",
+            desc: "既知の攻撃コードや異常な通信形式を入口で遮断します。",
+            attackState: "通信の形式は正常なため通過",
+            normalState: "正常な通信として通過",
+          },
+          {
+            step: "02",
+            name: "本人認証・権限層",
+            sub: "パスワード・APIキー",
+            tag: "これまでここで終わり",
+            desc: "ID・パスワード・APIキーで「誰からのアクセスか」を確認します。",
+            attackState: "盗まれた正規の鍵・AI権限のため通過",
+            normalState: "正規の権限として通過",
+          },
+          {
+            step: "03",
+            name: "実行照合層",
+            sub: "ブロックチェーン × ZKP 照合",
+            tag: "ProofGate",
+            desc: "実行の直前で「登録口座との一致」「変更案内の未改変」「AIの委任範囲」を照合します。",
+            attackState: "条件不一致を検知 → 実行を止め担当者の確認へ",
+            normalState: "条件合致を数学的に証明 → 即時通過",
+          },
+          {
+            step: "04",
+            name: "実行層",
+            sub: "SQL・銀行送金API・マスタ更新",
+            tag: "重要操作の実行",
+            desc: "基幹データベース（SQL）や送金APIなど、取り返しのつかない実操作を行います。",
+            attackState: "到達 0件（不正なSQL・APIは実行されない）",
+            normalState: "業務を止めず安全にSQL・APIを実行",
+          },
+        ],
+      },
       evidenceEyebrow: "実証データ",
       evidenceTitle: "攻撃実験の結果：6モデル・計30回の検証",
       evidenceIntro:
@@ -142,7 +194,7 @@ const C = isJa
       ],
       source: "GitHubで実験の条件・生データを見る",
       startEyebrow: "導入の流れ",
-      startTitle: "確認に追われている場面から、ひとつだけ",
+      startTitle: "既存システムを変えない段階的な導入",
       startBody:
         "振込・口座変更・AIの操作のうち、現場の確認負担が大きい場面ひとつから始められます。既存のシステムを変えずに重ねて導入できます。",
       steps: [
@@ -219,8 +271,8 @@ const C = isJa
         { op: "AI action (Internal doc summary)", check: "Within delegated permission scope", status: "Executed", held: false },
       ],
       gateNote: "Cryptographic & blockchain pre-execution verification log (illustrative)",
-      introEyebrow: "Why nothing leaks",
-      introTitle: "Stop it right before execution",
+      introEyebrow: "PROTECTING TRUST & ASSETS",
+      introTitle: "Pre-execution governance that protects corporate trust and assets",
       introLead:
         "Even when credentials are stolen or AI agents behave unpredictably, verify right before execution without disrupting daily operations. ProofGate combines immutable blockchain audit trails with Zero-Knowledge Proofs (ZKP) to verify qualifying facts without exposing raw secrets.",
       introCompare: {
@@ -251,7 +303,7 @@ const C = isJa
           body: "Record who authorized or held every critical action on an immutable ledger. Deter internal fraud and dramatically cut compliance audit overhead.",
         },
       ],
-      featuresTitle: "Stop unauthorized actions across three critical fronts",
+      featuresTitle: "Safeguarding AI, funds, and partner records",
       featuresIntro:
         "Start where manual reviews pile up. Layer onto your existing workflows without changing how your team works.",
       features: [
@@ -280,6 +332,59 @@ const C = isJa
           linkText: "Explore account change gate",
         },
       ],
+      guardrail: {
+        eyebrow: "WHERE PROOFGATE FITS",
+        title: "Stop unauthorized execution beyond pattern matching and authentication",
+        lead:
+          "WAF pattern matching and password or API-key authentication guard the entrance. Yet when valid credentials are stolen or an authorized AI acts outside intent, traditional guardrails let the request straight through to SQL and APIs. ProofGate adds a final execution gate right before critical actions run.",
+        modeAttack: "How attacks & rogue AI are stopped",
+        modeNormal: "How normal business passes through",
+        zoneLegacy: "Traditional Guardrails (Entrance defense: previously ended here)",
+        zoneLegacyEnd: "▲ Traditional defense ends here (stolen valid keys & authorized AI pass through)",
+        zoneGateBadge: "ProofGate",
+        zoneGateSub: "New pre-execution verification gate",
+        branchTitle: "Execution Stopped → Routed to Human Review",
+        branchSub: "Holds account mismatches, unverified changes & out-of-scope AI calls",
+        protectedLabel: "Only verified operations execute",
+        layers: [
+          {
+            step: "01",
+            name: "Perimeter Filter Layer",
+            sub: "WAF & Pattern Matching",
+            tag: "Classical Guardrail 1",
+            desc: "Blocks known exploit payloads and malformed traffic patterns at the edge.",
+            attackState: "Passes through (request syntax is valid)",
+            normalState: "Passes through as valid traffic",
+          },
+          {
+            step: "02",
+            name: "Authentication & Access Layer",
+            sub: "Passwords & API Keys",
+            tag: "Previously ended here",
+            desc: "Checks passwords, tokens, and API keys to verify caller identity.",
+            attackState: "Passes through (uses stolen valid key or AI token)",
+            normalState: "Passes through with valid credentials",
+          },
+          {
+            step: "03",
+            name: "Execution Gate",
+            sub: "Blockchain × ZKP Verification",
+            tag: "ProofGate",
+            desc: "Verifies partner bank match, unmodified notice proof, and AI scope right before execution.",
+            attackState: "Mismatch caught → Stopped & routed to human review",
+            normalState: "Conditions proven via ZKP → Passes immediately",
+          },
+          {
+            step: "04",
+            name: "Execution Layer",
+            sub: "SQL, Banking APIs & Master DB",
+            tag: "Critical Execution",
+            desc: "Executes irreversible database queries (SQL), payouts, and master record updates.",
+            attackState: "0 reached (unauthorized SQL/API never runs)",
+            normalState: "SQL & APIs execute safely without friction",
+          },
+        ],
+      },
       evidenceEyebrow: "EMPIRICAL RESULTS",
       evidenceTitle: "Attack experiment results: 6 models, 30 total runs",
       evidenceIntro:
@@ -313,7 +418,7 @@ const C = isJa
       ],
       source: "View test conditions and raw logs on GitHub",
       startEyebrow: "HOW TO START",
-      startTitle: "Start where reviews pile up, one scene at a time",
+      startTitle: "Phased adoption without changing existing systems",
       startBody:
         "Pick the single bottleneck—transfers, account updates, or AI tool calls—where risk and review fatigue concentrate.",
       steps: [
@@ -387,6 +492,30 @@ const factRows = (
       ]
 ) as ReadonlyArray<{ without: string; with: string }>;
 const whitepaperUrl = "https://tally.so/r/xX0VYv";
+
+// 45-degree Bird's-Eye Isometric Projection Helpers
+// u: along execution pipeline axis (top-left to bottom-right, 0..880)
+// v: across gate width (back-right to front-left, -105..+235)
+// z: vertical elevation (0..135)
+const ISO_X0 = 228;
+const ISO_Y0 = 192;
+const iso = (u: number, v: number, z = 0) => ({
+  x: Math.round((ISO_X0 + u * 0.81 - v * 0.56) * 10) / 10,
+  y: Math.round((ISO_Y0 + u * 0.265 + v * 0.43 - z) * 10) / 10,
+});
+const isoPt = (u: number, v: number, z = 0) => {
+  const p = iso(u, v, z);
+  return `${p.x},${p.y}`;
+};
+const isoPoly = (pts: ReadonlyArray<readonly [number, number, number?]>) =>
+  pts.map(([u, v, z = 0]) => isoPt(u, v, z)).join(" ");
+const isoPath = (pts: ReadonlyArray<readonly [number, number, number?]>) =>
+  pts
+    .map(([u, v, z = 0], idx) => `${idx === 0 ? "M" : "L"} ${isoPt(u, v, z)}`)
+    .join(" ");
+
+const floorGridU = [0, 75, 150, 225, 300, 375, 450, 525, 600, 675, 750, 825, 880] as const;
+const floorGridV = [-100, -50, 0, 50, 100] as const;
 ---
 
 <Layout
@@ -457,55 +586,16 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
 
     <!-- =====================================================================
          CHAPTER 1B: INTRO — EXECUTIVE EDITORIAL SPLIT & BENTO GRID
-         Benchmarks: Ramp / Vanta / Stripe Enterprise (Full-bleed dark canvas,
-         50/50 executive editorial header, intuitive Before/After visual bar,
-         and 3 structured Bento value cards)
          ===================================================================== -->
     <section class="cy-exec-intro" aria-labelledby="cy-intro-title">
       <div class="cy-container">
         <!-- 50/50 Executive Editorial Header -->
         <div class="cy-exec-header">
           <div class="cy-exec-title-col">
-            <span class="cy-exec-eyebrow">{C.introEyebrow}</span>
             <h2 id="cy-intro-title" class="cy-exec-h2">{C.introTitle}</h2>
           </div>
           <div class="cy-exec-lead-col">
             <p class="cy-exec-lead">{C.introLead}</p>
-          </div>
-        </div>
-
-        <!-- Executive Before / After Visual Comparison Banner (Why Nothing Leaks) -->
-        <div class="cy-exec-compare" aria-label={C.introEyebrow}>
-          <!-- Row 1: Traditional Defense (Perimeter only) -->
-          <div class="cy-cmp-row is-legacy">
-            <div class="cy-cmp-label">
-              <span class="cy-cmp-dot is-legacy" aria-hidden="true"></span>
-              <strong>{C.introCompare.legacyTag}</strong>
-            </div>
-            <div class="cy-cmp-flow" aria-hidden="true">
-              <span class="cy-cmp-step">{C.introCompare.legacySteps[0]}</span>
-              <span class="cy-cmp-arr">→</span>
-              <span class="cy-cmp-step is-weak">{C.introCompare.legacySteps[1]}</span>
-              <span class="cy-cmp-arr">→</span>
-              <span class="cy-cmp-step is-bad">{C.introCompare.legacySteps[2]}</span>
-            </div>
-            <span class="cy-cmp-verdict is-legacy">{C.introCompare.legacyStatus}</span>
-          </div>
-
-          <!-- Row 2: ProofGate (Final Execution Gate) -->
-          <div class="cy-cmp-row is-gate">
-            <div class="cy-cmp-label">
-              <span class="cy-cmp-dot is-gate" aria-hidden="true"></span>
-              <strong>{C.introCompare.gateTag}</strong>
-            </div>
-            <div class="cy-cmp-flow" aria-hidden="true">
-              <span class="cy-cmp-step">{C.introCompare.gateSteps[0]}</span>
-              <span class="cy-cmp-arr is-lime">→</span>
-              <span class="cy-cmp-step is-shield">{C.introCompare.gateSteps[1]}</span>
-              <span class="cy-cmp-arr is-lime">→</span>
-              <span class="cy-cmp-step is-safe">{C.introCompare.gateSteps[2]}</span>
-            </div>
-            <span class="cy-cmp-verdict is-gate">{C.introCompare.gateStatus}</span>
           </div>
         </div>
 
@@ -712,6 +802,618 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     </section>
 
     <!-- =====================================================================
+         CHAPTER 2B: 45° ISOMETRIC BIRD'S-EYE VIEW — DEFENSE-IN-DEPTH & EXECUTION GATE
+         Shows how ProofGate sits right after classical guardrails (WAF / Auth)
+         and right before critical execution (SQL / Banking APIs / Master DB).
+         ===================================================================== -->
+    <section class="cy-bird-sec" aria-labelledby="cy-bird-title" data-bird-mode="attack" data-bird-step="0">
+      <div class="cy-container">
+        <div class="cy-bird-header">
+          <div class="cy-bird-header-copy">
+            <h2 id="cy-bird-title">{C.guardrail.title}</h2>
+            <p>{C.guardrail.lead}</p>
+          </div>
+          <div class="cy-bird-controls" role="tablist" aria-label={C.guardrail.eyebrow}>
+            <button
+              type="button"
+              class="cy-bird-mode-btn is-active"
+              role="tab"
+              aria-selected="true"
+              data-set-bird-mode="attack"
+            >
+              <span class="cy-mode-dot is-attack" aria-hidden="true"></span>
+              {C.guardrail.modeAttack}
+            </button>
+            <button
+              type="button"
+              class="cy-bird-mode-btn"
+              role="tab"
+              aria-selected="false"
+              data-set-bird-mode="normal"
+            >
+              <span class="cy-mode-dot is-normal" aria-hidden="true"></span>
+              {C.guardrail.modeNormal}
+            </button>
+          </div>
+        </div>
+
+        <!-- 45° Isometric 3D Bird's-Eye View Stage -->
+        <div class="cy-bird-stage">
+          <div class="cy-bird-canvas-wrap">
+            <svg
+              class="cy-bird-svg"
+              viewBox="0 0 1120 535"
+              role="img"
+              aria-label={C.guardrail.title}
+            >
+              <defs>
+                <filter id="isoGlowLime" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <filter id="isoGlowRed" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- =========================================================
+                   1. 3D ISOMETRIC BASE DECK & SIDE BRANCH PLATFORM
+                   ========================================================= -->
+              <!-- Main Deck Top Surface (u: 0..880, v: -100..+100, z: 0) -->
+              <polygon
+                points={isoPoly([[0, -100, 0], [880, -100, 0], [880, 100, 0], [0, 100, 0]])}
+                fill="#151a14"
+                stroke="#2c3529"
+                stroke-width="1.5"
+              />
+              <!-- Main Deck Front-Left Bevel Thickness (v = 100, z: 0..-16) -->
+              <polygon
+                points={isoPoly([[0, 100, 0], [880, 100, 0], [880, 100, -16], [0, 100, -16]])}
+                fill="#0d110c"
+                stroke="#232b20"
+                stroke-width="1"
+              />
+              <!-- Main Deck Front-Right Bevel Thickness (u = 880, z: 0..-16) -->
+              <polygon
+                points={isoPoly([[880, -100, 0], [880, 100, 0], [880, 100, -16], [880, -100, -16]])}
+                fill="#090c08"
+                stroke="#232b20"
+                stroke-width="1"
+              />
+
+              <!-- Isometric Deck Grid Lines -->
+              <g stroke="rgba(255,255,255,0.045)" stroke-width="1">
+                {
+                  floorGridU.map((u) => (
+                    <line
+                      x1={iso(u, -100, 0).x}
+                      y1={iso(u, -100, 0).y}
+                      x2={iso(u, 100, 0).x}
+                      y2={iso(u, 100, 0).y}
+                    />
+                  ))
+                }
+                {
+                  floorGridV.map((v) => (
+                    <line
+                      x1={iso(0, v, 0).x}
+                      y1={iso(0, v, 0).y}
+                      x2={iso(880, v, 0).x}
+                      y2={iso(880, v, 0).y}
+                    />
+                  ))
+                }
+              </g>
+
+              <!-- Side-Branch Holding Platform (u: 480..640, v: 100..235, z: 0..-16) -->
+              <polygon
+                points={isoPoly([[480, 100, 0], [640, 100, 0], [640, 235, 0], [480, 235, 0]])}
+                fill="#211614"
+                stroke="#7f2d22"
+                stroke-width="1.5"
+              />
+              <polygon
+                points={isoPoly([[480, 235, 0], [640, 235, 0], [640, 235, -16], [480, 235, -16]])}
+                fill="#140c0b"
+                stroke="#5c2119"
+                stroke-width="1"
+              />
+              <polygon
+                points={isoPoly([[640, 100, 0], [640, 235, 0], [640, 235, -16], [640, 100, -16]])}
+                fill="#0f0908"
+                stroke="#5c2119"
+                stroke-width="1"
+              />
+
+              <!-- =========================================================
+                   2. FLOOR ZONES: LEGACY GUARDRAILS vs PROOFGATE vs EXECUTION
+                   ========================================================= -->
+              <!-- Zone A: Classical Guardrails Carpet (u: 80..435) -->
+              <polygon
+                points={isoPoly([[80, -86, 1], [435, -86, 1], [435, 86, 1], [80, 86, 1]])}
+                fill="rgba(255, 255, 255, 0.03)"
+                stroke="rgba(255, 255, 255, 0.14)"
+                stroke-dasharray="5 4"
+              />
+
+              <!-- Zone B: ProofGate Carpet (u: 475..635) -->
+              <polygon
+                points={isoPoly([[475, -88, 1], [635, -88, 1], [635, 88, 1], [475, 88, 1]])}
+                fill="rgba(168, 224, 16, 0.1)"
+                stroke="rgba(168, 224, 16, 0.5)"
+                stroke-width="1.5"
+              />
+
+              <!-- Zone C: Execution Core Carpet (u: 710..860) -->
+              <polygon
+                points={isoPoly([[710, -86, 1], [860, -86, 1], [860, 86, 1], [710, 86, 1]])}
+                fill="rgba(168, 224, 16, 0.05)"
+                stroke="rgba(168, 224, 16, 0.28)"
+                stroke-width="1"
+              />
+
+              <!-- Floor Track Center Guide Rail (u: 25..750, v: 0, z: 2) -->
+              <line
+                x1={iso(25, 0, 2).x}
+                y1={iso(25, 0, 2).y}
+                x2={iso(750, 0, 2).x}
+                y2={iso(750, 0, 2).y}
+                stroke="rgba(255,255,255,0.14)"
+                stroke-width="3"
+              />
+
+              <!-- =========================================================
+                   3. PAINTER'S ORDER LAYER 1: ENTRY & GATE 01 (WAF / PATTERN)
+                   ========================================================= -->
+              <!-- Entry Emitter Pedestal at u=32, v=0 -->
+              <polygon
+                points={isoPoly([[18, -22, 0], [46, -22, 0], [46, 22, 0], [18, 22, 0]])}
+                fill="#252c22"
+                stroke="#4a5544"
+              />
+              <circle cx={iso(32, 0, 44).x} cy={iso(32, 0, 44).y} r="7" fill="#a8e010" />
+              <circle cx={iso(32, 0, 44).x} cy={iso(32, 0, 44).y} r="13" fill="none" stroke="#a8e010" stroke-opacity="0.45" stroke-width="1.5" />
+
+              <!-- Beam Segment 0 -> Gate 1 (u: 32..148, v: 0, z: 44) -->
+              <line
+                x1={iso(32, 0, 44).x}
+                y1={iso(32, 0, 44).y}
+                x2={iso(148, 0, 44).x}
+                y2={iso(148, 0, 44).y}
+                stroke="#94a386"
+                stroke-width="3.5"
+                stroke-dasharray="6 4"
+              />
+
+              <!-- GATE 01: 境界防御層 (WAF / Pattern Match) at u: 136..162, v: -72..+72, z: 0..96 -->
+              <g class="cy-iso-gate is-gate-1" data-iso-gate="0">
+                <!-- Pedestal Base -->
+                <polygon
+                  points={isoPoly([[128, -78, 0], [170, -78, 0], [170, 78, 0], [128, 78, 0]])}
+                  fill="#222920"
+                  stroke="#465241"
+                />
+                <!-- Back-Right Face Outline -->
+                <polygon
+                  points={isoPoly([[136, -72, 0], [136, 72, 0], [136, 72, 96], [136, -72, 96]])}
+                  fill="rgba(45, 54, 42, 0.35)"
+                  stroke="#495443"
+                  stroke-width="1"
+                />
+                <!-- Top Thickness Face (z = 96) -->
+                <polygon
+                  points={isoPoly([[136, -72, 96], [162, -72, 96], [162, 72, 96], [136, 72, 96]])}
+                  fill="#495643"
+                  stroke="#788870"
+                  stroke-width="1.2"
+                />
+                <!-- Front-Left Thickness Face (v = 72) -->
+                <polygon
+                  points={isoPoly([[136, 72, 0], [162, 72, 0], [162, 72, 96], [136, 72, 96]])}
+                  fill="#2a3226"
+                  stroke="#63705c"
+                  stroke-width="1.2"
+                />
+                <!-- Wide Front Portal Face (u = 162) -->
+                <polygon
+                  points={isoPoly([[162, -72, 0], [162, 72, 0], [162, 72, 96], [162, -72, 96]])}
+                  fill="rgba(54, 65, 50, 0.72)"
+                  stroke="#7d8d75"
+                  stroke-width="1.5"
+                />
+                <!-- Inner Pattern-Matching Filter Screen (u = 162, v: -44..+44, z: 16..80) -->
+                <polygon
+                  points={isoPoly([[162, -44, 16], [162, 44, 16], [162, 44, 80], [162, -44, 80]])}
+                  fill="rgba(18, 22, 17, 0.78)"
+                  stroke="#95a58c"
+                  stroke-width="1.2"
+                />
+                <!-- Isometric Pattern Scan Grid Lines inside Aperture -->
+                <line x1={iso(162, -44, 37).x} y1={iso(162, -44, 37).y} x2={iso(162, 44, 37).x} y2={iso(162, 44, 37).y} stroke="rgba(255,255,255,0.22)" stroke-width="1" />
+                <line x1={iso(162, -44, 59).x} y1={iso(162, -44, 59).y} x2={iso(162, 44, 59).x} y2={iso(162, 44, 59).y} stroke="rgba(255,255,255,0.22)" stroke-width="1" />
+                <line x1={iso(162, -15, 16).x} y1={iso(162, -15, 16).y} x2={iso(162, -15, 80).x} y2={iso(162, -15, 80).y} stroke="rgba(255,255,255,0.22)" stroke-width="1" />
+                <line x1={iso(162, 15, 16).x} y1={iso(162, 15, 16).y} x2={iso(162, 15, 80).x} y2={iso(162, 15, 80).y} stroke="rgba(255,255,255,0.22)" stroke-width="1" />
+                <!-- Portal Aperture Node at (162, 0, 44) -->
+                <ellipse cx={iso(162, 0, 44).x} cy={iso(162, 0, 44).y} rx="10" ry="14" fill="rgba(168,224,16,0.14)" stroke="#b8c4ae" stroke-width="1.5" />
+
+                <!-- Floating Callout Header above Gate 01 -->
+                <g transform={`translate(${iso(149, -20, 128).x}, ${iso(149, -20, 128).y})`}>
+                  <line x1="0" y1="8" x2="0" y2="28" stroke="#8b9982" stroke-width="1.5" stroke-dasharray="2 2" />
+                  <rect x="-86" y="-40" width="172" height="48" rx="8" fill="#1d231b" stroke="#5b6854" stroke-width="1.5" />
+                  <text x="-74" y="-21" fill="#a8e010" font-family="Space Mono, monospace" font-size="11" font-weight="700">01</text>
+                  <text x="-52" y="-20" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="13" font-weight="700">{C.guardrail.layers[0]!.name}</text>
+                  <text x="-74" y="-3" fill="#b8c2b0" font-family="Noto Sans JP, sans-serif" font-size="11">{C.guardrail.layers[0]!.sub}</text>
+                </g>
+              </g>
+
+              <!-- =========================================================
+                   4. PAINTER'S ORDER LAYER 2: BEAM 1->2 & GATE 02 (AUTH / KEYS)
+                   ========================================================= -->
+              <!-- Beam Segment Gate 1 -> Gate 2 (u: 162..338, v: 0, z: 44) -->
+              <line
+                x1={iso(162, 0, 44).x}
+                y1={iso(162, 0, 44).y}
+                x2={iso(338, 0, 44).x}
+                y2={iso(338, 0, 44).y}
+                stroke="#94a386"
+                stroke-width="3.5"
+                stroke-dasharray="6 4"
+              />
+
+              <!-- GATE 02: 本人認証・権限層 (Passwords / API Keys) at u: 326..352, v: -72..+72, z: 0..96 -->
+              <g class="cy-iso-gate is-gate-2" data-iso-gate="1">
+                <!-- Pedestal Base -->
+                <polygon
+                  points={isoPoly([[318, -78, 0], [360, -78, 0], [360, 78, 0], [318, 78, 0]])}
+                  fill="#222920"
+                  stroke="#465241"
+                />
+                <!-- Back-Right Face -->
+                <polygon
+                  points={isoPoly([[326, -72, 0], [326, 72, 0], [326, 72, 96], [326, -72, 96]])}
+                  fill="rgba(45, 54, 42, 0.35)"
+                  stroke="#495443"
+                  stroke-width="1"
+                />
+                <!-- Top Thickness Face -->
+                <polygon
+                  points={isoPoly([[326, -72, 96], [352, -72, 96], [352, 72, 96], [326, 72, 96]])}
+                  fill="#495643"
+                  stroke="#788870"
+                  stroke-width="1.2"
+                />
+                <!-- Front-Left Thickness Face -->
+                <polygon
+                  points={isoPoly([[326, 72, 0], [352, 72, 0], [352, 72, 96], [326, 72, 96]])}
+                  fill="#2a3226"
+                  stroke="#63705c"
+                  stroke-width="1.2"
+                />
+                <!-- Wide Front Portal Face (u = 352) -->
+                <polygon
+                  points={isoPoly([[352, -72, 0], [352, 72, 0], [352, 72, 96], [352, -72, 96]])}
+                  fill="rgba(54, 65, 50, 0.72)"
+                  stroke="#7d8d75"
+                  stroke-width="1.5"
+                />
+                <!-- Inner Auth Verification Screen (u = 352, v: -44..+44, z: 16..80) -->
+                <polygon
+                  points={isoPoly([[352, -44, 16], [352, 44, 16], [352, 44, 80], [352, -44, 80]])}
+                  fill="rgba(18, 22, 17, 0.8)"
+                  stroke="#95a58c"
+                  stroke-width="1.2"
+                />
+                <!-- Auth Key Ring Geometry at (352, 0, 44) -->
+                <ellipse cx={iso(352, 0, 44).x} cy={iso(352, 0, 44).y} rx="18" ry="23" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1.2" stroke-dasharray="4 3" />
+                <ellipse cx={iso(352, 0, 44).x} cy={iso(352, 0, 44).y} rx="10" ry="14" fill="rgba(168,224,16,0.14)" stroke="#b8c4ae" stroke-width="1.5" />
+
+                <!-- Floating Callout Header above Gate 02 ("これまでここで終わり") -->
+                <g transform={`translate(${iso(339, -20, 134).x}, ${iso(339, -20, 134).y})`}>
+                  <line x1="0" y1="22" x2="0" y2="36" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="2 2" />
+                  <rect x="-92" y="-48" width="184" height="68" rx="8" fill="#1d231b" stroke="#d97706" stroke-width="1.5" />
+                  <rect x="-82" y="-40" width="128" height="17" rx="4" fill="rgba(245, 158, 11, 0.2)" />
+                  <text x="-76" y="-28" fill="#fcd34d" font-family="Noto Sans JP, sans-serif" font-size="10.5" font-weight="700">{C.guardrail.layers[1]!.tag}</text>
+                  <text x="-82" y="-8" fill="#a8e010" font-family="Space Mono, monospace" font-size="11" font-weight="700">02</text>
+                  <text x="-60" y="-7" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="13" font-weight="700">{C.guardrail.layers[1]!.name}</text>
+                  <text x="-82" y="10" fill="#b8c2b0" font-family="Noto Sans JP, sans-serif" font-size="11">{C.guardrail.layers[1]!.sub}</text>
+                </g>
+              </g>
+
+              <!-- =========================================================
+                   5. LEGACY DEFENSE BOUNDARY LINE ("従来の防御はここまで")
+                   ========================================================= -->
+              <line
+                x1={iso(440, -98, 2).x}
+                y1={iso(440, -98, 2).y}
+                x2={iso(440, 108, 2).x}
+                y2={iso(440, 108, 2).y}
+                stroke="#f59e0b"
+                stroke-width="2.5"
+                stroke-dasharray="7 5"
+              />
+              <!-- Boundary Callout Pill on Front Edge of Floor -->
+              <g transform={`translate(${iso(260, 118, -8).x}, ${iso(260, 118, -8).y})`}>
+                <rect x="-155" y="-14" width="310" height="26" rx="13" fill="#231c12" stroke="#d97706" stroke-width="1.2" />
+                <text x="0" y="3" text-anchor="middle" fill="#fde68a" font-family="Noto Sans JP, sans-serif" font-size="11" font-weight="700">
+                  {C.guardrail.zoneLegacy}
+                </text>
+              </g>
+
+              <!-- =========================================================
+                   6. PAINTER'S ORDER LAYER 3: BEAM 2->3 & GATE 03 (PROOFGATE)
+                   ========================================================= -->
+              <!-- Beam Segment Gate 2 -> Gate 3 ProofGate (u: 352..545, v: 0, z: 44) -->
+              <line
+                x1={iso(352, 0, 44).x}
+                y1={iso(352, 0, 44).y}
+                x2={iso(545, 0, 44).x}
+                y2={iso(545, 0, 44).y}
+                stroke="#d97706"
+                stroke-width="3.5"
+                stroke-dasharray="6 4"
+              />
+
+              <!-- GATE 03: PROOFGATE 実行照合層 (Hero Armored Lime Gate) at u: 526..568, v: -84..+84, z: 0..122 -->
+              <g class="cy-iso-gate is-gate-3" data-iso-gate="2">
+                <!-- Glowing Lime Pedestal Base -->
+                <polygon
+                  points={isoPoly([[514, -90, 0], [580, -90, 0], [580, 90, 0], [514, 90, 0]])}
+                  fill="#21310c"
+                  stroke="#a8e010"
+                  stroke-width="1.8"
+                />
+                <!-- Back-Right Face -->
+                <polygon
+                  points={isoPoly([[526, -84, 0], [526, 84, 0], [526, 84, 122], [526, -84, 122]])}
+                  fill="rgba(34, 52, 12, 0.55)"
+                  stroke="#6f9c00"
+                  stroke-width="1.2"
+                />
+                <!-- Top Thickness Face (Bright Lemma Lime) -->
+                <polygon
+                  points={isoPoly([[526, -84, 122], [568, -84, 122], [568, 84, 122], [526, 84, 122]])}
+                  fill="#a8e010"
+                  stroke="#d9f99d"
+                  stroke-width="1.5"
+                />
+                <!-- Front-Left Thickness Face -->
+                <polygon
+                  points={isoPoly([[526, 84, 0], [568, 84, 0], [568, 84, 122], [526, 84, 122]])}
+                  fill="#364f08"
+                  stroke="#a8e010"
+                  stroke-width="1.5"
+                />
+                <!-- Wide Front Portal Face (u = 568) -->
+                <polygon
+                  points={isoPoly([[568, -84, 0], [568, 84, 0], [568, 84, 122], [568, -84, 122]])}
+                  fill="rgba(25, 38, 12, 0.88)"
+                  stroke="#a8e010"
+                  stroke-width="2.2"
+                />
+                <!-- Inner Cryptographic Gate Screen (u = 568, v: -52..+52, z: 16..102) -->
+                <polygon
+                  points={isoPoly([[568, -52, 16], [568, 52, 16], [568, 52, 102], [568, -52, 102]])}
+                  fill="rgba(12, 18, 9, 0.9)"
+                  stroke="#a8e010"
+                  stroke-width="1.5"
+                />
+                <!-- Cryptographic ZKP & Blockchain Shield Rings at (568, 0, 52) -->
+                <ellipse
+                  class="cy-pg-ring-outer"
+                  cx={iso(568, 0, 52).x}
+                  cy={iso(568, 0, 52).y}
+                  rx="26"
+                  ry="34"
+                  fill="none"
+                  stroke="#a8e010"
+                  stroke-width="1.8"
+                  stroke-dasharray="6 4"
+                />
+                <ellipse
+                  class="cy-pg-ring-inner"
+                  cx={iso(568, 0, 52).x}
+                  cy={iso(568, 0, 52).y}
+                  rx="14"
+                  ry="19"
+                  fill="rgba(168, 224, 16, 0.25)"
+                  stroke="#d9f99d"
+                  stroke-width="2"
+                />
+                <!-- Intercept Shockwave Ring (Flashes when blocking an attack) -->
+                <ellipse
+                  class="cy-pg-intercept-ring"
+                  cx={iso(555, 0, 44).x}
+                  cy={iso(555, 0, 44).y}
+                  rx="18"
+                  ry="24"
+                  fill="none"
+                  stroke="#ef4444"
+                  stroke-width="3"
+                />
+
+                <!-- Prominent Hero Beacon Callout above Gate 03 ("ProofGate") -->
+                <g transform={`translate(${iso(547, -25, 162).x}, ${iso(547, -25, 162).y})`}>
+                  <line x1="0" y1="22" x2="0" y2="40" stroke="#a8e010" stroke-width="2.5" />
+                  <rect x="-110" y="-54" width="220" height="74" rx="10" fill="#131c0d" stroke="#a8e010" stroke-width="2.2" />
+                  <rect x="-98" y="-44" width="84" height="20" rx="5" fill="#a8e010" />
+                  <text x="-88" y="-30" fill="#12140e" font-family="Space Grotesk, Noto Sans JP, sans-serif" font-size="11.5" font-weight="800">
+                    {C.guardrail.zoneGateBadge}
+                  </text>
+                  <text x="-98" y="-7" fill="#a8e010" font-family="Space Mono, monospace" font-size="12" font-weight="700">03</text>
+                  <text x="-74" y="-6" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="14" font-weight="700">
+                    {C.guardrail.layers[2]!.name}
+                  </text>
+                  <text x="-98" y="11" fill="#d9f99d" font-family="Noto Sans JP, sans-serif" font-size="11">
+                    {C.guardrail.layers[2]!.sub}
+                  </text>
+                </g>
+              </g>
+
+              <!-- =========================================================
+                   7. SIDE-BRANCH DIVERSION TRACK & HUMAN REVIEW STATION
+                   ========================================================= -->
+              <!-- Diversion Track from ProofGate (555, 0, 44) -> Holding Station (560, 175, 18) -->
+              <path
+                class="cy-iso-branch-track"
+                d={isoPath([[555, 0, 44], [555, 95, 28], [560, 175, 18]])}
+                fill="none"
+                stroke="#ef4444"
+                stroke-width="3.5"
+                stroke-dasharray="7 4"
+              />
+              <!-- 3D Holding Terminal Cube on the Side-Branch Platform (u: 525..595, v: 155..205, z: 0..28) -->
+              <g class="cy-iso-hold-box">
+                <polygon
+                  points={isoPoly([[525, 155, 28], [595, 155, 28], [595, 205, 28], [525, 205, 28]])}
+                  fill="#451a16"
+                  stroke="#f87171"
+                  stroke-width="1.5"
+                />
+                <polygon
+                  points={isoPoly([[525, 205, 0], [595, 205, 0], [595, 205, 28], [525, 205, 28]])}
+                  fill="#2c100e"
+                  stroke="#ef4444"
+                  stroke-width="1.2"
+                />
+                <polygon
+                  points={isoPoly([[595, 155, 0], [595, 205, 0], [595, 205, 28], [595, 155, 28]])}
+                  fill="#220c0a"
+                  stroke="#ef4444"
+                  stroke-width="1.2"
+                />
+                <!-- Callout Banner on Side-Branch Platform -->
+                <g transform={`translate(${iso(560, 215, 0).x}, ${iso(560, 215, 0).y + 18})`}>
+                  <rect x="-132" y="-16" width="264" height="44" rx="8" fill="#281210" stroke="#ef4444" stroke-width="1.5" />
+                  <text x="0" y="1" text-anchor="middle" fill="#fecaca" font-family="Noto Sans JP, sans-serif" font-size="12" font-weight="700">
+                    {C.guardrail.branchTitle}
+                  </text>
+                  <text x="0" y="18" text-anchor="middle" fill="#fca5a5" font-family="Noto Sans JP, sans-serif" font-size="10.5">
+                    {C.guardrail.branchSub}
+                  </text>
+                </g>
+              </g>
+
+              <!-- =========================================================
+                   8. PAINTER'S ORDER LAYER 4: BEAM 3->4 & EXECUTION CORE (SQL / API)
+                   ========================================================= -->
+              <!-- Beam Segment Gate 3 ProofGate -> Layer 4 Execution (u: 568..748, v: 0, z: 44) -->
+              <line
+                class="cy-iso-exec-beam"
+                x1={iso(568, 0, 44).x}
+                y1={iso(568, 0, 44).y}
+                x2={iso(748, 0, 44).x}
+                y2={iso(748, 0, 44).y}
+                stroke="#a8e010"
+                stroke-width="3.5"
+                stroke-dasharray="6 4"
+              />
+
+              <!-- LAYER 04: 実行層 (SQL / Banking APIs / Master DB Monoliths) at u: 735..840, v: -75..+75 -->
+              <g class="cy-iso-gate is-gate-4" data-iso-gate="3">
+                <!-- Protected Vault Plinth -->
+                <polygon
+                  points={isoPoly([[722, -82, 0], [852, -82, 0], [852, 82, 0], [722, 82, 0]])}
+                  fill="#1c2617"
+                  stroke="#6f9c00"
+                  stroke-width="1.5"
+                />
+
+                <!-- 3D Monolith 1: Back-Right Cube (SQL / DB) v: -66..-26, u: 748..816, z: 0..78 -->
+                <polygon points={isoPoly([[748, -66, 78], [816, -66, 78], [816, -26, 78], [748, -26, 78]])} fill="#3a4a32" stroke="#84a96c" stroke-width="1.2" />
+                <polygon points={isoPoly([[748, -26, 0], [816, -26, 0], [816, -26, 78], [748, -26, 78]])} fill="#253020" stroke="#648253" stroke-width="1.2" />
+                <polygon points={isoPoly([[816, -66, 0], [816, -26, 0], [816, -26, 78], [816, -66, 78]])} fill="#1d2618" stroke="#648253" stroke-width="1.2" />
+                <text x={iso(782, -46, 84).x} y={iso(782, -46, 84).y} text-anchor="middle" fill="#d9f99d" font-family="Space Mono, monospace" font-size="10" font-weight="700">SQL</text>
+
+                <!-- 3D Monolith 2: Center Cube (Banking / Payout API) v: -18..+22, u: 748..816, z: 0..88 -->
+                <polygon points={isoPoly([[748, -18, 88], [816, -18, 88], [816, 22, 88], [748, 22, 88]])} fill="#465c3b" stroke="#a8e010" stroke-width="1.4" />
+                <polygon points={isoPoly([[748, 22, 0], [816, 22, 0], [816, 22, 88], [748, 22, 88]])} fill="#2c3b25" stroke="#7ea366" stroke-width="1.2" />
+                <polygon points={isoPoly([[816, -18, 0], [816, 22, 0], [816, 22, 88], [816, -18, 88]])} fill="#222e1c" stroke="#7ea366" stroke-width="1.2" />
+                <text x={iso(782, 2, 94).x} y={iso(782, 2, 94).y} text-anchor="middle" fill="#a8e010" font-family="Space Mono, monospace" font-size="10" font-weight="700">API</text>
+
+                <!-- 3D Monolith 3: Front-Left Cube (Master Records) v: +30..+70, u: 748..816, z: 0..72 -->
+                <polygon points={isoPoly([[748, 30, 72], [816, 30, 72], [816, 70, 72], [748, 70, 72]])} fill="#3a4a32" stroke="#84a96c" stroke-width="1.2" />
+                <polygon points={isoPoly([[748, 70, 0], [816, 70, 0], [816, 70, 72], [748, 70, 72]])} fill="#253020" stroke="#648253" stroke-width="1.2" />
+                <polygon points={isoPoly([[816, 30, 0], [816, 70, 0], [816, 70, 72], [816, 30, 72]])} fill="#1d2618" stroke="#648253" stroke-width="1.2" />
+                <text x={iso(782, 50, 78).x} y={iso(782, 50, 78).y} text-anchor="middle" fill="#d9f99d" font-family="Space Mono, monospace" font-size="10" font-weight="700">DB</text>
+
+                <!-- Floating Callout Header above Layer 04 -->
+                <g transform={`translate(${iso(790, -25, 134).x}, ${iso(790, -25, 134).y})`}>
+                  <line x1="0" y1="8" x2="0" y2="28" stroke="#a8e010" stroke-width="1.5" stroke-dasharray="2 2" />
+                  <rect x="-92" y="-42" width="184" height="50" rx="8" fill="#182213" stroke="#7da82b" stroke-width="1.5" />
+                  <text x="-80" y="-23" fill="#a8e010" font-family="Space Mono, monospace" font-size="11" font-weight="700">04</text>
+                  <text x="-58" y="-22" fill="#ffffff" font-family="Noto Sans JP, sans-serif" font-size="13" font-weight="700">{C.guardrail.layers[3]!.name}</text>
+                  <text x="-80" y="-4" fill="#c7d6b8" font-family="Noto Sans JP, sans-serif" font-size="11">{C.guardrail.layers[3]!.sub}</text>
+                </g>
+              </g>
+
+              <!-- =========================================================
+                   9. ANIMATED 3D REQUEST PACKETS (ATTACK STREAM & NORMAL STREAM)
+                   ========================================================= -->
+              <!-- Attack / Rogue AI Packet: Enters -> Passes Gate 01 -> Passes Gate 02 -> Intercepted at Gate 03 ProofGate -> Diverted to Hold Platform -->
+              <g class="cy-packet-attack" filter="url(#isoGlowRed)">
+                <circle r="9" fill="#ef4444" stroke="#fecaca" stroke-width="2">
+                  <animateMotion
+                    dur="5.6s"
+                    repeatCount="indefinite"
+                    path={isoPath([[32, 0, 44], [162, 0, 44], [352, 0, 44], [552, 0, 44], [560, 175, 18]])}
+                    keyPoints="0;0.24;0.5;0.74;1"
+                    keyTimes="0;0.24;0.5;0.74;1"
+                    calcMode="linear"
+                  />
+                </circle>
+              </g>
+
+              <!-- Normal Verified Business Packet: Enters -> Gate 01 -> Gate 02 -> Verified at Gate 03 ProofGate -> Executes at Layer 04 (SQL / API) -->
+              <g class="cy-packet-normal" filter="url(#isoGlowLime)">
+                <circle r="8" fill="#a8e010" stroke="#ffffff" stroke-width="2">
+                  <animateMotion
+                    dur="5.6s"
+                    repeatCount="indefinite"
+                    path={isoPath([[32, -14, 44], [162, -14, 44], [352, -14, 44], [568, -14, 44], [755, -14, 44]])}
+                    keyPoints="0;0.24;0.5;0.74;1"
+                    keyTimes="0;0.24;0.5;0.74;1"
+                    calcMode="linear"
+                  />
+                </circle>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Synchronized 4-Step Compact Footer Bar -->
+          <div class="cy-bird-steps" role="list">
+            {
+              C.guardrail.layers.map((layer, idx) => (
+                <button
+                  type="button"
+                  class={`cy-bird-step-card ${idx === 2 ? "is-proofgate" : ""} ${idx === 0 ? "is-current" : ""}`}
+                  data-bird-step-btn={idx}
+                >
+                  <div class="cy-bird-step-bar" aria-hidden="true">
+                    <span class="cy-bird-step-fill"></span>
+                  </div>
+                  <div class="cy-bird-step-head">
+                    <span class="cy-bird-step-num">{layer.step}</span>
+                    <strong class="cy-bird-step-title">{layer.name}</strong>
+                    {idx === 1 && <span class="cy-bird-mini-badge is-warn">{layer.tag}</span>}
+                    {idx === 2 && <span class="cy-bird-mini-badge is-lime">{layer.tag}</span>}
+                  </div>
+                  <span class="cy-bird-step-sub">{layer.sub}</span>
+                </button>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
          CHAPTER 3: ISSUE (Full-Bleed Stone #eef1eb Section)
          ===================================================================== -->
     <CyberProblem locale={locale} />
@@ -724,7 +1426,6 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
       <div class="cy-container">
         <div class="cy-fact-stage">
           <div class="cy-fact-header">
-            <span class="cy-eyebrow-dark">{C.evidenceEyebrow}</span>
             <h2 id="cy-evidence-title">{C.evidenceTitle}</h2>
             <p>{C.evidenceIntro}</p>
           </div>
@@ -809,7 +1510,6 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     <section class="cy-start-sec" aria-labelledby="cy-start-title">
       <div class="cy-container">
         <div class="cy-light-header">
-          <span class="cy-eyebrow-light">{C.startEyebrow}</span>
           <h2 id="cy-start-title">{C.startTitle}</h2>
           <p>{C.startBody}</p>
         </div>
@@ -834,7 +1534,6 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     <section class="cy-faq-sec" aria-labelledby="cy-faq-title">
       <div class="cy-container">
         <div class="cy-light-header">
-          <span class="cy-eyebrow-light">{C.faqEyebrow}</span>
           <h2 id="cy-faq-title">{C.faqTitle}</h2>
         </div>
 
@@ -862,7 +1561,6 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     <section id="cy-close" class="cy-close-sec" aria-labelledby="cy-close-title">
       <div class="cy-container">
         <div class="cy-close-stage">
-          <span class="cy-eyebrow-dark">{C.closeEyebrow}</span>
           <h2 id="cy-close-title">{C.closeTitle}</h2>
           <p class="cy-close-lead">{C.closeIntro}</p>
           <div class="cy-close-btns">
@@ -897,6 +1595,57 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   </main>
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
+
+<script>
+  (() => {
+    const sec = document.querySelector<HTMLElement>(".cy-bird-sec");
+    if (!sec) return;
+
+    const modeBtns = Array.from(sec.querySelectorAll<HTMLButtonElement>("[data-set-bird-mode]"));
+    const stepBtns = Array.from(sec.querySelectorAll<HTMLButtonElement>("[data-bird-step-btn]"));
+    let currentStep = 0;
+
+    const applyStep = (step: number) => {
+      currentStep = step;
+      sec.setAttribute("data-bird-step", String(step));
+      stepBtns.forEach((btn, idx) => {
+        btn.classList.toggle("is-current", idx === step);
+      });
+    };
+
+    let timer = window.setInterval(() => {
+      applyStep((currentStep + 1) % 4);
+    }, 1400);
+
+    const restartTimer = () => {
+      window.clearInterval(timer);
+      timer = window.setInterval(() => {
+        applyStep((currentStep + 1) % 4);
+      }, 1400);
+    };
+
+    stepBtns.forEach((btn, idx) => {
+      btn.addEventListener("click", () => {
+        applyStep(idx);
+        restartTimer();
+      });
+    });
+
+    modeBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const mode = btn.getAttribute("data-set-bird-mode") || "attack";
+        sec.setAttribute("data-bird-mode", mode);
+        modeBtns.forEach((b) => {
+          const active = b === btn;
+          b.classList.toggle("is-active", active);
+          b.setAttribute("aria-selected", active ? "true" : "false");
+        });
+        applyStep(0);
+        restartTimer();
+      });
+    });
+  })();
+</script>
 
 <style>
   /* ==========================================================================
@@ -2303,6 +3052,307 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   /* ==========================================================================
      Responsive Breakpoints
      ========================================================================== */
+  /* ==========================================================================
+     CHAPTER 2B: 45° ISOMETRIC BIRD'S-EYE VIEW — DEFENSE-IN-DEPTH & EXECUTION GATE
+     ========================================================================== */
+  .cy-bird-sec {
+    background: #ffffff;
+    padding: 0 0 112px;
+  }
+
+  .cy-bird-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  .cy-bird-header-copy {
+    max-width: 720px;
+  }
+
+  .cy-bird-header-copy h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 3.8vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.22;
+    color: var(--ink);
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+
+  .cy-bird-header-copy p {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .cy-bird-controls {
+    display: inline-flex;
+    background: var(--pale-stone);
+    border: 1px solid #cfd6c8;
+    padding: 5px;
+    border-radius: 999px;
+    gap: 4px;
+  }
+
+  .cy-bird-mode-btn {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+
+  .cy-bird-mode-btn.is-active {
+    background: var(--obsidian-stage);
+    color: #ffffff;
+  }
+
+  .cy-mode-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .cy-mode-dot.is-attack {
+    background: #ef4444;
+  }
+
+  .cy-mode-dot.is-normal {
+    background: var(--lime);
+  }
+
+  /* 3D Bird's-Eye Stage Container */
+  .cy-bird-stage {
+    background: var(--obsidian-stage);
+    border-radius: 28px;
+    padding: 36px 36px 40px;
+    color: #ffffff;
+    box-shadow: 0 24px 60px rgba(18, 20, 14, 0.14);
+  }
+
+  .cy-bird-canvas-wrap {
+    background: #0d110c;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 16px 12px 8px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+
+  .cy-bird-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Mode-dependent SVG visibility & animations */
+  .cy-bird-sec[data-bird-mode="attack"] .cy-packet-normal {
+    opacity: 0.25;
+  }
+  .cy-bird-sec[data-bird-mode="normal"] .cy-packet-attack {
+    opacity: 0.15;
+  }
+  .cy-bird-sec[data-bird-mode="normal"] .cy-iso-branch-track,
+  .cy-bird-sec[data-bird-mode="normal"] .cy-iso-hold-box {
+    opacity: 0.4;
+  }
+  .cy-bird-sec[data-bird-mode="attack"] .cy-iso-exec-beam {
+    opacity: 0.32;
+  }
+
+  /* Sequential Gate Highlighting synchronized with data-bird-step="0..3" */
+  .cy-iso-gate {
+    transition: filter 0.3s ease, transform 0.3s ease;
+  }
+  .cy-bird-sec[data-bird-step="0"] .is-gate-1,
+  .cy-bird-sec[data-bird-step="1"] .is-gate-2,
+  .cy-bird-sec[data-bird-step="2"] .is-gate-3,
+  .cy-bird-sec[data-bird-step="3"] .is-gate-4 {
+    filter: brightness(1.22);
+  }
+
+  /* ProofGate Intercept Shockwave Animation */
+  @keyframes pgInterceptPulse {
+    0%, 55% {
+      opacity: 0;
+      transform: scale(0.75);
+    }
+    70% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.65);
+    }
+  }
+
+  .cy-pg-intercept-ring {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pgInterceptPulse 5.6s infinite ease-out;
+  }
+
+  .cy-bird-sec[data-bird-mode="normal"] .cy-pg-intercept-ring {
+    stroke: var(--lime);
+  }
+
+  /* Synchronized 4-Step Compact Footer Bar */
+  .cy-bird-steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .cy-bird-step-card {
+    appearance: none;
+    text-align: left;
+    font-family: var(--font-body);
+    background: #161b14;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px 16px 14px;
+    color: #f4f7ef;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .cy-bird-step-card:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+  }
+
+  .cy-bird-step-card.is-proofgate {
+    background: #1a2313;
+    border-color: rgba(168, 224, 16, 0.4);
+  }
+
+  .cy-bird-step-card.is-current {
+    border-color: var(--lime);
+    background: #1f2818;
+  }
+
+  .cy-bird-step-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .cy-bird-step-fill {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: var(--lime);
+  }
+
+  @keyframes stepBarFill {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  .cy-bird-step-card.is-current .cy-bird-step-fill {
+    animation: stepBarFill 1.4s linear forwards;
+  }
+
+  .cy-bird-step-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .cy-bird-step-num {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--lime);
+    line-height: 1;
+  }
+
+  .cy-bird-step-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.3;
+  }
+
+  .cy-bird-mini-badge {
+    margin-left: auto;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    line-height: 1.3;
+  }
+
+  .cy-bird-mini-badge.is-warn {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fde68a;
+  }
+
+  .cy-bird-mini-badge.is-lime {
+    background: var(--lime);
+    color: var(--ink);
+  }
+
+  .cy-bird-step-sub {
+    font-size: 12px;
+    color: #9ca694;
+    line-height: 1.4;
+    padding-left: 24px;
+  }
+
+  @media (max-width: 1024px) {
+    .cy-bird-steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .cy-bird-stage {
+      padding: 24px 20px 28px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .cy-bird-steps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .cy-bird-controls {
+      width: 100%;
+      flex-direction: column;
+      border-radius: 16px;
+    }
+    .cy-bird-mode-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
   @media (max-width: 1024px) {
     .cy-hero-grid {
       grid-template-columns: minmax(0, 1fr);

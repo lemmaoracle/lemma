@@ -1,182 +1,123 @@
-# Lemma サイトのデザイン
+# Lemma Web Design System
 
-lemma.frame00.com（`packages/web`）の見た目と言葉の使い分けを書く。値の正は実装で、ここには「どこに何を使うか」だけを書く。
+Visual and editorial conventions for `lemma.frame00.com` (`packages/web`). The implementation is the source of truth for token values (`packages/web/src/styles/top-v47.css` under `.topx`); this document defines where and how each component, layout pattern, and term is used.
 
-- 色・書体の値：`packages/web/src/styles/top-v47.css` の `.topx` の変数（トップ v47 のヒーローが地の基準）
-- 初版（2026-10-25）は、ボタンとラベルの使い分けだけ。ほかの部品は、棚卸しをして足す。
+## Color
 
-## 色
-
-| 役目 | 変数 | 使う所 |
+| Role | Token / Value | Usage |
 |---|---|---|
-| 地 | 白・`--lite` | 面の地は、この 2 値だけ |
-| 文字 | `--tx`・`--tx-soft`・`--muted` | 本文・補足・注記 |
-| ライム | `--ok` | 押してほしい所、強調の下線 |
-| 濃い緑の字 | `--ok-light` | ライムの薄い地の上の字、リンク |
-| 誤り・警告 | `--err` | 誤り、被害の印 |
+| Surface | White (`#ffffff`) · `--lite` (`#eef1eb`) | Base canvas surfaces |
+| Dark Stage | `#121611` · `#191d17` | High-contrast dark stages and footer surfaces |
+| Text | `--tx` · `--tx-soft` · `--muted` | Body copy, supporting descriptions, and footnotes |
+| Accent Lime | `--ok` (`#a8e010`) | Primary interactive accents and emphasis underlines |
+| Dark Green Text | `--ok-light` | Text and links over pale lime backgrounds |
+| Error / Alert | `--err` | Held actions, verification mismatches, and risk indicators |
 
-ブラウン・タン・暖かいクリームは旧世代なので使わない（2026-08 にスレート／ライムへ移行済み）。
+Legacy brown, tan, and warm-cream palettes are deprecated and must not be used. All surfaces use Lemma's slate, stone, obsidian, and lime palette without blue-tinted navy tones.
 
-## ボタン
+## Buttons
 
-1 つの面で、ボタンの強さを段で分ける。同じ強さのボタンを並べない（全部ライムにしない）。
+Differentiate button weight by tier on every surface. Never place two buttons of identical visual weight side by side.
 
-| 段 | 見た目 | 使う所 | 例 |
+| Tier | Appearance | Usage | Example |
 |---|---|---|---|
-| 主 | 墨の地・白い字（トップの `.btn.solid`） | その面で、いちばん押してほしい 1 つ。1 面に 1 つ | セルフチェックの結果の「メールで相談する（無料）」 |
-| 呼び込み | ライムの地・墨の字 | 始める・入口 | LP のヒーローの「無料でチェックする」 |
-| 次の一歩 | 薄いライムの地・濃い緑の字（トップの `.btn.ghostd`） | 続ける・補助 | 「残りの 9 項目も点検する」、ナビの「ダッシュボード ↗」（全ページに出るので、各ページの主と競わせない） |
-| 小さな操作 | 白い地・細い線 | 保存・消去など | 「結果を PDF で保存」「回答を消す」 |
+| Primary | Dark ink background, white text (`.btn.solid`) | Single most important action on a light surface (one per surface) | "Book a consultation" |
+| Entry / Callout | Lime background, dark ink text | Primary action on dark surfaces or landing page hero entry points | "Talk to an expert ↗" |
+| Secondary | Pale lime tint, dark green text (`.btn.ghostd`) | Supporting paths and persistent global navigation actions | "Dashboard ↗" in global nav |
+| Utility | White background, thin border | Local utility actions such as saving, exporting, or resetting | "Save as PDF", "Reset answers" |
 
-- 暗い地（Lemma について・フッターなど）の上では、ライムが主になる。
-- 主の横に、呼び込みを並べない。主を目立たせたいときは、まわりのライムを次の一歩に下げる。
-- 形：角 4px（トップの `.btn` と同じ）。営業用の LP も同じ。選ぶボタン（タブ・担当・進め方）も、ボタンと同じ角にする。
+- On dark surfaces, Accent Lime serves as the primary button tier.
+- Do not place an Entry button immediately next to a Primary ink button unless one is demoted to Secondary or outline style.
+- **Shape**: `4px` border-radius for standard buttons and interactive selector tabs.
+- **Icons**: When pairing an icon with button text, place it to the left at matching cap height (`--ok-light` on light backgrounds, lime on dark ink backgrounds).
+- **Touch targets**: Minimum `44px` height on both desktop and mobile; full-width for mobile yes/no/unknown response buttons.
 
-- ボタンにアイコンを添えるときは、文字の左に小さく（文字と同じ高さ）。色はふだん `--ok-light`、墨の地の上ではライム。例：お急ぎ点検＝ストップウォッチ、じっくり点検＝虫めがね、メールで相談する＝封筒。
-- 押しやすさ：スマホで答えるボタン（はい／いいえ／分からない）は横いっぱい・高さ 44px。PC も高さ 44px。
+## Labels & Badges
 
-## ラベル
+- **Shape**: Pill (`999px` border-radius) for category tags, scenario labels, and status legends so they are visually distinct from `4px` interactive buttons.
+- **Status colors**: Pass / Yes = `--ok` (lime fill, dark ink text); Alert / Held / No = `--err`; Unknown / Pending = `--muted`.
 
-- 形は丸（`999px`）。Brief の分類、セルフチェックの場面、答えの凡例。ボタン（角 4px）と形で見分ける。
-- 答えの色（セルフチェック）：はい＝`--ok`（ライムの地・墨の字）、いいえ＝`--err`、分からない＝`--muted`。結果の「確認が必要な項目」でも同じ色を使う。
+## Typography & Sizing
 
-## 文字の大きさ（PC とスマホ）
+- On desktop viewports (`761px` and wider), constrain line measure and scale up font sizes rather than setting small type across wide containers.
+- Reference sizes for interactive checks: item copy `16px` desktop / `14.5px` mobile; step headings `21px` desktop / `19px` mobile; paired action buttons max-width `640px` on desktop.
+- Do not use glowing text shadows or text gradients. Establish hierarchy through solid color contrast and typographic scale jumps.
+- On product landing pages, let section headings (`<h2>`) stand on their own without small eyebrow sub-headings above them.
 
-- PC（761px 以上）で面が広いときは、幅を絞って文字を大きくする。広い面に小さい文字を置かない。
-- 目安（セルフチェック）：チェック項目の文 PC 16px／スマホ 14.5px、手順の見出し PC 21px／スマホ 19px、横に並ぶ 2 つのボタンは PC で最大 640px。
+## Lists & Dividers
 
-## 一覧の区切り
+- Separate items inside a bordered card or box with dotted horizontal dividers.
+- Omit the top divider on the first visible item inside a container (the container border marks the start), including when lists are filtered or reordered dynamically.
 
-- 箱の中の項目は点線で区切る。箱の最初の項目の上には引かない（箱の縁が始まりを示す）。
-- 項目が並べ替わったり隠れたりする一覧では、画面に出ている最初の項目で決める。
+## Product & Interactive Landing Pages
 
-## 営業用の LP
+### Interactive Self-Check (`/ja/critical/self-check/`)
 
-例：`/ja/critical/self-check/`。記事のトーンのまま文字を積むと、読まれない。
+- Keep prose minimal; consolidate explanations into compact legends, metric bands, and miniature UI previews (email, chat, notification, or report cards).
+- Use `.example` for all illustrative sender addresses and domains.
+- Allow visitors to switch scenarios by role via tabs.
+- Show a bottom progress bar with the remaining item count during check flows.
+- Refer to yes/no prompts as "check items" (`チェック項目`) rather than "questions."
+- Label short vs. comprehensive paths by pace (e.g., quick check vs. thorough check) with item count and estimated time (`25s` per item).
 
-- 文字を減らす。説明の箇条は、凡例や数字の帯にまとめる。
-- 「あなたの担当は？」のタブで、担当ごとの中身に切り替える。
-- 手口は文章で説明せず、メール・チャット・通知・報告書の小さな画面で見せる。架空の差出人のアドレスは `.example` を使う。
-- 最初の画面に、「この会社は何か」を数字で出す（分析した事案の数など。数はビルドのたびに数える）。
-- 答える画面では、下のバーに「あと N 項目」と進みの棒を出す。
-- はい／いいえで答えるものは「チェック項目」と呼ぶ（「問い」と書かない）。
-- 短い道と長い道を選ばせるときは「お急ぎ点検」「じっくり点検」のように速さで呼ぶ。「要点」は「これだけやればよい」という推奨に聞こえるので使わない。項目数と目安の分（1 項目 25 秒）を添える。
+### Product Landing Page (`/cyber/`, `/ja/cyber/`)
 
-## トップのファーストビュー
+- **High-contrast stage alternation**: Alternate sections across pale stone (`#eef1eb`), pure white (`#ffffff`), and deep obsidian/charcoal (`#121611` / `#191d17`).
+- **Heading style**: In Japanese copy, prefer concise noun-phrase headings (体言止め) oriented around executive and governance outcomes rather than conversational phrasing.
+- **Feature cards with UI mocks**: Present core capabilities as crisp white cards inside a dark stage, pairing each card's copy with a light-mode UI mock (delegated AI permission scopes, recipient bank account matching, and cryptographic change-notice verification).
+- **Architectural diagram**: Illustrate how pre-execution verification relates to classical guardrails (perimeter pattern matching and authentication) using a 45-degree isometric bird's-eye diagram and synchronized step bar.
+- **Empirical & statistical evidence**: Always pair attack test results and market statistics with explicit denominators (e.g., models × scenarios), scope notes, and primary source links in the same section.
 
-入口の順位（2026-10-25）。売り先の優先（大企業・CVC → 開発者 → 中小は来たら受ける）に合わせる。
+## Top Page Hero Hierarchy
 
-| 順位 | 入口 | 形 |
+Entry points in the top-page first view follow a strict priority order aligned with primary reader journeys (enterprise & partner inquiries → developers):
+
+| Priority | Entry Point | Presentation |
 |---|---|---|
-| 1 | エンタープライズ相談 | 主（暗い地ではライム）。1 つだけ |
-| 2 | 証明サンプルを検証する | 次の一歩 |
-| 3 | 無料のセルフチェック（訴求ごと） | 文字の 1 行。ボタンにしない（ヒーローの話は「証明」で、詐欺の対策をボタンにすると軸がぶれる） |
-| 4 | NEW のお知らせ | 文字の 1 行 |
+| 1 | Enterprise consultation | Primary button (lime on dark hero, single instance) |
+| 2 | Verify a proof sample | Secondary button |
+| 3 | Self-check links | Single text line (not a button, keeping the hero focused on cryptographic proof) |
+| 4 | Release / news notice | Single text line |
 
-- 導入事例はファーストビューの上の帯に置く（順位の外・CLUBS for PUBLIC の LP と同じ置き方）。暗いヒーローに溶けないよう淡い緑の地にし、相手先の社名は出さずに自社の事例記事へ送る（2026-10-25）。
-- 入口を足すときは、この順位のどこに入るかを先に決める。ボタンは 2 つまで。
-- どれもクリックを GA に送る（`data-top-ev`）。順位は数字を見て見直す。
+- Case study banners sit in the top strip above the hero on a pale green surface, linking to internal case-study articles without exposing client names in the banner.
+- Limit hero buttons to at most two. Track all entry clicks via analytics attributes (`data-top-ev`, `data-cy-ev`).
 
-## Lemma の言葉
+## Editorial & Terminology Guidelines
 
-読み手でトーンを分ける。同じ「Lemma の説明」も、読み手ごとに言い方を変える。
+Adapt tone to the target reader while keeping functional terminology consistent across the site:
 
-| 面 | 読み手 | トーン | Lemma の説明の例 |
+| Surface | Reader | Tone | Example Description |
 |---|---|---|---|
-| 製品・技術（トップ・製品・API・業界別・Critical Brief） | 導入を検討する情シス・開発・経営企画・パートナー | 「証明」「検証」「真正性」は Lemma の言葉として使う。初めて出す所では、何を・誰が確かめられるのかを 1 文で添える | 記録・データ・AI の実行に証明を付け、受け取った側が自分で確かめられるようにする |
-| 業務の担当者（セルフチェック・営業用 LP） | 対策を調べに来た経理・経営・総務・情シス | 下の表の言い換えで、場面と、誰が・いつ何を確認するかで書く。専門の言葉は出さない | 振込先の書き換えに、送金の前に気づける仕組み |
+| Product & Technical (Top, Products, API, Industry, Critical Briefs) | IT, engineering, corporate planning, partners | Use Lemma's core terms (*proof*, *verification*, *authenticity*). On first mention, add one sentence stating what is verified and by whom. | Attach cryptographic proofs to records, data, and AI actions so recipients can verify facts independently. |
+| Business & Operations (Self-check, Product LPs) | Executive leadership, finance, accounting, security leads | Describe concrete operational scenes—what is checked before execution and what routes to human review—without unnecessary jargon. | Verify transfer instructions, account updates, and AI actions before execution, routing anomalies to human review. |
 
-どの面でも、効果を言い切らない（防げる・安全です・備えができています と書かない）。
+Never state or guarantee absolute security outcomes (do not claim an organization is "100% safe," "fully protected," or "immune to attacks").
 
-動詞の使い分け（どの面でも共通・CLUBS と同じ分け方）：
+### Verb Distinction
 
-| 言葉 | 使う所 |
+Maintain a strict distinction between system verification and human review across all surfaces (English and Japanese):
+
+| Term (JA / EN) | Usage |
 |---|---|
-| 照合 | Lemma の機能。システムが記録・データを突き合わせること。何と何を照合するかを書く |
-| 確認 | 人がすること。中身を見て判断する、登録済みの連絡先へ折り返す など |
-| チェック | 承認ポイントの種類、セルフチェックの「チェック項目」 |
+| `照合` (Verify / Cross-check) | **System action (Lemma / ProofGate)**. Automated cryptographic or registry comparison. Always specify *what* is being compared against *what* (e.g., incoming bank details against registered partner master records). |
+| `確認` (Review / Confirm) | **Human action**. A designated person inspecting a held operation or calling a registered phone number to make the final decision. |
+| `チェック` (Check) | Approval point categories or interactive self-check items (`チェック項目`). |
 
-### 業務の担当者の面の言い換え
+### Japanese Operational Copy Conventions
 
-| 使わない | 使う | 理由 |
+| Avoid | Prefer | Reason |
 |---|---|---|
-| 人がすることに「照合」（目視・折り返しの電話など） | 確認 | 「照合」は Lemma の機能の言葉。人の作業と混ざると、何をする製品か分からない |
-| 対象の無い「照合」・「照合できたものだけを通す」 | 「Lemma が、届いた口座情報を登録済みの取引先の情報と照合する」のように、何と何を照合するかを書く。止めるかどうかは受け手（経理・受け手側のシステム）が決める形で書く | 何と何を比べ、誰が何を通すのかが分からない |
-| 振込先の変更（詐欺の話をするとき） | 振込先の書き換え | 変更はふつうの手続きに聞こえる。悪意が分かる言葉にする |
-| 届いた経路とは別の経路で | 届いたメールやチャットとは別の手段（登録済みの電話番号など）で | 経路が何を指すか分からない |
-| 範囲外の一斉配信 | 予定と違う宛先への一斉配信 | 何の範囲か分からない |
-| 影響評価 | 情報の扱いに問題がないかの確認 | 専門の手続きの名前で、伝わらない |
-| 問い・質問 | チェック項目（数は「項目」） | はい／いいえで答えるもの |
-| 業務（狙われた業務の分け方） | 場面（振込先・口座の変更、承認・決裁 など） | お客さまの「業務」は担当（経理など）のこと |
-| 要点だけ | お急ぎ点検（長い方は じっくり点検） | 「これだけやればよい」という推奨に聞こえる |
-| 言い切れない | 分からない | 答えの選び方として迷わない |
-| 確かめる | 確認する | ボタン・答え・結果の言葉をそろえる（製品・技術の面は「確かめる」でよい） |
-| 診断・監査・助言 | 点検 | 特定の組織への監査や助言ではない |
-| 備えができています・防げる・安全です | 書かない（点数ごとの見出しも付けない） | 効果は保証できない。1 項目でも「いいえ」「分からない」があれば警戒を促す |
-| 穴をつぶす | システムや業務の抜け漏れを点検し、対策を進める | ビジネスの文書の言い方にする |
-| 億単位の・下記は | 書かない | あおらない・画面の位置に頼らない |
-
-## Proof Gate の営業用 LP（v2・Persuade Mode）
-
-対象面: `/ja/cyber/`（および `/cyber/`）。読者は経営者・セキュリティ責任者・意思決定層。
-面の性質: **Persuade（「決めてもらう」ページ）**。単なる情報提供ではなく、課題の客観的事実、具体的動作、実証データ、導入手順を経て導入相談を「決めてもらう」情報設計。
-
-### 1. ベンチマーク構図と Lemma ハイコントラスト・トーンの融合
-- **明暗ステージのダイナミックな切り替え（Lemma Stone / White Canvas & Deep Obsidian Stages）**:
-  - 色味は青みを一切排した **Lemma トーン（ペールストーン `#eef1eb`、純白 `#ffffff`、ディープオブシディアン `#121611`、チャコール `#191d17`、ライム `#a8e010`、濃墨 `#12140e`）** で高いコントラストを維持する。
-- **経営層向け Intro ステージ（Ramp / Vanta / Stripe Enterprise ベンチマークの Editorial Split ＋ 比較バー ＋ 3 Bento カード）**:
-  - ファーストビュー直下の Intro セクションでは、1Password 型の「右カードオーバーラップ＋角丸ボックス＋3小アイコン列」を排し、経営層が直感的に価値を掴める **フルブリード・ディープオブシディアン（`#121611`）の Editorial Split ＆ Bento 構図** を採用。
-  - 上段は左に「なぜ、流出しないのか／実行の直前で、止める」の大見出し、右にブロックチェーン×ゼロ知識証明（ZKP）の役割を平易な言葉で伝える 50/50 スプリットヘッダー。
-  - 中段には「従来の防御（入口の認証のみ：突破されると止められない）」と「ProofGate（実行直前の関門：侵入されても最後の関門で遮断）」を 2 行で対比するビジュアル比較バナーを配置。
-  - 下段には `01`〜`03` のナンバリングと経営メリットの日本語ピル（`既存システムを活かせる` / `機密データは社内のまま` / `内部統制・監査を強化`）を備えた 3 つの Bento カードを並べる。
-- **ダークステージ × 純白カード × 精緻なライトモードUIモック**:
-  - Features セクションでは、チャコール角丸ステージ（`#191d17`）の中に **3つの純白カード（`#ffffff`）** を横並びで配置。各カードの下半分には、テキストの主張を視覚的に補強する**ライトモードのリアルなUIウィジェット（数値・テーブル・リスクメーター・検証バッジ）**を収める。
-- **タイポグラフィのジャンプ率と最小文字サイズ**:
-  - 発光シャドウや文字グラデーションを排し、ソリッドなカラーと大胆なジャンプ率（Hero見出し `clamp(40px, 5.2vw, 62px)`、セクション見出し `clamp(30px, 4.2vw, 48px)` vs 本文 `15px〜17px`）で可読性と品位を高める。最小文字サイズは注記・ラベルでも `11.5px〜12.5px` 以上を厳守する。
-
-### 2. 節の順序と構成
-1. **hero（流出しないシステム）**:
-   - 背景: ペールストーン（`#eef1eb`）。
-   - 左カラムに大見出し「流出しないシステム」・リード文・ライムの主ボタン（個別に相談する ↗）・アウトライン副ボタン（攻撃実験の結果を見る）。
-   - 右カラムに「リアルタイム実行ゲート（ProofGate Execution Monitor）」の大型カード。
-2. **intro（実行の直前で、止める — Executive Editorial Split & Bento）**:
-   - 背景: フルブリードのディープオブシディアン（`#121611`）。
-   - 上段（50/50 Editorial Split）: 左に「なぜ、流出しないのか」「実行の直前で、止める」、右にリード文（控えめにブロックチェーン×ゼロ知識証明 ZKP 等の暗号技術を掛け合わせていることに言及）。
-   - 中段（Before/After 比較バナー）: 「従来の防御（入口の認証のみ）」と「ProofGate（実行直前の関門）」のフロー対比。
-   - 下段（3つの Bento カード）: `01 運用の手間を増やさずに保護`（`既存システムを活かせる`）、`02 機密を預けないゼロ知識照合`（`機密データは社内のまま`）、`03 改ざん不能な実行の監査証跡`（`内部統制・監査を強化`）。※個人名の引用は含めない。
-3. **features（3つの場面で、不正な実行を確実に止める）**:
-   - 背景: 純白キャンバス上のチャコール角丸ステージ（`#191d17`）。
-   - ステージ内に **3つの純白カード（`#ffffff`）** を3カラムで配置：
-     1. **AIを止める**（権限の範囲・有効期間の照合 ＋ AIツール呼び出し監視UIモック）
-     2. **送金を止める**（届いた口座情報と登録済み取引先情報の照合 ＋ 送金照合ステータス＆メーターUIモック）
-     3. **口座変更を止める**（担当者の所属証明・テキスト未改変証明の照合 ＋ 変更案内検証UIモック）
-   - 架空のドメインは必ず `.example` を使用。
-4. **issue（市場の課題：鍵だけでは、守りきれない）**:
-   - 背景: 全幅（Full-Bleed）のペールストーン（`#eef1eb`）。
-   - 3つの純白統計カード（約20倍の被害急増、約9割の大企業AI運用課題、60%超の正規認証情報悪用）＋ 下段に「従来の境界防御（鍵）の限界」と「FBI IC3 ネット犯罪申告被害額の推移グラフ（SVG曲線）」を並列配置した純白ワイドパネル。
-5. **fact（攻撃実験の結果：6モデル・計30回の検証）**:
-   - 背景: 純白キャンバス上のディープオブシディアン角丸ステージ（`#121611`）。
-   - 母数はモデル数×シナリオ数（6モデル × 5シナリオ = 30回）とし、両カードとも**攻撃成功数**で対比：
-     - **照合なし（従来の環境）**: **`18 / 30`**（18件で攻撃が成立、Opus 4.8は 5/5 すべて突破）
-     - **照合あり（ProofGate導入後）**: **`0 / 30`**（攻撃成功数 0件、すべて実行前に止め担当者の確認へ）
-   - Fable 5（5回分）は攻撃指示自体を拒否したため不成立である旨を注記。
-   - ステージ内に純白カードの「5シナリオ対比テーブル（Opus 4.8内訳）」＋ 安全寄りAIでの通常業務プローブ記録（$67,800送金遮断）の折りたたみ ＋ GitHub一次ソースリンク。
-6. **始め方（導入の流れ）**:
-   - 背景: 純白（`#ffffff`）。
-   - 「確認に追われている場面から、ひとつだけ」。3ステップカード（01 場面をひとつ選ぶ → 02 照合ルールを接続する → 03 運用を変えずに重ねる）。
-7. **FAQ（よくある確認）**:
-   - 背景: 全幅のペールストーン（`#eef1eb`）。白いカード型アコーディオンで6問を配置。
-8. **close（次の一歩：CTA）**:
-   - 背景: 純白キャンバス上のディープオブシディアン角丸ステージ（`#121611`）。
-   - 個別に相談する ↗（ライムピルボタン）、資料を受け取る ↗（アウトラインピルボタン）、技術者向け検証ツール導線。
-
-### 3. 言葉と数値の規約
-- **動詞の厳密な使い分け**:
-  - `照合`: Lemma / ProofGate の機能。システムが記録・データを突き合わせること（届いた口座情報と登録済み取引先マスター など、照合対象を明記）。
-  - `確認`: 人（担当者）がすること。不一致や範囲外の操作は「担当者の確認へ回る」と記述する。
-- **実証数値の規約**:
-  - 実測が確認されている数値のみを使用（Opus 5/5、18/30、テックタッチ約9割 n=257、FBI IC3 約20倍）。
-  - `$28K` / `$1M` / `96%` / `約7兆円` など根拠の曖昧な数字は使用禁止。
-- **CTAヒエラルキー**:
-  - hero および各セクションの主導線は経営者向けの「個別に相談する ↗」（ライムボタン）。
-  - 計測イベントは `data-cy-ev`（`cy_hero_consult`, `cy_hero_fact`, `cy_feat_verify`, `cy_issue_source`, `cy_fact_source`, `cy_close_consult` など「節_目的」）で一元送信する。
+| Using `照合` for human tasks (visual inspection, callback) | `確認` | `照合` is reserved for automated system verification. Mixing the two obscures what the product does. |
+| Unqualified `照合` ("only verified items pass") | State both sides of the comparison and leave the final decision to the receiving person or system | Clarifies what records are compared and who authorizes the hold or execution. |
+| `振込先の変更` (in fraud contexts) | `振込先の書き換え` | Distinguishes malicious tampering from routine administrative updates. |
+| `届いた経路とは別の経路で` | `届いたメールやチャットとは別の手段（登録済みの電話番号など）で` | Concrete communication channel rather than abstract "route." |
+| `範囲外の一斉配信` | `予定と違う宛先への一斉配信` | Clarifies what boundary was exceeded. |
+| `影響評価` | `情報の扱いに問題がないかの確認` | Plain business Japanese over compliance jargon. |
+| `問い` · `質問` | `チェック項目` (counted as `項目`) | Standard term for yes/no self-check items. |
+| `業務` (for targeted workflows) | `場面` (e.g., `振込先・口座の変更`, `承認・決裁`) | Readers associate `業務` with job departments rather than specific operational moments. |
+| `要点だけ` | `お急ぎ点検` (paired with `じっくり点検`) | Avoids implying that the short path alone is sufficient. |
+| `言い切れない` | `分からない` | Clearer answer choice in self-check flows. |
+| `診断` · `監査` · `助言` | `点検` | Self-check tools provide an operational check rather than formal audit or legal advice. |
+| `備えができています` · `防げる` · `安全です` | Omit guarantees | Security outcomes cannot be guaranteed; any gap warrants review. |
+| `穴をつぶす` | `システムや業務の抜け漏れを点検し、対策を進める` | Formal business register. |
+| `億単位の` · `下記は` | Omit sensational modifiers and layout-dependent references | Keep copy objective and viewport-independent. |
