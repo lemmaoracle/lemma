@@ -10,6 +10,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import CyberProblem from "../components/CyberProblem.astro";
+import LemmaOracle from "../components/LemmaOracle.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { localePath } from "../lib/urls";
 import "@fontsource/space-grotesk/latin-500.css";
@@ -48,7 +49,7 @@ const C = isJa
       ],
       gateNote: "ブロックチェーンと先端暗号技術による実行直前の照合ログ（イメージ）",
       introEyebrow: "企業資産と信用の保護",
-      introTitle: "企業の信用と資産を守る、実行直前の統制",
+      introTitle: "企業の信用と資産を守るセキュリティ",
       introLead:
         "鍵が盗まれても、AIが想定外の動きをしても。日常の業務を止めることなく、最後の関門で確かめます。ProofGateは、改ざんできないブロックチェーンとゼロ知識証明（ZKP）などの暗号技術を掛け合わせ、機密データを外部へ渡さずに「条件を満たす事実」だけを照合します。",
       introCompare: {
@@ -272,7 +273,7 @@ const C = isJa
       ],
       gateNote: "Cryptographic & blockchain pre-execution verification log (illustrative)",
       introEyebrow: "PROTECTING TRUST & ASSETS",
-      introTitle: "Pre-execution governance that protects corporate trust and assets",
+      introTitle: "Security that protects corporate trust and assets",
       introLead:
         "Even when credentials are stolen or AI agents behave unpredictably, verify right before execution without disrupting daily operations. ProofGate combines immutable blockchain audit trails with Zero-Knowledge Proofs (ZKP) to verify qualifying facts without exposing raw secrets.",
       introCompare: {
@@ -529,10 +530,11 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
   <HubSpotDrawer />
   <main class="cy-page">
     <!-- =====================================================================
-         CHAPTER 1A: HERO (Pale Stone Canvas #eef1eb + Execution Monitor)
+         CHAPTER 1A: HERO (1-Column Centered Copy + Wide Clean Dashboard Mock)
+         Dashboard tone matches workers/packages/dashboard (Slate/White/Blue utility UI)
          ===================================================================== -->
     <section class="cy-hero-sec" aria-labelledby="cy-title">
-      <div class="cy-container cy-hero-grid">
+      <div class="cy-container cy-hero-stack">
         <div class="cy-hero-copy">
           <span class="cy-hero-badge">{C.badge}</span>
           <h1 id="cy-title" class="cy-hero-h1">{C.headline}</h1>
@@ -554,30 +556,206 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
         </div>
 
         <div class="cy-hero-visual-col">
-          <div class="cy-gate-card" role="img" aria-label={C.gateLabel}>
-            <div class="cy-gate-head">
-              <div class="cy-gate-dots" aria-hidden="true">
-                <span></span><span></span><span></span>
+          <!-- Atmospheric, Low-Text, Bottom-Cropped Product Surface (matches workers/packages/dashboard tone) -->
+          <div class="db-shell" role="img" aria-label={C.gateLabel}>
+            <!-- Left Sidebar (Icon + Skeleton Bars for Atmospheric Look) -->
+            <aside class="db-sidebar" aria-hidden="true">
+              <div class="db-switcher">
+                <LemmaOracle class="db-logo" />
+                <span class="db-switcher-label">ProofGate</span>
+                <svg
+                  class="db-switcher-chevron"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M4 6l4 4 4-4" />
+                </svg>
               </div>
-              <span class="cy-gate-title">{C.gateTitle}</span>
-              <span class="cy-gate-live">{C.gateSample}</span>
-            </div>
-            <ul class="cy-gate-list">
-              {
-                C.gateRows.map((row) => (
-                  <li class={row.held ? "cy-gate-row is-held" : "cy-gate-row is-ok"}>
-                    <span class="cy-gate-indicator" aria-hidden="true" />
-                    <div class="cy-gate-main">
-                      <strong>{row.op}</strong>
-                      <small>{`${C.gateCheck}${isJa ? "：" : ": "}${row.check}`}</small>
-                    </div>
-                    <span class="cy-gate-pill">{row.status}</span>
+
+              <nav class="db-nav">
+                <ul>
+                  <li class="is-active">
+                    <svg class="db-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M8 1.75l4.75 1.9v3.6c0 3.1-2 5.4-4.75 6.75C5.25 12.65 3.25 10.35 3.25 7.25v-3.6z" />
+                      <path d="M6 8l1.4 1.4 2.6-2.8" />
+                    </svg>
+                    <span>Guard</span>
+                    <em class="db-nav-badge is-danger">3</em>
                   </li>
-                ))
-              }
-            </ul>
-            <div class="cy-gate-foot">
-              <span>{C.gateNote}</span>
+                  <li>
+                    <svg class="db-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="2" width="5.5" height="5.5" rx="1" />
+                      <rect x="8.5" y="2" width="5.5" height="5.5" rx="1" />
+                      <rect x="2" y="8.5" width="5.5" height="5.5" rx="1" />
+                      <rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1" />
+                    </svg>
+                    <span class="db-skel w-64"></span>
+                  </li>
+                  <li>
+                    <svg class="db-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 3h6a2 2 0 0 1 2 2v9H5a2 2 0 0 1-2-2z" />
+                      <line x1="3" y1="12" x2="11" y2="12" />
+                    </svg>
+                    <span class="db-skel w-52"></span>
+                  </li>
+                  <li>
+                    <svg class="db-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="5.5" cy="10.5" r="2.5" />
+                      <path d="M7.5 8.5l6-6" />
+                      <path d="M11 5l2 2" />
+                    </svg>
+                    <span class="db-skel w-44"></span>
+                  </li>
+                  <li>
+                    <svg class="db-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="2" y1="13.5" x2="14" y2="13.5" />
+                      <rect x="3" y="9" width="2.4" height="4.5" />
+                      <rect x="6.8" y="5" width="2.4" height="8.5" />
+                      <rect x="10.6" y="7.5" width="2.4" height="6" />
+                    </svg>
+                    <span class="db-skel w-56"></span>
+                  </li>
+                </ul>
+              </nav>
+            </aside>
+
+            <!-- Main Content Column -->
+            <div class="db-main" aria-hidden="true">
+              <!-- Minimal Topbar -->
+              <header class="db-topbar">
+                <div class="db-topbar-titles">
+                  <strong class="db-topbar-title">ProofGate</strong>
+                  <span class="db-live-indicator">
+                    <i class="db-status-dot"></i>
+                    Live
+                  </span>
+                </div>
+                <div class="db-topbar-actions">
+                  <span class="db-skel w-64"></span>
+                  <span class="db-theme-btn">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M13 9.5A5.5 5.5 0 0 1 6.5 3 5.5 5.5 0 1 0 13 9.5z" />
+                    </svg>
+                  </span>
+                </div>
+              </header>
+
+              <!-- Compact Workspace Content (Bottom Intentionally Cropped) -->
+              <div class="db-content">
+                <!-- 3 Compact KPI Cards -->
+                <div class="db-kpi-grid">
+                  <div class="db-kpi-card">
+                    <span class="db-kpi-label">{isJa ? "照合通過 (24h)" : "Verified (24h)"}</span>
+                    <div class="db-kpi-row">
+                      <strong class="db-kpi-num">1,482</strong>
+                      <span class="db-pill is-success">99.8%</span>
+                    </div>
+                  </div>
+
+                  <div class="db-kpi-card">
+                    <span class="db-kpi-label">{isJa ? "実行前に保留" : "Held pre-execution"}</span>
+                    <div class="db-kpi-row">
+                      <strong class="db-kpi-num is-danger">3</strong>
+                      <span class="db-pill is-danger">{isJa ? "確認待ち" : "Review"}</span>
+                    </div>
+                  </div>
+
+                  <div class="db-kpi-card">
+                    <span class="db-kpi-label">{isJa ? "保留中の送金額" : "Protected volume"}</span>
+                    <div class="db-kpi-row">
+                      <strong class="db-kpi-num">{isJa ? "¥12.8M" : "$85K"}</strong>
+                      <span class="db-pill is-neutral">Guard</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2-Column Split: Stream List & Selected Diff Inspector -->
+                <div class="db-workspace">
+                  <div class="db-table-wrap">
+                    <table class="db-table">
+                      <thead>
+                        <tr>
+                          <th>{isJa ? "対象操作" : "Operation"}</th>
+                          <th>Kind</th>
+                          <th>{isJa ? "状態" : "Status"}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="is-selected">
+                          <td>
+                            <div class="db-op-cell">
+                              <strong class="db-td-strong">{isJa ? "送金 ¥12,800,000" : "Transfer $85,000"}</strong>
+                              <code class="db-td-mono">pg_8492</code>
+                            </div>
+                          </td>
+                          <td><span class="db-kind-tag">transfer</span></td>
+                          <td><span class="db-pill is-danger">{isJa ? "確認へ回送" : "Held"}</span></td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="db-op-cell">
+                              <span class="db-td-strong">{isJa ? "口座変更案内" : "Account update"}</span>
+                              <span class="db-skel w-44"></span>
+                            </div>
+                          </td>
+                          <td><span class="db-kind-tag">account</span></td>
+                          <td><span class="db-pill is-danger">{isJa ? "確認へ回送" : "Held"}</span></td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="db-op-cell">
+                              <span class="db-td-strong">{isJa ? "AI 顧客DB出力" : "AI DB export"}</span>
+                              <span class="db-skel w-52"></span>
+                            </div>
+                          </td>
+                          <td><span class="db-kind-tag">api</span></td>
+                          <td><span class="db-pill is-danger">{isJa ? "確認へ回送" : "Held"}</span></td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="db-op-cell">
+                              <span class="db-skel w-88"></span>
+                              <span class="db-skel w-44"></span>
+                            </div>
+                          </td>
+                          <td><span class="db-kind-tag">api</span></td>
+                          <td><span class="db-pill is-success">{isJa ? "実行済" : "Passed"}</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Right Inspector Card (Minimal Visual Diff) -->
+                  <aside class="db-detail-panel">
+                    <div class="db-detail-head">
+                      <div class="db-detail-title-group">
+                        <code class="db-td-mono">pg_8492 · onBeforeVerify</code>
+                        <strong class="db-detail-title">{isJa ? "口座マスタ照合" : "Partner Account Check"}</strong>
+                      </div>
+                      <span class="db-pill is-danger">{isJa ? "不一致" : "Mismatch"}</span>
+                    </div>
+
+                    <div class="db-detail-body">
+                      <div class="db-diff-row is-ok">
+                        <span class="db-diff-key">expected_account</span>
+                        <code class="db-diff-val">bank:0412 ✓</code>
+                      </div>
+                      <div class="db-diff-row is-ng">
+                        <span class="db-diff-key">actual_account</span>
+                        <code class="db-diff-val">bank:9901 ✕</code>
+                      </div>
+                      <div class="db-detail-foot">
+                        <span class="db-skel w-88"></span>
+                        <span class="db-btn-primary">{isJa ? "担当者の確認へ" : "Route to review"}</span>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1742,22 +1920,29 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
   }
 
   /* ==========================================================================
-     CHAPTER 1A: HERO (Pale Stone #eef1eb Canvas)
+     CHAPTER 1A: HERO (1-Column Centered Copy + Compact Bottom-Cropped Dashboard)
+     Dashboard tone uses workers/packages/dashboard tokens (Slate / White / Blue)
      ========================================================================== */
   .cy-hero-sec {
     background: var(--pale-stone);
-    padding: 76px 0 88px;
+    padding: 64px 0 0;
+    overflow: hidden;
   }
 
-  .cy-hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  .cy-hero-stack {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 52px;
+    gap: 40px;
   }
 
   .cy-hero-copy {
-    padding: 8px 0;
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .cy-hero-badge {
@@ -1769,182 +1954,525 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
     background: var(--lime-tint);
     padding: 6px 14px;
     border-radius: 999px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .cy-hero-h1 {
     font-family: var(--font-heading);
-    font-size: clamp(40px, 5.2vw, 62px);
+    font-size: clamp(42px, 5.4vw, 66px);
     font-weight: 700;
     letter-spacing: -0.035em;
     line-height: 1.12;
     color: var(--ink);
-    margin: 0 0 24px;
+    margin: 0 0 20px;
     text-wrap: balance;
   }
 
   .cy-hero-lead {
-    font-size: 17px;
+    font-size: 17.5px;
     line-height: 1.8;
     color: var(--ink-soft);
-    margin: 0 0 32px;
-    max-width: 48ch;
+    margin: 0 0 28px;
+    max-width: 52ch;
+    text-wrap: balance;
   }
 
   .cy-hero-btns {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 14px;
   }
 
   .cy-hero-visual-col {
+    width: 100%;
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+
+  /* ─── Atmospheric Dashboard Product Surface (matches workers/packages/dashboard/src/styles/global.css) ─── */
+  .db-shell {
+    --db-canvas: #f8fafc;
+    --db-surface: #ffffff;
+    --db-surface-2: #f1f5f9;
+    --db-ink: #0f172a;
+    --db-ink-strong: #020617;
+    --db-ink-muted: #64748b;
+    --db-ink-faint: #94a3b8;
+    --db-line: rgba(15, 23, 42, 0.08);
+    --db-line-strong: rgba(15, 23, 42, 0.14);
+    --db-divider: rgba(15, 23, 42, 0.05);
+    --db-accent: #2563eb;
+    --db-accent-bg: rgba(37, 99, 235, 0.08);
+    --db-accent-border: rgba(37, 99, 235, 0.25);
+    --db-success: #15803d;
+    --db-success-bg: rgba(34, 197, 94, 0.12);
+    --db-danger: #b91c1c;
+    --db-danger-bg: rgba(220, 38, 38, 0.1);
+    --db-sans: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Text", "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --db-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+
     position: relative;
-  }
-
-  .cy-gate-card {
-    background: #ffffff;
-    border: 1px solid #cfd5c9;
-    border-radius: 20px;
-    box-shadow: 0 24px 60px rgba(18, 20, 14, 0.14);
-    overflow: hidden;
-  }
-
-  .cy-gate-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 22px;
-    background: var(--obsidian-stage);
-    color: #f4f7ef;
-  }
-
-  .cy-gate-dots {
-    display: flex;
-    gap: 6px;
-  }
-
-  .cy-gate-dots span {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #3a4035;
-  }
-
-  .cy-gate-dots span:first-child {
-    background: #ef4444;
-  }
-  .cy-gate-dots span:nth-child(2) {
-    background: #f59e0b;
-  }
-  .cy-gate-dots span:nth-child(3) {
-    background: var(--lime);
-  }
-
-  .cy-gate-title {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: #e2e6dd;
-  }
-
-  .cy-gate-live {
-    margin-left: auto;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--lime);
-    background: rgba(168, 224, 16, 0.14);
-    border: 1px solid rgba(168, 224, 16, 0.35);
-    padding: 4px 10px;
-    border-radius: 999px;
-  }
-
-  .cy-gate-list {
-    list-style: none;
-    margin: 0;
-    padding: 8px 0;
-    background: #ffffff;
-  }
-
-  .cy-gate-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 15px 22px;
-    border-bottom: 1px solid #eef1eb;
-  }
-
-  .cy-gate-row:last-child {
+    display: grid;
+    grid-template-columns: 184px minmax(0, 1fr);
+    height: 312px;
+    background: var(--db-canvas);
+    color: var(--db-ink);
+    font-family: var(--db-sans);
+    font-size: 13px;
+    line-height: 1.45;
+    border-radius: 14px 14px 0 0;
+    border: 1px solid var(--db-line-strong);
     border-bottom: none;
+    box-shadow:
+      0 -4px 40px rgba(15, 23, 42, 0.08),
+      0 16px 48px rgba(15, 23, 42, 0.1);
+    overflow: hidden;
+    text-align: left;
   }
 
-  .cy-gate-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+  /* Bottom crop fade-out so the lower edge feels naturally cut off */
+  .db-shell::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 54px;
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, rgba(248, 250, 252, 0.88) 100%);
+    pointer-events: none;
+  }
+
+  /* Abstract UI Skeleton Bars (reduces text clutter while preserving realistic product density) */
+  .db-skel {
+    display: inline-block;
+    height: 7px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    flex-shrink: 0;
+  }
+  .db-skel.w-44 { width: 44px; }
+  .db-skel.w-52 { width: 52px; }
+  .db-skel.w-56 { width: 56px; }
+  .db-skel.w-64 { width: 64px; }
+  .db-skel.w-88 { width: 88px; }
+
+  /* Left Sidebar */
+  .db-sidebar {
+    background: var(--db-surface);
+    border-right: 1px solid var(--db-line);
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .db-switcher {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--db-line);
+    background: var(--db-surface);
+    color: var(--db-ink-strong);
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+
+  .db-switcher :global(.db-logo) {
+    height: 16px;
+    width: auto;
+    display: block;
+    flex-shrink: 0;
+    color: var(--db-ink-strong);
+  }
+
+  .db-switcher-label {
+    font-weight: 600;
+    color: var(--db-ink-strong);
+    white-space: nowrap;
+  }
+
+  .db-switcher-chevron {
+    width: 12px;
+    height: 12px;
+    margin-left: auto;
+    color: var(--db-ink-faint);
     flex-shrink: 0;
   }
 
-  .cy-gate-row.is-held .cy-gate-indicator {
-    background: var(--err);
-  }
-
-  .cy-gate-row.is-ok .cy-gate-indicator {
-    background: #4e7a00;
-  }
-
-  .cy-gate-main {
-    flex-grow: 1;
+  .db-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     gap: 3px;
-    min-width: 0;
   }
 
-  .cy-gate-main strong {
-    font-size: 14.5px;
-    font-weight: 700;
-    color: var(--ink);
-  }
-
-  .cy-gate-main small {
+  .db-nav li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 6px;
     font-size: 12.5px;
-    color: var(--muted);
+    color: var(--db-ink-muted);
   }
 
-  .cy-gate-pill {
-    font-size: 12px;
-    font-weight: 700;
-    padding: 5px 12px;
+  .db-nav li.is-active {
+    background: var(--db-accent-bg);
+    color: var(--db-accent);
+    font-weight: 600;
+  }
+
+  .db-nav-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    opacity: 0.85;
+  }
+
+  .db-nav-badge {
+    margin-left: auto;
+    font-style: normal;
+    font-family: var(--db-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 1px 6px;
     border-radius: 999px;
+    background: var(--db-surface-2);
+    color: var(--db-ink-muted);
+  }
+
+  .db-nav-badge.is-danger {
+    background: var(--db-danger-bg);
+    color: var(--db-danger);
+  }
+
+  .db-status-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--db-success);
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.35);
     flex-shrink: 0;
   }
 
-  .cy-gate-row.is-held .cy-gate-pill {
-    background: #fef2f2;
-    color: var(--err);
-    border: 1px solid #fecaca;
+  /* Main Dashboard Workspace */
+  .db-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--db-canvas);
   }
 
-  .cy-gate-row.is-ok .cy-gate-pill {
-    background: var(--lime-tint);
-    color: #2b4200;
-    border: 1px solid #cbe38d;
+  .db-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 18px;
+    background: var(--db-surface);
+    border-bottom: 1px solid var(--db-line);
   }
 
-  .cy-gate-foot {
-    padding: 12px 22px;
-    background: #f6f8f4;
-    border-top: 1px solid #e1e5dd;
+  .db-topbar-titles {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .db-topbar-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--db-ink-strong);
+    letter-spacing: -0.01em;
+  }
+
+  .db-live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--db-ink-muted);
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--db-surface-2);
+  }
+
+  .db-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .db-theme-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid var(--db-line);
+    background: var(--db-surface);
+    color: var(--db-ink-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .db-theme-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .db-content {
+    padding: 14px 18px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* 3 Compact KPI Cards Row */
+  .db-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .db-kpi-card {
+    background: var(--db-surface);
+    border: 1px solid var(--db-line);
+    border-radius: 8px;
+    padding: 9px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .db-kpi-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--db-ink-muted);
+  }
+
+  .db-kpi-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .db-kpi-num {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--db-ink-strong);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .db-kpi-num.is-danger {
+    color: var(--db-danger);
+  }
+
+  /* Pills & Kind Tags */
+  .db-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 1.5px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+    line-height: 1.4;
+  }
+
+  .db-pill.is-success {
+    background: var(--db-success-bg);
+    color: var(--db-success);
+  }
+
+  .db-pill.is-danger {
+    background: var(--db-danger-bg);
+    color: var(--db-danger);
+  }
+
+  .db-pill.is-neutral {
+    background: var(--db-accent-bg);
+    color: var(--db-accent);
+  }
+
+  .db-kind-tag {
+    display: inline-block;
+    font-family: var(--db-mono);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 1.5px 6px;
+    border-radius: 4px;
+    background: var(--db-surface-2);
+    color: var(--db-ink-muted);
+    white-space: nowrap;
+  }
+
+  /* 2-Column Workspace: Left Table / Right Diff Card */
+  .db-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+    gap: 12px;
+    align-items: start;
+  }
+
+  .db-table-wrap {
+    background: var(--db-surface);
+    border: 1px solid var(--db-line);
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+  }
+
+  .db-table {
+    width: 100%;
+    border-collapse: collapse;
     font-size: 12px;
-    color: var(--muted);
+  }
+
+  .db-table th {
+    padding: 7px 11px;
+    text-align: left;
+    font-size: 9.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--db-ink-faint);
+    background: var(--db-surface);
+    border-bottom: 1px solid var(--db-line);
+    white-space: nowrap;
+  }
+
+  .db-table td {
+    padding: 8px 11px;
+    border-bottom: 1px solid var(--db-divider);
+    color: var(--db-ink);
+    vertical-align: middle;
+  }
+
+  .db-table tbody tr.is-selected {
+    background: var(--db-accent-bg);
+  }
+
+  .db-op-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .db-td-mono {
+    font-family: var(--db-mono);
+    font-size: 10.5px;
+    color: var(--db-ink-muted);
+    white-space: nowrap;
+  }
+
+  .db-td-strong {
+    font-weight: 500;
+    color: var(--db-ink-strong);
+    white-space: nowrap;
+  }
+
+  /* Right Detail Inspector Panel (Minimal Visual Diff) */
+  .db-detail-panel {
+    background: var(--db-surface);
+    border: 1px solid var(--db-line-strong);
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .db-detail-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 9px 13px;
+    border-bottom: 1px solid var(--db-line);
+  }
+
+  .db-detail-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .db-detail-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--db-ink-strong);
+  }
+
+  .db-detail-body {
+    padding: 10px 13px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .db-diff-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 9px;
+    border-radius: 6px;
+    font-family: var(--db-mono);
+    font-size: 11px;
+  }
+
+  .db-diff-row.is-ok {
+    background: var(--db-surface-2);
+    border: 1px solid var(--db-line);
+    color: var(--db-ink-muted);
+  }
+
+  .db-diff-row.is-ng {
+    background: var(--db-danger-bg);
+    border: 1px solid rgba(185, 28, 28, 0.22);
+    color: var(--db-danger);
+    font-weight: 600;
+  }
+
+  .db-diff-key {
+    font-size: 10.5px;
+    opacity: 0.85;
+  }
+
+  .db-diff-val {
+    font-family: var(--db-mono);
+    font-size: 11px;
+  }
+
+  .db-detail-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 3px;
+  }
+
+  .db-btn-primary {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 9px;
+    border-radius: 5px;
+    background: var(--db-accent);
+    color: #ffffff;
+    white-space: nowrap;
   }
 
   /* ==========================================================================
      CHAPTER 1B: INTRO — EXECUTIVE EDITORIAL SPLIT & BENTO GRID
-     Benchmarks: Ramp / Vanta / Stripe Enterprise
-     Full-Bleed Deep Obsidian (#121611) + 50/50 Split + Visual Compare + Bento
+     Full-Bleed Deep Obsidian (#121611) + 50/50 Split + Bento
      ========================================================================== */
   .cy-exec-intro {
     background: var(--obsidian-stage);
@@ -3354,9 +3882,15 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
   }
 
   @media (max-width: 1024px) {
-    .cy-hero-grid {
+    .db-shell {
       grid-template-columns: minmax(0, 1fr);
-      gap: 32px;
+      height: 290px;
+    }
+    .db-sidebar {
+      display: none;
+    }
+    .db-workspace {
+      grid-template-columns: minmax(0, 1fr);
     }
     .cy-exec-header {
       grid-template-columns: minmax(0, 1fr);
@@ -3386,7 +3920,17 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
 
   @media (max-width: 640px) {
     .cy-hero-sec {
-      padding: 48px 0 48px;
+      padding: 48px 0 0;
+    }
+    .db-shell {
+      height: 260px;
+    }
+    .db-kpi-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .db-table th:nth-child(2),
+    .db-table td:nth-child(2) {
+      display: none;
     }
     .cy-exec-intro {
       padding: 64px 0 72px;
