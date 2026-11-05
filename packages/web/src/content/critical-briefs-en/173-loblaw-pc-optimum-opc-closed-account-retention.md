@@ -50,6 +50,7 @@ controls:
     item: "Keep only the fields from closed accounts that have a reason to stay, and assess whether people can still be traced once names are removed"
   - slug: "audit-trail"
     item: "Record, for each member, what was deleted and what was kept when the account was closed"
+attack_method: "human-error"
 impact: "Purchase history, usage records, IP addresses and other data of closed accounts were kept; the OPC found the anonymization insufficient"
 takeaway: "The OPC found that deleting names and contact details on closure was not enough to anonymize the data. Loblaw disagrees, but agreed to a third-party assessment."
 self_check: "For data kept from people who have left, do you assess whether the fields that remain after names are removed could re-identify someone?"
