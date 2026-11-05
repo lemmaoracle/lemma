@@ -6,11 +6,11 @@ pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [ai-decision-integrity]
 incident_date: 2025-05-18
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["188-deloitte-dewr-report-fabricated-references", "060-withers-aberdeen-ai-hallucinated-precedent", "053-youtube-deepfake-likeness-provenance"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "Chicago Sun-Times、配信会社から購入した特集（シンジケート記事）が編集部の確認を経ずに載り、推薦図書の多くが存在しない本だった"
 og_lead_en: "Chicago Sun-Times ran a syndicated section without newsroom review; most books on its reading list did not exist"

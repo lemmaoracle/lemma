@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: "kyc-aml-disclosure"
 secondary_categories: [data-provenance]
 incident_date: 2026-03-05
-published: 2026-11-02
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["171-free-mobile-cnil-former-subscriber-retention", "142-awa-bank-test-environment-repurposed-leak", "052-discord-age-verification-id-leak"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "カナダ OPC、Loblaw PC Optimum の退会後のデータ保存を認定。名前を外すだけでは匿名化に足りない"
 og_lead_en: "Canada's OPC finds Loblaw PC Optimum kept closed-account data; removing names alone is not enough"

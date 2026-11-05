@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
 incident_date: 2025-03-26
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["163-liberty-lookalike-domain-vendor-payment", "176-modalis-subsidiary-vendor-email-takeover", "177-ovid-therapeutics-partner-email-compromise-payment", "174-mobile-alabama-arena-contractor-bank-change"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "米 Studco、仕入先を装ったメールの口座へ 4 回の ACH で 55.9 万ドル。控訴裁は、名義が違っても受取の銀行は責任を負わないと判断"
 og_lead_en: "Studco: $559K went by ACH to an account named by a fake supplier; the Fourth Circuit held the receiving bank not liable for the name mismatch"

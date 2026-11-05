@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
 incident_date: 2024-04-26
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["160-baltimore-workday-supplier-contact-bank-change", "176-modalis-subsidiary-vendor-email-takeover", "174-mobile-alabama-arena-contractor-bank-change", "158-portland-water-bureau-vendor-bank-change"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "岡部の米国子会社、取引先の関係者を装うメールで支払先を変更し 51.9 万ドルを送金 — 2020 年に続く 2 回目"
 og_lead_en: "Okabe's US subsidiary changed a payee on an email posing as a vendor and sent $519K, a second case after 2020"

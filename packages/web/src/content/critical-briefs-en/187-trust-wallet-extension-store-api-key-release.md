@@ -6,11 +6,11 @@ pillar: 01-verifiable-origin
 primary_category: code-provenance
 secondary_categories: [identity-auth]
 incident_date: 2025-12-24
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["087-polymarket-frontend-supply-chain", "089-secondfi-signing-sdk-provenance", "178-digicert-ev-code-signing-issuance-hijack"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "Trust Wallet のブラウザ拡張機能、漏れたストアの API キーで改ざん版 v2.68 が公開され、2,520 アドレスから資産が流出"
 og_lead_en: "Trust Wallet: a leaked store API key let a tampered v2.68 browser extension ship; 2,520 addresses drained"

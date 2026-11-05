@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: kyc-aml-disclosure
 secondary_categories: [identity-auth]
 incident_date: 2026-01-13
-published: 2026-11-02
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["013-coinbase-kyc-insider-breach", "052-discord-age-verification-id-leak", "141-idscan-net-drivers-license-dark-web-breach", "110-sourcenext-member-api-22m-records"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "Free Mobile・Free に CNIL が制裁、退会者のデータの保管も違反と認定"
 og_lead_en: "CNIL fines Free Mobile and Free; keeping ex-subscribers' data also found unlawful"

@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
 incident_date: 2025-01-06
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["177-ovid-therapeutics-partner-email-compromise-payment", "163-liberty-lookalike-domain-vendor-payment", "170-zephyr-energy-contractor-payment-diverted", "159-zuu-business-chat-executive-impersonation-transfer"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "モダリスの子会社、乗っ取られた製造委託先のメールから届いた請求に応じ犯人の口座へ送金 — 最終の損失は 9 万ドル"
 og_lead_en: "Modalis subsidiary paid a fraudster's account on an invoice sent from a contractor's hijacked email; final loss $90K"

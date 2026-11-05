@@ -6,11 +6,11 @@ pillar: 02-verifiable-ai
 primary_category: ai-decision-integrity
 secondary_categories: [data-provenance]
 incident_date: 2025-07-04
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["060-withers-aberdeen-ai-hallucinated-precedent", "189-chicago-sun-times-syndicated-ai-book-list"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "Deloitte が豪雇用職場関係省に納めた報告書、参考文献と判決の要約の誤りで差し替え。差し替え版に生成 AI の利用の記載"
 og_lead_en: "Deloitte's report for Australia's employment department replaced over faulty references; the new version notes generative AI use"
