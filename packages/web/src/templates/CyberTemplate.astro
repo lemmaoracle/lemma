@@ -215,6 +215,86 @@ const C = isJa
           desc: "日常業務の画面や手順はそのまま。条件に通らない操作だけが保留され、担当者の確認へ届きます。",
         },
       ],
+      pricing: {
+        title: "1つの場面から始める料金体系",
+        lead: "送金・口座変更・AI操作など、守りたい場面を1つから導入し、必要に応じて段階的に追加できます。取引先による証明発行や検証ツールの試用は無料です。",
+        headers: [
+          { key: "item", name: "項目" },
+          { key: "screen", name: "検証画面での照合", tag: "システム変更なし", featured: false },
+          { key: "gate", name: "実行直前の自動ゲート", tag: "業務組み込み · 推奨", featured: true },
+          { key: "custom", name: "AI・カスタム連携", tag: "SDK / API", featured: false },
+        ],
+        rows: [
+          {
+            label: "月額費用",
+            note: "税別 · 年契約",
+            screen: "¥50,000 / 月〜",
+            gate: "¥300,000 / 月〜",
+            custom: "個別見積 · 目安 月500,000円〜",
+          },
+          {
+            label: "提供形態",
+            note: "",
+            screen: "ブラウザ画面での照合 · システム変更なし",
+            gate: "支払い・マスタ更新処理へのAPI組み込み",
+            custom: "AIエージェントや基幹システムへの組み込み",
+          },
+          {
+            label: "含まれるゲート",
+            note: "",
+            screen: "1ゲートから選択",
+            gate: "送金指示と口座変更の主要2ゲート",
+            custom: "要件に合わせたゲート設計",
+          },
+          {
+            label: "ゲートの追加",
+            note: "",
+            screen: "2つ目 ＋月40,000円 · 3つ目以降 ＋月30,000円",
+            gate: "3つ目以降 ＋月100,000円 / ゲート",
+            custom: "要件に合わせて個別設計",
+          },
+          {
+            label: "初期導入",
+            note: "",
+            screen: "初期費用なし · 即日開始",
+            gate: "協業PoC 300万〜500万円 または 初期構築 200万円〜",
+            custom: "要件に応じた連携開発",
+          },
+          {
+            label: "実行直前の制御",
+            note: "",
+            screen: "目視照合と改ざん不能な記録保存",
+            gate: "条件不一致の実行を自動保留して担当者へ通知",
+            custom: "委任範囲外のAPI呼出を自動遮断",
+          },
+          {
+            label: "外部・試用",
+            note: "",
+            screen: "取引先側の証明発行は無料",
+            gate: "取引先側の証明発行は無料",
+            custom: "検証ツールとSandbox試用は無料",
+          },
+        ],
+        addonsTitle: "導入前診断・協業プログラム",
+        addons: [
+          {
+            name: "メールなりすまし簡易診断",
+            price: "無料",
+            desc: "公開ドメイン設定から偽メール対策の状況を自動診断",
+          },
+          {
+            name: "公開情報による攻撃診断・実験",
+            price: "100万〜300万円",
+            desc: "非侵入調査となりすまし経路の実証実験",
+          },
+          {
+            name: "協業PoC 3か月プログラム",
+            price: "300万〜500万円",
+            desc: "業務フローに合わせたゲート設計・回路構築・現場評価",
+          },
+        ],
+        note: "※上記は現在の参考価格です。税別表記。対象システムやゲート数に合わせて個別にご案内します。",
+      },
       faqEyebrow: "FAQ",
       faqTitle: "よくある確認",
       faq: [
@@ -439,6 +519,86 @@ const C = isJa
           desc: "Your team keeps using their current tools. Only actions that fail verification are held and routed for human review.",
         },
       ],
+      pricing: {
+        title: "Pricing that starts from a single workflow",
+        lead: "Start with one critical boundary such as payouts, account updates, or AI tool calls, and add gates as you expand. Partner proof issuance and verification tools are free.",
+        headers: [
+          { key: "item", name: "Feature" },
+          { key: "screen", name: "Verification Screen", tag: "No system changes", featured: false },
+          { key: "gate", name: "Pre-Execution Gate", tag: "Workflow integration · Recommended", featured: true },
+          { key: "custom", name: "AI & Custom Integration", tag: "SDK / API", featured: false },
+        ],
+        rows: [
+          {
+            label: "Monthly fee",
+            note: "Excl. tax · annual contract",
+            screen: "From ¥50,000 / mo",
+            gate: "From ¥300,000 / mo",
+            custom: "Custom quote · From ~¥500,000 / mo",
+          },
+          {
+            label: "Deployment",
+            note: "",
+            screen: "Browser UI check · No system modifications",
+            gate: "API integration into payout and master workflows",
+            custom: "Embedded in AI agents and custom infrastructure",
+          },
+          {
+            label: "Included gates",
+            note: "",
+            screen: "1 gate to start",
+            gate: "2 core gates · Transfers and account updates",
+            custom: "Custom gates based on requirements",
+          },
+          {
+            label: "Additional gates",
+            note: "",
+            screen: "2nd +¥40,000 / mo · 3rd onward +¥30,000 / mo",
+            gate: "3rd onward +¥100,000 / mo per gate",
+            custom: "Tailored to architecture",
+          },
+          {
+            label: "Initial setup",
+            note: "",
+            screen: "No setup fee · Instant start",
+            gate: "Joint PoC ¥3M–¥5M or standard setup from ¥2M",
+            custom: "Integration development based on specs",
+          },
+          {
+            label: "Pre-execution control",
+            note: "",
+            screen: "Visual verification and tamper-proof log",
+            gate: "Automatic hold and alert on policy mismatch",
+            custom: "Automatic intercept on out-of-scope tool calls",
+          },
+          {
+            label: "External access",
+            note: "",
+            screen: "Free proof issuance for business partners",
+            gate: "Free proof issuance for business partners",
+            custom: "Free developer verification tool & sandbox",
+          },
+        ],
+        addonsTitle: "Pre-Deployment Assessment & Joint Programs",
+        addons: [
+          {
+            name: "Email Spoofing Quick Check",
+            price: "Free",
+            desc: "Automated verification of public domain defenses",
+          },
+          {
+            name: "OSINT Attack Assessment",
+            price: "¥1M–¥3M",
+            desc: "Non-intrusive risk mapping and simulation",
+          },
+          {
+            name: "Joint PoC 3-Month Program",
+            price: "¥3M–¥5M",
+            desc: "Co-design, circuit implementation, and workflow evaluation",
+          },
+        ],
+        note: "* Indicative pricing. Excluding tax. Final quotes are tailored to your architecture and number of gates.",
+      },
       faqEyebrow: "FAQ",
       faqTitle: "Common questions",
       faq: [
@@ -1692,6 +1852,72 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
             ))
           }
         </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         CHAPTER 5B: PRICING (1つの場面から始める料金体系)
+         ===================================================================== -->
+    <section id="pricing" class="cy-pricing-sec" aria-labelledby="cy-pricing-title">
+      <div class="cy-container">
+        <div class="cy-light-header">
+          <h2 id="cy-pricing-title">{C.pricing.title}</h2>
+          <p>{C.pricing.lead}</p>
+        </div>
+
+        <div class="cy-pricing-table-wrap">
+          <table class="cy-pricing-table">
+            <thead>
+              <tr>
+                <th scope="col" class="cy-th-item">
+                  <span class="cy-th-item-title">{C.pricing.headers[0]!.name}</span>
+                </th>
+                {
+                  C.pricing.headers.slice(1).map((h) => (
+                    <th scope="col" class={`cy-th-col ${h.featured ? "is-featured" : ""}`}>
+                      <span class="cy-th-tag">{h.tag}</span>
+                      <strong class="cy-th-name">{h.name}</strong>
+                    </th>
+                  ))
+                }
+              </tr>
+            </thead>
+            <tbody>
+              {
+                C.pricing.rows.map((row) => (
+                  <tr>
+                    <th scope="row" class="cy-td-label">
+                      <strong>{row.label}</strong>
+                      {row.note && <span class="cy-td-note">{row.note}</span>}
+                    </th>
+                    <td class="cy-td-val">{row.screen}</td>
+                    <td class="cy-td-val is-featured">{row.gate}</td>
+                    <td class="cy-td-val">{row.custom}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cy-pricing-addons">
+          <h3 class="cy-addons-title">{C.pricing.addonsTitle}</h3>
+          <div class="cy-addons-grid">
+            {
+              C.pricing.addons.map((addon) => (
+                <div class="cy-addon-card">
+                  <div class="cy-addon-head">
+                    <strong>{addon.name}</strong>
+                    <span class="cy-addon-price">{addon.price}</span>
+                  </div>
+                  <p>{addon.desc}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <p class="cy-pricing-note">{C.pricing.note}</p>
       </div>
     </section>
 
@@ -3441,6 +3667,242 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
   }
 
   /* ==========================================================================
+     CHAPTER 5B: PRICING (Clean White / Stone Comparison Table + Addons)
+     ========================================================================== */
+  .cy-pricing-sec {
+    background: #ffffff;
+    padding: 0 0 112px;
+  }
+
+  .cy-pricing-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 20px;
+    border: 1px solid #dce1d7;
+    background: #ffffff;
+    box-shadow: 0 12px 36px rgba(18, 20, 14, 0.04);
+  }
+
+  .cy-pricing-table {
+    width: 100%;
+    min-width: 840px;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+  }
+
+  /* Table Headers */
+  .cy-pricing-table th {
+    font-weight: normal;
+  }
+
+  .cy-th-item {
+    width: 22%;
+    min-width: 160px;
+    background: #f8faf6;
+    border-bottom: 2px solid #dce1d7;
+    padding: 24px 22px;
+    vertical-align: bottom;
+  }
+
+  .cy-th-item-title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .cy-th-col {
+    width: 26%;
+    min-width: 220px;
+    background: #f8faf6;
+    border-bottom: 2px solid #dce1d7;
+    border-left: 1px solid #e5eae0;
+    padding: 24px 22px;
+    vertical-align: top;
+  }
+
+  .cy-th-col.is-featured {
+    background: var(--obsidian-stage);
+    border-bottom: 2px solid var(--obsidian-stage);
+    border-left: 2px solid var(--obsidian-stage);
+    border-right: 2px solid var(--obsidian-stage);
+  }
+
+  .cy-th-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: #2b4200;
+    background: var(--lime-tint);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+
+  .cy-th-col.is-featured .cy-th-tag {
+    background: var(--lime);
+    color: var(--ink);
+  }
+
+  .cy-th-name {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+
+  .cy-th-col.is-featured .cy-th-name {
+    color: #ffffff;
+  }
+
+  /* Table Body */
+  .cy-pricing-table tbody tr {
+    transition: background 0.15s ease;
+  }
+
+  .cy-pricing-table tbody tr:hover {
+    background: rgba(246, 248, 244, 0.65);
+  }
+
+  .cy-td-label {
+    background: #fafbfa;
+    border-bottom: 1px solid #e8ede4;
+    padding: 18px 22px;
+    vertical-align: top;
+    text-align: left;
+  }
+
+  .cy-td-label strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+
+  .cy-td-note {
+    display: block;
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  .cy-td-val {
+    border-bottom: 1px solid #e8ede4;
+    border-left: 1px solid #e8ede4;
+    padding: 18px 22px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    vertical-align: top;
+  }
+
+  /* Highlight first row values (Monthly fee) */
+  .cy-pricing-table tbody tr:first-child .cy-td-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .cy-pricing-table tbody tr:first-child .cy-td-val.is-featured {
+    font-size: 18px;
+    color: #1f3700;
+  }
+
+  .cy-td-val.is-featured {
+    background: #f7faf3;
+    border-left: 2px solid var(--obsidian-stage);
+    border-right: 2px solid var(--obsidian-stage);
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .cy-pricing-table tbody tr:last-child .cy-td-label,
+  .cy-pricing-table tbody tr:last-child .cy-td-val {
+    border-bottom: none;
+  }
+
+  .cy-pricing-table tbody tr:last-child .cy-td-val.is-featured {
+    border-bottom: 2px solid var(--obsidian-stage);
+  }
+
+  .cy-pricing-addons {
+    margin-top: 32px;
+    background: #f6f8f4;
+    border: 1px solid #dce1d7;
+    border-radius: 20px;
+    padding: 28px 30px;
+  }
+
+  .cy-addons-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 18px;
+  }
+
+  .cy-addons-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .cy-addon-card {
+    background: #ffffff;
+    border: 1px solid #e2e7dd;
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cy-addon-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .cy-addon-head strong {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .cy-addon-price {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #2b4200;
+    background: var(--lime-tint);
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .cy-addon-card p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .cy-pricing-note {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    margin: 22px 0 0;
+  }
+
+  /* ==========================================================================
      CHAPTER 6: FAQ (Pale Stone #eef1eb Full-Bleed Section)
      ========================================================================== */
   .cy-faq-sec {
@@ -3895,7 +4357,8 @@ const floorGridV = [-100, -50, 0, 50, 100] as const;
     }
     .cy-exec-bento,
     .cy-features-grid,
-    .cy-steps-grid {
+    .cy-steps-grid,
+    .cy-addons-grid {
       grid-template-columns: minmax(0, 1fr);
       gap: 24px;
     }
