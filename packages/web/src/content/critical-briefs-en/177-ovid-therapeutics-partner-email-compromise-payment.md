@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
 incident_date: 2024-11-12
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["176-modalis-subsidiary-vendor-email-takeover", "161-orion-manual-wire-transfer-fraud", "170-zephyr-energy-contractor-payment-diverted", "160-baltimore-workday-supplier-contact-bank-change"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "米 Ovid Therapeutics、開発パートナー側のメールの乗っ取りで、パートナーを装った相手へ 180 万ドルを送金"
 og_lead_en: "Ovid Therapeutics: after a partner's email was compromised, $1.8M went to a party posing as that partner"

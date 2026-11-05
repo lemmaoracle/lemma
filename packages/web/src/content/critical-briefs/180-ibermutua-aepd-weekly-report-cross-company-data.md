@@ -6,11 +6,11 @@ pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: []
 incident_date: 2024-07-15
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["151-toppan-sompo-japan-misdirected-zip", "134-tokyo-housing-supply-corp-label-misdirection", "156-asos-employee-impersonation-rogue-push"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "スペイン AEPD、Ibermutua に制裁。週 1 回の通知の添付に、他社の従業員の休業のデータが積み重なった"
 og_lead_en: "Spain's AEPD sanctions Ibermutua after weekly employer emails carried other firms' staff sick-leave data"

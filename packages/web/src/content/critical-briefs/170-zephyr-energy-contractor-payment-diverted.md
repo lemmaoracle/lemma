@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
 incident_date: 2026-04-09
-published: 2026-11-02
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["158-portland-water-bureau-vendor-bank-change", "163-liberty-lookalike-domain-vendor-payment", "032-booking-payout-account-tampering"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "英 Zephyr Energy、米子会社で契約先への支払い 1 件が流用され約 70 万ポンドが第三者の口座へ"
 og_lead_en: "Zephyr Energy: one contractor payment at a US subsidiary diverted, ~£700K sent to a third-party account"

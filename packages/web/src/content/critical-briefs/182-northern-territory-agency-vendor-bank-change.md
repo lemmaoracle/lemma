@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
 incident_date: 2024-11-07
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["158-portland-water-bureau-vendor-bank-change", "160-baltimore-workday-supplier-contact-bank-change", "174-mobile-alabama-arena-contractor-bank-change", "170-zephyr-energy-contractor-payment-diverted"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "豪ノーザンテリトリー準州政府の機関、建設会社を装うメールの振込先の変更で 358 万豪ドルを別の口座へ"
 og_lead_en: "Northern Territory Government agency: A$3.58M paid to an account from a fake contractor's bank-detail change"

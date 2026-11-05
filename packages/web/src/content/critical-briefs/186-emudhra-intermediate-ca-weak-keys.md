@@ -6,11 +6,11 @@ pillar: 01-verifiable-origin
 primary_category: code-provenance
 secondary_categories: [identity-auth]
 incident_date: 2026-10-17
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["178-digicert-ev-code-signing-issuance-hijack", "179-microsoft-fox-tempest-code-signing-service", "074-taiko-bridge-prover-key-leak"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "インドの認証局 eMudhra、鍵を作る台本の誤りで中間 CA 8 本の秘密鍵が弱く作られ、研究者がその鍵で署名してみせて失効"
 og_lead_en: "eMudhra: a key-ceremony script flaw left 8 intermediate CA keys weak; a researcher signed with them and the CAs were revoked"

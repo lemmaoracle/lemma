@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
 incident_date: 2025-10-09
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["032-booking-payout-account-tampering", "160-baltimore-workday-supplier-contact-bank-change", "164-capcom-id-password-change-ecommerce-mypage", "051-instagram-ai-support-takeover"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "米国の大学で職員のアカウントが乗っ取られ、Workday で給与の振込先が書き換えられた — Microsoft が Storm-2657 を報告"
 og_lead_en: "Storm-2657: US university staff accounts taken over and payroll deposits redirected in Workday (Microsoft)"

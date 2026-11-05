@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
 incident_date: 2024-07-19
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["163-liberty-lookalike-domain-vendor-payment", "170-zephyr-energy-contractor-payment-diverted", "177-ovid-therapeutics-partner-email-compromise-payment", "174-mobile-alabama-arena-contractor-bank-change"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "シンガポールの商品取引会社、仕入先に似せたアドレスのメールで東ティモールの新しい口座へ 4,230 万ドルを送金"
 og_lead_en: "A Singapore commodity firm wired $42.3M to a new Timor-Leste account on a lookalike supplier email"

@@ -6,11 +6,11 @@ pillar: 01-verifiable-origin
 primary_category: code-provenance
 secondary_categories: [identity-auth, attribute-proof-bypass]
 incident_date: 2026-05-19
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["178-digicert-ev-code-signing-issuance-hijack", "082-xz-utils-backdoor-identity-provenance", "022-onlyfake-ai-id-kyc-bypass"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "Microsoft、Fox Tempest を提訴。偽の身元で Artifact Signing の資格を得て、マルウェアに署名するサービスを売っていたと公表"
 og_lead_en: "Microsoft sues Fox Tempest, saying it used fake identities to get Artifact Signing access and sold malware signing as a service"

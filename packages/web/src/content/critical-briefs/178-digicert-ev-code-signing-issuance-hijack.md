@@ -6,11 +6,11 @@ pillar: 01-verifiable-origin
 primary_category: code-provenance
 secondary_categories: [identity-auth]
 incident_date: 2026-04-02
-published: 2026-11-03
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["082-xz-utils-backdoor-identity-provenance", "089-secondfi-signing-sdk-provenance", "087-polymarket-frontend-supply-chain"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "認証局 DigiCert、サポートの端末への侵入で審査済みの注文の発行コードが取り出され、EV コード署名証明書 60 枚を失効"
 og_lead_en: "DigiCert: a support-desk intrusion exposed pickup codes for approved orders; 60 EV code signing certificates revoked"

@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: kyc-aml-disclosure
 secondary_categories: [identity-auth]
 incident_date: 2021-12-27
-published: 2026-11-02
+published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["171-free-mobile-cnil-former-subscriber-retention", "142-awa-bank-test-environment-repurposed-leak", "013-coinbase-kyc-insider-breach", "141-idscan-net-drivers-license-dark-web-breach"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "米 FTC、Illuminate に命令。退職者の鍵で入られ、生徒 1,010 万人超の個人情報が流出したと主張"
 og_lead_en: "FTC order against Illuminate: a former employee's key let attackers in; 10.1M+ students' data taken, FTC alleges"
