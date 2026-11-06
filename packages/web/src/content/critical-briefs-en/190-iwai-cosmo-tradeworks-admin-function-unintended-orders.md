@@ -40,21 +40,21 @@ insight:
   slug: "order-without-account-holder"
   stop: true
   label: "Orders without the account holder"
-  quote: "Before executing an order, check that it came through a route the account holder authenticated, against the account's own record, not from inside the admin function."
+  quote: "Before executing an order, check that it carries the account holder's key signature, against the account's own record, not from inside the admin function."
 industries: ["finance"]
 operations: ["account-admin", "approval"]
 controls:
   - slug: "verify-entry"
-    item: "Check at the entry point that an order or operation from an admin function is a request the account holder authenticated"
+    item: "Check at the entry point that an order or operation from an admin function is a request signed with the account holder's key"
   - slug: "limit-and-revoke"
     item: "Keep admin functions usable only from a restricted environment, with no route left open from outside"
   - slug: "hold-unverified"
-    item: "Hold, before execution, any order that cannot be tied to a record of the account holder's authentication"
+    item: "Hold, before execution, any order that cannot be tied to the account holder's signature"
   - slug: "audit-trail"
-    item: "Record, apart from the executing side, which order was executed through which route and which authentication"
+    item: "Record, apart from the executing side, which order was signed with whose key and executed through which route"
 attack_method: "privilege-abuse"
 impact: "Orders the customers never placed were entered in 7 accounts and executed in 5 (restored to the pre-trade state the same day). Names, email addresses and other data of 4,975 customers were viewable"
-takeaway: "A vendor's admin function was usable from outside, and orders that passed through no customer authentication went through. Check that an order came through a route the account holder authenticated, against the account's own record, before executing it."
+takeaway: "A vendor's admin function was usable from outside, and orders that passed through no customer authentication went through. Check that an order carries the account holder's key signature, against the account's own record, before executing it."
 self_check: "Do you know whether the system that executes orders or transfers has any operation that can be run through a route without the account holder's authentication, such as an admin function or an operations console?"
 countries: ["jp"]
 search_title: "岩井コスモ証券の不正取引：委託先の管理機能と経緯"
@@ -77,17 +77,17 @@ Customer logins were protected by multi-factor authentication and passkeys, and 
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a trade order is executed, the order is checked as having come through a route the account holder authenticated, against the account's own record kept apart from the system that entered it.
+Whatever the route, the condition for telling them apart is that, before a trade order is executed, the order is checked as carrying a signature by the account holder's key, against the account's own record kept apart from the system that entered it. The question is not whether a login happened, but whether the holder signed this order.
 
-- **Who approves**: The account holder. An order is entered as a request that passed through the holder's login (multi-factor authentication and passkey). An operation from an admin function goes through only when it ties to a record of the holder's request.
-- **Where it is checked**: The execution step, before the order management system sends the order to the market. If an order cannot be tied to a record of the holder's authentication, execution is held. This is checked apart from the admin function's settings and from restrictions on connection sources.
-- **What is recorded**: Which order was executed through which route and which authentication. That record can show, for restoration, compensation or a report to the regulator, whether the order was the holder's request.
+- **Who approves**: The account holder. An order is entered as a request signed with the key on the holder's device (a passkey). An operation from an admin function goes through only when it ties to that signature.
+- **Where it is checked**: The execution step, before the order management system sends the order to the market. If an order carries no signature by the holder, execution is held. This is checked apart from the admin function's settings and from restrictions on connection sources.
+- **What is recorded**: Which order was signed with whose key and executed through which route. That record can show, for restoration, compensation or a report to the regulator, whether the order was the holder's request.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means confirming, before sending a trade order to the market, that it came through a route the account holder authenticated, against the account's own record, and keeping a record. Detection means finding the unauthorized access, blocking it and reversing the executed trades. Dates rely on the disclosures by Iwai Cosmo Securities and Trade Works.</p>
+<p class="rx-ex-cap">A pre-execution check means confirming, before sending a trade order to the market, that it carries the account holder's key signature, against the account's own record, and keeping a record. Detection means finding the unauthorized access, blocking it and reversing the executed trades. Dates rely on the disclosures by Iwai Cosmo Securities and Trade Works.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check an order against the record of the holder's authentication before executing it</div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check an order for the holder's key signature before executing it</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Unintended orders in 7 accounts<br>Executed in 5 accounts</span></div>
 <div class="rx-zone det"><b>Detection · worked the same day</b>Unauthorized access detected and blocked; trades restored to the pre-trade state the same day</div>
 <div class="rx-g g1"><div class="t">10-14</div><b>Orders entered through the admin function; 5 accounts execute</b></div>
@@ -101,7 +101,7 @@ Detection worked the same day, and the executed trades were reversed the same da
 
 ## 4. What Lemma does
 
-**Lemma builds the pre-execution check into the side that sends trade orders to the market.** It does not look for unauthorized access; it checks, before execution, that an order came through a route the account holder authenticated.
+**Lemma builds the pre-execution check into the side that sends trade orders to the market.** It does not look for unauthorized access; it checks, before execution, that an order carries the account holder's key signature.
 
 ### Industries and operations to watch
 
@@ -118,11 +118,11 @@ The route in this case is column 1 (orders from an admin function that was usabl
 | Multi-factor authentication and passkeys at login | Not effective | Effective | Not effective |
 | Restricting where the admin function can be used from | Effective | Not effective | Not effective |
 | Detecting and blocking unauthorized access; reversing executed trades | Partial | Partial | Partial |
-| **Lemma (pre-execution check)** | Effective | Not effective | Effective |
+| **Lemma (pre-execution check)** | Effective | Partial | Effective |
 
-Multi-factor authentication and passkeys protect only the login route and do nothing for orders from the admin function (here, passkey authentication was not broken). Restricting where the admin function can be used from stops use from outside but does nothing against a login takeover or abuse of rights inside (TW put such restrictions in place after the incident). Detection and blocking act after the unauthorized access, and reversal acts after execution; neither stops an order from reaching the market (here the trades were reversed the same day). Lemma checks, before execution, not the connection source or the strength of the login but whether the order came through a route the holder authenticated.
+Multi-factor authentication and passkeys protect only the login route and do nothing for orders from the admin function (here, passkey authentication was not broken). Restricting where the admin function can be used from stops use from outside but does nothing against a login takeover or abuse of rights inside (TW put such restrictions in place after the incident). Detection and blocking act after the unauthorized access, and reversal acts after execution; neither stops an order from reaching the market (here the trades were reversed the same day). Lemma checks, before execution, not the connection source or the strength of the login but whether the order carries the holder's key signature. Even if a password or a code is stolen, the signature of the key on the holder's device cannot be produced.
 
-Note: Lemma's check works only when it is built into the step that sends orders to the market and the record of the holder's authentication is managed apart from the admin function. It passes if the holder's own login has been taken over. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, and it does not reverse executed trades.
+Note: Lemma's check works only when it is built into the step that sends orders to the market and the record of the holder's key is managed apart from the admin function. It passes if the holder's device or key itself is taken over, or if an attacker's key is registered to the account. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, and it does not reverse executed trades.
 
 ### Checklist
 
@@ -130,7 +130,7 @@ Three things to confirm about the system that executes orders or transfers
 
 - Do you know whether any operation can enter an order or a transfer from an admin function or an operations channel without the holder's authentication?
 - Do you inspect with the vendor, at a set interval, that admin functions are usable only from a restricted environment?
-- Is there a procedure to hold, before execution, an order that cannot be tied to a record of the holder's authentication?
+- Is there a procedure to hold, before execution, an order that cannot be tied to the holder's signature?
 
 ## 5. Facts and timeline
 
