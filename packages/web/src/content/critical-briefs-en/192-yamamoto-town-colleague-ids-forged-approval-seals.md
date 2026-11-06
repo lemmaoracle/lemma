@@ -45,7 +45,7 @@ industries: ["public-sector"]
 operations: ["approval", "data-access"]
 controls:
   - slug: "verify-entry"
-    item: "Let operations on shared folders and approval systems through only when they pass the ID owner's own authentication, such as the device or multi-factor authentication"
+    item: "Let operations on shared folders and approval systems through only when they are signed with the ID owner's own key, such as a staff card or biometrics"
   - slug: "limit-and-revoke"
     item: "Give the official seal and approval rights only to people who have gone through the procedure, and leave no way to use another employee's device or ID"
   - slug: "hold-unverified"
@@ -79,8 +79,8 @@ The same employee handed contracts bearing the official seal (the mayor's seal),
 
 Whatever the route, the condition for telling them apart is that, before an approved document or a contract bearing the official seal is used, the approval is checked as tying to the approver's own record, against an approval record kept apart from the seal on the paper.
 
-- **Who approves**: The approver (the person with approval authority, and the custodian of the official seal). Approvals and seal use are recorded as operations that passed the person's own authentication. The seal impression is only a copy of that record.
-- **Where it is checked**: The step that issues a document, and the step that uses an approved document in the next procedure. If the approval cannot be tied to the approver's own record, issue and use are held. Access to shared folders is likewise let through only after checking against the ID owner's own authentication (device, multi-factor authentication).
+- **Who approves**: The approver (the person with approval authority, and the custodian of the official seal). Approvals and seal use are recorded as operations signed with a key only the person holds (a staff card or biometrics). The seal impression is only a copy of that record.
+- **Where it is checked**: The step that issues a document, and the step that uses an approved document in the next procedure. If the approval cannot be tied to the approver's own record, issue and use are held. Access to shared folders is likewise let through only after checking against the ID owner's own key. An ID and password, even if known, do not stand in for that key.
 - **What is recorded**: Who approved or sealed which document, when, and from which device and ID. That record can show, for explanations to counterparties, disciplinary action or a criminal complaint, whether the approval was the approver's own.
 
 <figure class="rx-ex">
@@ -122,7 +122,7 @@ The route in this case covers both column 1 (use of colleagues' IDs and terminal
 
 An ID and password let through anyone who knows them and show nothing about who is at the terminal (here colleagues' IDs and terminals were used). Locking the seal and keeping a usage log leave no trace when the procedure is skipped (the town says the seal was used "without permission, neglecting the procedure"). A visual check cannot easily tell a seal scanned from paper from a genuine one. Lemma checks, before a document is used, not the seal or the ID but the approver's own record.
 
-Note: Lemma's check works only when approvals and seal use are recorded as operations that passed the person's own authentication, and the check is built into the step that uses the document. An approver who approves improperly under their own authority can pass this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions or unauthorised entry, and it does not recover deleted data.
+Note: Lemma's check works only when approvals and seal use are recorded as operations signed with the person's own key, and the check is built into the step that uses the document. An approver who approves improperly under their own authority, or anyone holding the person's key itself, can pass this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions or unauthorised entry, and it does not recover deleted data.
 
 ### Checklist
 
