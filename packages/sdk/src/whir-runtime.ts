@@ -25,9 +25,9 @@
  * module AND the params buffer, so the module bytes are never confused with
  * the params bytes.
  *
- * This is a low-level WASM boundary module (cf. `platform.ts`); the few
- * `eslint-disable` lines below mark the unavoidable linear-memory writes and
- * the post-instantiation export binding.
+ * This is a low-level WASM boundary module (cf. `platform.ts`); linear-memory
+ * writes go through the typed-array views below and the import object resolves
+ * the instance's exports lazily, so no mutable module-level state is needed.
  */
 
 export type WhirProof = Readonly<{
@@ -82,10 +82,6 @@ type WasmExports = Readonly<{
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
-/** A one-slot mutable holder so import callbacks can reach the instance's
- *  exports, which only exist after instantiation. */
-type ExportsCell = { current: WasmExports | null };
-
 /** Initialise the externref table (undefined/null/true/false sentinels). */
 const initExternrefTable = (ex: WasmExports): void => {
   const table = ex.__wbindgen_externrefs;
@@ -110,10 +106,14 @@ const stringFromMemory = (ex: WasmExports, ptr: number, len: number): string =>
  * Build the wasm-bindgen import object. The module name and intrinsic field
  * names (one carries a build-specific hash) are read from the compiled module,
  * so a `Proxy` resolves handlers by name pattern rather than hard-coding them.
+ *
+ * `exportsRef` is a lazy thunk: the import callbacks are only invoked from
+ * `__wbindgen_start`/`prove`/`verify`, after the instance — and therefore its
+ * exports — exists. No mutable holder is needed.
  */
 const buildImports = (
   moduleName: string,
-  cell: ExportsCell,
+  exportsRef: () => WasmExports,
 ): WebAssembly.Imports => ({
   [moduleName]: new Proxy(
     {},
@@ -121,11 +121,11 @@ const buildImports = (
       get: (_target, name) =>
         name === "__wbindgen_init_externref_table"
           ? (_unused: unknown): void => {
-              initExternrefTable(cell.current as WasmExports);
+              initExternrefTable(exportsRef());
             }
           : typeof name === "string" && name.startsWith("__wbindgen_cast_")
             ? (ptr: number, len: number) =>
-                stringFromMemory(cell.current as WasmExports, ptr, len)
+                stringFromMemory(exportsRef(), ptr, len)
             : (_unused: unknown) => undefined,
     },
   ),
@@ -135,15 +135,14 @@ const buildImports = (
 const instantiate = async (bytes: Uint8Array): Promise<WasmExports> => {
   const module = await WebAssembly.compile(bytes);
   const moduleName = WebAssembly.Module.imports(module)[0]?.module ?? "";
-  const cell: ExportsCell = { current: null };
-  const instance = await WebAssembly.instantiate(
+  const instance: WebAssembly.Instance = await WebAssembly.instantiate(
     module,
-    buildImports(moduleName, cell),
+    buildImports(
+      moduleName,
+      (_unused?: undefined) => instance.exports as unknown as WasmExports,
+    ),
   );
   const ex = instance.exports as unknown as WasmExports;
-  // Bind the cell write so it is not a bare expression statement.
-  // eslint-disable-next-line functional/immutable-data -- mutable instantiation cell
-  const _instantiated = (cell.current = ex);
   ex.__wbindgen_start();
   return ex;
 };
