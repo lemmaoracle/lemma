@@ -80,7 +80,7 @@ The same employee handed contracts bearing the official seal (the mayor's seal),
 Whatever the route, the condition for telling them apart is that, before an approved document or a contract bearing the official seal is used, the approval is checked as tying to the approver's own record, against an approval record kept apart from the seal on the paper.
 
 - **Who approves**: The approver (the person with approval authority, and the custodian of the official seal). Approvals and seal use are recorded as operations signed with a key only the person holds (a staff card or biometrics). The seal impression is only a copy of that record.
-- **Where it is checked**: The step that issues a document, and the step that uses an approved document in the next procedure. If the approval cannot be tied to the approver's own record, issue and use are held. Access to shared folders is likewise let through only after checking against the ID owner's own key. From a colleague's device, that key cannot be used.
+- **Where it is checked**: The step that issues a document, and the step that uses an approved document in the next procedure. If the approval cannot be tied to the approver's own record, issue and use are held. Access to shared folders is likewise let through only after checking against the ID owner's own key. An ID and password, even if known, do not stand in for that key.
 - **What is recorded**: Who approved or sealed which document, when, and from which device and ID. That record can show, for explanations to counterparties, disciplinary action or a criminal complaint, whether the approval was the approver's own.
 
 <figure class="rx-ex">

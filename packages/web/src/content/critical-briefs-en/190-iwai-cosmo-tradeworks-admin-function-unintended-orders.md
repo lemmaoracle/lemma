@@ -51,7 +51,7 @@ controls:
   - slug: "hold-unverified"
     item: "Hold, before execution, any order that cannot be tied to the account holder's signature"
   - slug: "audit-trail"
-    item: "Record, apart from the executing side, which order was signed with whose key and executed through which route"
+    item: "Record, apart from the executing side, which key signed which order and through which route it was executed"
 attack_method: "privilege-abuse"
 impact: "Orders the customers never placed were entered in 7 accounts and executed in 5 (restored to the pre-trade state the same day). Names, email addresses and other data of 4,975 customers were viewable"
 takeaway: "A vendor's admin function was usable from outside, and orders that passed through no customer authentication went through. Check that an order carries the account holder's key signature, against the account's own record, before executing it."
