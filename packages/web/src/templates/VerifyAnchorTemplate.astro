@@ -1,11 +1,11 @@
 ---
 /**
- * 検証センター — `/verify/`（EN）と `/ja/verify/`（JA）。
+ * 検証センター — `/verify/counters/`（EN）と `/ja/verify/counters/`（JA）。
  *
  * 2モード（実装指示 v1 2026-07-24）:
- *   - `/verify/?doc=<docHash>` … 単票（その記録1件の判定）
+ *   - `/verify/counters/?doc=<docHash>` … 単票（その記録1件の判定）
  *       + proof verify: 読込成功後に自動で GET /v1/proofs → POST /v1/proofs/verify
- *   - `/verify/`（パラメータなし）… 全体（検証・発行の実数の内訳）
+ *   - `/verify/counters/`（パラメータなし）… 全体（検証・発行の実数の内訳）
  *
  * デザイン規律（モック v9）:
  *   - ヘッダーはロゴのみ・フッターは © / 利用規約 / プライバシーのみ。検証面の
@@ -175,7 +175,7 @@ const DOCPROSE = isJa
     };
 const DLINK = {
   docs: L("/guides/"),
-  agg: L("/verify/"),
+  agg: L("/verify/counters/"),
   nocode: L("/trust402/sell/"),
   api: "https://dashboard.lemma.workers.dev",
 };
@@ -303,7 +303,7 @@ const DOC = {
   title={C.metaTitle}
   description={C.metaDescription}
   metaType="page"
-  pagePath="/verify/"
+  pagePath="/verify/counters/"
 >
   <link
     rel="stylesheet"
