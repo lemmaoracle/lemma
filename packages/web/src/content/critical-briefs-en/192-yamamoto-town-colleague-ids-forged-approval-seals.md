@@ -40,7 +40,7 @@ insight:
   slug: "seal-is-not-approver"
   stop: true
   label: "A seal does not show the approver"
-  quote: "Before using an approved document or a contract bearing the official seal, check that the approval ties to the approver's own record, against the approval record rather than the seal on the paper."
+  quote: "Before using an approved document or a contract bearing the official seal, check that the approval carries the approver's own key signature, against the approval record rather than the seal on the paper."
 industries: ["public-sector"]
 operations: ["approval", "data-access"]
 controls:
@@ -49,13 +49,13 @@ controls:
   - slug: "limit-and-revoke"
     item: "Give the official seal and approval rights only to people who have gone through the procedure, and leave no way to use another employee's device or ID"
   - slug: "hold-unverified"
-    item: "Hold, before issue and use, any approved document or contract that cannot be tied to the approver's own record"
+    item: "Hold, before issue and use, any approved document or contract that does not carry the approver's own key signature"
   - slug: "audit-trail"
     item: "Record, apart from the document, who approved or sealed which document from which device and ID"
 attack_method: "privilege-abuse"
 impact: "Data in the town's shared and personal folders was viewed and deleted with colleagues' IDs, contracts bearing the official seal were handed to 2 contractors, and an unapproved document was used as approved under a forged seal (town disclosure)"
-takeaway: "Colleagues' IDs and devices opened the shared folders, and the official seal and forged seals passed an unapproved document as approved. Give an approval or a seal effect only after checking it against the approver's own record."
-self_check: "Do you know whether an approval seal or the official seal on a document ties to the approver's own record (who, when, from which device)?"
+takeaway: "Colleagues' IDs and devices opened the shared folders, and the official seal and forged seals passed an unapproved document as approved. Give an approval or a seal effect only after checking the approver's own key signature."
+self_check: "Do you know whether an approval seal or the official seal on a document ties to a record signed with the approver's own key (who, when, from which device)?"
 countries: ["jp"]
 search_title: "山元町職員の不正アクセスと印影偽造：公表の経緯"
 search_description: "宮城県山元町で、職員が他の職員の ID で庁内フォルダに不正アクセスし、公印と上司の印影を偽造して未決裁の文書を決裁済みとして使った（町の公表・免職）。何が起きたか、なぜ通ったか、対策を整理。"
@@ -77,17 +77,17 @@ The same employee handed contracts bearing the official seal (the mayor's seal),
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before an approved document or a contract bearing the official seal is used, the approval is checked as tying to the approver's own record, against an approval record kept apart from the seal on the paper.
+Whatever the route, the condition for telling them apart is that, before an approved document or a contract bearing the official seal is used, the approval is checked as carrying the approver's own key signature, against an approval record kept apart from the seal on the paper.
 
 - **Who approves**: The approver (the person with approval authority, and the custodian of the official seal). Approvals and seal use are recorded as operations signed with a key only the person holds (a staff card or biometrics). The seal impression is only a copy of that record.
-- **Where it is checked**: The step that issues a document, and the step that uses an approved document in the next procedure. If the approval cannot be tied to the approver's own record, issue and use are held. Access to shared folders is likewise let through only after checking against the ID owner's own key. An ID and password, even if known, do not stand in for that key.
+- **Where it is checked**: The step that issues a document, and the step that uses an approved document in the next procedure. If the approval does not carry the approver's own key signature, issue and use are held. Access to shared folders is likewise let through only after checking against the ID owner's own key. An ID and password, even if known, do not stand in for that key.
 - **What is recorded**: Who approved or sealed which document, when, and from which device and ID. That record can show, for explanations to counterparties, disciplinary action or a criminal complaint, whether the approval was the approver's own.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking an approved document or a sealed document against the approver's own record before using it, and keeping a record. Detection means noticing the unauthorized access or the forgery afterwards. Dates rely on the town's disclosure (how it came to light is not disclosed).</p>
+<p class="rx-ex-cap">A pre-execution check means checking an approved document or a sealed document for the approver's own key signature before using it, and keeping a record. Detection means noticing the unauthorized access or the forgery afterwards. Dates rely on the town's disclosure (how it came to light is not disclosed).</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check approvals and seals against the approver's own record before using the document</div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check approvals and seals for the approver's own key signature before using the document</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Sealed contracts reached two contractors<br>An unapproved document was used as approved</span></div>
 <div class="rx-zone det"><b>Detection · how is not disclosed</b>The town establishes the facts and disciplines the employee as of 16 October</div>
 <div class="rx-g g1"><div class="t">06</div><b>Shared folders entered with colleagues' IDs</b></div>
@@ -101,7 +101,7 @@ How it came to light has not been disclosed. Cases where legitimate rights or an
 
 ## 4. What Lemma does
 
-**Lemma builds the pre-execution check into the side that receives and uses approved documents and documents bearing the official seal.** It does not tell genuine seals from forged ones; it checks, before issue and use, that the approval ties to the approver's own record.
+**Lemma builds the pre-execution check into the side that receives and uses approved documents and documents bearing the official seal.** It does not tell genuine seals from forged ones; it checks, before issue and use, that the approval carries the approver's own key signature.
 
 ### Industries and operations to watch
 
@@ -120,7 +120,7 @@ The route in this case covers both column 1 (use of colleagues' IDs and terminal
 | Visual check of seal impressions | Not effective | Partial | Not effective |
 | **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-An ID and password let through anyone who knows them and show nothing about who is at the terminal (here colleagues' IDs and terminals were used). Locking the seal and keeping a usage log leave no trace when the procedure is skipped (the town says the seal was used "without permission, neglecting the procedure"). A visual check cannot easily tell a seal scanned from paper from a genuine one. Lemma checks, before a document is used, not the seal or the ID but the approver's own record.
+An ID and password let through anyone who knows them and show nothing about who is at the terminal (here colleagues' IDs and terminals were used). Locking the seal and keeping a usage log leave no trace when the procedure is skipped (the town says the seal was used "without permission, neglecting the procedure"). A visual check cannot easily tell a seal scanned from paper from a genuine one. Lemma checks, before a document is used, not the seal or the ID but whether the approval carries the approver's own key signature.
 
 Note: Lemma's check works only when approvals and seal use are recorded as operations signed with the person's own key, and the check is built into the step that uses the document. An approver who approves improperly under their own authority, or anyone holding the person's key itself, can pass this check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions or unauthorised entry, and it does not recover deleted data.
 
@@ -128,7 +128,7 @@ Note: Lemma's check works only when approvals and seal use are recorded as opera
 
 Three things to confirm about approvals and shared folders
 
-- Do you use approved documents and documents bearing the official seal only when tied to the approver's own record (who, when, from which device)?
+- Do you use approved documents and documents bearing the official seal only when tied to a record signed with the approver's own key (who, when, from which device)?
 - Is access to shared and personal folders tied to the person's own device or multi-factor authentication, not only to an ID and a password?
 - Is there a procedure to record and review entry to the building and folder access outside working hours?
 
