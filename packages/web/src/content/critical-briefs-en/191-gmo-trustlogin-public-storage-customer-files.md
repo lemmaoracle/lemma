@@ -145,7 +145,8 @@ Three things to confirm about public storage
 - **2026-09-14**: At 17:48 an outside security researcher reports through the vulnerability reporting channel. Blocking of retrieval begins at about 23:45.
 - **2026-09-15**: Blocking is complete at 16:00.
 - **2026-09-16**: First notice (provisionally 2,007 companies and 37,747 people). Retrieval links are switched to signed links that expire after one hour.
-- **2026-09-24 to 10-06**: Files holding customer data are deleted (24 September), listing at the affected location is stopped (25th), all file-handling features are reviewed (30th), all storage is inventoried and automated monitoring begins (2 October), and listing is stopped across all storage (6th).
+- **2026-09-24**: Files holding customer data are deleted. Listing at the affected location is stopped on the 25th, and all file-handling features are reviewed on the 30th.
+- **2026-10-02**: All storage is inventoried and automated monitoring begins. Listing is stopped across all storage on the 6th.
 - **2026-10-07**: Follow-up notice. The company begins emailing customers about reporting to the Personal Information Protection Commission, and says an outside specialist firm's findings will be reported in late October.
 - **2026-10-30**: Third notice (2,492 companies and 45,030 people; cause; measures; final report planned for 12 November).
 
