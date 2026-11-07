@@ -100,6 +100,14 @@ const briefSchema = z
     /** Frontmatter version. The Brief page hides "Revision History" while this is "1.0". */
     version: z.string().regex(/^\d+\.\d+$/).default("1.0"),
     /**
+     * 回覧で「修正したい」を受けて直した記録（2026-11-08）。下書きのあいだだけ使い、
+     * 回覧の一覧と記事の下の「どうでしたか？」に「修正済み」の印として出す。
+     * 公開（status: published）にするときに消す。date は直した日、note は何を直したか 1 行。
+     */
+    draft_fixed: z
+      .array(z.object({ date: z.date(), note: z.string().min(1).max(80) }))
+      .default([]),
+    /**
      * Optional headline used as the og:title / twitter:title / <title> lead.
      * Format: `{short descriptive headline} — {codename or case name}`
      * (≈30–45 chars; full og:title stays under ~65 chars for card-safe

@@ -90,10 +90,17 @@ H1 の長い一文は、検索結果では頭の 30 字ほどしか見えない�
 1. 下書きで PR を出し、ビルドとプレビューで見た目を確認してマージする。
 2. main に入ると prerelease ブランチが main と同じになる（`.github/workflows/sync-prerelease.yml`）。
    回覧はリンク 1 本：<https://prerelease.web-zgj.pages.dev/ja/critical/drafts/>
-3. 承認は CLUBS のいつもの仕事「Critical Brief 作成ルール」の承認ポイントで、回ごとに 1 回にまとめる。
-   直しのある Brief は外して次の回に回す。
-4. 承認された Brief を `status: published` にする PR を出し、マージすると本番に出る。
-   frontmatter の `published`（公開日）も本番に出す日に直す。
+3. 承認は下書きごとの「問題なし」（記事の下と一覧のボタン・CLUBS のいつもの仕事「Critical Brief
+   作成ルール」に名前つきで残る）で行う（2026-11-05 から。承認ポイントは使わない）。
+   「修正したい」が残った Brief は直して PR にし、frontmatter に直した記録を足す：
+   ```yaml
+   draft_fixed:
+     - date: 2026-11-08
+       note: "時系列の 09-24〜10-06 の行を 2 行に分けた"   # 何を直したか 1 行（80 字まで）
+   ```
+   一覧と記事の下に「修正済み」の印が付くので、読み直して「問題なし」を押し直してもらう。
+4. 「問題なし」の付いた Brief を `status: published` にする PR を出し、マージすると本番に出る。
+   frontmatter の `published`（公開日）も本番に出す日に直し、`draft_fixed` は消す。
 
 国内の大きな事案を 3 日以内に出す決まり（上）は、承認までを含めて 3 日で数える。
 

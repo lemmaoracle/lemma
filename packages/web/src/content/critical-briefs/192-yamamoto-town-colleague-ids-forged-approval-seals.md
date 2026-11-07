@@ -11,6 +11,9 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["190-iwai-cosmo-tradeworks-admin-function-unintended-orders", "152-denmark-cpr-lawful-access-misuse", "157-met-police-auror-unapproved-platform", "134-tokyo-housing-supply-corp-label-misdirection"]
 status: draft
+draft_fixed:
+  - date: 2026-11-08
+    note: "「承認者本人の記録」を「承認者本人の鍵の署名」に（11 か所）"
 version: "1.0"
 og_lead_ja: "宮城県山元町、職員が他の職員の ID で庁内フォルダに不正アクセスし、公印と偽造した印影で未決裁の文書を決裁済みとして使用。免職"
 og_lead_en: "Yamamoto Town, Japan: an employee used colleagues' IDs on shared folders and forged seals to pass unapproved documents as approved; dismissed"
