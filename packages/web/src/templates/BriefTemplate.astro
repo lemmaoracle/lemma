@@ -676,7 +676,7 @@ const labels = isJa
         </article>
 
         {/* 下書きの記事だけ：「問題なし／修正したい」（CLUBS の受け口へ・2026-11-04）。 */}
-        {isDraftBrief(brief) && <BriefDraftReview locale={locale} briefId={brief.id} title={mainTitle} />}
+        {isDraftBrief(brief) && <BriefDraftReview locale={locale} briefId={brief.id} title={mainTitle} fixed={brief.data.draft_fixed} />}
 
         {/* 似た事例を一覧で読む。本文の途中（5 章の直前）の 1 行と、Sources の直前の
             ブロック。どちらもページを開いたときに本文の中の目印へ移す。 */}

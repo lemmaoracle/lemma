@@ -35,10 +35,17 @@ breadcrumb.
 1. Open the PR as a draft, check the build and preview, and merge.
 2. Each push to `main` resets the `prerelease` branch to `main` (`.github/workflows/sync-prerelease.yml`).
    Reviewers get one link: <https://prerelease.web-zgj.pages.dev/ja/critical/drafts/>
-3. Approval happens once per round at the approval point of the CLUBS routine "Critical Brief 作成ルール".
-   Briefs that need fixes drop out to the next round.
-4. A PR that sets approved Briefs to `status: published` puts them on production. Also set the
-   `published` date to the day they go live.
+3. Approval is per draft: a "Looks good" from the buttons under the article or on the list (saved with the
+   reviewer's name to the CLUBS routine "Critical Brief 作成ルール"; since 2026-11-05, no approval point).
+   A Brief marked "Needs a fix" is revised in a PR that also records the fix in the frontmatter:
+   ```yaml
+   draft_fixed:
+     - date: 2026-11-08
+       note: "Split the 09-24 to 10-06 timeline row in two"   # one line, up to 80 chars
+   ```
+   The list and the article then show a "Fixed" badge, and the reviewer re-reads and marks "Looks good" again.
+4. A PR that sets Briefs marked "Looks good" to `status: published` puts them on production. Also set the
+   `published` date to the day they go live, and remove `draft_fixed`.
 
 ### Title
 

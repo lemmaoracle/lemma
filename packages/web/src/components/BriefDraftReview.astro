@@ -15,13 +15,19 @@ export interface BriefDraftReviewProps {
   locale: "ja" | "en";
   briefId: string;
   title: string;
+  /** 「修正したい」を受けて直した記録（frontmatter の draft_fixed）。最後の 1 件を「修正済み」で出す。 */
+  fixed?: { date: Date; note: string }[];
 }
-const { locale, briefId, title } = Astro.props as BriefDraftReviewProps;
+const { locale, briefId, title, fixed = [] } = Astro.props as BriefDraftReviewProps;
 const isJa = locale === "ja";
+const last = fixed.length > 0 ? fixed[fixed.length - 1] : undefined;
+const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
 const T = isJa
   ? {
       head: "この下書き、どうでしたか？",
-      sub: "名前つきで CLUBS の「Critical Brief 作成ルール」に残ります。公開の OK は承認ポイントで。",
+      sub: "名前つきで CLUBS の「Critical Brief 作成ルール」に残ります。公開は「問題なし」が付いたものから。",
+      fixed: "修正済み",
+      fixedSub: "「修正したい」を受けて直しました。読み直して「問題なし」を押し直してください。",
       ok: "問題なし",
       fix: "修正したい",
       note: "どこをどう修正したいか（1行・100字まで）",
@@ -37,7 +43,9 @@ const T = isJa
     }
   : {
       head: "How was this draft?",
-      sub: "Saved with your name to CLUBS (Critical Brief rules). The final OK is the approval point.",
+      sub: "Saved with your name to CLUBS (Critical Brief rules). Drafts go live once marked “Looks good”.",
+      fixed: "Fixed",
+      fixedSub: "Revised after a “Needs a fix”. Please re-read and mark “Looks good” again.",
       ok: "Looks good",
       fix: "Needs a fix",
       note: "What to fix, and how (one line, up to 100 chars)",
@@ -65,6 +73,12 @@ const T = isJa
 >
   <h2 id="bdr-h">{T.head}</h2>
   <p class="bdr-sub">{T.sub}</p>
+  {last && (
+    <p class="bdr-fixed">
+      <b>{T.fixed} {md(last.date)}</b> {last.note}
+      <span>{T.fixedSub}</span>
+    </p>
+  )}
   <div class="bdr-a">
     <a class="bdr-btn ok" data-bdr="ok" href="#brief-review">{T.ok}</a>
     <button type="button" class="bdr-btn" data-bdr="fix">{T.fix}</button>
@@ -245,6 +259,28 @@ const T = isJa
     display: flex;
     flex-wrap: wrap;
     gap: 4px 14px;
+    font-size: 12px;
+    color: #5c6156;
+  }
+  .bdr-fixed {
+    margin: 0 0 14px;
+    font-size: 13px;
+    color: #12140e;
+  }
+  .bdr-fixed b {
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #2e7d4f;
+    border: 1px solid #bfe0cc;
+    border-radius: 999px;
+    padding: 1px 8px;
+    background: #fff;
+  }
+  .bdr-fixed span {
+    display: block;
+    margin-top: 4px;
     font-size: 12px;
     color: #5c6156;
   }

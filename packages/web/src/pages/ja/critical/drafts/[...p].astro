@@ -32,6 +32,12 @@ const enIds = new Set(
 const pad = (no: number) => String(no).padStart(3, "0");
 const day = (d: Date) => d.toISOString().slice(0, 10);
 const head = (title: string) => title.split(" — ")[0];
+/* 「修正したい」を受けて直した記録（frontmatter の draft_fixed・最後の 1 件を出す）。 */
+const fixedOf = (b: BriefEntry) => {
+  const list = (b.data as { draft_fixed?: { date: Date; note: string }[] }).draft_fixed ?? [];
+  return list.length > 0 ? list[list.length - 1] : undefined;
+};
+const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
 ---
 
 <Layout
@@ -54,16 +60,21 @@ const head = (title: string) => title.split(" — ")[0];
       <p class="dr-lead">
         {drafts.length > 0 ? `${drafts.length} 本` : "いま回覧する下書きはありません。"}
         {drafts.length > 0 && (
-          <span class="dr-how">読んだら「問題なし」を一覧から残せます。「修正したい」は記事の下で（どちらも CLUBS に名前つきで残り、公開の OK は承認ポイントで）。</span>
+          <span class="dr-how">読んだら「問題なし」を一覧から残せます。「修正したい」は記事の下で（どちらも CLUBS に名前つきで残り、公開は「問題なし」が付いたものから）。直した下書きには「修正済み」が付くので、読み直して「問題なし」を押し直してください。</span>
         )}
       </p>
       <ul class="dr-list" data-url={BRIEF_REVIEW_URL} data-case={BRIEF_REVIEW_CASE}>
         {
           drafts.map((b) => (
-            <li data-brief={b.id} data-title={b.data.title}>
+            <li data-brief={b.id} data-title={b.data.title} data-fixed={fixedOf(b) ? "1" : undefined}>
               <a href={`${base}/critical/briefs/${b.id}/`}>
                 <small>No. {pad(b.data.brief_no)} · 公開予定 {day(b.data.published)}</small>
                 <b>{head(b.data.title)}</b>
+                {fixedOf(b) && (
+                  <span class="dr-fixed">
+                    <b>修正済み {md(fixedOf(b)!.date)}</b> {fixedOf(b)!.note}
+                  </span>
+                )}
               </a>
               <span class="dr-mine" data-dr-mine hidden></span>
               <em class="dr-read" data-dr-read hidden>開いた</em>
@@ -106,7 +117,8 @@ const head = (title: string) => title.split(" — ")[0];
       var read = li.querySelector("[data-dr-read]");
       var ok = li.querySelector("[data-dr-ok]");
       if (v === "ok" || v === "fix") {
-        mine.textContent = v === "ok" ? "問題なし" : "修正したい";
+        /* 「修正したい」のあとに直してあれば、押し直しを促す。 */
+        mine.textContent = v === "ok" ? "問題なし" : li.dataset.fixed ? "修正したい → 直しました" : "修正したい";
         mine.classList.add("is-" + v);
         mine.hidden = false;
       } else if (opened) {
@@ -193,6 +205,21 @@ const head = (title: string) => title.split(" — ")[0];
     display: block;
     margin-top: 4px;
     font-size: 12.5px;
+  }
+  .dr-fixed {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .dr-fixed b {
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #2e7d4f;
+    border: 1px solid #bfe0cc;
+    border-radius: 999px;
+    padding: 1px 8px;
+    background: #fff;
   }
   .dr-mine {
     flex: none;
