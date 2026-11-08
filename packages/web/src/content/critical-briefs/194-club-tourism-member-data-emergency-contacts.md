@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: kyc-aml-disclosure
 secondary_categories: [identity-auth]
 incident_date: 2026-10-30
-published: 2026-11-05
+published: 2026-11-08
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["110-sourcenext-member-api-22m-records", "026-cmoa-member-data-system-logs", "171-free-mobile-cnil-former-subscriber-retention", "191-gmo-trustlogin-public-storage-customer-files"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "クラブツーリズム、予約システムのサーバへの不正アクセスで、緊急連絡先を含むインターネット会員の情報 約 432 万件が流出したおそれ"
 og_lead_en: "Club Tourism: unauthorised access to a reservation system server may have leaked about 4.32 million online members' records, including emergency contacts"

@@ -6,11 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth]
 incident_date: 2026-10-14
-published: 2026-11-05
+published: 2026-11-08
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["165-gmo-onamae-desktop-cloud", "032-booking-payout-account-tampering", "167-zeabur-second-breach-admin-token", "046-servicenow-unauthenticated-api"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "岩井コスモ証券、委託先の管理機能への不正アクセスで 7 口座に意図しない売買注文、5 口座で約定"
 og_lead_en: "Iwai Cosmo Securities: unintended orders in 7 accounts through a vendor's admin function; 5 executed"
