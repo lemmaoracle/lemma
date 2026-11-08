@@ -20,13 +20,15 @@ export function getStaticPaths() {
 }
 
 export const GET: APIRoute = async ({ params, props }) => {
+  const slug = params.slug;
+  if (!slug) return new Response("Not found", { status: 404 });
   const { order, titleJa, titleEn } = props as {
     order: number;
     titleJa: string;
     titleEn: string;
   };
   const png = await renderPillarDetailOg(
-    params.slug!,
+    slug,
     order,
     titleJa,
     titleEn,

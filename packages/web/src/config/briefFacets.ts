@@ -490,12 +490,17 @@ export const BRIEF_COUNTRIES: Record<BriefCountrySlug, { slug: string; ja: strin
   global: { slug: "global", ja: "国際", en: "Global" },
 };
 
+/** Slug-keyed lookup for untrusted/GUI slugs; unknown slugs fall back to the raw slug. */
+const BRIEF_COUNTRY_BY_SLUG: Readonly<
+  Partial<Record<string, { readonly slug: string; readonly ja: string; readonly en: string }>>
+> = BRIEF_COUNTRIES;
+
 /** 表示用：「日本・米国」/「Japan / US」。 */
 export function briefCountryLabel(
   slugs: readonly string[] | undefined,
   loc: "ja" | "en",
 ): string | null {
   if (!slugs || slugs.length === 0) return null;
-  const names = slugs.map((s) => BRIEF_COUNTRIES[s as BriefCountrySlug]?.[loc] ?? s);
+  const names = slugs.map((s) => BRIEF_COUNTRY_BY_SLUG[s]?.[loc] ?? s);
   return names.join(loc === "ja" ? "・" : " / ");
 }

@@ -16,6 +16,7 @@
 import { getCollection } from "astro:content";
 import { isVisibleBrief } from "../../../../lib/briefDrafts";
 import type { APIRoute } from "astro";
+import type { BriefEntry } from "../../../../data/criticalBriefs";
 import { renderCriticalBriefOg } from "../../../../og/criticalBriefImage";
 import { getEnBriefMap } from "../../../../data/getEnBriefMap";
 import type { Locale } from "../../../../i18n/translations";
@@ -23,11 +24,14 @@ import type { Locale } from "../../../../i18n/translations";
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const jaBriefs = await getCollection("critical-briefs", isVisibleBrief);
+  // `astro:content` types resolve to `any` outside the generated
+  // `.astro/types.d.ts`; assert the mirrored entry shape (same pattern as
+  // data/getEnBriefMap.ts).
+  const jaBriefs = (await getCollection("critical-briefs", isVisibleBrief)) as BriefEntry[];
   const enById = await getEnBriefMap();
   const paths: Array<{
     params: { lang: Locale; slug: string };
-    props: { brief: Awaited<ReturnType<typeof getCollection<"critical-briefs">>>[number] };
+    props: { brief: BriefEntry };
   }> = [];
   for (const ja of jaBriefs) {
     paths.push({ params: { lang: "ja", slug: ja.id }, props: { brief: ja } });

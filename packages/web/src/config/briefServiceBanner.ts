@@ -69,7 +69,7 @@ const COPY: Readonly<Record<ServiceBannerKey, Readonly<Record<Locale, BannerCopy
 };
 
 /** 許可リスト。slug → バナー。ここに無い Brief には出さない。 */
-const BANNER_BY_SLUG: Readonly<Record<string, ServiceBannerKey>> = {
+const BANNER_BY_SLUG: Readonly<Partial<Record<string, ServiceBannerKey>>> = {
   "032-booking-payout-account-tampering": "cyber-early-access",
 };
 
