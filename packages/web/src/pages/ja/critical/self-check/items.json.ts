@@ -20,7 +20,7 @@ export const GET: APIRoute = async () => {
     string,
     { id: string; text: string; scenes: string[]; cases: { no: number; title: string; url: string }[] }
   >();
-  groups.forEach((g) =>
+  groups.forEach((g) => {
     g.items.forEach((it) => {
       const seen = items.get(it.id);
       if (seen) {
@@ -33,8 +33,8 @@ export const GET: APIRoute = async () => {
         scenes: [g.key],
         cases: it.sources.map((s) => ({ no: s.no, title: s.title, url: `${SITE}/ja/critical/briefs/${s.id}/` })),
       });
-    }),
-  );
+    });
+  });
   const body = {
     page: `${SITE}/ja/critical/self-check/`,
     scenes: groups.map((g) => ({ key: g.key, label: g.label })),
