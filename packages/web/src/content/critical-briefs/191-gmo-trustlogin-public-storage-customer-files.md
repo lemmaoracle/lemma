@@ -6,14 +6,11 @@ pillar: 04-regulatory-attribute
 primary_category: kyc-aml-disclosure
 secondary_categories: [data-provenance]
 incident_date: 2026-09-14
-published: 2026-11-05
+published: 2026-11-08
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["153-nec-contractor-osaka-university-shared-storage-leak", "144-studio-saas-breach-decryption-keys-read", "172-illuminate-education-ftc-former-customer-data", "141-idscan-net-drivers-license-dark-web-breach"]
-status: draft
-draft_fixed:
-  - date: 2026-11-08
-    note: "時系列の 09-24〜10-06 の行を 2 行に分けた（日付が本文に重なっていた）"
+status: published
 version: "1.0"
 og_lead_ja: "GMOトラスト・ログイン、公開領域に置かれた顧客情報のファイルが約 9 年取得可能に。2,492 社・45,030 人"
 og_lead_en: "GMO Trust Login: customer files in a public storage area were retrievable for about nine years; 2,492 companies, 45,030 people"

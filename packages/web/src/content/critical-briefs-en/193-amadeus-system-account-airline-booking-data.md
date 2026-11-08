@@ -6,11 +6,11 @@ pillar: 03-agent-authority
 primary_category: identity-auth
 secondary_categories: [data-provenance]
 incident_date: 2026-09-23
-published: 2026-11-05
+published: 2026-11-08
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["154-yumirlink-cuenote-support-credential-db-export", "069-connectwise-cloud-backup-app-identity-credential-abuse", "152-denmark-cpr-lawful-access-misuse", "172-illuminate-education-ftc-former-customer-data"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "Amadeus の予約システムで、システムアカウントの認証情報による不正アクセスが約 3 年続き、JAL 約 92,000 名・ANA 約 37,800 名などの予約情報が参照された"
 og_lead_en: "At Amadeus, unauthorised access with a system account's credentials ran for about three years; booking data of about 92,000 JAL and 37,800 ANA customers was viewed"
