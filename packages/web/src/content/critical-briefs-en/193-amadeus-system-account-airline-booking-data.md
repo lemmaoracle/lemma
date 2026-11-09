@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["154-yumirlink-cuenote-support-credential-db-export", "069-connectwise-cloud-backup-app-identity-credential-abuse", "152-denmark-cpr-lawful-access-misuse", "172-illuminate-education-ftc-former-customer-data"]
 status: published
-version: "1.0"
+version: "1.1"
 og_lead_ja: "Amadeus の予約システムで、システムアカウントの認証情報による不正アクセスが約 3 年続き、JAL 約 92,000 名・ANA 約 37,800 名などの予約情報が参照された"
 og_lead_en: "At Amadeus, unauthorised access with a system account's credentials ran for about three years; booking data of about 92,000 JAL and 37,800 ANA customers was viewed"
 layout: "report"
@@ -60,6 +60,8 @@ countries: ["es", "jp"]
 search_title: "Amadeus 不正アクセス：JAL・ANA の予約情報の経緯"
 search_description: "航空会社の予約システムを提供する Amadeus で、システムアカウントの認証情報による不正アクセスが約 3 年続き、JAL 約 92,000 名・ANA 約 37,800 名の予約情報が参照された（各社の公表）。経緯と対策を整理。"
 ---
+
+> **Revision (v1.1 / 2026-11-09)**: Replaced the URL of ANA's disclosure with one that resolves. Facts and sources are unchanged.
 
 ## 1. Summary
 
@@ -161,7 +163,7 @@ Three things to confirm about customer data held in a vendor's system
 ## 6. Sources
 
 - **Japan Airlines and Japan Transocean Air (Primary, company disclosure)**: 「Amadeus社が提供する旅客サービスシステムへの不正アクセスについて」 (2026-10-28) — <https://www.jal.co.jp/ja-jp/news/general/2026/other/261028.html>
-- **All Nippon Airways (Primary, company disclosure)**: 「Amadeus社 旅客サービスシステムへの不正アクセスについて」 (2026-10-30) — <https://www.ana.co.jp/ja/jp/special-notice/001612.html>
+- **All Nippon Airways (Primary, company disclosure)**: 「Amadeus社 旅客サービスシステムへの不正アクセスについて」 (2026-10-30) — <https://www.ana.co.jp/ja/jp/special-notice/001612.html?p1=top&p2=ja&p3=global>
 - **Cathay Pacific (Primary, company disclosure)**: "Personal data security incident involving a third-party service provider" (2026-10-30) — <https://www.cathaypacific.com/cx/en_HK/latest-news/security-and-operational-changes/personal-data-security.html>
 - **Amadeus (Primary, company statement)**: "Amadeus statement" (October 2026) — <https://amadeus.com/amadeus-statement-oct>
 - **Aviation Wire (Press)**: 「JALとJTA、アマデウス不正アクセスで予約情報9.2万人対象 クレカやパスワード流出なし」 (2026-10-28) — <https://www.aviationwire.jp/archives/353202>

@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["154-yumirlink-cuenote-support-credential-db-export", "069-connectwise-cloud-backup-app-identity-credential-abuse", "152-denmark-cpr-lawful-access-misuse", "172-illuminate-education-ftc-former-customer-data"]
 status: published
-version: "1.0"
+version: "1.1"
 og_lead_ja: "Amadeus の予約システムで、システムアカウントの認証情報による不正アクセスが約 3 年続き、JAL 約 92,000 名・ANA 約 37,800 名などの予約情報が参照された"
 og_lead_en: "At Amadeus, unauthorised access with a system account's credentials ran for about three years; booking data of about 92,000 JAL and 37,800 ANA customers was viewed"
 layout: "report"
@@ -60,6 +60,8 @@ countries: ["es", "jp"]
 search_title: "Amadeus 不正アクセス：JAL・ANA の予約情報の経緯"
 search_description: "航空会社の予約システムを提供する Amadeus で、システムアカウントの認証情報による不正アクセスが約 3 年続き、JAL 約 92,000 名・ANA 約 37,800 名の予約情報が参照された（各社の公表）。経緯と対策を整理。"
 ---
+
+> **改訂（v1.1 / 2026-11-09）**: ANA の公表の URL を開ける形に差し替え、05 の当事者の記述で公表の数え方を「3 社」から「3 つの公表」に直した。事実と出典は変えていない。
 
 ## 1. 要点
 
@@ -135,7 +137,7 @@ search_description: "航空会社の予約システムを提供する Amadeus �
 
 ## 5. 事実と時系列
 
-- **当事者**: Amadeus IT Group, S.A.（スペイン・航空会社に旅客サービスシステムを提供）と、同社のシステムを使う航空会社。本 Brief では、公表を確認した日本航空（JAL）・日本トランスオーシャン航空（JTA）、全日本空輸（ANA）、キャセイパシフィック航空の 3 社の公表に拠る。報道によれば、大韓航空・アシアナ航空・シンガポール航空・マレーシア航空なども影響を公表している。
+- **当事者**: Amadeus IT Group, S.A.（スペイン・航空会社に旅客サービスシステムを提供）と、同社のシステムを使う航空会社。本 Brief では、公表を確認した日本航空（JAL）・日本トランスオーシャン航空（JTA）、全日本空輸（ANA）、キャセイパシフィック航空の 3 つの公表に拠る。報道によれば、大韓航空・アシアナ航空・シンガポール航空・マレーシア航空なども影響を公表している。
 - **起きたこと**: キャセイパシフィック航空によれば、Amadeus のシステムで、同社のシステムアカウントに割り当てられたログインの認証情報を使う第三者が、2023 年 8 月から 2026 年 9 月の間に予約データに不正にアクセスした。Amadeus は声明で、旅行の予約表示の環境に影響する脆弱性を把握し、その脆弱性を通じて予約表示のデータが読める状態だったとし、決済や金融の情報が読まれた証拠は無く、ランサムウェアに使われた兆候も無いとしている。
 - **気づいた経緯**: JAL・JTA は 10 月 23 日に Amadeus から報告を受けた。キャセイは 10 月 28 日に通知を受け、29 日に詳細を受けた。ANA は、Amadeus から報告を受けたとしている（日付は記していない）。Amadeus がいつ把握したかは、声明に記されていない。
 - **影響と対応**: JAL・JTA は、2023 年 8 月 10 日から 2026 年 9 月 23 日に委託先のシステムにあった予約記録のうち、約 90,000 名の予約番号・氏名・搭乗日・区間・クラスと、約 2,000 名のそれに加えたメールアドレス・電話番号・パスポート番号・国籍・マイレージ番号などが参照された形跡があるとし、クレジットカード番号と各種パスワードの漏えいは無く、不正利用と運航への影響は確認されていないとした。ANA は、同じ期間に予約した約 37,800 名のうち、約 36,100 名の氏名・予約番号・搭乗日・区間・クラスと、約 1,700 名のそれに加えたメールアドレス・電話番号・パスポート番号・国籍・マイレージ番号・航空券番号・座席番号などが参照された形跡があるとし、該当する認証情報は無効にされ、監視が強められたと報告を受けたとした。キャセイは、約 53,000 件の予約が影響を受け、多くは予約番号・氏名・便の情報で、一部はメール・電話・旅行書類・マイレージ番号も含みうるとし、Amadeus がパスワードの再設定と監視の強化をし、不正利用の証拠は見つかっていないとした。3 社とも、自社のシステムは影響を受けていないとしている。
@@ -161,7 +163,7 @@ search_description: "航空会社の予約システムを提供する Amadeus �
 ## 6. Sources
 
 - **日本航空・日本トランスオーシャン航空（一次・当事者の公表）**: 「Amadeus社が提供する旅客サービスシステムへの不正アクセスについて」（2026-10-28） — <https://www.jal.co.jp/ja-jp/news/general/2026/other/261028.html>
-- **全日本空輸（一次・当事者の公表）**: 「Amadeus社 旅客サービスシステムへの不正アクセスについて」（2026-10-30） — <https://www.ana.co.jp/ja/jp/special-notice/001612.html>
+- **全日本空輸（一次・当事者の公表）**: 「Amadeus社 旅客サービスシステムへの不正アクセスについて」（2026-10-30） — <https://www.ana.co.jp/ja/jp/special-notice/001612.html?p1=top&p2=ja&p3=global>
 - **Cathay Pacific（一次・当事者の公表）**: "Personal data security incident involving a third-party service provider"（2026-10-30） — <https://www.cathaypacific.com/cx/en_HK/latest-news/security-and-operational-changes/personal-data-security.html>
 - **Amadeus（一次・当事者の声明）**: "Amadeus statement"（2026-10） — <https://amadeus.com/amadeus-statement-oct>
 - **Aviation Wire（報道）**: 「JALとJTA、アマデウス不正アクセスで予約情報9.2万人対象 クレカやパスワード流出なし」（2026-10-28） — <https://www.aviationwire.jp/archives/353202>

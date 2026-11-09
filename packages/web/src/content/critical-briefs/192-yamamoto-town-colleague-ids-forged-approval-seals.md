@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["190-iwai-cosmo-tradeworks-admin-function-unintended-orders", "152-denmark-cpr-lawful-access-misuse", "157-met-police-auror-unapproved-platform", "134-tokyo-housing-supply-corp-label-misdirection"]
 status: published
-version: "1.0"
+version: "1.1"
 og_lead_ja: "宮城県山元町、職員が他の職員の ID で庁内フォルダに不正アクセスし、公印と偽造した印影で未決裁の文書を決裁済みとして使用。免職"
 og_lead_en: "Yamamoto Town, Japan: an employee used colleagues' IDs on shared folders and forged seals to pass unapproved documents as approved; dismissed"
 layout: "report"
@@ -60,6 +60,8 @@ countries: ["jp"]
 search_title: "山元町職員の不正アクセスと印影偽造：公表の経緯"
 search_description: "宮城県山元町で、職員が他の職員の ID で庁内フォルダに不正アクセスし、公印と上司の印影を偽造して未決裁の文書を決裁済みとして使った（町の公表・免職）。何が起きたか、なぜ通ったか、対策を整理。"
 ---
+
+> **改訂（v1.1 / 2026-11-09）**: 点検チェックリストの 1 項目を、表紙のセルフチェックと重ならない問いに差し替えた。事実と出典は変えていない。
 
 ## 1. 要点
 
@@ -128,7 +130,7 @@ ID とパスワードは、知っていれば誰でも通り、端末の前に�
 
 決裁と共有フォルダについて、組織で確認する 3 項目
 
-- 決裁済みの文書と公印を押した文書を、承認者本人の鍵の署名の記録（誰が・いつ・どの端末で）と結びつけて使っているか。
+- 決裁済みとして出回った文書を、決裁の記録と突き合わせて、承認の無いものを見つけられるか。
 - 共有フォルダと個人専用フォルダへのアクセスを、ID とパスワードだけでなく、本人の端末や多要素認証と結びつけているか。
 - 勤務時間外の庁舎への立ち入りとフォルダへのアクセスを、記録して確認する手順があるか。
 

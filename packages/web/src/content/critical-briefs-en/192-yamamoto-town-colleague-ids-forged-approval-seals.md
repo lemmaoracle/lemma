@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["190-iwai-cosmo-tradeworks-admin-function-unintended-orders", "152-denmark-cpr-lawful-access-misuse", "157-met-police-auror-unapproved-platform", "134-tokyo-housing-supply-corp-label-misdirection"]
 status: published
-version: "1.0"
+version: "1.1"
 og_lead_ja: "宮城県山元町、職員が他の職員の ID で庁内フォルダに不正アクセスし、公印と偽造した印影で未決裁の文書を決裁済みとして使用。免職"
 og_lead_en: "Yamamoto Town, Japan: an employee used colleagues' IDs on shared folders and forged seals to pass unapproved documents as approved; dismissed"
 layout: "report"
@@ -60,6 +60,8 @@ countries: ["jp"]
 search_title: "山元町職員の不正アクセスと印影偽造：公表の経緯"
 search_description: "宮城県山元町で、職員が他の職員の ID で庁内フォルダに不正アクセスし、公印と上司の印影を偽造して未決裁の文書を決裁済みとして使った（町の公表・免職）。何が起きたか、なぜ通ったか、対策を整理。"
 ---
+
+> **Revision (v1.1 / 2026-11-09)**: Replaced one checklist item so it no longer repeats the cover self-check. Facts and sources are unchanged.
 
 ## 1. Summary
 
@@ -128,7 +130,7 @@ Note: Lemma's check works only when approvals and seal use are recorded as opera
 
 Three things to confirm about approvals and shared folders
 
-- Do you use approved documents and documents bearing the official seal only when tied to a record signed with the approver's own key (who, when, from which device)?
+- Can you check documents circulating as approved against the approval record, and find those without an approval?
 - Is access to shared and personal folders tied to the person's own device or multi-factor authentication, not only to an ID and a password?
 - Is there a procedure to record and review entry to the building and folder access outside working hours?
 

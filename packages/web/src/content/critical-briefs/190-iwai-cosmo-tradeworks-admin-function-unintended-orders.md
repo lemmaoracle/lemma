@@ -1,7 +1,7 @@
 ---
 brief_no: 190
-title: "岩井コスモ証券：委託先の管理機能から本人の意図しない売買注文が出され、5 口座で約定した(同社と委託先の公表)"
-title_en: "Iwai Cosmo Securities: Orders customers never placed went through a vendor's admin function, and trades executed in 5 accounts (company and vendor disclosures)"
+title: "岩井コスモ証券：委託先の管理機能から本人の意図しない売買注文が出された(同社と委託先の公表)"
+title_en: "Iwai Cosmo Securities: Orders customers never placed went through a vendor's admin function (company and vendor disclosures)"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth]
@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["165-gmo-onamae-desktop-cloud", "032-booking-payout-account-tampering", "167-zeabur-second-breach-admin-token", "046-servicenow-unauthenticated-api"]
 status: published
-version: "1.0"
+version: "1.1"
 og_lead_ja: "岩井コスモ証券、委託先の管理機能への不正アクセスで 7 口座に意図しない売買注文、5 口座で約定"
 og_lead_en: "Iwai Cosmo Securities: unintended orders in 7 accounts through a vendor's admin function; 5 executed"
 layout: "report"
@@ -61,6 +61,8 @@ countries: ["jp"]
 search_title: "岩井コスモ証券の不正取引：委託先の管理機能と経緯"
 search_description: "岩井コスモ証券で、委託先トレードワークスの管理機能への不正アクセスにより、7 口座で本人の意図しない売買注文が出され 5 口座で約定した（両社の公表）。何が起きたか、なぜ通ったか、対策を整理。"
 ---
+
+> **改訂（v1.1 / 2026-11-09）**: 題から件数（約定した口座の数）を外し、点検チェックリストの 1 項目を表紙のセルフチェックと重ならない問いに差し替えた。事実と出典は変えていない。
 
 ## 1. 要点
 
@@ -129,7 +131,7 @@ search_description: "岩井コスモ証券で、委託先トレードワーク�
 
 注文や送金を執行する仕組みについて、組織で確認する 3 項目
 
-- 管理機能や運用の口から、本人の認証を経ずに注文や送金を出せる操作があるかを把握しているか。
+- 管理機能や運用の口から出された注文を、本人の注文と区別して記録し、後から確認できるか。
 - 管理機能が限定された環境からだけ使える状態かを、委託先と決まった周期で点検しているか。
 - 本人の署名と結びつかない注文を、執行の前に保留する手順があるか。
 
