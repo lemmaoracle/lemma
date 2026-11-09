@@ -1,7 +1,7 @@
 ---
 brief_no: 190
-title: "岩井コスモ証券：委託先の管理機能から本人の意図しない売買注文が出され、5 口座で約定した(同社と委託先の公表)"
-title_en: "Iwai Cosmo Securities: Orders customers never placed went through a vendor's admin function, and trades executed in 5 accounts (company and vendor disclosures)"
+title: "岩井コスモ証券：委託先の管理機能から本人の意図しない売買注文が出された(同社と委託先の公表)"
+title_en: "Iwai Cosmo Securities: Orders customers never placed went through a vendor's admin function (company and vendor disclosures)"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth]
@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["165-gmo-onamae-desktop-cloud", "032-booking-payout-account-tampering", "167-zeabur-second-breach-admin-token", "046-servicenow-unauthenticated-api"]
 status: published
-version: "1.0"
+version: "1.1"
 og_lead_ja: "岩井コスモ証券、委託先の管理機能への不正アクセスで 7 口座に意図しない売買注文、5 口座で約定"
 og_lead_en: "Iwai Cosmo Securities: unintended orders in 7 accounts through a vendor's admin function; 5 executed"
 layout: "report"
@@ -60,6 +60,8 @@ countries: ["jp"]
 search_title: "岩井コスモ証券の不正取引：委託先の管理機能と経緯"
 search_description: "岩井コスモ証券で、委託先トレードワークスの管理機能への不正アクセスにより、7 口座で本人の意図しない売買注文が出され 5 口座で約定した（両社の公表）。何が起きたか、なぜ通ったか、対策を整理。"
 ---
+
+> **Revision (v1.1 / 2026-11-09)**: Removed the count (accounts with executed trades) from the title and replaced one checklist item so it no longer repeats the cover self-check. Facts and sources are unchanged.
 
 ## 1. Summary
 
@@ -128,7 +130,7 @@ Note: Lemma's check works only when it is built into the step that sends orders 
 
 Three things to confirm about the system that executes orders or transfers
 
-- Do you know whether any operation can enter an order or a transfer from an admin function or an operations channel without the holder's authentication?
+- Can you record orders entered from an admin function or an operations channel separately from the holder's own orders, and review them afterwards?
 - Do you inspect with the vendor, at a set interval, that admin functions are usable only from a restricted environment?
 - Is there a procedure to hold, before execution, an order that cannot be tied to the holder's signature?
 

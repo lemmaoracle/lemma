@@ -1,7 +1,7 @@
 ---
 brief_no: 194
-title: "クラブツーリズム：予約システムのサーバへの不正アクセスで、緊急連絡先を含むインターネット会員の情報 約 432 万件が流出したおそれ(同社の公表)"
-title_en: "Club Tourism: Unauthorised access to a reservation system server may have leaked about 4.32 million online members' records, including emergency contacts (company disclosure)"
+title: "クラブツーリズム：予約システムのサーバへの不正アクセスで、緊急連絡先を含むインターネット会員の情報が流出したおそれ(同社の公表)"
+title_en: "Club Tourism: Unauthorised access to a reservation system server may have leaked online members' records, including emergency contacts (company disclosure)"
 pillar: 04-regulatory-attribute
 primary_category: kyc-aml-disclosure
 secondary_categories: [identity-auth]
@@ -11,7 +11,7 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["110-sourcenext-member-api-22m-records", "026-cmoa-member-data-system-logs", "171-free-mobile-cnil-former-subscriber-retention", "191-gmo-trustlogin-public-storage-customer-files"]
 status: published
-version: "1.0"
+version: "1.1"
 og_lead_ja: "クラブツーリズム、予約システムのサーバへの不正アクセスで、緊急連絡先を含むインターネット会員の情報 約 432 万件が流出したおそれ"
 og_lead_en: "Club Tourism: unauthorised access to a reservation system server may have leaked about 4.32 million online members' records, including emergency contacts"
 layout: "report"
@@ -59,6 +59,8 @@ countries: ["jp"]
 search_title: "クラブツーリズム不正アクセス：432万件の経緯"
 search_description: "クラブツーリズムで、予約システムのサーバへの不正アクセスにより、緊急連絡先を含むインターネット会員の情報約 432 万件が流出したおそれ（同社の第1信）。何が起きたか、なぜ通ったか、対策を整理。"
 ---
+
+> **Revision (v1.1 / 2026-11-09)**: Removed the count (about 4.32 million records) from the title. Facts and sources are unchanged.
 
 ## 1. Summary
 
