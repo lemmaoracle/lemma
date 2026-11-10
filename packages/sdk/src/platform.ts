@@ -20,6 +20,30 @@ const te = new TextEncoder();
 const td = new TextDecoder();
 
 /* ------------------------------------------------------------------ */
+/*  Host-object polyfill injection                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Assign a property on a host-owned object (`globalThis`, `URL`, …).
+ *
+ * Both polyfills below must write into objects the host owns; a polyfill is
+ * by definition an in-place installation, so there is no functional
+ * alternative. Funnelling both writes through this one helper keeps the
+ * imperative boundary visible in exactly one place instead of one
+ * `eslint-disable` per injection site.
+ */
+const assignHostProperty = (
+  target: object,
+  key: string,
+  value: unknown,
+): unknown => {
+  // imperative: polyfill injection into a host object — no functional alternative
+  // eslint-disable-next-line functional/immutable-data
+  const _assigned = ((target as Record<string, unknown>)[key] = value);
+  return value;
+};
+
+/* ------------------------------------------------------------------ */
 /*  Buffer polyfill injection                                          */
 /* ------------------------------------------------------------------ */
 
@@ -31,12 +55,12 @@ const td = new TextDecoder();
  * Call this before any code that depends on `@docknetwork/crypto-wasm`
  * or other Node-oriented packages.
  */
-// imperative: polyfill injection on globalThis — no functional alternative
-export const ensureBufferPolyfill = (_placeholder?: undefined): void =>
-  typeof globalThis.Buffer === "undefined"
-    ? // eslint-disable-next-line functional/immutable-data -- polyfill injection on globalThis
-      (((globalThis as Record<string, unknown>).Buffer = BufferPolyfill), undefined)
-    : undefined;
+export const ensureBufferPolyfill = (_placeholder?: undefined): void => {
+  const _ensured: unknown =
+    typeof globalThis.Buffer === "undefined"
+      ? assignHostProperty(globalThis, "Buffer", BufferPolyfill)
+      : undefined;
+};
 
 // Auto-inject on import so that any consumer gets the polyfill
 // before third-party modules evaluate their top-level code.
@@ -77,11 +101,11 @@ export const ensureUrlCreateObjectUrlPolyfill = (_placeholder?: undefined): void
     const _probe = URL.createObjectURL(_blob);
   };
   const installShim = (_error: unknown): void => {
-    const _installed: (blob: Blob) => string =
-      // eslint-disable-next-line functional/immutable-data -- polyfill placeholder for Cloudflare Workers stub
-      ((URL as unknown as { createObjectURL: (blob: Blob) => string }).createObjectURL = (
-        _blob?: Blob,
-      ) => "blob:snarkjs-shim");
+    const _installed = assignHostProperty(
+      URL,
+      "createObjectURL",
+      (_blob?: Blob) => "blob:snarkjs-shim",
+    );
   };
   R.tryCatch(probeUrl, installShim)(new Blob([""]));
 };
