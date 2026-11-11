@@ -6,6 +6,11 @@
  * getStaticPaths が空を返すので、ページそのものが無い。回覧する人にはこのリンク1本を渡し、
  * 承認は CLUBS のいつもの仕事「Critical Brief 作成ルール」の承認ポイントで1回にまとめる。
  * 承認された Brief を status: published にする PR で、本番に出る。lib/briefDrafts.ts
+ *
+ * 状態の3つの札（2026-11-11・CLUBS ブログの回覧と同じ形）：直し待ち（桃）・まだ読んでいない（墨）・
+ * 問題なし（緑）。このページは CLUBS の声を読めないので、この端末で自分が残した声で数える
+ * （チーム全体の数は CLUBS の BOARD）。一覧は直し待ち → まだ読んでいない → 問題なし（畳む）の順。
+ * 「修正したい」のあとに直したものは、読み直すので「まだ読んでいない」に入れる。
  */
 import { getCollection } from "astro:content";
 import Layout from "../../../../layouts/Layout.astro";
@@ -63,7 +68,28 @@ const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
           <span class="dr-how">読んだら「問題なし」を一覧から残せます。「修正したい」は記事の下で（どちらも CLUBS に名前つきで残り、公開は「問題なし」が付いたものから）。直した下書きには「修正済み」が付くので、読み直して「問題なし」を押し直してください。</span>
         )}
       </p>
-      <ul class="dr-list" data-url={BRIEF_REVIEW_URL} data-case={BRIEF_REVIEW_CASE}>
+      {drafts.length > 0 && (
+        <>
+          <div class="dr-st" id="dr-st" role="group" aria-label="状態で絞る">
+            <button type="button" class="is-fix" data-st="fix" aria-pressed="false">
+              <b>0</b><span>直し待ち</span><small>あなたが「修正したい」</small>
+            </button>
+            <button type="button" class="is-todo" data-st="todo" aria-pressed="false">
+              <b>{drafts.length}</b><span>まだ読んでいない</span><small>直したものの読み直しも</small>
+            </button>
+            <button type="button" class="is-ok" data-st="ok" aria-pressed="false">
+              <b>0</b><span>問題なし</span><small>あなたが「問題なし」</small>
+            </button>
+          </div>
+          <p class="dr-st-note">この端末で残した声で数えます。チーム全体の数は CLUBS の BOARD で見られます。<button type="button" class="dr-all" id="dr-all" hidden>すべて表示に戻す</button></p>
+          <div class="dr-sgs" id="dr-sgs" hidden>
+            <section class="dr-sg is-fix" data-sg="fix"><h2>直し待ち<span></span></h2><ul class="dr-list"></ul></section>
+            <section class="dr-sg is-todo" data-sg="todo"><h2>まだ読んでいない<span></span></h2><ul class="dr-list"></ul></section>
+            <details class="dr-sg is-ok" data-sg="ok"><summary>問題なし<span></span></summary><ul class="dr-list"></ul></details>
+          </div>
+        </>
+      )}
+      <ul class="dr-list dr-src" data-url={BRIEF_REVIEW_URL} data-case={BRIEF_REVIEW_CASE}>
         {
           drafts.map((b) => (
             <li data-brief={b.id} data-title={b.data.title} data-fixed={fixedOf(b) ? "1" : undefined}>
@@ -96,7 +122,7 @@ const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
      自分の分だけ。自分の声があれば「開いた」はその言葉に変わる。一覧からも「問題なし」を残せる
      （CLUBS の受け口へ飛んで保存し、この一覧に戻る・ブログの回覧と同じ）。 */
   (() => {
-    var list = document.querySelector(".dr-list");
+    var list = document.querySelector(".dr-src");
     if (!list) return;
     var back = location.origin + location.pathname;
     /* 受け口から戻ってきた（?reviewed=ok&b=…）。覚えて、住所から外す。 */
@@ -135,7 +161,46 @@ const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
         ok.href = list.dataset.url + "?" + q.toString();
         ok.hidden = false;
       }
+      /* 状態（直したあとの「修正したい」は読み直す＝まだ読んでいない）。 */
+      li.dataset.st = v === "ok" ? "ok" : v === "fix" && !li.dataset.fixed ? "fix" : "todo";
     });
+    /* 状態の順に並べ、札に数を出す。押すとその状態だけ。 */
+    var box = document.getElementById("dr-sgs");
+    var chips = [].slice.call(document.querySelectorAll("#dr-st [data-st]"));
+    var sgs = [].slice.call(document.querySelectorAll("[data-sg]"));
+    var all = document.getElementById("dr-all");
+    if (!box) return;
+    var n = { fix: 0, todo: 0, ok: 0 };
+    [].slice.call(list.children).forEach(function (li) {
+      n[li.dataset.st] += 1;
+      box.querySelector('[data-sg="' + li.dataset.st + '"] ul').appendChild(li);
+    });
+    chips.forEach(function (c) {
+      c.querySelector("b").textContent = String(n[c.dataset.st]);
+      c.disabled = !n[c.dataset.st];
+    });
+    sgs.forEach(function (g) {
+      g.querySelector("h2 > span, summary > span").textContent = n[g.dataset.sg] + " 本";
+    });
+    list.hidden = true;
+    box.hidden = false;
+    var filter = null;
+    var apply = function () {
+      chips.forEach(function (c) { c.setAttribute("aria-pressed", String(c.dataset.st === filter)); });
+      sgs.forEach(function (g) {
+        g.hidden = !n[g.dataset.sg] || (!!filter && g.dataset.sg !== filter);
+        if (filter === "ok" && g.tagName === "DETAILS") g.open = true;
+      });
+      all.hidden = !filter;
+    };
+    chips.forEach(function (c) {
+      c.addEventListener("click", function () {
+        filter = filter === c.dataset.st ? null : c.dataset.st;
+        apply();
+      });
+    });
+    all.addEventListener("click", function () { filter = null; apply(); });
+    apply();
   })();
 </script>
 
@@ -261,6 +326,150 @@ const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
   }
   .dr-ok:hover {
     background: #eef5f9;
+  }
+  /* 状態の3つの札（CLUBS LP の止める／通すの色）。 */
+  .dr-st {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 18px 0 6px;
+  }
+  .dr-st button {
+    display: grid;
+    gap: 2px;
+    text-align: left;
+    padding: 12px 14px;
+    border: 1.5px solid var(--st-line);
+    border-radius: 12px;
+    background: var(--st-bg);
+    color: var(--st);
+    font: inherit;
+    cursor: pointer;
+  }
+  .dr-st button:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+  .dr-st button:focus-visible {
+    outline: 2px solid var(--tx);
+    outline-offset: 2px;
+  }
+  .dr-st button[aria-pressed="true"] {
+    border-color: var(--st);
+    box-shadow: inset 0 0 0 1.5px var(--st);
+  }
+  .dr-st b {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .dr-st span {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .dr-st small {
+    font-size: 11px;
+    opacity: 0.85;
+  }
+  .dr-st .is-fix,
+  .dr-sg.is-fix {
+    --st: #c8337a;
+    --st-bg: #fff0f5;
+    --st-line: #ffcade;
+  }
+  .dr-st .is-todo,
+  .dr-sg.is-todo {
+    --st: #12140e;
+    --st-bg: #ffffff;
+    --st-line: #d6d9d1;
+  }
+  .dr-st .is-ok,
+  .dr-sg.is-ok {
+    --st: #17663a;
+    --st-bg: #e6f4ec;
+    --st-line: #b5dbc4;
+  }
+  .dr-st-note {
+    margin: 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .dr-all {
+    margin-left: 10px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--muted);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .dr-all[hidden],
+  .dr-sgs[hidden],
+  .dr-sg[hidden],
+  .dr-list[hidden] {
+    display: none;
+  }
+  .dr-sg {
+    margin-top: 24px;
+  }
+  .dr-sg h2,
+  .dr-sg summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 17px;
+    font-weight: 800;
+  }
+  .dr-sg h2::before,
+  .dr-sg summary::after {
+    content: "";
+    order: -1;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--st);
+  }
+  .dr-sg h2 span,
+  .dr-sg summary span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .dr-sg summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .dr-sg summary::-webkit-details-marker {
+    display: none;
+  }
+  .dr-sg summary::before {
+    content: "▸";
+    order: -2;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .dr-sg[open] summary::before {
+    content: "▾";
+  }
+  .dr-sg .dr-list {
+    margin-top: 8px;
+  }
+  @media (max-width: 560px) {
+    .dr-st {
+      gap: 6px;
+    }
+    .dr-st button {
+      padding: 10px;
+    }
+    .dr-st b {
+      font-size: 24px;
+    }
+    .dr-st small {
+      display: none;
+    }
   }
   .dr-en {
     flex: none;
