@@ -88,6 +88,11 @@ H1 の長い一文は、検索結果では頭の 30 字ほどしか見えない�
 「下書き」のラベルが付く。
 
 1. 下書きで PR を出し、ビルドとプレビューで見た目を確認してマージする。
+   一次ソースとの事実確認を終えた AI は、同じ PR で記録を書く（2026-11-11）：
+   `node packages/web/scripts/brief-factcheck.mjs <id> --by "Claude Opus 5.5"`（英語版は `--en`）。
+   frontmatter に `fact_check: { by, at, rev }` が入り、回覧の一覧と記事の下に
+   「AI の事実確認 ✓ Claude Opus 5.5・11/11」が出る。あとで本文を直すと「確認のあと変更あり」に
+   変わるので、直したら確認し直して流し直す。by はモデル名まで（「Claude」だけは通らない）。
 2. main に入ると prerelease ブランチが main と同じになる（`.github/workflows/sync-prerelease.yml`）。
    回覧はリンク 1 本：<https://prerelease.web-zgj.pages.dev/ja/critical/drafts/>
 3. 承認は下書きごとの「問題なし」（記事の下と一覧のボタン・CLUBS のいつもの仕事「Critical Brief

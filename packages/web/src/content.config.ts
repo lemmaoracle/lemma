@@ -108,6 +108,14 @@ const briefSchema = z
       .array(z.object({ date: z.date(), note: z.string().min(1).max(80) }))
       .default([]),
     /**
+     * AI の事実確認（2026-11-11・lib/factCheck.ts）。scripts/brief-factcheck.mjs が書く。
+     * by は確認した AI のモデル名まで（数字の無い名前は通さない）。rev はそのときの題名と本文の指紋で、
+     * 直すと回覧の札が「確認のあと変更あり」になる。
+     */
+    fact_check: z
+      .object({ by: z.string().regex(/\d/), at: z.coerce.date(), rev: z.string().min(1) })
+      .optional(),
+    /**
      * Optional headline used as the og:title / twitter:title / <title> lead.
      * Format: `{short descriptive headline} — {codename or case name}`
      * (≈30–45 chars; full og:title stays under ~65 chars for card-safe
