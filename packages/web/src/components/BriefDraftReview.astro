@@ -10,6 +10,7 @@
  * 下書きの記事にだけ出る（呼ぶ側が絞る）。
  */
 import { BRIEF_REVIEW_URL, BRIEF_REVIEW_CASE } from "../config/briefReview";
+import { factCheckLabel, factRefLabel, type FactCheck } from "../lib/factCheck";
 
 export interface BriefDraftReviewProps {
   locale: "ja" | "en";
@@ -17,8 +18,13 @@ export interface BriefDraftReviewProps {
   title: string;
   /** 「修正したい」を受けて直した記録（frontmatter の draft_fixed）。最後の 1 件を「修正済み」で出す。 */
   fixed?: { date: Date; note: string }[];
+  /** AI の事実確認（frontmatter の fact_check・lib/factCheck.ts）と、指紋を照らす題名・本文。 */
+  factCheck?: FactCheck;
+  rawTitle?: string;
+  body?: string;
 }
-const { locale, briefId, title, fixed = [] } = Astro.props as BriefDraftReviewProps;
+const { locale, briefId, title, fixed = [], factCheck, rawTitle = "", body = "" } = Astro.props as BriefDraftReviewProps;
+const fc = factCheckLabel(factCheck, rawTitle, body, locale);
 const isJa = locale === "ja";
 const last = fixed.length > 0 ? fixed[fixed.length - 1] : undefined;
 const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
@@ -71,6 +77,12 @@ const T = isJa
   data-case={BRIEF_REVIEW_CASE}
   aria-labelledby="bdr-h"
 >
+  <p class={`bdr-fc is-${fc.state}`}>
+    {fc.text}
+    {factCheck?.ref && (
+      <a class="bdr-fcref" href={factCheck.ref} target="_blank" rel="noopener">{factRefLabel(factCheck.ref, locale)}</a>
+    )}
+  </p>
   <h2 id="bdr-h">{T.head}</h2>
   <p class="bdr-sub">{T.sub}</p>
   {last && (
@@ -189,6 +201,25 @@ const T = isJa
     margin: 0;
     font-size: 15px;
     font-weight: 800;
+  }
+  .bdr-fc {
+    margin: 0 0 6px;
+    font-size: 12.5px;
+    color: #5c6156;
+  }
+  .bdr-fcref {
+    margin-left: 8px;
+    font-weight: 400;
+    color: #12140e;
+    text-decoration: underline;
+  }
+  .bdr-fc.is-ok {
+    color: #2e7d4f;
+    font-weight: 700;
+  }
+  .bdr-fc.is-stale {
+    color: #b8336a;
+    font-weight: 700;
   }
   .bdr-sub {
     margin: 4px 0 12px;

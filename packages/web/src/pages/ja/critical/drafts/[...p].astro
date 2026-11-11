@@ -20,6 +20,7 @@ import { getTranslations } from "../../../../i18n/translations";
 import { isDraftBrief, showDrafts } from "../../../../lib/briefDrafts";
 import type { BriefEntry } from "../../../../data/criticalBriefs";
 import { BRIEF_REVIEW_URL, BRIEF_REVIEW_CASE } from "../../../../config/briefReview";
+import { factCheckLabel, factRefLabel } from "../../../../lib/factCheck";
 
 export function getStaticPaths() {
   return showDrafts ? [{ params: { p: undefined } }] : [];
@@ -43,6 +44,8 @@ const fixedOf = (b: BriefEntry) => {
   return list.length > 0 ? list[list.length - 1] : undefined;
 };
 const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
+/* AI の事実確認の札（2026-11-11・lib/factCheck.ts）。 */
+const fcOf = (b: BriefEntry) => factCheckLabel(b.data.fact_check, b.data.title, b.body, "ja");
 ---
 
 <Layout
@@ -94,7 +97,7 @@ const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
           drafts.map((b) => (
             <li data-brief={b.id} data-title={b.data.title} data-fixed={fixedOf(b) ? "1" : undefined}>
               <a href={`${base}/critical/briefs/${b.id}/`}>
-                <small>No. {pad(b.data.brief_no)} · 公開予定 {day(b.data.published)}</small>
+                <small>No. {pad(b.data.brief_no)} · 公開予定 {day(b.data.published)}<span class={`dr-fc is-${fcOf(b).state}`}>{fcOf(b).text}</span></small>
                 <b>{head(b.data.title)}</b>
                 {fixedOf(b) && (
                   <span class="dr-fixed">
@@ -102,6 +105,9 @@ const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
                   </span>
                 )}
               </a>
+              {b.data.fact_check?.ref && (
+                <a class="dr-fcref" href={b.data.fact_check.ref} target="_blank" rel="noopener">{factRefLabel(b.data.fact_check.ref).replace("修正の記録：", "")}</a>
+              )}
               <span class="dr-mine" data-dr-mine hidden></span>
               <em class="dr-read" data-dr-read hidden>開いた</em>
               <a class="dr-ok" data-dr-ok href="#" hidden>問題なし</a>
@@ -270,6 +276,26 @@ const md = (d: Date) => d.toISOString().slice(5, 10).replace("-", "/");
     display: block;
     margin-top: 4px;
     font-size: 12.5px;
+  }
+  .dr-fcref {
+    flex: none;
+    font-size: 12px;
+    color: #12140e;
+    text-decoration: underline;
+    white-space: nowrap;
+  }
+  .dr-fc {
+    margin-left: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .dr-fc.is-ok {
+    color: #2e7d4f;
+    font-weight: 700;
+  }
+  .dr-fc.is-stale {
+    color: #b8336a;
+    font-weight: 700;
   }
   .dr-fixed {
     font-size: 12.5px;
