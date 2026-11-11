@@ -113,7 +113,16 @@ const briefSchema = z
      * 直すと回覧の札が「確認のあと変更あり」になる。
      */
     fact_check: z
-      .object({ by: z.string().regex(/\d/), at: z.coerce.date(), rev: z.string().min(1) })
+      .object({
+        by: z.string().regex(/\d/),
+        at: z.coerce.date(),
+        rev: z.string().min(1),
+        /** 直した中身を書いた PR（とその中のコメント）。直しは1行に収まらないのでリンクだけ。 */
+        ref: z
+          .string()
+          .regex(/^https:\/\/github\.com\/lemmaoracle\/lemma\/pull\/\d+(#[\w-]+)?$/)
+          .optional(),
+      })
       .optional(),
     /**
      * Optional headline used as the og:title / twitter:title / <title> lead.

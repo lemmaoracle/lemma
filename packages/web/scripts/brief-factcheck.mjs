@@ -2,7 +2,10 @@
 /**
  * Brief に「AI の事実確認」を記録する（2026-11-11・src/lib/factCheck.ts）。
  *
- *   node packages/web/scripts/brief-factcheck.mjs <id> --by "Claude Opus 5.5" [--en] [--at 2026-11-11]
+ *   node packages/web/scripts/brief-factcheck.mjs <id> --by "Claude Opus 5.5" [--pr 1160] [--en] [--at 2026-11-11]
+ *
+ * --pr は、確認して直した中身を書いた PR（番号か、PR・その中のコメントの URL）。直しは1行に
+ * 収まらないので、中身は PR に書き、記録にはそこへのリンクだけ残す。
  *
  * <id> は Brief のファイル名（拡張子なし・例 200-logix-aero-…）。--en で英語版（critical-briefs-en）。
  * 頭に fact_check: { by, at, rev } を書く（あれば置き換える）。by はモデル名まで。
@@ -28,15 +31,26 @@ const factRevOf = (title, body) => {
 };
 
 const args = process.argv.slice(2);
-const id = args.find((a, i) => !a.startsWith("--") && !["--by", "--at"].includes(args[i - 1]));
+const id = args.find((a, i) => !a.startsWith("--") && !["--by", "--at", "--pr"].includes(args[i - 1]));
 const opt = (k) => {
   const i = args.indexOf(`--${k}`);
   return i >= 0 ? args[i + 1] : undefined;
 };
 const by = (opt("by") ?? "").trim();
+const REPO = "https://github.com/lemmaoracle/lemma/pull/";
+const prArg = (opt("pr") ?? "").trim();
+const ref = /^\d+$/.test(prArg)
+  ? REPO + prArg
+  : /^https:\/\/github\.com\/lemmaoracle\/lemma\/pull\/\d+(#[\w-]+)?$/.test(prArg)
+    ? prArg
+    : "";
+if (prArg && !ref) {
+  console.error("--pr は PR の番号か、lemmaoracle/lemma の PR・コメントの URL にしてください");
+  process.exit(1);
+}
 const at = opt("at") ?? new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
 if (!id || !/^[0-9a-z-]+$/.test(id) || !by || !/^\d{4}-\d{2}-\d{2}$/.test(at)) {
-  console.error('使い方: node packages/web/scripts/brief-factcheck.mjs <id> --by "Claude Opus 5.5" [--en] [--at YYYY-MM-DD]');
+  console.error('使い方: node packages/web/scripts/brief-factcheck.mjs <id> --by "Claude Opus 5.5" [--pr 番号|URL] [--en] [--at YYYY-MM-DD]');
   process.exit(1);
 }
 if (!/\d/.test(by)) {
@@ -53,7 +67,7 @@ if (!m) {
 }
 const title = String(matter(raw).data.title ?? "");
 const rev = factRevOf(title, m[2]);
-const block = `fact_check:\n  by: ${JSON.stringify(by)}\n  at: ${at}\n  rev: ${JSON.stringify(rev)}`;
+const block = `fact_check:\n  by: ${JSON.stringify(by)}\n  at: ${at}\n  rev: ${JSON.stringify(rev)}${ref ? `\n  ref: ${JSON.stringify(ref)}` : ""}`;
 const lines = m[1].split("\n");
 const out = [];
 for (let i = 0; i < lines.length; i++) {

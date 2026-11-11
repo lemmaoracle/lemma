@@ -20,7 +20,7 @@ import { getTranslations } from "../../../../i18n/translations";
 import { isDraftBrief, showDrafts } from "../../../../lib/briefDrafts";
 import type { BriefEntry } from "../../../../data/criticalBriefs";
 import { BRIEF_REVIEW_URL, BRIEF_REVIEW_CASE } from "../../../../config/briefReview";
-import { factCheckLabel } from "../../../../lib/factCheck";
+import { factCheckLabel, factRefLabel } from "../../../../lib/factCheck";
 
 export function getStaticPaths() {
   return showDrafts ? [{ params: { p: undefined } }] : [];
@@ -105,6 +105,9 @@ const fcOf = (b: BriefEntry) => factCheckLabel(b.data.fact_check, b.data.title, 
                   </span>
                 )}
               </a>
+              {b.data.fact_check?.ref && (
+                <a class="dr-fcref" href={b.data.fact_check.ref} target="_blank" rel="noopener">{factRefLabel(b.data.fact_check.ref).replace("修正の記録：", "")}</a>
+              )}
               <span class="dr-mine" data-dr-mine hidden></span>
               <em class="dr-read" data-dr-read hidden>開いた</em>
               <a class="dr-ok" data-dr-ok href="#" hidden>問題なし</a>
@@ -273,6 +276,13 @@ const fcOf = (b: BriefEntry) => factCheckLabel(b.data.fact_check, b.data.title, 
     display: block;
     margin-top: 4px;
     font-size: 12.5px;
+  }
+  .dr-fcref {
+    flex: none;
+    font-size: 12px;
+    color: #12140e;
+    text-decoration: underline;
+    white-space: nowrap;
   }
   .dr-fc {
     margin-left: 10px;

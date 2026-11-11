@@ -24,7 +24,17 @@ export interface FactCheck {
   by: string;
   at: Date;
   rev: string;
+  ref?: string;
 }
+
+/** 「修正の記録：PR #1160」（コメントを指すなら「のコメント」）。 */
+export const factRefLabel = (ref: string | undefined, locale: "ja" | "en" = "ja"): string => {
+  const m = ref?.match(/\/pull\/(\d+)(#[\w-]+)?$/);
+  if (!m) return "";
+  return locale === "ja"
+    ? `修正の記録：PR #${m[1]}${m[2] ? " のコメント" : ""}`
+    : `Fixes: PR #${m[1]}${m[2] ? " (comment)" : ""}`;
+};
 
 export type FactCheckState = "ok" | "stale" | "none";
 
