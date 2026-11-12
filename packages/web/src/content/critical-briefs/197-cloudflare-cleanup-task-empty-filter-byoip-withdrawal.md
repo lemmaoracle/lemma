@@ -10,6 +10,11 @@ published: 2026-11-10
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["007-pocketos-cursor-db-deletion", "080-replit-agent-code-freeze-data-loss"]
+fact_check:
+  by: "muse-spark-1.3×7 + GLM-5.3"
+  at: 2026-11-12
+  rev: "4eeafb719ebc9cf0"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
 status: draft
 version: "1.0"
 og_lead_ja: "Cloudflare で、BYOIP の掃除用の定期処理が空の条件を「すべて」と解釈し、顧客の約 1,100 の IP プレフィックスの経路を取り下げた"

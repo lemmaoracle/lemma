@@ -10,6 +10,11 @@ published: 2026-11-10
 authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["078-tenncare-connect-medicaid-eligibility", "124-wiser-medicare-ai-prior-authorization"]
+fact_check:
+  by: "muse-spark-1.3×7 + GLM-5.3"
+  at: 2026-11-12
+  rev: "807944ff0308a229"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
 status: draft
 version: "1.0"
 og_lead_ja: "英国 HMRC が渡航データとの突き合わせで児童手当 23,794 件の支給を止め、59% は受給資格ありか雇用の確認で外れたと会計検査院が報告"
