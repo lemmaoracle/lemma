@@ -10,6 +10,11 @@ published: 2026-11-12
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["164-capcom-id-password-change-ecommerce-mypage", "168-goodsmile-payment-page-tampering", "190-iwai-cosmo-tradeworks-admin-function-unintended-orders"]
+fact_check:
+  by: "muse-spark-1.3×7 + GLM-5.3"
+  at: 2026-11-12
+  rev: "9a54e52cb563ddbb"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
 status: draft
 version: "1.0"
 og_lead_ja: "Mizkan のコミュニティサイト「ミツカン 365」で、会員 487 名のニックネームとアイコンが書き換えられ、29 名の顧客 ID とメールアドレスが漏えいした"

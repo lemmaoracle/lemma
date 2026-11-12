@@ -10,6 +10,11 @@ published: 2026-11-12
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["201-bank-sinopac-vendor-setting-unauthorized-transfers", "081-bybit-safe-wallet-ui-injection", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
+fact_check:
+  by: "muse-spark-1.3×7 + GLM-5.3"
+  at: 2026-11-12
+  rev: "350796376ca53c22"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
 status: draft
 version: "1.0"
 og_lead_ja: "フランスの Crédit Mutuel Arkéa で、委託先のプラットフォームを経て入った攻撃者が、銀行の自己勘定から他行へ送金した。同行は報道の 1 億 1,800 万ユーロについて、額は確認せず桁だけを認めた"

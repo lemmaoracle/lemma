@@ -10,6 +10,11 @@ published: 2026-11-12
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["135-zombie-cards-visa-contactless-expiry", "069-connectwise-cloud-backup-app-identity-credential-abuse", "162-hatena-police-impersonation-remote-transfer"]
+fact_check:
+  by: "muse-spark-1.3×7 + GLM-5.3"
+  at: 2026-11-12
+  rev: "80691fbb065d7348"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
 status: draft
 version: "1.0"
 og_lead_ja: "台湾の永豊銀行で、新しいネットバンキングの取引システムの提供元の安全の設定が外部のハッカーに利用され、418 人の口座から 427 件・約 4,176 万台湾ドルが不正に送金された"

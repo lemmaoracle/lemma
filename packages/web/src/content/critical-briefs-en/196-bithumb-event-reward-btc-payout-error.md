@@ -10,6 +10,11 @@ published: 2026-11-10
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["085-secret-network-axelar-bridge-infinite-mint", "190-iwai-cosmo-tradeworks-admin-function-unintended-orders"]
+fact_check:
+  by: "muse-spark-1.3×7 + GLM-5.3"
+  at: 2026-11-12
+  rev: "6c7e4ea827057fb0"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
 status: draft
 version: "1.0"
 og_lead_ja: "韓国の暗号資産取引所 Bithumb、イベントの報酬 2,000 ウォンを 2,000 BTC として付与し、計 62 万 BTC が利用者の口座に記帳された"

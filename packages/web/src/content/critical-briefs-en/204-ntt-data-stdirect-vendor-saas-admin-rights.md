@@ -10,6 +10,11 @@ published: 2026-11-12
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["154-yumirlink-cuenote-support-credential-db-export", "193-amadeus-system-account-airline-booking-data", "167-zeabur-second-breach-admin-token"]
+fact_check:
+  by: "muse-spark-1.3×7 + GLM-5.3"
+  at: 2026-11-12
+  rev: "83ffeecef050b688"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
 status: draft
 version: "1.0"
 og_lead_ja: "NTT データの STdirectServices で、委託先 Securitize Japan の SaaS の管理者権限が不正に取得され、社債の購入者 111 名・2,678 名の情報が持ち出された"

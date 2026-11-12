@@ -10,6 +10,11 @@ published: 2026-11-10
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["157-met-police-auror-unapproved-platform", "172-illuminate-education-ftc-former-customer-data"]
+fact_check:
+  by: "muse-spark-1.3×7 + GLM-5.3"
+  at: 2026-11-12
+  rev: "2ded5e62312740e5"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
 status: draft
 version: "1.0"
 og_lead_ja: "オンタリオ州の病院で、退職した医師の AI 文字起こしツールが招待の残った会議に自動で参加し、患者 7 人の診断や治療の情報を記録した"

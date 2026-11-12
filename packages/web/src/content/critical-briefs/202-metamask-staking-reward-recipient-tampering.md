@@ -10,6 +10,11 @@ published: 2026-11-12
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["032-booking-payout-account-tampering", "175-storm-2657-university-payroll-diversion", "196-bithumb-event-reward-btc-payout-error"]
+fact_check:
+  by: "muse-spark-1.3×7 + GLM-5.3"
+  at: 2026-11-12
+  rev: "1dadd551cdfea6a0"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
 status: draft
 version: "1.0"
 og_lead_ja: "MetaMask Staking で、報酬の受取先を保管するインフラに不正アクセスがあり、一部のバリデーターの受取先が書き換えられて約 0.385 ETH の報酬が流れた"

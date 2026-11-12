@@ -10,6 +10,11 @@ published: 2026-11-12
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["063-smart-tv-residential-proxy-ai-scraping", "082-xz-utils-backdoor-identity-provenance", "201-bank-sinopac-vendor-setting-unauthorized-transfers"]
+fact_check:
+  by: "muse-spark-1.3×7 + GLM-5.3"
+  at: 2026-11-12
+  rev: "a165fe90aa4366ae"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
 status: draft
 version: "1.0"
 og_lead_ja: "XCPE ボットネット：Android TV のセットトップボックス 130 万台超に事前導入されたバックドアを、Google が警察庁と連携してテイクダウンした"
