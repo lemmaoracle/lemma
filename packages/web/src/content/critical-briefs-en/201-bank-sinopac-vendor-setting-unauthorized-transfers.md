@@ -162,6 +162,8 @@ Three things to confirm about switching transaction systems and executing transf
 - **Market Observation Post System, SinoPac Holdings (Primary, material announcement)**: 「永豐金控代子公司永豐銀行說明媒體報導」 (2026-11-03, Chinese) — [mopsov.twse.com.tw/mops/web/t05st01](https://mopsov.twse.com.tw/mops/web/t05st01) (query company code 2890, ROC year 115, month 11)
 - **Bank SinoPac (Primary, company guidance)**: 「使用非約定轉帳服務，有金額限制嗎?」 (Chinese) — <https://bank.sinopac.com/searchmb/FAQ/content.aspx?sid=MMA&catID=%E8%A1%8C%E5%8B%95%E9%8A%80%E8%A1%8C&subCatID=%E6%9C%8D%E5%8B%99%E5%8A%9F%E8%83%BD&no=296>
 - **CNA (Reporting)**: 「永豐銀新網銀APP釀資安危機 還原遭駭時間軸、向系統商求償」 (2026-11-04, Chinese) — <https://cna.com.tw/news/afe/202611040331.aspx>
+- **CNA (Reporting)**: 「永豐銀行多帳戶遭盜轉帳10萬元已68人報案」 (2026-11-03, Chinese) — <https://www.cna.com.tw/news/asoc/202611030213.aspx>
+- **CNA (Reporting)**: 「永豐銀行帳戶爆異常轉帳北檢分案偵辦」 (2026-11-04, Chinese) — <https://www.cna.com.tw/news/asoc/202611040200.aspx>
 - **Focus Taiwan (Reporting)**: "SinoPac still probing unauthorized transfer of NT$40 million: FSC" (2026-11-03) — <https://focustaiwan.tw/society/202611030027>
 - **Focus Taiwan (Reporting)**: "No evidence of customer data leak in unauthorized transactions: SinoPac" (2026-11-04) — <https://focustaiwan.tw/society/202611040022>
 - **Liberty Times (Reporting)**: 「永豐銀行異常轉帳出包 金管會：419人受影響、總金額約4千多萬」 (2026-11-03, Chinese) — <https://ec.ltn.com.tw/article/breakingnews/5628238>

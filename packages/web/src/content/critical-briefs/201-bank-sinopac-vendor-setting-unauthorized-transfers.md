@@ -162,6 +162,8 @@ countries: ["tw"]
 - **公開資訊觀測站・永豊金控（一次・重大訊息）**: 「永豐金控代子公司永豐銀行說明媒體報導」（2026-11-03） — [mopsov.twse.com.tw/mops/web/t05st01](https://mopsov.twse.com.tw/mops/web/t05st01)（公司代號 2890・115 年 11 月で照会）
 - **永豊銀行（一次・当事者の案内）**: 「使用非約定轉帳服務，有金額限制嗎?」 — <https://bank.sinopac.com/searchmb/FAQ/content.aspx?sid=MMA&catID=%E8%A1%8C%E5%8B%95%E9%8A%80%E8%A1%8C&subCatID=%E6%9C%8D%E5%8B%99%E5%8A%9F%E8%83%BD&no=296>
 - **中央社（報道）**: 「永豐銀新網銀APP釀資安危機 還原遭駭時間軸、向系統商求償」（2026-11-04） — <https://cna.com.tw/news/afe/202611040331.aspx>
+- **中央社（報道）**: 「永豐銀行多帳戶遭盜轉帳10萬元已68人報案」（2026-11-03） — <https://www.cna.com.tw/news/asoc/202611030213.aspx>
+- **中央社（報道）**: 「永豐銀行帳戶爆異常轉帳北檢分案偵辦」（2026-11-04） — <https://www.cna.com.tw/news/asoc/202611040200.aspx>
 - **Focus Taiwan（報道）**: "SinoPac still probing unauthorized transfer of NT$40 million: FSC"（2026-11-03） — <https://focustaiwan.tw/society/202611030027>
 - **Focus Taiwan（報道）**: "No evidence of customer data leak in unauthorized transactions: SinoPac"（2026-11-04） — <https://focustaiwan.tw/society/202611040022>
 - **自由時報（報道）**: 「永豐銀行異常轉帳出包 金管會：419人受影響、總金額約4千多萬」（2026-11-03） — <https://ec.ltn.com.tw/article/breakingnews/5628238>
