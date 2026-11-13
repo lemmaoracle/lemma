@@ -10,6 +10,11 @@ published: 2026-11-13
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["184-singapore-commodity-trader-lookalike-supplier-email", "200-logix-aero-lookalike-domain-engine-sale-invoice", "174-mobile-alabama-arena-contractor-bank-change"]
+fact_check:
+  by: "Claude Opus 5.5"
+  at: 2026-11-13
+  rev: "e52b5fb5a05fb96c"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1164"
 status: draft
 version: "1.0"
 og_lead_ja: "シンガポールの石油化学会社、書類の食い違いに気づいたが偽の授権書を示され、カンボジアの口座へ 1,280 万ドルを送金"

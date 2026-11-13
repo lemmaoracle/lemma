@@ -10,6 +10,11 @@ published: 2026-11-05
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["158-portland-water-bureau-vendor-bank-change", "160-baltimore-workday-supplier-contact-bank-change", "163-liberty-lookalike-domain-vendor-payment", "200-logix-aero-lookalike-domain-engine-sale-invoice"]
+fact_check:
+  by: "Claude Opus 5.5"
+  at: 2026-11-13
+  rev: "32551ff2c7d489db"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1164"
 status: published
 version: "1.1"
 og_lead_ja: "米アラバマ州モービル市、アリーナの施工会社を装う相手に 1,470 万ドルが送られる"

@@ -10,6 +10,11 @@ published: 2026-11-13
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["204-ntt-data-stdirect-vendor-saas-admin-rights", "154-yumirlink-cuenote-support-credential-db-export"]
+fact_check:
+  by: "Claude Opus 5.5"
+  at: 2026-11-13
+  rev: "b000be7b631ee4d5"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1164"
 status: draft
 version: "1.0"
 og_lead_ja: "電通デジタルの TONARIWA で、漏えいした認証情報で管理アカウントに入られて権限が広げられ、導入企業 2 社の個人情報の漏えいが確認された"
