@@ -1,0 +1,10 @@
+---
+import CyberTemplate from "../templates/CyberTemplate.astro";
+import { getTranslations } from "../i18n/translations";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+---
+
+<CyberTemplate locale={locale} t={t} base={base} />
