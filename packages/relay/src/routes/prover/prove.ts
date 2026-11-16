@@ -39,6 +39,8 @@ type RequestBody = Readonly<{
 
 /** Type guard: validate that the request body conforms to RequestBody. */
 const isValidRequestBody = (body: unknown): body is RequestBody =>
+  typeof body === "object" &&
+  body !== null &&
   R.allPass([
     (b: Record<string, unknown>) => typeof b["apiBase"] === "string",
     (b: Record<string, unknown>) =>
