@@ -1,1 +1,185 @@
-IyBhY2NvdW50LWNoYW5nZQoKWksgY2lyY3VpdCBmb3IgTGVtbWEgKipQcm9vZkdhdGUqKjogYSBjcnlwdG9ncmFwaGljIHByb29mIGZvciBhCmJhbmstYWNjb3VudCBjaGFuZ2UgcmVxdWVzdCAoR0VOSUFDIGRlc2lnbiAqKnYxLjEqKikuCgpDaXJjdWl0IElEOiBgYWNjb3VudC1jaGFuZ2UtdjFgIMK3IENpcmNvbSArIEdyb3RoMTYgLyBCTjI1NAoKIyMgU3RhdGVtZW50Cgo+IEEgcmVwcmVzZW50YXRpdmUgd2hvIChhKSBpcyByZWdpc3RlcmVkIGluIHRoZSB2ZXJpZmllcidzIHZlbmRvcgo+IHJlZ2lzdHJ5ICpiZWZvcmUqIHRoZSBjaGFuZ2UgcmVxdWVzdCB3YXMgcmVjZWl2ZWQsIGFuZCAoYikgaG9sZHMgdGhlCj4gYWNjb3VudC1jaGFuZ2Ugcm9sZSwgYXBwcm92ZXMgKnRoaXMqIG9sZCDihpIgbmV3IGFjY291bnQgY2hhbmdlLAo+IGZvciAqdGhpcyogdmVyaWZpZXIgKGF1ZGllbmNlKSBhbmQgKnRoaXMqIGdhdGUtaXNzdWVkIGNoYWxsZW5nZS4KPiBUaGUgbmV3IGFjY291bnQgaXMgaGVsZCBpbiB0aGUgdmVuZG9yJ3Mgb3duIHJlZ2lzdGVyZWQgbGVnYWwgbmFtZSBhbmQKPiBpcyBib3VuZCB0byBiYW5rLXNpZGUgYWNjb3VudC1jb250cm9sIGV2aWRlbmNlLgoKIyMgQmluZGluZ3MKCnwgIyB8IEJpbmRpbmcgfCBNZWNoYW5pc20gfAp8LS0tfC0tLS0tLS0tLXwtLS0tLS0tLS0tLXwKfCAxIHwgU3ViamVjdCB8IENyZWRlbnRpYWwgbGVhZiBpbmNsdXNpb24gaW4gYHJlZ2lzdHJ5Um9vdGAgKGRlcHRoLTIwIFBvc2VpZG9uIE1lcmtsZSwgYm9vbGVhbi1jb25zdHJhaW5lZCBjaGVja2VyIGZyb20gYGxpc3RpbmctYmluZGluZ2ApICsga25vd2xlZGdlIG9mIHRoZSByZXByZXNlbnRhdGl2ZSBzZWNyZXQgKGBQb3NlaWRvbjEoc2VjcmV0KWAgaW5zaWRlIHRoZSBsZWFmKSB8CnwgMiB8IENvbnRlbnQgfCBgb2xkQWNjb3VudEhhc2hgIC8gYG5ld0FjY291bnRIYXNoYCBhcmUgZ2F0ZS1maXhlZCBwdWJsaWMgaW5wdXRzOyB0aGUgcHJvdmVyIG9wZW5zIGBuZXdBY2NvdW50SGFzaCA9IFBvc2VpZG9uNigxMTAxLCBiYW5rQ29kZSwgYnJhbmNoQ29kZSwgYWNjb3VudFR5cGUsIGFjY291bnROdW1iZXIsIGhvbGRlck5hbWVIYXNoKWAgZnJvbSB0aGUgcmVhbCBhY2NvdW50IGZpZWxkcyB8CnwgMyB8IEhvbGRlciB8IGBob2xkZXJOYW1lSGFzaCA9PT0gbGVnYWxOYW1lSGFzaGAgKHRoZSBsZWdhbCBuYW1lIGluc2lkZSB0aGUgcmVnaXN0ZXJlZCBjcmVkZW50aWFsKS4gQSBsZWFrZWQgcmVwcmVzZW50YXRpdmUga2V5IGNhbm5vdCBkaXZlcnQgZnVuZHMgdG8gYSB0aGlyZC1wYXJ0eS1uYW1lZCBhY2NvdW50IHwKfCA0IHwgQ29udGV4dCB8IGBjb250ZXh0SGFzaGAgaXMgZGVyaXZlZCAqKmluLWNpcmN1aXQqKiBmcm9tIGl0cyBwdWJsaWMgY29tcG9uZW50cyAoYXVkaWVuY2UsIHJlcXVlc3QgZGlnZXN0LCBjaGFsbGVuZ2Ugd2luZG93LCByZWdpc3RyeSByb290LCBwb2xpY3kgaGFzaCkgYW5kIGlzIGFuIG91dHB1dCwgbmV2ZXIgYSBwcm92ZXItc3VwcGxpZWQgaW5wdXQuIGBudWxsaWZpZXIgPSBQb3NlaWRvbjIoY3JlZGVudGlhbENvbW1pdG1lbnQsIGNoYWxsZW5nZUlkKWAgaXMgdGhlIGdhdGUncyBhdWRpdC1saW5rYWdlIGtleSBmb3IgYSAoY3JlZGVudGlhbCwgY2hhbGxlbmdlKSBwYWlyIOKAlCBHcm90aDE2IHByb29mcyBhcmUgcmUtcmFuZG9taXphYmxlLCBzbyBwcm9vZiBieXRlcyBjYW5ub3Qgc2VydmUgdGhhdCByb2xlLiBJdCBkb2VzICoqbm90KiogZGV0ZWN0IGEgcmVzdWJtaXNzaW9uIHVuZGVyIGEgKm5ldyogY2hhbGxlbmdlIGZvciB0aGUgc2FtZSByZXF1ZXN0OyB0aGF0IGlzIHByZXZlbnRlZCBieSBjaGFsbGVuZ2UgY29uc3VtcHRpb24gcGx1cyB0aGUgZ2F0ZSdzIHJlcXVlc3QgcmVjb3JkIChzZWUgR2F0ZSBwb2xpY3kpIHwKfCA1IHwgRXhlY3V0aW9uIHwgR2F0ZSBwb2xpY3kgKGJlbG93KSB8CgpDcmVkZW50aWFsIGxlYWYgKGBsZWFmID09IGNyZWRlbnRpYWxDb21taXRtZW50YCksIGZvbGxvd2luZyB0aGUKYGFnZW50LWlkZW50aXR5YCBzdWItaGFzaCBsYXlvdXQ6CgpgYGAKaWRlbnRpdHlIYXNoICA9IFBvc2VpZG9uMih2ZW5kb3JJZCwgUG9zZWlkb24xKHJlcFNlY3JldCkpCmF1dGhvcml0eUhhc2ggPSBQb3NlaWRvbjIocm9sZUhhc2gsIGxlZ2FsTmFtZUhhc2gpCmxpZmVjeWNsZUhhc2ggPSBQb3NlaWRvbjQoc3RhdHVzLCB2YWxpZEZyb20sIHZhbGlkVW50aWwsIHJlZ2lzdGVyZWRBdCkKY3JlZGVudGlhbENvbW1pdG1lbnQgPSBQb3NlaWRvbjQoaWRlbnRpdHlIYXNoLCBhdXRob3JpdHlIYXNoLCBsaWZlY3ljbGVIYXNoLCBzYWx0KQpgYGAKClRpbWUgYmluZGluZ3MgKGFsbCA2NC1iaXQgcmFuZ2VkKToKCmBgYAp2YWxpZEZyb20gPD0gY2hhbGxlbmdlSXNzdWVkQXQgPCBjaGFsbGVuZ2VFeHBpcmVzQXQgPD0gdmFsaWRVbnRpbApyZWdpc3RlcmVkQXQgPD0gcmVxdWVzdFJlY2VpdmVkQXQgPD0gY2hhbGxlbmdlSXNzdWVkQXQKYGBgCgpFdmVyeSB0aW1lIHZhbHVlIChwcml2YXRlIGFuZCBwdWJsaWMpIGlzIHJhbmdlLWJvdW5kIHdpdGgKYE51bTJCaXRzKDY0KWAgYmVmb3JlIGFueSBjb21wYXJpc29uOiB3aXRob3V0IGl0LCBhIGZpZWxkIGVsZW1lbnQgb2YKdGhlIGZvcm0gYHIta2Agd3JhcHMgdGhyb3VnaCB0aGUgY29tcGFyYXRvcnMnIGludGVybmFsIGRlY29tcG9zaXRpb24KYW5kIHJlYWRzIGFzIGEgdmVyeSBzbWFsbCB0aW1lc3RhbXAuCgpgaXNGaXJzdGAgaXMgbm90IGEgZnJlZSBmbGFnOiBpdCBtdXN0IGVxdWFsIGBJc1plcm8ob2xkQWNjb3VudEhhc2gpYC4KCiMjIE9wZXJhdGlvbmFsIGRlZmluaXRpb25zIChub3JtYXRpdmUgZm9yIGdhdGUvcmVnaXN0cnkgaW1wbGVtZW50ZXJzKQoKLSAqKlJvbGUgaGFzaCoqOiBgcmVxdWlyZWRSb2xlSGFzaCA9IFBvc2VpZG9uMSh0b1NjYWxhcigibGVtbWE6cm9sZTphY2NvdW50LWNoYW5nZSIpKWAsCiAgd2hlcmUgYHRvU2NhbGFyYCBpcyB0aGUgU0RLJ3MgYGNvbW1pdG1lbnRzLnRvU2NhbGFyYCAoZm9yIHN0cmluZ3M6CiAgU0hBLTI1NiBvZiB0aGUgVVRGLTggYnl0ZXMsIG1vZCByKSDigJQgdGhlIHNhbWUgZnVuY3Rpb24gcHJvZHVjdGlvbgogIGNvZGUgYWxyZWFkeSB1c2VzLCBzbyBpc3N1ZXJzIGFuZCBnYXRlcyBkZXJpdmUgdGhlIGlkZW50aWNhbCB2YWx1ZQogIGJ5IGNvbnN0cnVjdGlvbi4gR29sZGVuIHZhbHVlOgogIGAyNjY2ODk1NDA1NDk3ODE0NTgzOTM2ODY2OTA4NzYzMzMxMjk3ODU2MDk2NzI3NDc1MTEwODc3NjQyMTczOTU2MTM4NTMzMDg1MDA0YAogIChwaW5uZWQgYnkgYSB0ZXN0KS4gRG8gbm90IHN1YnN0aXR1dGUgdGhlIHJhdy1ieXRlcyBjb252ZW50aW9uIHVzZWQKICBieSBzb21lIGNpcmN1aXQgdGVzdCBoZWxwZXJzIChVVEYtOCBieXRlcyBhcyBhIGJpZy1lbmRpYW4gaW50ZWdlcik7CiAgaXQgZGVyaXZlcyBhIGRpZmZlcmVudCB2YWx1ZS4gVGhlIHZhbHVlIGlzIGEgKnBvbGljeSogZGVjaXNpb24gYnkKICB0aGUgZ2F0ZSBvcGVyYXRvcjsgY2hhbmdpbmcgaXQgaXMgYSBwb2xpY3kgY2hhbmdlIGFuZCBtdXN0IGJlCiAgcmVmbGVjdGVkIGluIGBwb2xpY3lIYXNoYC4gUmVnaXN0cnkgYW5kIGdhdGUgbXVzdCBiZSBjb25maWd1cmVkCiAgd2l0aCB0aGUgc2FtZSB2YWx1ZSDigJQgdGhlIHRlc3QgZml4dHVyZSB1c2VzIHRoaXMgb3BlcmF0aW9uYWwgdmFsdWUuCi0gKipEb21haW4gdGFncyoqICh2MSBhc3NpZ25tZW50cywgdG8gYmUgcHJvbW90ZWQgdG8gYSBjZW50cmFsCiAgcmVnaXN0cnkpOiBgMTEwMWAgYWNjb3VudCB0dXBsZSwgYDExMDJgL2AxMTAzYCBjb250ZXh0IGJyYW5jaGVzLgogIGBhdHRlc3RhdGlvbkNvbW1pdG1lbnRgIChQb3NlaWRvbjUpIGFuZCBgbnVsbGlmaWVyYCAoUG9zZWlkb24yKSBhcmUKICBjdXJyZW50bHkgdW50YWdnZWQ7IHRoZXkgYXJlIHJlZ2lzdGVyZWQgaGVyZSB0b2dldGhlciB3aXRoIHRoZQogIHRhZ2dlZCB1c2VzIHNvIGEgZnV0dXJlIHJlZ2lzdHJ5IGNhbiBhc3NpZ24gdGFncyBjb25zaXN0ZW50bHkuCi0gKipyZXF1ZXN0RGlnZXN0Kio6IGEgZGlnZXN0IG9mIHRoZSBjaGFuZ2UgcmVxdWVzdCBhcyByZWNlaXZlZCwKICBjb21wdXRlZCBieSB0aGUgZ2F0ZS4gSWYgaXQgaXMgZGVyaXZlZCBmcm9tIGEgU0hBLTI1NiBvZiB0aGUgcmVxdWVzdAogIGJ5dGVzLCB0aGUgMjU2LWJpdCB2YWx1ZSBtdXN0IGJlIGluamVjdGVkIGludG8gdGhlIGZpZWxkIHdpdGggYW4KICBpbmplY3RpdmUgbXVsdGktbGltYiBlbmNvZGluZyDigJQgbmV2ZXIgYnkgYSBwbGFpbiBgbW9kIHJgIHJlZHVjdGlvbiwKICB3aGljaCBkb2VzIG5vdCBwcmVzZXJ2ZSBpZGVudGl0eS4KLSAqKk5vcm1hbGl6YXRpb24qKjogYWNjb3VudCBmaWVsZHMgYXJlIHBhcnNlZCBhcyBmaXhlZC13aWR0aCBkZWNpbWFscwogIG9mZi1jaXJjdWl0IChsZWFkaW5nIHplcm9zIHByZXNlcnZlZCkuIFRoZSBob2xkZXIgbmFtZSBtdXN0IGJlCiAgbm9ybWFsaXplZCAoa2FuYSB3aWR0aCwgbGVnYWwtbmFtZSBmb3JtKSBieSAqb25lKiBzaGFyZWQgbm9ybWFsaXplcgogIHVzZWQgYnkgYm90aCB0aGUgcmVnaXN0cnkgKGZvciBgbGVnYWxOYW1lSGFzaGApIGFuZCB0aGUgcHJvdmVyIChmb3IKICBgaG9sZGVyTmFtZUhhc2hgKTsgdGhhdCBub3JtYWxpemVyIGlzIG5vdCBwYXJ0IG9mIHRoaXMgcGFja2FnZSB5ZXQuCiAgQSBtaXNtYXRjaCBjYXVzZXMgZmFsc2UgcmVqZWN0aW9ucyAoYW4gYXZhaWxhYmlsaXR5IGZhaWx1cmUpLCBub3QgYQogIHNvdW5kbmVzcyBmYWlsdXJlIOKAlCBidXQgaXQgbXVzdCBiZSBzcGVjaWZpZWQgYmVmb3JlIHByb2R1Y3Rpb24gdXNlLgotICoqQXR0ZXN0YXRpb24gc2NvcGUqKjogYGF0dGVzdGF0aW9uQ29tbWl0bWVudGAgZG9lcyBub3QgaW5jbHVkZQogIGByZXF1ZXN0UmVjZWl2ZWRBdGA7IGEgZG93bnN0cmVhbSBjb25zdW1lciB0aGF0IG5lZWRzIHRoZSByZWNlaXB0CiAgdGltZSBtdXN0IHJlYWQgaXQgZnJvbSB0aGUgZ2F0ZSdzIHJlcXVlc3QgcmVjb3JkLCBub3QgZnJvbSB0aGUKICBhdHRlc3RhdGlvbi4KCiMjIEdhdGUgcG9saWN5IChvZmYtY2lyY3VpdCwgcGFydCBvZiB0aGUgZGVzaWduKQoKVGhlIGNpcmN1aXQgYWxvbmUgaXMgbm90IGFjY2VwdGFuY2UuIFRoZSBnYXRlIG11c3Q6CgoxLiBGaXggZXZlcnkgR2F0ZUlucHV0IGl0c2VsZiAocmVnaXN0cnkgcm9vdCBhdCBjaGFsbGVuZ2UgaXNzdWFuY2UsCiAgIGFjY291bnQgaGFzaGVzIGZyb20gdGhlIHN0b3BwZWQgcmVxdWVzdCBhbmQgaXRzIG93biBjdXJyZW50IHJlY29yZHMsCiAgIHJlcXVlc3QgZGlnZXN0LCB0aW1lc3RhbXBzLCBwb2xpY3kgaGFzaCkg4oCUIG5ldmVyIHRha2UgdGhlbSBmcm9tIHRoZQogICBwcm92ZXIuCjIuIERlbGl2ZXIgdGhlIGNoYWxsZW5nZSBvbmx5IHZpYSB0aGUgY29udGFjdCBjaGFubmVsIHJlZ2lzdGVyZWQKICAgKmJlZm9yZSogdGhlIGNoYW5nZSByZXF1ZXN0LiBLbm93aW5nIHRoZSBjaGFsbGVuZ2UgaXMgbm90IGV2aWRlbmNlCiAgIG9mIGlkZW50aXR5OyBrZXkgcG9zc2Vzc2lvbiBpcy4KMy4gVmVyaWZ5IHRoZSBiYW5rIGV2aWRlbmNlIGl0c2VsZiAoYGJhbmtFdmlkZW5jZUhhc2hgIGlzIGEKICAgcHJvdmVyLXN1cHBsaWVkIFByb3ZlbklucHV0OyB0aGUgY2lyY3VpdCBiaW5kcyBpdHMgaGFzaCBpbnRvIHRoZQogICBhdHRlc3RhdGlvbiBidXQgZG9lcyBub3QgcHJvdmUgaXRzIHRydXRoKS4KNC4gSnVkZ2UgZXhwaXJ5IGF0IHRoZSBnYXRlLXJlY29yZGVkIHN1Ym1pc3Npb24gdGltZS4gU2V0CiAgIGBjaGFsbGVuZ2VFeHBpcmVzQXRgIHNvIGl0IGFsc28gZW5jb2RlcyBhbnkgcHJvY2VkdXJhbCB3YWl0aW5nCiAgIHBlcmlvZCAoZS5nLiB0aGUgbW9udGgtZW5kIHBheW1lbnQgcHJvY2VkdXJlJ3MgcnVsZSB0aGF0IGEgY2hhbmdlCiAgIGlzIG9ubHkgcmVmbGVjdGVkIGFmdGVyIGEgd2FpdGluZyBwZXJpb2QgY291bnRlZCBmcm9tIHRoZQogICByZWdpc3RyYXRpb24gZGF0ZSkg4oCUIHRoZSBjaXJjdWl0IGhhcyBubyBzZXBhcmF0ZSBob29rIGZvciBpdC4KNS4gUmVjb3JkIHRoZSBgbnVsbGlmaWVyYCBvbmx5IHdoZW4gYSBzdWJtaXNzaW9uIGlzIGFjY2VwdGVkOyByZXRyaWVzCiAgIGZvciB0aGUgc2FtZSBjaGFsbGVuZ2UgYmVmb3JlIGFjY2VwdGFuY2UgYXJlIGFsbG93ZWQuIEF0IGNvbW1pdAogICB0aW1lLCByZS1jaGVjayByb290IGZyZXNobmVzcyAvIHJldm9jYXRpb24gZXBvY2ggYW5kIGNoYWxsZW5nZQogICBleHBpcnksIGNvbnN1bWUgdGhlIGNoYWxsZW5nZSBhdG9taWNhbGx5IHRvZ2V0aGVyIHdpdGggcmVnaXN0ZXJpbmcKICAgKipleGFjdGx5KiogdGhlIGFjY291bnQgd2hvc2UgaGFzaCB3YXMgcHJvdmVuLCBhbmQga2VlcCBjb21wYXJpbmcKICAgdGhhdCBoYXNoIGluIGRvd25zdHJlYW0gcGF5bWVudCBjaGVja3MuCgojIyBXaGF0IHRoaXMgZG9lcyBub3QgcHJvdmUKCi0gVGhhdCB0aGUgYWNjb3VudCBleGlzdHMgb24gdGhlIGJhbmsncyBsZWRnZXIg4oCUIHRoZSBldmlkZW5jZSBzb3VyY2UKICBjYXJyaWVzIHRoYXQgdHJ1dGguCi0gVGhhdCB0aGUgcmVwcmVzZW50YXRpdmUgd2FzIG5vdCBkZWNlaXZlZCBpbnRvIGFwcHJvdmluZy4KLSBUaGF0IHRoZSBpbml0aWFsIHJlZ2lzdHJ5IGVucm9sbG1lbnQgd2FzIGNvcnJlY3QuIFNlY3VyaXR5IG1vdmVzCiAgZnJvbSAiZG91YnQgZXZlcnkgbW9udGhseSBlbWFpbCIgdG8gIm1ha2UgZW5yb2xsbWVudCBhbmQga2V5IGN1c3RvZHkKICBzdHJpY3QiLgotIFByaXZhY3kgaXMgbm90IGFuIGFkb3B0aW9uIGNsYWltLiBQdWJsaWMgc2lnbmFscyBhcmUgZm9yIG9mZi1jaGFpbgogIGdhdGUgdmVyaWZpY2F0aW9uIG9ubHk6IGFuIHVuc2FsdGVkIGFjY291bnQgaGFzaCBpcyBicnV0ZS1mb3JjZWFibGUKICBhbmQgKiptdXN0IG5vdCBiZSBwdWJsaXNoZWQgb24tY2hhaW4qKi4gVGhlIHNhbWUgYXBwbGllcyB0bwogIGBiYW5rRXZpZGVuY2VIYXNoYDogaWYgdGhlIHVuZGVybHlpbmcgZXZpZGVuY2UgaXMgYSBsb3ctZW50cm9weQogIHZhbHVlIChlLmcuIGEgc2hvcnQgY29kZSBpbiBhIHRyYW5zYWN0aW9uIG1lbW8pLCBpdHMgaGFzaCBpbiB0aGUKICBwdWJsaWMgc2lnbmFscyBpcyBicnV0ZS1mb3JjZWFibGUgdG9vLCBzbyBhcmNoaXZlZCBwdWJsaWMgc2lnbmFscwogIGNhbiBsZWFrIHRoZSBldmlkZW5jZSBwcmVpbWFnZS4gQSBzYWx0ZWQtY29tbWl0bWVudCB2YXJpYW50IGZvcgogIGV4dGVybmFsIFByb29mIENhcmRzIGlzIGZ1dHVyZSB3b3JrLgotIEtleSBwb3NzZXNzaW9uIGlzIGBQb3NlaWRvbjEoc2VjcmV0KWAgKHRoZSBgYWdlbnQtaWRlbnRpdHlgCiAgcHJlY2VkZW50KSwgbm90IGEgc2lnbmF0dXJlIHNjaGVtZS4gRm9yIHByb2R1Y3Rpb24gdXNlIHdpdGggcmVhbAogIGJhbmsgYWNjb3VudHMsIHBsYW4gYSBtaWdyYXRpb24gdG8gc2lnbmF0dXJlLWJhc2VkIGF1dGhvcml6YXRpb24KICAoRWREU0Egb3ZlciB0aGUgY29udGV4dCkgc28gYXBwcm92YWxzIGFyZSBub24tcmVwdWRpYWJsZQogIGF1dGhvcml6YXRpb25zIHJhdGhlciB0aGFuIGtleS1wb3NzZXNzaW9uIHByb29mcy4KCiMjIHYxLjEgY2hhbmdlcyAoc2VsZi1yZXZpZXcgb2YgdjEpCgotIGBjb250ZXh0SGFzaGAgY2hhbmdlZCBmcm9tIGEgcHJvdmVyLXN1cHBsaWVkIHB1YmxpYyBpbnB1dCB0byBhbgogIGluLWNpcmN1aXQgZGVyaXZhdGlvbiAob3V0cHV0KS4KLSBSZWdpc3RyYXRpb24tdGltZSBvcmRlcmluZyAoYHJlZ2lzdGVyZWRBdCA8PSByZXF1ZXN0UmVjZWl2ZWRBdGApCiAgaXMgbm93IGNvbnN0cmFpbmVkLCBub3QganVzdCBzdGF0ZWQgaW4gcHJvc2UuCi0gYGJhbmtFdmlkZW5jZUhhc2hgIHJlY2xhc3NpZmllZCBmcm9tIEdhdGVJbnB1dCB0byBQcm92ZW5JbnB1dCB3aXRoCiAgYW4gZXhwbGljaXQgdHdvLXN0ZXAgZ2F0ZSBjaGVjay4KLSBgaXNGaXJzdGAgYm91bmQgdG8gYElzWmVybyhvbGRBY2NvdW50SGFzaClgLgotIE1lcmtsZSBjaGVja2VyOiBib29sZWFuLWNvbnN0cmFpbmVkIHF1YWRyYXRpYy1tdXggdmVyc2lvbiBvbmx5LgotIFJvbGUgY2hlY2tlZCBhZ2FpbnN0IGEgZ2F0ZS1maXhlZCBgcmVxdWlyZWRSb2xlSGFzaGAgcHVibGljIGlucHV0CiAgKHRoZSBgcm9sZS1zcGVuZC1saW1pdGAgcGF0dGVybikgaW5zdGVhZCBvZiBhIG1hZ2ljIGNvbnN0YW50LgotIENyZWRlbnRpYWwgbGVhZiBsYXlvdXQgZnVsbHkgc3BlY2lmaWVkLgotIE51bGxpZmllcidzIHJvbGUgY29ycmVjdGVkOiBkZWR1cGxpY2F0aW9uIGtleSwgbm90IHJlcGxheQogIHByZXZlbnRpb24gYnkgaXRzZWxmLgoKIyMgUG9zdC1yZXZpZXcgZml4ZXMgKEtpbG8gcmV2aWV3IG9mIFBSICMxMTcxKQoKLSBSb290IGBwbnBtLWxvY2sueWFtbGAgdXBkYXRlZCB3aXRoIHRoaXMgcGFja2FnZSdzIGltcG9ydGVyIChDSSB3YXMKICBmYWlsaW5nIGF0IGBwbnBtIGluc3RhbGxgKS4KLSBBbGwgdGltZSB2YWx1ZXMgYXJlIG5vdyBgTnVtMkJpdHMoNjQpYCByYW5nZS1ib3VuZCBiZWZvcmUKICBjb21wYXJpc29uIChmaWVsZC13cmFwIHZhbHVlcyBgci1rYCBwcmV2aW91c2x5IHNsaXBwZWQgdGhyb3VnaCB0aGUKICBvcmRlcmluZyBjaGVja3MpLgotIENpcmN1aXQgaGVhZGVyIGRvY3VtZW50cyB0aGUgcHJvdmVyLXNlbGVjdGVkIChgY3JlZGVudGlhbENvbW1pdG1lbnRgKQogIGFuZCBnYXRlLWRlcml2ZWQgKGBpc0ZpcnN0YCkgcHVibGljIGlucHV0cy4KLSBUZXN0czogYnVpbGQtYXJ0aWZhY3Qgc2tpcCBndWFyZCAoc2libGluZyBwYXR0ZXJuKSwgbm9uLXplcm8taW5kZXgKICBNZXJrbGUgcGF0aCwgdGltZS13aW5kb3cgLyByZXZvY2F0aW9uIC8gY3Jvc3MtdmVuZG9yIG5lZ2F0aXZlcywKICB2ZXJpZnktbGV2ZWwgdGFtcGVyaW5nIG9mIG1vcmUgcHVibGljIHNpZ25hbHMsIGFuZCB0aGUgZmllbGQtd3JhcAogIHJlZ3Jlc3Npb24gY2FzZXMuCgojIyBCdWlsZCAmIHRlc3QKCmBgYHNoCmNkIGNpcmN1aXRzCm5wbSBpbnN0YWxsCm5wbSBydW4gYnVpbGQgICAjIHJlcXVpcmVzIGNpcmNvbTsgdXNlcyBjYXVsZHJvbiBwaGFzZTIgbGlrZSBzaWJsaW5nIHBhY2thZ2VzCm5wbSB0ZXN0ICAgICAgICAjIHNraXBzIHdpdGggYSBub3RpY2Ugd2hlbiBidWlsZCBhcnRpZmFjdHMgYXJlIGFic2VudApgYGAKCmBzY3JpcHRzL3JlZ2lzdGVyLWNpcmN1aXQudHNgIGlzIHR5cGUtY2hlY2tlZCB3aXRoCmBucG0gcnVuIHR5cGVjaGVja2AgZnJvbSB0aGUgcGFja2FnZSByb290IChhZnRlciBhIHdvcmtzcGFjZQpgcG5wbSBpbnN0YWxsYCBhbmQgYnVpbGRpbmcgYEBsZW1tYW9yYWNsZS9zZGtgIC8gYEBsZW1tYW9yYWNsZS9zcGVjYCkuCgojIyBMYXlvdXQKCmBgYApjaXJjdWl0cy9zcmMvYWNjb3VudC1jaGFuZ2UuY2lyY29tICAgdGhlIGNpcmN1aXQKY2lyY3VpdHMvdGVzdC9hY2NvdW50LWNoYW5nZS50ZXN0LnRzIHBvc2l0aXZlICsgbmVnYXRpdmUgY2FzZXMKY2lyY3VpdHMvc2NyaXB0cy9idWlsZC5zaCAgICAgICAgICAgICAgICAgY29tcGlsZSArIGdyb3RoMTYgc2V0dXAKc2NyaXB0cy9yZWdpc3Rlci1jaXJjdWl0LnRzICAgICAgICAgICAgICAgcmVnaXN0ZXIgd2l0aCB0aGUgTGVtbWEgQVBJCmBgYAo=
+# account-change
+
+ZK circuit for Lemma **ProofGate**: a cryptographic proof for a
+bank-account change request (GENIAC design **v1.1**).
+
+Circuit ID: `account-change-v1` · Circom + Groth16 / BN254
+
+## Statement
+
+> A representative who (a) is registered in the verifier's vendor
+> registry *before* the change request was received, and (b) holds the
+> account-change role, approves *this* old → new account change,
+> for *this* verifier (audience) and *this* gate-issued challenge.
+> The new account is held in the vendor's own registered legal name and
+> is bound to bank-side account-control evidence.
+
+## Bindings
+
+| # | Binding | Mechanism |
+|---|---------|-----------|
+| 1 | Subject | Credential leaf inclusion in `registryRoot` (depth-20 Poseidon Merkle, boolean-constrained checker from `listing-binding`) + knowledge of the representative secret (`Poseidon1(secret)` inside the leaf) |
+| 2 | Content | `oldAccountHash` / `newAccountHash` are gate-fixed public inputs; the prover opens `newAccountHash = Poseidon6(1101, bankCode, branchCode, accountType, accountNumber, holderNameHash)` from the real account fields |
+| 3 | Holder | `holderNameHash === legalNameHash` (the legal name inside the registered credential). A leaked representative key cannot divert funds to a third-party-named account |
+| 4 | Context | `contextHash` is derived **in-circuit** from its public components (audience, request digest, challenge window, registry root, policy hash) and is an output, never a prover-supplied input. `nullifier = Poseidon2(credentialCommitment, challengeId)` is the gate's audit-linkage key for a (credential, challenge) pair — Groth16 proofs are re-randomizable, so proof bytes cannot serve that role. It does **not** detect a resubmission under a *new* challenge for the same request; that is prevented by challenge consumption plus the gate's request record (see Gate policy) |
+| 5 | Execution | Gate policy (below) |
+
+Credential leaf (`leaf == credentialCommitment`), following the
+`agent-identity` sub-hash layout:
+
+```
+identityHash  = Poseidon2(vendorId, Poseidon1(repSecret))
+authorityHash = Poseidon2(roleHash, legalNameHash)
+lifecycleHash = Poseidon4(status, validFrom, validUntil, registeredAt)
+credentialCommitment = Poseidon4(identityHash, authorityHash, lifecycleHash, salt)
+```
+
+Time bindings (all 64-bit ranged):
+
+```
+validFrom <= challengeIssuedAt < challengeExpiresAt <= validUntil
+registeredAt <= requestReceivedAt <= challengeIssuedAt
+```
+
+Every time value (private and public) is range-bound with
+`Num2Bits(64)` before any comparison: without it, a field element of
+the form `r-k` wraps through the comparators' internal decomposition
+and reads as a very small timestamp.
+
+`isFirst` is not a free flag: it must equal `IsZero(oldAccountHash)`.
+
+## Operational definitions (normative for gate/registry implementers)
+
+- **Role hash**: `requiredRoleHash = Poseidon1(toScalar("lemma:role:account-change"))`,
+  where `toScalar` is the SDK's `commitments.toScalar` (for strings:
+  SHA-256 of the UTF-8 bytes, mod r) — the same function production
+  code already uses, so issuers and gates derive the identical value
+  by construction. Golden value:
+  `2666895405497814583936866908763331297856096727475110877642173956138533085004`
+  (pinned by a test). Do not substitute the raw-bytes convention used
+  by some circuit test helpers (UTF-8 bytes as a big-endian integer);
+  it derives a different value. The value is a *policy* decision by
+  the gate operator; changing it is a policy change and must be
+  reflected in `policyHash`. Registry and gate must be configured
+  with the same value — the test fixture uses this operational value.
+- **Domain tags** (v1 assignments, to be promoted to a central
+  registry): `1101` account tuple, `1102`/`1103` context branches.
+  `attestationCommitment` (Poseidon5) and `nullifier` (Poseidon2) are
+  currently untagged; they are registered here together with the
+  tagged uses so a future registry can assign tags consistently.
+- **requestDigest**: a digest of the change request as received,
+  computed by the gate. If it is derived from a SHA-256 of the request
+  bytes, the 256-bit value must be injected into the field with an
+  injective multi-limb encoding — never by a plain `mod r` reduction,
+  which does not preserve identity.
+- **Normalization**: account fields are parsed as fixed-width decimals
+  off-circuit (leading zeros preserved). The holder name must be
+  normalized (kana width, legal-name form) by *one* shared normalizer
+  used by both the registry (for `legalNameHash`) and the prover (for
+  `holderNameHash`); that normalizer is not part of this package yet.
+  A mismatch causes false rejections (an availability failure), not a
+  soundness failure — but it must be specified before production use.
+- **Attestation scope**: `attestationCommitment` does not include
+  `requestReceivedAt`; a downstream consumer that needs the receipt
+  time must read it from the gate's request record, not from the
+  attestation.
+
+## Gate policy (off-circuit, part of the design)
+
+The circuit alone is not acceptance. The gate must:
+
+1. Fix every GateInput itself (registry root at challenge issuance,
+   account hashes from the stopped request and its own current records,
+   request digest, timestamps, policy hash) — never take them from the
+   prover.
+2. Deliver the challenge only via the contact channel registered
+   *before* the change request. Knowing the challenge is not evidence
+   of identity; key possession is.
+3. Verify the bank evidence itself (`bankEvidenceHash` is a
+   prover-supplied ProvenInput; the circuit binds its hash into the
+   attestation but does not prove its truth).
+4. Judge expiry at the gate-recorded submission time. Set
+   `challengeExpiresAt` so it also encodes any procedural waiting
+   period (e.g. the month-end payment procedure's rule that a change
+   is only reflected after a waiting period counted from the
+   registration date) — the circuit has no separate hook for it.
+5. Record the `nullifier` only when a submission is accepted; retries
+   for the same challenge before acceptance are allowed. At commit
+   time, re-check root freshness / revocation epoch and challenge
+   expiry, consume the challenge atomically together with registering
+   **exactly** the account whose hash was proven, and keep comparing
+   that hash in downstream payment checks.
+
+## What this does not prove
+
+- That the account exists on the bank's ledger — the evidence source
+  carries that truth.
+- That the representative was not deceived into approving.
+- That the initial registry enrollment was correct. Security moves
+  from "doubt every monthly email" to "make enrollment and key custody
+  strict".
+- Privacy is not an adoption claim. Public signals are for off-chain
+  gate verification only: an unsalted account hash is brute-forceable
+  and **must not be published on-chain**. The same applies to
+  `bankEvidenceHash`: if the underlying evidence is a low-entropy
+  value (e.g. a short code in a transaction memo), its hash in the
+  public signals is brute-forceable too, so archived public signals
+  can leak the evidence preimage. A salted-commitment variant for
+  external Proof Cards is future work.
+- Key possession is `Poseidon1(secret)` (the `agent-identity`
+  precedent), not a signature scheme. For production use with real
+  bank accounts, plan a migration to signature-based authorization
+  (EdDSA over the context) so approvals are non-repudiable
+  authorizations rather than key-possession proofs.
+
+## v1.1 changes (self-review of v1)
+
+- `contextHash` changed from a prover-supplied public input to an
+  in-circuit derivation (output).
+- Registration-time ordering (`registeredAt <= requestReceivedAt`)
+  is now constrained, not just stated in prose.
+- `bankEvidenceHash` reclassified from GateInput to ProvenInput with
+  an explicit two-step gate check.
+- `isFirst` bound to `IsZero(oldAccountHash)`.
+- Merkle checker: boolean-constrained quadratic-mux version only.
+- Role checked against a gate-fixed `requiredRoleHash` public input
+  (the `role-spend-limit` pattern) instead of a magic constant.
+- Credential leaf layout fully specified.
+- Nullifier's role corrected: deduplication key, not replay
+  prevention by itself.
+
+## Post-review fixes (Kilo review of PR #1171)
+
+- Root `pnpm-lock.yaml` updated with this package's importer (CI was
+  failing at `pnpm install`).
+- All time values are now `Num2Bits(64)` range-bound before
+  comparison (field-wrap values `r-k` previously slipped through the
+  ordering checks).
+- Circuit header documents the prover-selected (`credentialCommitment`)
+  and gate-derived (`isFirst`) public inputs.
+- Tests: build-artifact skip guard (sibling pattern), non-zero-index
+  Merkle path, time-window / revocation / cross-vendor negatives,
+  verify-level tampering of more public signals, and the field-wrap
+  regression cases.
+
+## Build & test
+
+```sh
+cd circuits
+npm install
+npm run build   # requires circom; uses cauldron phase2 like sibling packages
+npm test        # skips with a notice when build artifacts are absent
+```
+
+`scripts/register-circuit.ts` is type-checked with
+`npm run typecheck` from the package root (after a workspace
+`pnpm install` and building `@lemmaoracle/sdk` / `@lemmaoracle/spec`).
+
+## Layout
+
+```
+circuits/src/account-change.circom   the circuit
+circuits/test/account-change.test.ts positive + negative cases
+circuits/scripts/build.sh                 compile + groth16 setup
+scripts/register-circuit.ts               register with the Lemma API
+```

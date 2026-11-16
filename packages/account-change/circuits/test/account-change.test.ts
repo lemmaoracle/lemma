@@ -1,1 +1,527 @@
-LyoqCiAqIENpcmN1aXQgdGVzdDogd2l0bmVzcyBnZW5lcmF0aW9uICsgcHJvb2YgdmVyaWZpY2F0aW9uIGZvcgogKiBBY2NvdW50Q2hhbmdlVjEgKGRlc2lnbiB2MS4xICsgcG9zdC1yZXZpZXcgZml4ZXMpLgogKgogKiBQb3NpdGl2ZSBjYXNlczogYWNjb3VudCBjaGFuZ2UsIGZpcnN0IHJlZ2lzdHJhdGlvbiwgYW5kIGEgY3JlZGVudGlhbAogKiBhdCBhIG5vbi16ZXJvIE1lcmtsZSBpbmRleCAoZXhlcmNpc2VzIHRoZSByaWdodC1icmFuY2ggbXV4KS4KICogTmVnYXRpdmUgY2FzZXMgY292ZXIgZXZlcnkgYmluZGluZzogY29udGVudCwgaG9sZGVyLCByb2xlLCBzdGF0dXMsCiAqIHJlZ2lzdHJhdGlvbiBvcmRlcmluZywgdGhlIGZ1bGwgdGltZSB3aW5kb3csIE1lcmtsZSBwYXRoIGludGVncml0eSwKICogY3Jvc3MtdmVuZG9yIHJlcGxheSwgaXNGaXJzdCBjb25zaXN0ZW5jeSBpbiBib3RoIGRpcmVjdGlvbnMsIGFuZAogKiBmaWVsZC13cmFwIHRpbWVzdGFtcHMgKHItaykgdGhhdCBtdXN0IGZhaWwgdGhlIDY0LWJpdCByYW5nZSBiaW5kaW5nLgogKiBWZXJpZnktbGV2ZWwgY2FzZXMgdGFtcGVyIGluZGl2aWR1YWwgcHVibGljIHNpZ25hbHMuCiAqCiAqIExpa2UgdGhlIHNpYmxpbmcgcGFja2FnZXMgKGUuZy4gbGlzdGluZy1iaW5kaW5nKSwgdGhlIHN1aXRlIHNraXBzCiAqIGNsZWFubHkgd2hlbiB0aGUgY2lyY3VpdCBoYXMgbm90IGJlZW4gYnVpbHQuCiAqLwppbXBvcnQgeyBkZXNjcmliZSwgaXQsIGJlZm9yZUFsbCwgZXhwZWN0IH0gZnJvbSAidml0ZXN0IjsKaW1wb3J0ICogYXMgcGF0aCBmcm9tICJub2RlOnBhdGgiOwppbXBvcnQgKiBhcyBmcyBmcm9tICJub2RlOmZzIjsKaW1wb3J0IHsgY3JlYXRlSGFzaCB9IGZyb20gIm5vZGU6Y3J5cHRvIjsKaW1wb3J0IHsgZ3JvdGgxNiB9IGZyb20gInNuYXJranMiOwppbXBvcnQgewogIHBvc2VpZG9uMSwKICBwb3NlaWRvbjIsCiAgcG9zZWlkb240LAogIHBvc2VpZG9uNSwKICBwb3NlaWRvbjYsCn0gZnJvbSAicG9zZWlkb24tbGl0ZSI7Cgpjb25zdCBDSVJDVUlUU19ESVIgPSBwYXRoLnJlc29sdmUoaW1wb3J0Lm1ldGEuZGlybmFtZSwgIi4uIik7CmNvbnN0IEJVSUxEX0RJUiA9IHBhdGguam9pbihDSVJDVUlUU19ESVIsICJidWlsZCIpOwpjb25zdCBDSVJDVUlUX05BTUUgPSAiYWNjb3VudC1jaGFuZ2UiOwpjb25zdCBXQVNNX1BBVEggPSBwYXRoLmpvaW4oQlVJTERfRElSLCBgJHtDSVJDVUlUX05BTUV9X2pzYCwgYCR7Q0lSQ1VJVF9OQU1FfS53YXNtYCk7CmNvbnN0IFpLRVlfUEFUSCA9IHBhdGguam9pbihCVUlMRF9ESVIsIGAke0NJUkNVSVRfTkFNRX1fZmluYWwuemtleWApOwpjb25zdCBWS0VZX1BBVEggPSBwYXRoLmpvaW4oQlVJTERfRElSLCBgJHtDSVJDVUlUX05BTUV9X3ZrZXkuanNvbmApOwoKY29uc3QgY2lyY3VpdEJ1aWx0ID0KICBmcy5leGlzdHNTeW5jKFZLRVlfUEFUSCkgJiYgZnMuZXhpc3RzU3luYyhXQVNNX1BBVEgpICYmIGZzLmV4aXN0c1N5bmMoWktFWV9QQVRIKTsKCmNvbnN0IExFVkVMUyA9IDIwOwpjb25zdCBBQ0NPVU5UX0RPTUFJTiA9IDExMDFuOwpjb25zdCBDT05URVhUX0RPTUFJTl9BID0gMTEwMm47CmNvbnN0IENPTlRFWFRfRE9NQUlOX0IgPSAxMTAzbjsKY29uc3QgQk4yNTRfUFJJTUUgPSBCaWdJbnQoCiAgIjIxODg4MjQyODcxODM5Mjc1MjIyMjQ2NDA1NzQ1MjU3Mjc1MDg4NTQ4MzY0NDAwNDE2MDM0MzQzNjk4MjA0MTg2NTc1ODA4NDk1NjE3IiwKKTsKCi8vIFplcm8tc3VidHJlZSBoYXNoZXMgZm9yIGEgUG9zZWlkb24yIE1lcmtsZSB0cmVlIHdob3NlIGVtcHR5IGxlYWYgaXMgMC4KY29uc3QgemVyb1N1YnRyZWU6IGJpZ2ludFtdID0gWzBuXTsKZm9yIChsZXQgaSA9IDE7IGkgPD0gTEVWRUxTOyBpKyspIHsKICB6ZXJvU3VidHJlZVtpXSA9IHBvc2VpZG9uMihbemVyb1N1YnRyZWVbaSAtIDFdLCB6ZXJvU3VidHJlZVtpIC0gMV1dKTsKfQoKLyoqIFJvb3Qgb2YgdGhlIHN1YnRyZWUgYXQgKGxldmVsLCBpZHgpIGZvciBhIHNwYXJzZSBsZWFmIGFzc2lnbm1lbnQuICovCmZ1bmN0aW9uIHN1YnRyZWVSb290KAogIGxlYXZlczogUmVhZG9ubHlNYXA8bnVtYmVyLCBiaWdpbnQ+LAogIGxldmVsOiBudW1iZXIsCiAgaWR4OiBudW1iZXIsCik6IGJpZ2ludCB7CiAgY29uc3QgbG8gPSBpZHggKiAyICoqIGxldmVsOwogIGNvbnN0IGhpID0gbG8gKyAyICoqIGxldmVsOwogIGxldCBvY2N1cGllZCA9IGZhbHNlOwogIGZvciAoY29uc3QgayBvZiBsZWF2ZXMua2V5cygpKSB7CiAgICBpZiAoayA+PSBsbyAmJiBrIDwgaGkpIHsKICAgICAgb2NjdXBpZWQgPSB0cnVlOwogICAgICBicmVhazsKICAgIH0KICB9CiAgaWYgKCFvY2N1cGllZCkgcmV0dXJuIHplcm9TdWJ0cmVlW2xldmVsXTsKICBpZiAobGV2ZWwgPT09IDApIHJldHVybiBsZWF2ZXMuZ2V0KGlkeCkhOwogIHJldHVybiBwb3NlaWRvbjIoWwogICAgc3VidHJlZVJvb3QobGVhdmVzLCBsZXZlbCAtIDEsIGlkeCAqIDIpLAogICAgc3VidHJlZVJvb3QobGVhdmVzLCBsZXZlbCAtIDEsIGlkeCAqIDIgKyAxKSwKICBdKTsKfQoKZnVuY3Rpb24gbWVya2xlUGF0aEZvcigKICBsZWF2ZXM6IFJlYWRvbmx5TWFwPG51bWJlciwgYmlnaW50PiwKICBpbmRleDogbnVtYmVyLAopOiB7IHJvb3Q6IGJpZ2ludDsgcGF0aDogc3RyaW5nW107IGluZGljZXM6IHN0cmluZ1tdIH0gewogIGNvbnN0IHBhdGhFbHM6IHN0cmluZ1tdID0gW107CiAgY29uc3QgaW5kaWNlczogc3RyaW5nW10gPSBbXTsKICBmb3IgKGxldCBsZXZlbCA9IDA7IGxldmVsIDwgTEVWRUxTOyBsZXZlbCsrKSB7CiAgICBjb25zdCBub2RlSWR4ID0gaW5kZXggPj4gbGV2ZWw7CiAgICBwYXRoRWxzLnB1c2goc3VidHJlZVJvb3QobGVhdmVzLCBsZXZlbCwgbm9kZUlkeCBeIDEpLnRvU3RyaW5nKCkpOwogICAgaW5kaWNlcy5wdXNoKFN0cmluZyhub2RlSWR4ICYgMSkpOwogIH0KICByZXR1cm4gewogICAgcm9vdDogc3VidHJlZVJvb3QobGVhdmVzLCBMRVZFTFMsIDApLAogICAgcGF0aDogcGF0aEVscywKICAgIGluZGljZXMsCiAgfTsKfQoKLy8gUHVibGljIHNpZ25hbCBwb3NpdGlvbnM6IDMgb3V0cHV0cywgdGhlbiB0aGUgMTUgcHVibGljIGlucHV0cyBpbgovLyBgbWFpbiB7IHB1YmxpYyBbLi4uXSB9YCBkZWNsYXJhdGlvbiBvcmRlci4KY29uc3QgU0lHID0gewogIGNvbnRleHRIYXNoOiAwLAogIGF0dGVzdGF0aW9uQ29tbWl0bWVudDogMSwKICBudWxsaWZpZXI6IDIsCiAgcmVnaXN0cnlSb290OiAzLAogIGNyZWRlbnRpYWxDb21taXRtZW50OiA0LAogIHJlcXVpcmVkUm9sZUhhc2g6IDUsCiAgdmVuZG9ySWQ6IDYsCiAgb2xkQWNjb3VudEhhc2g6IDcsCiAgbmV3QWNjb3VudEhhc2g6IDgsCiAgaXNGaXJzdDogOSwKICBhdWRpZW5jZUhhc2g6IDEwLAogIHJlcXVlc3REaWdlc3Q6IDExLAogIHJlcXVlc3RSZWNlaXZlZEF0OiAxMiwKICBjaGFsbGVuZ2VJZDogMTMsCiAgY2hhbGxlbmdlSXNzdWVkQXQ6IDE0LAogIGNoYWxsZW5nZUV4cGlyZXNBdDogMTUsCiAgcG9saWN5SGFzaDogMTYsCiAgYmFua0V2aWRlbmNlSGFzaDogMTcsCn0gYXMgY29uc3Q7CgppbnRlcmZhY2UgQ3JlZGVudGlhbFNwZWMgewogIHJlcFNlY3JldDogYmlnaW50OwogIHZlbmRvcklkOiBiaWdpbnQ7CiAgcm9sZUhhc2g6IGJpZ2ludDsKICBsZWdhbE5hbWVIYXNoOiBiaWdpbnQ7CiAgY3JlZGVudGlhbFN0YXR1czogYmlnaW50OwogIHZhbGlkRnJvbTogYmlnaW50OwogIHZhbGlkVW50aWw6IGJpZ2ludDsKICByZWdpc3RlcmVkQXQ6IGJpZ2ludDsKICBjcmVkZW50aWFsU2FsdDogYmlnaW50Owp9CgpmdW5jdGlvbiBjcmVkZW50aWFsQ29tbWl0bWVudE9mKGM6IENyZWRlbnRpYWxTcGVjKTogYmlnaW50IHsKICBjb25zdCBpZGVudGl0eUhhc2ggPSBwb3NlaWRvbjIoW2MudmVuZG9ySWQsIHBvc2VpZG9uMShbYy5yZXBTZWNyZXRdKV0pOwogIGNvbnN0IGF1dGhvcml0eUhhc2ggPSBwb3NlaWRvbjIoW2Mucm9sZUhhc2gsIGMubGVnYWxOYW1lSGFzaF0pOwogIGNvbnN0IGxpZmVjeWNsZUhhc2ggPSBwb3NlaWRvbjQoWwogICAgYy5jcmVkZW50aWFsU3RhdHVzLAogICAgYy52YWxpZEZyb20sCiAgICBjLnZhbGlkVW50aWwsCiAgICBjLnJlZ2lzdGVyZWRBdCwKICBdKTsKICByZXR1cm4gcG9zZWlkb240KFtpZGVudGl0eUhhc2gsIGF1dGhvcml0eUhhc2gsIGxpZmVjeWNsZUhhc2gsIGMuY3JlZGVudGlhbFNhbHRdKTsKfQoKaW50ZXJmYWNlIEZpeHR1cmUgewogIGlucHV0OiBSZWNvcmQ8c3RyaW5nLCBzdHJpbmcgfCBzdHJpbmdbXT47CiAgY29udGV4dEhhc2g6IGJpZ2ludDsKICBhdHRlc3RhdGlvbkNvbW1pdG1lbnQ6IGJpZ2ludDsKICBudWxsaWZpZXI6IGJpZ2ludDsKfQoKaW50ZXJmYWNlIEZpeHR1cmVPdmVycmlkZXMgewogIGNyZWQ/OiBQYXJ0aWFsPENyZWRlbnRpYWxTcGVjPjsKICB2ZW5kb3JJZElucHV0PzogYmlnaW50OwogIGxlYWZJbmRleD86IG51bWJlcjsKICBleHRyYUxlYXZlcz86IFJlYWRvbmx5TWFwPG51bWJlciwgYmlnaW50PjsKICByZXF1aXJlZFJvbGVIYXNoPzogYmlnaW50OwogIGhvbGRlck5hbWVIYXNoPzogYmlnaW50OwogIGFjY291bnROdW1iZXI/OiBiaWdpbnQ7CiAgbmV3QWNjb3VudEhhc2hPdmVycmlkZT86IGJpZ2ludDsKICBvbGRBY2NvdW50SGFzaD86IGJpZ2ludDsKICBpc0ZpcnN0PzogYmlnaW50OwogIHJlcXVlc3RSZWNlaXZlZEF0PzogYmlnaW50OwogIGNoYWxsZW5nZUlzc3VlZEF0PzogYmlnaW50OwogIGNoYWxsZW5nZUV4cGlyZXNBdD86IGJpZ2ludDsKICBwb2xpY3lIYXNoPzogYmlnaW50OwogIHJlZ2lzdHJ5Um9vdE92ZXJyaWRlPzogYmlnaW50OwogIG1lcmtsZVBhdGhNdXRhdGU/OiAocGF0aDogc3RyaW5nW10pID0+IHN0cmluZ1tdOwogIG1lcmtsZUluZGljZXNPdmVycmlkZT86IHN0cmluZ1tdOwp9CgovLyBUaGUgU0RLJ3MgY29tbWl0bWVudHMudG9TY2FsYXIgZm9yIHN0cmluZ3M6IFNIQS0yNTYgb2YgdGhlIFVURi04Ci8vIGJ5dGVzLCBtb2Qgci4gVGhlIGFjY291bnQtY2hhbmdlIHJvbGUgaGFzaCBpcyBkZWZpbmVkIG92ZXIgaXQgKHNlZQovLyBSRUFETUUgIk9wZXJhdGlvbmFsIGRlZmluaXRpb25zIiksIHNvIHRoZSBmaXh0dXJlIHVzZXMgdGhlIHJlYWwKLy8gb3BlcmF0aW9uYWwgdmFsdWUgaW5zdGVhZCBvZiBhIGR1bW15Lgpjb25zdCB0b1NjYWxhciA9IChzOiBzdHJpbmcpOiBiaWdpbnQgPT4KICBCaWdJbnQoYDB4JHtjcmVhdGVIYXNoKCJzaGEyNTYiKS51cGRhdGUocywgInV0ZjgiKS5kaWdlc3QoImhleCIpfWApICUKICBCTjI1NF9QUklNRTsKCmNvbnN0IEFDQ09VTlRfQ0hBTkdFX1JPTEVfSEFTSCA9IHBvc2VpZG9uMShbCiAgdG9TY2FsYXIoImxlbW1hOnJvbGU6YWNjb3VudC1jaGFuZ2UiKSwKXSk7Cgpjb25zdCBCQVNFX0NSRUQ6IENyZWRlbnRpYWxTcGVjID0gewogIHJlcFNlY3JldDogOTg3NjU0MzIxbiwKICB2ZW5kb3JJZDogNDI0MjQybiwKICByb2xlSGFzaDogQUNDT1VOVF9DSEFOR0VfUk9MRV9IQVNILAogIGxlZ2FsTmFtZUhhc2g6IHBvc2VpZG9uMShbMzEzMzduXSksCiAgY3JlZGVudGlhbFN0YXR1czogMW4sCiAgdmFsaWRGcm9tOiAxNjAwMDAwMDAwbiwKICB2YWxpZFVudGlsOiAxODAwMDAwMDAwbiwKICByZWdpc3RlcmVkQXQ6IDE3MDAwMDAwMDBuLAogIGNyZWRlbnRpYWxTYWx0OiA1NTVuLAp9OwoKZnVuY3Rpb24gYnVpbGRGaXh0dXJlKG92ZXJyaWRlczogRml4dHVyZU92ZXJyaWRlcyA9IHt9KTogRml4dHVyZSB7CiAgY29uc3QgY3JlZDogQ3JlZGVudGlhbFNwZWMgPSB7IC4uLkJBU0VfQ1JFRCwgLi4ub3ZlcnJpZGVzLmNyZWQgfTsKICBjb25zdCBjcmVkZW50aWFsQ29tbWl0bWVudCA9IGNyZWRlbnRpYWxDb21taXRtZW50T2YoY3JlZCk7CiAgY29uc3QgbGVhZkluZGV4ID0gb3ZlcnJpZGVzLmxlYWZJbmRleCA/PyAwOwogIGNvbnN0IGxlYXZlcyA9IG5ldyBNYXA8bnVtYmVyLCBiaWdpbnQ+KG92ZXJyaWRlcy5leHRyYUxlYXZlcyA/PyBbXSk7CiAgbGVhdmVzLnNldChsZWFmSW5kZXgsIGNyZWRlbnRpYWxDb21taXRtZW50KTsKICBjb25zdCBtZXJrbGUgPSBtZXJrbGVQYXRoRm9yKGxlYXZlcywgbGVhZkluZGV4KTsKICBjb25zdCBtZXJrbGVQYXRoID0gb3ZlcnJpZGVzLm1lcmtsZVBhdGhNdXRhdGUKICAgID8gb3ZlcnJpZGVzLm1lcmtsZVBhdGhNdXRhdGUobWVya2xlLnBhdGgpCiAgICA6IG1lcmtsZS5wYXRoOwoKICBjb25zdCBob2xkZXJOYW1lSGFzaCA9IG92ZXJyaWRlcy5ob2xkZXJOYW1lSGFzaCA/PyBjcmVkLmxlZ2FsTmFtZUhhc2g7CiAgY29uc3QgYmFua0NvZGUgPSAxMjNuOwogIGNvbnN0IGJyYW5jaENvZGUgPSA0NTZuOwogIGNvbnN0IGFjY291bnRUeXBlID0gMW47CiAgY29uc3QgYWNjb3VudE51bWJlciA9IG92ZXJyaWRlcy5hY2NvdW50TnVtYmVyID8/IDc2NTQzMjFuOwogIGNvbnN0IGNvbXB1dGVkTmV3QWNjb3VudEhhc2ggPSBwb3NlaWRvbjYoWwogICAgQUNDT1VOVF9ET01BSU4sCiAgICBiYW5rQ29kZSwKICAgIGJyYW5jaENvZGUsCiAgICBhY2NvdW50VHlwZSwKICAgIGFjY291bnROdW1iZXIsCiAgICBob2xkZXJOYW1lSGFzaCwKICBdKTsKICBjb25zdCBuZXdBY2NvdW50SGFzaCA9IG92ZXJyaWRlcy5uZXdBY2NvdW50SGFzaE92ZXJyaWRlID8/IGNvbXB1dGVkTmV3QWNjb3VudEhhc2g7CiAgY29uc3Qgb2xkQWNjb3VudEhhc2ggPQogICAgb3ZlcnJpZGVzLm9sZEFjY291bnRIYXNoID8/CiAgICBwb3NlaWRvbjYoWwogICAgICBBQ0NPVU5UX0RPTUFJTiwKICAgICAgYmFua0NvZGUsCiAgICAgIGJyYW5jaENvZGUsCiAgICAgIGFjY291bnRUeXBlLAogICAgICAxMTExMTExbiwKICAgICAgaG9sZGVyTmFtZUhhc2gsCiAgICBdKTsKICBjb25zdCBpc0ZpcnN0ID0gb3ZlcnJpZGVzLmlzRmlyc3QgPz8gKG9sZEFjY291bnRIYXNoID09PSAwbiA/IDFuIDogMG4pOwoKICBjb25zdCB2ZW5kb3JJZElucHV0ID0gb3ZlcnJpZGVzLnZlbmRvcklkSW5wdXQgPz8gY3JlZC52ZW5kb3JJZDsKICBjb25zdCByZWdpc3RyeVJvb3QgPSBvdmVycmlkZXMucmVnaXN0cnlSb290T3ZlcnJpZGUgPz8gbWVya2xlLnJvb3Q7CiAgY29uc3QgYXVkaWVuY2VIYXNoID0gcG9zZWlkb24xKFsyMDI2MDAxbl0pOwogIGNvbnN0IHJlcXVlc3REaWdlc3QgPSBwb3NlaWRvbjEoWzkwOTA5MG5dKTsKICBjb25zdCByZXF1ZXN0UmVjZWl2ZWRBdCA9IG92ZXJyaWRlcy5yZXF1ZXN0UmVjZWl2ZWRBdCA/PyAxNzUwMDAwMDAwbjsKICBjb25zdCBjaGFsbGVuZ2VJZCA9IDYwNjA2MG47CiAgY29uc3QgY2hhbGxlbmdlSXNzdWVkQXQgPSBvdmVycmlkZXMuY2hhbGxlbmdlSXNzdWVkQXQgPz8gMTc1MDAwMDEwMG47CiAgY29uc3QgY2hhbGxlbmdlRXhwaXJlc0F0ID0gb3ZlcnJpZGVzLmNoYWxsZW5nZUV4cGlyZXNBdCA/PyAxNzUwMTAwMDAwbjsKICBjb25zdCBwb2xpY3lIYXNoID0gb3ZlcnJpZGVzLnBvbGljeUhhc2ggPz8gcG9zZWlkb24xKFsxMTFuXSk7CiAgY29uc3QgYmFua0V2aWRlbmNlSGFzaCA9IHBvc2VpZG9uMShbMjQ2ODBuXSk7CgogIGNvbnN0IGN0eEEgPSBwb3NlaWRvbjQoWwogICAgQ09OVEVYVF9ET01BSU5fQSwKICAgIGF1ZGllbmNlSGFzaCwKICAgIHZlbmRvcklkSW5wdXQsCiAgICByZXF1ZXN0RGlnZXN0LAogIF0pOwogIGNvbnN0IGN0eEIgPSBwb3NlaWRvbjQoWwogICAgQ09OVEVYVF9ET01BSU5fQiwKICAgIGNoYWxsZW5nZUlkLAogICAgY2hhbGxlbmdlSXNzdWVkQXQsCiAgICBjaGFsbGVuZ2VFeHBpcmVzQXQsCiAgXSk7CiAgY29uc3QgY29udGV4dEhhc2ggPSBwb3NlaWRvbjQoW2N0eEEsIGN0eEIsIHJlZ2lzdHJ5Um9vdCwgcG9saWN5SGFzaF0pOwogIGNvbnN0IGF0dGVzdGF0aW9uQ29tbWl0bWVudCA9IHBvc2VpZG9uNShbCiAgICBjcmVkZW50aWFsQ29tbWl0bWVudCwKICAgIG9sZEFjY291bnRIYXNoLAogICAgbmV3QWNjb3VudEhhc2gsCiAgICBiYW5rRXZpZGVuY2VIYXNoLAogICAgY29udGV4dEhhc2gsCiAgXSk7CiAgY29uc3QgbnVsbGlmaWVyID0gcG9zZWlkb24yKFtjcmVkZW50aWFsQ29tbWl0bWVudCwgY2hhbGxlbmdlSWRdKTsKCiAgY29uc3QgaW5wdXQ6IFJlY29yZDxzdHJpbmcsIHN0cmluZyB8IHN0cmluZ1tdPiA9IHsKICAgIHJlcFNlY3JldDogY3JlZC5yZXBTZWNyZXQudG9TdHJpbmcoKSwKICAgIHJvbGVIYXNoOiBjcmVkLnJvbGVIYXNoLnRvU3RyaW5nKCksCiAgICBsZWdhbE5hbWVIYXNoOiBjcmVkLmxlZ2FsTmFtZUhhc2gudG9TdHJpbmcoKSwKICAgIGNyZWRlbnRpYWxTdGF0dXM6IGNyZWQuY3JlZGVudGlhbFN0YXR1cy50b1N0cmluZygpLAogICAgdmFsaWRGcm9tOiBjcmVkLnZhbGlkRnJvbS50b1N0cmluZygpLAogICAgdmFsaWRVbnRpbDogY3JlZC52YWxpZFVudGlsLnRvU3RyaW5nKCksCiAgICByZWdpc3RlcmVkQXQ6IGNyZWQucmVnaXN0ZXJlZEF0LnRvU3RyaW5nKCksCiAgICBjcmVkZW50aWFsU2FsdDogY3JlZC5jcmVkZW50aWFsU2FsdC50b1N0cmluZygpLAogICAgbWVya2xlUGF0aCwKICAgIG1lcmtsZUluZGljZXM6IG92ZXJyaWRlcy5tZXJrbGVJbmRpY2VzT3ZlcnJpZGUgPz8gbWVya2xlLmluZGljZXMsCiAgICBiYW5rQ29kZTogYmFua0NvZGUudG9TdHJpbmcoKSwKICAgIGJyYW5jaENvZGU6IGJyYW5jaENvZGUudG9TdHJpbmcoKSwKICAgIGFjY291bnRUeXBlOiBhY2NvdW50VHlwZS50b1N0cmluZygpLAogICAgYWNjb3VudE51bWJlcjogYWNjb3VudE51bWJlci50b1N0cmluZygpLAogICAgaG9sZGVyTmFtZUhhc2g6IGhvbGRlck5hbWVIYXNoLnRvU3RyaW5nKCksCiAgICByZWdpc3RyeVJvb3Q6IHJlZ2lzdHJ5Um9vdC50b1N0cmluZygpLAogICAgY3JlZGVudGlhbENvbW1pdG1lbnQ6IGNyZWRlbnRpYWxDb21taXRtZW50LnRvU3RyaW5nKCksCiAgICByZXF1aXJlZFJvbGVIYXNoOiAob3ZlcnJpZGVzLnJlcXVpcmVkUm9sZUhhc2ggPz8gY3JlZC5yb2xlSGFzaCkudG9TdHJpbmcoKSwKICAgIHZlbmRvcklkOiB2ZW5kb3JJZElucHV0LnRvU3RyaW5nKCksCiAgICBvbGRBY2NvdW50SGFzaDogb2xkQWNjb3VudEhhc2gudG9TdHJpbmcoKSwKICAgIG5ld0FjY291bnRIYXNoOiBuZXdBY2NvdW50SGFzaC50b1N0cmluZygpLAogICAgaXNGaXJzdDogaXNGaXJzdC50b1N0cmluZygpLAogICAgYXVkaWVuY2VIYXNoOiBhdWRpZW5jZUhhc2gudG9TdHJpbmcoKSwKICAgIHJlcXVlc3REaWdlc3Q6IHJlcXVlc3REaWdlc3QudG9TdHJpbmcoKSwKICAgIHJlcXVlc3RSZWNlaXZlZEF0OiByZXF1ZXN0UmVjZWl2ZWRBdC50b1N0cmluZygpLAogICAgY2hhbGxlbmdlSWQ6IGNoYWxsZW5nZUlkLnRvU3RyaW5nKCksCiAgICBjaGFsbGVuZ2VJc3N1ZWRBdDogY2hhbGxlbmdlSXNzdWVkQXQudG9TdHJpbmcoKSwKICAgIGNoYWxsZW5nZUV4cGlyZXNBdDogY2hhbGxlbmdlRXhwaXJlc0F0LnRvU3RyaW5nKCksCiAgICBwb2xpY3lIYXNoOiBwb2xpY3lIYXNoLnRvU3RyaW5nKCksCiAgICBiYW5rRXZpZGVuY2VIYXNoOiBiYW5rRXZpZGVuY2VIYXNoLnRvU3RyaW5nKCksCiAgfTsKCiAgcmV0dXJuIHsgaW5wdXQsIGNvbnRleHRIYXNoLCBhdHRlc3RhdGlvbkNvbW1pdG1lbnQsIG51bGxpZmllciB9Owp9Cgphc3luYyBmdW5jdGlvbiBleHBlY3RXaXRuZXNzRmFpbHVyZShmOiBGaXh0dXJlKTogUHJvbWlzZTx2b2lkPiB7CiAgYXdhaXQgZXhwZWN0KAogICAgZ3JvdGgxNi5mdWxsUHJvdmUoZi5pbnB1dCwgV0FTTV9QQVRILCBaS0VZX1BBVEgpLAogICkucmVqZWN0cy50b1Rocm93KCk7Cn0KCmRlc2NyaWJlLnJ1bklmKGNpcmN1aXRCdWlsdCkoIkFjY291bnRDaGFuZ2VWMSBjaXJjdWl0IiwgKCkgPT4gewogIGxldCB2a2V5OiBvYmplY3Q7CgogIGJlZm9yZUFsbChhc3luYyAoKSA9PiB7CiAgICB2a2V5ID0gSlNPTi5wYXJzZShmcy5yZWFkRmlsZVN5bmMoVktFWV9QQVRILCAidXRmLTgiKSk7CiAgfSwgMzAwMDApOwoKICBpdCgicGlucyB0aGUgb3BlcmF0aW9uYWwgcm9sZSBoYXNoIChnb2xkZW4gdmFsdWUpIiwgKCkgPT4gewogICAgLy8gUG9zZWlkb24xKHRvU2NhbGFyKCJsZW1tYTpyb2xlOmFjY291bnQtY2hhbmdlIikpIHdpdGggdGhlIFNESydzCiAgICAvLyB0b1NjYWxhci4gSWYgdGhpcyBjaGFuZ2VzLCB0aGUgcm9sZSBkZWZpbml0aW9uIGNoYW5nZWQg4oCUIGEKICAgIC8vIHBvbGljeSBjaGFuZ2UgdGhhdCBtdXN0IGJlIHJlZmxlY3RlZCBpbiBwb2xpY3lIYXNoIChzZWUgUkVBRE1FKS4KICAgIGV4cGVjdChBQ0NPVU5UX0NIQU5HRV9ST0xFX0hBU0gpLnRvQmUoCiAgICAgIDI2NjY4OTU0MDU0OTc4MTQ1ODM5MzY4NjY5MDg3NjMzMzEyOTc4NTYwOTY3Mjc0NzUxMTA4Nzc2NDIxNzM5NTYxMzg1MzMwODUwMDRuLAogICAgKTsKICB9KTsKCiAgaXQoInByb3ZlcyBhbiBhY2NvdW50IGNoYW5nZSBhbmQgZGVyaXZlcyBjb250ZXh0IC8gYXR0ZXN0YXRpb24gLyBudWxsaWZpZXIiLCBhc3luYyAoKSA9PiB7CiAgICBjb25zdCBmID0gYnVpbGRGaXh0dXJlKCk7CiAgICBjb25zdCB7IHByb29mLCBwdWJsaWNTaWduYWxzIH0gPSBhd2FpdCBncm90aDE2LmZ1bGxQcm92ZSgKICAgICAgZi5pbnB1dCwKICAgICAgV0FTTV9QQVRILAogICAgICBaS0VZX1BBVEgsCiAgICApOwoKICAgIGV4cGVjdChhd2FpdCBncm90aDE2LnZlcmlmeSh2a2V5LCBwdWJsaWNTaWduYWxzLCBwcm9vZikpLnRvQmUodHJ1ZSk7CiAgICBleHBlY3QocHVibGljU2lnbmFscykudG9IYXZlTGVuZ3RoKDE4KTsKICAgIGV4cGVjdChwdWJsaWNTaWduYWxzW1NJRy5jb250ZXh0SGFzaF0pLnRvQmUoZi5jb250ZXh0SGFzaC50b1N0cmluZygpKTsKICAgIGV4cGVjdChwdWJsaWNTaWduYWxzW1NJRy5hdHRlc3RhdGlvbkNvbW1pdG1lbnRdKS50b0JlKAogICAgICBmLmF0dGVzdGF0aW9uQ29tbWl0bWVudC50b1N0cmluZygpLAogICAgKTsKICAgIGV4cGVjdChwdWJsaWNTaWduYWxzW1NJRy5udWxsaWZpZXJdKS50b0JlKGYubnVsbGlmaWVyLnRvU3RyaW5nKCkpOwogIH0sIDYwMDAwKTsKCiAgaXQoInByb3ZlcyBhIGZpcnN0IHJlZ2lzdHJhdGlvbiAob2xkQWNjb3VudEhhc2ggPSAwLCBpc0ZpcnN0ID0gMSkiLCBhc3luYyAoKSA9PiB7CiAgICBjb25zdCBmID0gYnVpbGRGaXh0dXJlKHsgb2xkQWNjb3VudEhhc2g6IDBuIH0pOwogICAgY29uc3QgeyBwcm9vZiwgcHVibGljU2lnbmFscyB9ID0gYXdhaXQgZ3JvdGgxNi5mdWxsUHJvdmUoCiAgICAgIGYuaW5wdXQsCiAgICAgIFdBU01fUEFUSCwKICAgICAgWktFWV9QQVRILAogICAgKTsKICAgIGV4cGVjdChhd2FpdCBncm90aDE2LnZlcmlmeSh2a2V5LCBwdWJsaWNTaWduYWxzLCBwcm9vZikpLnRvQmUodHJ1ZSk7CiAgfSwgNjAwMDApOwoKICBpdCgicHJvdmVzIGEgY3JlZGVudGlhbCBhdCBhIG5vbi16ZXJvIE1lcmtsZSBpbmRleCAocmlnaHQtYnJhbmNoIG11eCkiLCBhc3luYyAoKSA9PiB7CiAgICBjb25zdCBmID0gYnVpbGRGaXh0dXJlKHsgbGVhZkluZGV4OiA1IH0pOwogICAgY29uc3QgeyBwcm9vZiwgcHVibGljU2lnbmFscyB9ID0gYXdhaXQgZ3JvdGgxNi5mdWxsUHJvdmUoCiAgICAgIGYuaW5wdXQsCiAgICAgIFdBU01fUEFUSCwKICAgICAgWktFWV9QQVRILAogICAgKTsKICAgIGV4cGVjdChhd2FpdCBncm90aDE2LnZlcmlmeSh2a2V5LCBwdWJsaWNTaWduYWxzLCBwcm9vZikpLnRvQmUodHJ1ZSk7CiAgfSwgNjAwMDApOwoKICBpdCgicmVqZWN0cyBhIHByb29mIHJlLXBvaW50ZWQgYXQgYSBkaWZmZXJlbnQgYWNjb3VudCBudW1iZXIiLCBhc3luYyAoKSA9PiB7CiAgICBjb25zdCBnYXRlRml4ZWRIYXNoID0gcG9zZWlkb242KFsKICAgICAgQUNDT1VOVF9ET01BSU4sCiAgICAgIDEyM24sCiAgICAgIDQ1Nm4sCiAgICAgIDFuLAogICAgICA3NjU0MzIxbiwKICAgICAgcG9zZWlkb24xKFszMTMzN25dKSwKICAgIF0pOwogICAgYXdhaXQgZXhwZWN0V2l0bmVzc0ZhaWx1cmUoCiAgICAgIGJ1aWxkRml4dHVyZSh7CiAgICAgICAgYWNjb3VudE51bWJlcjogNzY1NDk5OW4sCiAgICAgICAgbmV3QWNjb3VudEhhc2hPdmVycmlkZTogZ2F0ZUZpeGVkSGFzaCwKICAgICAgfSksCiAgICApOwogIH0sIDYwMDAwKTsKCiAgaXQoInJlamVjdHMgYW4gYWNjb3VudCBoZWxkIHVuZGVyIGEgZGlmZmVyZW50IG5hbWUgdGhhbiB0aGUgcmVnaXN0ZXJlZCBsZWdhbCBuYW1lIiwgYXN5bmMgKCkgPT4gewogICAgYXdhaXQgZXhwZWN0V2l0bmVzc0ZhaWx1cmUoCiAgICAgIGJ1aWxkRml4dHVyZSh7IGhvbGRlck5hbWVIYXNoOiBwb3NlaWRvbjEoWzk5OTk5OW5dKSB9KSwKICAgICk7CiAgfSwgNjAwMDApOwoKICBpdCgicmVqZWN0cyBhIHJlcHJlc2VudGF0aXZlIHdpdGhvdXQgdGhlIGFjY291bnQtY2hhbmdlIHJvbGUiLCBhc3luYyAoKSA9PiB7CiAgICBhd2FpdCBleHBlY3RXaXRuZXNzRmFpbHVyZSgKICAgICAgYnVpbGRGaXh0dXJlKHsgcmVxdWlyZWRSb2xlSGFzaDogcG9zZWlkb24xKFs4ODhuXSkgfSksCiAgICApOwogIH0sIDYwMDAwKTsKCiAgaXQoInJlamVjdHMgYSByZXZva2VkIGNyZWRlbnRpYWwgKHN0YXR1cyAhPSAxKSIsIGFzeW5jICgpID0+IHsKICAgIGF3YWl0IGV4cGVjdFdpdG5lc3NGYWlsdXJlKAogICAgICBidWlsZEZpeHR1cmUoeyBjcmVkOiB7IGNyZWRlbnRpYWxTdGF0dXM6IDBuIH0gfSksCiAgICApOwogIH0sIDYwMDAwKTsKCiAgaXQoInJlamVjdHMgYSBjcmVkZW50aWFsIHJlZ2lzdGVyZWQgYWZ0ZXIgdGhlIHJlcXVlc3Qgd2FzIHJlY2VpdmVkICh2MS4xIG9yZGVyaW5nKSIsIGFzeW5jICgpID0+IHsKICAgIGF3YWl0IGV4cGVjdFdpdG5lc3NGYWlsdXJlKAogICAgICBidWlsZEZpeHR1cmUoeyBjcmVkOiB7IHJlZ2lzdGVyZWRBdDogMTc2MDAwMDAwMG4gfSB9KSwKICAgICk7CiAgfSwgNjAwMDApOwoKICBpdCgicmVqZWN0cyB2YWxpZEZyb20gYWZ0ZXIgdGhlIGNoYWxsZW5nZSB3YXMgaXNzdWVkIiwgYXN5bmMgKCkgPT4gewogICAgYXdhaXQgZXhwZWN0V2l0bmVzc0ZhaWx1cmUoCiAgICAgIGJ1aWxkRml4dHVyZSh7IGNyZWQ6IHsgdmFsaWRGcm9tOiAxNzUwMDAwMjAwbiB9IH0pLAogICAgKTsKICB9LCA2MDAwMCk7CgogIGl0KCJyZWplY3RzIHZhbGlkVW50aWwgYmVmb3JlIHRoZSBjaGFsbGVuZ2UgZXhwaXJlcyIsIGFzeW5jICgpID0+IHsKICAgIGF3YWl0IGV4cGVjdFdpdG5lc3NGYWlsdXJlKAogICAgICBidWlsZEZpeHR1cmUoeyBjcmVkOiB7IHZhbGlkVW50aWw6IDE3NTAwNTAwMDBuIH0gfSksCiAgICApOwogIH0sIDYwMDAwKTsKCiAgaXQoInJlamVjdHMgYW4gZW1wdHkgY2hhbGxlbmdlIHdpbmRvdyAoaXNzdWVkQXQgPT0gZXhwaXJlc0F0KSIsIGFzeW5jICgpID0+IHsKICAgIGF3YWl0IGV4cGVjdFdpdG5lc3NGYWlsdXJlKAogICAgICBidWlsZEZpeHR1cmUoeyBjaGFsbGVuZ2VFeHBpcmVzQXQ6IDE3NTAwMDAxMDBuIH0pLAogICAgKTsKICB9LCA2MDAwMCk7CgogIGl0KCJyZWplY3RzIGEgcmVxdWVzdCByZWNlaXZlZCBhZnRlciB0aGUgY2hhbGxlbmdlIHdhcyBpc3N1ZWQiLCBhc3luYyAoKSA9PiB7CiAgICBhd2FpdCBleHBlY3RXaXRuZXNzRmFpbHVyZSgKICAgICAgYnVpbGRGaXh0dXJlKHsgcmVxdWVzdFJlY2VpdmVkQXQ6IDE3NTAwMDAyMDBuIH0pLAogICAgKTsKICB9LCA2MDAwMCk7CgogIGl0KCJyZWplY3RzIGEgd3JhcHBlZCAoci1rKSByZWdpc3RlcmVkQXQgLSA2NC1iaXQgcmFuZ2UgYmluZGluZyByZWdyZXNzaW9uIiwgYXN5bmMgKCkgPT4gewogICAgYXdhaXQgZXhwZWN0V2l0bmVzc0ZhaWx1cmUoCiAgICAgIGJ1aWxkRml4dHVyZSh7IGNyZWQ6IHsgcmVnaXN0ZXJlZEF0OiBCTjI1NF9QUklNRSAtIDEwMG4gfSB9KSwKICAgICk7CiAgfSwgNjAwMDApOwoKICBpdCgicmVqZWN0cyBhIHdyYXBwZWQgKHItaykgdmFsaWRGcm9tIC0gNjQtYml0IHJhbmdlIGJpbmRpbmcgcmVncmVzc2lvbiIsIGFzeW5jICgpID0+IHsKICAgIGF3YWl0IGV4cGVjdFdpdG5lc3NGYWlsdXJlKAogICAgICBidWlsZEZpeHR1cmUoeyBjcmVkOiB7IHZhbGlkRnJvbTogQk4yNTRfUFJJTUUgLSAxMDBuIH0gfSksCiAgICApOwogIH0sIDYwMDAwKTsKCiAgaXQoInJlamVjdHMgYSB0YW1wZXJlZCBNZXJrbGUgcGF0aCBlbGVtZW50IiwgYXN5bmMgKCkgPT4gewogICAgYXdhaXQgZXhwZWN0V2l0bmVzc0ZhaWx1cmUoCiAgICAgIGJ1aWxkRml4dHVyZSh7CiAgICAgICAgbWVya2xlUGF0aE11dGF0ZTogKHApID0+CiAgICAgICAgICBwLm1hcCgodiwgaSkgPT4gKGkgPT09IDMgPyAoQmlnSW50KHYpICsgMW4pLnRvU3RyaW5nKCkgOiB2KSksCiAgICAgIH0pLAogICAgKTsKICB9LCA2MDAwMCk7CgogIGl0KCJyZWplY3RzIGEgd3JvbmcgcmVnaXN0cnkgcm9vdCIsIGFzeW5jICgpID0+IHsKICAgIGF3YWl0IGV4cGVjdFdpdG5lc3NGYWlsdXJlKAogICAgICBidWlsZEZpeHR1cmUoeyByZWdpc3RyeVJvb3RPdmVycmlkZTogcG9zZWlkb24xKFsxbl0pIH0pLAogICAgKTsKICB9LCA2MDAwMCk7CgogIGl0KCJyZWplY3RzIGEgbm9uLWJvb2xlYW4gTWVya2xlIHBhdGggaW5kZXgiLCBhc3luYyAoKSA9PiB7CiAgICBjb25zdCBmID0gYnVpbGRGaXh0dXJlKHsgbGVhZkluZGV4OiA1IH0pOwogICAgY29uc3QgYmFkSW5kaWNlcyA9IFsuLi4oZi5pbnB1dC5tZXJrbGVJbmRpY2VzIGFzIHN0cmluZ1tdKV07CiAgICBiYWRJbmRpY2VzWzBdID0gIjIiOwogICAgYXdhaXQgZXhwZWN0V2l0bmVzc0ZhaWx1cmUoCiAgICAgIGJ1aWxkRml4dHVyZSh7IGxlYWZJbmRleDogNSwgbWVya2xlSW5kaWNlc092ZXJyaWRlOiBiYWRJbmRpY2VzIH0pLAogICAgKTsKICB9LCA2MDAwMCk7CgogIGl0KCJyZWplY3RzIGFub3RoZXIgdmVuZG9yJ3MgY3JlZGVudGlhbCBwcmVzZW50ZWQgdW5kZXIgdGhpcyB2ZW5kb3JJZCAoY3Jvc3MtdmVuZG9yKSIsIGFzeW5jICgpID0+IHsKICAgIGNvbnN0IHZlbmRvckEgPSBjcmVkZW50aWFsQ29tbWl0bWVudE9mKEJBU0VfQ1JFRCk7CiAgICBjb25zdCB2ZW5kb3JCOiBDcmVkZW50aWFsU3BlYyA9IHsKICAgICAgLi4uQkFTRV9DUkVELAogICAgICByZXBTZWNyZXQ6IDEyMzQ1Njc4OW4sCiAgICAgIHZlbmRvcklkOiA1MTUxNTFuLAogICAgfTsKICAgIGF3YWl0IGV4cGVjdFdpdG5lc3NGYWlsdXJlKAogICAgICBidWlsZEZpeHR1cmUoewogICAgICAgIGNyZWQ6IHZlbmRvckIsCiAgICAgICAgbGVhZkluZGV4OiAxLAogICAgICAgIGV4dHJhTGVhdmVzOiBuZXcgTWFwKFtbMCwgdmVuZG9yQV1dKSwKICAgICAgICB2ZW5kb3JJZElucHV0OiBCQVNFX0NSRUQudmVuZG9ySWQsCiAgICAgIH0pLAogICAgKTsKICB9LCA2MDAwMCk7CgogIGl0KCJyZWplY3RzIGlzRmlyc3QgPSAwIGZvciBhIGZpcnN0IHJlZ2lzdHJhdGlvbiIsIGFzeW5jICgpID0+IHsKICAgIGF3YWl0IGV4cGVjdFdpdG5lc3NGYWlsdXJlKAogICAgICBidWlsZEZpeHR1cmUoeyBvbGRBY2NvdW50SGFzaDogMG4sIGlzRmlyc3Q6IDBuIH0pLAogICAgKTsKICB9LCA2MDAwMCk7CgogIGl0KCJyZWplY3RzIGlzRmlyc3QgPSAxIHdoZW4gYW4gb2xkIGFjY291bnQgZXhpc3RzIiwgYXN5bmMgKCkgPT4gewogICAgYXdhaXQgZXhwZWN0V2l0bmVzc0ZhaWx1cmUoYnVpbGRGaXh0dXJlKHsgaXNGaXJzdDogMW4gfSkpOwogIH0sIDYwMDAwKTsKCiAgaXQoImRvZXMgbm90IHZlcmlmeSBhZ2FpbnN0IGEgZGlmZmVyZW50IGNoYWxsZW5nZSAocmVwbGF5IGFjcm9zcyBjaGFsbGVuZ2VzKSIsIGFzeW5jICgpID0+IHsKICAgIGNvbnN0IGYgPSBidWlsZEZpeHR1cmUoKTsKICAgIGNvbnN0IHsgcHJvb2YsIHB1YmxpY1NpZ25hbHMgfSA9IGF3YWl0IGdyb3RoMTYuZnVsbFByb3ZlKAogICAgICBmLmlucHV0LAogICAgICBXQVNNX1BBVEgsCiAgICAgIFpLRVlfUEFUSCwKICAgICk7CiAgICBleHBlY3QoYXdhaXQgZ3JvdGgxNi52ZXJpZnkodmtleSwgcHVibGljU2lnbmFscywgcHJvb2YpKS50b0JlKHRydWUpOwoKICAgIGNvbnN0IHRhbXBlcmVkID0gWy4uLnB1YmxpY1NpZ25hbHNdOwogICAgdGFtcGVyZWRbU0lHLmNoYWxsZW5nZUlkXSA9ICI3MDcwNzAiOwogICAgZXhwZWN0KGF3YWl0IGdyb3RoMTYudmVyaWZ5KHZrZXksIHRhbXBlcmVkLCBwcm9vZikpLnRvQmUoZmFsc2UpOwogIH0sIDYwMDAwKTsKCiAgaXQoImRvZXMgbm90IHZlcmlmeSB3aGVuIGF1ZGllbmNlLCByZXF1ZXN0LCB2ZW5kb3IsIG9sZCBhY2NvdW50LCBvciBwb2xpY3kgc2lnbmFscyBhcmUgdGFtcGVyZWQiLCBhc3luYyAoKSA9PiB7CiAgICBjb25zdCBmID0gYnVpbGRGaXh0dXJlKCk7CiAgICBjb25zdCB7IHByb29mLCBwdWJsaWNTaWduYWxzIH0gPSBhd2FpdCBncm90aDE2LmZ1bGxQcm92ZSgKICAgICAgZi5pbnB1dCwKICAgICAgV0FTTV9QQVRILAogICAgICBaS0VZX1BBVEgsCiAgICApOwogICAgZXhwZWN0KGF3YWl0IGdyb3RoMTYudmVyaWZ5KHZrZXksIHB1YmxpY1NpZ25hbHMsIHByb29mKSkudG9CZSh0cnVlKTsKCiAgICBjb25zdCBwb3NpdGlvbnMgPSBbCiAgICAgIFNJRy5hdWRpZW5jZUhhc2gsCiAgICAgIFNJRy5yZXF1ZXN0RGlnZXN0LAogICAgICBTSUcudmVuZG9ySWQsCiAgICAgIFNJRy5vbGRBY2NvdW50SGFzaCwKICAgICAgU0lHLnBvbGljeUhhc2gsCiAgICBdOwogICAgZm9yIChjb25zdCBwb3Mgb2YgcG9zaXRpb25zKSB7CiAgICAgIGNvbnN0IHRhbXBlcmVkID0gWy4uLnB1YmxpY1NpZ25hbHNdOwogICAgICB0YW1wZXJlZFtwb3NdID0gKEJpZ0ludCh0YW1wZXJlZFtwb3NdKSArIDFuKS50b1N0cmluZygpOwogICAgICBleHBlY3QoYXdhaXQgZ3JvdGgxNi52ZXJpZnkodmtleSwgdGFtcGVyZWQsIHByb29mKSkudG9CZShmYWxzZSk7CiAgICB9CiAgfSwgNjAwMDApOwp9KTsKCmRlc2NyaWJlLnJ1bklmKCFjaXJjdWl0QnVpbHQpKCJBY2NvdW50Q2hhbmdlVjEgY2lyY3VpdCAobm90IGJ1aWx0KSIsICgpID0+IHsKICBpdCgiaXMgc2tpcHBlZCB1bnRpbCB0aGUgY2lyY3VpdCBpcyBjb21waWxlZCIsICgpID0+IHsKICAgIGV4cGVjdChjaXJjdWl0QnVpbHQpLnRvQmUoZmFsc2UpOwogIH0pOwp9KTsK
+/**
+ * Circuit test: witness generation + proof verification for
+ * AccountChangeV1 (design v1.1 + post-review fixes).
+ *
+ * Positive cases: account change, first registration, and a credential
+ * at a non-zero Merkle index (exercises the right-branch mux).
+ * Negative cases cover every binding: content, holder, role, status,
+ * registration ordering, the full time window, Merkle path integrity,
+ * cross-vendor replay, isFirst consistency in both directions, and
+ * field-wrap timestamps (r-k) that must fail the 64-bit range binding.
+ * Verify-level cases tamper individual public signals.
+ *
+ * Like the sibling packages (e.g. listing-binding), the suite skips
+ * cleanly when the circuit has not been built.
+ */
+import { describe, it, beforeAll, expect } from "vitest";
+import * as path from "node:path";
+import * as fs from "node:fs";
+import { createHash } from "node:crypto";
+import { groth16 } from "snarkjs";
+import {
+  poseidon1,
+  poseidon2,
+  poseidon4,
+  poseidon5,
+  poseidon6,
+} from "poseidon-lite";
+
+const CIRCUITS_DIR = path.resolve(import.meta.dirname, "..");
+const BUILD_DIR = path.join(CIRCUITS_DIR, "build");
+const CIRCUIT_NAME = "account-change";
+const WASM_PATH = path.join(BUILD_DIR, `${CIRCUIT_NAME}_js`, `${CIRCUIT_NAME}.wasm`);
+const ZKEY_PATH = path.join(BUILD_DIR, `${CIRCUIT_NAME}_final.zkey`);
+const VKEY_PATH = path.join(BUILD_DIR, `${CIRCUIT_NAME}_vkey.json`);
+
+const circuitBuilt =
+  fs.existsSync(VKEY_PATH) && fs.existsSync(WASM_PATH) && fs.existsSync(ZKEY_PATH);
+
+const LEVELS = 20;
+const ACCOUNT_DOMAIN = 1101n;
+const CONTEXT_DOMAIN_A = 1102n;
+const CONTEXT_DOMAIN_B = 1103n;
+const BN254_PRIME = BigInt(
+  "21888242871839275222246405745257275088548364400416034343698204186575808495617",
+);
+
+// Zero-subtree hashes for a Poseidon2 Merkle tree whose empty leaf is 0.
+const zeroSubtree: bigint[] = [0n];
+for (let i = 1; i <= LEVELS; i++) {
+  zeroSubtree[i] = poseidon2([zeroSubtree[i - 1], zeroSubtree[i - 1]]);
+}
+
+/** Root of the subtree at (level, idx) for a sparse leaf assignment. */
+function subtreeRoot(
+  leaves: ReadonlyMap<number, bigint>,
+  level: number,
+  idx: number,
+): bigint {
+  const lo = idx * 2 ** level;
+  const hi = lo + 2 ** level;
+  let occupied = false;
+  for (const k of leaves.keys()) {
+    if (k >= lo && k < hi) {
+      occupied = true;
+      break;
+    }
+  }
+  if (!occupied) return zeroSubtree[level];
+  if (level === 0) return leaves.get(idx)!;
+  return poseidon2([
+    subtreeRoot(leaves, level - 1, idx * 2),
+    subtreeRoot(leaves, level - 1, idx * 2 + 1),
+  ]);
+}
+
+function merklePathFor(
+  leaves: ReadonlyMap<number, bigint>,
+  index: number,
+): { root: bigint; path: string[]; indices: string[] } {
+  const pathEls: string[] = [];
+  const indices: string[] = [];
+  for (let level = 0; level < LEVELS; level++) {
+    const nodeIdx = index >> level;
+    pathEls.push(subtreeRoot(leaves, level, nodeIdx ^ 1).toString());
+    indices.push(String(nodeIdx & 1));
+  }
+  return {
+    root: subtreeRoot(leaves, LEVELS, 0),
+    path: pathEls,
+    indices,
+  };
+}
+
+// Public signal positions: 3 outputs, then the 15 public inputs in
+// `main { public [...] }` declaration order.
+const SIG = {
+  contextHash: 0,
+  attestationCommitment: 1,
+  nullifier: 2,
+  registryRoot: 3,
+  credentialCommitment: 4,
+  requiredRoleHash: 5,
+  vendorId: 6,
+  oldAccountHash: 7,
+  newAccountHash: 8,
+  isFirst: 9,
+  audienceHash: 10,
+  requestDigest: 11,
+  requestReceivedAt: 12,
+  challengeId: 13,
+  challengeIssuedAt: 14,
+  challengeExpiresAt: 15,
+  policyHash: 16,
+  bankEvidenceHash: 17,
+} as const;
+
+interface CredentialSpec {
+  repSecret: bigint;
+  vendorId: bigint;
+  roleHash: bigint;
+  legalNameHash: bigint;
+  credentialStatus: bigint;
+  validFrom: bigint;
+  validUntil: bigint;
+  registeredAt: bigint;
+  credentialSalt: bigint;
+}
+
+function credentialCommitmentOf(c: CredentialSpec): bigint {
+  const identityHash = poseidon2([c.vendorId, poseidon1([c.repSecret])]);
+  const authorityHash = poseidon2([c.roleHash, c.legalNameHash]);
+  const lifecycleHash = poseidon4([
+    c.credentialStatus,
+    c.validFrom,
+    c.validUntil,
+    c.registeredAt,
+  ]);
+  return poseidon4([identityHash, authorityHash, lifecycleHash, c.credentialSalt]);
+}
+
+interface Fixture {
+  input: Record<string, string | string[]>;
+  contextHash: bigint;
+  attestationCommitment: bigint;
+  nullifier: bigint;
+}
+
+interface FixtureOverrides {
+  cred?: Partial<CredentialSpec>;
+  vendorIdInput?: bigint;
+  leafIndex?: number;
+  extraLeaves?: ReadonlyMap<number, bigint>;
+  requiredRoleHash?: bigint;
+  holderNameHash?: bigint;
+  accountNumber?: bigint;
+  newAccountHashOverride?: bigint;
+  oldAccountHash?: bigint;
+  isFirst?: bigint;
+  requestReceivedAt?: bigint;
+  challengeIssuedAt?: bigint;
+  challengeExpiresAt?: bigint;
+  policyHash?: bigint;
+  registryRootOverride?: bigint;
+  merklePathMutate?: (path: string[]) => string[];
+  merkleIndicesOverride?: string[];
+}
+
+// The SDK's commitments.toScalar for strings: SHA-256 of the UTF-8
+// bytes, mod r. The account-change role hash is defined over it (see
+// README "Operational definitions"), so the fixture uses the real
+// operational value instead of a dummy.
+const toScalar = (s: string): bigint =>
+  BigInt(`0x${createHash("sha256").update(s, "utf8").digest("hex")}`) %
+  BN254_PRIME;
+
+const ACCOUNT_CHANGE_ROLE_HASH = poseidon1([
+  toScalar("lemma:role:account-change"),
+]);
+
+const BASE_CRED: CredentialSpec = {
+  repSecret: 987654321n,
+  vendorId: 424242n,
+  roleHash: ACCOUNT_CHANGE_ROLE_HASH,
+  legalNameHash: poseidon1([31337n]),
+  credentialStatus: 1n,
+  validFrom: 1600000000n,
+  validUntil: 1800000000n,
+  registeredAt: 1700000000n,
+  credentialSalt: 555n,
+};
+
+function buildFixture(overrides: FixtureOverrides = {}): Fixture {
+  const cred: CredentialSpec = { ...BASE_CRED, ...overrides.cred };
+  const credentialCommitment = credentialCommitmentOf(cred);
+  const leafIndex = overrides.leafIndex ?? 0;
+  const leaves = new Map<number, bigint>(overrides.extraLeaves ?? []);
+  leaves.set(leafIndex, credentialCommitment);
+  const merkle = merklePathFor(leaves, leafIndex);
+  const merklePath = overrides.merklePathMutate
+    ? overrides.merklePathMutate(merkle.path)
+    : merkle.path;
+
+  const holderNameHash = overrides.holderNameHash ?? cred.legalNameHash;
+  const bankCode = 123n;
+  const branchCode = 456n;
+  const accountType = 1n;
+  const accountNumber = overrides.accountNumber ?? 7654321n;
+  const computedNewAccountHash = poseidon6([
+    ACCOUNT_DOMAIN,
+    bankCode,
+    branchCode,
+    accountType,
+    accountNumber,
+    holderNameHash,
+  ]);
+  const newAccountHash = overrides.newAccountHashOverride ?? computedNewAccountHash;
+  const oldAccountHash =
+    overrides.oldAccountHash ??
+    poseidon6([
+      ACCOUNT_DOMAIN,
+      bankCode,
+      branchCode,
+      accountType,
+      1111111n,
+      holderNameHash,
+    ]);
+  const isFirst = overrides.isFirst ?? (oldAccountHash === 0n ? 1n : 0n);
+
+  const vendorIdInput = overrides.vendorIdInput ?? cred.vendorId;
+  const registryRoot = overrides.registryRootOverride ?? merkle.root;
+  const audienceHash = poseidon1([2026001n]);
+  const requestDigest = poseidon1([909090n]);
+  const requestReceivedAt = overrides.requestReceivedAt ?? 1750000000n;
+  const challengeId = 606060n;
+  const challengeIssuedAt = overrides.challengeIssuedAt ?? 1750000100n;
+  const challengeExpiresAt = overrides.challengeExpiresAt ?? 1750100000n;
+  const policyHash = overrides.policyHash ?? poseidon1([111n]);
+  const bankEvidenceHash = poseidon1([24680n]);
+
+  const ctxA = poseidon4([
+    CONTEXT_DOMAIN_A,
+    audienceHash,
+    vendorIdInput,
+    requestDigest,
+  ]);
+  const ctxB = poseidon4([
+    CONTEXT_DOMAIN_B,
+    challengeId,
+    challengeIssuedAt,
+    challengeExpiresAt,
+  ]);
+  const contextHash = poseidon4([ctxA, ctxB, registryRoot, policyHash]);
+  const attestationCommitment = poseidon5([
+    credentialCommitment,
+    oldAccountHash,
+    newAccountHash,
+    bankEvidenceHash,
+    contextHash,
+  ]);
+  const nullifier = poseidon2([credentialCommitment, challengeId]);
+
+  const input: Record<string, string | string[]> = {
+    repSecret: cred.repSecret.toString(),
+    roleHash: cred.roleHash.toString(),
+    legalNameHash: cred.legalNameHash.toString(),
+    credentialStatus: cred.credentialStatus.toString(),
+    validFrom: cred.validFrom.toString(),
+    validUntil: cred.validUntil.toString(),
+    registeredAt: cred.registeredAt.toString(),
+    credentialSalt: cred.credentialSalt.toString(),
+    merklePath,
+    merkleIndices: overrides.merkleIndicesOverride ?? merkle.indices,
+    bankCode: bankCode.toString(),
+    branchCode: branchCode.toString(),
+    accountType: accountType.toString(),
+    accountNumber: accountNumber.toString(),
+    holderNameHash: holderNameHash.toString(),
+    registryRoot: registryRoot.toString(),
+    credentialCommitment: credentialCommitment.toString(),
+    requiredRoleHash: (overrides.requiredRoleHash ?? cred.roleHash).toString(),
+    vendorId: vendorIdInput.toString(),
+    oldAccountHash: oldAccountHash.toString(),
+    newAccountHash: newAccountHash.toString(),
+    isFirst: isFirst.toString(),
+    audienceHash: audienceHash.toString(),
+    requestDigest: requestDigest.toString(),
+    requestReceivedAt: requestReceivedAt.toString(),
+    challengeId: challengeId.toString(),
+    challengeIssuedAt: challengeIssuedAt.toString(),
+    challengeExpiresAt: challengeExpiresAt.toString(),
+    policyHash: policyHash.toString(),
+    bankEvidenceHash: bankEvidenceHash.toString(),
+  };
+
+  return { input, contextHash, attestationCommitment, nullifier };
+}
+
+async function expectWitnessFailure(f: Fixture): Promise<void> {
+  await expect(
+    groth16.fullProve(f.input, WASM_PATH, ZKEY_PATH),
+  ).rejects.toThrow();
+}
+
+describe.runIf(circuitBuilt)("AccountChangeV1 circuit", () => {
+  let vkey: object;
+
+  beforeAll(async () => {
+    vkey = JSON.parse(fs.readFileSync(VKEY_PATH, "utf-8"));
+  }, 30000);
+
+  it("pins the operational role hash (golden value)", () => {
+    // Poseidon1(toScalar("lemma:role:account-change")) with the SDK's
+    // toScalar. If this changes, the role definition changed — a
+    // policy change that must be reflected in policyHash (see README).
+    expect(ACCOUNT_CHANGE_ROLE_HASH).toBe(
+      2666895405497814583936866908763331297856096727475110877642173956138533085004n,
+    );
+  });
+
+  it("proves an account change and derives context / attestation / nullifier", async () => {
+    const f = buildFixture();
+    const { proof, publicSignals } = await groth16.fullProve(
+      f.input,
+      WASM_PATH,
+      ZKEY_PATH,
+    );
+
+    expect(await groth16.verify(vkey, publicSignals, proof)).toBe(true);
+    expect(publicSignals).toHaveLength(18);
+    expect(publicSignals[SIG.contextHash]).toBe(f.contextHash.toString());
+    expect(publicSignals[SIG.attestationCommitment]).toBe(
+      f.attestationCommitment.toString(),
+    );
+    expect(publicSignals[SIG.nullifier]).toBe(f.nullifier.toString());
+  }, 60000);
+
+  it("proves a first registration (oldAccountHash = 0, isFirst = 1)", async () => {
+    const f = buildFixture({ oldAccountHash: 0n });
+    const { proof, publicSignals } = await groth16.fullProve(
+      f.input,
+      WASM_PATH,
+      ZKEY_PATH,
+    );
+    expect(await groth16.verify(vkey, publicSignals, proof)).toBe(true);
+  }, 60000);
+
+  it("proves a credential at a non-zero Merkle index (right-branch mux)", async () => {
+    const f = buildFixture({ leafIndex: 5 });
+    const { proof, publicSignals } = await groth16.fullProve(
+      f.input,
+      WASM_PATH,
+      ZKEY_PATH,
+    );
+    expect(await groth16.verify(vkey, publicSignals, proof)).toBe(true);
+  }, 60000);
+
+  it("rejects a proof re-pointed at a different account number", async () => {
+    const gateFixedHash = poseidon6([
+      ACCOUNT_DOMAIN,
+      123n,
+      456n,
+      1n,
+      7654321n,
+      poseidon1([31337n]),
+    ]);
+    await expectWitnessFailure(
+      buildFixture({
+        accountNumber: 7654999n,
+        newAccountHashOverride: gateFixedHash,
+      }),
+    );
+  }, 60000);
+
+  it("rejects an account held under a different name than the registered legal name", async () => {
+    await expectWitnessFailure(
+      buildFixture({ holderNameHash: poseidon1([999999n]) }),
+    );
+  }, 60000);
+
+  it("rejects a representative without the account-change role", async () => {
+    await expectWitnessFailure(
+      buildFixture({ requiredRoleHash: poseidon1([888n]) }),
+    );
+  }, 60000);
+
+  it("rejects a revoked credential (status != 1)", async () => {
+    await expectWitnessFailure(
+      buildFixture({ cred: { credentialStatus: 0n } }),
+    );
+  }, 60000);
+
+  it("rejects a credential registered after the request was received (v1.1 ordering)", async () => {
+    await expectWitnessFailure(
+      buildFixture({ cred: { registeredAt: 1760000000n } }),
+    );
+  }, 60000);
+
+  it("rejects validFrom after the challenge was issued", async () => {
+    await expectWitnessFailure(
+      buildFixture({ cred: { validFrom: 1750000200n } }),
+    );
+  }, 60000);
+
+  it("rejects validUntil before the challenge expires", async () => {
+    await expectWitnessFailure(
+      buildFixture({ cred: { validUntil: 1750050000n } }),
+    );
+  }, 60000);
+
+  it("rejects an empty challenge window (issuedAt == expiresAt)", async () => {
+    await expectWitnessFailure(
+      buildFixture({ challengeExpiresAt: 1750000100n }),
+    );
+  }, 60000);
+
+  it("rejects a request received after the challenge was issued", async () => {
+    await expectWitnessFailure(
+      buildFixture({ requestReceivedAt: 1750000200n }),
+    );
+  }, 60000);
+
+  it("rejects a wrapped (r-k) registeredAt - 64-bit range binding regression", async () => {
+    await expectWitnessFailure(
+      buildFixture({ cred: { registeredAt: BN254_PRIME - 100n } }),
+    );
+  }, 60000);
+
+  it("rejects a wrapped (r-k) validFrom - 64-bit range binding regression", async () => {
+    await expectWitnessFailure(
+      buildFixture({ cred: { validFrom: BN254_PRIME - 100n } }),
+    );
+  }, 60000);
+
+  it("rejects a tampered Merkle path element", async () => {
+    await expectWitnessFailure(
+      buildFixture({
+        merklePathMutate: (p) =>
+          p.map((v, i) => (i === 3 ? (BigInt(v) + 1n).toString() : v)),
+      }),
+    );
+  }, 60000);
+
+  it("rejects a wrong registry root", async () => {
+    await expectWitnessFailure(
+      buildFixture({ registryRootOverride: poseidon1([1n]) }),
+    );
+  }, 60000);
+
+  it("rejects a non-boolean Merkle path index", async () => {
+    const f = buildFixture({ leafIndex: 5 });
+    const badIndices = [...(f.input.merkleIndices as string[])];
+    badIndices[0] = "2";
+    await expectWitnessFailure(
+      buildFixture({ leafIndex: 5, merkleIndicesOverride: badIndices }),
+    );
+  }, 60000);
+
+  it("rejects another vendor's credential presented under this vendorId (cross-vendor)", async () => {
+    const vendorA = credentialCommitmentOf(BASE_CRED);
+    const vendorB: CredentialSpec = {
+      ...BASE_CRED,
+      repSecret: 123456789n,
+      vendorId: 515151n,
+    };
+    await expectWitnessFailure(
+      buildFixture({
+        cred: vendorB,
+        leafIndex: 1,
+        extraLeaves: new Map([[0, vendorA]]),
+        vendorIdInput: BASE_CRED.vendorId,
+      }),
+    );
+  }, 60000);
+
+  it("rejects isFirst = 0 for a first registration", async () => {
+    await expectWitnessFailure(
+      buildFixture({ oldAccountHash: 0n, isFirst: 0n }),
+    );
+  }, 60000);
+
+  it("rejects isFirst = 1 when an old account exists", async () => {
+    await expectWitnessFailure(buildFixture({ isFirst: 1n }));
+  }, 60000);
+
+  it("does not verify against a different challenge (replay across challenges)", async () => {
+    const f = buildFixture();
+    const { proof, publicSignals } = await groth16.fullProve(
+      f.input,
+      WASM_PATH,
+      ZKEY_PATH,
+    );
+    expect(await groth16.verify(vkey, publicSignals, proof)).toBe(true);
+
+    const tampered = [...publicSignals];
+    tampered[SIG.challengeId] = "707070";
+    expect(await groth16.verify(vkey, tampered, proof)).toBe(false);
+  }, 60000);
+
+  it("does not verify when audience, request, vendor, old account, or policy signals are tampered", async () => {
+    const f = buildFixture();
+    const { proof, publicSignals } = await groth16.fullProve(
+      f.input,
+      WASM_PATH,
+      ZKEY_PATH,
+    );
+    expect(await groth16.verify(vkey, publicSignals, proof)).toBe(true);
+
+    const positions = [
+      SIG.audienceHash,
+      SIG.requestDigest,
+      SIG.vendorId,
+      SIG.oldAccountHash,
+      SIG.policyHash,
+    ];
+    for (const pos of positions) {
+      const tampered = [...publicSignals];
+      tampered[pos] = (BigInt(tampered[pos]) + 1n).toString();
+      expect(await groth16.verify(vkey, tampered, proof)).toBe(false);
+    }
+  }, 60000);
+});
+
+describe.runIf(!circuitBuilt)("AccountChangeV1 circuit (not built)", () => {
+  it("is skipped until the circuit is compiled", () => {
+    expect(circuitBuilt).toBe(false);
+  });
+});
