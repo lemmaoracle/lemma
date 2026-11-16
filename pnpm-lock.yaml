@@ -206,6 +206,25 @@ importers:
         specifier: ^8.72.2
         version: 8.72.2(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.8.3)
 
+  packages/account-change:
+    dependencies:
+      '@lemmaoracle/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      '@lemmaoracle/spec':
+        specifier: workspace:*
+        version: link:../spec
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.7
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.20.5
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
   packages/agent:
     dependencies:
       '@lemmaoracle/sdk':
