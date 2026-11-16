@@ -1,0 +1,11 @@
+{
+  "name": "@lemmaoracle/bank-account-change",
+  "version": "1.0.0",
+  "description": "Bank-account change ZK circuit for Lemma (ProofGate)",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@lemmaoracle/sdk": "workspace:*",
+    "@lemmaoracle/spec": "workspace:*"
+  }
+}
