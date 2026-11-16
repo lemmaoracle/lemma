@@ -2,6 +2,7 @@ pragma circom 2.1.0;
 
 include "circomlib/circuits/poseidon.circom";
 include "circomlib/circuits/comparators.circom";
+include "circomlib/circuits/bitify.circom";
 
 /**
  * AccountChangeV1 — proof for a bank-account change request
@@ -47,6 +48,15 @@ include "circomlib/circuits/comparators.circom";
  *   newAccountHash, audienceHash, requestDigest, requestReceivedAt,
  *   challengeId, challengeIssuedAt, challengeExpiresAt, policyHash
  *
+ * Prover-selected public input:
+ *   credentialCommitment — chosen by the prover, but bound by the
+ *   Merkle inclusion check against the gate-fixed registryRoot.
+ *
+ * Gate-derived public input:
+ *   isFirst — the gate derives it from its own records, and the circuit
+ *   forces it to equal IsZero(oldAccountHash), so neither side can
+ *   present an inconsistent value.
+ *
  * ProvenInput (prover-supplied public input):
  *   bankEvidenceHash — hash of bank-side account-control evidence (e.g. a
  *   challenge code observed in the new account's transaction history).
@@ -88,7 +98,7 @@ include "circomlib/circuits/comparators.circom";
  * data-commitment / agent-identity-valid do not constrain path indices
  * to be boolean and are deliberately not reused).
  *
- * Constraint count: 8,244 (circom 2.1.9; depth-20 Poseidon Merkle dominates) -> 2^15 ptau.
+ * Constraint count: 8,628 (circom 2.1.9; depth-20 Poseidon Merkle dominates) -> 2^15 ptau.
  */
 
 // ── MerkleProofChecker (Poseidon2 nodes; quadratic Mux) ─────────────
@@ -236,6 +246,25 @@ template AccountChangeV1(nLevels) {
     isFirst === oldIsZero.out;
 
     // ── 7. Time bindings (all 64-bit ranged) ────────────────────────
+    // Range-bind every time value to 64 bits first. Without this, a
+    // field element of the form r-k (a "negative" timestamp) wraps
+    // through LessEqThan's internal (a + 2^n - b) decomposition and
+    // reads as a very small timestamp, defeating the ordering checks
+    // below (review M-1). Num2Bits(64) makes any value >= 2^64 — and
+    // any wrapped r-k value — unsatisfiable.
+    component validFromBits = Num2Bits(64);
+    validFromBits.in <== validFrom;
+    component validUntilBits = Num2Bits(64);
+    validUntilBits.in <== validUntil;
+    component registeredAtBits = Num2Bits(64);
+    registeredAtBits.in <== registeredAt;
+    component requestReceivedAtBits = Num2Bits(64);
+    requestReceivedAtBits.in <== requestReceivedAt;
+    component challengeIssuedAtBits = Num2Bits(64);
+    challengeIssuedAtBits.in <== challengeIssuedAt;
+    component challengeExpiresAtBits = Num2Bits(64);
+    challengeExpiresAtBits.in <== challengeExpiresAt;
+
     // Credential must cover the whole challenge window:
     //   validFrom <= challengeIssuedAt < challengeExpiresAt <= validUntil
     component validFromCheck = LessEqThan(64);
