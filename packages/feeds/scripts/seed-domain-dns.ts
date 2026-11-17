@@ -21,7 +21,7 @@
  * The run prints the live record (`did=` + `oid=`) after the pipeline so the
  * operator can cross-check what was committed. `oid=` is the docHash of the
  * domain's latest org-identity-v1 commitment (`packages/roles
- * seed:org-identity`) — the Proof Card issuer check (CLUBS 側・別 PR) follows
+ * seed:org-identity`) — the Proof Card issuer check (CLUBS side, separate PR) follows
  * did → oid → proof, so a domain that wants to be trusted there must publish
  * both.
  *
@@ -83,13 +83,13 @@ const printRecord = async (domain: string): Promise<string> => {
       const effective = resolveOid(live, envOid);
       const lines = [
         `TXT _lemma.${domain}: did=${record.orgDid}` +
-          ` oid=${effective ?? "(none — Proof Card の発行者確認には org-identity の docHash を oid= で公開してください)"}` +
+          ` oid=${effective ?? "(none — publish the org-identity docHash as oid= so the Proof Card issuer check can find it)"}` +
           (record.verifiedAt === null ? "" : ` verified=${record.verifiedAt}`),
       ];
       if (live === null && effective !== null) {
         lines.push(
-          `  ⚠ 権威 DNS に oid= がまだありません（snapshot は ORG_IDENTITY_DOC_HASH を代用）。` +
-            `公開するレコード: "v=lemma1 did=${record.orgDid} oid=${effective}"` +
+          `  ⚠ The authoritative DNS has no oid= yet (the snapshot substitutes ORG_IDENTITY_DOC_HASH).` +
+            `Record to publish: "v=lemma1 did=${record.orgDid} oid=${effective}"` +
             (record.verifiedAt === null ? "" : ` verified=${record.verifiedAt}`),
         );
       }
@@ -97,7 +97,7 @@ const printRecord = async (domain: string): Promise<string> => {
     })
     .catch(
       (e: unknown) =>
-        `TXT _lemma.${domain}: 取得に失敗しました (${e instanceof Error ? e.message : String(e)})`,
+        `TXT _lemma.${domain}: fetch failed (${e instanceof Error ? e.message : String(e)})`,
     );
 };
 

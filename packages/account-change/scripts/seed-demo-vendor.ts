@@ -2,7 +2,7 @@
 /**
  * Seed the TEST-ONLY demo vendor bundle for account-change-v1 (Proof Card).
  *
- * ⚠ TEST-ONLY・本番では絶対に使わない。Every key below is a fixed demo
+ * ⚠ TEST-ONLY — never use in production. Every key below is a fixed demo
  * default (or an env override intended for tests). The demo secret is
  * public knowledge by construction, so a proof made from it proves
  * nothing about a real holder — never point a production registry or a
@@ -168,7 +168,7 @@ type DemoVendorBundle = Readonly<{
 }>;
 
 const main = (): void => {
-  console.error("⚠ TEST-ONLY・本番では絶対に使わない — demo vendor bundle (fixed demo keys).");
+  console.error("⚠ TEST-ONLY — never use in production — demo vendor bundle (fixed demo keys).");
 
   const repSecret = toScalar(DEMO_VENDOR_SECRET);
   const credentialSalt = toScalar(DEMO_VENDOR_SALT);
