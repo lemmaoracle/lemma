@@ -5,7 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "type-check": "tsc -p tsconfig.json --noEmit",
+    "seed:demo-vendor": "tsx scripts/seed-demo-vendor.ts"
   },
   "dependencies": {
     "@lemmaoracle/sdk": "workspace:*",
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "typescript": "5.8.3",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "poseidon-lite": "^0.3.0"
   }
 }
