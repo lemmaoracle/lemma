@@ -171,15 +171,160 @@ npm run build   # requires circom; uses cauldron phase2 like sibling packages
 npm test        # skips with a notice when build artifacts are absent
 ```
 
-`scripts/register-circuit.ts` is type-checked with
-`npm run typecheck` from the package root (after a workspace
-`pnpm install` and building `@lemmaoracle/sdk` / `@lemmaoracle/spec`).
+`scripts/*.ts` are type-checked with `pnpm type-check` from the package
+root (after a workspace `pnpm install` and building `@lemmaoracle/sdk` /
+`@lemmaoracle/spec`).
 
 ## Layout
 
 ```
-circuits/src/account-change.circom   the circuit
-circuits/test/account-change.test.ts positive + negative cases
+circuits/src/account-change.circom        the circuit
+circuits/src/derivations.ts               TS mirror of the leaf/tree derivations (shared by test + seed)
+circuits/test/account-change.test.ts      positive + negative cases
 circuits/scripts/build.sh                 compile + groth16 setup
-scripts/register-circuit.ts               register with the Lemma API
+scripts/register-circuit.ts               register with the Lemma API (wasm + zkey + vkey)
+scripts/seed-demo-vendor.ts               TEST-ONLY demo vendor bundle (pnpm seed:demo-vendor)
+demo-vendor.example.json                  committed example of one seed run (TEST-ONLY)
 ```
+
+## 接続契約（CLUBS 側）
+
+CLUBS 側の Proof Gate 統合がコーディングする共有リファレンス。CLUBS 側の
+実装は別 PR（clubsx）で行う。**提出ページ（web UI）は後続の別タスク** —
+この節はコア（回路・スクリプト・契約）だけを扱う。
+
+### 公開シグナルの並び（18 本）
+
+snarkjs の `publicSignals` は **出力3本 → `main { public [...] }` の宣言順**
+（`circuits/test/account-change.test.ts` の `SIG` が同じ並びを押さえている。
+食い違ったら回路が正）:
+
+| index | signal | 種別 |
+| ----- | ------ | ---- |
+| 0 | `contextHash` | 出力（回路内導出・prover 供給ではない） |
+| 1 | `attestationCommitment` | 出力 |
+| 2 | `nullifier` | 出力（= Poseidon2(credentialCommitment, challengeId)） |
+| 3 | `registryRoot` | GateInput |
+| 4 | `credentialCommitment` | prover 選択（registryRoot に対する Merkle 包含で拘束） |
+| 5 | `requiredRoleHash` | GateInput |
+| 6 | `vendorId` | GateInput |
+| 7 | `oldAccountHash` | GateInput（初回登録は 0） |
+| 8 | `newAccountHash` | GateInput |
+| 9 | `isFirst` | GateInput（= IsZero(oldAccountHash) に拘束） |
+| 10 | `audienceHash` | GateInput |
+| 11 | `requestDigest` | GateInput |
+| 12 | `requestReceivedAt` | GateInput |
+| 13 | `challengeId` | GateInput |
+| 14 | `challengeIssuedAt` | GateInput |
+| 15 | `challengeExpiresAt` | GateInput |
+| 16 | `policyHash` | GateInput |
+| 17 | `bankEvidenceHash` | ProvenInput（prover 供給・ゲートが実物確認する） |
+
+### CLUBS 側エンドポイント（CLUBS 側で実装する）
+
+- `GET /api/gate-card/{ref}` → 提出用ペイロード:
+
+  ```json
+  {
+    "card": {
+      "clubName": "…",
+      "caseTitle": "…",
+      "payeeName": "…",
+      "runLabel": "…",
+      "expiresAt": "…",
+      "issuerDomain": "…",
+      "gate": {
+        "circuitId": "account-change-v1",
+        "registryRoot": "<10進の体要素>",
+        "vendorId": "<10進の体要素>",
+        "requiredRoleHash": "<10進の体要素>",
+        "audience": "<文字列>",
+        "policy": "<文字列>",
+        "requestCanonical": "<文字列>",
+        "requestReceivedAt": 1760000000,
+        "challengeId": "…",
+        "challengeIssuedAt": 1760000000,
+        "challengeExpiresAt": 1760100000,
+        "isFirst": true
+      }
+    }
+  }
+  ```
+
+  - `audience` / `policy` / `requestCanonical` は**文字列**で来る。プローバ側は
+    SDK の `commitments.toScalar`（文字列 = SHA-256 mod r）で体要素に変えてから
+    `audienceHash` / `policyHash` / `requestDigest` を組む。
+  - `oldAccountHash` / `newAccountHash` は CLUBS から送られない。プローバ側が
+    自分の入力から `Poseidon6(1101, bankCode, branchCode, accountType,
+    accountNumber, holderNameHash)` で導出する（数値欄は固定幅10進として
+    パース・口座名は両側で同じ正規化器にかける — 上の
+    「Operational definitions」参照）。
+- `POST /api/gate-card/{ref}` ボディ `{ proof, publicSignals }` →
+  `{ ok: true }` または 4xx。`publicSignals` は上の並びのまま文字列配列。
+
+### 2 段階検証（Gate policy どおり・消費の前後）
+
+1. **stage 1 — 証明の検証**: `POST {workers}/v1/proofs/verify` に
+   `{circuitId, proof, publicSignals}` → valid。
+2. **stage 2 — 実物確認**: `bankEvidenceHash` を銀行側の証拠（新口座の
+   入出金明細に付いたチャレンジコード）と突き合わせる。**チャレンジを消費する
+   前に**行う（回路は hash を拘束するだけで真偽は証明しない）。
+3. 通ったら、チャレンジを原子的に消費し、`nullifier` を記録し、
+   `newAccountHash` として証明された口座**ちょうど**を登録する。
+
+### 運用手順
+
+1. `cd circuits && npm install && npm run build` — wasm / zkey /
+   **`account-change_vkey.json`** が出る
+2. `npx tsx scripts/register-circuit.ts` — **vkey を含む3点**（wasm・zkey・
+   vkey）を Pinata に上げて `circuits.register`。vkey が無いと workers の
+   `POST /v1/proofs/verify` も `@lemmaoracle/verify` のリゾルバも
+   `artifact.location.vkey` から検証鍵を取れず、証明がすべて検証で落ちる
+   （スクリプトは vkey 無しで登録しない）
+3. `pnpm seed:demo-vendor` → `demo-vendor.example.json` の
+   `registryRoot` / `vendorId` / `requiredRoleHash` / `oldAccountHash` を
+   CLUBS 側の環境変数へ（⚠ TEST-ONLY）
+4. 発行元ドメイン: TXT `_lemma.<domain>` に `oid=<orgIdentityDocHash>` を載せて
+   `packages/feeds` の `seed:domain-dns`（TXT に `oid=` が届く前は
+   `ORG_IDENTITY_DOC_HASH` で pin できる）、`packages/roles` の
+   `seed:org-identity` は **24時間以内の再実行**（timestamp が古くなると
+   発行者確認が stale を拒否する）
+
+### 回路の登録（vkey 必須）
+
+サーバー側検証（workers `POST /v1/proofs/verify` と `@lemmaoracle/verify`）は
+どちらも `artifact.location.vkey` を見て Groth16 の検証鍵を取りに行く。
+**vkey を登録し忘れた回路は、証明を作れてもすべて検証で落ちる**（生成と検証で
+鍵が食い違うため）。`register-circuit.ts` は3点を一緒に上げ、vkey が無ければ
+明示的なエラーで止まる（build.sh を先に回すこと）。
+
+### デモベンダー（TEST-ONLY）
+
+```sh
+pnpm seed:demo-vendor          # == npx tsx scripts/seed-demo-vendor.ts
+# → demo-vendor.example.json に書き出し、同じ JSON を stdout にも出す
+```
+
+`demo-vendor.example.json` は⚠ **テスト専用・本番では絶対に使わない**。
+固定のデモ鍵（`DEMO_VENDOR_SECRET` 既定 `demo-vendor-secret-1` 等）から
+決定的に作るので、本番のレジストリや実在の口座には使えない。
+導出（leaf・Merkle・口座 hash）は回路テストと**同じ共有モジュール**
+（`circuits/src/derivations.ts`）を使うので、テストと食い違わない。
+
+CLUBS（ゲート）側がこのバンドルから固定する公開値:
+
+| 値 | 由来 |
+| --- | --- |
+| `registryRoot` | 深さ20の Poseidon Merkle（リーフ1枚 = credentialCommitment・index 0）の根 |
+| `vendorId` | `Poseidon1(toScalar("lemma:vendor:demo"))`（デモ用の固定タグ・回路は任意値） |
+| `requiredRoleHash` | `Poseidon1(toScalar("lemma:role:account-change"))`（回路テストのゴールデン値・スクリプトが assert する） |
+| `oldAccountHash` | `oldAccount` 欄からの `Poseidon6(1101, …)` — ゲートは初回受け付けまでこれを `oldAccountHash` として記録する |
+
+環境変数（すべて既定値つき・TEST-ONLY）: `DEMO_VENDOR_SECRET` /
+`DEMO_VENDOR_SALT` / `DEMO_ROLE_NAME` / `DEMO_LEGAL_NAME` / `DEMO_OLD_BANK` /
+`DEMO_OLD_BRANCH` / `DEMO_OLD_TYPE` / `DEMO_OLD_NUMBER` / `DEMO_OLD_HOLDER` /
+`DEMO_NOW`（ms・時刻の基準）。時刻は `validFrom = now−30d` /
+`validUntil = now+365d` / `registeredAt = now−30d`（unix 秒）なので、
+**再実行すると registryRoot が変わる** — 再実行したらゲート側も一緒に
+設定し直す。名前の正規化は trim + ASCII uppercase（デモの約束。
+`holderNameHash === legalNameHash` が成立しない組み合わせは起動時に落ちる）。
