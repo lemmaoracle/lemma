@@ -15,7 +15,22 @@
  * (packages/spec §SubmitProof — "DNS-verified domain").
  *
  * DNS record contract:
- *   _lemma.example.com  TXT  "v=lemma1 did=<poseidon-hex>" [verified=<iso8601>]
+ *   _lemma.example.com  TXT  "v=lemma1 did=<poseidon-hex>"
+ *                             [oid=<orgIdentityDocHash>] [verified=<iso8601>]
+ *
+ * `oid=` (added 2026-11 for the Proof Card issuer check) points at the
+ * org-identity-v1 commitment document (`packages/roles seed:org-identity`)
+ * for the same domain, so a verifier can go DNS → oid → proof without any
+ * out-of-band channel. Records without `oid=` keep parsing (backward
+ * compat) — the issuer check just cannot run for them.
+ *
+ * Seeding helper: the `ORG_IDENTITY_DOC_HASH` env (read by `fetch`, set by
+ * `scripts/seed-domain-dns.ts`) pins the intended oid. When the live TXT
+ * carries no `oid=` yet (record published before DNS propagation, or the
+ * document seeded before the record goes live), the env value fills the
+ * snapshot so the registered document carries `meta.oid`. If the live
+ * record carries a *different* oid, that is a misconfiguration — fetch
+ * fails rather than committing the wrong pair.
  *
  * Long TXT values are split into 255-byte character-strings on the wire; the
  * DoH JSON answer concatenates them back as quoted chunks ("…" "…"), which
@@ -39,6 +54,12 @@ export type DomainVerifyRecord = Readonly<{
   readonly domain: string;
   /** The orgDid published by the domain (`did=` tag value). */
   readonly orgDid: string;
+  /**
+   * Optional org-identity-v1 document hash (`oid=` tag) for the same
+   * domain — `GET /v1/proofs?docHash=<oid>` returns its latest proof.
+   * Null for old `did=`-only records.
+   */
+  readonly orgIdentityDocHash: string | null;
   /** Optional timestamp the domain operator set (`verified=` tag). */
   readonly verifiedAt: string | null;
 }>;
@@ -82,8 +103,8 @@ export const concatTxtChunks = (data: string): string => {
 /**
  * Parse the concatenated `_lemma` TXT payload into the record.
  *
- * `v=lemma1` must be the first tag; `did=` is required; `verified=` is
- * optional; anything else is rejected.
+ * `v=lemma1` must be the first tag; `did=` is required; `oid=` and
+ * `verified=` are optional; anything else is rejected.
  */
 export const parseLemmaTxt = (
   txt: string,
@@ -111,7 +132,9 @@ export const parseLemmaTxt = (
         ? fail(`domain-dns: unparsable tag "${tag}"`)
         : [tag.slice(0, eq), tag.slice(eq + 1)];
     });
-  const unknownTag = pairs.find(([k]) => k !== "did" && k !== "verified");
+  const unknownTag = pairs.find(
+    ([k]) => k !== "did" && k !== "oid" && k !== "verified",
+  );
   // imperative: sync validation boundary must throw (see `fail`)
   const _knownTagsChecked: undefined =
     unknownTag !== undefined
@@ -124,9 +147,39 @@ export const parseLemmaTxt = (
     orgDid === undefined || orgDid === ""
       ? fail("domain-dns: missing did= tag")
       : undefined;
+  const orgIdentityDocHash = pairs.find(([k]) => k === "oid")?.[1] ?? null;
   const verifiedAt = pairs.find(([k]) => k === "verified")?.[1] ?? null;
 
-  return { domain: stripRootDot(domain), orgDid: orgDid ?? "", verifiedAt };
+  return {
+    domain: stripRootDot(domain),
+    orgDid: orgDid ?? "",
+    orgIdentityDocHash,
+    verifiedAt,
+  };
+};
+
+/**
+ * Merge the live record's `oid=` with the `ORG_IDENTITY_DOC_HASH` env pin.
+ *
+ * - live only → live (plain reading, backward compatible)
+ * - env only  → env (the snapshot pins the intended oid before the zone
+ *   publishes it — the registered document carries `meta.oid`)
+ * - both      → they must agree; a mismatch is a misconfiguration and throws
+ * - neither   → null
+ */
+export const resolveOid = (
+  liveOid: string | null,
+  envOid: string,
+): string | null => {
+  const oid = envOid.trim();
+  // imperative: sync validation boundary must throw (see `fail`)
+  const _mismatchChecked: undefined =
+    liveOid !== null && oid !== "" && liveOid !== oid
+      ? fail(
+          `domain-dns: TXT oid=${liveOid} does not match ORG_IDENTITY_DOC_HASH=${oid}`,
+        )
+      : undefined;
+  return liveOid ?? (oid === "" ? null : oid);
 };
 
 // ── DoH response → TXT strings ──────────────────────────────────────────────
@@ -182,9 +235,10 @@ export const lemmaAnswer = (
 // ── snapshot ────────────────────────────────────────────────────────────────
 
 /**
- * The committed compact structure (~6 leaves): type, domain, orgDid,
- * verifiedAt, queriedAt, doh. The raw DoH answer travels in `data.answer`
- * (uncommitted) so a client can re-derive the tags without re-querying.
+ * The committed compact structure (~7 leaves): type, domain, orgDid,
+ * orgIdentityDocHash, verifiedAt, queriedAt, doh. The raw DoH answer
+ * travels in `data.answer` (uncommitted) so a client can re-derive the
+ * tags without re-querying.
  */
 export const buildSnapshot = (
   record: DomainVerifyRecord,
@@ -195,6 +249,7 @@ export const buildSnapshot = (
     type: TYPE,
     domain: record.domain,
     orgDid: record.orgDid,
+    orgIdentityDocHash: record.orgIdentityDocHash ?? "",
     verifiedAt: record.verifiedAt ?? "",
     queriedAt,
     doh: dohUrl,
@@ -239,7 +294,14 @@ export const domainDns: FeedSource = {
     const response = (await resp.json()) as Json;
 
     const answerData = lemmaAnswer(txtAnswers(response, name), domain);
-    const record = parseLemmaTxt(answerData, domain);
+    const parsed = parseLemmaTxt(answerData, domain);
+    const record: DomainVerifyRecord = {
+      ...parsed,
+      orgIdentityDocHash: resolveOid(
+        parsed.orgIdentityDocHash,
+        env("ORG_IDENTITY_DOC_HASH", ""),
+      ),
+    };
     const queriedAt = new Date().toISOString();
 
     // Commit the compact structure; the raw DoH answer rides along uncommitted.
@@ -276,6 +338,7 @@ export const domainDns: FeedSource = {
       "meta.type": jsonString(obj["type"], TYPE),
       "meta.domain": jsonString(obj["domain"], ""),
       "meta.orgDid": jsonString(obj["orgDid"], ""),
+      "meta.oid": jsonString(obj["orgIdentityDocHash"], ""),
       "meta.verifiedAt": jsonString(obj["verifiedAt"], ""),
       "meta.queriedAt": jsonString(obj["queriedAt"], ""),
       "meta.doh": jsonString(obj["doh"], ""),

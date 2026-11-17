@@ -18,13 +18,14 @@ import * as path from "node:path";
 import * as fs from "node:fs";
 import { createHash } from "node:crypto";
 import { groth16 } from "snarkjs";
+import { poseidon1, poseidon2, poseidon4, poseidon5 } from "poseidon-lite";
 import {
-  poseidon1,
-  poseidon2,
-  poseidon4,
-  poseidon5,
-  poseidon6,
-} from "poseidon-lite";
+  ACCOUNT_DOMAIN,
+  accountHashOf,
+  credentialCommitmentOf,
+  merklePathFor,
+} from "../src/derivations.js";
+import type { CredentialSpec } from "../src/derivations.js";
 
 const CIRCUITS_DIR = path.resolve(import.meta.dirname, "..");
 const BUILD_DIR = path.join(CIRCUITS_DIR, "build");
@@ -36,60 +37,11 @@ const VKEY_PATH = path.join(BUILD_DIR, `${CIRCUIT_NAME}_vkey.json`);
 const circuitBuilt =
   fs.existsSync(VKEY_PATH) && fs.existsSync(WASM_PATH) && fs.existsSync(ZKEY_PATH);
 
-const LEVELS = 20;
-const ACCOUNT_DOMAIN = 1101n;
 const CONTEXT_DOMAIN_A = 1102n;
 const CONTEXT_DOMAIN_B = 1103n;
 const BN254_PRIME = BigInt(
   "21888242871839275222246405745257275088548364400416034343698204186575808495617",
 );
-
-// Zero-subtree hashes for a Poseidon2 Merkle tree whose empty leaf is 0.
-const zeroSubtree: bigint[] = [0n];
-for (let i = 1; i <= LEVELS; i++) {
-  zeroSubtree[i] = poseidon2([zeroSubtree[i - 1], zeroSubtree[i - 1]]);
-}
-
-/** Root of the subtree at (level, idx) for a sparse leaf assignment. */
-function subtreeRoot(
-  leaves: ReadonlyMap<number, bigint>,
-  level: number,
-  idx: number,
-): bigint {
-  const lo = idx * 2 ** level;
-  const hi = lo + 2 ** level;
-  let occupied = false;
-  for (const k of leaves.keys()) {
-    if (k >= lo && k < hi) {
-      occupied = true;
-      break;
-    }
-  }
-  if (!occupied) return zeroSubtree[level];
-  if (level === 0) return leaves.get(idx)!;
-  return poseidon2([
-    subtreeRoot(leaves, level - 1, idx * 2),
-    subtreeRoot(leaves, level - 1, idx * 2 + 1),
-  ]);
-}
-
-function merklePathFor(
-  leaves: ReadonlyMap<number, bigint>,
-  index: number,
-): { root: bigint; path: string[]; indices: string[] } {
-  const pathEls: string[] = [];
-  const indices: string[] = [];
-  for (let level = 0; level < LEVELS; level++) {
-    const nodeIdx = index >> level;
-    pathEls.push(subtreeRoot(leaves, level, nodeIdx ^ 1).toString());
-    indices.push(String(nodeIdx & 1));
-  }
-  return {
-    root: subtreeRoot(leaves, LEVELS, 0),
-    path: pathEls,
-    indices,
-  };
-}
 
 // Public signal positions: 3 outputs, then the 15 public inputs in
 // `main { public [...] }` declaration order.
@@ -113,30 +65,6 @@ const SIG = {
   policyHash: 16,
   bankEvidenceHash: 17,
 } as const;
-
-interface CredentialSpec {
-  repSecret: bigint;
-  vendorId: bigint;
-  roleHash: bigint;
-  legalNameHash: bigint;
-  credentialStatus: bigint;
-  validFrom: bigint;
-  validUntil: bigint;
-  registeredAt: bigint;
-  credentialSalt: bigint;
-}
-
-function credentialCommitmentOf(c: CredentialSpec): bigint {
-  const identityHash = poseidon2([c.vendorId, poseidon1([c.repSecret])]);
-  const authorityHash = poseidon2([c.roleHash, c.legalNameHash]);
-  const lifecycleHash = poseidon4([
-    c.credentialStatus,
-    c.validFrom,
-    c.validUntil,
-    c.registeredAt,
-  ]);
-  return poseidon4([identityHash, authorityHash, lifecycleHash, c.credentialSalt]);
-}
 
 interface Fixture {
   input: Record<string, string | string[]>;
@@ -205,25 +133,23 @@ function buildFixture(overrides: FixtureOverrides = {}): Fixture {
   const branchCode = 456n;
   const accountType = 1n;
   const accountNumber = overrides.accountNumber ?? 7654321n;
-  const computedNewAccountHash = poseidon6([
-    ACCOUNT_DOMAIN,
+  const computedNewAccountHash = accountHashOf({
     bankCode,
     branchCode,
     accountType,
     accountNumber,
     holderNameHash,
-  ]);
+  });
   const newAccountHash = overrides.newAccountHashOverride ?? computedNewAccountHash;
   const oldAccountHash =
     overrides.oldAccountHash ??
-    poseidon6([
-      ACCOUNT_DOMAIN,
+    accountHashOf({
       bankCode,
       branchCode,
       accountType,
-      1111111n,
+      accountNumber: 1111111n,
       holderNameHash,
-    ]);
+    });
   const isFirst = overrides.isFirst ?? (oldAccountHash === 0n ? 1n : 0n);
 
   const vendorIdInput = overrides.vendorIdInput ?? cred.vendorId;
@@ -355,14 +281,13 @@ describe.runIf(circuitBuilt)("AccountChangeV1 circuit", () => {
   }, 60000);
 
   it("rejects a proof re-pointed at a different account number", async () => {
-    const gateFixedHash = poseidon6([
-      ACCOUNT_DOMAIN,
-      123n,
-      456n,
-      1n,
-      7654321n,
-      poseidon1([31337n]),
-    ]);
+    const gateFixedHash = accountHashOf({
+      bankCode: 123n,
+      branchCode: 456n,
+      accountType: 1n,
+      accountNumber: 7654321n,
+      holderNameHash: poseidon1([31337n]),
+    });
     await expectWitnessFailure(
       buildFixture({
         accountNumber: 7654999n,
@@ -514,7 +439,7 @@ describe.runIf(circuitBuilt)("AccountChangeV1 circuit", () => {
     ];
     for (const pos of positions) {
       const tampered = [...publicSignals];
-      tampered[pos] = (BigInt(tampered[pos]) + 1n).toString();
+      tampered[pos] = (BigInt(tampered[pos] as string) + 1n).toString();
       expect(await groth16.verify(vkey, tampered, proof)).toBe(false);
     }
   }, 60000);

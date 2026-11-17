@@ -171,15 +171,176 @@ npm run build   # requires circom; uses cauldron phase2 like sibling packages
 npm test        # skips with a notice when build artifacts are absent
 ```
 
-`scripts/register-circuit.ts` is type-checked with
-`npm run typecheck` from the package root (after a workspace
-`pnpm install` and building `@lemmaoracle/sdk` / `@lemmaoracle/spec`).
+`scripts/*.ts` are type-checked with `pnpm type-check` from the package
+root (after a workspace `pnpm install` and building `@lemmaoracle/sdk` /
+`@lemmaoracle/spec`).
 
 ## Layout
 
 ```
-circuits/src/account-change.circom   the circuit
-circuits/test/account-change.test.ts positive + negative cases
+circuits/src/account-change.circom        the circuit
+circuits/src/derivations.ts               TS mirror of the leaf/tree derivations (shared by test + seed)
+circuits/test/account-change.test.ts      positive + negative cases
 circuits/scripts/build.sh                 compile + groth16 setup
-scripts/register-circuit.ts               register with the Lemma API
+scripts/register-circuit.ts               register with the Lemma API (wasm + zkey + vkey)
+scripts/seed-demo-vendor.ts               TEST-ONLY demo vendor bundle (pnpm seed:demo-vendor)
+demo-vendor.example.json                  committed example of one seed run (TEST-ONLY)
 ```
+
+## Integration contract (CLUBS side)
+
+The shared reference the CLUBS-side Proof Gate integration codes against.
+The CLUBS-side implementation lives in a separate PR (clubsx). **The
+submission page (web UI) is a follow-up task** — this section covers only
+the core (circuit, scripts, contract).
+
+### Public signal order (18 signals)
+
+snarkjs `publicSignals` are ordered **3 outputs → declaration order in
+`main { public [...] }`** (the `SIG` table in
+`circuits/test/account-change.test.ts` pins the same order; if they
+disagree, the circuit wins):
+
+| index | signal | kind |
+| ----- | ------ | ---- |
+| 0 | `contextHash` | output (derived in-circuit; not prover-supplied) |
+| 1 | `attestationCommitment` | output |
+| 2 | `nullifier` | output (= Poseidon2(credentialCommitment, challengeId)) |
+| 3 | `registryRoot` | GateInput |
+| 4 | `credentialCommitment` | prover-chosen (bound by Merkle inclusion in `registryRoot`) |
+| 5 | `requiredRoleHash` | GateInput |
+| 6 | `vendorId` | GateInput |
+| 7 | `oldAccountHash` | GateInput (0 for a first registration) |
+| 8 | `newAccountHash` | GateInput |
+| 9 | `isFirst` | GateInput (bound to IsZero(oldAccountHash)) |
+| 10 | `audienceHash` | GateInput |
+| 11 | `requestDigest` | GateInput |
+| 12 | `requestReceivedAt` | GateInput |
+| 13 | `challengeId` | GateInput |
+| 14 | `challengeIssuedAt` | GateInput |
+| 15 | `challengeExpiresAt` | GateInput |
+| 16 | `policyHash` | GateInput |
+| 17 | `bankEvidenceHash` | ProvenInput (prover-supplied; the gate verifies the original) |
+
+### CLUBS-side endpoints (implemented on the CLUBS side)
+
+- `GET /api/gate-card/{ref}` → the submission payload:
+
+  ```json
+  {
+    "card": {
+      "clubName": "…",
+      "caseTitle": "…",
+      "payeeName": "…",
+      "runLabel": "…",
+      "expiresAt": "…",
+      "issuerDomain": "…",
+      "gate": {
+        "circuitId": "account-change-v1",
+        "registryRoot": "<decimal field element>",
+        "vendorId": "<decimal field element>",
+        "requiredRoleHash": "<decimal field element>",
+        "audience": "<string>",
+        "policy": "<string>",
+        "requestCanonical": "<string>",
+        "requestReceivedAt": 1760000000,
+        "challengeId": "…",
+        "challengeIssuedAt": 1760000000,
+        "challengeExpiresAt": 1760100000,
+        "isFirst": true
+      }
+    }
+  }
+  ```
+
+  - `audience` / `policy` / `requestCanonical` arrive as **strings**. The
+    prover side converts them to field elements with the SDK's
+    `commitments.toScalar` (string = SHA-256 mod r) and then builds
+    `audienceHash` / `policyHash` / `requestDigest`.
+  - `oldAccountHash` / `newAccountHash` are not sent from CLUBS. The
+    prover side derives them from its own inputs as
+    `Poseidon6(1101, bankCode, branchCode, accountType, accountNumber, holderNameHash)`
+    (numeric fields are parsed as fixed-width decimals; the account name
+    goes through the same normalizer on both sides — see "Operational
+    definitions" above).
+- `POST /api/gate-card/{ref}` with body `{ proof, publicSignals }` →
+  `{ ok: true }` or 4xx. `publicSignals` is a string array in the order
+  above.
+
+### Two-stage verification (per Gate policy, around consumption)
+
+1. **stage 1 — proof verification**: `POST {workers}/v1/proofs/verify`
+   with `{circuitId, proof, publicSignals}` → valid.
+2. **stage 2 — original-evidence check**: match `bankEvidenceHash`
+   against the bank-side evidence (the challenge code attached to the
+   new account's statement). Do this **before consuming the challenge**
+   (the circuit only binds the hash; it does not prove its truth).
+3. Once both pass, atomically consume the challenge, record the
+   `nullifier`, and register **exactly** the account proven as
+   `newAccountHash`.
+
+### Operational order
+
+1. `cd circuits && npm install && npm run build` — produces wasm / zkey /
+   **`account-change_vkey.json`**
+2. `npx tsx scripts/register-circuit.ts` — uploads **all 3 artifacts
+   including the vkey** (wasm, zkey, vkey) to Pinata and calls
+   `circuits.register`. Without the vkey, neither the workers
+   `POST /v1/proofs/verify` nor the `@lemmaoracle/verify` resolver can
+   obtain the verification key from `artifact.location.vkey`, and every
+   proof fails verification (the script refuses to register without a
+   vkey)
+3. `pnpm seed:demo-vendor` → copy `registryRoot` / `vendorId` /
+   `requiredRoleHash` / `oldAccountHash` from
+   `demo-vendor.example.json` into the CLUBS-side environment variables
+   (⚠ TEST-ONLY)
+4. Issuer domain: publish `oid=<orgIdentityDocHash>` in the TXT record
+   `_lemma.<domain>` and run `seed:domain-dns` from `packages/feeds`
+   (until `oid=` reaches the TXT record, it can be pinned with
+   `ORG_IDENTITY_DOC_HASH`); re-run `seed:org-identity` from
+   `packages/roles` **within 24 hours** (issuer verification rejects
+   stale timestamps)
+
+### Circuit registration (vkey required)
+
+Server-side verification (the workers `POST /v1/proofs/verify` and
+`@lemmaoracle/verify`) both obtain the Groth16 verification key from
+`artifact.location.vkey`. **A circuit registered without its vkey can
+produce proofs that all fail verification** (the generation and
+verification keys diverge). `register-circuit.ts` uploads all three
+artifacts together and stops with an explicit error when the vkey is
+missing (run build.sh first).
+
+### Demo vendor (TEST-ONLY)
+
+```sh
+pnpm seed:demo-vendor          # == npx tsx scripts/seed-demo-vendor.ts
+# → writes demo-vendor.example.json and prints the same JSON to stdout
+```
+
+`demo-vendor.example.json` is ⚠ **test-only — never use in production**.
+It is derived deterministically from fixed demo keys (e.g. the
+`DEMO_VENDOR_SECRET` default `demo-vendor-secret-1`), so it cannot be
+used for a production registry or real accounts. The derivations (leaf,
+Merkle, account hash) use the **same shared module** as the circuit
+tests (`circuits/src/derivations.ts`), so they cannot drift from the
+tests.
+
+Public values the CLUBS (gate) side fixes from this bundle:
+
+| value | origin |
+| --- | --- |
+| `registryRoot` | root of a depth-20 Poseidon Merkle tree (a single leaf = credentialCommitment, at index 0) |
+| `vendorId` | `Poseidon1(toScalar("lemma:vendor:demo"))` (a fixed demo tag; the circuit accepts any value) |
+| `requiredRoleHash` | `Poseidon1(toScalar("lemma:role:account-change"))` (the golden value in the circuit tests; asserted by the script) |
+| `oldAccountHash` | `Poseidon6(1101, …)` over the `oldAccount` fields — the gate records this as `oldAccountHash` until the first submission |
+
+Environment variables (all with defaults; TEST-ONLY): `DEMO_VENDOR_SECRET` /
+`DEMO_VENDOR_SALT` / `DEMO_ROLE_NAME` / `DEMO_LEGAL_NAME` / `DEMO_OLD_BANK` /
+`DEMO_OLD_BRANCH` / `DEMO_OLD_TYPE` / `DEMO_OLD_NUMBER` / `DEMO_OLD_HOLDER` /
+`DEMO_NOW` (ms; the time base). Times are `validFrom = now−30d` /
+`validUntil = now+365d` / `registeredAt = now−30d` (unix seconds), so
+**re-running changes registryRoot** — reconfigure the gate side after a
+re-run. Name normalization is trim + ASCII uppercase (a demo convention;
+combinations where `holderNameHash === legalNameHash` does not hold fail
+at startup).

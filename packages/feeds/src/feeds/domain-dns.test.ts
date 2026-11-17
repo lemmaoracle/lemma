@@ -3,6 +3,7 @@ import {
   lemmaTxtName,
   concatTxtChunks,
   parseLemmaTxt,
+  resolveOid,
   txtAnswers,
   lemmaAnswer,
   buildSnapshot,
@@ -30,10 +31,11 @@ describe("concatTxtChunks", () => {
 });
 
 describe("parseLemmaTxt", () => {
-  it("parses did and optional verified tags", () => {
+  it("parses did and optional verified tags (backward compat: no oid)", () => {
     expect(parseLemmaTxt("v=lemma1 did=0xabc", "example.com")).toEqual({
       domain: "example.com",
       orgDid: "0xabc",
+      orgIdentityDocHash: null,
       verifiedAt: null,
     });
     expect(
@@ -44,9 +46,50 @@ describe("parseLemmaTxt", () => {
     ).toEqual({
       domain: "example.com",
       orgDid: "0xabc",
+      orgIdentityDocHash: null,
       verifiedAt: "2026-08-28T00:00:00Z",
     });
   });
+
+  it("parses the optional oid tag (org-identity document hash)", () => {
+    expect(
+      parseLemmaTxt(
+        "v=lemma1 did=0xabc oid=0x" + "ab".repeat(32),
+        "example.com",
+      ),
+    ).toEqual({
+      domain: "example.com",
+      orgDid: "0xabc",
+      orgIdentityDocHash: "0x" + "ab".repeat(32),
+      verifiedAt: null,
+    });
+  });
+
+describe("resolveOid", () => {
+  it("keeps the live oid when only the record carries one", () => {
+    expect(resolveOid("0xabc", "")).toBe("0xabc");
+    expect(resolveOid("0xabc", "   ")).toBe("0xabc");
+  });
+
+  it("pins the env oid when the record does not carry one yet", () => {
+    expect(resolveOid(null, "0xabc")).toBe("0xabc");
+  });
+
+  it("accepts an env oid that agrees with the record", () => {
+    expect(resolveOid("0xabc", "0xabc")).toBe("0xabc");
+  });
+
+  it("returns null when neither the record nor the env carries an oid", () => {
+    expect(resolveOid(null, "")).toBeNull();
+    expect(resolveOid(null, "   ")).toBeNull();
+  });
+
+  it("rejects a record oid that disagrees with ORG_IDENTITY_DOC_HASH", () => {
+    expect(() => resolveOid("0xaaa", "0xbbb")).toThrow(
+      "does not match ORG_IDENTITY_DOC_HASH",
+    );
+  });
+});
 
   it("rejects a record that does not start with v=lemma1", () => {
     expect(() => parseLemmaTxt("v=DKIM1 k=rsa", "example.com")).toThrow();
@@ -117,7 +160,12 @@ describe("lemmaAnswer", () => {
 describe("buildSnapshot", () => {
   it("commits a ~6-field compact structure with domain and orgDid", () => {
     const { compact, record } = buildSnapshot(
-      { domain: "example.com", orgDid: "0xabc", verifiedAt: null },
+      {
+        domain: "example.com",
+        orgDid: "0xabc",
+        orgIdentityDocHash: "0x" + "ab".repeat(32),
+        verifiedAt: null,
+      },
       "2026-08-28T01:02:03.000Z",
       "https://cloudflare-dns.com/dns-query",
     );
@@ -125,13 +173,16 @@ describe("buildSnapshot", () => {
       "doh",
       "domain",
       "orgDid",
+      "orgIdentityDocHash",
       "queriedAt",
       "type",
       "verifiedAt",
     ]);
     expect(compact["domain"]).toBe("example.com");
     expect(compact["orgDid"]).toBe("0xabc");
+    expect(compact["orgIdentityDocHash"]).toBe("0x" + "ab".repeat(32));
     expect(compact["verifiedAt"]).toBe("");
     expect(record.orgDid).toBe("0xabc");
+    expect(record.orgIdentityDocHash).toBe("0x" + "ab".repeat(32));
   });
 });
