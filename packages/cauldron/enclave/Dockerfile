@@ -3,7 +3,7 @@
 FROM node:20.20.2-alpine3.22@sha256:8f47899606d000b0704e992f927fe7335adcd0d6c98851600072fb6e14a13e60
 
 RUN apk add --no-cache \
-      python3=3.12.15-r0 \
+      python3=3.12.16-r0 \
       py3-pip=25.1.1-r0 \
       socat=1.8.1.3-r0
 
