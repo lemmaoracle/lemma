@@ -1,0 +1,1061 @@
+---
+import type { Locale } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import LemmaOracle from "../components/LemmaOracle.astro";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const base = locale === "ja" ? "/ja" : "";
+const ja = locale === "ja";
+const title = ja ? "受け取った記録を確かめる" : "Check a record you received";
+const description = ja
+  ? "発行元から受け取った確認用コード（docHash）で、公開された登録と証明データを確認します。"
+  : "Use the reference code (docHash) from the issuer to check its public registration and proof data.";
+---
+
+<Layout locale={locale} title={title} description={description} metaType="page" pagePath="/verify/">
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;600&family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@200;300;400;500&family=Space+Mono&display=swap"
+  />
+  <div class="v9">
+    <header class="v9-hd">
+      <a href={`${base}/`} class="v9-logo" aria-label="Lemma"><LemmaOracle /></a>
+    </header>
+    <main class="v9-main" data-live-verifier data-ja={String(ja)}>
+      <div class="v9-wrap">
+        <p class="v9-kicker">LEMMA / VERIFY</p>
+        <h1 class="v9-h2">{title}</h1>
+        <p class="v9-lede">{description}</p>
+        <ol class="verify-guide" aria-label={ja ? "確認の手順" : "How to check"}>
+          {
+            (ja
+              ? [
+                  {
+                    title: "コードを受け取る",
+                    body: "確認したい記録の発行元から docHash を受け取ります。",
+                  },
+                  {
+                    title: "貼り付けて確認",
+                    body: "公開された登録と、それに結び付いた証明を照会します。",
+                  },
+                  {
+                    title: "結果を読み取る",
+                    body: "確認できたこと・未確認のことを分けて表示します。",
+                  },
+                ]
+              : [
+                  {
+                    title: "Get the code",
+                    body: "Ask the issuer for the docHash of the record you want to check.",
+                  },
+                  {
+                    title: "Paste and check",
+                    body: "Look up the public registration and the proof linked to it.",
+                  },
+                  {
+                    title: "Read the result",
+                    body: "See which checks passed and which remain unconfirmed.",
+                  },
+                ]
+            ).map((step, index) => (
+              <li>
+                <>
+                  <span aria-hidden="true">0{index + 1}</span>
+                  <strong>{step.title}</strong>
+                  <p>{step.body}</p>
+                </>
+              </li>
+            ))
+          }
+        </ol>
+        <form id="lookup" novalidate>
+          <label for="doc-hash">{ja ? "確認用コード（docHash）" : "Reference code (docHash)"}</label
+          >
+          <p id="hash-help">
+            {
+              ja
+                ? "0x から始まる66文字のコードを、そのまま貼り付けてください。"
+                : "Paste the full 66-character code starting with 0x."
+            }
+          </p>
+          <div class="input-row">
+            <input
+              id="doc-hash"
+              name="doc"
+              type="text"
+              required
+              pattern="0x[0-9a-fA-F]{64}"
+              placeholder="0x…"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-describedby="hash-help hash-error"
+            />
+            <button type="submit" class="verify-primary"
+              >{ja ? "記録を確認する" : "Check the record"}</button
+            >
+          </div>
+          <p id="hash-error" class="input-error" role="alert" hidden></p>
+          <div class="form-notes">
+            <p>
+              {
+                ja
+                  ? "コードは Lemma の公開APIに送信されます。文書の本文やファイルはアップロードしません。"
+                  : "The code is sent to Lemma’s public API. No document text or files are uploaded."
+              }
+            </p><button id="clear-input" type="button" class="text-button"
+              >{ja ? "入力をクリア" : "Clear input"}</button
+            >
+          </div>
+        </form>
+        <noscript
+          ><p class="input-error">
+            {
+              ja
+                ? "この画面での確認には JavaScript が必要です。ブラウザーの設定で有効にしてから、再読み込みしてください。"
+                : "Enable JavaScript in your browser and reload to use this checker."
+            }
+          </p></noscript
+        >
+        <p id="verify-status" class="verify-sr-only" role="status" aria-atomic="true"></p>
+        <div id="live-result" role="region" aria-labelledby="result-title" aria-busy="false">
+          <div class="empty-state">
+            <h2 id="result-title">
+              {ja ? "確認結果はここに表示されます" : "Your result will appear here"}
+            </h2><p>
+              {
+                ja
+                  ? "コードを入力して「記録を確認する」を押してください。"
+                  : "Enter a code and choose “Check the record”."
+              }
+            </p>
+          </div>
+        </div>
+        <section class="verify-help" aria-labelledby="verify-help-title">
+          <h2 id="verify-help-title">
+            {ja ? "確認するときに知っておきたいこと" : "Before you use the result"}
+          </h2>
+          <details>
+            <summary
+              >{
+                ja ? "確認用コードはどこで入手できますか？" : "Where do I get the reference code?"
+              }</summary
+            >
+            <p>
+              {
+                ja
+                  ? "確認したい記録の発行元から、docHash という名前のコードを受け取ってください。コードが見当たらない場合は、発行元に「この記録の docHash を教えてください」と問い合わせてください。"
+                  : "Ask the issuer for the code called docHash. If you cannot find it, ask them to provide the docHash for this specific record."
+              }
+            </p>
+            <p>
+              {
+                ja
+                  ? "文書の本文ではなく、発行元から受け取ったコードを入力してください。"
+                  : "Enter the reference code from the issuer rather than the document text."
+              }
+            </p>
+          </details>
+          <details>
+            <summary>{ja ? "この画面で何が確認できますか？" : "What does this page check?"}</summary
+            >
+            <p>
+              {
+                ja
+                  ? "入力したコードの登録状態と、それに結び付いた最新の証明データを公開APIで確認します。Cyber 以外の種類の証明も照会できます。"
+                  : "The public API checks the registration status of your code and the latest proof linked to it. You can also look up proofs outside Cyber."
+              }
+            </p>
+            <p>
+              {
+                ja
+                  ? "何を確かめる証明かは、その種類（回路）によって異なります。対応していない種類や取得できない証明は、未確認として表示します。"
+                  : "The conditions a proof checks depend on its type (circuit). Unsupported types and unavailable proofs remain unconfirmed."
+              }
+            </p>
+          </details>
+          <details>
+            <summary
+              >{
+                ja
+                  ? "「確認できた」なら、そのまま信用してよいですか？"
+                  : "Does a successful check mean I can trust everything?"
+              }</summary
+            >
+            <p>
+              {
+                ja
+                  ? "今回確認したのは、公開された登録と証明データです。文書本文との一致、送信者が本人であること、業務上その操作を承認してよいかは、この画面では確認していません。"
+                  : "This page checks the public registration and proof data. It does not compare the document itself, establish the sender’s identity or authorize a business action."
+              }
+            </p>
+            <p>
+              {
+                ja
+                  ? "証明が対象にする条件を発行元に確認し、業務で必要な照合や承認も行ってください。"
+                  : "Ask the issuer which conditions the proof covers, and complete the checks and approvals your workflow requires."
+              }
+            </p>
+          </details>
+          <details>
+            <summary
+              >{ja ? "開発者向け：APIで確認する" : "For developers: check with the API"}</summary
+            >
+            <p>
+              {
+                ja
+                  ? "以下を手元で実行できます。証明の検証はリモートの公開APIが行います。完全なオフライン検証には、対応する検証鍵と検証器が別途必要です。"
+                  : "Run this snippet on your machine. The remote public API verifies the proof. Fully offline verification requires the matching verification key and verifier."
+              }
+            </p>
+            <pre><code id="verify-code" /></pre>
+          </details>
+        </section>
+        <p class="verify-back">
+          <a href={`${base}/cyber/`}>{ja ? "← Cyber の説明に戻る" : "← Back to Cyber"}</a>
+        </p>
+      </div>
+    </main>
+    <footer class="v9-ft">
+      <span>© FRAME00, Inc.</span><a href={`${base}/terms/`}>{ja ? "利用規約" : "Terms"}</a><a
+        href={`${base}/privacy/`}>{ja ? "プライバシー" : "Privacy"}</a
+      >
+    </footer>
+  </div>
+</Layout>
+<script>
+  // Preserve the original single-record view and all query parameters on legacy deep links.
+  const legacyUrl = new URL(window.location.href);
+  legacyUrl.searchParams.has("doc") &&
+    window.location.replace(
+      `${legacyUrl.pathname.replace(/\/$/, "")}/counters/${legacyUrl.search}${legacyUrl.hash}`,
+    );
+  const root = document.querySelector<HTMLElement>("[data-live-verifier]")!;
+  const ja = root.dataset.ja === "true";
+  const text = (jp: string, en: string) => (ja ? jp : en);
+  const api = "https://workers.lemma.workers.dev/v1";
+  const form = document.querySelector<HTMLFormElement>("#lookup")!;
+  const input = document.querySelector<HTMLInputElement>("#doc-hash")!;
+  const button = form.querySelector<HTMLButtonElement>("button[type='submit']")!;
+  const clearButton = document.querySelector<HTMLButtonElement>("#clear-input")!;
+  const inputError = document.querySelector<HTMLElement>("#hash-error")!;
+  const status = document.querySelector<HTMLElement>("#verify-status")!;
+  const result = document.querySelector<HTMLElement>("#live-result")!;
+  const idleMarkup = result.innerHTML;
+  const esc = (value: unknown) =>
+    String(value ?? "").replace(
+      /[&<>"']/g,
+      (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!,
+    );
+  const string = (value: unknown) => (typeof value === "string" ? value : "");
+  const record = (value: unknown): Readonly<Record<string, unknown>> =>
+    value !== null && typeof value === "object" && !Array.isArray(value)
+      ? (value as Readonly<Record<string, unknown>>)
+      : {};
+  const mappedIssuer = (doc: Readonly<Record<string, unknown>>) => {
+    const schema = string(doc.schemaId);
+    const issuer = string(doc.issuerId);
+    const feeds: Readonly<Record<string, string>> = {
+      "forex/composite": text("為替データフィード", "FX data feed"),
+      "forex/er-api": text("為替データフィード", "FX data feed"),
+      "forex/frankfurter": text("為替データフィード", "FX data feed"),
+      "jp-holidays": text("祝日データフィード", "JP holidays feed"),
+      "jp-postal-codes": text("郵便番号データフィード", "JP postal codes feed"),
+    };
+    const feedId = issuer.endsWith("-pipeline") ? issuer.slice(0, -9) : "";
+    return ["clubs.nippo.v1", "clubs.seal-issuance.v1"].includes(schema)
+      ? "CLUBS"
+      : Object.prototype.hasOwnProperty.call(feeds, feedId)
+        ? feeds[feedId]
+        : "";
+  };
+  const jst = (value: unknown) => {
+    const date = new Date(string(value));
+    return Number.isNaN(date.getTime())
+      ? ""
+      : `${date.toLocaleString(ja ? "ja-JP" : "en-GB", { timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false })} JST`;
+  };
+  const request = async (url: string, init: RequestInit = {}) =>
+    fetch(url, {
+      ...init,
+      signal: AbortSignal.timeout(20000),
+      headers: { accept: "application/json", ...init.headers },
+    })
+      .then(async (response) => ({
+        status: response.status,
+        ok: response.ok,
+        data: response.ok ? record(await response.json()) : {},
+      }))
+      .catch(() => ({ status: 0, ok: false, data: {} as Readonly<Record<string, unknown>> }));
+  const row = (label: string, value: string) =>
+    value ? `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>` : "";
+  const check = (label: string, state: string, tone: string) =>
+    `<li><strong>${esc(label)}</strong><span class="check-state ${esc(tone)}">${esc(state)}</span></li>`;
+  const loading = (active: number) => {
+    const labels = [
+      text("登録された記録を取得", "Look up the registration"),
+      text("関連する証明を取得", "Retrieve the linked proof"),
+      text("証明データを検証", "Verify the proof data"),
+    ];
+    status.textContent = labels[active];
+    result.innerHTML = `<div class="loading-state"><h2 id="result-title">${text("確認しています…", "Checking the record…")}</h2><ol class="check-progress">${labels.map((label, index) => `<li class="${index < active ? "complete" : index === active ? "current" : ""}"><span aria-hidden="true">${index < active ? "✓" : `0${index + 1}`}</span>${esc(label)}${index === active ? `<span class="progress-label">${text("確認中", "In progress")}</span>` : ""}</li>`).join("")}</ol></div>`;
+  };
+  const snippet = (hash: string) => `const api = "${api}";
+const docHash = ${JSON.stringify(hash || "PASTE_DOC_HASH")};
+const response = await fetch(api + "/proofs?docHash=" + encodeURIComponent(docHash));
+if (!response.ok) throw new Error("Proof lookup unavailable");
+const { docHash: linkedHash, circuitId, proof, inputs } = await response.json();
+if (linkedHash?.toLowerCase() !== docHash.toLowerCase()) {
+  throw new Error("Proof does not match the requested docHash");
+}
+const verification = await fetch(api + "/proofs/verify", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ circuitId, proof, publicSignals: inputs })
+});
+if (!verification.ok) throw new Error("Verification unavailable");
+console.log(await verification.json());`;
+  document.querySelector("#verify-code")!.textContent = snippet("");
+  const clearError = () => {
+    inputError.hidden = true;
+    inputError.textContent = "";
+    input.removeAttribute("aria-invalid");
+  };
+  const reset = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.has("doc")
+      ? (url.searchParams.delete("doc"), window.history.replaceState(null, "", url))
+      : undefined;
+    clearError();
+    result.innerHTML = idleMarkup;
+    status.textContent = "";
+    document.querySelector("#verify-code")!.textContent = snippet("");
+  };
+  const run = async () => {
+    const hash = input.value.trim();
+    input.value = hash;
+    clearError();
+    return /^0x[0-9a-fA-F]{64}$/.test(hash)
+      ? execute(hash)
+      : ((inputError.textContent =
+          hash.length === 0
+            ? text(
+                "発行元から受け取った確認用コード（docHash）を入力してください。",
+                "Enter the reference code (docHash) from the issuer.",
+              )
+            : text(
+                "コードの形式を確認してください。0x に続く64文字の半角英数字（0〜9、a〜f）を、省略せず貼り付けます。",
+                "Check the code: paste 0x followed by all 64 hexadecimal characters (0–9, a–f), without shortening it.",
+              )),
+        (inputError.hidden = false),
+        input.setAttribute("aria-invalid", "true"),
+        input.focus());
+  };
+  const execute = async (hash: string) => {
+    button.disabled = true;
+    input.disabled = true;
+    clearButton.disabled = true;
+    result.setAttribute("aria-busy", "true");
+    loading(0);
+    const url = new URL(window.location.href);
+    url.searchParams.set("doc", hash);
+    window.history.replaceState(null, "", url);
+    document.querySelector("#verify-code")!.textContent = snippet(hash);
+    const docUrl = `${api}/documents/${encodeURIComponent(hash)}`;
+    const proofUrl = `${api}/proofs?docHash=${encodeURIComponent(hash)}`;
+    const docResponse = await request(docUrl);
+    loading(1);
+    const proofResponse = await request(proofUrl);
+    const doc = docResponse.data;
+    const proof = proofResponse.data;
+    const linked = proofResponse.ok && string(proof.docHash).toLowerCase() === hash.toLowerCase();
+    const usable =
+      linked && !!string(proof.circuitId) && proof.proof != null && Array.isArray(proof.inputs);
+    usable ? loading(2) : undefined;
+    const verification = usable
+      ? await request(`${api}/proofs/verify`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            circuitId: proof.circuitId,
+            proof: proof.proof,
+            publicSignals: proof.inputs,
+          }),
+        })
+      : null;
+    const docValid =
+      docResponse.ok &&
+      string(doc.docHash).toLowerCase() === hash.toLowerCase() &&
+      ["registered", "anchored", "pending", "not_found"].includes(string(doc.status));
+    const verificationError = verification?.ok ? string(verification.data.error) : "";
+    const offline =
+      (!docValid && docResponse.status !== 404) ||
+      (!proofResponse.ok && proofResponse.status !== 404) ||
+      (proofResponse.ok && !usable) ||
+      !!verificationError ||
+      (verification !== null && (!verification.ok || typeof verification.data.valid !== "boolean"));
+    const invalid = verification?.ok && verification.data.valid === false && !verificationError;
+    const verified = verification?.ok && verification.data.valid === true && !verificationError;
+    const missing = docResponse.status === 404 || (docValid && doc.status === "not_found");
+    const registered =
+      docValid && ["registered", "anchored", "pending"].includes(string(doc.status));
+    const pending = docValid && doc.status === "pending";
+    const band = offline
+      ? [
+          "neutral",
+          text("確認を完了できませんでした", "The check could not be completed"),
+          text(
+            "通信や検証に必要なデータの取得に問題があり、結果を確定できませんでした。",
+            "A connection or verification data issue prevented a conclusive result.",
+          ),
+        ]
+      : invalid
+        ? [
+            "bad",
+            text("証明データを確認できませんでした", "The proof did not verify"),
+            text(
+              "取得した証明と公開入力の検証は成功しませんでした。原因は発行元に確認してください。",
+              "Verification of the retrieved proof and public inputs did not succeed. Ask the issuer to check the cause.",
+            ),
+          ]
+        : missing
+          ? [
+              "bad",
+              text("登録が見つかりませんでした", "No registration was found"),
+              text(
+                "入力したコードに対応する登録を見つけられませんでした。",
+                "No registration matching the entered code was found.",
+              ),
+            ]
+          : registered && verified
+            ? [
+                "good",
+                text("登録と証明を確認できました", "Registration and proof checked"),
+                text(
+                  "公開された登録を取得し、それに結び付いた証明データの検証に成功しました。",
+                  "The public registration was retrieved and its linked proof data verified successfully.",
+                ),
+              ]
+            : [
+                "neutral",
+                text("登録済みですが、証明は未確認です", "Registered, with the proof unconfirmed"),
+                text(
+                  "記録の登録は確認できましたが、証明の検証は完了していません。",
+                  "The record is registered, but proof verification has not been completed.",
+                ),
+              ];
+    const proofState = verified
+      ? text("✓ 検証できました", "✓ Verified")
+      : invalid
+        ? text("× 検証できませんでした", "× Did not verify")
+        : text("? 未確認", "? Unconfirmed");
+    const registrationState = registered
+      ? text("✓ 登録済み", "✓ Registered")
+      : missing
+        ? text("× 見つかりません", "× Not found")
+        : text("? 未確認", "? Unconfirmed");
+    const linkedState = linked
+      ? text("✓ 取得できました", "✓ Retrieved")
+      : proofResponse.status === 404
+        ? text("? 見つかりません", "? No proof found")
+        : proofResponse.ok
+          ? text("? コードとの一致が未確認", "? Code match unconfirmed")
+          : text("? 取得できませんでした", "? Could not retrieve");
+    const next = offline
+      ? text(
+          "少し時間をおいて再試行してください。繰り返す場合は、発行元にこのコードと確認日時を伝え、証明を確認できる状態か問い合わせてください。",
+          "Wait a moment and try again. If this persists, send the issuer the code and check time, and ask whether the proof is available for verification.",
+        )
+      : missing
+        ? text(
+            "コードを最後まで貼り付けたか確認してください。見つからない場合は、発行元にコードと登録状況を問い合わせてください。",
+            "Check that you pasted the complete code. If no record is found, ask the issuer to confirm the code and registration status.",
+          )
+        : invalid
+          ? text(
+              "もう一度確認し、同じ結果になる場合は発行元に証明の再確認を依頼してください。この表示だけでは、改ざんなどの原因を断定できません。",
+              "Try the check again. If the result is unchanged, ask the issuer to recheck the proof. This result alone does not establish a cause such as tampering.",
+            )
+          : registered && !verified
+            ? text(
+                "発行元に、この記録の証明が公開されているか問い合わせてください。",
+                "Ask the issuer whether a proof for this record has been published.",
+              )
+            : text(
+                "どの条件を確かめる証明かを発行元に確認し、業務で必要な照合や承認とあわせて判断してください。",
+                "Confirm which conditions the proof covers with the issuer, and complete the checks and approvals your workflow requires.",
+              );
+    result.innerHTML = `<section class="result-panel"><div class="band ${band[0]}"><p class="result-eyebrow">${text("確認結果", "CHECK RESULT")}</p><h2 id="result-title" tabindex="-1">${esc(band[1])}</h2><p>${esc(band[2])}</p></div>
+      <h3>${text("今回確認したこと", "Checks performed")}</h3><ul class="checks">${check(text("記録の登録", "Record registration"), registrationState, registered ? "good" : missing ? "bad" : "neutral")}${check(text("関連する証明の取得", "Linked proof retrieval"), linkedState, linked ? "good" : "neutral")}${check(text("証明データの検証", "Proof data verification"), proofState, verified ? "good" : invalid ? "bad" : "neutral")}</ul>
+      ${pending ? `<p class="registration-note">${text("Lemma への登録は確認できました。ブロックチェーンへの記録は反映待ちです。", "Registration in Lemma is confirmed. Recording on the blockchain is still pending.")}</p>` : ""}
+      <p class="result-scope">${text("文書本文との一致・送信者の本人確認・業務上の操作承認は、この画面では確認していません。", "This page has not compared the document itself, established the sender’s identity or confirmed authorization for an action.")}</p>
+      <aside><h3>${text("次にできること", "What to do next")}</h3><p>${esc(next)}</p></aside>
+      <div class="result-actions"><button id="retry-lookup" type="button">${text("もう一度確認する", "Check again")}</button><button id="copy-hash" type="button">${text("確認用コードをコピー", "Copy the reference code")}</button></div>
+      <details class="result-details"><summary>${text("詳しいデータを見る", "View the technical details")}</summary><dl>${row(text("確認用コード（docHash）", "Reference code (docHash)"), hash)}${row(text("発行者（登録上のラベル）", "Issuer (registry label)"), docValid ? mappedIssuer(doc) : "")}${row(text("記録日時", "Recorded at"), docValid ? jst(doc.registeredAt) : "")}${row(text("対象の日付", "Record date"), docValid ? string(doc.date) : "")}${row(text("登録状態", "Registration status"), docValid ? string(doc.status) : "")}${row(text("証明の種類（circuitId）", "Proof type (circuitId)"), linked ? string(proof.circuitId) : "")}${row(text("検証番号（verifyId）", "Verification ID (verifyId)"), verification?.ok ? string(verification.data.verifyId) : "")}${row(text("検証APIの応答", "Verification API response"), verificationError)}</dl>
+      <p><a href="${docUrl}" target="_blank" rel="noopener">${text("登録データを開く", "Open registration data")}</a> · <a href="${proofUrl}" target="_blank" rel="noopener">${text("証明データを開く", "Open proof data")}</a></p></details></section>`;
+    result.querySelector("#retry-lookup")!.addEventListener("click", () => {
+      void run();
+    });
+    const copyButton = result.querySelector<HTMLButtonElement>("#copy-hash")!;
+    copyButton.addEventListener("click", () =>
+      Promise.resolve()
+        .then(() => navigator.clipboard.writeText(hash))
+        .then(() =>
+          copyButton.isConnected
+            ? ((copyButton.textContent = text("コピーしました", "Copied")),
+              (status.textContent = text(
+                "確認用コードをコピーしました。",
+                "Reference code copied.",
+              )))
+            : undefined,
+        )
+        .catch(() =>
+          copyButton.isConnected
+            ? ((copyButton.textContent = text(
+                "詳細のコードをコピーしてください",
+                "Copy the code from the details",
+              )),
+              result.querySelector(".result-details")?.setAttribute("open", ""),
+              (status.textContent = text(
+                "コピーできませんでした。詳しいデータを開いたので、コードを選択してコピーしてください。",
+                "Clipboard unavailable. The details are open so you can select and copy the code.",
+              )))
+            : undefined,
+        ),
+    );
+    status.textContent = band[1];
+    result.setAttribute("aria-busy", "false");
+    button.disabled = false;
+    input.disabled = false;
+    clearButton.disabled = false;
+    result.querySelector<HTMLElement>("#result-title")?.focus({ preventScroll: true });
+    result.scrollIntoView({
+      block: "start",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  };
+  input.addEventListener("input", reset);
+  clearButton.addEventListener("click", () => {
+    input.value = "";
+    reset();
+    input.focus();
+  });
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    void run();
+  });
+  const initial = new URLSearchParams(window.location.search).get("doc");
+  initial !== null && (input.value = initial);
+  // Incoming ?doc= links are handled by the legacy redirect above.
+</script>
+<style is:global>
+  .v9 {
+    --ok: #a8e010;
+    --ok-ink: #6f9c00;
+    --ok-light: #4e7a00;
+    --err: #c25438;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #fff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    --dline: #e7eae5;
+    --font-serif-jp: "Noto Serif JP", Georgia, serif;
+    --font-body: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-num: "Inter", "Noto Sans JP", sans-serif;
+    --font-mono: "Space Mono", monospace;
+    background: var(--lite);
+    color: var(--tx);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .v9 *,
+  .v9 *::before,
+  .v9 *::after {
+    box-sizing: border-box;
+  }
+
+  /* header：ロゴのみ */
+  .v9-hd {
+    padding: 18px 6vw;
+    border-bottom: 1px solid rgba(15, 20, 18, 0.08);
+  }
+  .v9-logo {
+    display: inline-flex;
+    align-items: center;
+    color: var(--tx);
+  }
+  .v9-logo svg {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+
+  .v9-main {
+    flex: 1;
+    padding: 52px 6vw 24px;
+  }
+  .v9-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .v9-kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .v9-h2 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(22px, 2.4vw, 28px);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    color: var(--tx);
+    margin: 0 0 10px;
+  }
+  .v9-lede {
+    font-size: 13.5px;
+    line-height: 2;
+    color: var(--tx-soft);
+    margin: 0 0 30px;
+  }
+
+  .v9-ft {
+    padding: 32px 6vw 44px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .v9-ft a {
+    color: var(--ok-light);
+    text-decoration: none;
+  }
+  .v9-ft a:hover {
+    text-decoration: underline;
+  }
+
+  .v9 [data-live-verifier] {
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+  }
+  .v9 h2,
+  .v9 h3 {
+    font-family: var(--font-body);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+  .v9 .verify-guide {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    list-style: none;
+    padding: 0;
+    margin: 28px 0 36px;
+  }
+  .v9 .verify-guide li {
+    min-width: 0;
+  }
+  .v9 .verify-guide li > span {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    margin-bottom: 12px;
+    border: 1px solid #cbd1c2;
+    border-radius: 50%;
+    font: 10px/1 var(--font-mono);
+    color: var(--muted);
+  }
+  .v9 .verify-guide strong {
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .v9 .verify-guide p {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .v9 form,
+  .v9 .verify-help details {
+    margin: 24px 0;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--card);
+  }
+  .v9 label {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .v9 .input-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .v9 input {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px;
+    border: 1px solid #b8c0ad;
+    border-radius: 6px;
+    color: var(--tx);
+    background: white;
+    font: 12px/1.6 var(--font-mono);
+  }
+  .v9 input[aria-invalid="true"] {
+    border-color: var(--err);
+  }
+  .v9 button {
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 1px solid #b8c0ad;
+    border-radius: 6px;
+    background: var(--lite-2);
+    color: var(--tx);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .v9 button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  .v9 .verify-primary {
+    border-color: var(--ok);
+    background: var(--ok);
+    font-weight: 500;
+  }
+  .v9 button:not(:disabled):hover {
+    border-color: var(--ok-light);
+  }
+  .v9 #hash-help {
+    margin: 10px 0 18px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .v9 .input-error {
+    margin: 14px 0 0;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #973f2c;
+  }
+  .v9 .input-error[hidden] {
+    display: none;
+  }
+  .v9 .form-notes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 14px;
+  }
+  .v9 .form-notes p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+  .v9 .text-button {
+    flex-shrink: 0;
+    min-height: 36px;
+    padding: 6px 0;
+    border: 0;
+    background: transparent;
+    font-size: 11px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .v9 #live-result {
+    scroll-margin-top: 24px;
+  }
+  .v9 .empty-state,
+  .v9 .loading-state {
+    margin: 24px 0;
+    padding: 24px;
+    border: 1px dashed #cbd1c2;
+    border-radius: 12px;
+  }
+  .v9 .empty-state h2,
+  .v9 .loading-state h2 {
+    margin: 0;
+    font-size: 15px;
+  }
+  .v9 .empty-state p {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .v9 .check-progress {
+    display: grid;
+    gap: 12px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .v9 .check-progress li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .v9 .check-progress li > span:first-child {
+    width: 24px;
+    font: 10px/1.6 var(--font-mono);
+  }
+  .v9 .check-progress .current {
+    color: var(--tx);
+    font-weight: 500;
+  }
+  .v9 .check-progress .complete {
+    color: var(--ok-light);
+  }
+  .v9 .progress-label {
+    margin-left: auto;
+    font-size: 10px;
+  }
+  .v9 .result-panel {
+    margin: 24px 0;
+    padding: 28px;
+    border-radius: 12px;
+    background: #293127;
+    color: #ebefe6;
+  }
+  .v9 .band {
+    border-top: 2px solid #9ba296;
+    padding-top: 18px;
+  }
+  .v9 .band.good {
+    border-color: var(--ok);
+  }
+  .v9 .band.good h2 {
+    color: #c8ed90;
+  }
+  .v9 .band.bad {
+    border-color: var(--err);
+  }
+  .v9 .band.bad h2 {
+    color: #f0b199;
+  }
+  .v9 .band h2 {
+    margin: 10px 0 12px;
+    font-size: 22px;
+  }
+  .v9 .band p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.9;
+    color: #d4dccb;
+  }
+  .v9 .band .result-eyebrow {
+    font: 10px/1.6 var(--font-mono);
+    color: #b5c0aa;
+    letter-spacing: 0.08em;
+  }
+  .v9 .result-panel h3 {
+    margin: 26px 0 12px;
+    font-size: 13px;
+  }
+  .v9 .checks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .v9 .checks li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #4a544b;
+    font-size: 12px;
+  }
+  .v9 .checks strong {
+    font-weight: 400;
+  }
+  .v9 .check-state {
+    text-align: right;
+  }
+  .v9 .check-state.good {
+    color: #c8ed90;
+  }
+  .v9 .check-state.bad {
+    color: #f0b199;
+  }
+  .v9 .check-state.neutral {
+    color: #c1cbb6;
+  }
+  .v9 .registration-note {
+    margin: 16px 0 0;
+    color: #d4dccb;
+    font-size: 11px;
+    line-height: 1.9;
+  }
+  .v9 .result-scope {
+    margin: 18px 0 0;
+    color: #bbc6b0;
+    font-size: 11px;
+    line-height: 1.9;
+  }
+  .v9 aside {
+    font-size: 12px;
+    line-height: 1.9;
+  }
+  .v9 aside p {
+    margin: 0;
+  }
+  .v9 .result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+  }
+  .v9 .result-actions button {
+    color: #ebefe6;
+    border-color: #707d65;
+    background: transparent;
+  }
+  .v9 .result-details {
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid #4a544b;
+    font-size: 12px;
+  }
+  .v9 .result-details dl {
+    margin: 14px 0;
+  }
+  .v9 .result-details dl > div {
+    display: grid;
+    grid-template-columns: minmax(120px, 1fr) 2fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #4a544b;
+  }
+  .v9 dt {
+    color: #bbc6b0;
+    font-size: 11px;
+  }
+  .v9 dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .v9 a {
+    color: var(--tx-soft);
+    text-underline-offset: 4px;
+  }
+  .v9 .result-panel a {
+    color: #d8ddd1;
+  }
+  .v9 .verify-help {
+    margin-top: 44px;
+  }
+  .v9 .verify-help > h2 {
+    font-size: 16px;
+  }
+  .v9 .verify-help details {
+    margin: 12px 0;
+    padding: 18px 22px;
+    font-size: 12px;
+    line-height: 1.9;
+  }
+  .v9 .verify-help details p {
+    margin: 16px 0 0;
+    color: var(--tx-soft);
+  }
+  .v9 summary {
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .v9 pre {
+    background: var(--lite-2);
+    padding: 16px;
+    overflow-x: auto;
+    font: 11px/1.8 var(--font-mono);
+    margin-top: 18px;
+  }
+  .v9 .verify-back {
+    margin: 32px 0;
+    font-size: 12px;
+  }
+  .v9 .verify-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .v9 :focus-visible {
+    outline: 2px solid var(--muted);
+    outline-offset: 4px;
+  }
+  .v9 .result-panel :focus-visible {
+    outline-color: #c8ed90;
+  }
+  @media (max-width: 540px) {
+    .v9-main {
+      padding-top: 32px;
+    }
+    .v9 .verify-guide {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .v9 .verify-guide li {
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      gap: 0 12px;
+    }
+    .v9 .verify-guide li > span {
+      grid-row: 1 / 3;
+      margin: 0;
+    }
+    .v9 .verify-guide p {
+      grid-column: 2;
+      margin-top: 4px;
+    }
+    .v9 form,
+    .v9 .result-panel {
+      padding: 20px;
+    }
+    .v9 .input-row {
+      flex-direction: column;
+    }
+    .v9 .form-notes {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .v9 .band h2 {
+      font-size: 19px;
+    }
+    .v9 .result-details dl > div {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .v9 .result-actions {
+      flex-direction: column;
+    }
+  }
+</style>
