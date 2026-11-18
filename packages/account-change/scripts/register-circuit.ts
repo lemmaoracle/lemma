@@ -32,7 +32,7 @@ const PINATA_API_KEY = process.env.PINATA_API_KEY;
 const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY;
 
 const CIRCUIT_ID = "account-change-v1";
-const SCHEMA = "account-change-v1";
+const SCHEMA = "passthrough-v1";
 
 const WASM_PATH = path.join(PKG_ROOT, "circuits", "build", "account-change_js", "account-change.wasm");
 const ZKEY_PATH = path.join(PKG_ROOT, "circuits", "build", "account-change_final.zkey");
