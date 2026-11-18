@@ -53,6 +53,16 @@ describe("spec types", () => {
     expect(req.circuitId).toBe("age-over-18");
   });
 
+  it("accepts SubmitProofRequest without docHash (circuit proofs)", () => {
+    const req: SubmitProofRequest = {
+      circuitId: "account-change-v1",
+      proof: "base64...",
+      inputs: ["1", "2"],
+    };
+    expect(req.docHash).toBeUndefined();
+    expect(req.circuitId).toBe("account-change-v1");
+  });
+
   it("accepts LemmaClient with fetcher field", () => {
     const client: LemmaClient = {
       apiBase: "http://localhost:8787",

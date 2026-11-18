@@ -115,7 +115,7 @@ export type RegisterDocumentResponse = Readonly<{
 
 ```typescript
 export type SubmitProofRequest = Readonly<{
-  docHash: string;
+  docHash?: string;
   circuitId: string;
   proof: string;
   inputs: ReadonlyArray<string>;
