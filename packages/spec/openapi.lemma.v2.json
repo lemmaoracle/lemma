@@ -506,7 +506,6 @@
           }
         },
         "required": [
-          "docHash",
           "circuitId",
           "proof",
           "inputs"
@@ -537,23 +536,29 @@
       },
       "ProofRecord": {
         "type": "object",
-        "description": "Public proof record returned by GET /v1/proofs?docHash=. Latest proof for the given document hash.",
+        "description": "Proof record returned by GET /v1/proofs/{verificationId} and GET /v1/proofs?docHash= (legacy). verificationId is the primary lookup key. docHash is optional (circuit proofs may have no registered document). proof and inputs are returned only to API-key holders; unauthenticated public queries receive the redacted subset (status, circuitId, registeredAt, verificationId, docHash).",
         "properties": {
+          "verificationId": {
+            "type": "string",
+            "description": "Primary lookup key for this proof record."
+          },
           "docHash": {
             "type": "string",
-            "description": "Document hash (0x-prefixed bytes32)"
+            "description": "Document hash this proof attests to, when one was supplied."
           },
           "circuitId": {
             "type": "string"
           },
           "proof": {
-            "type": "string"
+            "type": "string",
+            "description": "Proof bytes. Present only for API-key-authenticated callers."
           },
           "inputs": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Public inputs. Present only for API-key-authenticated callers."
           },
           "status": {
             "type": "string"
@@ -564,10 +569,8 @@
           }
         },
         "required": [
-          "docHash",
+          "verificationId",
           "circuitId",
-          "proof",
-          "inputs",
           "status",
           "registeredAt"
         ],
@@ -1207,7 +1210,7 @@
     "/v1/proofs": {
       "get": {
         "summary": "Get latest proof by document hash",
-        "description": "Public. Returns the most recently registered proof for the given docHash.",
+        "description": "Legacy compatibility: returns the most recently registered proof for the given docHash. Prefer GET /v1/proofs/{verificationId}. Unauthenticated callers receive the redacted public subset (status, circuitId, registeredAt, verificationId, docHash). API-key holders additionally receive proof and inputs.",
         "security": [],
         "parameters": [
           {
@@ -2087,6 +2090,46 @@
           },
           "404": {
             "description": "Dataset not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/proofs/{verificationId}": {
+      "get": {
+        "summary": "Get proof by verificationId",
+        "description": "Primary proof lookup. Unauthenticated callers receive the redacted public subset (status, circuitId, registeredAt, verificationId, docHash). API-key holders additionally receive proof and inputs.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "verificationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "verificationId returned by POST /v1/proofs"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProofRecord"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {

@@ -35,8 +35,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@lemmaoracle/sdk": "^0.0.31",
-    "@lemmaoracle/spec": "^0.0.30",
+    "@lemmaoracle/sdk": "workspace:*",
+    "@lemmaoracle/spec": "workspace:*",
     "@modelcontextprotocol/sdk": "1.29.0",
     "agents": "^0.11.4",
     "ramda": "^0.30.1",

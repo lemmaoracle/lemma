@@ -317,7 +317,7 @@ export type SelectiveDisclosure = Readonly<{
 }>;
 
 export type SubmitProofRequest = Readonly<{
-  docHash: string;
+  docHash?: string;
   circuitId: string;
   proof: string;
   inputs: ReadonlyArray<string>;
@@ -363,16 +363,21 @@ export type SubmitProofResponse = Readonly<{
 }>;
 
 /**
- * Public proof record returned by `GET /v1/proofs?docHash=`.
+ * Proof record returned by `GET /v1/proofs/{verificationId}` and
+ * `GET /v1/proofs?docHash=` (legacy compatibility).
  *
- * The latest proof for a document hash (ORDER BY registered_at DESC).
- * A third party holding a docHash uses this to fetch the proof for verification.
+ * `verificationId` is the primary lookup key. `docHash` is optional because
+ * circuit proofs may be submitted for documents that are not registered as
+ * documents. `proof` and `inputs` are returned only to API-key holders;
+ * unauthenticated/public queries receive the redacted subset
+ * (`status`, `circuitId`, `registeredAt`, `verificationId`, `docHash`).
  */
 export type ProofRecord = Readonly<{
-  docHash: string;
+  verificationId: string;
+  docHash?: string;
   circuitId: string;
-  proof: string;
-  inputs: ReadonlyArray<string>;
+  proof?: string;
+  inputs?: ReadonlyArray<string>;
   status: string;
   registeredAt: string;
 }>;
