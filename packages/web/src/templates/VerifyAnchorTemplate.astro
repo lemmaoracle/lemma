@@ -5,6 +5,9 @@
  * 2モード（実装指示 v1 2026-07-24）:
  *   - `/verify/?doc=<docHash>` … 単票（その記録1件の判定）
  *       + proof verify: 読込成功後に自動で GET /v1/proofs → POST /v1/proofs/verify
+ *   - `/verify/?proof=<verificationId>` … 証明1件（GET /v1/proofs/{id} の公開の形＝状態・回路・
+ *       記録日時。proof 本体は API キーの持ち主にしか返らないので、判定は Lemma の記録の状態で見せる。
+ *       CLUBS の月末振込の「証明は有効です」から開く・2026-11-19）
  *   - `/verify/`（パラメータなし）… 全体（検証・発行の実数の内訳）
  *
  * デザイン規律（モック v9）:
@@ -293,6 +296,42 @@ const DOC = {
   hashLabel: "DOC HASH",
   copy: "コピー",
   copied: "コピーしました",
+  // 証明1件（?proof=）の状態。status は GET /v1/proofs/{id} の公開の形。
+  proofStates: {
+    verified: { cls: "registered", ja: "証明は有効です", en: "The proof is valid", subJa: null, subEn: null },
+    "onchain-verified": {
+      cls: "anchored",
+      ja: "証明は有効です",
+      en: "The proof is valid",
+      subJa: "この証明はブロックチェーン上にも刻まれています。",
+      subEn: "Also anchored on-chain.",
+    },
+    received: {
+      cls: "pending",
+      ja: "検証を待っています",
+      en: "Waiting for verification",
+      subJa: "証明は届いていますが、まだ検証が済んでいません。",
+      subEn: "The proof has arrived but has not been verified yet.",
+    },
+    rejected: {
+      cls: "not_found",
+      ja: "証明は無効です",
+      en: "The proof is invalid",
+      subJa: "この証明は検証で通りませんでした。",
+      subEn: "This proof did not pass verification.",
+    },
+  },
+  proofNotFound: {
+    ja: "証明が見つかりません",
+    en: "Proof not found",
+    subJa: "この証明は登録されていないか、リンクが正しくない可能性があります。",
+    subEn: "This proof has not been registered, or the link may be incorrect.",
+  },
+  proofIdLabel: "VERIFICATION ID",
+  pf: {
+    circuitJa: "証明の種類",
+    circuitEn: "Circuit",
+  },
   chainVerify: "オンチェーンの記録を確認",
   chainPending: "オンチェーン記録あり（エクスプローラ確定待ち）",
 };
@@ -785,10 +824,80 @@ const DOC = {
         $("plive").textContent = STR.offline;
       }
     }
+    // ── 証明1件（?proof=）──────────────────────────────────────
+    function renderProof(rec) {
+      const view = $("view");
+      const st = rec && DOC.proofStates[rec.status];
+      if (!rec || !st) {
+        const nf = DOC.proofNotFound;
+        view.innerHTML = `<div class="cert2 not_found"><div class="pgrid"></div>
+          <div class="ch"><div class="seal">${svg(I.q)}</div>
+            <div><h1 class="verdict">${nf.ja}</h1><div class="verdict-en">${nf.en}</div></div></div>
+          <p class="sub2">${nf.subJa}<span class="en">${nf.subEn}</span></p></div>`;
+        return;
+      }
+      const recAt = fmtJst(rec.registeredAt);
+      const facts = [
+        rec.circuitId ? [DOC.pf.circuitJa, DOC.pf.circuitEn, esc(rec.circuitId)] : null,
+        recAt ? [DOC.f.recAtJa, DOC.f.recAtEn, recAt] : null,
+      ]
+        .filter(Boolean)
+        .map(
+          ([ja, en, v]) =>
+            `<div class="fr"><span class="k">${ja}<span class="en">${en}</span></span><span class="v">${v}</span></div>`,
+        )
+        .join("");
+      const subHtml = st.subJa ? `<p class="sub2">${st.subJa}<span class="en">${st.subEn}</span></p>` : "";
+      const icon = st.cls === "pending" ? I.clock : st.cls === "not_found" ? I.q : I.check;
+      view.innerHTML = `<div class="cert2 ${st.cls}"><div class="pgrid"></div>
+        <div class="ch"><div class="seal">${svg(icon)}</div>
+          <div><h1 class="verdict">${st.ja}</h1><div class="verdict-en">${st.en}</div></div></div>
+        <div class="idline"><span class="idk">${DOC.proofIdLabel}</span><span class="idv">${esc(rec.verificationId)}</span><button class="copybtn" id="copyBtn">${DOC.copy}</button></div>
+        ${subHtml}
+        <div class="facts">${facts}</div>
+      </div>`;
+      const btn = $("copyBtn");
+      if (btn)
+        btn.onclick = () => {
+          navigator.clipboard?.writeText(rec.verificationId);
+          btn.textContent = DOC.copied;
+          setTimeout(() => (btn.textContent = DOC.copy), 1400);
+        };
+    }
+
+    async function loadProof(id) {
+      try {
+        const r = await fetch(DOC.api + "/proofs/" + encodeURIComponent(id), {
+          headers: { accept: "application/json" },
+        });
+        if (!r.ok) {
+          renderProof(null);
+          return;
+        }
+        const j = await r.json();
+        // 描画に使うものだけ（公開の形：状態・回路・記録日時・番号）。
+        renderProof({
+          verificationId: String(j.verificationId || id),
+          status: j.status,
+          circuitId: j.circuitId || "",
+          registeredAt: j.registeredAt || "",
+        });
+      } catch (e) {
+        renderProof(null);
+      }
+    }
+
     // ── モード分岐 ─────────────────────────────────────────────
     const params = new URLSearchParams(location.search);
     const rawDoc = params.get("doc");
-    if (rawDoc !== null) {
+    const rawProof = params.get("proof");
+    if (rawDoc === null && rawProof !== null) {
+      // ?proof がある＝証明1件。形式不正はサーバ照会せず見つからない表示。
+      $("doc-mode").hidden = false;
+      $("agg-mode").hidden = true;
+      if (!/^[A-Za-z0-9_:.-]{4,128}$/.test(rawProof)) renderProof(null);
+      else loadProof(rawProof);
+    } else if (rawDoc !== null) {
       // ?doc がある＝単票モード。形式不正はサーバ照会せず not_found 表示。
       $("doc-mode").hidden = false;
       $("agg-mode").hidden = true;
