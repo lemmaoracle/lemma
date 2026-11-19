@@ -180,10 +180,13 @@ root (after a workspace `pnpm install` and building `@lemmaoracle/sdk` /
 ```
 circuits/src/account-change.circom        the circuit
 circuits/src/derivations.ts               TS mirror of the leaf/tree derivations (shared by test + seed)
+circuits/src/prover.ts                    prover input build + the 18 expected public signals
 circuits/test/account-change.test.ts      positive + negative cases
+circuits/test/prover.test.ts              prover-input checks + a real proof (when built)
 circuits/scripts/build.sh                 compile + groth16 setup
 scripts/register-circuit.ts               register with the Lemma API (wasm + zkey + vkey)
 scripts/seed-demo-vendor.ts               TEST-ONLY demo vendor bundle (pnpm seed:demo-vendor)
+scripts/prove-account-change.ts           real Groth16 prover for a CLUBS proof card (pnpm prove)
 demo-vendor.example.json                  committed example of one seed run (TEST-ONLY)
 ```
 
@@ -300,6 +303,67 @@ disagree, the circuit wins):
    `ORG_IDENTITY_DOC_HASH`); re-run `seed:org-identity` from
    `packages/roles` **within 24 hours** (issuer verification rejects
    stale timestamps)
+5. Generate a proof for a CLUBS-issued card (next section) and submit it
+   from the card page. CLUBS must run with `GATE_PSEUDO_PROOF=0` for the
+   real path; while it is `1`, only pseudo proofs are accepted.
+
+### Prover (first path: script)
+
+`scripts/prove-account-change.ts` turns the demo bundle + a CLUBS proof
+card + the vendor's new account + bank evidence into a real Groth16
+proof. It refuses to write a proof whose 18 signals differ from the
+values it derives, and verifies the result against the local vkey before
+writing.
+
+```sh
+cd packages/account-change
+
+# 1. get a card from CLUBS (a stopped payment's 証明を求める in prerelease)
+#    → https://prerelease.clubs.place/api/gate-card/{ref}
+
+# 2. prove
+pnpm prove \
+  --challenge https://prerelease.clubs.place/api/gate-card/{ref} \
+  --number 7654321 \
+  --out account-change-proof.json
+
+# 3. either paste account-change-proof.json into /proof-card/{ref}
+#    (「実証明 JSON を貼って送る」), or let the script post it:
+pnpm prove --challenge … --number 7654321 --submit
+```
+
+Inputs:
+
+- `--bundle` — `demo-vendor.example.json` (default). It carries the
+  credential (secret, role, legal name, lifecycle, Merkle path) and the
+  registered old account. If CLUBS was re-seeded, `registryRoot` changes
+  and the script stops with the re-seed steps — request a new card.
+- `--challenge` — the `GET /api/gate-card/{ref}` payload (a file, `-`
+  for stdin, or a URL). Fixed inputs, the challenge window and the
+  canonical request all come from here.
+- `--bank/--branch/--type/--number/--holder` — the **new** account. The
+  holder must normalize to the credential's legal name (holder binding);
+  the default is that legal name.
+- `--evidence` / `--evidence-hash` — the bank-side evidence. The default
+  is the 照合番号 shown on the proof card (`displayedRefOf(ref)`: first
+  10 alphanumerics, uppercase), hashed with `toScalar` — the same
+  correspondence the pseudo flow used (`fieldScalarOf(bankEvidence)` on
+  the CLUBS side). Pass `--evidence` to hash another text.
+- `--out` — `{ circuitId, ref?, proof, publicSignals }` (the submission
+  page and `POST /api/gate-card/{ref}` accept it as-is).
+- `--no-verify` skips the local vkey check (not recommended);
+  `--verbose` prints the proof JSON.
+
+The pure input build and the gate/bundle cross-checks live in
+`circuits/src/prover.ts` and are pinned by `circuits/test/prover.test.ts`
+(the proof case runs when the circuit is built). `toScalar` is the SDK's
+`commitments.toScalar`; the script asserts the local mirror agrees before
+proving.
+
+Browser-side proving (the vendor makes the proof in their own browser) is
+future work: the same `buildProverInput` can feed a snarkjs-in-browser
+prover once the wasm/zkey are served, but nothing in this package depends
+on a Node-only API beyond file/CLI plumbing.
 
 ### Circuit registration (vkey required)
 

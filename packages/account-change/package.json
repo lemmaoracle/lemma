@@ -6,16 +6,19 @@
   "type": "module",
   "scripts": {
     "type-check": "tsc -p tsconfig.json --noEmit",
-    "seed:demo-vendor": "tsx scripts/seed-demo-vendor.ts"
+    "seed:demo-vendor": "tsx scripts/seed-demo-vendor.ts",
+    "prove": "tsx scripts/prove-account-change.ts"
   },
   "dependencies": {
     "@lemmaoracle/sdk": "workspace:*",
     "@lemmaoracle/spec": "workspace:*",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "snarkjs": "^0.7.6"
   },
   "devDependencies": {
     "typescript": "5.8.3",
     "@types/node": "^22.0.0",
-    "poseidon-lite": "^0.3.0"
+    "poseidon-lite": "^0.3.0",
+    "@types/snarkjs": "^0.7.9"
   }
 }
