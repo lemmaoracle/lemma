@@ -217,10 +217,16 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.7
+      snarkjs:
+        specifier: ^0.7.6
+        version: 0.7.6
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
         version: 22.20.5
+      '@types/snarkjs':
+        specifier: ^0.7.9
+        version: 0.7.9
       poseidon-lite:
         specifier: ^0.3.0
         version: 0.3.0
