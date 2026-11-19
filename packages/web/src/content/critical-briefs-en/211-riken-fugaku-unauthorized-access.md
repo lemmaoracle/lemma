@@ -10,6 +10,11 @@ published: 2026-11-19
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["144-studio-saas-breach-decryption-keys-read", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
+fact_check:
+  by: "Claude Opus 5.5"
+  at: 2026-11-19
+  rev: "89f976dc3299942e"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1177"
 status: draft
 version: "1.0"
 og_lead_ja: "理研の「富岳」で、公開ダッシュボードを足がかりに運用系へ侵入され、利用者最大4,597名分の情報とSSH秘密鍵が持ち出されたおそれが公表された"
@@ -34,7 +39,7 @@ glossary:
   - term: "Fugaku"
     desc: "A supercomputer operated by RIKEN's Center for Computational Science (R-CCS). Successor to the K computer, in shared use since March 2021."
   - term: "Rikyu"
-    desc: "A supercomputer for AI for Science development being built by RIKEN. Its users' registration records were held in Fugaku's authentication system."
+    desc: "A supercomputer for AI for Science development being built by RIKEN. Names and email addresses of its users registered in the user authentication system were also affected."
   - term: "SSH private key"
     desc: "One of the credentials used to connect to another computer over SSH. Possession itself acts as permission to connect, so a taken key can be used directly as a way in to its destination."
   - term: "Status dashboard"
@@ -87,7 +92,7 @@ Two conditions distinguish the cases regardless of route. One is checking, befor
 - **Checked against what**: For public pages, the record of the boundary between the public area and the operations network. For keys, the record of owner, location and destination, and the revocation status.
 - **What happens when it does not match**: A connection that does not match the boundary record is not let inside. A connection with a key that is not in the record, or has been revoked, is not accepted at the destination.
 
-Detection worked. The maintenance contractor detected suspicious traffic on 12 November, RIKEN confirmed the unauthorised access at 16:33 on 13 November, and the systems used for the entry were isolated that night. Even so, during the four days the intruders were inside, user records and keys may have been taken.
+Detection worked. Suspicious traffic was detected on 12 November and an investigation began together with the maintenance contractor; the unauthorised access was confirmed at 16:33 on 13 November, and the systems used for the entry were isolated that night. Even so, during the four days the intruders were inside, user records and keys may have been taken.
 
 ## 4. What Lemma does
 
@@ -128,23 +133,23 @@ Three items for organisations that operate computing platforms or shared-use sys
 - **What happened**: According to RIKEN, from 10 to 13 November an outside third party used the public Fugaku status dashboard as a foothold to enter the operations internal network and operated several internal servers without authorisation. Tampering was also confirmed on some of the entered servers. The specific method of entry is under investigation.
 - **Information**: According to RIKEN, the affected information is what was registered in the user authentication system (Fugaku: names, email addresses and IDs of up to 4,222 users; Rikyu: names and email addresses of up to 375 users) and part of the files stored in users' home directories (credentials such as SSH private keys and access keys for connecting outside RIKEN, and research data). No concrete evidence that research results leaked has been confirmed, and whether the affected files contained third parties' personal data is being checked.
 - **Impact**: RIKEN has confirmed that the intruders used some of the obtained credentials to try connecting to other systems. Whether there was secondary damage is under investigation. Fugaku's operations are stopped, and RIKEN plans to restart after taking preventive measures.
-- **How it was noticed**: The maintenance contractor for the operations systems detected suspicious traffic on 12 November and began investigating with RIKEN. The unauthorised access was confirmed at 16:33 on 13 November.
+- **How it was noticed**: Maintenance of the operations systems is outsourced. After suspicious traffic was detected on 12 November, an investigation began together with the contractor, and the unauthorised access was confirmed at 16:33 on 13 November.
 
 ### Timeline
 
 - **2026-11-10 to 11-13**: An outside third party uses the public dashboard as a foothold to enter the operations internal network and operates several servers without authorisation.
-- **2026-11-12**: The maintenance contractor detects suspicious traffic and investigation begins.
+- **2026-11-12**: Suspicious traffic is detected; an investigation begins together with the maintenance contractor.
 - **2026-11-13 16:33**: RIKEN confirms the unauthorised access.
 - **2026-11-13 20:59**: Report to the Ministry of Education, Culture, Sports, Science and Technology. At 22:07 the systems used for the entry are isolated.
 - **2026-11-14 04:30**: Fugaku's operations are stopped and outside access is cut off. At 20:20 the administrative keys are replaced.
 - **2026-11-15 16:18**: Users are notified by email and all running and queued computing jobs are stopped. All users' login public keys are invalidated, and users are asked to invalidate the credentials they had stored on Fugaku. A report is made to the HPCI organisations at 10:51.
 - **2026-11-16 17:55**: Report to the Personal Information Protection Commission. RIKEN announces the incident the same day.
 
-> The facts in this Brief rest on RIKEN's announcement (primary). At the time of the announcement, the specific method of entry, the final extent of the files taken, whether third parties' personal data was included, and whether the connection attempts succeeded were under investigation or being checked. RIKEN states that newly found facts will be announced promptly. What has not been announced does not mean that no measures were in place. This Brief does not evaluate RIKEN's response. Written as of 18 November.
+> The facts in this Brief rest on RIKEN's announcement (primary). At the time of the announcement, the specific method of entry, the final extent of the files taken, whether third parties' personal data was included, and whether the connection attempts succeeded were under investigation or being checked. RIKEN states that newly found facts will be announced promptly. What has not been announced does not mean that no measures were in place. This Brief does not evaluate RIKEN's response. Written as of 19 November.
 
 ### Response after disclosure
 
-- **RIKEN**: Stopped Fugaku's operations and cut off the route, isolated the systems used for the entry, replaced the administrative keys, and invalidated all users' login public keys. It reported to the Ministry of Education, Culture, Sports, Science and Technology, the HPCI organisations, and the Personal Information Protection Commission. As prevention, it lists dealing with the exploited software vulnerability, rebuilding the entered servers, reviewing the network configuration, and introducing advanced security measures using AI, and plans to restart operations after these are in place. It also states it will review the division of roles in the operations and maintenance structure for faster emergency response.
+- **RIKEN**: Stopped Fugaku's operations and cut off the route, isolated the systems used for the entry, replaced the administrative keys, and invalidated all users' login public keys. It reported to the Ministry of Education, Culture, Sports, Science and Technology, the HPCI organisations, and the Personal Information Protection Commission. As prevention, it lists dealing with the exploited software vulnerability, rebuilding the entered servers, reviewing the network configuration, and introducing state-of-the-art security measures using AI, and plans to restart operations after these are in place. It also states it will review the division of roles in the operations and maintenance structure for faster emergency response.
 
 ## 6. Sources
 
