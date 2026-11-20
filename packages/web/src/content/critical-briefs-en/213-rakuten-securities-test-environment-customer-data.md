@@ -10,6 +10,11 @@ published: 2026-11-20
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["142-awa-bank-test-environment-repurposed-leak", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
+fact_check:
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "4cedd6f92027b023"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1185"
 status: draft
 version: "1.0"
 og_lead_ja: "楽天証券で、テスト環境のシステム内で管理していた顧客の情報が、第三者の不正アクセスで外部に漏えいしたおそれ"
