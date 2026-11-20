@@ -17,3 +17,10 @@ allowBuilds:
   protobufjs: false
   sharp: true
   workerd: true
+# onnxruntime-node override — @huggingface/transformers 3.8.1 pins
+# onnxruntime-node@1.21.0, whose postinstall downloads native libraries from
+# the microsoft/onnxruntime GitHub release and fails the whole `pnpm install`
+# with 404. packages/parser already resolves 1.31.1 (postinstall from NuGet),
+# so dedupe on that version. See lemma#1189.
+overrides:
+  onnxruntime-node: 1.31.1
