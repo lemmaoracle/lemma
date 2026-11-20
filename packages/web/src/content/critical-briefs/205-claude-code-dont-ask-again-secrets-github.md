@@ -13,7 +13,7 @@ related_briefs: ["037-agent-config-auto-execution", "027-librechat-mcp-url-secre
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "01bad7480db53dfd"
+  rev: "a9aa88df1c642d4b"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -71,7 +71,7 @@ Anthropic の AI コーディングツール Claude Code では、シェルの�
 
 Claude Code は、git リポジトリの中でこのファイルを初めて書くとき、利用者の global の git excludes に足す。Apiiro によれば、後から git のリポジトリになったフォルダ、別の機械の clone、すでに追跡されているファイルは、この除外では守られない。秘密情報のあるファイルは、2026 年 11 月 2 日の時点ですべて既定のブランチにあり、最初の commit は中央値で 217 日前だった。Apiiro は資格情報を試しておらず、知らせた組織のうち 1 社が鍵は有効だったと認めた。
 
-<strong>手間を省くために保存した記録も、ほかのファイルと同じように外へ出る。</strong>
+<strong>手間を省くために保存した記録も、ほかのファイルと同じ経路で外へ出る。</strong>
 
 ## 2. 通った操作
 

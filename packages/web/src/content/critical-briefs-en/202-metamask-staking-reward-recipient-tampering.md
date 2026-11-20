@@ -13,7 +13,7 @@ related_briefs: ["032-booking-payout-account-tampering", "175-storm-2657-univers
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "b1535bf9ed360530"
+  rev: "bf080ba32931d608"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -67,7 +67,7 @@ On 28 September 2026, MetaMask identified unauthorised access to part of its inf
 
 MetaMask identified and fixed the change on the same day and, as a precaution, exited all affected validators. It says there is no evidence that the ETH customers staked (the principal) or the keys that withdraw it were compromised, and that wallets were not affected. How the access was gained has not been disclosed. A researcher estimates that about 17,000 validators holding about 523,000 ETH were exited (Decrypt).
 
-<strong>If the central store of recipients is altered, payouts go to the altered recipient.</strong>
+<strong>If a recipient in the central store is altered, rewards go straight to the new recipient.</strong>
 
 ## 2. What got through
 

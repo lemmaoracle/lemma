@@ -13,7 +13,7 @@ related_briefs: ["157-met-police-auror-unapproved-platform", "172-illuminate-edu
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "4a6584c654519e8c"
+  rev: "94aca2a5da1429f5"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -70,7 +70,7 @@ At a hospital in Ontario, Canada, on 23 September 2024, the AI transcription too
 
 In a letter of 27 October 2025, the province's Information and Privacy Commissioner (IPC) set out what happened, based on the hospital's report. The physician had used their personal rather than their work email address in the meeting group, and the organiser had not removed them from the invite after they left. The tool they installed on their personal device in September 2024 joined through the invite still in their personal calendar. The IPC recommended, among other things, that the hospital ask the vendor for deletion itself, audit its offboarding, and enforce lobbies for virtual meetings.
 
-<strong>A meeting invite stays in the calendar after its holder leaves, and connected tools can still join with it.</strong>
+<strong>If an invite sent to someone who has left stays in their calendar, their tools can still join the meeting.</strong>
 
 ## 2. What got through
 

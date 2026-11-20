@@ -13,7 +13,7 @@ related_briefs: ["037-agent-config-auto-execution", "027-librechat-mcp-url-secre
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "bff7e892ee99ac1d"
+  rev: "6288ba2a1e9a39e3"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -71,7 +71,7 @@ In Claude Code, Anthropic's AI coding tool, choosing "Yes, and don't ask again" 
 
 The first time Claude Code writes the file inside a git repository, it adds it to the user's global git excludes. Apiiro says this exclusion does not protect a folder that becomes a git repository later, a clone on another machine, or a file already tracked. As of 2 November 2026 every file with a secret was on its default branch, first committed a median of 217 days earlier. Apiiro did not test the credentials; one notified organisation confirmed its key was live.
 
-<strong>A record saved to skip a prompt still leaves by the same route as any other file.</strong>
+<strong>A record saved to skip a prompt can leave by the same route as any other file.</strong>
 
 ## 2. What got through
 

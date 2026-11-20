@@ -13,7 +13,7 @@ related_briefs: ["164-capcom-id-password-change-ecommerce-mypage", "168-goodsmil
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "561a670e5b1d8ec7"
+  rev: "e1f88892567e1744"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -72,7 +72,7 @@ On 30 October 2026, a third party gained unauthorised access to "Mizkan 365", a 
 
 Through this, customer IDs and registered email addresses of 29 of the 487 were obtained, and for 26 of them the number of perk exchanges and of entries to campaigns and monitor programmes too. On 2 November the company received several enquiries saying "my nickname was changed without my permission", began investigating, and the same day stopped the site and fixed the program. No leak of passwords, names, addresses, phone numbers or credit card data, and no change of email addresses or passwords, has been confirmed.
 
-<strong>Unless something checks that the data being rewritten belongs to the person acting, rewriting someone else's member data goes through.</strong>
+<strong>If changes are accepted without checking that the data belongs to the person making them, someone else's member data can be changed too.</strong>
 
 ## 2. What got through
 

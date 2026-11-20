@@ -13,7 +13,7 @@ related_briefs: ["085-secret-network-axelar-bridge-infinite-mint", "190-iwai-cos
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "c26bb67fb691f6eb"
+  rev: "b5c3c81bece6ba34"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -68,7 +68,7 @@ countries: ["kr"]
 
 Bithumb の報告として金融委員会は、翌日 4 時の時点で 618,214 BTC（99.7%）を売られる前に回収し、売られた 1,786 BTC の約 93% を回収したとした。金融委員会・金融監督院などは緊急対応班をつくって取引所を点検し、4 月 6 日、帳簿と実際の保有を 5 分ごとに突き合わせることや、報酬の付与など手作業が入る支払いに自動の検証と多段の承認を設けることを打ち出した。
 
-<strong>付与が帳簿の上だけで確定すると、単位を取り違えた量も、実際に持つ以上の量も、そのまま口座に入る。</strong>
+<strong>付与が帳簿の上だけで確定すると、単位を間違えた量も、取引所が実際に持つ以上の量も、そのまま口座に入る。</strong>
 
 ## 2. 通った操作
 

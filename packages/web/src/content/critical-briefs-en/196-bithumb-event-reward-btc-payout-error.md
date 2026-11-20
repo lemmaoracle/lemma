@@ -13,7 +13,7 @@ related_briefs: ["085-secret-network-axelar-bridge-infinite-mint", "190-iwai-cos
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "ebf0bd6a30f77db2"
+  rev: "f4de3de3fe3c839a"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -68,7 +68,7 @@ At about 19:00 on 6 February 2026, Bithumb, a South Korean crypto exchange, paid
 
 Citing Bithumb's report, the Financial Services Commission (FSC) said that by 04:00 the next day 618,214 BTC (99.7%) had been recovered before being sold, and about 93% of the 1,786 BTC that had been sold had been recovered. The FSC, the Financial Supervisory Service (FSS) and others formed an emergency response team to review the exchanges, and on 6 April set out reconciliation of ledgers against actual holdings every five minutes, plus automatic validation and multi-level approval for payouts that involve manual work, such as event rewards.
 
-<strong>When a payout is settled on the ledger alone, a wrong-unit amount, or more than is actually held, goes straight into accounts.</strong>
+<strong>When a payout is final on the ledger alone, an amount in the wrong unit, or more than the exchange actually holds, goes straight into accounts.</strong>
 
 ## 2. What got through
 

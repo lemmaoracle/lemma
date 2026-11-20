@@ -13,7 +13,7 @@ related_briefs: ["164-capcom-id-password-change-ecommerce-mypage", "168-goodsmil
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "ad04fc555ec9f5d1"
+  rev: "775b7091aa19a4a9"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -72,7 +72,7 @@ search_description: "Mizkan のコミュニティサイト「ミツカン 365」
 
 この仕組みで、487 名のうち 29 名の顧客 ID と登録メールアドレスが取得され、うち 26 名は特典交換とキャンペーン・モニター企画への応募の回数も取得された。同社は 11 月 2 日に「ニックネームが勝手に変更された」との複数の問い合わせを受けて調査を始め、同日にサイトを止めてプログラムを修正した。パスワード・氏名・住所・電話番号・クレジットカード情報の漏えいと、メールアドレスやパスワードの変更は確認されていない。
 
-<strong>書き換える先が本人の情報かを確かめなければ、他人の会員情報の書き換えもそのまま通る。</strong>
+<strong>本人の情報かを確かめずに書き換えを受け付けると、他人の会員情報も書き換えられる。</strong>
 
 ## 2. 通った操作
 

@@ -13,7 +13,7 @@ related_briefs: ["078-tenncare-connect-medicaid-eligibility", "124-wiser-medicar
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "7d46f86f2db37be9"
+  rev: "f96cda57ac6b017c"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -70,7 +70,7 @@ countries: ["gb"]
 
 NAO の分析では、2026 年 4 月時点で、止めた 23,794 件のうち 59% が受給資格ありと確認されたか雇用の確認で外され、不正・誤りと確認されたのは 38% だった。雇用の確認を外す決定は、2025 年 5 月に現場の担当者の会議で行われた。HMRC は、試行と本格実施のあいだの監督に弱さがあったことを認め、10〜11 月に雇用の確認を戻して 5,327 件の支給を自動で再開し、遡って支払った。2026 年 3 月からは、支給を止める前に 1 か月の回答期間を置いている。
 
-<strong>データが一致しただけで支給を止めると、一致の条件が承認したときと違っていても、手順はそのまま動く。</strong>
+<strong>一致の条件が承認を受けたときから変わっても、データが一致すれば支給はそのまま止まる。</strong>
 
 ## 2. 通った操作
 

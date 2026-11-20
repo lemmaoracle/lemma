@@ -13,7 +13,7 @@ related_briefs: ["032-booking-payout-account-tampering", "175-storm-2657-univers
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "64ec810479db8738"
+  rev: "9a1b7b87e3ea31f1"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -67,7 +67,7 @@ countries: ["us"]
 
 MetaMask は書き換えを同じ日に見つけて直し、予防のため、影響のあるバリデーターをすべて退出させた。顧客がステーキングに預けた ETH（元本）と、それを引き出す鍵が侵害された証拠は無く、ウォレットも影響を受けていないとしている。不正アクセスの経路は公表されていない。研究者は、退出したバリデーターを約 17,000、預かりを約 523,000 ETH と推計している（Decrypt）。
 
-<strong>受取先をまとめて置く場所が書き換えられると、書き換えた先にそのまま支払われる。</strong>
+<strong>受取先をまとめて置く場所で値が書き換えられると、報酬は新しい受取先へそのまま払われる。</strong>
 
 ## 2. 通った操作
 

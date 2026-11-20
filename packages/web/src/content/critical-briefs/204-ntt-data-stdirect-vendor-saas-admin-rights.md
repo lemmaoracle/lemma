@@ -13,7 +13,7 @@ related_briefs: ["154-yumirlink-cuenote-support-credential-db-export", "193-amad
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "8db1065442433f5b"
+  rev: "8d7b4aac309b1c08"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -72,7 +72,7 @@ NTT データが提供するデジタル証券プラットフォーム「STdirec
 
 不正に取得された情報は、発行体 2 社分の社債の購入者 111 名の氏名・住所・電話番号・メールアドレス・性別・生年月日と、発行体 1 社分の購入者 2,678 名のカナ氏名・社債の購入数量・メールアドレスである。111 名分は、STdirectServices の提供の前に NTT データが個別に提供していたサービスの情報である。発行体・金融機関のシステムの利用担当者の氏名とメールアドレスも対象で、人数は調査中とされる。不正利用は確認されていない。Securitize Japan はサービスを止め、経路を遮断し、不正に取得された管理者権限を無効にした。
 
-<strong>管理者権限があれば、どう得た権限でも、データを預けた側の依頼なしに読み出せる。</strong>
+<strong>管理者権限さえあれば、データを預けた側の依頼がなくても読み出せる。</strong>
 
 ## 2. 通った操作
 

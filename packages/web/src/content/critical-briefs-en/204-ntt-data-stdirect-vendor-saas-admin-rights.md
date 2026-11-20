@@ -13,7 +13,7 @@ related_briefs: ["154-yumirlink-cuenote-support-credential-db-export", "193-amad
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "c4a80fd981d8bd90"
+  rev: "dff5575779082332"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
@@ -72,7 +72,7 @@ On 29 October 2026, a third party gained unauthorised access to the SaaS of cont
 
 The data illicitly obtained comprises the names, addresses, phone numbers, email addresses, sex and dates of birth of 111 bond buyers for two issuers, and the names in kana, bond quantities purchased and email addresses of 2,678 buyers for one issuer. The 111 records come from a service NTT DATA provided individually before STdirectServices began. Names and email addresses of system users at issuers and financial institutions were also taken, and their number is under investigation. No misuse has been confirmed. Securitize Japan stopped the service, cut off the route and invalidated the illicitly obtained administrator rights.
 
-<strong>With administrator rights, however obtained, data can be read without a request from the party that entrusted it.</strong>
+<strong>With administrator rights alone, data can be read without a request from the party that entrusted it.</strong>
 
 ## 2. What got through
 
