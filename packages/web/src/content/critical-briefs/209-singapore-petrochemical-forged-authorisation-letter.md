@@ -16,6 +16,9 @@ fact_check:
   rev: "835f8b5a62dd94ef"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-20
+    note: "なぜ通ったか：「指示を出した側から届いた書類」を「送ってきた相手が出した別の書類だけ」に"
 version: "1.0"
 og_lead_ja: "シンガポールの石油化学会社、書類の食い違いに気づいたが偽の授権書を示され、カンボジアの口座へ 1,280 万ドルを送金"
 og_lead_en: "A Singapore petrochemical firm spotted a discrepancy, then wired $12.8M to Cambodia on a forged authorisation letter"
