@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "059-vercel-contextai-oauth", "007-pocketos-cursor-db-deletion"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "257bece10c4cc3c7"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "9a258aa8da2a2816"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "Railway で、ビルド基盤の脆弱性と誤った OIDC の設定を経て、最大で約 10 万のワークスペースの環境変数が復号された可能性がある"
@@ -73,7 +73,7 @@ At Railway (US), a development and hosting platform, an attacker used an unknown
 
 According to Railway, at most 1.85% of workspaces (about 100,000) could have had any environment variable decrypted. The logs identify environments, not individual variables, so this is an upper bound. Railway believes the attacker was after AI providers' API keys. The decrypted data included linked-account tokens of 1,852 users, and unauthorised spend on the stolen keys was estimated at about USD 740,000.
 
-<strong>A credential issued correctly does not show that the job using it is genuine.</strong>
+<strong>A correctly issued credential does not mean the job using it is genuine.</strong>
 
 ## 2. What got through
 

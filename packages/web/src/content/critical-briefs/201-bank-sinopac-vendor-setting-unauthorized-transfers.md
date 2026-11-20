@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["135-zombie-cards-visa-contactless-expiry", "069-connectwise-cloud-backup-app-identity-credential-abuse", "162-hatena-police-impersonation-remote-transfer"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "baa2cc9c511d0145"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "741bd4b7914ed383"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "台湾の永豊銀行で、新しいネットバンキングの取引システムの提供元の安全の設定が外部のハッカーに利用され、418 人の口座から 427 件・約 4,176 万台湾ドルが不正に送金された"
@@ -70,7 +70,7 @@ countries: ["tw"]
 
 同行は 11 月 4 日、外部のハッカーが、新しいネットバンキング（新網銀）の取引システムの提供元の安全の設定を利用したと公表した。この取引システムは、台湾の金融業でほかに導入した例が無い。同行は新しいアプリを取り下げ、全額と手数料を同じ日に返金し、提供元に損害の賠償を求めるとしている。手口の詳細は、司法の調査に入ったとして公表されていない。
 
-<strong>取引システムが送金を受け付けたことは、その指示を口座の本人が出したことを示さない。</strong>
+<strong>システムが送金を受け付けても、口座の本人が指示したとは限らない。</strong>
 
 ## 2. 通った操作
 

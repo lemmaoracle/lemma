@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["032-booking-payout-account-tampering", "175-storm-2657-university-payroll-diversion", "196-bithumb-event-reward-btc-payout-error"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "aac5f52478ea7503"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "bf080ba32931d608"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "MetaMask Staking で、報酬の受取先を保管するインフラに不正アクセスがあり、一部のバリデーターの受取先が書き換えられて約 0.385 ETH の報酬が流れた"
@@ -67,7 +67,7 @@ On 28 September 2026, MetaMask identified unauthorised access to part of its inf
 
 MetaMask identified and fixed the change on the same day and, as a precaution, exited all affected validators. It says there is no evidence that the ETH customers staked (the principal) or the keys that withdraw it were compromised, and that wallets were not affected. How the access was gained has not been disclosed. A researcher estimates that about 17,000 validators holding about 523,000 ETH were exited (Decrypt).
 
-<strong>Where the value in a central store of recipients is used as is, a recipient altered in that store is used for payouts as the correct one.</strong>
+<strong>If a recipient in the central store is altered, rewards go straight to the new recipient.</strong>
 
 ## 2. What got through
 

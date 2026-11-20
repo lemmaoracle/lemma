@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["007-pocketos-cursor-db-deletion", "080-replit-agent-code-freeze-data-loss"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "4eeafb719ebc9cf0"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "e811eb1fab8f46df"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "Cloudflare で、BYOIP の掃除用の定期処理が空の条件を「すべて」と解釈し、顧客の約 1,100 の IP プレフィックスの経路を取り下げた"
@@ -70,7 +70,7 @@ countries: ["us"]
 
 原因は、顧客が削除を求めたプレフィックスを定期的に探して消す、掃除用の処理だった。処理は pending_delete という条件を値なしで渡し、API は空の値を「すべての BYOIP プレフィックス」の要求と解釈した。処理は、プレフィックスとサービスの結びつけなどの関連する設定を順に消し、技術者が気づいて止めるまで続いた。同社は、API の条件の型の見直し、設定の配布を戻せる形にすること、速すぎる・広すぎる変更で配布を止める仕組みを挙げている。
 
-<strong>削除の対象を決める条件は、空でも誤りでも、受け付ける側には正しい依頼と同じ形で届く。</strong>
+<strong>削除の条件が空でも誤りでも、受け付ける側には正しい依頼に見える。</strong>
 
 ## 2. 通った操作
 

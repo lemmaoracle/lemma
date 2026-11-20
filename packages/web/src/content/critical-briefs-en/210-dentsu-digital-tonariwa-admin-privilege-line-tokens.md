@@ -12,10 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["204-ntt-data-stdirect-vendor-saas-admin-rights", "154-yumirlink-cuenote-support-credential-db-export"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-13
-  rev: "b000be7b631ee4d5"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1164"
+  at: 2026-11-20
+  rev: "315f57cf0e97fe70"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-20
+    note: "なぜ通ったか：ログインのあとの権限の変更に追加の承認が要らなければ通る、と短くした"
 version: "1.0"
 og_lead_ja: "電通デジタルの TONARIWA で、漏えいした認証情報で管理アカウントに入られて権限が広げられ、導入企業 2 社の個人情報の漏えいが確認された"
 og_lead_en: "At Dentsu Digital's TONARIWA, leaked credentials let a third party into an administrative account and widen its permissions, and leaks were confirmed at two client companies"
@@ -69,7 +72,7 @@ On 10 November 2026, unauthorised access by a third party to an administrative a
 
 According to the second notice (12 November), logs showing data being taken out of part of the system infrastructure were found, and leaks of personal data were confirmed at two client companies. Their names and the number of records have not been disclosed; the count is still being determined. Dentsu Digital stopped and isolated all servers and is arranging the invalidation and reissue of LINE integration tokens. Japan Post, one client company, used TONARIWA for surveys and responses on its LINE account "Yubinkyoku [Posukuma]", and took the account down for emergency maintenance from about 14:20 on 11 November.
 
-<strong>Where no separate approval is required, a change that widens an administrative account's scope of operations goes through on a login alone.</strong>
+<strong>If changing permissions after login needs no additional approval, the change simply goes through.</strong>
 
 ## 2. What got through
 

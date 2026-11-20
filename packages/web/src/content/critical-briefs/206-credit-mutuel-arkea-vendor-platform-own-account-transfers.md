@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["201-bank-sinopac-vendor-setting-unauthorized-transfers", "081-bybit-safe-wallet-ui-injection", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "350796376ca53c22"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "42999f3be0ac5c24"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "フランスの Crédit Mutuel Arkéa で、委託先のプラットフォームを経て入った攻撃者が、銀行の自己勘定から他行へ送金した。同行は報道の 1 億 1,800 万ユーロについて、額は確認せず桁だけを認めた"
@@ -67,7 +67,7 @@ countries: ["fr"]
 
 同行は同じ日の FAQ で、攻撃者は委託先の 1 社のプラットフォームを経て同行に直接達したとし、人の操作の誤りではなく外部からの高度な攻撃だとした。報道の 1 億 1,800 万ユーロについては、額は確認せず桁だけを認め、資金の一部は止められたとしている。委託先の名前と、攻撃の詳しい手口は公表されていない。パリ検察が捜査している。
 
-<strong>送金の指示が銀行の内側の系統から出たことは、その送金を銀行の担当が承認したことを示さない。</strong>
+<strong>送金の指示が銀行の内側から出ても、銀行の担当が承認したとは限らない。</strong>
 
 ## 2. 通った操作
 

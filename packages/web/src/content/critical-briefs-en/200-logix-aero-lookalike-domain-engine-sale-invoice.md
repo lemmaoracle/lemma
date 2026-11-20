@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["185-studco-fourth-circuit-ach-name-mismatch", "184-singapore-commodity-trader-lookalike-supplier-email", "170-zephyr-energy-contractor-payment-diverted"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "02c85bc8a724e799"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "212d62464426e233"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "Logix Aero、エンジン 2 基の売買のメールに似せたドメインの相手が割り込み、書き換えた契約書の口座へ 824,900 ドルを払った"
@@ -68,7 +68,7 @@ During the purchase of two aircraft engines by Logix Aero of Ireland from Siam A
 
 According to the judgments, there was no evidence that either company's systems had been compromised, and how the fraudster obtained the first email is not known. The buyer sued the seller in England for its loss; the High Court struck out the claim, and on 29 April 2026 the Court of Appeal dismissed the appeal.
 
-<strong>Contracts and invoices received by email, even with genuine signatures and layout, do not show that the account written in them belongs to the counterparty.</strong>
+<strong>Contracts and invoices by email can look genuine, yet the account in them may not be the counterparty's.</strong>
 
 ## 2. What got through
 

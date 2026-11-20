@@ -12,10 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["204-ntt-data-stdirect-vendor-saas-admin-rights", "154-yumirlink-cuenote-support-credential-db-export"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-13
-  rev: "840e75180f461954"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1164"
+  at: 2026-11-20
+  rev: "c843cabc4efc04ce"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-20
+    note: "なぜ通ったか：ログインのあとの権限の変更に追加の承認が要らなければ通る、と短くした"
 version: "1.0"
 og_lead_ja: "電通デジタルの TONARIWA で、漏えいした認証情報で管理アカウントに入られて権限が広げられ、導入企業 2 社の個人情報の漏えいが確認された"
 og_lead_en: "At Dentsu Digital's TONARIWA, leaked credentials let a third party into an administrative account and widen its permissions, and leaks were confirmed at two client companies"
@@ -70,7 +73,7 @@ search_description: "電通デジタルの TONARIWA で、漏えいした認証�
 
 第二報（11 月 12 日）によれば、システム基盤の一部のデータについて外部への持ち出しを示すログが確認され、導入企業 2 社で個人情報の漏えいが確認された。社名と件数は公表されておらず、件数は特定中である。電通デジタルは全サーバーを止めて隔離し、LINE 連携トークンの無効化と再発行を調整している。導入企業の 1 社の日本郵便は、TONARIWA をアンケートの実施と回答の管理に使っていた LINE アカウント「郵便局［ぽすくま］」を、11 月 11 日 14 時 20 分ごろから緊急メンテナンスで止めた。
 
-<strong>管理アカウントの操作の範囲を広げる変更は、別の承認を求めない仕組みでは、ログインできたことだけで通る。</strong>
+<strong>ログインのあとの権限の変更に追加の承認が要らなければ、変更はそのまま通る。</strong>
 
 ## 2. 通った操作
 

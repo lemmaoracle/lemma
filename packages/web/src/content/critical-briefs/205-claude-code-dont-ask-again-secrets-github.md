@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["037-agent-config-auto-execution", "027-librechat-mcp-url-secrets", "062-claude-code-github-action-bot-trust"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "62b7693467b82e0d"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "a9aa88df1c642d4b"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "Claude Code で「今後は聞かない」と承認したコマンドが秘密情報ごと設定ファイルに保存され、公開の GitHub で 1,122 ファイルに 1,379 件の秘密情報が見つかったと Apiiro が報告"
@@ -71,7 +71,7 @@ Anthropic の AI コーディングツール Claude Code では、シェルの�
 
 Claude Code は、git リポジトリの中でこのファイルを初めて書くとき、利用者の global の git excludes に足す。Apiiro によれば、後から git のリポジトリになったフォルダ、別の機械の clone、すでに追跡されているファイルは、この除外では守られない。秘密情報のあるファイルは、2026 年 11 月 2 日の時点ですべて既定のブランチにあり、最初の commit は中央値で 217 日前だった。Apiiro は資格情報を試しておらず、知らせた組織のうち 1 社が鍵は有効だったと認めた。
 
-<strong>一度の手間を省くつもりで保存された記録も、ファイルとしては、ほかのファイルと同じ経路で外へ出る。</strong>
+<strong>手間を省くために保存した記録も、ほかのファイルと同じ経路で外へ出る。</strong>
 
 ## 2. 通った操作
 
