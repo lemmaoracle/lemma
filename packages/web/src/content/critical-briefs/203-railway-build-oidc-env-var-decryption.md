@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "059-vercel-contextai-oauth", "007-pocketos-cursor-db-deletion"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "6da11624df8f2b6f"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "ed7b5f9bf1e500b4"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "Railway で、ビルド基盤の脆弱性と誤った OIDC の設定を経て、最大で約 10 万のワークスペースの環境変数が復号された可能性がある"
@@ -73,7 +73,7 @@ countries: ["us"]
 
 Railway によれば、環境変数のいずれかが復号された可能性があるのは、最大で 1.85%（約 100,000）のワークスペースである。記録が示すのは環境の単位で、個々の変数ではないため、これは上限の値である。攻撃者は AI の事業者の API キーを狙っていたと Railway はみている。復号されたデータには 1,852 人の連携トークンが含まれ、盗まれた鍵での不正な利用は約 74 万米ドルと見積もられた。
 
-<strong>認証情報が正しく出されることは、それを使う作業が本物であることを示さない。</strong>
+<strong>認証情報が正しく出されても、それを使う作業が本物とは限らない。</strong>
 
 ## 2. 通った操作
 

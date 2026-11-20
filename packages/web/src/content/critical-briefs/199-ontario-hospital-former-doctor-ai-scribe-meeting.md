@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["157-met-police-auror-unapproved-platform", "172-illuminate-education-ftc-former-customer-data"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "2ded5e62312740e5"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "3c449947a6e3d00a"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "オンタリオ州の病院で、退職した医師の AI 文字起こしツールが招待の残った会議に自動で参加し、患者 7 人の診断や治療の情報を記録した"
@@ -70,7 +70,7 @@ countries: ["ca"]
 
 州の情報・プライバシー委員会（IPC）は 2025 年 10 月 27 日の書簡で、病院の報告に基づき経緯をまとめた。医師は会議のグループに勤務先ではなく個人のメールアドレスを使っており、主催者は退職の後も医師を招待から外していなかった。医師が 2024 年 9 月に個人の端末へ入れたツールは、個人の予定表に残った招待から会議に入った。IPC は、病院が事業者に自ら削除を求めること、退職の手続きの監査、会議の待合室の強制などを勧告した。
 
-<strong>会議の招待は、受け取った人が辞めても予定表に残り、そこにつながるツールにとって参加の資格として働き続ける。</strong>
+<strong>辞めた人に送った招待が予定表に残っていれば、その人のツールは会議に入れる。</strong>
 
 ## 2. 通った操作
 

@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["037-agent-config-auto-execution", "027-librechat-mcp-url-secrets", "062-claude-code-github-action-bot-trust"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "b67e5566169a06da"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "6288ba2a1e9a39e3"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "Claude Code で「今後は聞かない」と承認したコマンドが秘密情報ごと設定ファイルに保存され、公開の GitHub で 1,122 ファイルに 1,379 件の秘密情報が見つかったと Apiiro が報告"
@@ -71,7 +71,7 @@ In Claude Code, Anthropic's AI coding tool, choosing "Yes, and don't ask again" 
 
 The first time Claude Code writes the file inside a git repository, it adds it to the user's global git excludes. Apiiro says this exclusion does not protect a folder that becomes a git repository later, a clone on another machine, or a file already tracked. As of 2 November 2026 every file with a secret was on its default branch, first committed a median of 217 days earlier. Apiiro did not test the credentials; one notified organisation confirmed its key was live.
 
-<strong>A record saved to skip a prompt is still a file, and leaves by the same route as every other file.</strong>
+<strong>A record saved to skip a prompt can leave by the same route as any other file.</strong>
 
 ## 2. What got through
 

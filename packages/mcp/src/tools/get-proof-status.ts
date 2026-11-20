@@ -23,23 +23,20 @@ export type ProofStatusResult = Readonly<{
  * sufficient for a status check. Returns `undefined` when the verificationId
  * is unknown.
  */
-export const getProofStatus = async (
+export const getProofStatus = (
   client: LemmaClient,
   input: GetProofStatusInput,
-): Promise<ProofStatusResult | undefined> => {
-  try {
-    const record = await proofs.getById(client, input.verificationId);
-    return {
+): Promise<ProofStatusResult | undefined> =>
+  proofs
+    .getById(client, input.verificationId)
+    .then((record) => ({
       verificationId: record.verificationId,
       status: record.status,
       circuitId: record.circuitId,
       docHash: record.docHash,
       registeredAt: record.registeredAt,
-    };
-  } catch {
-    return undefined;
-  }
-};
+    }))
+    .catch((_e: unknown) => undefined);
 
 export const getProofStatusTool = (server: McpServer, client: LemmaClient): RegisteredTool =>
   server.registerTool(

@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["154-yumirlink-cuenote-support-credential-db-export", "193-amadeus-system-account-airline-booking-data", "167-zeabur-second-breach-admin-token"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "83ffeecef050b688"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "dff5575779082332"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "NTT データの STdirectServices で、委託先 Securitize Japan の SaaS の管理者権限が不正に取得され、社債の購入者 111 名・2,678 名の情報が持ち出された"
@@ -72,7 +72,7 @@ On 29 October 2026, a third party gained unauthorised access to the SaaS of cont
 
 The data illicitly obtained comprises the names, addresses, phone numbers, email addresses, sex and dates of birth of 111 bond buyers for two issuers, and the names in kana, bond quantities purchased and email addresses of 2,678 buyers for one issuer. The 111 records come from a service NTT DATA provided individually before STdirectServices began. Names and email addresses of system users at issuers and financial institutions were also taken, and their number is under investigation. No misuse has been confirmed. Securitize Japan stopped the service, cut off the route and invalidated the illicitly obtained administrator rights.
 
-<strong>A read with administrator rights goes through without a request from the party that entrusted the data, however those rights were obtained.</strong>
+<strong>With administrator rights alone, data can be read without a request from the party that entrusted it.</strong>
 
 ## 2. What got through
 

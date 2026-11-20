@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["063-smart-tv-residential-proxy-ai-scraping", "082-xz-utils-backdoor-identity-provenance", "201-bank-sinopac-vendor-setting-unauthorized-transfers"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "c5637ef064608599"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "b0f6f38327a05006"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "XCPE ボットネット：Android TV のセットトップボックス 130 万台超に事前導入されたバックドアを、Google が警察庁と連携してテイクダウンした"
@@ -71,7 +71,7 @@ On 3 November, Google Threat Intelligence Group disclosed that it and industry p
 
 On 4 November, Japan's National Police Agency (NPA) said that, after it had worked with Google together with the Kanto Regional Police Bureau's Cyber Special Investigation Unit and the Fukuoka Prefectural Police, Google took legal action and other steps in the United States leading to the takedown of domains and servers linked to residential proxies. One starting point was a search in September 2025 by the Fukuoka police of the source of unauthorised access in an online banking fraud case, which found an IoT device carrying a malicious app. The NPA has analysed that a residential proxy was used in about 44% of online banking fraud cases in 2024.
 
-<strong>A connection from a domestic home IP address need not be sent by the customer.</strong>
+<strong>Even traffic from a home connection in Japan is not necessarily sent by the person it appears to come from.</strong>
 
 ## 2. What got through
 
