@@ -69,7 +69,7 @@ On 10 November 2026, unauthorised access by a third party to an administrative a
 
 According to the second notice (12 November), logs showing data being taken out of part of the system infrastructure were found, and leaks of personal data were confirmed at two client companies. Their names and the number of records have not been disclosed; the count is still being determined. Dentsu Digital stopped and isolated all servers and is arranging the invalidation and reissue of LINE integration tokens. Japan Post, one client company, used TONARIWA for surveys and responses on its LINE account "Yubinkyoku [Posukuma]", and took the account down for emergency maintenance from about 14:20 on 11 November.
 
-<strong>Where no separate approval is required, a change that widens an administrative account's scope of operations goes through on a login alone.</strong>
+<strong>If changing permissions after login needs no additional approval, the change simply goes through.</strong>
 
 ## 2. What got through
 
