@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["157-met-police-auror-unapproved-platform", "172-illuminate-education-ftc-former-customer-data"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "bda9d237b66ab129"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "4a6584c654519e8c"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "オンタリオ州の病院で、退職した医師の AI 文字起こしツールが招待の残った会議に自動で参加し、患者 7 人の診断や治療の情報を記録した"
@@ -70,7 +70,7 @@ At a hospital in Ontario, Canada, on 23 September 2024, the AI transcription too
 
 In a letter of 27 October 2025, the province's Information and Privacy Commissioner (IPC) set out what happened, based on the hospital's report. The physician had used their personal rather than their work email address in the meeting group, and the organiser had not removed them from the invite after they left. The tool they installed on their personal device in September 2024 joined through the invite still in their personal calendar. The IPC recommended, among other things, that the hospital ask the vendor for deletion itself, audit its offboarding, and enforce lobbies for virtual meetings.
 
-<strong>A meeting invite stays in the calendar after its holder leaves, and keeps working as a right to join for any tool connected to that calendar.</strong>
+<strong>A meeting invite stays in the calendar after its holder leaves, and connected tools can still join with it.</strong>
 
 ## 2. What got through
 

@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["184-singapore-commodity-trader-lookalike-supplier-email", "200-logix-aero-lookalike-domain-engine-sale-invoice", "174-mobile-alabama-arena-contractor-bank-change"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-13
-  rev: "e52b5fb5a05fb96c"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1164"
+  at: 2026-11-20
+  rev: "6fa3122a544e1dba"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "シンガポールの石油化学会社、書類の食い違いに気づいたが偽の授権書を示され、カンボジアの口座へ 1,280 万ドルを送金"
@@ -66,7 +66,7 @@ According to the Singapore Police Force, on 1 October 2026 a Singapore-based pet
 
 The fraud came to light on 26 October, when the counterpart said it had not received the payment, and the police received a report the same day. The police's Cyber Command worked with the Cambodian National Police and the bank OCBC, and the full amount was traced and recovered. Whether the email was spoofed or the counterpart's mailbox was compromised has not been disclosed.
 
-<strong>When a discrepancy is checked with papers from the party that gave the instructions, the check never leaves that party's hands.</strong>
+<strong>When a discrepancy is checked only with other papers from the sender, the check never leaves the sender's hands.</strong>
 
 ## 2. What got through
 

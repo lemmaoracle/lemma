@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["007-pocketos-cursor-db-deletion", "080-replit-agent-code-freeze-data-loss"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "4a8ee8ed48eda925"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "51181e5b2073c8e6"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "Cloudflare で、BYOIP の掃除用の定期処理が空の条件を「すべて」と解釈し、顧客の約 1,100 の IP プレフィックスの経路を取り下げた"
@@ -70,7 +70,7 @@ On 20 February 2026, routes for customer prefixes in Cloudflare's BYOIP service 
 
 The cause was a cleanup task that regularly looks for prefixes customers have asked to remove and removes them. It passed a pending_delete condition with no value, and the API read the empty value as a request for all BYOIP prefixes. The task went on deleting prefixes and related objects such as service bindings until an engineer noticed and stopped it. Cloudflare lists a stricter type for API conditions, configuration rollouts that can be reverted, and a mechanism that halts rollouts on changes that are too fast or too broad.
 
-<strong>A condition that selects deletion targets reaches the accepting side in the same form as a correct request, whether it is empty or wrong.</strong>
+<strong>Whether a deletion condition is empty or wrong, the receiving side sees a valid request.</strong>
 
 ## 2. What got through
 

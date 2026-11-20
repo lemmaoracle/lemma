@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
 related_briefs: ["078-tenncare-connect-medicaid-eligibility", "124-wiser-medicare-ai-prior-authorization"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "889c9dd3301c3427"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "64aba78b79683e53"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "英国 HMRC が渡航データとの突き合わせで児童手当 23,794 件の支給を止め、59% は受給資格ありか雇用の確認で外れたと会計検査院が報告"
@@ -70,7 +70,7 @@ In August 2025 HM Revenue & Customs (HMRC) moved into full rollout an interventi
 
 In the NAO's analysis, as of April 2026, 59% of the 23,794 suspended claims had been confirmed eligible or removed by the employment check, while 38% were confirmed fraudulent or incorrect. The decision to remove the employment check was taken in May 2025 at a workshop of operational staff. HMRC accepts there were weaknesses in its oversight of the move from pilot to rollout; in October and November it reintroduced the employment check, reinstated 5,327 payments automatically and backdated them. Since March 2026 it has given claimants a month to respond before suspending payments.
 
-<strong>A process that suspends payments on a data match alone runs without asking whether the conditions that produced the match are the ones that were approved.</strong>
+<strong>If payments stop on a data match alone, the process runs even when the match conditions differ from the approved ones.</strong>
 
 ## 2. What got through
 

@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["063-smart-tv-residential-proxy-ai-scraping", "082-xz-utils-backdoor-identity-provenance", "201-bank-sinopac-vendor-setting-unauthorized-transfers"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "a165fe90aa4366ae"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "0a8eac4b361a8301"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "XCPE ボットネット：Android TV のセットトップボックス 130 万台超に事前導入されたバックドアを、Google が警察庁と連携してテイクダウンした"
@@ -71,7 +71,7 @@ Google Threat Intelligence Group は 11 月 3 日、Android TV のセットト�
 
 警察庁は 11 月 4 日、関東管区警察局サイバー特別捜査部・福岡県警察とともに Google と連携してきた結果、Google が米国で法的措置等を行い、レジデンシャルプロキシに関連するドメインとサーバのテイクダウン等に至ったと公表した。発端の一つは、2025 年 9 月の福岡県警によるネットバンキング不正送金事件の不正アクセス元の捜索で、不正なアプリが混入した IoT 機器が見つかったことである。警察庁は、2024 年の不正送金の被害件数の約 44% でレジデンシャルプロキシが使われたと分析している。
 
-<strong>接続元が国内の家庭の IP アドレスでも、その通信を送っているのが本人とは限らない。</strong>
+<strong>国内の家庭の IP アドレスからの通信でも、送っているのが本人とは限らない。</strong>
 
 ## 2. 通った操作
 

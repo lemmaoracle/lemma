@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["185-studco-fourth-circuit-ach-name-mismatch", "184-singapore-commodity-trader-lookalike-supplier-email", "170-zephyr-energy-contractor-payment-diverted"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "5f853363d7180469"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "dd40e5d8a333b4e4"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "Logix Aero、エンジン 2 基の売買のメールに似せたドメインの相手が割り込み、書き換えた契約書の口座へ 824,900 ドルを払った"
@@ -69,7 +69,7 @@ countries: ["gb", "ie"]
 
 判決によれば、どちらの会社のシステムにも侵入の証拠は無く、相手が最初のメールをどう手に入れたかは分かっていない。買い手は売り手に損失を求めて英国で訴えたが、高等法院は請求を却下し、控訴院は 2026 年 4 月 29 日に控訴を棄却した。
 
-<strong>メールで届いた契約書と請求書は、署名や体裁が本物どおりでも、そこに書かれた口座が相手のものだとは示さない。</strong>
+<strong>メールの契約書や請求書が本物どおりに見えても、そこにある口座が相手のものとは限らない。</strong>
 
 ## 2. 通った操作
 

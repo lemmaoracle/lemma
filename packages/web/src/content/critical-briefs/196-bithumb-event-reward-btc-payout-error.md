@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["085-secret-network-axelar-bridge-infinite-mint", "190-iwai-cosmo-tradeworks-admin-function-unintended-orders"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "8cc7ae0a05cb012a"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "c26bb67fb691f6eb"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "韓国の暗号資産取引所 Bithumb、イベントの報酬 2,000 ウォンを 2,000 BTC として付与し、計 62 万 BTC が利用者の口座に記帳された"
@@ -68,7 +68,7 @@ countries: ["kr"]
 
 Bithumb の報告として金融委員会は、翌日 4 時の時点で 618,214 BTC（99.7%）を売られる前に回収し、売られた 1,786 BTC の約 93% を回収したとした。金融委員会・金融監督院などは緊急対応班をつくって取引所を点検し、4 月 6 日、帳簿と実際の保有を 5 分ごとに突き合わせることや、報酬の付与など手作業が入る支払いに自動の検証と多段の承認を設けることを打ち出した。
 
-<strong>付与の指示が帳簿の上だけで確定する仕組みでは、単位を取り違えた入力も、実際の保有を超える量も、正しい付与として口座に記帳される。</strong>
+<strong>付与が帳簿の上だけで確定すると、単位を取り違えた量も、実際に持つ以上の量も、そのまま口座に入る。</strong>
 
 ## 2. 通った操作
 

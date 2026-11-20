@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["154-yumirlink-cuenote-support-credential-db-export", "193-amadeus-system-account-airline-booking-data", "167-zeabur-second-breach-admin-token"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "52e654758cdac528"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "8db1065442433f5b"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "NTT データの STdirectServices で、委託先 Securitize Japan の SaaS の管理者権限が不正に取得され、社債の購入者 111 名・2,678 名の情報が持ち出された"
@@ -72,7 +72,7 @@ NTT データが提供するデジタル証券プラットフォーム「STdirec
 
 不正に取得された情報は、発行体 2 社分の社債の購入者 111 名の氏名・住所・電話番号・メールアドレス・性別・生年月日と、発行体 1 社分の購入者 2,678 名のカナ氏名・社債の購入数量・メールアドレスである。111 名分は、STdirectServices の提供の前に NTT データが個別に提供していたサービスの情報である。発行体・金融機関のシステムの利用担当者の氏名とメールアドレスも対象で、人数は調査中とされる。不正利用は確認されていない。Securitize Japan はサービスを止め、経路を遮断し、不正に取得された管理者権限を無効にした。
 
-<strong>管理者権限での読み出しは、その権限がどう得られたかを問わず、データを預けた側の依頼が無くても通る。</strong>
+<strong>管理者権限があれば、どう得た権限でも、データを預けた側の依頼なしに読み出せる。</strong>
 
 ## 2. 通った操作
 

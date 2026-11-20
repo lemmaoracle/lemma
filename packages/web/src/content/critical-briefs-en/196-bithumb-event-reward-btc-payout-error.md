@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["085-secret-network-axelar-bridge-infinite-mint", "190-iwai-cosmo-tradeworks-admin-function-unintended-orders"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "6c7e4ea827057fb0"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "ebf0bd6a30f77db2"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "韓国の暗号資産取引所 Bithumb、イベントの報酬 2,000 ウォンを 2,000 BTC として付与し、計 62 万 BTC が利用者の口座に記帳された"
@@ -68,7 +68,7 @@ At about 19:00 on 6 February 2026, Bithumb, a South Korean crypto exchange, paid
 
 Citing Bithumb's report, the Financial Services Commission (FSC) said that by 04:00 the next day 618,214 BTC (99.7%) had been recovered before being sold, and about 93% of the 1,786 BTC that had been sold had been recovered. The FSC, the Financial Supervisory Service (FSS) and others formed an emergency response team to review the exchanges, and on 6 April set out reconciliation of ledgers against actual holdings every five minutes, plus automatic validation and multi-level approval for payouts that involve manual work, such as event rewards.
 
-<strong>Where a payout instruction is settled on the ledger alone, an input with the wrong unit, and an amount beyond actual holdings, are both credited to accounts as valid payouts.</strong>
+<strong>When a payout is settled on the ledger alone, a wrong-unit amount, or more than is actually held, goes straight into accounts.</strong>
 
 ## 2. What got through
 

@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["032-booking-payout-account-tampering", "175-storm-2657-university-payroll-diversion", "196-bithumb-event-reward-btc-payout-error"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "1dadd551cdfea6a0"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "64ec810479db8738"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "MetaMask Staking で、報酬の受取先を保管するインフラに不正アクセスがあり、一部のバリデーターの受取先が書き換えられて約 0.385 ETH の報酬が流れた"
@@ -67,7 +67,7 @@ countries: ["us"]
 
 MetaMask は書き換えを同じ日に見つけて直し、予防のため、影響のあるバリデーターをすべて退出させた。顧客がステーキングに預けた ETH（元本）と、それを引き出す鍵が侵害された証拠は無く、ウォレットも影響を受けていないとしている。不正アクセスの経路は公表されていない。研究者は、退出したバリデーターを約 17,000、預かりを約 523,000 ETH と推計している（Decrypt）。
 
-<strong>受取先を一元で保管する場所の値がそのまま使われる仕組みでは、そこで書き換えられた受取先も、正しい受取先として支払いに使われる。</strong>
+<strong>受取先をまとめて置く場所が書き換えられると、書き換えた先にそのまま支払われる。</strong>
 
 ## 2. 通った操作
 

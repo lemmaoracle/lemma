@@ -11,10 +11,10 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["201-bank-sinopac-vendor-setting-unauthorized-transfers", "081-bybit-safe-wallet-ui-injection", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
-  by: "muse-spark-1.3×7 + GLM-5.3"
-  at: 2026-11-12
-  rev: "ca36e6fe8d7d863b"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1162"
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "325e8d9306ec707b"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
 version: "1.0"
 og_lead_ja: "フランスの Crédit Mutuel Arkéa で、委託先のプラットフォームを経て入った攻撃者が、銀行の自己勘定から他行へ送金した。同行は報道の 1 億 1,800 万ユーロについて、額は確認せず桁だけを認めた"
@@ -67,7 +67,7 @@ On 4 November 2026 the French banking group Crédit Mutuel Arkéa (parent of Cr�
 
 In an FAQ the same day, the bank said the attackers reached it directly through the platform of one of its service providers, and called it a sophisticated outside attack rather than human error. On the reported €118 million, it did not confirm the amount but validated the order of magnitude, and said part of the funds had been blocked. The provider's name and the details of the method have not been disclosed. The Paris prosecutor is investigating.
 
-<strong>That a transfer instruction came from inside the bank's own systems does not show that a bank officer approved it.</strong>
+<strong>A transfer instruction coming from inside the bank does not mean a bank officer approved it.</strong>
 
 ## 2. What got through
 
