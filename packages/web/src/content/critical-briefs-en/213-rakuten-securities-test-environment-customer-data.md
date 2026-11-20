@@ -1,7 +1,7 @@
 ---
 brief_no: 213
-title: "楽天証券：第三者の不正アクセスで、テスト環境のシステム内で管理していた顧客の情報が外部に漏えいしたおそれがある(楽天証券の公表)"
-title_en: "Rakuten Securities: Unauthorised access by a third party may have leaked customer data held in a test environment system (Rakuten Securities' disclosure)"
+title: "楽天証券：テスト環境で管理していた顧客の情報が、不正アクセスで外部に漏えいしたおそれがある(楽天証券の公表)"
+title_en: "Rakuten Securities: Customer data held in a test environment may have leaked through unauthorised access (Rakuten Securities' disclosure)"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [identity-auth]
@@ -18,9 +18,9 @@ layout: "report"
 sections: "proof"
 gate: "disclosure"
 og_kicker_ja: "サイバー攻撃事例 · 不正アクセス"
-og_kicker_en: "CYBERATTACK · UNAUTHORISED ACCESS"
+og_kicker_en: "CYBERATTACK · DATA LEAK"
 og_headline_ja: "テスト環境にあった\n本番の顧客情報が\n外に漏れたおそれ。\n<accent>最大約 447 万口座</accent>"
-og_headline_en: "Real customer data\nheld in a test environment\nmay have leaked.\n<accent>Up to c. 4.47m accounts.</accent>"
+og_headline_en: "Live customer data\nheld in a test environment\nmay have leaked.\n<accent>Up to c. 4.47m accounts.</accent>"
 key_figures:
   - value: "c. 4.47m"
     unit: "accounts"
@@ -53,10 +53,10 @@ controls:
   - slug: "audit-trail"
     item: "Record, apart from the environment, which production data was placed in a test environment, on whose approval, from when until when, and when it was deleted"
 impact: "Names, addresses, withdrawal bank accounts, declared income and financial assets and more for up to about 4.47 million accounts, and branch and customer codes and login IDs for up to about 11.25 million accounts, may have leaked (includes closed accounts; Rakuten Securities, 17 November). The company says no leak of passwords or PINs, and no fraudulent trading arising from the incident, has been confirmed"
-takeaway: "Customer data held in a test environment system may have leaked through unauthorised access. Even a copy made through formal procedures leaves open whether its scope was what the test needed. Before production data is copied into a test environment, check its scope and deletion date against the approved plan."
+takeaway: "Customer data held in a test environment system may have leaked through unauthorised access. Even when a copy goes through formal procedures, check separately that its scope is only what the test needs. Before production data is copied into a test environment, check its scope and deletion date against the approved plan."
 self_check: "Before production customer data is copied into a test environment, do you have a mechanism that checks the accounts, fields and deletion date against the approved test plan?"
 countries: ["jp"]
-search_title: "楽天証券の情報漏えい：テスト環境から最大1,125万口座"
+search_title: "楽天証券の情報漏えいのおそれ：テスト環境の最大1,125万口座"
 search_description: "楽天証券は、第三者の不正アクセスで、テスト環境で管理していた最大約447万口座の氏名・出金先口座などと、最大約1,125万口座のログインIDが漏えいしたおそれがあると公表した（11月17日）。経緯と対策を整理。"
 ---
 
@@ -64,9 +64,9 @@ search_description: "楽天証券は、第三者の不正アクセスで、テ�
 
 According to Rakuten Securities, on 11 November 2026 part of the data held in a system in its test environment may have leaked outside through unauthorised access by a third party. For up to about 4.47 million accounts, the data includes names, dates of birth, addresses, phone numbers, email addresses, employers, withdrawal bank accounts, declared income and financial assets, holdings by product and last login dates. The company detected possible unauthorised access on 16 November, cut off access and made fixes. The cause and details of the unauthorised access are under investigation.
 
-The company says no leak of the passwords and PINs needed to log in has been confirmed, and no unauthorised access or fraudulent trading arising from the incident has been confirmed. It told the press that, to test an upgrade of internal systems, it had copied part of its production customer data into the test environment for a period. The data was not masked, and the copy had gone through formal internal procedures (ITmedia NEWS, J-CAST News).
+The company says no leak of the passwords and PINs needed to log in has been confirmed, and no unauthorised access or fraudulent trading arising from the incident has been confirmed. It told the press that, to test an upgrade of internal systems, it had copied part of its production customer data into the test environment for a period. The data was not masked (ITmedia NEWS), and the copy had gone through formal internal procedures, it said (ITmedia NEWS, J-CAST News).
 
-<strong>When production customer data is copied into a test environment and no step compares the accounts and fields with what the test needs, unmasked customer data is copied as it is, even through formal procedures.</strong>
+<strong>If no step checks the scope of a copy, live customer data goes into the test environment unmasked.</strong>
 
 ## 2. What got through
 
@@ -80,7 +80,7 @@ The company says no leak of the passwords and PINs needed to log in has been con
 Whatever the route, the condition for telling them apart is that, before production customer data is copied into a test environment, the accounts and fields copied, the fields masked and the deletion date are checked against the approved test plan.
 
 - **Who approves**: The side that manages the customer data (the owner of the production data). For each upgrade test, it decides which accounts and fields are needed to check which functions, which fields are masked and how long the copy may stay, and issues the approval separately from the staff who perform the copy.
-- **Where it is checked**: First, just before data is copied from production into the test environment. The number of accounts and the fields are checked as falling within the approval, and the fields to be masked as masked; if they do not match, the copy is held before it runs. Second, on the approved deletion date. The test environment is checked for remaining production data, and anything left is deleted. A third party who enters the test environment and takes the copied data out is not stopped by this check.
+- **Where it is checked**: First, just before data is copied from production into the test environment. The check confirms that the number of accounts and the fields fall within the approval and that the fields to be masked are masked; if they do not match, the copy is held before it runs. Second, on the approved deletion date. The test environment is checked against the record for remaining production data, and if any is left, the data owner is asked to delete it. A third party who enters the test environment and takes the copied data out is not stopped by this check.
 - **What is recorded**: Which production data was placed in the test environment, on whose approval, from when until when, and when it was deleted. This is kept apart from the test environment, so that if a leak is suspected the affected accounts and fields can be identified from the record.
 
 <figure class="rx-ex">
@@ -101,7 +101,7 @@ Detection worked, and Rakuten Securities noticed the possible unauthorised acces
 
 ## 4. What Lemma does
 
-**Lemma builds the pre-execution check into the step that copies production customer data into a test environment, and into the clean-up on the approved deletion date.** It does not look for unauthorised access; it checks, before the copy, that the scope of the data and how long it stays fall within the approved test plan.
+**Lemma builds the pre-execution check into the step that copies production customer data into a test environment, and into the check on the approved deletion date.** It does not look for unauthorised access; it checks, before the copy, that the scope of the data and how long it stays fall within the approved test plan.
 
 ### Industries and operations to watch
 
@@ -120,7 +120,7 @@ The route in this case is column 1 (copying production customer data into the te
 | Passkey login | Not relevant | Not relevant | Partial |
 | **Lemma (pre-execution check)** | Effective | Not effective | Not effective |
 
-Masking reduces what can be read if copied data leaks, but needs a step that decides which fields to mask and applies it to every copy. Restricting entry points and fixing vulnerabilities reduces the chances of an outside intrusion, but does not change how much data is copied or for how long. Passkeys resist schemes that get users to enter passwords on fake sites, but do not stop calls or post that try to draw out personal details. Lemma checks, before the copy, not the guarding of entry points but whether the scope and time limit of the copied data rest on an approval.
+Masking reduces what can be read if copied data leaks, but needs a step that decides which fields to mask and applies it to every copy. Restricting entry points and fixing vulnerabilities reduces the chances of an outside intrusion, but does not change how much data is copied or for how long. Passkeys resist schemes that get users to enter passwords on fake sites, but do not stop calls or post that try to draw out personal details. Lemma does not guard entry points; it checks, before the copy, whether the scope and time limit of the copied data rest on an approval.
 
 Note: Lemma's check works only when it is built into the step that copies data from production into a test environment, and approvals of test plans are managed apart from the staff who perform the copy. If the approved plan itself says to copy a wide scope unmasked, the check passes. If data is moved without going through the copy step (by another route), this check is bypassed. It does not stop a third party who has entered the test environment from taking data out. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, and does not recover data already taken.
 
@@ -136,7 +136,7 @@ Three things to confirm about production customer data placed in development and
 
 - **Parties**: Rakuten Securities, Inc. (an online brokerage).
 - **What happened**: According to Rakuten Securities, on 16 November it detected possible unauthorised access by a third party to part of its systems, cut off access to the affected part and made fixes. Its investigation found that on 11 November part of the data held in a system in its test environment may have leaked outside. The cause and details of the unauthorised access are under investigation.
-- **Why it was in the test environment**: Rakuten Securities told the press that an upgrade of internal systems required checking some functions with production data. It had copied part of the production customer data onto a test server for a period to run the tests, and the data was not masked. The copy was not one staff member's decision but went through formal internal procedures, it said. Normally, it said, test environments hold only dummy data (ITmedia NEWS, J-CAST News). It declined to say when the data was copied or how long the work lasted.
+- **Why it was in the test environment**: Rakuten Securities told the press that an upgrade of internal systems required checking some functions with production data. It had copied part of the production customer data onto a test server for a period to run the tests, and according to ITmedia NEWS the data was not masked. The copy was not one staff member's decision but went through formal internal procedures, it said. Normally, it said, test environments hold only dummy data (ITmedia NEWS, J-CAST News). It declined to say when the data was copied or how long the work lasted.
 - **Data**: According to Rakuten Securities, the scope covers the following data for customers, including closed accounts. (1) Branch and customer code, login ID, name, name in kana, date of birth, address, phone number, email address, employer, withdrawal bank account (institution, account number, holder), income and financial assets (as declared by the customer), holdings by product, last login date: up to about 4.47 million accounts. (2) Branch and customer code and login ID: up to about 11.25 million accounts. The login ID is not the Rakuten ID. According to J-CAST News, the company told it the two groups of accounts do not overlap (up to about 15.72 million accounts in total, as reported).
 - **Impact**: Rakuten Securities says no leak of information needed for trading, including the passwords and PINs needed to log in, has been confirmed. As of 17 November, no unauthorised access or fraudulent trading thought to arise from the incident had been confirmed. The disclosure speaks of a "possible" leak, but according to J-CAST News the company said on 18 November that it had confirmed that information including personal data had in fact leaked outside.
 - **How it was found**: Rakuten Securities detected possible unauthorised access on 16 November. How it noticed has not been disclosed.
