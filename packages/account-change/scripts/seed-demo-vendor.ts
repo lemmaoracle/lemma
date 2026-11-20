@@ -66,12 +66,14 @@
  *   DEMO_VENDOR_SECRET   default "demo-vendor-secret-1"
  *   DEMO_VENDOR_SALT     default "demo-vendor-salt-1"
  *   DEMO_ROLE_NAME       default "account-change" (→ roleHash == requiredRoleHash)
- *   DEMO_LEGAL_NAME      default "Demo Vendor K.K."
+ *   DEMO_NAME            optional; sets both DEMO_LEGAL_NAME and DEMO_OLD_HOLDER
+ *                        (the bank account holder is the vendor name)
+ *   DEMO_LEGAL_NAME      default DEMO_NAME or "Demo Vendor K.K."
  *   DEMO_OLD_BANK        default "0001"
  *   DEMO_OLD_BRANCH      default "001"
  *   DEMO_OLD_TYPE        default "1"
  *   DEMO_OLD_NUMBER      default "1234567"
- *   DEMO_OLD_HOLDER      default "DEMO VENDOR K.K."
+ *   DEMO_OLD_HOLDER      default DEMO_NAME or "DEMO VENDOR K.K."
  *   DEMO_NOW             ms epoch (default Date.now())
  *
  * Writes `demo-vendor.example.json` at the package root (committed
@@ -105,15 +107,17 @@ const DEMO_VENDOR_SECRET = env("DEMO_VENDOR_SECRET", "demo-vendor-secret-1");
 const DEMO_VENDOR_SALT = env("DEMO_VENDOR_SALT", "demo-vendor-salt-1");
 /** ⚠ TEST-ONLY demo role. Must stay "account-change" for roleHash == requiredRoleHash. */
 const DEMO_ROLE_NAME = env("DEMO_ROLE_NAME", "account-change");
+/** Optional single name for both the credential and the old account holder. */
+const DEMO_NAME = env("DEMO_NAME", "");
 /** ⚠ TEST-ONLY demo legal name. */
-const DEMO_LEGAL_NAME = env("DEMO_LEGAL_NAME", "Demo Vendor K.K.");
+const DEMO_LEGAL_NAME = env("DEMO_LEGAL_NAME", DEMO_NAME || "Demo Vendor K.K.");
 
 /** Demo old account (the partner's INITIAL registered account). ⚠ TEST-ONLY. */
 const DEMO_OLD_BANK = env("DEMO_OLD_BANK", "0001");
 const DEMO_OLD_BRANCH = env("DEMO_OLD_BRANCH", "001");
 const DEMO_OLD_TYPE = env("DEMO_OLD_TYPE", "1");
 const DEMO_OLD_NUMBER = env("DEMO_OLD_NUMBER", "1234567");
-const DEMO_OLD_HOLDER = env("DEMO_OLD_HOLDER", "DEMO VENDOR K.K.");
+const DEMO_OLD_HOLDER = env("DEMO_OLD_HOLDER", DEMO_NAME || "DEMO VENDOR K.K.");
 
 /** ⚠ TEST-ONLY demo clock (ms) — all credential times derive from it. */
 const DEMO_NOW_MS = Number(env("DEMO_NOW", String(Date.now())));
