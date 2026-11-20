@@ -10,6 +10,11 @@ published: 2026-11-20
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["174-mobile-alabama-arena-contractor-bank-change", "200-logix-aero-lookalike-domain-engine-sale-invoice"]
+fact_check:
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "0b08b92f285b4b95"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1186"
 status: draft
 version: "1.0"
 og_lead_ja: "米ニュージャージー州クランベリー町、土地の購入の代金約 2,600 万ドルが偽の振込の指示で送られ、1,730 万ドル近くが凍結された"
