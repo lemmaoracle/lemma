@@ -1,7 +1,7 @@
 ---
 brief_no: 214
-title: "米クランベリー町：アフォーダブル住宅のための土地の代金が、偽の振込の指示で別の口座へ送られた(町と警察の公表)"
-title_en: "Cranbury Township, New Jersey: Money for land meant for affordable housing was wired to another account on fraudulent wiring instructions (township and police statements)"
+title: "米クランベリー町：土地の購入代金が、偽の振込の指示で別の口座へ送られた(町の公表・警察署長の説明)"
+title_en: "Cranbury Township, New Jersey: The purchase price for land was wired to another account on fraudulent wiring instructions (township statements and police chief's remarks)"
 pillar: 04-regulatory-attribute
 primary_category: attribute-proof-bypass
 secondary_categories: [identity-auth, data-provenance]
@@ -12,13 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["174-mobile-alabama-arena-contractor-bank-change", "200-logix-aero-lookalike-domain-engine-sale-invoice"]
 status: draft
 version: "1.0"
-og_lead_ja: "米ニュージャージー州クランベリー町、土地の購入の代金約 2,600 万ドルが偽の振込の指示で送られ、約 1,730 万ドルが凍結された"
+og_lead_ja: "米ニュージャージー州クランベリー町、土地の購入の代金約 2,600 万ドルが偽の振込の指示で送られ、1,730 万ドル近くが凍結された"
 og_lead_en: "Cranbury Township, New Jersey wired about $26M for a land purchase on fraudulent instructions; nearly $17.3M has been frozen"
 layout: "report"
 sections: "proof"
 gate: "payment-instruction"
 og_kicker_ja: "サイバー攻撃事例 · 偽の振込指示"
-og_kicker_en: "CYBERATTACK · FAKE WIRE INSTRUCTIONS"
+og_kicker_en: "CYBERATTACK · FAKE WIRE DETAILS"
 og_headline_ja: "土地の代金が、\n偽の振込の指示で\n送られた。\n<accent>約 2,600 万ドル</accent>"
 og_headline_en: "A town's land payment\nfollowed fake wiring\ninstructions.\n<accent>About $26M sent away.</accent>"
 key_figures:
@@ -55,6 +55,8 @@ impact: "About $26M in township funds for a land purchase went out on fraudulent
 takeaway: "As the township prepared to close on land for affordable housing, fraudulent wiring instructions arrived, and about $26M was sent to the account they named. Check wiring instructions received before closing with the receiving side's registered contact before using them."
 self_check: "When wiring instructions arrive before a large closing, do you check the account with the receiving side's registered contact before sending the money?"
 countries: ["us"]
+search_title: "米クランベリー町 2,600万ドル送金詐欺の経緯と対策"
+search_description: "米ニュージャージー州クランベリー町が、土地の購入代金約2,600万ドルを偽の振込の指示で送り、1,730万ドル近くが凍結された（町の公表）。何が起きたか、なぜ通ったか、対策を整理。"
 ---
 
 ## 1. Summary
@@ -63,13 +65,13 @@ On 28 September 2026, Cranbury Township in New Jersey (population about 4,000) w
 
 The township told residents on 6 November. A task force led by the township police and the county prosecutor's office, with state and federal agencies, is investigating and has frozen nearly $17.3 million in assets. The police chief believes the rest has been dispersed across multiple accounts. Whom the instructions imitated and how they arrived have not been disclosed while the investigation continues.
 
-<strong>If wiring instructions are not confirmed by a route other than the one they arrived by, the money goes straight to the account they name.</strong>
+<strong>If wiring instructions are not checked with a contact on file, the money goes straight to the account they name.</strong>
 
 ## 2. What got through
 
 - **What got through**: A wire transfer of about $26 million, the purchase price for land for affordable housing. The township sent it on 28 September and the funds were stolen (township statement).
 - **What arrived first**: According to MyCentralJersey, the police chief told the 9 November committee meeting that the township had received fraudulent wiring instructions as it prepared to close on the property. In whose name, and by what means, they arrived has not been disclosed.
-- **What reached the accepting side**: In general, the paying side in a property closing receives the bank, account number and account name in the name of the seller or a closing agent. Because they arrive just before closing, they tend to be handled in a rush to send the money.
+- **What reached the accepting side**: In general, the paying side in a property closing receives the bank, account number and account name, sent in the name of the seller or a closing agent. Because they arrive just before closing, they tend to be handled in a rush to send the money.
 - **Not disclosed**: The land and the seller. Whom the instructions imitated. How they arrived, and how they were created or altered. What checks were made before the wire. When, and by whom, the fraud was noticed. The receiving account and bank. How much will return to the township.
 
 ## 3. Pre-execution check
@@ -78,7 +80,7 @@ Whatever the route, the condition for telling them apart is that, before wiring 
 
 - **Who approves**: The receiving side (the seller or a closing agent). It registers the destination account at the start of the closing process and approves any change through a contact registered in advance. Phone numbers or addresses written in the instructions are not used.
 - **Where it is checked**: The approval step before the wire is sent. The account in the instructions is compared with the registered account; if it differs, the wire is held until it can be checked against the receiving side's approval.
-- **What is recorded**: Which wiring instructions' account was used, and who confirmed it through which contact. In freezing, recovery and insurance, the payer can show what was confirmed before the money went.
+- **What is recorded**: Which wiring instructions' account was used, and who confirmed it through which contact. In freezing, recovery and insurance claims, the payer can show what was confirmed before the money went.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
@@ -114,12 +116,12 @@ The route in this case is column 1 (wiring instructions received before closing)
 | --- | --- | --- | --- |
 | Sender checks (domain display, warnings) | Partial | Not relevant | Not effective |
 | Wire approval (matching amount to closing documents) | Not effective | Not effective | Not effective |
-| Freezing and recovery through banks and law enforcement | Not relevant | Partial | Partial |
+| Bank check of the payee name | Not relevant | Partial | Partial |
 | **Lemma (pre-execution check)** | Effective | Effective | Partial |
 
-Sender checks flag lookalike domains and the like through a display or warning, but do not work when instructions come by phone or on paper, or from a genuine account. Matching the amount to the closing documents agrees when the amount and the counterparty's name are genuine. Freezing and recovery act after the wire; here, nearly $17.3 million was frozen, but how much will return to the township is unknown. Lemma checks not how the instructions look but whether the account can be matched to the receiving side's approval, before the wire.
+Sender checks flag lookalike domains and the like through a display or warning, but do not work when instructions come by phone or on paper, or from a genuine account. Matching the amount to the closing documents agrees when the amount and the counterparty's name are genuine. A bank's payee-name check flags an account name that differs from the party in the instructions, but does not work when the account name has been made to look similar or the wire is sent without looking at the result. Lemma checks not how the instructions look but whether the account can be matched to the receiving side's approval, before the wire.
 
-Note: Lemma's check works only when it is built into the approval before the wire, and the receiving side's approval comes through a contact or key registered at the start of the closing, separate from the channel that delivered the instructions. If confirmation uses a contact written in the instructions, or the registered contact itself has been changed, it can pass. If the receiving side's mailbox is taken over, it works when confirmation does not go through that mailbox, and can pass when it does. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusion or impersonation, and it does not recover funds already sent.
+Note: Lemma's check works only when it is built into the approval before the wire, and the receiving side's approval comes through a contact or key registered at the start of the closing, separate from the channel that delivered the instructions. If confirmation uses a contact written in the instructions, or the registered contact itself has been changed, it can pass. If the receiving side's mailbox is taken over and the contact used for confirmation is that mailbox, it can pass. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusion or impersonation, and it does not recover funds already sent.
 
 ### Checklist
 
@@ -136,7 +138,7 @@ Three things to confirm about wires for land and building closings
 - **Method**: According to MyCentralJersey, the police chief said the township had received fraudulent wiring instructions as it prepared to close on the property. How they arrived and whom they imitated have not been disclosed.
 - **Route of intrusion**: Under investigation. The township says it cannot share details while the investigation is active. Whether township IT systems or email were compromised has not been disclosed.
 - **Discovery**: According to MyCentralJersey, police reached Town Hall about six minutes after being alerted to possible fraud, and the police chief's first call was to the FBI. Who raised the alert, and when, has not been disclosed.
-- **Frozen and remaining funds**: Investigators have frozen nearly $17.3 million in assets (township). The police chief believes the frozen funds are the largest identifiable portion of the stolen money and that the rest has been dispersed across multiple accounts, transactions and other channels (police chief's statement). The press puts the remainder at about $8.7 million, or about $9 million (WHYY, reporting the chief).
+- **Frozen and remaining funds**: Investigators have frozen nearly $17.3 million in assets (township). The police chief believes the frozen funds are the largest identifiable portion of the stolen money and that the rest has been dispersed across multiple accounts, transactions and other channels (police chief's statement). MyCentralJersey puts the remainder at about $9 million and roughly $8.7 million; WHYY reports the police chief putting it at about $9 million.
 - **Insurance**: The township is working with its insurers on possible recovery (township). WHYY reports that the Wall Street Journal reported a policy covering this type of loss up to $5 million.
 
 ### Timeline
@@ -152,8 +154,8 @@ Three things to confirm about wires for land and building closings
 
 ### After disclosure
 
-- **Investigation**: A multiagency task force led by the township police and the Middlesex County Prosecutor's Office, with state and federal agencies, is tracing the funds and pursuing those involved (township, police chief). According to the local newspaper, subpoenas are still being issued.
-- **Timing of disclosure**: The police chief says he alone decided when and what to release, and that an earlier public statement could have let the perpetrators move the funds (police chief's statement).
+- **Investigation**: A multi-agency task force led by the township police and the Middlesex County Prosecutor's Office, with state and federal agencies, is tracing the funds and pursuing those involved (township, police chief). According to the local newspaper, subpoenas are still being issued.
+- **Timing of disclosure**: The police chief says the timing and content of the release were the chief's own decision, and that an earlier public statement could have let the perpetrators move the funds (police chief's statement).
 - **Township measures**: The committee introduced ordinances creating assistant township administrator and assistant chief financial officer posts, and considered a resolution appointing the municipal accounting firm PKF O'Connor Davies for financial consulting (township). According to the local newspaper, the affordable housing plan will continue on a revised schedule.
 
 ## 6. Sources
@@ -164,6 +166,6 @@ Three things to confirm about wires for land and building closings
 - **Cranbury Township (Primary, mayor's update)**: "Mayor's Update- November 11, 2026" (2026-11-11) — <https://www.cranburytownship.org/m/newsflash/Home/Detail/123>
 - **MyCentralJersey (Press, report of the committee meeting)**: "Cranbury $26M theft began with fraudulent wire instructions" (2026-11-10) — <https://www.yahoo.com/news/us/articles/where-cranburys-missing-9m-police-144027105.html>
 - **WHYY (Press)**: "Cyberthieves trick a Central Jersey town into wiring them $26 million, mayor says" (2026-11-13) — <https://whyy.org/articles/cranbury-township-new-jersey-cybertheft-wire/>
-- **Patch (Press)**: "$26M Wire Transfer Theft Hits Middlesex Co. Town, Officials Reveal" (2026-11-09) — <https://patch.com/new-jersey/southbrunswick/26m-wire-transfer-theft-hits-middlesex-co-town-officials-reveal>
+- **Patch (Press)**: "$26M Wire Theft Hits Middlesex Co. Town; $17.3M Frozen So Far" (2026-11-09) — <https://patch.com/new-jersey/southbrunswick/26m-wire-transfer-theft-hits-middlesex-co-town-officials-reveal>
 
 References: ["The last layer left in AI-era cyber defense"](https://lemma.frame00.com/blog/detection-is-not-proof/)
