@@ -10,6 +10,11 @@ published: 2026-11-20
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["210-dentsu-digital-tonariwa-admin-privilege-line-tokens", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
+fact_check:
+  by: "Claude Opus 5.5"
+  at: 2026-11-20
+  rev: "676d572ee37ed67e"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1187"
 status: draft
 version: "1.0"
 og_lead_ja: "プレイドの KARTE で、サーバーの脆弱性から接続用の認証情報が盗まれ、メールアドレス 79,249 件と外部連携の認証情報、利用企業の顧客データの一部が漏えいした"
