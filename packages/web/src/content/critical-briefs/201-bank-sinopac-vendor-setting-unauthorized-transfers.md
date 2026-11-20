@@ -13,8 +13,8 @@ related_briefs: ["135-zombie-cards-visa-contactless-expiry", "069-connectwise-cl
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "741bd4b7914ed383"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  rev: "bd31a74596cf53de"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1192"
 status: draft
 draft_fixed:
   - date: 2026-11-20

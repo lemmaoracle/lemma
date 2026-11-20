@@ -13,8 +13,8 @@ related_briefs: ["085-secret-network-axelar-bridge-infinite-mint", "190-iwai-cos
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "b5c3c81bece6ba34"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  rev: "299bd71f4e64ac21"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1192"
 status: draft
 draft_fixed:
   - date: 2026-11-20
