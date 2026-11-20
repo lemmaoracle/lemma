@@ -12,17 +12,14 @@ const GATEWAYS: ReadonlyArray<string> = [
   "https://w3s.link/ipfs/",
 ];
 
-const artifactUrl = (cid: string): string =>
-  `https://artifacts.lemma.workers.dev/ipfs/${cid}`;
+const artifactUrl = (cid: string): string => `https://artifacts.lemma.workers.dev/ipfs/${cid}`;
 
-const okBody = (bytes: string): ArrayBuffer =>
-  new TextEncoder().encode(bytes).buffer;
+const okBody = (bytes: string): ArrayBuffer => new TextEncoder().encode(bytes).buffer;
 
 const jsonOf = async (res: Response): Promise<{ error: string }> =>
   (await res.json()) as { error: string };
 
-const mockCtx = (): ExecutionContext =>
-  ({ waitUntil: vi.fn() }) as unknown as ExecutionContext;
+const mockCtx = (): ExecutionContext => ({ waitUntil: vi.fn() }) as unknown as ExecutionContext;
 
 const mockCache = (): {
   match: ReturnType<typeof vi.fn>;
@@ -47,6 +44,22 @@ const r2Body = (bytes: string): ReadableStream<Uint8Array> =>
       controller.close();
     },
   });
+
+const mockQueue = (): { send: ReturnType<typeof vi.fn> } => ({
+  send: vi.fn().mockResolvedValue(undefined),
+});
+
+const mockMessage = (body: unknown) => ({
+  id: "msg-1",
+  timestamp: new Date(),
+  body,
+  attempts: 1,
+  ack: vi.fn(),
+  retry: vi.fn(),
+});
+
+const mockBatch = (messages: ReadonlyArray<unknown>): MessageBatch =>
+  ({ queue: "artifact-retry", messages }) as unknown as MessageBatch;
 
 describe("artifacts worker", () => {
   const cache = mockCache();
@@ -130,9 +143,7 @@ describe("artifacts worker", () => {
   it("fetches all gateways in parallel on miss and returns the first success", async () => {
     const fetchMock = vi.fn((url: string) =>
       url.startsWith("https://ipfs.io/")
-        ? Promise.resolve(
-            new Response(okBody("from-ipfs-io"), { status: 200 }),
-          )
+        ? Promise.resolve(new Response(okBody("from-ipfs-io"), { status: 200 }))
         : Promise.reject(new Error("gateway-fail")),
     );
     vi.stubGlobal("fetch", fetchMock);
@@ -143,16 +154,15 @@ describe("artifacts worker", () => {
     // success and never call the remaining gateways.
     expect(fetchMock).toHaveBeenCalledTimes(GATEWAYS.length);
     GATEWAYS.forEach((gateway) => {
-      expect(fetchMock).toHaveBeenCalledWith(`${gateway}${CID_V0}`);
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${gateway}${CID_V0}`,
+        expect.objectContaining({ signal: expect.any(AbortSignal) }),
+      );
     });
     expect(res.status).toBe(200);
     expect(res.headers.get("Content-Type")).toBe("application/octet-stream");
-    expect(res.headers.get("Cache-Control")).toBe(
-      "public, max-age=31536000, immutable",
-    );
-    expect(res.headers.get("Content-Length")).toBe(
-      String(okBody("from-ipfs-io").byteLength),
-    );
+    expect(res.headers.get("Cache-Control")).toBe("public, max-age=31536000, immutable");
+    expect(res.headers.get("Content-Length")).toBe(String(okBody("from-ipfs-io").byteLength));
     expect(res.headers.get("Access-Control-Allow-Origin")).toBe("*");
     expect(await res.text()).toBe("from-ipfs-io");
     expect(ctx.waitUntil).toHaveBeenCalledTimes(1);
@@ -164,29 +174,36 @@ describe("artifacts worker", () => {
   });
 
   it("accepts a CIDv1 and relays it", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response(okBody("v1-bytes"), { status: 200 }),
-    );
+    const fetchMock = vi.fn().mockResolvedValue(new Response(okBody("v1-bytes"), { status: 200 }));
     vi.stubGlobal("fetch", fetchMock);
 
     const res = await worker.fetch(new Request(artifactUrl(CID_V1)), {}, ctx);
 
     expect(res.status).toBe(200);
     expect(await res.text()).toBe("v1-bytes");
-    expect(fetchMock).toHaveBeenCalledWith(`${GATEWAYS[0]}${CID_V1}`);
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${GATEWAYS[0]}${CID_V1}`,
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
   });
 
-  it("returns 502 JSON when every gateway fails", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(new Response(null, { status: 404 })),
-    );
+  it("returns 502 JSON and queues a background retry when every gateway fails", async () => {
+    const queue = mockQueue();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 404 })));
 
-    const res = await worker.fetch(new Request(artifactUrl(CID_V0)), {}, ctx);
+    const res = await worker.fetch(
+      new Request(artifactUrl(CID_V0)),
+      { ARTIFACT_RETRY_QUEUE: queue } as unknown as {
+        ARTIFACT_RETRY_QUEUE: Queue;
+      },
+      ctx,
+    );
 
     expect(res.status).toBe(502);
     expect(await jsonOf(res)).toEqual({ error: "artifact unavailable" });
     expect(cache.put).not.toHaveBeenCalled();
+    expect(queue.send).toHaveBeenCalledTimes(1);
+    expect(queue.send).toHaveBeenCalledWith({ cid: CID_V0, attempt: 1 }, { delaySeconds: 30 });
   });
 
   it("retries the gateway relay before giving up", async () => {
@@ -262,11 +279,7 @@ describe("artifacts worker", () => {
       vi.fn().mockResolvedValue(new Response(okBody("head-body"), { status: 200 })),
     );
 
-    const res = await worker.fetch(
-      new Request(artifactUrl(CID_V0), { method: "HEAD" }),
-      {},
-      ctx,
-    );
+    const res = await worker.fetch(new Request(artifactUrl(CID_V0), { method: "HEAD" }), {}, ctx);
 
     expect(res.status).toBe(200);
     expect(await res.text()).toBe("");
@@ -286,14 +299,125 @@ describe("artifacts worker", () => {
       }),
     );
 
-    const res = await worker.fetch(
-      new Request(artifactUrl(CID_V0), { method: "HEAD" }),
-      {},
-      ctx,
-    );
+    const res = await worker.fetch(new Request(artifactUrl(CID_V0), { method: "HEAD" }), {}, ctx);
 
     expect(res.status).toBe(200);
     expect(await res.text()).toBe("");
     expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+});
+
+describe("artifact retry queue", () => {
+  const ctx = {} as ExecutionContext;
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("mirrors a recovered artifact into R2 and acks", async () => {
+    const r2 = mockR2();
+    const queue = mockQueue();
+    const message = mockMessage({ cid: CID_V0, attempt: 1 });
+    const fetchMock = vi.fn((url: string) =>
+      url.startsWith("https://ipfs.io/")
+        ? Promise.resolve(new Response(okBody("recovered"), { status: 200 }))
+        : Promise.resolve(new Response(null, { status: 404 })),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await worker.queue(
+      mockBatch([message]),
+      { ARTIFACTS: r2, ARTIFACT_RETRY_QUEUE: queue } as unknown as {
+        ARTIFACTS: R2Bucket;
+        ARTIFACT_RETRY_QUEUE: Queue;
+      },
+      ctx,
+    );
+
+    expect(fetchMock).toHaveBeenCalledTimes(GATEWAYS.length);
+    expect(r2.put).toHaveBeenCalledTimes(1);
+    expect(r2.put.mock.calls[0]?.[0]).toBe(CID_V0);
+    expect(queue.send).not.toHaveBeenCalled();
+    expect(message.ack).toHaveBeenCalledTimes(1);
+    expect(message.retry).not.toHaveBeenCalled();
+  });
+
+  it("reschedules with exponential backoff when a round fails", async () => {
+    const r2 = mockR2();
+    const queue = mockQueue();
+    const message = mockMessage({ cid: CID_V0, attempt: 2 });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 404 })));
+
+    await worker.queue(
+      mockBatch([message]),
+      { ARTIFACTS: r2, ARTIFACT_RETRY_QUEUE: queue } as unknown as {
+        ARTIFACTS: R2Bucket;
+        ARTIFACT_RETRY_QUEUE: Queue;
+      },
+      ctx,
+    );
+
+    expect(r2.put).not.toHaveBeenCalled();
+    expect(queue.send).toHaveBeenCalledTimes(1);
+    expect(queue.send).toHaveBeenCalledWith({ cid: CID_V0, attempt: 3 }, { delaySeconds: 600 });
+    expect(message.ack).toHaveBeenCalledTimes(1);
+    expect(message.retry).not.toHaveBeenCalled();
+  });
+
+  it("stops after the bounded number of attempts", async () => {
+    const r2 = mockR2();
+    const queue = mockQueue();
+    const message = mockMessage({ cid: CID_V0, attempt: 6 });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 404 })));
+
+    await worker.queue(
+      mockBatch([message]),
+      { ARTIFACTS: r2, ARTIFACT_RETRY_QUEUE: queue } as unknown as {
+        ARTIFACTS: R2Bucket;
+        ARTIFACT_RETRY_QUEUE: Queue;
+      },
+      ctx,
+    );
+
+    expect(queue.send).not.toHaveBeenCalled();
+    expect(message.ack).toHaveBeenCalledTimes(1);
+  });
+
+  it("acks without fetching when the artifact is already in R2", async () => {
+    const r2 = mockR2();
+    const queue = mockQueue();
+    const message = mockMessage({ cid: CID_V0, attempt: 1 });
+    r2.get.mockResolvedValue({
+      body: r2Body("already-there"),
+      size: 12,
+      httpMetadata: { contentType: "application/octet-stream" },
+    });
+    vi.stubGlobal("fetch", vi.fn());
+
+    await worker.queue(
+      mockBatch([message]),
+      { ARTIFACTS: r2, ARTIFACT_RETRY_QUEUE: queue } as unknown as {
+        ARTIFACTS: R2Bucket;
+        ARTIFACT_RETRY_QUEUE: Queue;
+      },
+      ctx,
+    );
+
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(r2.put).not.toHaveBeenCalled();
+    expect(message.ack).toHaveBeenCalledTimes(1);
+  });
+
+  it("acks an invalid message without touching R2", async () => {
+    const r2 = mockR2();
+    const message = mockMessage({ cid: 42 });
+    vi.stubGlobal("fetch", vi.fn());
+
+    await worker.queue(mockBatch([message]), { ARTIFACTS: r2 }, ctx);
+
+    expect(r2.get).not.toHaveBeenCalled();
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(message.ack).toHaveBeenCalledTimes(1);
   });
 });

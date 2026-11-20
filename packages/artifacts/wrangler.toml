@@ -7,3 +7,23 @@ compatibility_flags = ["nodejs_compat"]
 [[r2_buckets]]
 binding = "ARTIFACTS"
 bucket_name = "lemma-artifacts"
+# Bounded background recovery when every IPFS gateway misses for a CID.
+# The request path returns 502 as soon as the relay fails; this queue keeps
+# retrying with exponential backoff and writes recovered bytes to R2 so later
+# reads are fast. Create the queue before the first deploy:
+#   npx wrangler queues create artifact-retry
+[[queues.producers]]
+queue = "artifact-retry"
+binding = "ARTIFACT_RETRY_QUEUE"
+
+[[queues.consumers]]
+queue = "artifact-retry"
+max_batch_size = 1
+max_batch_timeout = 5
+max_retries = 3
+max_concurrency = 1
+
+# Persist the structured artifact_retry_* lines so failures and recoveries can
+# be inspected after the fact (wrangler tail also shows them live).
+[observability.logs]
+enabled = true
