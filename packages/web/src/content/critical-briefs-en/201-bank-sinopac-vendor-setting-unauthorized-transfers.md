@@ -13,9 +13,12 @@ related_briefs: ["135-zombie-cards-visa-contactless-expiry", "069-connectwise-cl
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-20
-  rev: "f5ec15b1158a1c68"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  rev: "7f50307072f0bd35"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1192"
 status: draft
+draft_fixed:
+  - date: 2026-11-20
+    note: "Added the 12 November report and the FSC's stance on penalties and outsourcing"
 version: "1.0"
 og_lead_ja: "台湾の永豊銀行で、新しいネットバンキングの取引システムの提供元の安全の設定が外部のハッカーに利用され、418 人の口座から 427 件・約 4,176 万台湾ドルが不正に送金された"
 og_lead_en: "At Taiwan's Bank SinoPac, outside hackers exploited the vendor's security settings on a new online banking system, and NT$41.76 million left 418 customers' accounts in 427 transfers"
@@ -150,14 +153,14 @@ Three things to confirm about switching transaction systems and executing transf
 - **2026-11-03**: The bank posts a notice, and SinoPac Holdings files a material announcement at 18:10 (cause given as a program anomaly in the new online banking transaction system). The FSC gives 419 customers and 427 transfers (Liberty Times).
 - **2026-11-04**: The bank says outside hackers exploited the vendor's security settings. The chairman and president apologise at a press conference and give 418 customers, 427 transfers and NT$41.76 million.
 - **2026-11-05**: The FSC is reported to have asked the chairman and president to explain and to be reviewing outsourcing and internal controls (Economic Daily News).
-- **2026-11-12**: Deadline for the bank's major-incident investigation report to the FSC (Liberty Times, Economic Daily News).
+- **2026-11-12**: Deadline for the bank's major-incident investigation report to the FSC (Liberty Times, Economic Daily News, Liberty Times Finance). Liberty Times Finance reported that the bank was due to submit it that day.
 
-> The facts rely on Bank SinoPac's notice (3 November) and press release (4 November), SinoPac Holdings' material announcement (3 November) and the bank's FAQ guidance (all primary), and on reporting by CNA, Liberty Times, Economic Daily News and BusinessNext. The customer, transfer and amount figures and the times rely on reporting of the bank's press conference. All FSC statements rely on reporting; no FSC press release could be confirmed. The vendor's name and country, the security setting exploited, how transfers went through without a login or customer authentication, and how the cap was handled have not been disclosed. The explanation of 3 November (a program anomaly) differs from that of 4 November (hackers exploited the vendor's security settings). What has not been disclosed does not mean there were no controls. This Brief does not evaluate the responses of the bank or the vendor. Written as of 12 November.
+> The facts rely on Bank SinoPac's notice (3 November) and press release (4 November), SinoPac Holdings' material announcement (3 November) and the bank's FAQ guidance (all primary), and on reporting by CNA, Liberty Times, Economic Daily News and BusinessNext. The customer, transfer and amount figures and the times rely on reporting of the bank's press conference. All FSC statements rely on reporting; no FSC press release could be confirmed. The vendor's name and country, the security setting exploited, how transfers went through without a login or customer authentication, and how the cap was handled have not been disclosed. The explanation of 3 November (a program anomaly) differs from that of 4 November (hackers exploited the vendor's security settings). What has not been disclosed does not mean there were no controls. This Brief does not evaluate the responses of the bank or the vendor. Written as of 20 November.
 
 ### After disclosure
 
 - **Bank SinoPac**: Pulled the new app and directed customers to its previous app and ATMs. It says it has blocked the method used, tightened verification, brought in a third-party security team, shared the attack information with other institutions through F-ISAC, and strengthened monitoring to flag and stop bursts of queries and unusual transactions at once; it says it will claim damages from the vendor.
-- **FSC**: Treated the case as a major incident, required an investigation report by 12 November and asked the chairman and president to explain. According to reports, it is reviewing outsourcing and internal controls and having F-ISAC run a correlation analysis, with any penalty awaiting the investigation's results (Economic Daily News).
+- **FSC**: Treated the case as a major incident, required an investigation report by 12 November and asked the chairman and president to explain. According to reports, it is reviewing outsourcing and internal controls and having F-ISAC run a correlation analysis, with any penalty awaiting the investigation's results (Economic Daily News). According to a 12 November report, the FSC had not yet decided whether or how far to penalise the bank, and said it would review outsourcing and supply-chain management in light of the findings and consider amending self-regulatory rules. Noting that the incident occurred in the middle-layer transaction system rather than the front or back end, it also said it would ask financial institutions for protection across all layers (Liberty Times Finance).
 - **Prosecutors**: The Taipei District Prosecutors Office is investigating the case as an offence of obstructing computer use (CNA).
 
 ## 6. Sources
@@ -173,6 +176,7 @@ Three things to confirm about switching transaction systems and executing transf
 - **Focus Taiwan (Reporting)**: "No evidence of customer data leak in unauthorized transactions: SinoPac" (2026-11-04) — <https://focustaiwan.tw/society/202611040022>
 - **Liberty Times (Reporting)**: 「永豐銀行異常轉帳出包 金管會：419人受影響、總金額約4千多萬」 (2026-11-03, Chinese) — <https://ec.ltn.com.tw/article/breakingnews/5628238>
 - **Economic Daily News (Reporting)**: 「永豐銀遭駭案延燒！金管會找董總說明 查內控缺失」 (2026-11-05, Chinese) — <https://money.udn.com/money/story/5613/9860339>
+- **Liberty Times Finance (Reporting)**: 「永豐銀行資安事件今送報告 金管會全面調查缺失」 (2026-11-12, Chinese) — <https://ec.ltn.com.tw/article/breakingnews/5638871>
 - **BusinessNext (Reporting)**: 「永豐銀證實遭駭4,176萬元！總座稱「沒有損失，但有名譽損失」，沒登入App為何也遭盜轉？」 (2026-11-04, Chinese) — <https://www.bnext.com.tw/article/92920/sinopac-bank-online-banking-cyberattack-abnormal-transfers>
 
 References: ["The last layer left in AI-era cyber defense"](https://lemma.frame00.com/blog/detection-is-not-proof/)
