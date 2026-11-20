@@ -16,24 +16,27 @@ fact_check:
   rev: "e1f88892567e1744"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-20
+    note: "Second notice of 17 Nov: tampering 501, 3,437 Cook Lists viewed, store resumed"
 version: "1.0"
-og_lead_ja: "Mizkan のコミュニティサイト「ミツカン 365」で、会員 487 名のニックネームとアイコンが書き換えられ、29 名の顧客 ID とメールアドレスが漏えいした"
-og_lead_en: "On Mizkan's community site \"Mizkan 365\", nicknames and icons of 487 members were rewritten, and customer IDs and email addresses of 29 were leaked"
+og_lead_ja: "Mizkan のコミュニティサイト「ミツカン 365」で、会員 501 名のニックネームとアイコンが書き換えられ、29 名の顧客 ID とメールアドレスが漏えいした"
+og_lead_en: "On Mizkan's community site \"Mizkan 365\", nicknames and icons of 501 members were rewritten, and customer IDs and email addresses of 29 were leaked"
 layout: "report"
 sections: "proof"
 gate: "account-change"
 og_kicker_ja: "サイバー攻撃事例 · 会員サイト"
 og_kicker_en: "CYBERATTACK · MEMBER SITE"
-og_headline_ja: "ほかの会員の\n登録情報が\n書き換えられた。\n<accent>487 名・漏えい 29 名</accent>"
-og_headline_en: "Other members'\nprofile data was rewritten.\n<accent>487 members, 29 leaked.</accent>"
+og_headline_ja: "ほかの会員の\n登録情報が\n書き換えられた。\n<accent>501 名・漏えい 29 名</accent>"
+og_headline_en: "Other members'\nprofile data was rewritten.\n<accent>501 members, 29 leaked.</accent>"
 key_figures:
-  - value: "487"
+  - value: "501"
     unit: "members"
-    label: "Members whose member data was tampered with. Their nicknames were changed to \"名なしさん\" (\"Nameless\") and their user icons were rewritten (Mizkan)"
+    label: "Members whose member data was tampered with. Their nicknames were changed to \"名なしさん\" (\"Nameless\") and their user icons were rewritten (Mizkan; corrected from 487 in the second notice)"
     tone: "alert"
   - value: "29"
     unit: "members"
-    label: "Of the 487, members whose customer IDs and registered email addresses were leaked. For 26 of them, the number of perk exchanges using points and of entries to campaigns and monitor programmes were leaked too (Mizkan)"
+    label: "Of the 501, members whose customer IDs and registered email addresses were leaked. For 26 of them, the number of perk exchanges using points and of entries to campaigns and monitor programmes were leaked too (Mizkan)"
   - value: "10-30 → 11-02"
     label: "From the unauthorised access to the start of the investigation, prompted by members' enquiries, and the suspension of the site"
 glossary:
@@ -58,28 +61,29 @@ controls:
   - slug: "audit-trail"
     item: "Record which login rewrote which field of which member's data"
 attack_method: "privilege-abuse"
-impact: "Nicknames of 487 members were changed to \"名なしさん\" and their icons rewritten. Customer IDs and registered email addresses of 29 of them were leaked, and for 26 the number of perk exchanges and campaign entries too (Mizkan, 6 November)"
+impact: "Nicknames of 501 members were changed to \"名なしさん\" and their icons rewritten. Customer IDs and registered email addresses of 29 of them were leaked, and for 26 the number of perk exchanges and campaign entries too. The private \"My Cook List\" data of 3,437 members was also viewed (Mizkan, 6 and 17 November)"
 takeaway: "A third party rewrote other members' nickname and icon data, and a program planted in it obtained some members' data. Let a rewrite of profile data through only after checking that the member being rewritten owns the login that made it."
 self_check: "Do you know the mechanism that limits rewrites of a member's profile data to that member's own login?"
 countries: ["jp"]
-search_title: "ミツカン365 不正アクセス：487名の改ざんと漏えいの経緯"
-search_description: "Mizkan のコミュニティサイト「ミツカン 365」で会員 487 名のニックネームなどが書き換えられ、29 名の顧客 ID とメールアドレスが漏えいした（同社 11 月 6 日公表）。何が起きたか、なぜ通ったか、対策を整理。"
+search_title: "ミツカン365 不正アクセス：501名の改ざんと漏えいの経緯"
+search_description: "Mizkan の「ミツカン 365」で会員 501 名のニックネームなどが書き換えられ、29 名の顧客 ID とメールアドレスが漏えいした（同社 11 月 6 日・17 日公表）。何が起きたか、なぜ通ったか、対策を整理。"
 ---
 
 ## 1. Summary
 
-On 30 October 2026, a third party gained unauthorised access to "Mizkan 365", a community site run by Mizkan Co., Ltd., and the nicknames of 487 members were changed to "名なしさん" ("Nameless") and their user icons rewritten. According to the company, the third party exploited deficiencies in the function for changing member data and in the mechanism that displays information on screen to rewrite other members' profile data, and a program planted in that data ran when members opened the site.
+On 30 October 2026, a third party gained unauthorised access to "Mizkan 365", a community site run by Mizkan Co., Ltd., and the nicknames of 501 members (corrected from 487 in the second notice of 17 November) were changed to "名なしさん" ("Nameless") and their user icons rewritten. According to the company, the third party exploited deficiencies in the function for changing member data and in the mechanism that displays information on screen to rewrite other members' profile data, and a program planted in that data ran when members opened the site.
 
-Through this, customer IDs and registered email addresses of 29 of the 487 were obtained, and for 26 of them the number of perk exchanges and of entries to campaigns and monitor programmes too. On 2 November the company received several enquiries saying "my nickname was changed without my permission", began investigating, and the same day stopped the site and fixed the program. No leak of passwords, names, addresses, phone numbers or credit card data, and no change of email addresses or passwords, has been confirmed.
+Through this, customer IDs and registered email addresses of 29 of the 501 were obtained, and for 26 of them the number of perk exchanges and of entries to campaigns and monitor programmes too. The second notice added that, by the same method, the names, recipe titles and photos in the private "My Cook List" of 3,437 members were viewed. On 2 November the company received several enquiries saying "my nickname was changed without my permission", began investigating, and the same day stopped the site and fixed the program. No leak of passwords, names, addresses, phone numbers or credit card data, and no change of email addresses or passwords, has been confirmed.
 
 <strong>If changes are accepted without checking that the data belongs to the person making them, someone else's member data can be changed too.</strong>
 
 ## 2. What got through
 
-- **What got through**: Rewriting other members' nickname and user icon data. According to Mizkan, the third party exploited deficiencies in the function for changing member data and in the mechanism that displays information on screen, and rewrote the profile data of 487 members.
+- **What got through**: Rewriting other members' nickname and user icon data. According to Mizkan, the third party exploited deficiencies in the function for changing member data and in the mechanism that displays information on screen, and rewrote the profile data of 501 members.
+- **What was viewed**: The names of members' private "My Cook List" (recipe collections) and the recipe titles and photos registered in them. According to the company, the third party exploited a deficiency in the display function of "My Recipes" to access and view the lists of 3,437 members without authorisation. Through this route, the list owners' customer IDs, email addresses, names and similar data were not obtained.
 - **What ran**: A program planted in the rewritten profile data. According to the company, it ran when members opened the site, and the customer IDs, registered email addresses and other data of 29 members were obtained.
 - **What reached the accepting side**: In general, a function for changing member data receives a logged-in session and the fields and values to change. Whether the change reflects the will of the member being rewritten does not arrive unless it is checked. Registered text and images also appear as they are on other members' screens.
-- **Not disclosed**: What the deficiencies were, and how other members' data could be rewritten. Whether the third party used a member account (the company says it is dealing with malicious programs and accounts). Whether the rewrites took place only on 30 October. Why data was obtained from 29 of the 487. Where the obtained data was sent.
+- **Not disclosed**: What the deficiencies were, and how other members' data could be rewritten. Whether the third party used a member account (the company says it is dealing with malicious programs and accounts). Whether the rewrites took place only on 30 October. Why data was obtained from 29 of the 501. Where the obtained data was sent. Whether the viewed "My Cook List" data was saved or taken out (the company says it has not been able to confirm this).
 
 ## 3. Pre-execution check
 
@@ -94,16 +98,16 @@ Whatever the route, the condition for telling them apart is that, before a membe
 <p class="rx-ex-cap">A pre-execution check means checking, before a member's profile data is rewritten, that the member being rewritten owns the login that made the change, and keeping a record. Detection means noticing the unauthorised access from members' enquiries, stopping the site and fixing the program. Dates rely on Mizkan's disclosure.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Save a rewrite only after checking that the target owns the login that made it</div>
-<div class="rx-zone gapz"><b>What was confirmed</b><span>Other members' profile data rewritten: 487<br>Customer IDs and email addresses leaked: 29</span></div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Other members' profile data rewritten: 501<br>Customer IDs and email addresses leaked: 29</span></div>
 <div class="rx-zone det"><b>Detection · worked</b>Enquiries investigated, site stopped, program fixed</div>
 <div class="rx-g g1"><div class="t">10-30</div><b>Profile data rewritten through unauthorised access</b></div>
 <div class="rx-g g2"><div class="t">11-02</div><b>Enquiries investigated and the site stopped</b></div>
 <div class="rx-g g3"><div class="t">11-05</div><b>Preliminary report to the PPC</b></div>
-<div class="rx-g g4"><div class="t">11-06</div><b>Disclosure and emails to the 487 members</b></div>
+<div class="rx-g g4"><div class="t">11-06</div><b>Disclosure and emails to the 487 members (second notice on the 17th)</b></div>
 </div>
 </figure>
 
-Detection worked, and the site was stopped on the day members' enquiries arrived. Even so, before that, the profile data of 487 members had been rewritten and data of 29 obtained. A case where password changes were not tied to the owner is [Capcom](/critical/briefs/164-capcom-id-password-change-ecommerce-mypage/) (password changes on shared accounts); a case where a program placed on a site's page may have read input is [Good Smile Company](/critical/briefs/168-goodsmile-payment-page-tampering/) (the payment page); and a case where operations without the owner's authentication went through a function is [Iwai Cosmo Securities](/critical/briefs/190-iwai-cosmo-tradeworks-admin-function-unintended-orders/) (a contractor's admin function). Here, rewriting fields that members write themselves became the way in to running a program on other members' screens.
+Detection worked, and the site was stopped on the day members' enquiries arrived. Even so, before that, the profile data of 501 members had been rewritten and data of 29 obtained. A case where password changes were not tied to the owner is [Capcom](/critical/briefs/164-capcom-id-password-change-ecommerce-mypage/) (password changes on shared accounts); a case where a program placed on a site's page may have read input is [Good Smile Company](/critical/briefs/168-goodsmile-payment-page-tampering/) (the payment page); and a case where operations without the owner's authentication went through a function is [Iwai Cosmo Securities](/critical/briefs/190-iwai-cosmo-tradeworks-admin-function-unintended-orders/) (a contractor's admin function). Here, rewriting fields that members write themselves became the way in to running a program on other members' screens.
 
 ## 4. What Lemma does
 
@@ -143,8 +147,8 @@ Three things to confirm about the information members register
 
 - **Parties**: Mizkan Co., Ltd. (runs the community site "Mizkan 365").
 - **What happened**: According to Mizkan, on 30 October a third party gained unauthorised access to the site, member data was tampered with and some personal data was leaked. According to the company, the cause was deficiencies in the function for changing member data and in the mechanism that displays information on screen. The third party exploited these to rewrite other members' nickname and icon data, and a malicious program planted in it ran when members opened the site, obtaining some personal data.
-- **Data**: Member data of 487 members was tampered with: nicknames were changed to "名なしさん" and user icons rewritten. Personal data of 29 of the 487 was leaked: customer IDs and registered email addresses for all 29, and for 26 of them also the number of perk exchanges using points and of entries to campaigns and monitor programmes. The leaked data has not been confirmed to include login passwords, names, addresses, phone numbers or credit card data.
-- **Impact**: According to the company, no misuse of the leaked data or secondary harm has been confirmed, and no unauthorised change of email addresses or passwords has been confirmed. The "Mizkan official online store" and "Fibee 腸内会" have been suspended since 4 November for safety checks, and the company says no direct impact through the same mechanism has been confirmed there.
+- **Data**: Member data of 501 members was tampered with (487 in the 6 November notice, corrected with 14 more in the second notice of 17 November): nicknames were changed to "名なしさん" and user icons rewritten. Customer IDs and related data of 29 of the 501 were leaked: customer IDs and registered email addresses for all 29, and for 26 of them also the number of perk exchanges using points and of entries to campaigns and monitor programmes. The leaked data has not been confirmed to include login passwords, names, addresses, phone numbers or credit card data. In the second notice, after widening the investigation to members without malicious program writes, the company also confirmed that the private "My Cook List" data of 3,437 members (list names, registered recipe titles and photos) was viewed; 74 of them are among the 501 whose data was tampered with. Through this route, the owners' customer IDs, email addresses, names and similar data were not obtained, and whether the data was saved or taken out has not been confirmed.
+- **Impact**: According to the company, no misuse of the leaked data or secondary harm has been confirmed, and no unauthorised change of email addresses or passwords has been confirmed. The "Mizkan official online store" and "Fibee 腸内会" were suspended from 4 November for safety checks; after confirming no direct impact, the company resumed the online store on 6 November and Fibee 腸内会 on 11 November.
 - **How it was found**: On 2 November the company received several enquiries saying "my nickname was changed without my permission", began investigating and confirmed the unauthorised access and the leak.
 
 ### Timeline
@@ -153,19 +157,22 @@ Three things to confirm about the information members register
 - **2026-11-02**: Prompted by several members' enquiries, the company investigates and confirms the access and the leak. The same day it stops the site and, according to the company, fixes the deficiency in the program that was exploited.
 - **2026-11-04**: The "Mizkan official online store" and "Fibee 腸内会" are suspended for safety checks.
 - **2026-11-05**: Preliminary report to the Personal Information Protection Commission.
-- **2026-11-06**: Disclosure; from 16:00, emails go out in turn to the 487 members affected (458 tampering only, 29 leak and tampering).
+- **2026-11-06**: Disclosure; from 16:00, emails go out in turn to the 487 members affected (458 tampering only, 29 leak and tampering). The "Mizkan official online store" resumes.
+- **2026-11-11**: "Fibee 腸内会" resumes.
+- **2026-11-17**: Second notice. The company corrects the tampering figure to 501, adds the viewing of 3,437 members' "My Cook List" data, and emails the newly found 14 and 3,437 members.
 
-> The facts rely on Mizkan Co., Ltd.'s notice 「「ミツカン 365」への不正アクセスに伴う お客様情報の改ざん・漏えいに関するお詫びとお知らせ」 (6 November 2026, primary). "Deficiencies" is the company's own wording. What the deficiencies were, how the third party rewrote other members' data and where the obtained data was sent have not been disclosed. This Brief does not cover details that could help reproduce the attack. The company's site lists other notices about unauthorised access (Sagawa Express, Mizkan Asia Pacific); these are separate incidents and are not covered here. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the company's response. Written as of 12 November.
+> The facts rely on Mizkan Co., Ltd.'s notice 「「ミツカン 365」への不正アクセスに伴う お客様情報の改ざん・漏えいに関するお詫びとお知らせ」 (6 November 2026, primary) and its second notice (17 November, primary). "Deficiencies" is the company's own wording; the second notice says the same method exploited a deficiency in the display function of "My Recipes". What the deficiencies were, how the third party rewrote other members' data and where the obtained data was sent have not been disclosed. This Brief does not cover details that could help reproduce the attack. The company's site lists other notices about unauthorised access (Sagawa Express, Mizkan Asia Pacific); these are separate incidents and are not covered here. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the company's response. Written as of 20 November.
 
 ### After disclosure
 
 - **Mizkan**: On 2 November it fixed the deficiency in the program that was exploited and confirmed that unauthorised operations by the same method can no longer be performed. It is restoring the tampered data, dealing with malicious programs and accounts, inspecting other functions and verifying safety. It will review its procedures for developing and checking programs and consider measures to prevent recurrence.
-- **Resuming the site**: The company will decide after restoring the data and confirming safety, and will update the notice with the timing of resumption and any newly found facts.
+- **Resuming the site**: As of 17 November the site remains suspended. The company will decide after restoring the data and confirming safety, and will update the notice with the timing of resumption and any newly found facts.
 - **Advice to members**: It warns members not to open URLs or attachments in suspicious emails or SMS, and says it never asks for passwords or verification codes by email or phone.
 
 ## 6. Sources
 
 - **Mizkan Co., Ltd. (Primary, company disclosure)**: 「「ミツカン 365」への不正アクセスに伴う お客様情報の改ざん・漏えいに関するお詫びとお知らせ」 (2026-11-06) — <https://www.mizkan.co.jp/file.jsp?id=2021_Renewal/files/pdf/emg/news/oshirase18.pdf>
+- **Mizkan Co., Ltd. (Primary, company disclosure)**: 「（第 2 報）「ミツカン 365」への不正アクセスに伴う お客様情報の改ざん・漏えいに関するお詫びとお知らせ」 (2026-11-17) — <https://www.mizkan.co.jp/file.jsp?id=2021_Renewal/files/pdf/emg/news/oshirase19.pdf>
 - **Mizkan Co., Ltd. (Primary, company website)**: Notices section of the 「ミツカングループ」 top page (checked 2026-11-12) — <https://www.mizkan.co.jp/>
 
 References: ["The last layer left in AI-era cyber defense"](https://lemma.frame00.com/blog/detection-is-not-proof/)
