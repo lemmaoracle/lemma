@@ -22,11 +22,18 @@ export const TREE_LEVELS = 20;
 export const ACCOUNT_DOMAIN = 1101n;
 
 // Zero-subtree hashes for a Poseidon2 Merkle tree whose empty leaf is 0.
-const zeroSubtree: bigint[] = [0n];
-for (let i = 1; i <= TREE_LEVELS; i++) {
-  const prev = zeroSubtree[i - 1] as bigint;
-  zeroSubtree[i] = poseidon2([prev, prev]);
-}
+// Built by folding the empty leaf upward: level 0 is 0n, each next level is
+// Poseidon2(prev, prev). Immutable accumulation keeps the table a `const`.
+const zeroSubtree: readonly bigint[] = Array.from(
+  { length: TREE_LEVELS },
+  (_unused: unknown) => 0n,
+).reduce<readonly bigint[]>(
+  (acc: readonly bigint[]) => {
+    const prev = acc[acc.length - 1] as bigint;
+    return [...acc, poseidon2([prev, prev])];
+  },
+  [0n],
+);
 
 /** Root of the subtree at (level, idx) for a sparse leaf assignment. */
 export function subtreeRoot(
@@ -36,19 +43,15 @@ export function subtreeRoot(
 ): bigint {
   const lo = idx * 2 ** level;
   const hi = lo + 2 ** level;
-  let occupied = false;
-  for (const k of leaves.keys()) {
-    if (k >= lo && k < hi) {
-      occupied = true;
-      break;
-    }
-  }
-  if (!occupied) return zeroSubtree[level] as bigint;
-  if (level === 0) return leaves.get(idx) as bigint;
-  return poseidon2([
-    subtreeRoot(leaves, level - 1, idx * 2),
-    subtreeRoot(leaves, level - 1, idx * 2 + 1),
-  ]);
+  const occupied = Array.from(leaves.keys()).some((k: number) => k >= lo && k < hi);
+  return !occupied
+    ? (zeroSubtree[level] as bigint)
+    : level === 0
+      ? (leaves.get(idx) as bigint)
+      : poseidon2([
+          subtreeRoot(leaves, level - 1, idx * 2),
+          subtreeRoot(leaves, level - 1, idx * 2 + 1),
+        ]);
 }
 
 /**
@@ -60,17 +63,13 @@ export function merklePathFor(
   leaves: ReadonlyMap<number, bigint>,
   index: number,
 ): { root: bigint; path: string[]; indices: string[] } {
-  const pathEls: string[] = [];
-  const indices: string[] = [];
-  for (let level = 0; level < TREE_LEVELS; level++) {
-    const nodeIdx = index >> level;
-    pathEls.push(subtreeRoot(leaves, level, nodeIdx ^ 1).toString());
-    indices.push(String(nodeIdx & 1));
-  }
+  const levels = Array.from({ length: TREE_LEVELS }, (_unused: unknown, level: number) => level);
   return {
     root: subtreeRoot(leaves, TREE_LEVELS, 0),
-    path: pathEls,
-    indices,
+    path: levels.map((level: number) =>
+      subtreeRoot(leaves, level, (index >> level) ^ 1).toString(),
+    ),
+    indices: levels.map((level: number) => String((index >> level) & 1)),
   };
 }
 
@@ -98,12 +97,7 @@ export interface CredentialSpec {
 export function credentialCommitmentOf(c: CredentialSpec): bigint {
   const identityHash = poseidon2([c.vendorId, poseidon1([c.repSecret])]);
   const authorityHash = poseidon2([c.roleHash, c.legalNameHash]);
-  const lifecycleHash = poseidon4([
-    c.credentialStatus,
-    c.validFrom,
-    c.validUntil,
-    c.registeredAt,
-  ]);
+  const lifecycleHash = poseidon4([c.credentialStatus, c.validFrom, c.validUntil, c.registeredAt]);
   return poseidon4([identityHash, authorityHash, lifecycleHash, c.credentialSalt]);
 }
 
