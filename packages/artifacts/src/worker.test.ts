@@ -414,7 +414,11 @@ describe("artifact retry queue", () => {
     const message = mockMessage({ cid: 42 });
     vi.stubGlobal("fetch", vi.fn());
 
-    await worker.queue(mockBatch([message]), { ARTIFACTS: r2 }, ctx);
+    await worker.queue(
+      mockBatch([message]),
+      { ARTIFACTS: r2 } as unknown as { ARTIFACTS: R2Bucket },
+      ctx,
+    );
 
     expect(r2.get).not.toHaveBeenCalled();
     expect(globalThis.fetch).not.toHaveBeenCalled();
