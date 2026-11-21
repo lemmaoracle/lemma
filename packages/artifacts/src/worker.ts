@@ -159,7 +159,7 @@ const enqueueRetry = (env: Env, cid: string, attempt: number): Promise<unknown> 
 const scheduleRetry = (env: Env, cid: string, attempt: number, ctx: ExecutionContext): void => {
   ctx.waitUntil(
     enqueueRetry(env, cid, attempt)
-      .then((_?: undefined) => {
+      .then((_: unknown) => {
         logRetry("artifact_retry_scheduled", {
           cid,
           attempt,
@@ -270,7 +270,7 @@ const reprocessOrStop = (
   reason: string,
 ): Promise<void> =>
   nextAttempt > MAX_RETRY_ATTEMPTS
-    ? Promise.resolve().then((_?: undefined) => {
+    ? Promise.resolve().then((_: unknown) => {
         logRetry("artifact_retry_exhausted", {
           cid: message.body.cid,
           attempt: message.body.attempt,
@@ -279,7 +279,7 @@ const reprocessOrStop = (
         message.ack();
       })
     : enqueueRetry(env, message.body.cid, nextAttempt)
-        .then((_?: undefined) => {
+        .then((_: unknown) => {
           logRetry("artifact_retry_rescheduled", {
             cid: message.body.cid,
             attempt: nextAttempt,
@@ -301,7 +301,7 @@ const reprocessOrStop = (
 
 const processRetryMessage = (message: Message<ArtifactRetryMessage>, env: Env): Promise<void> =>
   !isValidRetryMessage(message.body)
-    ? Promise.resolve().then((_?: undefined) => {
+    ? Promise.resolve().then((_: unknown) => {
         logRetry("artifact_retry_invalid_message", {
           body: JSON.stringify(message.body),
         });
@@ -310,7 +310,7 @@ const processRetryMessage = (message: Message<ArtifactRetryMessage>, env: Env): 
     : readR2(env, message.body.cid)
         .then((existing) =>
           existing !== null
-            ? Promise.resolve().then((_?: undefined) => {
+            ? Promise.resolve().then((_: unknown) => {
                 logRetry("artifact_retry_already_mirrored", {
                   cid: message.body.cid,
                   attempt: message.body.attempt,
@@ -318,7 +318,7 @@ const processRetryMessage = (message: Message<ArtifactRetryMessage>, env: Env): 
                 message.ack();
               })
             : mirrorArtifact(env, message.body.cid)
-                .then((_?: undefined) => {
+                .then((_: unknown) => {
                   logRetry("artifact_retry_recovered", {
                     cid: message.body.cid,
                     attempt: message.body.attempt,
@@ -336,7 +336,7 @@ const processRetryMessage = (message: Message<ArtifactRetryMessage>, env: Env): 
 export default {
   fetch: (request: Request, env: Env, ctx: ExecutionContext): Promise<Response> | Response =>
     handleRequest(request, env, ctx),
-  queue: async (batch: MessageBatch, env: Env): Promise<void> => {
+  queue: async (batch: MessageBatch, env: Env, _ctx: ExecutionContext): Promise<void> => {
     const _processed = await Promise.all(
       batch.messages.map((message) =>
         processRetryMessage(message as Message<ArtifactRetryMessage>, env),
