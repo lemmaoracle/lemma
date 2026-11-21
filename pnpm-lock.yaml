@@ -872,7 +872,7 @@ importers:
         version: 0.2.1
       viem:
         specifier: ^2.49.0
-        version: 2.58.1(typescript@5.8.3)(zod@4.6.7)
+        version: 2.58.2(typescript@5.8.3)(zod@4.6.7)
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.56.1
@@ -3952,8 +3952,8 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  baseline-browser-mapping@2.11.38:
-    resolution: {integrity: sha512-rMgy5YW7x28SMfXHLlVZDBqlWzYZ0x2rVR/6FWrNBF0chjigARK1H6nM0hKA1Um3kPOlkQFVtjJs00d2N1ezuw==}
+  baseline-browser-mapping@2.11.39:
+    resolution: {integrity: sha512-Q9buOYhr2ggrEZpImICecZTJHCCd8yXkRUokFlUEQ8uiD6oP82F4W4jWnhOHZYV+wlvrC51V7Wy0ULyWjil5Wg==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -4393,8 +4393,8 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  electron-to-chromium@1.5.491:
-    resolution: {integrity: sha512-zMOQrvaTekJMwENqx1Rnyl3qieqGxIui5CRu9g6ktKzQ/T54fq0Qfr3V/SEhGrkStWI3eYMSzMN4rbyFwfQSzA==}
+  electron-to-chromium@1.5.492:
+    resolution: {integrity: sha512-4uMs7omhajKiud0GqALLTazS/zyvHLTLmDWVTR+e6BnyJo5bSNrph/JoRWEFJJmY75ct9hCiSGsbFF9fLe5gDw==}
 
   emoji-regex-xs@1.0.0:
     resolution: {integrity: sha512-LRlerrMYoIDrT6jgpeZ2YYl/L8EulRTt5hQcYjy5AInh7HWXKimpqx68aknBFpGL2+/IcogTcaydJEgaTmOpDg==}
@@ -4916,8 +4916,8 @@ packages:
   hast-util-to-parse5@8.0.1:
     resolution: {integrity: sha512-MlWT6Pjt4CG9lFCjiz4BH7l9wmrMkfkJYCxFwKQic8+RTZgWPuWxwAfjJElsXkex7DJjfSJsQIt931ilUgmwdA==}
 
-  hast-util-to-text@4.0.3:
-    resolution: {integrity: sha512-5yrlWOvGFs6CqHriUpSsNrjzT/Tdo+IOQudbznxOn8K5qblp18MJyzOg8IgDOKQ8MYgQcJA7SusuCjSpDr8mSA==}
+  hast-util-to-text@4.0.5:
+    resolution: {integrity: sha512-zQdBtSMatDIbQeO3FuKwl6O+FAol/HtTa8lT4HYd1+w+t+yYqcySxpj9k7+VBNnXBuHiD/ctVUJgyEgIZB2a9Q==}
 
   hast-util-whitespace@3.0.0:
     resolution: {integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==}
@@ -5357,14 +5357,14 @@ packages:
   mdast-util-definitions@6.0.0:
     resolution: {integrity: sha512-scTllyX6pnYNZH/AIp/0ePz6s4cZtARxImwoPJ7kS42n+MnVsI4XbnG6d4ibehRIldYMWM2LD7ImQblVhUejVQ==}
 
-  mdast-util-find-and-replace@3.0.4:
-    resolution: {integrity: sha512-z4B5c6jrnJ1ltOQemhWYPBSAo6y42Z8Gt2yEgfgNTMcLSU59B8bfj8Z8AnAlJrBGLnqkdAUZ7jdDEqQw3KuipQ==}
+  mdast-util-find-and-replace@3.0.5:
+    resolution: {integrity: sha512-of3wZLEBWpK8mSYy8wmKnwyxfUKjhCkXxGLz45DVBqfcahTP37LscCK+0oAZh+ReZ5OunPDkB2zdGMIxrojLhw==}
 
   mdast-util-from-markdown@2.1.0:
     resolution: {integrity: sha512-KRLgmPaP2H1ul2bpoJkOS+9pAcDAAj9Nu1mqLnh8NLeJG5tlvj42TH80PIGBpROWlRXLk0lDrWNuZCFy/tsB4A==}
 
-  mdast-util-gfm-autolink-literal@2.1.0:
-    resolution: {integrity: sha512-Jx6QSK8wDo558Bcf7q+1pe0v81g2PVs09Hlvu9xJHmCFRF3sAPW7vXFVIAwBncs3sde92WbsVqNxwdqViA2XnQ==}
+  mdast-util-gfm-autolink-literal@2.1.2:
+    resolution: {integrity: sha512-rAlbZBGZfv2YRr6lSFGHTN305KkNawOYRRlbldFyPHnTlHJZwlGdzVwyIDvr3fxbhRbmJOSZc06c8H5Fgfu8Ng==}
 
   mdast-util-gfm-footnote@2.1.0:
     resolution: {integrity: sha512-sqpDWlsHn7Ac9GNZQMeUzPQSMzR6Wv0WKRNvQRg0KqHh02fpTz69Qc1QSseNX29bhz1ROIyNyxExfawVKTm1GQ==}
@@ -5387,8 +5387,8 @@ packages:
   mdast-util-to-hast@13.2.2:
     resolution: {integrity: sha512-l2pnmOuqs+SGLVpTVXnRLQu5v1AzvDe181404fbXzzqObVxrAnnVxapAP27pUwzLBL/ABIkgUhGlPVU7QSvIFg==}
 
-  mdast-util-to-markdown@2.2.3:
-    resolution: {integrity: sha512-dImdB6VZRMRac1SwAW6o1c0ESk/7pFFAMCMuKM+9v7LpTSthMM5nzXpqKw4Mjo66aXVKhNkyrP4bMB9MurPyWg==}
+  mdast-util-to-markdown@2.2.4:
+    resolution: {integrity: sha512-aCsogoZ2Oz1EItAlC12A+/uGuzp+CWlDU0xZ3o5jbJaepLsOu2tlxpvHslnX5dRhspD1gxNVkBtYG0yMiIpXoQ==}
 
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
@@ -6456,8 +6456,8 @@ packages:
   string_decoder@1.3.0:
     resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
 
-  stringify-entities@4.0.4:
-    resolution: {integrity: sha512-IwfBptatlO+QCJUo19AqvrPNqlVMpW9YEL2LIVY+Rpv2qsjCGxaDLNRgeGsQWJhfItebuJhsGSLjaBbNSQ+ieg==}
+  stringify-entities@4.0.5:
+    resolution: {integrity: sha512-jNuI2fNNw5ecxrWmgm90R3iH0Kc/94AQwoQWoSUYphWzvmUA2pjFG34H56Z7Z3FkvH3FpYwwewKAa97oQnPFhw==}
 
   strip-ansi@6.0.1:
     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
@@ -6843,8 +6843,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  viem@2.58.1:
-    resolution: {integrity: sha512-8qzo5+rbG4Sr9/MvUit9g0r/0H25suExk5WEBOzqXoTu7nYfm8EpgCTtpqQAlu8HkBmz96clZHfN7RkXKT3a1g==}
+  viem@2.58.2:
+    resolution: {integrity: sha512-tOdKI6+6oQWbb0NirduHfILojP9uY8YamtYIwallzObzMhhSCxWb2zOVw7SwrkYWTt7JmB1/Of4L3hTokp9GJA==}
     peerDependencies:
       mppx: '>=0.17.0'
       typescript: '>=5.0.4'
@@ -7298,7 +7298,7 @@ snapshots:
       '@astrojs/prism': 3.2.0
       github-slugger: 2.0.0
       hast-util-from-html: 2.1.0
-      hast-util-to-text: 4.0.3
+      hast-util-to-text: 4.0.5
       import-meta-resolve: 4.2.0
       js-yaml: 4.3.2
       mdast-util-definitions: 6.0.0
@@ -8986,11 +8986,11 @@ snapshots:
       '@noble/hashes': 1.8.0
       apg-js: 4.4.0
 
-  '@signinwithethereum/siwe@4.2.1(viem@2.58.1(typescript@5.8.3)(zod@4.6.7))':
+  '@signinwithethereum/siwe@4.2.1(viem@2.58.2(typescript@5.8.3)(zod@4.6.7))':
     dependencies:
       '@signinwithethereum/siwe-parser': 4.2.1
     optionalDependencies:
-      viem: 2.58.1(typescript@5.8.3)(zod@4.6.7)
+      viem: 2.58.2(typescript@5.8.3)(zod@4.6.7)
 
   '@sinclair/typebox@0.27.12': {}
 
@@ -9465,7 +9465,7 @@ snapshots:
   '@x402/evm@2.31.0(typescript@5.8.3)':
     dependencies:
       '@x402/core': 2.31.0
-      viem: 2.58.1(typescript@5.8.3)(zod@4.6.7)
+      viem: 2.58.2(typescript@5.8.3)(zod@4.6.7)
       zod: 4.6.7
     transitivePeerDependencies:
       - bufferutil
@@ -9477,12 +9477,12 @@ snapshots:
     dependencies:
       '@noble/curves': 1.9.7
       '@scure/base': 1.2.6
-      '@signinwithethereum/siwe': 4.2.1(viem@2.58.1(typescript@5.8.3)(zod@4.6.7))
+      '@signinwithethereum/siwe': 4.2.1(viem@2.58.2(typescript@5.8.3)(zod@4.6.7))
       '@x402/core': 2.31.0
       ajv: 8.20.0
       jose: 5.10.0
       tweetnacl: 1.0.3
-      viem: 2.58.1(typescript@5.8.3)(zod@4.6.7)
+      viem: 2.58.2(typescript@5.8.3)(zod@4.6.7)
       zod: 4.6.7
     transitivePeerDependencies:
       - bufferutil
@@ -9870,7 +9870,7 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  baseline-browser-mapping@2.11.38: {}
+  baseline-browser-mapping@2.11.39: {}
 
   better-ajv-errors@1.2.0(ajv@8.20.0):
     dependencies:
@@ -9941,9 +9941,9 @@ snapshots:
 
   browserslist@4.29.6:
     dependencies:
-      baseline-browser-mapping: 2.11.38
+      baseline-browser-mapping: 2.11.39
       caniuse-lite: 1.0.30001826
-      electron-to-chromium: 1.5.491
+      electron-to-chromium: 1.5.492
       node-releases: 2.0.65
       update-browserslist-db: 1.4.0(browserslist@4.29.6)
 
@@ -10273,7 +10273,7 @@ snapshots:
     dependencies:
       jake: 10.9.4
 
-  electron-to-chromium@1.5.491: {}
+  electron-to-chromium@1.5.492: {}
 
   emoji-regex-xs@1.0.0: {}
 
@@ -11001,7 +11001,7 @@ snapshots:
       mdast-util-to-hast: 13.2.2
       property-information: 7.2.0
       space-separated-tokens: 2.0.2
-      stringify-entities: 4.0.4
+      stringify-entities: 4.0.5
       zwitch: 2.0.4
 
   hast-util-to-parse5@8.0.1:
@@ -11014,7 +11014,7 @@ snapshots:
       web-namespaces: 2.0.1
       zwitch: 2.0.4
 
-  hast-util-to-text@4.0.3:
+  hast-util-to-text@4.0.5:
     dependencies:
       '@types/hast': 3.0.5
 
@@ -11388,7 +11388,7 @@ snapshots:
       '@types/unist': 3.0.3
       unist-util-visit: 5.2.0
 
-  mdast-util-find-and-replace@3.0.4:
+  mdast-util-find-and-replace@3.0.5:
     dependencies:
       '@types/mdast': 4.0.4
       escape-string-regexp: 5.0.0
@@ -11412,12 +11412,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-autolink-literal@2.1.0:
+  mdast-util-gfm-autolink-literal@2.1.2:
     dependencies:
       '@types/mdast': 4.0.4
       ccount: 2.0.1
       devlop: 1.1.0
-      mdast-util-find-and-replace: 3.0.4
+      mdast-util-find-and-replace: 3.0.5
       micromark-util-character: 2.1.1
 
   mdast-util-gfm-footnote@2.1.0(supports-color@10.2.2):
@@ -11425,7 +11425,7 @@ snapshots:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       mdast-util-from-markdown: 2.1.0(supports-color@10.2.2)
-      mdast-util-to-markdown: 2.2.3
+      mdast-util-to-markdown: 2.2.4
       micromark-util-normalize-identifier: 2.0.1
     transitivePeerDependencies:
       - supports-color
@@ -11434,7 +11434,7 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.4
       mdast-util-from-markdown: 2.1.0(supports-color@10.2.2)
-      mdast-util-to-markdown: 2.2.3
+      mdast-util-to-markdown: 2.2.4
     transitivePeerDependencies:
       - supports-color
 
@@ -11444,7 +11444,7 @@ snapshots:
       devlop: 1.1.0
       markdown-table: 3.1.0
       mdast-util-from-markdown: 2.1.0(supports-color@10.2.2)
-      mdast-util-to-markdown: 2.2.3
+      mdast-util-to-markdown: 2.2.4
       mdast-util-to-string: 4.0.0
       unist-util-visit: 5.2.0
     transitivePeerDependencies:
@@ -11455,19 +11455,19 @@ snapshots:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       mdast-util-from-markdown: 2.1.0(supports-color@10.2.2)
-      mdast-util-to-markdown: 2.2.3
+      mdast-util-to-markdown: 2.2.4
     transitivePeerDependencies:
       - supports-color
 
   mdast-util-gfm@3.1.0(supports-color@10.2.2):
     dependencies:
       mdast-util-from-markdown: 2.1.0(supports-color@10.2.2)
-      mdast-util-gfm-autolink-literal: 2.1.0
+      mdast-util-gfm-autolink-literal: 2.1.2
       mdast-util-gfm-footnote: 2.1.0(supports-color@10.2.2)
       mdast-util-gfm-strikethrough: 2.0.1(supports-color@10.2.2)
       mdast-util-gfm-table: 2.0.1(supports-color@10.2.2)
       mdast-util-gfm-task-list-item: 2.0.1(supports-color@10.2.2)
-      mdast-util-to-markdown: 2.2.3
+      mdast-util-to-markdown: 2.2.4
     transitivePeerDependencies:
       - supports-color
 
@@ -11488,7 +11488,7 @@ snapshots:
       unist-util-visit: 5.2.0
       vfile: 6.0.3
 
-  mdast-util-to-markdown@2.2.3:
+  mdast-util-to-markdown@2.2.4:
     dependencies:
       '@types/mdast': 4.0.4
       '@types/unist': 3.0.3
@@ -12389,7 +12389,7 @@ snapshots:
   remark-stringify@11.0.0:
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-to-markdown: 2.2.3
+      mdast-util-to-markdown: 2.2.4
       unified: 11.0.5
 
   require-directory@2.1.1: {}
@@ -12879,7 +12879,7 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  stringify-entities@4.0.4:
+  stringify-entities@4.0.5:
     dependencies:
       character-entities-html4: 2.1.0
       character-entities-legacy: 3.0.0
@@ -13204,7 +13204,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.4
 
-  viem@2.58.1(typescript@5.8.3)(zod@4.6.7):
+  viem@2.58.2(typescript@5.8.3)(zod@4.6.7):
     dependencies:
       '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
