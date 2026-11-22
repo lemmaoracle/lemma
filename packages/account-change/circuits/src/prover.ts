@@ -427,25 +427,37 @@ export const buildProverInput = (args: BuildProverInputArgs): ProverBuildResult 
     bankEvidenceHash: bankEvidenceHash.toString(),
   };
 
-  const expectedPublicSignals: string[] = Array.from({ length: SIGNALS_LENGTH }, () => "0");
-  expectedPublicSignals[SIGNAL.contextHash] = contextHash.toString();
-  expectedPublicSignals[SIGNAL.attestationCommitment] = attestationCommitment.toString();
-  expectedPublicSignals[SIGNAL.nullifier] = nullifier.toString();
-  expectedPublicSignals[SIGNAL.registryRoot] = gate.registryRoot;
-  expectedPublicSignals[SIGNAL.credentialCommitment] = credentialCommitment.toString();
-  expectedPublicSignals[SIGNAL.requiredRoleHash] = gate.requiredRoleHash;
-  expectedPublicSignals[SIGNAL.vendorId] = gate.vendorId;
-  expectedPublicSignals[SIGNAL.oldAccountHash] = oldAccountHash.toString();
-  expectedPublicSignals[SIGNAL.newAccountHash] = newAccountHash.toString();
-  expectedPublicSignals[SIGNAL.isFirst] = String(gate.isFirst);
-  expectedPublicSignals[SIGNAL.audienceHash] = audienceHash.toString();
-  expectedPublicSignals[SIGNAL.requestDigest] = requestDigest.toString();
-  expectedPublicSignals[SIGNAL.requestReceivedAt] = String(gate.requestReceivedAt);
-  expectedPublicSignals[SIGNAL.challengeId] = gate.challengeId;
-  expectedPublicSignals[SIGNAL.challengeIssuedAt] = String(gate.challengeIssuedAt);
-  expectedPublicSignals[SIGNAL.challengeExpiresAt] = String(gate.challengeExpiresAt);
-  expectedPublicSignals[SIGNAL.policyHash] = policyHash.toString();
-  expectedPublicSignals[SIGNAL.bankEvidenceHash] = bankEvidenceHash.toString();
+  /*
+   * Signal values keyed by their contract position (`SIGNAL`). Building the
+   * array from the keyed record keeps one source of truth: a new signal is a
+   * compile error until its value is added here, and the wire order is always
+   * the `SIGNAL` index order snarkjs must return.
+   */
+  const signalValues: Readonly<Record<number, string>> = {
+    [SIGNAL.contextHash]: contextHash.toString(),
+    [SIGNAL.attestationCommitment]: attestationCommitment.toString(),
+    [SIGNAL.nullifier]: nullifier.toString(),
+    [SIGNAL.registryRoot]: gate.registryRoot,
+    [SIGNAL.credentialCommitment]: credentialCommitment.toString(),
+    [SIGNAL.requiredRoleHash]: gate.requiredRoleHash,
+    [SIGNAL.vendorId]: gate.vendorId,
+    [SIGNAL.oldAccountHash]: oldAccountHash.toString(),
+    [SIGNAL.newAccountHash]: newAccountHash.toString(),
+    [SIGNAL.isFirst]: String(gate.isFirst),
+    [SIGNAL.audienceHash]: audienceHash.toString(),
+    [SIGNAL.requestDigest]: requestDigest.toString(),
+    [SIGNAL.requestReceivedAt]: String(gate.requestReceivedAt),
+    [SIGNAL.challengeId]: gate.challengeId,
+    [SIGNAL.challengeIssuedAt]: String(gate.challengeIssuedAt),
+    [SIGNAL.challengeExpiresAt]: String(gate.challengeExpiresAt),
+    [SIGNAL.policyHash]: policyHash.toString(),
+    [SIGNAL.bankEvidenceHash]: bankEvidenceHash.toString(),
+  };
+  const expectedPublicSignals: string[] = Array.from(
+    { length: SIGNALS_LENGTH },
+    (_unused: unknown, position: number) =>
+      signalValues[position] ?? fail(`public signal ${String(position)} has no value`),
+  );
 
   return {
     input,
