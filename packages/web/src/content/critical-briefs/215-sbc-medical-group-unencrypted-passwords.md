@@ -13,6 +13,7 @@ related_briefs: ["212-plaid-karte-server-flaw-db-credentials", "211-riken-fugaku
 fact_check:
   by: "Claude (separate fact-check AI)"
   at: 2026-11-22
+  ref: "https://github.com/lemmaoracle/lemma/pull/1197"
 status: draft
 version: "1.0"
 og_lead_ja: "SBCメディカルグループで、海外からの77万回の攻撃でデータベースに到達され、暗号化していなかったパスワードを含む基本情報162万4,000人分などが不正に取得された"
