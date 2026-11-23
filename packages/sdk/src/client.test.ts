@@ -34,4 +34,14 @@ describe("create", () => {
     const client = create({ apiBase: "http://localhost:8787" });
     expect(client.fetcher).toBeUndefined();
   });
+
+  it("includes defaultChainId when provided", () => {
+    const client = create({ apiBase: "http://localhost:8787", defaultChainId: 8453 });
+    expect(client.defaultChainId).toBe(8453);
+  });
+
+  it("omits defaultChainId when not provided", () => {
+    const client = create({ apiBase: "http://localhost:8787" });
+    expect(client.defaultChainId).toBeUndefined();
+  });
 });

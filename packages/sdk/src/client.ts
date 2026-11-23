@@ -8,5 +8,6 @@ const DEFAULT_API_BASE = "https://workers.lemma.workers.dev";
 export const create = (config: LemmaClientConfig, fetcher?: typeof fetch): LemmaClient => ({
   apiBase: config.apiBase || DEFAULT_API_BASE,
   apiKey: config.apiKey,
+  ...(config.defaultChainId !== undefined ? { defaultChainId: config.defaultChainId } : {}),
   fetcher,
 });
