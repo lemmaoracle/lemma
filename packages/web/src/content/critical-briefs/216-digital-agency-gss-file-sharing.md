@@ -13,6 +13,7 @@ related_briefs: ["211-riken-fugaku-unauthorized-access", "212-plaid-karte-server
 fact_check:
   by: "Claude (separate fact-check AI)"
   at: 2026-11-23
+  ref: "https://github.com/lemmaoracle/lemma/pull/1202"
 status: draft
 version: "1.0"
 og_lead_ja: "デジタル庁のガバメントソリューションサービス（GSS）のファイル共有サービスで、正規の共有相手以外の者からのアクセスがあり、アップロードされていたファイルの一部が漏えいした可能性がある"
