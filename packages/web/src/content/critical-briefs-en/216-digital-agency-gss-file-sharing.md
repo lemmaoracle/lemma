@@ -32,7 +32,7 @@ key_figures:
   - value: "11/12"
     label: "The day the Digital Agency detected the possibility of the access and began its investigation. Immediately after detection it cut off the service's communication with the outside, and it stopped providing the service the same day"
   - value: "11/20"
-    label: "The day the Digital Agency disclosed the case. The count, contents and route of the files that may have leaked have not been disclosed and are under investigation"
+    label: "The day the Digital Agency disclosed the case. The number and contents of the files that may have leaked, and the route of the access, have not been disclosed"
 glossary:
   - term: "Government Solution Service (GSS)"
     desc: "A common work platform the Digital Agency provides to government agencies and other bodies that use GSS. Its file-sharing service shares large files, such as meeting materials, between users and with people outside the organisations, such as businesses."
@@ -53,7 +53,7 @@ controls:
   - slug: "audit-trail"
     item: "Keep a record of who read which file and when, so the scope of a leak can be checked afterwards"
 attack_method: "account-takeover"
-impact: "On the file-sharing service provided under the Digital Agency's Government Solution Service (GSS), some of the uploaded files may have leaked to the outside. Access by someone other than the intended recipients was confirmed over the period from 30 July to 12 November 2026. The files that may have leaked are also assumed possibly to contain personal information. The count, contents and route have not been disclosed and are under investigation. Provision of the service was stopped on 12 November"
+impact: "On the file-sharing service provided under the Digital Agency's Government Solution Service (GSS), some of the uploaded files may have leaked to the outside. Access by someone other than the intended recipients was confirmed over the period from 30 July to 12 November 2026. The files that may have leaked are also assumed possibly to contain personal information. The number and contents of the files, and the route of the access, have not been disclosed. Provision of the service was stopped on 12 November"
 takeaway: "On a government file-sharing service, access by someone who was not an intended recipient was confirmed over the period until it was detected. If the recipient is not checked at the sharing entry, access by someone who is not a recipient goes through as it is. Before a file is opened, check that access against the intended recipients and the record of the sharing's scope and period, and keep a record of who read what."
 self_check: "When you share files with people outside your organisation, do you have rules for the recipients, the scope and the period?"
 countries: ["jp"]
@@ -65,16 +65,16 @@ search_description: "デジタル庁は、ガバメントソリューション�
 
 On 20 November 2026, the Digital Agency announced that, on the file-sharing service provided under the Government Solution Service (GSS) for government agencies, some of the uploaded files may have leaked to the outside. Access by someone other than the intended recipients was confirmed over the period from 30 July to 12 November of the same year.
 
-The Digital Agency detected the possibility of the access on 12 November and began an investigation. Immediately after detection it cut off the service's communication with the outside, and it stopped providing the service the same day. Because the files that may have leaked are also assumed possibly to contain personal information, it reported the case promptly to the Personal Information Protection Commission. The count, contents and route of the files that may have leaked have not been disclosed and are under investigation. At this point, no secondary harm to personal information arising from this case has been confirmed.
+The Digital Agency detected the possibility of the access on 12 November and began an investigation. Immediately after detection it cut off the service's communication with the outside, and it stopped providing the service the same day. Because the files that may have leaked are also assumed possibly to contain personal information, it reported the case promptly to the Personal Information Protection Commission. The number and contents of the files that may have leaked, and the route of the access, have not been disclosed. According to the Digital Agency, at the time of the announcement no secondary harm to personal information arising from this case had been confirmed.
 
 <strong>If the recipient is not checked at the sharing entry, access by someone who is not a recipient goes through, indistinguishable from normal sharing.</strong>
 
 ## 2. What got through
 
-- **What got through**: Access to shared files by someone other than the intended recipients. What was targeted was the sharing mechanism itself. GSS file sharing is a service that can share files with people outside the organisations as well, and access that came through that sharing entry was confirmed over the period from 30 July to 12 November. It was detected on 12 November, and the period over which access took place runs to three and a half months. Which days in the period saw access, and how much, is under investigation.
-- **What reached the accepting side**: In general, a file-sharing mechanism receives only the operation of opening a file itself. It does not receive whether that operation is by an intended recipient. Unless it is compared with a record of who opened which file and when, access by someone who is not a recipient cannot be told apart from normal sharing.
-- **Disclosure while it is still only a "possibility of leakage"**: What leaked, and how much, is not yet known. The Digital Agency disclosed the case on the basis that some of the files may have leaked and that they "may also contain personal information". Having to disclose while the scope is still unknown is itself the weight of this case. What is in question is not whether files leaked, but the state of not knowing who saw them.
-- **Not disclosed**: The count and contents of the files that may have leaked (including whether personal information was actually in them). The route and method of the access by someone other than the intended recipients. Who the accessor was, and whether files were taken out. The details of the period over which the access took place. Whether the leaked information has been misused in secondary harm was unconfirmed at the time of the disclosure.
+- **What got through**: Access to shared files by someone other than the intended recipients. GSS file sharing is a service that can share files with people outside the organisations as well, and access by someone other than the intended recipients was confirmed over the period from 30 July to 12 November. The route by which the access arrived has not been disclosed. It was detected on 12 November, and the period over which access took place runs to three and a half months. Which days in the period saw access, and how much, is under investigation.
+- **What reached the accepting side**: In general, what reaches a file-sharing mechanism is the operation of opening a file through a sharing link or an account. It does not show whether that operation is by the very recipient the sharer designated. Unless it is compared with a record of who opened which file and when, access by someone who is not a recipient cannot be told apart from normal sharing.
+- **Disclosure while it is still only a "possibility of leakage"**: What leaked, and how much, is not yet known. The Digital Agency disclosed the case on the basis that some of the files may have leaked and that they "may also contain personal information".
+- **Not disclosed**: The count and contents of the files that may have leaked (including whether personal information was actually in them). The route and method of the access by someone other than the intended recipients. Who accessed the files, and whether files were taken out. The details of the period over which the access took place. Whether the leaked information has been misused in secondary harm was unconfirmed at the time of the disclosure.
 
 ## 3. Pre-execution check
 
@@ -98,7 +98,7 @@ Whatever the route, the condition for telling them apart is that, before a share
 </div>
 </figure>
 
-Detection worked, and on the same day it detected the access, the Digital Agency cut off communication and stopped providing the service. Even so, the period over which access took place runs to three and a half months, and the scope of the files that may have leaked is not yet known. Cases where an outside mechanism or a public page became the entry include [RIKEN 'Fugaku'](/critical/briefs/211-riken-fugaku-unauthorized-access/) (a public page used to reach the operations network) and [Plaid KARTE](/critical/briefs/212-plaid-karte-server-flaw-db-credentials/) (theft of connection credentials). Here, the target was the sharing mechanism itself, shared across government agencies.
+Detection worked, and on the same day it detected the access, the Digital Agency cut off communication and stopped providing the service. Even so, the period over which access took place runs to three and a half months, and the scope of the files that may have leaked is not yet known. Cases where an outside mechanism or a public page became the entry include [RIKEN 'Fugaku'](/critical/briefs/211-riken-fugaku-unauthorized-access/) (a public page used to reach the operations network) and [Plaid KARTE](/critical/briefs/212-plaid-karte-server-flaw-db-credentials/) (theft of connection credentials). This case occurred on a file-sharing mechanism used by government agencies and other bodies.
 
 ## 4. What Lemma does
 
@@ -119,10 +119,9 @@ The route in this case is column 1 (access to shared files by someone who is not
 | --- | --- | --- | --- |
 | At the entry, check whether the person accessing is an intended recipient | Partial | Not relevant | Not relevant |
 | Narrow the scope and period of sharing, with rules for cutting sharing off | Partial | Partial | Not relevant |
-| Keep a record of who read which file and when | Not relevant | Not relevant | Not relevant |
 | **Lemma (pre-execution check)** | Partial | Partial | Not effective |
 
-Checking the recipient at the entry does not stop access that slips past the checking mechanism. Narrowing the scope and period makes the scope that could be seen smaller, but does not stop the access itself. Keeping a record is needed to check the scope of a leak afterwards, but does not decide whether access goes through. Lemma checks, before execution, not whether access is valid but whether it is tied to the intended recipients and the record of the sharing's scope and period.
+Checking the recipient at the entry does not stop access that slips past the checking mechanism. Narrowing the scope and period makes the scope that could be seen smaller, but does not stop the access itself. Lemma checks, before execution, not whether access is valid but whether it is tied to the intended recipients and the record of the sharing's scope and period.
 
 Note: Lemma's check works only when it is built into the steps for opening files, and the record of recipients, scope and period is managed apart from the sharing mechanism itself. If the sharing mechanism itself is taken over and files are reached directly by a route that skips the check, the check is bypassed. Files passed on from a recipient also bypass it, and the sharing's scope and period are the answer. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, fix sharing settings or recover files that have leaked.
 
@@ -145,10 +144,10 @@ Three things to confirm about a sharing's recipients, scope and period, the cont
 ### Timeline
 
 - **2026-07-30**: The start of the period over which access by someone other than the intended recipients was confirmed (through 12 November).
-- **2026-11-12**: The Digital Agency detects the possibility of the access and begins an investigation. Immediately after detection it cuts off communication with the outside, and stops providing the service the same day. It reports the case promptly to the Personal Information Protection Commission.
+- **2026-11-12**: The Digital Agency detects the possibility of the access and begins an investigation. Immediately after detection it cuts off communication with the outside, and stops providing the service the same day (the date of the report to the Personal Information Protection Commission has not been disclosed).
 - **2026-11-20**: The Digital Agency discloses the case.
 
-> The facts of this case rely on the Digital Agency's announcement (the primary source). No second report had been published as of 23 November. The count and contents of the files that may have leaked, the route and method of the access by someone other than the intended recipients, who the accessor was, and the details of the period have not been disclosed and are under investigation. What has not been disclosed does not mean that no countermeasures were in place. This Brief does not evaluate any party's response. As of 23 November.
+> The facts of this case rely on the Digital Agency's announcement (the primary source). No second report had been published as of 23 November. The count and contents of the files that may have leaked, the route and method of the access by someone other than the intended recipients, and who accessed the files have not been disclosed. The details of the period are said to be under investigation. What has not been disclosed does not mean that no countermeasures were in place. This Brief does not evaluate any party's response. As of 23 November.
 
 ### Response after disclosure
 
