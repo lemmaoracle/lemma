@@ -150,8 +150,13 @@ export interface ProverBuildResult {
 }
 
 const fail = (message: string): never => {
+  // imperative: sync pre-condition validation must abort the call site — no functional alternative
+  // eslint-disable-next-line functional/no-throw-statements
   throw new Error(message);
 };
+
+/** Abort unless `condition` holds; the boolean result keeps call sites expression-shaped. */
+const check = (condition: boolean, message: string): boolean => (condition ? true : fail(message));
 
 const FIELD_R = BigInt(
   "21888242871839275222246405745257275088548364400416034343698204186575808495617",
@@ -191,10 +196,8 @@ const intOf = (value: unknown, what: string): number => {
   return Number.isSafeInteger(n) ? n : fail(`${what} is out of range: ${text}`);
 };
 
-const strOf = (value: unknown, what: string): string => {
-  if (typeof value !== "string" || value.trim() === "") return fail(`${what} is required (string)`);
-  return value;
-};
+const strOf = (value: unknown, what: string): string =>
+  typeof value === "string" && value.trim() !== "" ? value : fail(`${what} is required (string)`);
 
 /**
  * Normalize the several shapes a challenge arrives in:
@@ -214,7 +217,10 @@ export const gateViewOf = (raw: unknown): GateCardView => {
       : isFirstRaw === false || isFirstRaw === 0 || isFirstRaw === "0"
         ? 0
         : fail("gate.isFirst must be 0 or 1");
-  const out: GateCardView = {
+  const oldAccountHash = picked("oldAccountHash");
+  const requestDigest = picked("requestDigest");
+  const ref = card?.ref ?? root.ref;
+  return {
     circuitId: strOf(picked("circuitId"), "gate.circuitId"),
     registryRoot: decimalOf(picked("registryRoot"), "gate.registryRoot"),
     vendorId: decimalOf(picked("vendorId"), "gate.vendorId"),
@@ -227,28 +233,31 @@ export const gateViewOf = (raw: unknown): GateCardView => {
     challengeIssuedAt: intOf(picked("challengeIssuedAt"), "gate.challengeIssuedAt"),
     challengeExpiresAt: intOf(picked("challengeExpiresAt"), "gate.challengeExpiresAt"),
     isFirst,
+    ...(oldAccountHash !== undefined
+      ? { oldAccountHash: decimalOf(oldAccountHash, "gate.oldAccountHash") }
+      : {}),
+    ...(requestDigest !== undefined
+      ? { requestDigest: decimalOf(requestDigest, "gate.requestDigest") }
+      : {}),
+    ...(typeof ref === "string" && ref.trim() !== "" ? { ref: ref.trim() } : {}),
   };
-  const oldAccountHash = picked("oldAccountHash");
-  if (oldAccountHash !== undefined)
-    out.oldAccountHash = decimalOf(oldAccountHash, "gate.oldAccountHash");
-  const requestDigest = picked("requestDigest");
-  if (requestDigest !== undefined)
-    out.requestDigest = decimalOf(requestDigest, "gate.requestDigest");
-  const ref = card?.ref ?? root.ref;
-  if (typeof ref === "string" && ref.trim() !== "") out.ref = ref.trim();
-  return out;
 };
 
 const parseBundle = (bundle: DemoVendorBundle): DemoVendorBundle => {
-  if (bundle.circuitId !== CIRCUIT_ID)
-    fail(`bundle.circuitId is ${bundle.circuitId}, expected ${CIRCUIT_ID}`);
-  if (!Array.isArray(bundle.credential.merklePath) || bundle.credential.merklePath.length !== 20)
-    fail("bundle.credential.merklePath must have 20 elements");
-  if (
-    !Array.isArray(bundle.credential.merkleIndices) ||
-    bundle.credential.merkleIndices.length !== 20
-  )
-    fail("bundle.credential.merkleIndices must have 20 elements");
+  const _bundleValid =
+    check(
+      bundle.circuitId === CIRCUIT_ID,
+      `bundle.circuitId is ${bundle.circuitId}, expected ${CIRCUIT_ID}`,
+    ) &&
+    check(
+      Array.isArray(bundle.credential.merklePath) && bundle.credential.merklePath.length === 20,
+      "bundle.credential.merklePath must have 20 elements",
+    ) &&
+    check(
+      Array.isArray(bundle.credential.merkleIndices) &&
+        bundle.credential.merkleIndices.length === 20,
+      "bundle.credential.merkleIndices must have 20 elements",
+    );
   return bundle;
 };
 
@@ -262,48 +271,53 @@ const parseBundle = (bundle: DemoVendorBundle): DemoVendorBundle => {
 export const buildProverInput = (args: BuildProverInputArgs): ProverBuildResult => {
   const bundle = parseBundle(args.bundle);
   const gate = args.gate;
-  if (gate.circuitId !== CIRCUIT_ID)
-    fail(`gate.circuitId is ${gate.circuitId}, expected ${CIRCUIT_ID}`);
+  const _gateCircuitValid = check(
+    gate.circuitId === CIRCUIT_ID,
+    `gate.circuitId is ${gate.circuitId}, expected ${CIRCUIT_ID}`,
+  );
 
   /* Gate-fixed values must be the ones this bundle was issued for. */
-  if (BigInt(gate.registryRoot) !== BigInt(bundle.registryRoot))
-    fail(
+  const _gateValid =
+    check(
+      BigInt(gate.registryRoot) === BigInt(bundle.registryRoot),
       "registryRoot mismatch: the gate was re-seeded after this bundle was made.\n" +
         "Re-run `pnpm seed:demo-vendor`, update GATE_REGISTRY_ROOT (and the other " +
         "GATE_* values) on the CLUBS side, then request a new proof card.",
+    ) &&
+    check(
+      BigInt(gate.vendorId) === BigInt(bundle.vendorId),
+      "vendorId mismatch: the bundle and the gate card disagree",
+    ) &&
+    check(
+      BigInt(gate.requiredRoleHash) === BigInt(bundle.requiredRoleHash),
+      "requiredRoleHash mismatch: the bundle and the gate card disagree",
+    ) &&
+    check(
+      gate.oldAccountHash === undefined ||
+        BigInt(gate.oldAccountHash) === BigInt(bundle.oldAccountHash),
+      "oldAccountHash mismatch: the gate card was issued for a different " +
+        "registered account than this bundle carries",
     );
-  if (BigInt(gate.vendorId) !== BigInt(bundle.vendorId))
-    fail("vendorId mismatch: the bundle and the gate card disagree");
-  if (BigInt(gate.requiredRoleHash) !== BigInt(bundle.requiredRoleHash))
-    fail("requiredRoleHash mismatch: the bundle and the gate card disagree");
-  if (gate.oldAccountHash !== undefined) {
-    if (BigInt(gate.oldAccountHash) !== BigInt(bundle.oldAccountHash))
-      fail(
-        "oldAccountHash mismatch: the gate card was issued for a different " +
-          "registered account than this bundle carries",
-      );
-  }
 
   const cred = bundle.credential;
   const roleHash = poseidon1([scalarOf(`lemma:role:${cred.roleName}`)]);
-  if (roleHash !== BigInt(gate.requiredRoleHash))
-    fail(
-      `credential role "${cred.roleName}" does not match the gate's requiredRoleHash ` +
-        '(keep DEMO_ROLE_NAME="account-change" for the demo bundle)',
-    );
-
   const legalNameHash = scalarOf(normalizeName(cred.legalName));
   const holderNameHash = scalarOf(normalizeName(bundle.oldAccount.holderName));
-  if (legalNameHash !== holderNameHash)
-    fail(
-      "holder binding impossible: the registered legal name and the old account " +
-        "holder normalize to different hashes (demo normalizer: trim + ASCII uppercase)",
-    );
-
   const accountHolder = args.account.holderName ?? cred.legalName;
   const newHolderHash = scalarOf(normalizeName(accountHolder));
-  if (newHolderHash !== legalNameHash)
-    fail(
+  const _credentialValid =
+    check(
+      roleHash === BigInt(gate.requiredRoleHash),
+      `credential role "${cred.roleName}" does not match the gate's requiredRoleHash ` +
+        '(keep DEMO_ROLE_NAME="account-change" for the demo bundle)',
+    ) &&
+    check(
+      legalNameHash === holderNameHash,
+      "holder binding impossible: the registered legal name and the old account " +
+        "holder normalize to different hashes (demo normalizer: trim + ASCII uppercase)",
+    ) &&
+    check(
+      newHolderHash === legalNameHash,
       `the new account must be held in the registered legal name ` +
         `("${cred.legalName}"); "${accountHolder}" hashes differently`,
     );
@@ -315,31 +329,42 @@ export const buildProverInput = (args: BuildProverInputArgs): ProverBuildResult 
     accountNumber: BigInt(bundle.oldAccount.accountNumber),
     holderNameHash,
   });
-  if (oldAccountHash !== BigInt(bundle.oldAccountHash))
-    fail(
+  const isFirst = oldAccountHash === 0n ? 1 : 0;
+  const _accountValid =
+    check(
+      oldAccountHash === BigInt(bundle.oldAccountHash),
       "bundle.oldAccountHash does not match the old account fields in the bundle " +
         "(the bundle was edited by hand?)",
-    );
-
-  const isFirst = oldAccountHash === 0n ? 1 : 0;
-  if (gate.isFirst !== isFirst)
-    fail(
-      `gate.isFirst is ${gate.isFirst} but the old account is ` +
+    ) &&
+    check(
+      gate.isFirst === isFirst,
+      `gate.isFirst is ${String(gate.isFirst)} but the old account is ` +
         `${oldAccountHash === 0n ? "empty (isFirst must be 1)" : "registered (isFirst must be 0)"}. ` +
         "Update GATE_IS_FIRST on the CLUBS side (or request a first-registration bundle).",
     );
 
   /* Time window (the circuit rejects these; fail early with the reason). */
-  if (BigInt(cred.registeredAt) > BigInt(gate.requestReceivedAt))
-    fail("the credential was registered after the change request was received");
-  if (BigInt(cred.validFrom) > BigInt(gate.challengeIssuedAt))
-    fail("the credential was not valid yet when the challenge was issued");
-  if (BigInt(gate.challengeExpiresAt) > BigInt(cred.validUntil))
-    fail("the credential expires before the challenge window ends");
-  if (gate.challengeIssuedAt >= gate.challengeExpiresAt)
-    fail("the challenge window is empty (issuedAt >= expiresAt)");
-  if (gate.requestReceivedAt > gate.challengeIssuedAt)
-    fail("the challenge was issued before the request was received");
+  const _windowValid =
+    check(
+      BigInt(cred.registeredAt) <= BigInt(gate.requestReceivedAt),
+      "the credential was registered after the change request was received",
+    ) &&
+    check(
+      BigInt(cred.validFrom) <= BigInt(gate.challengeIssuedAt),
+      "the credential was not valid yet when the challenge was issued",
+    ) &&
+    check(
+      BigInt(gate.challengeExpiresAt) <= BigInt(cred.validUntil),
+      "the credential expires before the challenge window ends",
+    ) &&
+    check(
+      gate.challengeIssuedAt < gate.challengeExpiresAt,
+      "the challenge window is empty (issuedAt >= expiresAt)",
+    ) &&
+    check(
+      gate.requestReceivedAt <= gate.challengeIssuedAt,
+      "the challenge was issued before the request was received",
+    );
 
   const credentialCommitment = credentialCommitmentOf({
     repSecret: BigInt(cred.repSecret),
@@ -371,11 +396,11 @@ export const buildProverInput = (args: BuildProverInputArgs): ProverBuildResult 
   const audienceHash = scalarOf(gate.audience);
   const requestDigest = scalarOf(gate.requestCanonical);
   const policyHash = scalarOf(gate.policy);
-  if (gate.requestDigest !== undefined && BigInt(gate.requestDigest) !== requestDigest)
-    fail(
-      "requestDigest mismatch: the gate card and this prover derive a different " +
-        "digest from requestCanonical",
-    );
+  const _digestValid = check(
+    gate.requestDigest === undefined || BigInt(gate.requestDigest) === requestDigest,
+    "requestDigest mismatch: the gate card and this prover derive a different " +
+      "digest from requestCanonical",
+  );
 
   const ctxA = poseidon4([CONTEXT_DOMAIN_A, audienceHash, BigInt(gate.vendorId), requestDigest]);
   const ctxB = poseidon4([
@@ -427,25 +452,37 @@ export const buildProverInput = (args: BuildProverInputArgs): ProverBuildResult 
     bankEvidenceHash: bankEvidenceHash.toString(),
   };
 
-  const expectedPublicSignals: string[] = Array.from({ length: SIGNALS_LENGTH }, () => "0");
-  expectedPublicSignals[SIGNAL.contextHash] = contextHash.toString();
-  expectedPublicSignals[SIGNAL.attestationCommitment] = attestationCommitment.toString();
-  expectedPublicSignals[SIGNAL.nullifier] = nullifier.toString();
-  expectedPublicSignals[SIGNAL.registryRoot] = gate.registryRoot;
-  expectedPublicSignals[SIGNAL.credentialCommitment] = credentialCommitment.toString();
-  expectedPublicSignals[SIGNAL.requiredRoleHash] = gate.requiredRoleHash;
-  expectedPublicSignals[SIGNAL.vendorId] = gate.vendorId;
-  expectedPublicSignals[SIGNAL.oldAccountHash] = oldAccountHash.toString();
-  expectedPublicSignals[SIGNAL.newAccountHash] = newAccountHash.toString();
-  expectedPublicSignals[SIGNAL.isFirst] = String(gate.isFirst);
-  expectedPublicSignals[SIGNAL.audienceHash] = audienceHash.toString();
-  expectedPublicSignals[SIGNAL.requestDigest] = requestDigest.toString();
-  expectedPublicSignals[SIGNAL.requestReceivedAt] = String(gate.requestReceivedAt);
-  expectedPublicSignals[SIGNAL.challengeId] = gate.challengeId;
-  expectedPublicSignals[SIGNAL.challengeIssuedAt] = String(gate.challengeIssuedAt);
-  expectedPublicSignals[SIGNAL.challengeExpiresAt] = String(gate.challengeExpiresAt);
-  expectedPublicSignals[SIGNAL.policyHash] = policyHash.toString();
-  expectedPublicSignals[SIGNAL.bankEvidenceHash] = bankEvidenceHash.toString();
+  /*
+   * Signal values keyed by their contract position (`SIGNAL`). Building the
+   * array from the keyed record keeps one source of truth: a new signal is a
+   * compile error until its value is added here, and the wire order is always
+   * the `SIGNAL` index order snarkjs must return.
+   */
+  const signalValues: Readonly<Record<number, string>> = {
+    [SIGNAL.contextHash]: contextHash.toString(),
+    [SIGNAL.attestationCommitment]: attestationCommitment.toString(),
+    [SIGNAL.nullifier]: nullifier.toString(),
+    [SIGNAL.registryRoot]: gate.registryRoot,
+    [SIGNAL.credentialCommitment]: credentialCommitment.toString(),
+    [SIGNAL.requiredRoleHash]: gate.requiredRoleHash,
+    [SIGNAL.vendorId]: gate.vendorId,
+    [SIGNAL.oldAccountHash]: oldAccountHash.toString(),
+    [SIGNAL.newAccountHash]: newAccountHash.toString(),
+    [SIGNAL.isFirst]: String(gate.isFirst),
+    [SIGNAL.audienceHash]: audienceHash.toString(),
+    [SIGNAL.requestDigest]: requestDigest.toString(),
+    [SIGNAL.requestReceivedAt]: String(gate.requestReceivedAt),
+    [SIGNAL.challengeId]: gate.challengeId,
+    [SIGNAL.challengeIssuedAt]: String(gate.challengeIssuedAt),
+    [SIGNAL.challengeExpiresAt]: String(gate.challengeExpiresAt),
+    [SIGNAL.policyHash]: policyHash.toString(),
+    [SIGNAL.bankEvidenceHash]: bankEvidenceHash.toString(),
+  };
+  const expectedPublicSignals: string[] = Array.from(
+    { length: SIGNALS_LENGTH },
+    (_unused: unknown, position: number) =>
+      signalValues[position] ?? fail(`public signal ${String(position)} has no value`),
+  );
 
   return {
     input,
