@@ -13,7 +13,12 @@ allowBuilds:
   core-js: false
   core-js-pure: false
   esbuild: true
-  onnxruntime-node: true
+  # onnxruntime-node's postinstall downloads the CUDA EP from GitHub releases
+  # on Linux/x64. v1.21.0 (pinned by @huggingface/transformers) points at an
+  # asset that now 404s, which fails every clean install (Cloudflare builds
+  # included). The CPU binaries are bundled in the tarball, so skipping the
+  # postinstall keeps inference working and only drops CUDA support.
+  onnxruntime-node: false
   protobufjs: false
   sharp: true
   workerd: true
