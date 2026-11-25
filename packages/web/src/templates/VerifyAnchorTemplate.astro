@@ -328,6 +328,22 @@ const DOC = {
     subEn: "This proof has not been registered, or the link may be incorrect.",
   },
   proofIdLabel: "VERIFICATION ID",
+  // 口座変更の証明（Proof Gate・account-change-v1）で残るもの／残らないもの（2026-11-25・CLUBS の
+  // 取引先の確認ページから開く人向け）。Lemma に残るのは公開できる値（指紋）だけ。
+  keep: {
+    circuits: ["account-change-v1"],
+    title: "この証明で残るもの・残らないもの / What this proof keeps",
+    yesK: "残るもの",
+    yesKEn: "Kept",
+    yesJa: "登録された担当者が出した証明であること、証明した日時、どの依頼への証明か（依頼の指紋）、新しい口座の指紋。指紋からは、元の口座番号や依頼の中身は戻せません。",
+    yesEn: "That a registered contact made the proof, when, which request it answers (a fingerprint of the request), and a fingerprint of the new account. The original account number or request cannot be recovered from these fingerprints.",
+    noK: "残らないもの",
+    noKEn: "Not kept",
+    noJa: "口座番号、パスワード、確認用ファイルの中の秘密、メールの本文。",
+    noEn: "Account numbers, passwords, the secret inside the credential file, or email contents.",
+    noteJa: "依頼した会社の記録にも、口座番号は残りません（照合に使う指紋と、口座の末尾4桁だけです）。",
+    noteEn: "The requesting company does not keep the account number either — only a fingerprint for matching and the last 4 digits.",
+  },
   pf: {
     circuitJa: "証明の種類",
     circuitEn: "Circuit",
@@ -849,12 +865,23 @@ const DOC = {
         .join("");
       const subHtml = st.subJa ? `<p class="sub2">${st.subJa}<span class="en">${st.subEn}</span></p>` : "";
       const icon = st.cls === "pending" ? I.clock : st.cls === "not_found" ? I.q : I.check;
+      const K = DOC.keep;
+      const keepHtml = K.circuits.includes(rec.circuitId)
+        ? `<div class="fold"><details>
+            <summary><span class="sm-ic">${svg(I.q)}</span>${K.title}<span class="caret">▶</span></summary>
+            <div class="foldbody">
+              <div class="trow"><span class="k">${K.yesK}<span class="en">${K.yesKEn}</span></span><span class="v">${K.yesJa}<span class="en">${K.yesEn}</span></span></div>
+              <div class="trow"><span class="k">${K.noK}<span class="en">${K.noKEn}</span></span><span class="v">${K.noJa}<span class="en">${K.noEn}</span></span></div>
+              <p class="meaningtxt">${K.noteJa}<span class="en">${K.noteEn}</span></p>
+            </div></details></div>`
+        : "";
       view.innerHTML = `<div class="cert2 ${st.cls}"><div class="pgrid"></div>
         <div class="ch"><div class="seal">${svg(icon)}</div>
           <div><h1 class="verdict">${st.ja}</h1><div class="verdict-en">${st.en}</div></div></div>
         <div class="idline"><span class="idk">${DOC.proofIdLabel}</span><span class="idv">${esc(rec.verificationId)}</span><button class="copybtn" id="copyBtn">${DOC.copy}</button></div>
         ${subHtml}
         <div class="facts">${facts}</div>
+        ${keepHtml}
       </div>`;
       const btn = $("copyBtn");
       if (btn)
