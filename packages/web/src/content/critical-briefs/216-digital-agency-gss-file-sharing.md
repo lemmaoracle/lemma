@@ -11,8 +11,9 @@ authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["211-riken-fugaku-unauthorized-access", "212-plaid-karte-server-flaw-db-credentials"]
 fact_check:
-  by: "Claude (separate fact-check AI)"
-  at: 2026-11-23
+  by: "Claude Opus 5.5"
+  at: 2026-11-25
+  rev: "425ae10bf7621271"
   ref: "https://github.com/lemmaoracle/lemma/pull/1202"
 status: draft
 version: "1.0"
