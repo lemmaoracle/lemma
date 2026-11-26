@@ -19,6 +19,8 @@ status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Band, 03 opening and figure 1 now name the reader and the client's job (#53)"
+  - date: 2026-11-26
+    note: "Cut overlapping explanations and shortened the text"
 version: "1.0"
 og_lead_ja: "プレイドの KARTE で、サーバーの脆弱性から接続用の認証情報が盗まれ、メールアドレス 79,249 件と外部連携の認証情報、利用企業の顧客データの一部が漏えいした"
 og_lead_en: "At Plaid's KARTE, connection credentials were stolen through a server vulnerability, and 79,249 email addresses, integration credentials and part of client companies' customer data leaked"
@@ -32,18 +34,18 @@ og_headline_en: "A server flaw gave away\ndatabase credentials,\nand client data
 key_figures:
   - value: "79,249"
     unit: "addresses"
-    label: "KARTE account email addresses whose leak was confirmed (counts for integration credentials and part of customer data still being investigated; Plaid)"
+    label: "KARTE account email addresses whose leak was confirmed (counts for the other leaked data still being investigated; Plaid)"
     tone: "alert"
   - value: "08:59 → 15:23"
-    label: "On 13 November, from Plaid detecting the unauthorised access to finishing containment, including cutting off traffic from the attack source (the access took place in the early hours of the same day)"
+    label: "On 13 November, from detecting the unauthorised access to finishing containment, including cutting off traffic (the access took place in the early hours of the same day)"
   - value: "331,586"
     unit: "records"
-    label: "Members' Club member records disclosed by one client company, Hankyu Hanshin Hotels (the maximum identified so far; may include former members; 16 November)"
+    label: "Member records disclosed by the client company Hankyu Hanshin Hotels (the maximum identified so far; may include former members; 16 November)"
 glossary:
   - term: "KARTE"
     desc: "A customer experience platform provided by Plaid. Client companies use it for web and app tracking, sending email and other messages, and operations in an admin console. According to Plaid, client companies can import their own member data and more through a feature called 'linking tables' (紐付けテーブル)."
   - term: "Connection credentials"
-    desc: "In general, the IDs, passwords or keys a system uses to connect to a database or similar. According to Plaid, the third party exploited a server vulnerability to steal connection credentials for systems and databases."
+    desc: "In general, the IDs, passwords or keys a system uses to connect to a database or similar."
 insight:
   slug: "db-credential-read-not-tied-to-client-job"
   stop: true
@@ -62,7 +64,7 @@ controls:
     item: "Record, apart from the database, which credentials read which client company's data, and as which job"
 attack_method: "supply-chain"
 impact: "79,249 email addresses registered as KARTE accounts, credentials used to integrate with outside services (secret keys, access tokens and more), and part of the customer data client companies imported leaked (counts for the latter two still being investigated; Plaid, 16 November). On the client side, Hankyu Hanshin Hotels disclosed up to 331,586 records, among others. All KARTE services are suspended"
-takeaway: "Connection credentials were stolen through a server vulnerability, and client companies' customer data was read out of databases. Holding connection credentials does not show that a read is a client company's job. Check a read against the record of which client company and which job it serves before letting it through."
+takeaway: "Holding connection credentials does not show that a read is a client company's job. Check a read against the record of which client company and which job it serves before letting it through."
 self_check: "Do you know what customer data you have entrusted to an outside service, how long it stays there, and which credentials can read it?"
 countries: ["jp"]
 search_title: "プレイド KARTE 不正アクセス：漏えいの経緯と対策"
@@ -71,26 +73,26 @@ search_description: "プレイドの KARTE で、サーバーの脆弱性から�
 
 ## 1. Summary
 
-In the early hours of 13 November 2026, a third party gained unauthorised access to KARTE, the customer experience platform provided by Plaid. According to Plaid's disclosure of 16 November, the third party exploited a vulnerability in the company's servers to steal connection credentials for systems and databases, and read data out of databases and other stores to an outside location. Using the stolen credentials, they also took over Plaid's accounts and accessed the admin console. Plaid detected the access the same day and shut down all KARTE services in stages.
+In the early hours of 13 November 2026, a third party gained unauthorised access to KARTE, the customer experience platform provided by Plaid. According to Plaid's disclosure of 16 November, the third party exploited a vulnerability in the company's servers to steal connection credentials and read data out of databases and other stores to an outside location, and also accessed the admin console from accounts taken over with the stolen credentials. Plaid detected the access the same day and shut down all KARTE services in stages.
 
-The leak was confirmed for 79,249 email addresses registered as KARTE accounts, for credentials used to integrate KARTE with outside services (secret keys, access tokens and more), and for part of the data client companies had imported to use their own member data in KARTE. Counts for the latter two are still being investigated. On the client side, Hankyu Hanshin Hotels disclosed up to 331,586 Members' Club member records, and en Inc. disclosed 545 records for en TENSHOKU and 12,474 corporate accounts for MIDDLE NO TENSHOKU, among others. No date has been set for KARTE to resume.
+The leak was confirmed for 79,249 KARTE account email addresses, credentials used to integrate with outside services, and part of the data client companies had imported; counts for the latter two are still being investigated. On the client side, Hankyu Hanshin Hotels disclosed up to 331,586 records, and en Inc. disclosed counts for en TENSHOKU and more.
 
 <strong>If a database checks only the connection credentials, a read by whoever stole them simply goes through.</strong>
 
 ## 2. What got through
 
-- **What got through**: Reads of data from databases and other stores using stolen connection credentials, and access to the admin console from taken-over accounts. According to Plaid, the third party exploited a server vulnerability to steal connection credentials for systems and databases.
+- **What got through**: Reads of data from databases and other stores using stolen connection credentials, and access to the admin console from taken-over accounts.
 - **What reached the accepting side**: In general, a database receives only valid connection credentials and a read command. It does not receive which client company and which job (tracking, sending, matching member data and so on) the read is for. From one platform's databases, customer data imported by multiple client companies can be reached.
-- **Integration credentials**: The leaked credentials include the secret keys and access tokens used to integrate KARTE with outside services. Plaid has asked client companies with integrations configured to invalidate the relevant credentials promptly. Nothing disclosed says these credentials were misused.
-- **Not disclosed**: The type of server vulnerability exploited and which server it was on. Which databases were read, and how often and how much. What kind of accounts were taken over, and what was done in the admin console. The counts of integration credentials and imported client data. What mechanism produced the 08:59 detection.
+- **Integration credentials**: The leaked credentials include the secret keys and access tokens used to integrate with outside services. Plaid has asked client companies with integrations configured to invalidate the relevant credentials promptly. Nothing disclosed says these credentials were misused.
+- **Not disclosed**: The type of server vulnerability exploited and which server it was on. Which databases were read, and how often and how much. What kind of accounts were taken over, and what was done in the admin console. What mechanism produced the 08:59 detection.
 
 ## 3. Pre-execution check
 
 Whatever the route, the condition for telling them apart is that, before a client company's customer data is read out in bulk, which client company, and which of its jobs, the reader is reading for is checked against the record of client companies' jobs, kept apart from the connection credentials.
 
 - **Who issues the record**: The KARTE components that run jobs such as tracking, sending and matching member data. For each job, they record which client company's data, and what scope of it, will be read. Client companies decide which data to import and how long to use it.
-- **Where it is checked**: The step at which client companies' customer data is read out of a database in bulk. The check confirms that the read is tied to a client's job and scope in the record; a read that is not is held. The check runs on a server separate from the connection credentials, with a separate key. Where the server itself is taken over and the check is skipped altogether, this check is bypassed.
-- **What is recorded**: Which credentials read which client company's data, as which job, and when. This is kept apart from the platform, so client companies can check for themselves which fields of their customers' data were affected.
+- **Where it is checked**: The step at which client companies' customer data is read out of a database in bulk. A read not tied to a client's job and scope in the record is held. The check runs on a server separate from the connection credentials, with a separate key.
+- **What is recorded**: Which credentials read which client company's data, as which job, and when. This is kept apart from the platform, so client companies can check for themselves which fields were affected.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
@@ -106,7 +108,7 @@ Whatever the route, the condition for telling them apart is that, before a clien
 </div>
 </figure>
 
-Detection worked, and Plaid invalidated the stolen credentials, shut down all services and contained the incident the same day. Even so, data had been read out of databases and other stores using the stolen connection credentials. Cases where client companies' data was read at a contractor's service include [Dentsu Digital TONARIWA](/critical/briefs/210-dentsu-digital-tonariwa-admin-privilege-line-tokens/) (privilege escalation on an administrative account entered with leaked credentials) and [NTT DATA STdirectServices](/critical/briefs/204-ntt-data-stdirect-vendor-saas-admin-rights/) (administrator rights obtained through a flaw in the authentication function). Here, one platform put the customer data of multiple client companies, and the credentials for integrating with outside services, in scope.
+Detection worked, and the incident was contained the same day. Even so, data had already been read out using the stolen connection credentials. Cases where client companies' data was read at a contractor's service include [Dentsu Digital TONARIWA](/critical/briefs/210-dentsu-digital-tonariwa-admin-privilege-line-tokens/) (privilege escalation on an administrative account entered with leaked credentials) and [NTT DATA STdirectServices](/critical/briefs/204-ntt-data-stdirect-vendor-saas-admin-rights/) (administrator rights obtained through a flaw in the authentication function).
 
 ## 4. What Lemma does
 
@@ -115,13 +117,13 @@ Detection worked, and Plaid invalidated the stolen credentials, shut down all se
 ### Industries and operations to watch
 
 - **Industry · Services & retail**: Companies that import member data, purchase histories and contact details into an outside customer experience or marketing platform for tracking and sending. Client companies in hotels, retail and recruitment services have disclosed leaks.
-- **Industry · Procurement & supply chain**: Companies that hand the use of customer data, and sending, to an outside service. One set of connection credentials on the contractor's platform reaches multiple client companies' customer data.
+- **Industry · Procurement & supply chain**: Companies that hand the use of customer data, and sending, to an outside service.
 - **Operation · Data access & export**: Bulk reads of client companies' customer data from the platform's databases, and exports from the admin console.
 - **Operation · Accounts & permissions**: The scope and revocation of database connection credentials, admin console accounts, and the secret keys and access tokens used to integrate with outside services.
 
 ### Current controls vs Lemma
 
-The route in this case is column 1 (reads from databases with stolen connection credentials). Column 2 covers exports from the admin console using taken-over accounts; access to the admin console was disclosed, but what, if anything, was exported from it has not been. Column 3 covers direct operations on outside services using leaked integration credentials; nothing disclosed says these were misused.
+The route in this case is column 1. For column 2 (exports from the admin console with taken-over accounts), access to the admin console was disclosed, but what, if anything, was exported has not been. For column 3 (direct operations on outside services with leaked integration credentials), nothing disclosed says these were misused.
 
 | Control | Reads from databases with stolen connection credentials | Exports from the admin console with taken-over accounts | Direct operations on outside services with leaked integration credentials |
 | --- | --- | --- | --- |
@@ -130,9 +132,9 @@ The route in this case is column 1 (reads from databases with stolen connection 
 | Import fewer fields | Partial | Partial | Not effective |
 | **Lemma (pre-execution check)** | Partial | Effective | Not effective |
 
-Narrowing connection credentials shrinks what one set can reach, but does not stop reads within that scope. Multi-factor authentication on the admin console blocks a login with a password alone, but is not relevant to direct database connections. Importing fewer fields reduces the fields exposed when data is read, but does not stop reads of data that remains. Social Interior says it is looking into how past data remained on KARTE's side after its contract ended. Lemma checks, before execution, not whether the credentials are valid but whether a read or export rests on a client company's job.
+Narrowing credentials shrinks what they can reach, but does not stop reads within that scope. Multi-factor authentication on the admin console is not relevant to direct database connections. Importing fewer fields reduces what is exposed, but does not stop reads of data that remains. Social Interior says it is looking into how past data remained on KARTE's side after its contract ended.
 
-Note: Lemma's check works only when it is built into database reads and admin console exports, and the record of client companies' jobs is managed outside the server that holds the connection credentials. If a vulnerability lets the server itself be taken over and the database is reached directly by a route that skips the check, the check is bypassed. Direct operations on outside services with leaked integration credentials also bypass it, and invalidating those credentials is the answer. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, fix vulnerabilities, revoke credentials or recover data already read out.
+Note: Lemma's check works only when it is built into database reads and admin console exports, and the record of client companies' jobs is managed outside the server that holds the connection credentials. If a vulnerability lets the server itself be taken over and the database is reached directly by a route that skips the check, the check is bypassed. Direct operations on outside services with leaked integration credentials are dealt with by invalidating those credentials. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, fix vulnerabilities, revoke credentials or recover data already read out.
 
 ### Checklist
 
@@ -144,12 +146,12 @@ Three things to confirm about customer data and integration credentials entruste
 
 ## 5. Facts and timeline
 
-- **Parties**: PLAID, Inc. (provides the customer experience platform KARTE) and its client companies. Plaid does not name its client companies. On the client side, Hankyu Hanshin Hotels, en Inc., Social Interior (subsclife by TOKYOROOMS), Onward Holdings and others have disclosed leaks caused by the unauthorised access to KARTE.
-- **What happened**: According to Plaid, in the early hours of 13 November a third party exploited a vulnerability in its servers to steal connection credentials for systems and databases, and read data out of databases and other stores to an outside location. Using the stolen credentials, they took over Plaid's accounts, and the admin console was also accessed without authorisation. The type of vulnerability and what was done in the admin console have not been disclosed.
+- **Parties**: PLAID, Inc. (provides the customer experience platform KARTE) and its client companies. On the client side, Hankyu Hanshin Hotels, en Inc., Social Interior (subsclife by TOKYOROOMS), Onward Holdings and others have disclosed leaks caused by the unauthorised access to KARTE.
+- **What happened**: According to Plaid, a third party exploited a server vulnerability to steal connection credentials and read data out of databases and other stores to an outside location. Using the stolen credentials, they took over Plaid's accounts and also accessed the admin console (the sequence is in the timeline).
 - **Data**: According to Plaid, the leak was confirmed for 79,249 email addresses registered as KARTE accounts; for credentials used to integrate KARTE with outside services (secret keys, access tokens and more); and for part of the data client companies imported to use their own member data and more in KARTE (including data imported through the linking tables feature). Counts for the latter two are still being investigated; the fields imported differ by client company and may include personal data. Plaid is also checking the impact on other data.
 - **Client disclosures**: Hankyu Hanshin Hotels put the total at 331,586 records of Members' Club member data, including names, ages, addresses, phone numbers and email addresses (the maximum identified so far, which may fall after review and may include former members; 16 November). en Inc. put it at 545 records for en TENSHOKU (user ID, gender, age and prefecture-level address) and 12,474 corporate accounts for MIDDLE NO TENSHOKU (registered email addresses) (as of 18 November). Social Interior put it at 28,517 records of names, email addresses and LINE user IDs for subsclife by TOKYOROOMS (corrected from 29,194 in its second notice; 19 November). Onward Holdings has not given a count.
-- **Impact**: All KARTE services have been suspended since 13 November, covering every function including web and app tracking, sending and admin console operations. No date has been set for resumption. Hankyu Hanshin Hotels says it has received no reports of specific harm. Plaid warns of suspicious emails claiming to come from it.
-- **How it was found**: Plaid detected the unauthorised access at 08:59 on 13 November. What mechanism detected it has not been disclosed. Hankyu Hanshin Hotels received a report of suspected unauthorised access from Plaid on 13 November, and a report that member data had leaked on 15 November. Social Interior also received a report on 15 November.
+- **Impact**: All KARTE services, including tracking, sending and admin console operations, have been suspended since 13 November, with no date set for resumption. Hankyu Hanshin Hotels says it has received no reports of specific harm. Plaid warns of suspicious emails claiming to come from it.
+- **How it was found**: Plaid detected the unauthorised access at 08:59 on 13 November. Hankyu Hanshin Hotels received a report of suspected unauthorised access from Plaid on 13 November (the reports of a leak are in the timeline).
 
 ### Timeline
 
@@ -160,11 +162,11 @@ Three things to confirm about customer data and integration credentials entruste
 - **2026-11-18**: en Inc. and Onward Holdings disclose their leaks.
 - **2026-11-19**: In its second notice, Social Interior corrects its count to 28,517.
 
-> The facts rely on Plaid's two disclosures and the disclosures by Hankyu Hanshin Hotels, en Inc., Social Interior and Onward Holdings (all primary). Many other client companies have also disclosed leaks; this Brief names only those whose primary disclosures could be read. Plaid has not disclosed the names of its client companies or the counts of integration credentials and customer data. The type of vulnerability, the scope and volume of the reads, and what was done in the admin console have not been disclosed either. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the companies' responses. Written as of 20 November.
+> The facts rely on Plaid's two disclosures and the disclosures by Hankyu Hanshin Hotels, en Inc., Social Interior and Onward Holdings (all primary). Many other client companies have also disclosed leaks; this Brief names only those whose primary disclosures could be read. Plaid has not disclosed the names of its client companies or the counts of integration credentials and customer data. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the companies' responses. Written as of 20 November.
 
 ### After disclosure
 
-- **Plaid**: Invalidated the stolen credentials, shut down all services and cut off traffic from the attack source. It says no new unauthorised access has been confirmed since. It has contacted the affected client companies individually, reported to the Personal Information Protection Commission and consulted the police. It has asked client companies to invalidate integration credentials. It plans a forensic investigation and an outside security assessment towards resuming service, and says it will set out and publish recurrence prevention measures based on the findings.
+- **Plaid**: It says no new unauthorised access has been confirmed since the cut-off. It has contacted the affected client companies individually, reported to the Personal Information Protection Commission and consulted the police. It plans a forensic investigation and an outside security assessment towards resuming service, and says it will set out and publish recurrence prevention measures based on the findings.
 - **Client companies**: en Inc. ended its external integration with KARTE, invalidated the credentials it was aware of, contacted affected customers individually and reported to the Personal Information Protection Commission. Onward Holdings disconnected the affected service from its network. Social Interior sent apology emails to the affected addresses on 18 November.
 
 ## 6. Sources

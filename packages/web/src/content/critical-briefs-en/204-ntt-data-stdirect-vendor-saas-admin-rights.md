@@ -16,6 +16,9 @@ fact_check:
   rev: "dff5575779082332"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Cut overlapping explanations and shortened the text"
 version: "1.0"
 og_lead_ja: "NTT データの STdirectServices で、委託先 Securitize Japan の SaaS の管理者権限が不正に取得され、社債の購入者 111 名・2,678 名の情報が持ち出された"
 og_lead_en: "At NTT DATA's STdirectServices, administrator rights at contractor Securitize Japan's SaaS were illicitly obtained, and data on 111 and 2,678 bond buyers was taken"
@@ -29,7 +32,7 @@ og_headline_en: "Admin rights were seized\nat the contractor's SaaS,\nand bond b
 key_figures:
   - value: "111"
     unit: "people"
-    label: "Bond buyers for two issuers whose names, addresses, phone numbers, email addresses, sex and dates of birth were illicitly obtained (data from a service NTT DATA provided individually before STdirectServices; NTT DATA's second notice)"
+    label: "Bond buyers for two issuers whose names, addresses, dates of birth and more were illicitly obtained (data from the service before STdirectServices; NTT DATA's second notice)"
     tone: "alert"
   - value: "2,678"
     unit: "people"
@@ -59,7 +62,7 @@ controls:
     item: "Record, apart from the contractor's SaaS, which rights read which issuer's buyer data under which request"
 attack_method: "supply-chain"
 impact: "Names, addresses, phone numbers, dates of birth and more of 111 bond buyers for two issuers, and names in kana, quantities purchased and email addresses of 2,678 buyers for one issuer, were illicitly obtained (NTT DATA, as of 2 November). Names and email addresses of issuer and financial institution staff were also taken; their number is under investigation"
-takeaway: "At a contractor's SaaS, administrator rights were illicitly obtained through a flaw in the authentication function, and bond buyers' data was taken. Holding administrator rights does not show that an export rests on an issuer's request. Check exports against the issuer's record of requests before letting them through."
+takeaway: "Holding administrator rights does not show that an export rests on an issuer's request. Check exports against the issuer's record of requests before letting them through."
 self_check: "Do you know how much of your customers' personal data remains in your contractor's service, and until when?"
 countries: ["jp"]
 search_title: "NTTデータ STdirect 漏えい：委託先 SaaS の経緯"
@@ -68,21 +71,21 @@ search_description: "NTT データの STdirectServices の委託先 Securitize J
 
 ## 1. Summary
 
-On 29 October 2026, a third party gained unauthorised access to the SaaS of contractor Securitize Japan, which is used by STdirectServices, the digital securities platform provided by NTT DATA, and by other services. According to NTT DATA's second notice (2 November), administrator rights were illicitly obtained by exploiting a vulnerability in the system's authentication function, and information in the system was taken out. STdirectServices supports the granting of perks to bond buyers.
+On 29 October 2026, a third party gained unauthorised access to the SaaS of contractor Securitize Japan, which is used by STdirectServices, the digital securities platform provided by NTT DATA, and by other services. According to NTT DATA's second notice (2 November), administrator rights were illicitly obtained by exploiting a vulnerability in the system's authentication function, and information in the system was taken out.
 
-The data illicitly obtained comprises the names, addresses, phone numbers, email addresses, sex and dates of birth of 111 bond buyers for two issuers, and the names in kana, bond quantities purchased and email addresses of 2,678 buyers for one issuer. The 111 records come from a service NTT DATA provided individually before STdirectServices began. Names and email addresses of system users at issuers and financial institutions were also taken, and their number is under investigation. No misuse has been confirmed. Securitize Japan stopped the service, cut off the route and invalidated the illicitly obtained administrator rights.
+The data illicitly obtained comprises the names, addresses, dates of birth and more of 111 bond buyers for two issuers, the names in kana, quantities purchased and email addresses of 2,678 buyers for one issuer, and the names and email addresses of issuer and financial institution staff (number under investigation). No misuse has been confirmed.
 
 <strong>With administrator rights alone, data can be read without a request from the party that entrusted it.</strong>
 
 ## 2. What got through
 
-- **What got through**: Taking information out of Securitize Japan's SaaS using administrator rights. According to NTT DATA, the administrator rights were illicitly obtained by exploiting a vulnerability in the system's authentication function. The data taken includes buyer data handled by the service that preceded STdirectServices.
+- **What got through**: Taking information out of Securitize Japan's SaaS using illicitly obtained administrator rights. It includes buyer data handled by the service that preceded STdirectServices.
 - **What reached the accepting side**: In general, a SaaS's administrative functions receive only a session holding administrator rights and the read or export operation. They do not receive which issuer's perk procedure the operation is for. With administrator rights, buyer data for several issuers is reachable at once.
-- **Not disclosed**: The type of vulnerability in the authentication function, and whether it was already known. How far the administrator rights reached. Whether the data was taken in a single operation on 29 October. When and how Securitize Japan noticed. Why data from the earlier service remained in the same SaaS. The number of issuer and financial institution staff affected. Securitize Japan's own disclosure has not been confirmed.
+- **Not disclosed**: The type of vulnerability in the authentication function, and whether it was already known. How far the administrator rights reached. Whether the data was taken in a single operation on 29 October. When and how Securitize Japan noticed. Why data from the earlier service remained in the same SaaS. The number of issuer and financial institution staff affected.
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before buyers' personal data is read or exported, the operation is checked as resting on a specific issuer's perk procedure, against the issuer's record of requests kept apart from administrator rights.
+Whatever the route, the condition for telling them apart is which issuer's perk procedure a read or export of buyers' personal data rests on.
 
 - **Who approves**: The issuer that entrusted the buyer data, and NTT DATA as the service provider. For each perk procedure they set which bond, which period and which fields are handled, and issue requests in a form the contractor's administrator rights alone cannot produce.
 - **Where it is checked**: The step in the contractor's SaaS that executes reads and exports of buyer data. Even with administrator rights, an operation not tied to the record of requests, or one beyond the scope (issuer, count, fields), is held. Data for bonds whose procedures have ended cannot be read without a request.
@@ -102,7 +105,7 @@ Whatever the route, the condition for telling them apart is that, before buyers'
 </div>
 </figure>
 
-Detection worked, and the issuers were told the next day. Even so, buyer data for several issuers was taken out together with administrator rights. Cases where rights on a provider's side read its customers' data include [Yumirlink](/critical/briefs/154-yumirlink-cuenote-support-credential-db-export/) (the provider's staff credentials) and [Amadeus](/critical/briefs/193-amadeus-system-account-airline-booking-data/) (the provider's system account), and a case where administrator credentials read a platform's database is [Zeabur](/critical/briefs/167-zeabur-second-breach-admin-token/). Here, even data from the earlier service could be read with the same SaaS's administrator rights.
+Detection worked, and the issuers were told the next day. Even so, buyer data for several issuers was taken out together with administrator rights. Cases where rights on a provider's side read its customers' data include [Yumirlink](/critical/briefs/154-yumirlink-cuenote-support-credential-db-export/) (the provider's staff credentials) and [Amadeus](/critical/briefs/193-amadeus-system-account-airline-booking-data/) (the provider's system account), and a case where administrator credentials read a platform's database is [Zeabur](/critical/briefs/167-zeabur-second-breach-admin-token/).
 
 ## 4. What Lemma does
 
@@ -117,7 +120,7 @@ Detection worked, and the issuers were told the next day. Even so, buyer data fo
 
 ### Current controls vs Lemma
 
-The route in this case is column 1 (exports with administrator rights illicitly obtained through a flaw in the authentication function). Column 2 covers a takeover of an issuer staff member's account, and column 3 an intrusion into a server and direct reading of the database; nothing disclosed says either happened here.
+The route in this case is column 1. Nothing disclosed says column 2 (a takeover of an issuer staff account) or column 3 (an intrusion into a server and direct reading of the database) happened here.
 
 | Control | Export with illicitly obtained administrator rights | Takeover of an issuer staff account | Direct reading of the database |
 | --- | --- | --- | --- |
@@ -126,7 +129,7 @@ The route in this case is column 1 (exports with administrator rights illicitly 
 | Scope and expiry on administrator rights | Partial | Not effective | Not effective |
 | **Lemma (pre-execution check)** | Effective | Partial | Not effective |
 
-Vulnerability testing and fixing closes known holes, but does not stop operations once the authentication function has been bypassed. Multi-factor authentication protects a person's login, but can be passed when the authentication function itself is exploited. A scope and an expiry on administrator rights narrow what they reach, but exports within that scope go through. Lemma checks, before execution, not whether the rights are valid but whether the export rests on an issuer's request.
+Vulnerability testing and fixing closes known holes, but does not stop operations once the authentication function has been bypassed. Multi-factor authentication protects a person's login, but can be passed when the authentication function itself is exploited. A scope and an expiry on administrator rights narrow what they reach, but exports within that scope go through.
 
 Note: Lemma's check works only when it is built into the execution of reads and exports in the contractor's SaaS and the issuer's record of requests is managed apart from the contractor's administrator rights. If a server is breached and the database read directly, the data can be read without passing this check. If an issuer staff member's account is taken over and the request record is forged too, it can pass. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, and it does not recover data already taken.
 
@@ -141,10 +144,10 @@ Three things to confirm about customer data entrusted to a contractor's service
 ## 5. Facts and timeline
 
 - **Parties**: NTT DATA Corporation (provides STdirectServices) and its contractor Securitize Japan (provides the SaaS). According to Securitize, the two companies provide STdirectServices jointly. Issuers Kagome and West Japan Railway (JR West) have disclosed, as has Rakuten Securities, which sold the bonds.
-- **What happened**: According to NTT DATA, on 29 October a third party gained unauthorised access to Securitize Japan's SaaS; administrator rights were illicitly obtained by exploiting a vulnerability in the system's authentication function, and information in the system was taken out. Rakuten Securities gives the date of occurrence as 30 October. Kagome, JR West and Rakuten Securities say the cause and intrusion route are under investigation at NTT DATA's contractor.
-- **Data**: According to NTT DATA, as of 2 November: (1) names, addresses, phone numbers, email addresses, sex and dates of birth of 111 bond buyers for two issuers; (2) names in kana, bond quantities purchased and email addresses of 2,678 buyers for one issuer; (3) names and email addresses of system users at issuers and financial institutions (number under investigation). (1) is data from a service NTT DATA provided individually before STdirectServices began. NTT DATA does not name the issuers. Kagome says 109 of the 5,472 buyers of its "Kagome 日本の野菜で健康応援債" issued in 2023 are affected, and JR West says two records of buyers of its 80th unsecured bond (issued 19 June 2024); in both cases the fields are the same as (1). Rakuten Securities says a cumulative 362 records are affected, covering buyers of the Kagome and JR West bonds and of Kintetsu Group Holdings' 135th unsecured bond (issued 24 July 2026; buyers of ¥1 million or more). Press reports say the 2,678 are buyers of the Kintetsu Group Holdings bond.
+- **What happened**: According to NTT DATA, on 29 October a third party gained unauthorised access to Securitize Japan's SaaS by exploiting a vulnerability in its authentication function, and information was taken out. Rakuten Securities gives the date of occurrence as 30 October. Kagome, JR West and Rakuten Securities say the cause and intrusion route are under investigation at NTT DATA's contractor.
+- **Data**: According to NTT DATA, as of 2 November: (1) names, addresses, phone numbers, email addresses, sex and dates of birth of 111 bond buyers for two issuers; (2) names in kana, bond quantities purchased and email addresses of 2,678 buyers for one issuer; (3) names and email addresses of system users at issuers and financial institutions (number under investigation). (1) is data from a service NTT DATA provided individually before STdirectServices began. Kagome says 109 of the 5,472 buyers of its "Kagome 日本の野菜で健康応援債" issued in 2023 are affected, and JR West says two records of buyers of its 80th unsecured bond (issued 19 June 2024); in both cases the fields are the same as (1). Rakuten Securities says a cumulative 362 records are affected, covering buyers of the Kagome and JR West bonds and of Kintetsu Group Holdings' 135th unsecured bond (issued 24 July 2026; buyers of ¥1 million or more). Press reports say the 2,678 are buyers of the Kintetsu Group Holdings bond.
 - **Impact**: NTT DATA says no misuse of the leaked data has been confirmed. Rakuten Securities says it was told that login IDs, passwords and information needed for trading are not included, and that no unauthorised access or trading attributable to the incident has been confirmed. The first notice said that, as no bond is currently eligible for perks, the suspension does not affect perk-granting work.
-- **How it was found**: Kagome and JR West were told by NTT DATA on 30 October that information on the platform may have been taken out. When and how Securitize Japan noticed has not been disclosed.
+- **How it was found**: Kagome and JR West were told by NTT DATA on 30 October that information on the platform may have been taken out.
 
 ### Timeline
 
@@ -156,7 +159,7 @@ Three things to confirm about customer data entrusted to a contractor's service
 - **2026-10-31**: NTT DATA discloses the suspension of STdirectServices (first notice; the contractor is not named). Kagome, JR West and Rakuten Securities disclose.
 - **2026-11-02**: In its second notice, NTT DATA names the contractor as Securitize Japan and discloses that a leak is confirmed.
 
-> The facts rely on NTT DATA's first and second notices, the disclosures of Kagome, JR West and Rakuten Securities, and Securitize's press release (all primary). Securitize Japan's own disclosure of this incident has not been confirmed. NTT DATA dates the unauthorised access to 29 October, Rakuten Securities to 30 October. NTT DATA does not name the issuers; the sum of the Kagome (109) and JR West (2) figures matches the 111 in (1), but NTT DATA's disclosure does not state that correspondence. That the 2,678 are Kintetsu Group Holdings bond buyers rests on press reports. Press reports say other clients of Securitize Japan, such as Sony Bank and Marui Group, have also disclosed an impact; this Brief does not cover them in detail. The type of vulnerability, the scope of the administrator rights and how Securitize Japan noticed have not been disclosed. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the companies' responses. Written as of 12 November.
+> The facts rely on NTT DATA's first and second notices, the disclosures of Kagome, JR West and Rakuten Securities, and Securitize's press release (all primary). Securitize Japan's own disclosure of this incident has not been confirmed. NTT DATA does not name the issuers; the sum of the Kagome (109) and JR West (2) figures matches the 111 in (1), but NTT DATA's disclosure does not state that correspondence. That the 2,678 are Kintetsu Group Holdings bond buyers rests on press reports. Press reports say other clients of Securitize Japan, such as Sony Bank and Marui Group, have also disclosed an impact; this Brief does not cover them in detail. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the companies' responses. Written as of 12 November.
 
 ### After disclosure
 

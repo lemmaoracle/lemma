@@ -16,6 +16,9 @@ fact_check:
   rev: "6288ba2a1e9a39e3"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Cut overlapping explanations and shortened the text"
 version: "1.0"
 og_lead_ja: "Claude Code で「今後は聞かない」と承認したコマンドが秘密情報ごと設定ファイルに保存され、公開の GitHub で 1,122 ファイルに 1,379 件の秘密情報が見つかったと Apiiro が報告"
 og_lead_en: "Commands approved with \"don't ask again\" in Claude Code were saved with their secrets; Apiiro reports 1,379 secrets in 1,122 settings files on public GitHub"
@@ -60,28 +63,28 @@ controls:
     item: "Record, apart from the repository, which push published which file and which list entry it matched"
 attack_method: "human-error"
 impact: "Of 104,185 Claude Code settings files on public GitHub, 1,122 contained 1,379 secrets (Apiiro). Whether the credentials work was not tested"
-takeaway: "Commands approved in Claude Code were saved with their secrets in a settings file, and the file was pushed to public repositories. A local exclusion does not travel with the repository. Before publishing, check the files against the owner's publication list."
+takeaway: "A record saved to skip a prompt can leave by the same route as any other file. A local exclusion does not travel with the repository. Before publishing, check the files against the owner's publication list."
 self_check: "Do you know whether the allow rules and settings an AI coding tool saves locally contain secrets?"
 countries: ["global"]
 ---
 
 ## 1. Summary
 
-In Claude Code, Anthropic's AI coding tool, choosing "Yes, and don't ask again" when approving a shell command saves the command's text as it is, as an allow rule, in the project's .claude/settings.local.json. According to Apiiro's research, passwords and API keys in the command were saved along with it, and the file was pushed to public repositories. Of 104,185 copies of the file on public GitHub (in 103,617 repositories), 1,122 contained 1,379 real secrets.
+In Claude Code, Anthropic's AI coding tool, choosing "Yes, and don't ask again" when approving a shell command saves the command's text as it is, as an allow rule, in the project's .claude/settings.local.json. According to Apiiro's research, passwords and API keys in the command were saved along with it, and the file was pushed to public repositories. Of 104,185 copies of the file on public GitHub, 1,122 contained 1,379 real secrets.
 
-The first time Claude Code writes the file inside a git repository, it adds it to the user's global git excludes. Apiiro says this exclusion does not protect a folder that becomes a git repository later, a clone on another machine, or a file already tracked. As of 2 November 2026 every file with a secret was on its default branch, first committed a median of 217 days earlier. Apiiro did not test the credentials; one notified organisation confirmed its key was live.
+Claude Code adds the file to the global git excludes, but Apiiro says this does not protect a folder that becomes a git repository later, a clone on another machine and the like. As of 2 November 2026 every file with a secret was on its default branch, first committed a median of 217 days earlier. Apiiro did not test the credentials; one notified organisation confirmed its key was live.
 
 <strong>A record saved to skip a prompt can leave by the same route as any other file.</strong>
 
 ## 2. What got through
 
-- **What got through**: Pushes to public repositories. According to Apiiro, .claude/settings.local.json, holding the saved allow rules, was committed with other files and pushed to public GitHub. Tracing 1,105 repositories with a file containing a secret, in 539 a commit listing Claude as co-author changed the file. Apiiro says nobody meant to publish their keys.
-- **What reached the accepting side**: In general, a repository host receives only the committed files and their contents. It does not receive whether a file was meant to stay on the user's machine or to be shared with the team. Global git excludes work only for git on that machine and do not travel with the repository.
-- **Not disclosed**: How the file came to be tracked in each repository (created by hand, or a case the exclusion did not cover). Whether, in the commits co-authored by Claude, the file was added on the user's instruction or by the agent's choice. How many of the secrets still work, and whether any were used (Apiiro did not test them).
+- **What got through**: Pushes to public repositories. According to Apiiro, .claude/settings.local.json was committed with other files and pushed. Tracing 1,105 repositories with a file containing a secret, in 539 a commit listing Claude as co-author changed the file. Apiiro says nobody meant to publish their keys.
+- **What reached the accepting side**: In general, a repository host receives only the committed files and their contents. It does not receive whether a file was meant to stay on the user's machine or to be shared with the team.
+- **Not disclosed**: How the file came to be tracked in each repository (created by hand, or a case the exclusion did not cover). Whether, in the commits co-authored by Claude, the file was added on the user's instruction or by the agent's choice. How many of the secrets still work, and whether any were used.
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a push to a public repository, the files it contains are checked as fit to publish against a list set by the repository's owner, apart from local exclusion settings.
+Whatever the route, the condition for telling them apart is whether the files in a push are ones the repository's owner has decided may be published, apart from local exclusion settings.
 
 - **Who approves**: The repository's owner (the administrator of the organisation's repositories). They set the list of files that may be published, and treat an AI tool's local settings (such as .claude/settings.local.json) and conversation logs as not on the list.
 - **Where it is checked**: The step that accepts a push to a public repository. A push containing a file not on the list, or content matching a secret format, is held before publication. A second place, earlier, is the step that saves an approved command as an allow rule: if the rule's text contains a secret, it is not saved as it is.
@@ -101,7 +104,7 @@ Whatever the route, the condition for telling them apart is that, before a push 
 </div>
 </figure>
 
-The secrets sat on default branches for a median of 217 days until researchers looked. A case where AI agent config bundled in repositories ran without being checked is [Miasma](/critical/briefs/037-agent-config-auto-execution/). A case where a user-supplied URL carried a server's secrets out is [LibreChat](/critical/briefs/027-librechat-mcp-url-secrets/), and research where Claude Code's GitHub integration trusted an actor's name is [Claude Code GitHub Action](/critical/briefs/062-claude-code-github-action-bot-trust/). Here there was no attack: a local record saved by an AI tool left as it was through the publication step.
+The secrets sat on default branches for a median of 217 days until researchers looked. A case where AI agent config bundled in repositories ran without being checked is [Miasma](/critical/briefs/037-agent-config-auto-execution/). A case where a user-supplied URL carried a server's secrets out is [LibreChat](/critical/briefs/027-librechat-mcp-url-secrets/), and research where Claude Code's GitHub integration trusted an actor's name is [Claude Code GitHub Action](/critical/briefs/062-claude-code-github-action-bot-trust/).
 
 ## 4. What Lemma does
 
@@ -110,13 +113,13 @@ The secrets sat on default branches for a median of 217 days until researchers l
 ### Industries and operations to watch
 
 - **Industry · Developers & agent operations**: Development teams that let an AI coding tool check databases or call APIs. Settings that save a prompt's effort stay behind in a local file.
-- **Industry · AI adoption (all industries)**: Organisations, such as contract developers and start-ups, that publish repositories built with AI tools or hand them to customers. Apiiro counts 63 affected organisations and says most exposure came from individual developers.
+- **Industry · AI adoption (all industries)**: Organisations, such as contract developers and start-ups, that publish repositories built with AI tools or hand them to customers. Apiiro says most affected organisations were individual developers.
 - **Operation · Disclosure & data release**: Publishing repositories, forks and packages.
 - **Operation · Accounts & permissions**: Issuing and revoking database passwords, cloud keys and publishing tokens.
 
 ### Current controls vs Lemma
 
-The route in this case is column 1 (pushing the local settings file). Column 2 covers secrets entering the shared .claude/settings.json or conversation logs and being pushed, which is part of Apiiro's wider count (2,539). Column 3 covers a third party using a published key; nothing disclosed says this happened here.
+The route in this case is column 1. Column 2 (pushing the shared .claude/settings.json or conversation logs) is part of Apiiro's wider count (2,539). Nothing disclosed says column 3 (a third party using a published key) happened here.
 
 | Control | Push of the local settings file | Push of shared settings or conversation logs | Use of a published key |
 | --- | --- | --- | --- |
@@ -125,7 +128,7 @@ The route in this case is column 1 (pushing the local settings file). Column 2 c
 | Expiry and scope limits on keys | Not effective | Not effective | Partial |
 | **Lemma (pre-execution check)** | Effective | Partial | Not effective |
 
-Global git excludes protect a file created on that machine, but not a file already tracked or a clone on another machine. In Apiiro's sample, of 1,122 files gitleaks caught 564 and TruffleHog 643, and 215 were caught by neither (passwords inside commands are hard to spot). Expiry and scope limits narrow the harm after publication but do not stop the publication itself. Lemma checks, before publication, not the format of the contents but whether each file is on the owner's publication list.
+Global git excludes protect a file created on that machine, but not a file already tracked or a clone on another machine. In Apiiro's sample, of 1,122 files gitleaks caught 564 and TruffleHog 643, and 215 were caught by neither (passwords inside commands are hard to spot). Expiry and scope limits narrow the harm after publication but do not stop the publication itself.
 
 Note: Lemma's check works only when it is built into the step where a public repository accepts a push, and the list of files that may be published is managed by the owner apart from developers' local settings. If a secret is written into a file that is on the list, such as a shared settings file, it can pass without a content check. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, and it does not revoke published keys.
 
@@ -139,11 +142,11 @@ Three things to confirm about repositories where AI coding tools are used
 
 ## 5. Facts and timeline
 
-- **Parties**: Anthropic (United States), which provides Claude Code, and the developers and organisations using it. The study was done by the application security company Apiiro, and this Brief relies on its report.
-- **What happened**: According to Apiiro, when Claude Code is asked to check a database or call an API, the command it proposes can contain a secret. Choosing "Yes, and don't ask again" saves the command's text, secret included, as an allow rule in .claude/settings.local.json. Anthropic's documentation also says this approval is saved as an allow rule. Apiiro attributes this to Claude Code's behaviour rather than the model, and says that of 16 coding agents, Claude Code was the only one confirmed to write the full approved command to a project file by default.
+- **Parties**: Anthropic (United States), which provides Claude Code, and the developers and organisations using it. The study was done by the application security company Apiiro.
+- **What happened**: According to Apiiro, when Claude Code is asked to check a database or call an API, the command it proposes can contain a secret, and approving it with "don't ask again" saves it, secret included. Anthropic's documentation also says this approval is saved as an allow rule. Apiiro attributes this to Claude Code's behaviour rather than the model, and says that of 16 coding agents, Claude Code was the only one confirmed to write the full approved command to a project file by default.
 - **The exclusion**: According to Anthropic's documentation, the first time Claude Code writes the file inside a git repository that does not already ignore it, it adds it to the global git excludes. If the file was created by hand, the user is asked to add it to .gitignore themselves. Apiiro says a folder that becomes a git repository later, a clone on another machine and a file already committed are not protected, and later approvals are appended to a tracked file.
 - **Scope and numbers**: On 1–3 November 2026, Apiiro read public repositories through GitHub's code search and commit search. It found 104,185 copies of .claude/settings.local.json (in 103,617 repositories), of which 1,122 (about 1.1%) contained a real secret. There were 1,379 distinct values (636 provider-format keys and 743 passwords or tokens for public hosts), including 379 database passwords, 43 SSH logins, 42 GitHub, GitLab and npm tokens and 23 AWS keys. 211 forks of 74 repositories carried the same secrets, and earlier versions held 734 secrets (in 509 repositories) absent from current copies. Including git history, the shared .claude/settings.json and conversation logs, the count was 2,539 secrets across 1,994 repositories.
-- **Method and limits**: Apiiro did not use or test any credential. A "real secret" is one that matches a provider's key format or points to a public host, not one confirmed valid. It classified 2,774 values with rules and a separate LLM review, counting only those both agreed on. It counts 63 affected organisations, one of which confirmed its key was live.
+- **Method and limits**: Apiiro did not use or test any credential. A "real secret" is one that matches a provider's key format or points to a public host, not one confirmed valid. It classified 2,774 values with rules and a separate LLM review, counting only those both agreed on. It counts 63 affected organisations.
 
 ### Timeline
 
@@ -155,7 +158,7 @@ Three things to confirm about repositories where AI coding tools are used
 - **2026-11-07**: The head of Claude Code at Anthropic responds on Hacker News (per Apiiro).
 - **2026-11-08**: Apiiro adds an update to its report.
 
-> The facts rely on Apiiro's report (research publication, primary) and on Anthropic's Claude Code documentation and the GitHub issue (primary). Apiiro's report page carries no publication date; the date relies on iTWire's report. Of the figures, 1,122 files and 1,379 secrets count current copies of .claude/settings.local.json, while 2,539 secrets across 1,994 repositories is the wider count including history, shared settings files and conversation logs. Whether the secrets still work, or were used by a third party, has not been disclosed. That commits co-authored by Claude changed the file (539 of 1,105 repositories) does not show that Claude Code published every secret. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the responses of the provider or its users. Written as of 12 November.
+> The facts rely on Apiiro's report (research publication, primary) and on Anthropic's Claude Code documentation and the GitHub issue (primary). Apiiro's report page carries no publication date; the date relies on iTWire's report. Of the figures, 1,122 files and 1,379 secrets count current copies of .claude/settings.local.json, while 2,539 secrets across 1,994 repositories is the wider count including history, shared settings files and conversation logs. That commits co-authored by Claude changed the file does not show that Claude Code published every secret. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the responses of the provider or its users. Written as of 12 November.
 
 ### After disclosure
 

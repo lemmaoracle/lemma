@@ -19,6 +19,8 @@ status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Added the disclosure date (21 February) to the figures (#53)"
+  - date: 2026-11-26
+    note: "Cut overlapping explanations and shortened the text"
 version: "1.0"
 og_lead_ja: "Cloudflare で、BYOIP の掃除用の定期処理が空の条件を「すべて」と解釈し、顧客の約 1,100 の IP プレフィックスの経路を取り下げた"
 og_lead_en: "At Cloudflare, a recurring BYOIP cleanup task read an empty condition as \"all\" and withdrew the routes of about 1,100 customer IP prefixes"
@@ -62,28 +64,28 @@ controls:
     item: "Record, apart from the task, which task deleted which customer's configuration under which condition, together with the prior state"
 attack_method: "human-error"
 impact: "Routes of about 1,100 BYOIP prefixes were withdrawn, affecting some customers using the CDN, Spectrum, Dedicated Egress and Magic Transit for about six hours (Cloudflare's post-mortem). Not an attack"
-takeaway: "A recurring BYOIP cleanup task passed a condition with no value, which was read as \"all BYOIP prefixes\", and withdrew about 1,100 routes. A query result is not necessarily the right set of targets. Before deleting, check the count and scope against the record of deletion requests."
+takeaway: "If a condition with no value is read as \"all\", the query result is not the right set of targets. Before deleting, check the count and scope against the record of deletion requests."
 self_check: "Do you know the per-run cap on what a recurring automated task can delete from customer configuration, and how it handles the condition that selects its targets?"
 countries: ["us"]
 ---
 
 ## 1. Summary
 
-On 20 February 2026, routes for customer prefixes in Cloudflare's BYOIP service (which advertises customers' own IP addresses from Cloudflare) were withdrawn over BGP. According to Cloudflare's post-mortem, about 1,100 prefixes were withdrawn between 17:56 and 18:46 UTC, about 25% of the 4,306 BYOIP prefixes. Connections failed for some customers using the CDN and security services, Spectrum, Dedicated Egress and Magic Transit, and everything was restored at 23:03 UTC. Cloudflare says the cause was an internal change, not an attack.
+On 20 February 2026, routes for customer prefixes in Cloudflare's BYOIP service were withdrawn over BGP. According to Cloudflare's post-mortem, about 1,100 prefixes were withdrawn. Connections failed for some customers using the CDN and security services, Spectrum, Dedicated Egress and Magic Transit, and everything was restored at 23:03 UTC. Cloudflare says the cause was an internal change, not an attack.
 
-The cause was a cleanup task that regularly looks for prefixes customers have asked to remove and removes them. It passed a pending_delete condition with no value, and the API read the empty value as a request for all BYOIP prefixes. The task went on deleting prefixes and related objects such as service bindings until an engineer noticed and stopped it. Cloudflare lists a stricter type for API conditions, configuration rollouts that can be reverted, and a mechanism that halts rollouts on changes that are too fast or too broad.
+The cause was a cleanup task that regularly looks for prefixes customers have asked to remove and removes them. It passed a pending_delete condition with no value, and the API read the empty value as a request for all BYOIP prefixes.
 
 <strong>Whether a deletion condition is empty or wrong, the receiving side sees a valid request.</strong>
 
 ## 2. What got through
 
-- **What got through**: Deletion of BYOIP prefixes and related configuration through the Addressing API. A recurring cleanup task, merged on 5 February and deployed to production at 17:46 UTC on 20 February, ran it from 17:56 UTC. In its query for prefixes pending deletion the task passed pending_delete with no value, and the API treated this as a request for all BYOIP prefixes rather than those pending deletion (Cloudflare's post-mortem).
-- **What reached the accepting side**: In general, an API that manages configuration receives queries and deletion requests from a legitimate task. It does not receive whether the query condition is what was intended, or whether the number returned matches the customers' requests. Cloudflare says testing focused on the self-service API path customers use and missed the case where the task changes user data without explicit input. Staging data was not close enough to production.
+- **What got through**: Deletion of BYOIP prefixes and related configuration through the Addressing API. A recurring cleanup task, deployed to production at 17:46 UTC on 20 February, ran it from 17:56 UTC (Cloudflare's post-mortem).
+- **What reached the accepting side**: In general, an API that manages configuration receives queries and deletion requests from a legitimate task. It does not receive whether the query condition is what was intended, or whether the number returned matches the customers' requests.
 - **Not disclosed**: How often the recurring task ran. How many prefixes were actually pending deletion. How many customers were affected (Cloudflare says not all BYOIP customers were). Whether the task had a cap on how many items it could delete in one run.
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a recurring task deletes customer configuration, the number and scope of targets are checked against the record of deletion requests customers made, apart from the task's own query result.
+Whatever the route, the condition for telling them apart is whether the number and scope of targets match the record of deletion requests customers made, not the task's own query result.
 
 - **Who approves**: The customer who owns the prefix. When it requests deletion in the dashboard or API, a record of which prefixes to remove is kept in a form the cleanup task cannot produce.
 - **Where it is checked**: The step at which the cleanup task executes the deletion. If the targets returned by the query do not match the record of deletion requests by count and by prefix, if a condition is empty or unspecified, or if one run exceeds the cap, the deletion is held before execution.
@@ -103,7 +105,7 @@ Whatever the route, the condition for telling them apart is that, before a recur
 </div>
 </figure>
 
-The task was stopped 50 minutes after withdrawals began, and full restoration took about four more hours. Cases where an AI agent ran an operation that deleted production data without human approval include [PocketOS](/critical/briefs/007-pocketos-cursor-db-deletion/) (one API call deleted the production database and its backups) and [Replit](/critical/briefs/080-replit-agent-code-freeze-data-loss/) (the production database was deleted during a code freeze). Here it was not AI but a legitimate recurring task written by people that, with an empty condition, deleted customer configuration without narrowing its targets.
+The task was stopped 50 minutes after withdrawals began, and full restoration took about four more hours. Cases where an AI agent ran an operation that deleted production data without human approval include [PocketOS](/critical/briefs/007-pocketos-cursor-db-deletion/) (one API call deleted the production database and its backups) and [Replit](/critical/briefs/080-replit-agent-code-freeze-data-loss/) (the production database was deleted during a code freeze).
 
 ## 4. What Lemma does
 
@@ -112,12 +114,12 @@ The task was stopped 50 minutes after withdrawals began, and full restoration to
 ### Industries and operations to watch
 
 - **Industry · Developers & IT**: Cloud and network providers that create, change and delete customer configuration and resources through recurring tasks and automation. One task reaches many customers' configuration.
-- **Industry · Procurement & supply chain**: Companies that leave IP address advertisement and network routing to an outside provider. Here Laravel Cloud says it was unreachable for about 3 hours 15 minutes while its own infrastructure stayed up.
+- **Industry · Procurement & supply chain**: Companies that leave IP address advertisement and network routing to an outside provider.
 - **Operation · Approval & sign-off**: Bulk operations that delete customer configuration, and confirming their scope (count and targets).
 
 ### Current controls vs Lemma
 
-The route in this case is column 1 (a recurring task deleted beyond the requested scope because of a wrong condition). Column 2 covers a human operator issuing a bulk deletion with a wrong condition; nothing disclosed says that happened here. Column 3 is restoring deleted configuration; every control below stops or narrows execution, so none works there.
+The route in this case is column 1. Nothing disclosed says column 2 (a human operator issuing a bulk deletion with a wrong condition) happened here. For column 3 (restoring deleted configuration), every control below stops or narrows execution, so none works.
 
 | Control | Wrong condition in a recurring task | Wrong bulk deletion by a human operator | Restoring deleted configuration |
 | --- | --- | --- | --- |
@@ -126,7 +128,7 @@ The route in this case is column 1 (a recurring task deleted beyond the requeste
 | Halting rollouts on changes too fast or too broad (Cloudflare's remediation) | Partial | Partial | Not effective |
 | **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-Code review and testing catch errors before production, but here they focused on the self-service path and missed the case with no explicit input. Monitoring and detection worked here through failures on 1.1.1.1, but only after about 1,100 prefixes had been withdrawn over about 50 minutes. The change breaker Cloudflare lists looks at the speed and breadth of changes, so a wrong deletion below its threshold can pass. Lemma checks, before execution, not the volume of change but whether the targets match the record of customers' deletion requests.
+Code review and testing catch errors before production, but here they missed the case with no explicit input. Monitoring and detection worked here through failures on 1.1.1.1, but only after about 1,100 prefixes had been withdrawn. The change breaker Cloudflare lists looks at the speed and breadth of changes, so a wrong deletion below its threshold can pass.
 
 Note: Lemma's check works only when it is built into the step at which the cleanup task executes deletions and the record of customers' deletion requests is managed apart from the task's query. If the request record itself is wrong, it can pass. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect outages, and it does not restore deleted configuration or data.
 
@@ -141,7 +143,7 @@ Three things to confirm about automated tasks that change and delete customer co
 ## 5. Facts and timeline
 
 - **Parties**: Cloudflare, Inc. (United States) and customers using its BYOIP service. This Brief relies on Cloudflare's post-mortem and the Cloudflare Status record (both primary), and on the incident report of Laravel Cloud, an affected customer.
-- **What happened**: According to Cloudflare's post-mortem, as part of its Code Orange: Fail Small work it introduced a change to automate the removal of BYOIP prefixes, which customers had been requesting manually. A sub-task within it, which regularly looks for prefixes that should be removed and removes them, passed pending_delete with no value, and the server side read the empty value as a request for all BYOIP prefixes rather than those pending deletion. The task began systematically deleting all BYOIP prefixes and their related objects, including service bindings, and continued until an engineer noticed and stopped it. Because the change was applied iteratively rather than all at once, the impact differed by customer.
+- **What happened**: According to Cloudflare's post-mortem, as part of its Code Orange: Fail Small work it introduced a change to automate the removal of BYOIP prefixes, which customers had been requesting manually. A sub-task within it, which regularly looks for prefixes that should be removed and removes them, passed pending_delete with no value, and the server side read the empty value as a request for all BYOIP prefixes rather than those pending deletion. The task began systematically deleting all BYOIP prefixes and their related objects, including service bindings, and continued until it was stopped (see the timeline). Because the change was applied iteratively rather than all at once, the impact differed by customer.
 - **Impact**: Between 17:56 and 18:46 UTC, about 1,100 of the 6,500 prefixes advertised to one peer were withdrawn. BYOIP accounted for 4,306 of them, so about 25% were withdrawn. On the CDN and security services, connections to affected sites failed; Spectrum apps could not proxy traffic; Dedicated Egress customers could not send traffic to their destinations; and applications protected by Magic Transit timed out. The 1.1.1.1 website returned HTTP 403, but DNS resolution through 1.1.1.1 (including DNS over HTTPS) was not affected. Cloudflare puts the incident at 6 hours 7 minutes.
 - **Why restoration took long**: Prefixes were affected in different ways. Those that were only withdrawn could be re-advertised by customers from the dashboard, but those that lost some or all service bindings could not. For about 300 prefixes, a software bug had removed their service configurations from the edge, so they could not be restored from the dashboard and a configuration update was rolled out to every machine on the edge.
 - **Why it was missed**: Cloudflare says staging data was not close enough to production and the mock data was insufficient. Testing and initial code review focused on the self-service API path customers use and did not cover the case where the task changes user data without explicit input.
@@ -154,7 +156,7 @@ Three things to confirm about automated tasks that change and delete customer co
 - **2026-02-20**: At 19:19 customers can re-advertise from the dashboard. At 20:30 a release restores prefixes that still had bindings. At 21:08 a configuration rollout across the edge begins; it completes at 23:03 and impact ends. At 23:50 Cloudflare Status marks the incident resolved.
 - **2026-02-21**: Cloudflare publishes its post-mortem.
 
-> The facts rely on Cloudflare's post-mortem and the Cloudflare Status record (both primary). The post-mortem gives 17:48 UTC as the start in its opening and 17:56 UTC as the start of impact in its timeline; this Brief uses the timeline value. The "about 25%" in the post-mortem is a share of BYOIP prefixes, not of customers. The number of affected customers, how often the task ran and how many prefixes were actually pending deletion have not been disclosed. Laravel Cloud's times rely on its own incident report. What has not been disclosed does not mean there were no controls. This Brief does not evaluate Cloudflare's response. Written as of 10 November.
+> The facts rely on Cloudflare's post-mortem and the Cloudflare Status record (both primary). The post-mortem gives 17:48 UTC as the start in its opening and 17:56 UTC as the start of impact in its timeline; this Brief uses the timeline value. The "about 25%" in the post-mortem is a share of BYOIP prefixes, not of customers. Laravel Cloud's times rely on its own incident report. What has not been disclosed does not mean there were no controls. This Brief does not evaluate Cloudflare's response. Written as of 10 November.
 
 ### After disclosure
 

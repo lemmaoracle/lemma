@@ -21,6 +21,8 @@ draft_fixed:
     note: "なぜ通ったか：「指示を出した側から届いた書類」を「送ってきた相手が出した別の書類だけ」に"
   - date: 2026-11-26
     note: "Replaced the metaphor in the 01 bold sentence with plain wording (#53)"
+  - date: 2026-11-26
+    note: "Cut overlapping explanations and shortened the text"
 version: "1.0"
 og_lead_ja: "シンガポールの石油化学会社、書類の食い違いに気づいたが偽の授権書を示され、カンボジアの口座へ 1,280 万ドルを送金"
 og_lead_en: "A Singapore petrochemical firm spotted a discrepancy, then wired $12.8M to Cambodia on a forged authorisation letter"
@@ -60,7 +62,7 @@ controls:
     item: "Record which instruction's account was checked by whom, through which contact details, before the transfer"
 attack_method: "impersonation"
 impact: "On payment instructions said to come from the counterpart, $12.8M was sent to a new account in Cambodia (the full amount was later traced and recovered)"
-takeaway: "The company spotted a discrepancy in the payment documents, but relied on a forged authorisation letter supplied by the instructing party, and $12.8M went to a new account. Check a new account through the counterparty's registered contact details before using it for a transfer."
+takeaway: "When a discrepancy is checked only with papers from the instructing party, the payment goes ahead without checking with the real counterparty. Check a new account through the counterparty's registered contact details before using it for a transfer."
 self_check: "When a counterparty's receiving account changes, do you know how that change is checked through registered contact details apart from the instruction email?"
 countries: ["sg"]
 ---
@@ -76,7 +78,7 @@ The fraud came to light on 26 October, when the counterpart said it had not rece
 ## 2. What got through
 
 - **What got through**: A transfer made as a payment to the counterpart. It went to the new account named in the email of 1 October, which the police describe as a fraudulent bank account in Cambodia. The amount was $12.8M (Singapore Police Force release).
-- **What reached the accepting side**: In general, the paying side receives payment instructions in the counterparty's name and papers setting out the account. According to the police, the company noticed a discrepancy in the documents, but the scammers furnished an authorisation letter bearing the counterpart's company signature and stamp. In general, a signature and stamp are marks on a document; they do not show that whoever sent it is the counterparty.
+- **What reached the accepting side**: In general, the paying side receives payment instructions in the counterparty's name and papers setting out the account. A signature and stamp are marks on a document; they do not show that whoever sent it is the counterparty.
 - **Not disclosed**: The names and countries of the company and the counterpart. Whether the email of 1 October was spoofed or sent from a compromised mailbox of the counterpart. What the discrepancy was. By what route the authorisation letter arrived, and whom the company asked and how. The purpose of the payment. When the recovered funds were returned to the company.
 
 ## 3. Pre-execution check
@@ -101,7 +103,7 @@ Whatever the route, the condition for telling them apart is that, before the tra
 </div>
 </figure>
 
-Here the discrepancy was noticed before the transfer, but the material used to resolve it was an authorisation letter supplied by the party giving the instructions. Another Singapore case is [a commodity firm](/critical/briefs/184-singapore-commodity-trader-lookalike-supplier-email/) (2024; staff did not notice a lookalike supplier address, $42.3M went to Timor-Leste, and most of it was frozen). A case where the account in the papers themselves was rewritten is [Logix Aero](/critical/briefs/200-logix-aero-lookalike-domain-engine-sale-invoice/), and one where construction payments went to a party posing as the contractor is [Mobile, Alabama](/critical/briefs/174-mobile-alabama-arena-contractor-bank-change/).
+Another Singapore case is [a commodity firm](/critical/briefs/184-singapore-commodity-trader-lookalike-supplier-email/) (2024; staff did not notice a lookalike supplier address, $42.3M went to Timor-Leste, and most of it was frozen). A case where the account in the papers themselves was rewritten is [Logix Aero](/critical/briefs/200-logix-aero-lookalike-domain-engine-sale-invoice/), and one where construction payments went to a party posing as the contractor is [Mobile, Alabama](/critical/briefs/174-mobile-alabama-arena-contractor-bank-change/).
 
 ## 4. What Lemma does
 
@@ -115,7 +117,7 @@ Here the discrepancy was noticed before the transfer, but the material used to r
 
 ### Current controls vs Lemma
 
-The route in this case runs through column 1 (payment instructions to a new account, said to come from the counterpart) and column 2 (a forged authorisation letter supplied to resolve the discrepancy). Whether the column 1 email was spoofed or sent from a compromised mailbox has not been disclosed. Column 3 covers a takeover of the counterparty's registered contact details themselves.
+The route in this case runs through columns 1 and 2. Column 3 covers a takeover of the counterparty's registered contact details themselves.
 
 | Control | Instructions to pay a new account | Forged papers supplied as confirmation | Takeover of registered contact details |
 | --- | --- | --- | --- |
@@ -124,7 +126,7 @@ The route in this case runs through column 1 (payment instructions to a new acco
 | Tracing and recovery by banks and law enforcement after transfer | Partial | Partial | Partial |
 | **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-Sender checks show no difference when the email comes from the counterparty's genuine mailbox. Document checks did find a discrepancy here, but once forged papers with a signature and stamp are supplied to resolve it, those papers pass. Tracing and recovery by banks and law enforcement reached the full amount this time, but they act after the transfer and do not stop it. Lemma checks not the marks on the papers but the new account, against the counterparty's approval through registered contact details, before the transfer.
+Sender checks show no difference when the email comes from the counterparty's genuine mailbox. Document checks did find a discrepancy here, but once forged papers with a signature and stamp are supplied to resolve it, those papers pass. Tracing and recovery by banks and law enforcement reached the full amount this time, but they act after the transfer and do not stop it.
 
 Note: Lemma's check works only when it is built into the approval before the transfer and the counterparty's approval is received through registered contact details or a key managed apart from the instruction email and any attached papers. If the registered contact details themselves have been taken over, or the check uses contact details written in the instruction email or the authorisation letter, it can pass. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusion or impersonation, and it does not trace or recover funds already sent.
 
@@ -148,14 +150,14 @@ Three things to confirm about transfers to counterparties
 
 - **2026-10-01**: The company receives an email sent by its counterpart with revised payment instructions naming a new account.
 - **2026-10-13**: The company transfers $12.8M to the new account.
-- **2026-10-26**: The counterpart reports non-receipt and the police receive a report. Cyber Command engages the Cambodian National Police and coordinates recovery with OCBC.
+- **2026-10-26**: The counterpart reports non-receipt and the police receive a report.
 - **2026-10-29**: The Singapore Police Force announces the case and the recovery of the full amount.
 
-> The facts rely on the Singapore Police Force release (primary). The names and countries of the company and the counterpart, whether the email was spoofed or sent from a compromised mailbox, what the discrepancy was, the route by which the authorisation letter arrived, the company's approval procedure, the date of recovery and when the funds were returned to the company have not been disclosed. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the company's response.
+> The facts rely on the Singapore Police Force release (primary). The company's approval procedure and the date of recovery have not been disclosed either. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the company's response.
 
 ### After disclosure
 
-- **Singapore Police Force (recovery)**: Said that Cyber Command, working with the Cambodian National Police and OCBC, traced and recovered the full amount.
+- **Singapore Police Force (recovery)**: Said it traced and recovered the full amount.
 - **Singapore Police Force (advice to businesses)**: Urged businesses to verify any new or sudden change in payment instructions by contacting the supplier or counterpart directly on an independently verified, trusted number, and never to rely solely on contact details provided in the same email chain. It also advised training staff who authorise or execute payments on BEC tactics, and using strong passwords, multi-factor authentication and email protection software that can detect spoofed emails.
 
 ## 6. Sources

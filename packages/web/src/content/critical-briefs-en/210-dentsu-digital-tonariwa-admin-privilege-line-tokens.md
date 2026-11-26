@@ -21,6 +21,8 @@ draft_fixed:
     note: "なぜ通ったか：ログインのあとの権限の変更に追加の承認が要らなければ通る、と短くした"
   - date: 2026-11-26
     note: "Band, 03 opening and figure 1 now name the person changing permissions (#53)"
+  - date: 2026-11-26
+    note: "Cut overlapping explanations and shortened the text"
 version: "1.0"
 og_lead_ja: "電通デジタルの TONARIWA で、漏えいした認証情報で管理アカウントに入られて権限が広げられ、導入企業 2 社の個人情報の漏えいが確認された"
 og_lead_en: "At Dentsu Digital's TONARIWA, leaked credentials let a third party into an administrative account and widen its permissions, and leaks were confirmed at two client companies"
@@ -44,7 +46,7 @@ glossary:
   - term: "TONARIWA"
     desc: "A marketing platform provided by Dentsu Digital. Japan Post used it to run surveys and manage responses on its LINE account 'Yubinkyoku [Posukuma]' (郵便局［ぽすくま］)."
   - term: "LINE Official Account integration token"
-    desc: "In general, a key that an outside system uses to act as a LINE Official Account, for example to send messages. According to Dentsu Digital, TONARIWA's administrative account information includes access tokens for LINE Official Account integration, among other things."
+    desc: "In general, a key that an outside system uses to act as a LINE Official Account, for example to send messages."
 insight:
   slug: "permission-widened-by-login-alone"
   stop: true
@@ -61,7 +63,7 @@ controls:
     item: "Record, apart from the platform, whose approval widened which account's permissions, and which client's plan each send rests on"
 attack_method: "account-takeover"
 impact: "At two client companies, a leak of end users' personal data (names, dates of birth, contact details and more) was confirmed (count still being determined; Dentsu Digital, as of 12 November). Administrative account information, including access tokens for LINE Official Account integration, is also in scope. Japan Post took its LINE account 'Yubinkyoku [Posukuma]' down"
-takeaway: "A third party entered an administrative account with leaked credentials and widened its scope of operations. Being able to log in does not show that a permission change was approved. Check permission changes against the record of approvals before letting them through."
+takeaway: "Being able to log in does not show that a permission change was approved. Check permission changes against the record of approvals before letting them through."
 self_check: "On the platform you entrust with sending and customer management, do you know who approves, and through which approval, any widening of an administrative account's scope of operations?"
 countries: ["jp"]
 search_title: "電通デジタル TONARIWA 不正アクセスの経緯と対策"
@@ -72,13 +74,13 @@ search_description: "電通デジタルの TONARIWA で、漏えいした認証�
 
 On 10 November 2026, unauthorised access by a third party to an administrative account used in the system infrastructure of TONARIWA, the marketing platform provided by Dentsu Digital, was confirmed, together with privilege escalation (a widening of the scope of operations). According to Dentsu Digital's first notice (11 November), the access stemmed from leaked credentials. Possibly in scope are client companies' end users' names, dates of birth and contact details, and administrative account information including access tokens for LINE Official Account integration.
 
-According to the second notice (12 November), logs showing data being taken out of part of the system infrastructure were found, and leaks of personal data were confirmed at two client companies. Their names and the number of records have not been disclosed; the count is still being determined. Dentsu Digital stopped and isolated all servers and is arranging the invalidation and reissue of LINE integration tokens. Japan Post, one client company, used TONARIWA for surveys and responses on its LINE account "Yubinkyoku [Posukuma]", and took the account down for emergency maintenance from about 14:20 on 11 November.
+According to the second notice (12 November), logs showing data being taken out of part of the system infrastructure were found, and leaks of personal data were confirmed at two client companies. Their names and the number of records have not been disclosed; the count is still being determined. Japan Post, one client company, took its LINE account "Yubinkyoku [Posukuma]" down for emergency maintenance from about 14:20 on 11 November.
 
 <strong>If changing permissions after login needs no additional approval, the change simply goes through.</strong>
 
 ## 2. What got through
 
-- **What got through**: A login to an administrative account used in TONARIWA's system infrastructure, and the widening of that account's scope of operations (privilege escalation). According to Dentsu Digital, the unauthorised access stemmed from leaked credentials. The second notice says logs showing data being taken out of part of the system infrastructure were found.
+- **What got through**: A login to an administrative account used in TONARIWA's system infrastructure, and the widening of that account's scope of operations (privilege escalation).
 - **What reached the accepting side**: In general, an administrative function receives only a session holding valid credentials and the permission-change operation. It does not receive whether a platform operator approved the change. With widened permissions, the data of end users at several client companies, and the integration tokens that operate each company's LINE Official Account, can be reached.
 - **Risk of sending**: In its first notice, Dentsu Digital said that because LINE Official Account integration data may have been included, it could not rule out the risk of unauthorised message sending by a third party. Nothing disclosed says unauthorised sending took place.
 - **Not disclosed**: Where and how the credentials leaked. How the privileges were escalated and how far they reached. When, and how many times, data was taken out. How Dentsu Digital noticed on 10 November. The names of the two companies with confirmed leaks and the number of records. Whether Japan Post is one of the two. Whether integration tokens were actually taken.
@@ -88,7 +90,7 @@ According to the second notice (12 November), logs showing data being taken out 
 Whatever the route, the condition for telling them apart is that, before an administrative account's scope of operations is widened, whether the person changing the permissions has the approval of the staff in charge is checked against a record of approvals kept apart from the credentials used to log in.
 
 - **Who approves**: The staff at Dentsu Digital, as platform operator, who approve permission changes. They set which account may perform which operations for how long, and issue approvals in a form the administrative account's credentials alone cannot produce. For sending, the client company that owns the LINE Official Account issues the sending plan.
-- **Where it is checked**: First, the step at which the platform changes an administrative account's permissions. A change not tied to the record of approvals is held, and the account keeps its scope from before the change. Second, the step at which the platform sends from a client company's LINE Official Account. The send is checked as resting on a specific client's sending plan, and a send not tied to one is held. If integration tokens are taken and used without passing through the platform, this check is bypassed, so the scope in which tokens are held and the procedure for revoking them are needed separately.
+- **Where it is checked**: First, the step at which the platform changes an administrative account's permissions. A change not tied to the record of approvals is held, and the account keeps its scope from before the change. Second, the step at which the platform sends from a client company's LINE Official Account. The send is checked as resting on a specific client's sending plan, and a send not tied to one is held.
 - **What is recorded**: Whose approval widened which account's permissions, and when; and which client's plan each send rests on. These are kept apart from the platform, so client companies can check the impact on their own end users and LINE Official Accounts themselves.
 
 <figure class="rx-ex">
@@ -105,7 +107,7 @@ Whatever the route, the condition for telling them apart is that, before an admi
 </div>
 </figure>
 
-Detection worked, and Dentsu Digital stopped and isolated all servers. Even so, the scope of the administrative account entered with leaked credentials had been widened, and leaks of personal data were confirmed at two client companies. Cases where administrator rights at a contractor's service read client companies' data include [NTT DATA STdirectServices](/critical/briefs/204-ntt-data-stdirect-vendor-saas-admin-rights/) (administrator rights at the contractor's SaaS) and [Yumirlink](/critical/briefs/154-yumirlink-cuenote-support-credential-db-export/) (a delivery service's support staff credentials). Here, beyond the data, the integration tokens that operate client companies' LINE Official Accounts were also in scope.
+Detection worked, and Dentsu Digital stopped and isolated all servers. Even so, the scope of the administrative account entered with leaked credentials had been widened, and leaks of personal data were confirmed at two client companies. Cases where administrator rights at a contractor's service read client companies' data include [NTT DATA STdirectServices](/critical/briefs/204-ntt-data-stdirect-vendor-saas-admin-rights/) (administrator rights at the contractor's SaaS) and [Yumirlink](/critical/briefs/154-yumirlink-cuenote-support-credential-db-export/) (a delivery service's support staff credentials).
 
 ## 4. What Lemma does
 
@@ -120,7 +122,7 @@ Detection worked, and Dentsu Digital stopped and isolated all servers. Even so, 
 
 ### Current controls vs Lemma
 
-The route in this case is column 1 (widening the permissions of an administrative account entered with leaked credentials). Column 2 covers sends from the platform using widened permissions, and column 3 sends that bypass the platform using taken integration tokens; nothing disclosed says unauthorised sending happened in either case.
+The route in this case is column 1. Nothing disclosed says column 2 (sends from the platform with widened permissions) or column 3 (sends bypassing the platform with taken integration tokens) happened.
 
 | Control | Widening permissions with leaked credentials | Sends from the platform with widened permissions | Sends bypassing the platform with taken integration tokens |
 | --- | --- | --- | --- |
@@ -129,7 +131,7 @@ The route in this case is column 1 (widening the permissions of an administrativ
 | Staff review before sending | Not effective | Partial | Not effective |
 | **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-Multi-factor authentication blocks a login with a password alone, but can be passed if the leaked credentials take the form of a session or a key. Narrowing permissions reduces what is reachable at first, but does not stop operations after the permissions have been escalated. Staff review before sending works for sends made from the platform's screens, but is passed where the side that widened the permissions can skip the review step altogether. Lemma checks, before execution, not whether the login is valid but whether a permission change and a send rest on an approval and a plan.
+Multi-factor authentication blocks a login with a password alone, but can be passed if the leaked credentials take the form of a session or a key. Narrowing permissions reduces what is reachable at first, but does not stop operations after the permissions have been escalated. Staff review before sending works for sends made from the platform's screens, but is passed where the side that widened the permissions can skip the review step altogether.
 
 Note: Lemma's check works only when it is built into the platform's permission changes and send execution, and the record of approvals and client companies' sending plans are managed apart from the administrative account's credentials. If taken integration tokens are used to send directly on LINE's side, the send bypasses this check, and token scope and revocation are the answer. The check is also bypassed if the privilege escalation did not go through the permission-change procedure (for example, through a vulnerability). It can also pass if the credentials of the staff who issue approvals leak too. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, revoke tokens or recover data already taken.
 
@@ -144,10 +146,10 @@ Three things to confirm about LINE Official Accounts and end-user data entrusted
 ## 5. Facts and timeline
 
 - **Parties**: Dentsu Digital Inc. (provides the marketing platform TONARIWA) and its client companies. Japan Post has disclosed that it is a client company. According to Japan Post, it outsources part of the running of its LINE account "Yubinkyoku [Posukuma]" to Dentsu Digital and used TONARIWA to run surveys and manage responses.
-- **What happened**: According to Dentsu Digital, on 10 November it confirmed that an administrative account used in TONARIWA's system infrastructure had been subject to unauthorised access by a third party stemming from leaked credentials, and to privilege escalation (a widening of the scope of operations). The second notice says logs showing data being taken out of part of the system infrastructure were found. The intrusion route and how the credentials leaked have not been disclosed.
-- **Data**: According to Dentsu Digital, the scope covers end users' personal data handled by some client companies (attributes such as names, dates of birth and contact details) and TONARIWA's administrative account information (including access tokens for LINE Official Account integration). Payment-related data such as credit card and bank account details is not included. As of the second notice (12 November), leaks of personal data had been confirmed at two client companies, and the count is still being determined. Other client companies are being checked, and each will be contacted individually whether or not it is affected.
-- **Impact**: Dentsu Digital says no misuse or abuse has been confirmed. Its first notice said that because LINE Official Account integration data may have been included, the risk of unauthorised message sending by a third party could not be ruled out. Japan Post says no illicit acquisition or misuse of the data has been confirmed, and took "Yubinkyoku [Posukuma]" down for emergency maintenance from about 14:20 on 11 November. No date for resumption has been given.
-- **How it was found**: Dentsu Digital confirmed the unauthorised access and privilege escalation on 10 November. How it noticed has not been disclosed. Japan Post says it was contacted by Dentsu Digital.
+- **What happened**: According to Dentsu Digital, unauthorised access to the administrative account and privilege escalation were confirmed on 10 November, and the second notice says logs showing data being taken out were found. The intrusion route and how the credentials leaked have not been disclosed.
+- **Data**: According to Dentsu Digital, the scope covers end users' personal data handled by some client companies (attributes such as names, dates of birth and contact details) and TONARIWA's administrative account information (including access tokens for LINE Official Account integration). Payment-related data such as credit card and bank account details is not included. Client companies other than the two with confirmed leaks are being checked, and each will be contacted individually whether or not it is affected.
+- **Impact**: Dentsu Digital says no misuse or abuse has been confirmed. Japan Post says no illicit acquisition or misuse of the data has been confirmed. No date has been given for resuming "Yubinkyoku [Posukuma]".
+- **How it was found**: How Dentsu Digital noticed on 10 November has not been disclosed. Japan Post says it was contacted by Dentsu Digital.
 
 ### Timeline
 
@@ -156,7 +158,7 @@ Three things to confirm about LINE Official Accounts and end-user data entrusted
 - **2026-11-11**: Japan Post takes "Yubinkyoku [Posukuma]" down for emergency maintenance from about 14:20 and discloses the unauthorised access to its contractor's platform.
 - **2026-11-12**: In its second notice, Dentsu Digital discloses that leaks of personal data are confirmed at two client companies.
 
-> The facts rely on Dentsu Digital's first and second notices and Japan Post's two disclosures (all primary). Dentsu Digital does not name its client companies, and whether Japan Post is one of the two companies with confirmed leaks cannot be read from either company's disclosures. No other disclosure by a TONARIWA client company has been confirmed. When the service was suspended, how the credentials leaked, how the privileges were escalated and whether integration tokens were actually taken have not been disclosed. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the companies' responses. Written as of 13 November.
+> The facts rely on Dentsu Digital's first and second notices and Japan Post's two disclosures (all primary). Dentsu Digital does not name its client companies, and whether Japan Post is one of the two companies with confirmed leaks cannot be read from either company's disclosures. No other disclosure by a TONARIWA client company has been confirmed. When the service was suspended has not been disclosed either. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the companies' responses. Written as of 13 November.
 
 ### After disclosure
 
