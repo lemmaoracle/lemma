@@ -16,6 +16,9 @@ fact_check:
   rev: "51181e5b2073c8e6"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Added the disclosure date (21 February) to the figures (#53)"
 version: "1.0"
 og_lead_ja: "Cloudflare で、BYOIP の掃除用の定期処理が空の条件を「すべて」と解釈し、顧客の約 1,100 の IP プレフィックスの経路を取り下げた"
 og_lead_en: "At Cloudflare, a recurring BYOIP cleanup task read an empty condition as \"all\" and withdrew the routes of about 1,100 customer IP prefixes"
@@ -29,13 +32,13 @@ og_headline_en: "A cleanup task read\nan empty filter as \"all\"\nand pulled cus
 key_figures:
   - value: "About 1,100"
     unit: "prefixes"
-    label: "BYOIP prefixes whose routes were withdrawn (about 25% of the 4,306 BYOIP prefixes; 17:56 to 18:46 UTC; Cloudflare's post-mortem)"
+    label: "BYOIP prefixes whose routes were withdrawn (about 25% of the 4,306 BYOIP prefixes; 17:56 to 18:46 UTC; as of the 21 February disclosure; Cloudflare's post-mortem)"
     tone: "alert"
   - value: "17:56 → 23:03"
     label: "From the start of impact until every prefix was restored (2026-02-20, UTC; Cloudflare puts the incident at 6 hours 7 minutes)"
   - value: "About 300"
     unit: "prefixes"
-    label: "Prefixes whose service configurations were removed from the edge, so customers could not restore them from the dashboard (Cloudflare's post-mortem)"
+    label: "Prefixes whose service configurations were removed from the edge, so customers could not restore them from the dashboard (as of the 21 February disclosure; Cloudflare's post-mortem)"
 glossary:
   - term: "BYOIP (Bring Your Own IP)"
     desc: "A service in which a customer brings its own IP address ranges to Cloudflare and has Cloudflare's network advertise them to the internet."

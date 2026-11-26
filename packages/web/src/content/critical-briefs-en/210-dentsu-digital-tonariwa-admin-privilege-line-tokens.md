@@ -12,13 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["204-ntt-data-stdirect-vendor-saas-admin-rights", "154-yumirlink-cuenote-support-credential-db-export"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "315f57cf0e97fe70"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "2bb71cba7817583b"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-20
     note: "なぜ通ったか：ログインのあとの権限の変更に追加の承認が要らなければ通る、と短くした"
+  - date: 2026-11-26
+    note: "Band, 03 opening and figure 1 now name the person changing permissions (#53)"
 version: "1.0"
 og_lead_ja: "電通デジタルの TONARIWA で、漏えいした認証情報で管理アカウントに入られて権限が広げられ、導入企業 2 社の個人情報の漏えいが確認された"
 og_lead_en: "At Dentsu Digital's TONARIWA, leaked credentials let a third party into an administrative account and widen its permissions, and leaks were confirmed at two client companies"
@@ -47,7 +49,7 @@ insight:
   slug: "permission-widened-by-login-alone"
   stop: true
   label: "Admin permissions widened by a login alone"
-  quote: "Before an administrative account's scope of operations is widened, check the change against the platform operator's record of approvals, kept apart from the credentials that were used."
+  quote: "Before an administrative account's scope of operations is widened, check whether the person changing the permissions has the approval of the platform operator's staff in charge, against the record of approvals, apart from the credentials that were used."
 industries: ["retail", "supply-chain"]
 operations: ["account-admin", "delivery"]
 controls:
@@ -83,7 +85,7 @@ According to the second notice (12 November), logs showing data being taken out 
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before an administrative account's scope of operations is widened, the change is checked against a record of approvals kept apart from the credentials used to log in.
+Whatever the route, the condition for telling them apart is that, before an administrative account's scope of operations is widened, whether the person changing the permissions has the approval of the staff in charge is checked against a record of approvals kept apart from the credentials used to log in.
 
 - **Who approves**: The staff at Dentsu Digital, as platform operator, who approve permission changes. They set which account may perform which operations for how long, and issue approvals in a form the administrative account's credentials alone cannot produce. For sending, the client company that owns the LINE Official Account issues the sending plan.
 - **Where it is checked**: First, the step at which the platform changes an administrative account's permissions. A change not tied to the record of approvals is held, and the account keeps its scope from before the change. Second, the step at which the platform sends from a client company's LINE Official Account. The send is checked as resting on a specific client's sending plan, and a send not tied to one is held. If integration tokens are taken and used without passing through the platform, this check is bypassed, so the scope in which tokens are held and the procedure for revoking them are needed separately.
@@ -91,9 +93,9 @@ Whatever the route, the condition for telling them apart is that, before an admi
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking a change against the record of approvals before an administrative account's scope of operations is widened, and keeping a record. Detection means noticing the unauthorised access and privilege escalation, revoking the credentials, and stopping and isolating all servers. Dates rely on the disclosures by Dentsu Digital and Japan Post.</p>
+<p class="rx-ex-cap">A pre-execution check means checking, before an administrative account's scope of operations is widened, whether the person changing the permissions has the approval of the staff in charge, against the record of approvals, and keeping a record. Detection means noticing the unauthorised access and privilege escalation, revoking the credentials, and stopping and isolating all servers. Dates rely on the disclosures by Dentsu Digital and Japan Post.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check a permission change against the record of approvals before letting it through</div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check that the person changing permissions has the approval of the staff in charge, against the record of approvals, before letting it through</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Unauthorised access to an administrative account and privilege escalation<br>Personal data leaks at two client companies (count being determined)</span></div>
 <div class="rx-zone det"><b>Detection · worked</b>Credentials revoked, all servers stopped and isolated</div>
 <div class="rx-g g1"><div class="t">11-10</div><b>Dentsu Digital confirms the unauthorised access and privilege escalation</b></div>

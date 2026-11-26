@@ -19,6 +19,8 @@ status: draft
 draft_fixed:
   - date: 2026-11-20
     note: "金融監督院の検査意見書（8 月・報道）と返還の訴えの判決 3 件を足した"
+  - date: 2026-11-26
+    note: "帯の見出しの「照らさずに」を「確かめずに」に直した（#53）"
 version: "1.0"
 og_lead_ja: "韓国の暗号資産取引所 Bithumb、イベントの報酬 2,000 ウォンを 2,000 BTC として付与し、計 62 万 BTC が利用者の口座に記帳された"
 og_lead_en: "Bithumb, a South Korean crypto exchange, paid a 2,000-won event reward as 2,000 BTC, crediting 620,000 BTC to users' accounts"
@@ -47,7 +49,7 @@ glossary:
 insight:
   slug: "payout-credited-without-plan-and-reserve-check"
   stop: true
-  label: "計画と保有に照らさずに記帳される付与"
+  label: "計画と保有を確かめずに記帳される付与"
   quote: "報酬を口座に記帳する前に、付与の単位と総量を、事前の支給計画と取引所が実際に持つ量で照合する。"
 industries: ["finance"]
 operations: ["approval"]

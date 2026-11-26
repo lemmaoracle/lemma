@@ -19,6 +19,8 @@ status: draft
 draft_fixed:
   - date: 2026-11-20
     note: "Added the 12 November report and the FSC's stance on penalties and outsourcing"
+  - date: 2026-11-26
+    note: "Rewrote the band around the person giving the instruction and the cap (#53)"
 version: "1.0"
 og_lead_ja: "台湾の永豊銀行で、新しいネットバンキングの取引システムの提供元の安全の設定が外部のハッカーに利用され、418 人の口座から 427 件・約 4,176 万台湾ドルが不正に送金された"
 og_lead_en: "At Taiwan's Bank SinoPac, outside hackers exploited the vendor's security settings on a new online banking system, and NT$41.76 million left 418 customers' accounts in 427 transfers"
@@ -50,7 +52,7 @@ insight:
   slug: "transfer-trusts-transaction-system-setting"
   stop: true
   label: "Customer authentication left to the transaction system's settings"
-  quote: "Before executing a transfer out of an account, check the instruction against the bank's own record of the customer's authentication and the per-transfer cap, apart from the transaction system's settings."
+  quote: "Before executing a transfer out of an account, check whether the person giving the instruction has authenticated as the account holder and the amount is within the per-transfer cap, against the bank's own records, apart from the transaction system's settings."
 industries: ["finance"]
 operations: ["approval", "account-admin"]
 controls:

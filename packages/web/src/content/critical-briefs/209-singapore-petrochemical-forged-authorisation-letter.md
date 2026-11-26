@@ -12,13 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["184-singapore-commodity-trader-lookalike-supplier-email", "200-logix-aero-lookalike-domain-engine-sale-invoice", "174-mobile-alabama-arena-contractor-bank-change"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "835f8b5a62dd94ef"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "a338c613f7103b02"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-20
     note: "なぜ通ったか：「指示を出した側から届いた書類」を「送ってきた相手が出した別の書類だけ」に"
+  - date: 2026-11-26
+    note: "01 の太字の比喩（相手の手の中で終わる）を、ふだんの言葉に直した（#53）"
 version: "1.0"
 og_lead_ja: "シンガポールの石油化学会社、書類の食い違いに気づいたが偽の授権書を示され、カンボジアの口座へ 1,280 万ドルを送金"
 og_lead_en: "A Singapore petrochemical firm spotted a discrepancy, then wired $12.8M to Cambodia on a forged authorisation letter"
@@ -70,7 +72,7 @@ countries: ["sg"]
 
 10 月 26 日に取引先が代金を受け取っていないと知らせて発覚し、警察は同じ日に届け出を受けた。警察の Cyber Command は、カンボジアの国家警察と銀行の OCBC と連携し、全額を追跡・回収した。メールが偽装されたものか、取引先のメールが乗っ取られたものかは公表されていない。
 
-<strong>食い違いを、送ってきた相手が出した別の書類だけで確かめると、確認は相手の手の中で終わる。</strong>
+<strong>食い違いを、指示を送ってきた相手が出した別の書類だけで確かめると、取引先本人には確かめないまま送金に進む。</strong>
 
 ## 2. 通った操作
 

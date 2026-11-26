@@ -16,6 +16,9 @@ fact_check:
   rev: "9a258aa8da2a2816"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Clarified the insight label and added the disclosure date (10 November) (#53)"
 version: "1.0"
 og_lead_ja: "Railway で、ビルド基盤の脆弱性と誤った OIDC の設定を経て、最大で約 10 万のワークスペースの環境変数が復号された可能性がある"
 og_lead_en: "At Railway, a build-infrastructure vulnerability and a misconfigured OIDC binding led to the possible decryption of environment variables in up to about 100,000 workspaces"
@@ -29,14 +32,14 @@ og_headline_en: "In through the builders,\npast a bad OIDC setting,\nto decrypte
 key_figures:
   - value: "Up to 1.85"
     unit: "%"
-    label: "Share of workspaces that could have had any environment variable decrypted (about 100,000; the logs identify environments, so this is an upper bound; Railway's incident report)"
+    label: "Share of workspaces that could have had any environment variable decrypted (about 100,000; the logs identify environments, so this is an upper bound; as of the 10 November disclosure; Railway's incident report)"
     tone: "alert"
   - value: "353"
     unit: "builds"
     label: "Builds whose stored histories the attacker read from Temporal (sealed variables included; 20 October, 13:50 to 15:30 UTC)"
   - value: "About 740,000"
     unit: "USD"
-    label: "Estimated unauthorised spend on the stolen keys (Railway's incident report)"
+    label: "Estimated unauthorised spend on the stolen keys (as of the 10 November disclosure; Railway's incident report)"
 glossary:
   - term: "Environment variable"
     desc: "A setting passed to an application from outside. It often holds secrets such as API keys or database connection details. Railway stores them encrypted with a key per environment."
@@ -47,7 +50,7 @@ glossary:
 insight:
   slug: "workload-credential-not-tied-to-deploy"
   stop: true
-  label: "An issued credential shows no job"
+  label: "An issued credential does not show the job is genuine"
   quote: "Before cloud credentials are issued to CI/CD, check which repository and which deployment the requesting job is for, against a deployment record rather than a match in the trust configuration."
 industries: ["developers", "ai"]
 operations: ["account-admin", "data-access"]

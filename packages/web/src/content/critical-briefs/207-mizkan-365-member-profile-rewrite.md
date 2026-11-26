@@ -12,13 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["164-capcom-id-password-change-ecommerce-mypage", "168-goodsmile-payment-page-tampering", "190-iwai-cosmo-tradeworks-admin-function-unintended-orders"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "001b00f4170db065"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1192"
+  at: 2026-11-26
+  rev: "115cc7724cecd423"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-20
     note: "11/17 の第2報を反映（改ざん 501 名・My クックリスト 3,437 名の閲覧・通販などの再開）"
+  - date: 2026-11-26
+    note: "帯・03・図表1・takeaway を、操作した人のログインが会員本人のものかで書き直した（#53）"
 version: "1.0"
 og_lead_ja: "Mizkan のコミュニティサイト「ミツカン 365」で、会員 501 名のニックネームとアイコンが書き換えられ、29 名の顧客 ID とメールアドレスが漏えいした"
 og_lead_en: "On Mizkan's community site \"Mizkan 365\", nicknames and icons of 501 members were rewritten, and customer IDs and email addresses of 29 were leaked"
@@ -48,7 +50,7 @@ insight:
   slug: "profile-write-not-tied-to-owner"
   stop: true
   label: "書き換え先が、操作した本人に結びつかない"
-  quote: "会員の登録情報を書き換える前に、書き換える先の会員が操作したログインの持ち主と同じかを、操作の中身ではなくサーバ側のログインの記録で照合する。"
+  quote: "会員の登録情報を書き換える前に、操作した人のログインが、書き換える先の会員本人のものかを、操作の中身ではなくサーバ側のログインの記録で照合する。"
 industries: ["retail", "media"]
 operations: ["account-admin", "data-access"]
 controls:
@@ -62,7 +64,7 @@ controls:
     item: "どのログインが、どの会員の、どの項目を書き換えたかを記録する"
 attack_method: "privilege-abuse"
 impact: "会員 501 名のニックネームが「名なしさん」に変更され、アイコンが書き換えられた。このうち 29 名の顧客 ID と登録メールアドレスが漏えいし、26 名は特典交換とキャンペーンへの応募の回数も漏えいした。非公開の「My クックリスト」3,437 名分も閲覧された（Mizkan・11 月 6 日と 17 日）"
-takeaway: "第三者が、ほかの会員のニックネームとアイコンの登録情報を書き換え、そこに仕込んだプログラムで一部の会員の情報を取得した。登録情報の書き換えは、書き換える先が操作したログインの持ち主かを照合してから通す。"
+takeaway: "第三者が、ほかの会員のニックネームとアイコンの登録情報を書き換え、そこに仕込んだプログラムで一部の会員の情報を取得した。登録情報の書き換えは、操作した人のログインが書き換える先の会員本人のものかを照合してから通す。"
 self_check: "会員の登録情報を書き換える操作が、その会員本人のログインからに限られる仕組みを把握しているか。"
 countries: ["jp"]
 search_title: "ミツカン365 不正アクセス：501名の改ざんと漏えいの経緯"
@@ -87,7 +89,7 @@ search_description: "Mizkan の「ミツカン 365」で会員 501 名のニッ�
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、会員の登録情報を書き換える前に、書き換える先の会員が、その操作をしたログインの持ち主と同じかを、操作の中身とは別のサーバ側の記録で照合することである。
+経路を問わず区別できる条件は、会員の登録情報を書き換える前に、操作した人のログインが、書き換える先の会員本人のものかを、操作の中身とは別のサーバ側の記録で照合することである。
 
 - **誰が承認を出すか**: 登録情報の持ち主である会員本人。本人のログインからの書き換えだけが、本人の承認として扱われる。運営側が会員の情報を直すときは、運営の担当者の権限と依頼の記録で別に通す。
 - **どこで照合するか**: サイトが会員情報の書き換えを保存する手順。書き換える先の会員と、操作したログインの持ち主が違えば保存しない。登録された文字や画像は、ほかの会員の画面に出す前に、プログラムとして動かない形にする。
@@ -95,9 +97,9 @@ search_description: "Mizkan の「ミツカン 365」で会員 501 名のニッ�
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
-<p class="rx-ex-cap">実行の前の照合＝会員の登録情報を書き換える前に、書き換える先が操作したログインの持ち主かを照合し、記録に残すこと。検知＝会員の問い合わせから不正なアクセスに気づき、サイトを止めてプログラムを修正すること。日付は Mizkan の公表に拠る。</p>
+<p class="rx-ex-cap">実行の前の照合＝会員の登録情報を書き換える前に、操作した人のログインが、書き換える先の会員本人のものかを照合し、記録に残すこと。検知＝会員の問い合わせから不正なアクセスに気づき、サイトを止めてプログラムを修正すること。日付は Mizkan の公表に拠る。</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>書き換える先が、操作したログインの持ち主かを照合してから保存する</div>
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>操作した人のログインが、書き換える先の会員のものかを照合してから保存する</div>
 <div class="rx-zone gapz"><b>確認されたこと</b><span>ほかの会員の登録情報の書き換え 501 名<br>顧客 ID・メールアドレスの漏えい 29 名</span></div>
 <div class="rx-zone det"><b>検知 · 働いた</b>問い合わせを受けて調べ、サイトを止め、プログラムを修正する</div>
 <div class="rx-g g1"><div class="t">10-30</div><b>不正アクセスで登録情報が書き換えられる</b></div>

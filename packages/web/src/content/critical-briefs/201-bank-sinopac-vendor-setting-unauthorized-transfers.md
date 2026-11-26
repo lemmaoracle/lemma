@@ -19,6 +19,8 @@ status: draft
 draft_fixed:
   - date: 2026-11-20
     note: "11/12 の報告の提出と金管会の方針（処分は未定・委託先の管理の見直し）を足した"
+  - date: 2026-11-26
+    note: "帯を、指示した人の認証と 1 回の上限という人と条件で書き直した（#53）"
 version: "1.0"
 og_lead_ja: "台湾の永豊銀行で、新しいネットバンキングの取引システムの提供元の安全の設定が外部のハッカーに利用され、418 人の口座から 427 件・約 4,176 万台湾ドルが不正に送金された"
 og_lead_en: "At Taiwan's Bank SinoPac, outside hackers exploited the vendor's security settings on a new online banking system, and NT$41.76 million left 418 customers' accounts in 427 transfers"
@@ -50,7 +52,7 @@ insight:
   slug: "transfer-trusts-transaction-system-setting"
   stop: true
   label: "取引システムの設定に任せた本人の認証"
-  quote: "口座から送金を実行する前に、その指示を、取引システムの設定とは別に、銀行が持つ本人の認証の記録と 1 回の上限で照合する。"
+  quote: "口座から送金する前に、指示した人が口座の本人として認証を済ませたかと、額が 1 回の上限の内かを、取引システムの設定とは別に銀行の記録で照合する。"
 industries: ["finance"]
 operations: ["approval", "account-admin"]
 controls:

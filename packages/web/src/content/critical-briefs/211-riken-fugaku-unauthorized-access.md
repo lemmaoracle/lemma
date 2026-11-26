@@ -12,10 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["144-studio-saas-breach-decryption-keys-read", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-19
-  rev: "2b549515cd0d9207"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1177"
+  at: 2026-11-26
+  rev: "7f5c138ba7919211"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "01 の太字の比喩（入口）を理研の言葉で直し、人数の時点（11月16日）を足した（#53）"
 version: "1.0"
 og_lead_ja: "理研の「富岳」で、公開ダッシュボードを足がかりに運用系へ侵入され、利用者最大4,597名分の情報とSSH秘密鍵が持ち出されたおそれが公表された"
 og_lead_en: "At RIKEN's 'Fugaku', intruders used the public status dashboard to reach the operations network, and records for up to 4,597 users and their SSH private keys may have been taken"
@@ -29,7 +32,7 @@ og_headline_en: "A read-only page became\nthe way into operations.\n<accent>User
 key_figures:
   - value: "4,597"
     unit: "名"
-    label: "持ち出し、またはその可能性が公表された利用者情報の対象（富岳 最大4,222名＋理究 最大375名・理化学研究所の発表）"
+    label: "持ち出し、またはその可能性が公表された利用者情報の対象（富岳 最大4,222名＋理究 最大375名・11月16日の公表時点・理化学研究所の発表）"
     tone: "alert"
   - value: "11-10 → 11-13"
     label: "公開ダッシュボードを足がかりに、運用系の内部ネットワークへ侵入していた期間"
@@ -75,7 +78,7 @@ search_description: "理化学研究所の「富岳」で、公開ダッシュ�
 
 理研は 11 月 14 日午前 4 時 30 分に富岳の運用を停止して外部からのアクセスを遮断し、全利用者のログイン用の公開鍵を無効にした。利用者には、富岳に保存していた SSH 秘密鍵や各種認証情報を、それぞれの接続先で無効にし、再発行するよう求めている。
 
-<strong>公開していた「見るだけ」の画面が、運用系の内部への入口になった。入口は、ログイン画面だけではない。</strong>
+<strong>外部から入られうる画面は、ログイン画面とは限らない。公開していた「見るだけ」のダッシュボードが、運用系の内部ネットワークへ侵入する足がかりになった。</strong>
 
 ## 2. 通った操作
 

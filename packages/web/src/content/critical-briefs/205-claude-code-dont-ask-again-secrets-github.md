@@ -16,6 +16,9 @@ fact_check:
   rev: "a9aa88df1c642d4b"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "帯の見出しの「公開の照合」を、何を確かめるかが分かる形に直した（#53）"
 version: "1.0"
 og_lead_ja: "Claude Code で「今後は聞かない」と承認したコマンドが秘密情報ごと設定ファイルに保存され、公開の GitHub で 1,122 ファイルに 1,379 件の秘密情報が見つかったと Apiiro が報告"
 og_lead_en: "Commands approved with \"don't ask again\" in Claude Code were saved with their secrets; Apiiro reports 1,379 secrets in 1,122 settings files on public GitHub"
@@ -45,7 +48,7 @@ glossary:
 insight:
   slug: "local-ignore-not-publish-check"
   stop: true
-  label: "手元の除外は、公開の照合にならない"
+  label: "手元の除外の設定は、公開してよいかの確認にならない"
   quote: "公開のリポジトリへ push する前に、含まれるファイルを、手元の除外の設定ではなく、リポジトリの持ち主が決めた公開してよいファイルの一覧で照合する。"
 industries: ["developers", "ai"]
 operations: ["disclosure", "account-admin"]

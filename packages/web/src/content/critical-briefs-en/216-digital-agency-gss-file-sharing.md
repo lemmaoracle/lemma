@@ -12,10 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["211-riken-fugaku-unauthorized-access", "212-plaid-karte-server-flaw-db-credentials"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-25
-  rev: "e798925d158db257"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1202"
+  at: 2026-11-26
+  rev: "36d2502837974f4a"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Band, label, 03, figure 1, takeaway and 01 bold name the opener (#53)"
 version: "1.0"
 og_lead_ja: "デジタル庁のガバメントソリューションサービス（GSS）のファイル共有サービスで、正規の共有相手以外の者からのアクセスがあり、アップロードされていたファイルの一部が漏えいした可能性がある"
 og_lead_en: "On the file-sharing service of the Digital Agency's Government Solution Service (GSS), someone other than the intended recipients accessed files, and some of the uploaded files may have leaked"
@@ -42,8 +45,8 @@ glossary:
 insight:
   slug: "file-access-not-checked-against-sharing-recipient"
   stop: true
-  label: "Access by someone who is not a recipient shows no sharing record"
-  quote: "Before a shared file is opened, check that access against the intended recipients and the record of the sharing's scope and period."
+  label: "Files opened by someone who was not a recipient"
+  quote: "Before a shared file is opened, check whether the person opening it is an intended recipient, against the record of the sharing's scope and period."
 industries: ["public-sector"]
 operations: ["data-access"]
 controls:
@@ -55,7 +58,7 @@ controls:
     item: "Keep a record of who read which file and when, so the scope of a leak can be checked afterwards"
 attack_method: "account-takeover"
 impact: "On the file-sharing service provided under the Digital Agency's Government Solution Service (GSS), some of the uploaded files may have leaked to the outside. Access by someone other than the intended recipients was confirmed over the period from 30 July to 12 November 2026. The files that may have leaked are also assumed possibly to contain personal information. The number and contents of the files, and the route of the access, have not been disclosed. Provision of the service was stopped on 12 November"
-takeaway: "On a government file-sharing service, access by someone who was not an intended recipient was confirmed over the period until it was detected. If the recipient is not checked at the sharing entry, access by someone who is not a recipient goes through as it is. Before a file is opened, check that access against the intended recipients and the record of the sharing's scope and period, and keep a record of who read what."
+takeaway: "On a government file-sharing service, access by someone who was not an intended recipient was confirmed over the period until it was detected. If no one checks whether the person opening a file is an intended recipient, access by someone who is not a recipient goes through as it is. Before a file is opened, check whether the person opening it is an intended recipient against the record of the sharing's scope and period, and keep a record of who read what."
 self_check: "When you share files with people outside your organisation, do you have rules for the recipients, the scope and the period?"
 countries: ["jp"]
 search_title: "デジタル庁GSS ファイル共有 漏えいの可能性：経緯と対策"
@@ -68,7 +71,7 @@ On 20 November 2026, the Digital Agency announced that, on the file-sharing serv
 
 The Digital Agency detected the possibility of the access on 12 November and began an investigation. Immediately after detection it cut off the service's communication with the outside, and it stopped providing the service the same day. Because the files that may have leaked are also assumed possibly to contain personal information, it reported the case promptly to the Personal Information Protection Commission. The number and contents of the files that may have leaked, and the route of the access, have not been disclosed. According to the Digital Agency, at the time of the announcement no secondary harm to personal information arising from this case had been confirmed.
 
-<strong>If the recipient is not checked at the sharing entry, access by someone who is not a recipient goes through, indistinguishable from normal sharing.</strong>
+<strong>Unless the person opening a file is checked as an intended recipient against the record of the sharing's scope and period, access by someone who is not a recipient goes through, indistinguishable from normal sharing.</strong>
 
 ## 2. What got through
 
@@ -79,7 +82,7 @@ The Digital Agency detected the possibility of the access on 12 November and beg
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a shared file is opened, the access is checked against the intended recipients and the record of the sharing's scope and period.
+Whatever the route, the condition for telling them apart is that, before a shared file is opened, whether the person opening it is an intended recipient is checked against the record of the sharing's scope and period.
 
 - **Who issues the record**: The file-sharing mechanism. Each time a file is shared, it records who the intended recipients are, what scope is shared, and until when. For sharing with people outside the organisations, the result of checking the recipient is also kept in the record.
 - **Where it is checked**: The steps for opening a shared file. The check confirms whether the person accessing is tied to an intended recipient in the record; access that is not is held. The check runs on a mechanism separate from the sharing mechanism itself.
@@ -87,9 +90,9 @@ Whatever the route, the condition for telling them apart is that, before a share
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking access against the intended recipients and the record of the sharing's scope and period before a shared file is opened, and keeping a record. Detection means noticing the possibility of access by someone other than the intended recipients, cutting off communication with the outside and stopping provision of the service. Dates rely on the Digital Agency's disclosure.</p>
+<p class="rx-ex-cap">A pre-execution check means checking, before a shared file is opened, whether the person opening it is an intended recipient, against the record of the sharing's scope and period, and keeping a record. Detection means noticing the possibility of access by someone other than the intended recipients, cutting off communication with the outside and stopping provision of the service. Dates rely on the Digital Agency's disclosure.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check access against the intended recipients and the sharing record before letting it through</div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check that the person opening the file is an intended recipient, against the record of scope and period, before letting it through</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Access by someone other than the intended recipients (30 July – 12 November)<br>The possibility that some of the files leaked</span></div>
 <div class="rx-zone det"><b>Detection · worked</b>Communication with the outside cut off and provision of the service stopped</div>
 <div class="rx-g g1"><div class="t">07-30</div><b>The period of access by someone other than the intended recipients begins</b></div>

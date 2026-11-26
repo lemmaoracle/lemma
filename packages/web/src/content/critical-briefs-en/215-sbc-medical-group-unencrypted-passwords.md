@@ -12,10 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["212-plaid-karte-server-flaw-db-credentials", "211-riken-fugaku-unauthorized-access"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-25
-  rev: "53d65ddfcd4f418f"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1197"
+  at: 2026-11-26
+  rev: "3ed611cd0d58a91c"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Band, label, 03, figure 1 and 01 bold rewritten without metaphors (#53)"
 version: "1.0"
 og_lead_ja: "SBCメディカルグループで、海外からの77万回の攻撃でデータベースに到達され、暗号化していなかったパスワードを含む基本情報162万4,000人分などが不正に取得された"
 og_lead_en: "At SBC Medical Group, sustained attacks from overseas — 770,000 in all — reached a database, and basic information on 1,624,000 people, including passwords stored without encryption, was taken without authorisation"
@@ -44,8 +47,8 @@ glossary:
 insight:
   slug: "entry-attempts-not-checked-against-normal-use"
   stop: true
-  label: "Attempts that line up on count, hour and origin are not normal use"
-  quote: "Before access to a database and logins to an admin console are let through, check those attempts against the record of normal use (count, hour and origin)."
+  label: "Attempts that differ from normal use in count, hour and origin"
+  quote: "Before access to a database and logins to an admin console are let through, check whether the count, hour and origin of the attempts are within normal use, against the record of use."
 industries: ["healthcare", "supply-chain"]
 operations: ["data-access", "account-admin"]
 controls:
@@ -70,7 +73,7 @@ On 16 November 2026, unauthorised access was confirmed to part of a database wit
 
 The information confirmed taken was disclosed by category. The largest, basic information, covers 1,624,000 people and includes passwords that had been stored without encryption, together with names, addresses and dates of birth. Web booking applications for 255,416 people, enquiry-form consultations for 217,769 people and about 20,000 staff account records were also in scope. Also on 16 November, unauthorised logins were confirmed to the admin console of Tribeau, an outside booking service, and information on 12,641 people with bookings only and 6,804 people who had received treatments was taken. No taking of medical records such as electronic charts has been confirmed at this point.
 
-<strong>If attempts are not counted at the entry, attacks repeated over and over reach the database as they are — and a password stored in readable form becomes a key the moment it is taken.</strong>
+<strong>If the count, hour and origin of login and access attempts are not compared with normal use, attacks repeated from overseas also reach the database. Passwords stored without encryption can be tried at other services as they are once taken.</strong>
 
 ## 2. What got through
 
@@ -81,7 +84,7 @@ The information confirmed taken was disclosed by category. The largest, basic in
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before an attempt at the entry is let through, the attempt is checked against the record of normal use.
+Whatever the route, the condition for telling them apart is that, before login and access attempts are let through, whether the count, hour and origin of the attempts are within normal use is checked against the record of use.
 
 - **Who issues the record**: The components that run the website and database, and the outside booking service. For each kind of work — bookings, enquiries, clinic operations — they record when, from where and how much access is normal. For a contractor's admin console, the clinics that use it and the scope of operations are decided.
 - **Where it is checked**: The steps for access to the database and for logins to the admin console. The check confirms whether an attempt's count, hour and origin are tied to normal use in the record; an attempt that is not is held. The check runs on a mechanism separate from the entry itself.
@@ -89,9 +92,9 @@ Whatever the route, the condition for telling them apart is that, before an atte
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking an attempt against the record of normal use (count, hour and origin) before letting it through at the entry, and keeping a record. Detection means noticing the unauthorised access, isolating the server and cutting off the attacker's access. Dates rely on SBC Medical Group's disclosure.</p>
+<p class="rx-ex-cap">A pre-execution check means checking, before access to a database and logins to an admin console are let through, whether the count, hour and origin of the attempts are within normal use, against the record of use, and keeping a record. Detection means noticing the unauthorised access, isolating the server and cutting off the attacker's access. Dates rely on SBC Medical Group's disclosure.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check attempts at the entry against the record of normal use before letting them through</div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check that the count, hour and origin of attempts are within normal use before letting them through</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>A database reached through 770,000 sustained attacks from overseas<br>Personal information taken, including passwords without encryption</span></div>
 <div class="rx-zone det"><b>Detection · worked</b>Server isolated and the attacker's access cut off</div>
 <div class="rx-g g1"><div class="t">11-16</div><b>Unauthorised access detected; the server in question is isolated</b></div>

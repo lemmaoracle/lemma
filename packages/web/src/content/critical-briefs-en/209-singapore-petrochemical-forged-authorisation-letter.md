@@ -12,13 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["184-singapore-commodity-trader-lookalike-supplier-email", "200-logix-aero-lookalike-domain-engine-sale-invoice", "174-mobile-alabama-arena-contractor-bank-change"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "6fa3122a544e1dba"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "76990758f5684e6e"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-20
     note: "なぜ通ったか：「指示を出した側から届いた書類」を「送ってきた相手が出した別の書類だけ」に"
+  - date: 2026-11-26
+    note: "Replaced the metaphor in the 01 bold sentence with plain wording (#53)"
 version: "1.0"
 og_lead_ja: "シンガポールの石油化学会社、書類の食い違いに気づいたが偽の授権書を示され、カンボジアの口座へ 1,280 万ドルを送金"
 og_lead_en: "A Singapore petrochemical firm spotted a discrepancy, then wired $12.8M to Cambodia on a forged authorisation letter"
@@ -69,7 +71,7 @@ According to the Singapore Police Force, on 1 October 2026 a Singapore-based pet
 
 The fraud came to light on 26 October, when the counterpart said it had not received the payment, and the police received a report the same day. The police's Cyber Command worked with the Cambodian National Police and the bank OCBC, and the full amount was traced and recovered. Whether the email was spoofed or the counterpart's mailbox was compromised has not been disclosed.
 
-<strong>When a discrepancy is checked only with other papers from the sender, the check never leaves the sender's hands.</strong>
+<strong>When a discrepancy is checked only with other papers from the party that sent the instructions, the payment goes ahead without ever checking with the real counterparty.</strong>
 
 ## 2. What got through
 

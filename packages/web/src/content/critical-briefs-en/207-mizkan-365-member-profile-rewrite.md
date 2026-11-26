@@ -12,13 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["164-capcom-id-password-change-ecommerce-mypage", "168-goodsmile-payment-page-tampering", "190-iwai-cosmo-tradeworks-admin-function-unintended-orders"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "efda1e183be841f4"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1192"
+  at: 2026-11-26
+  rev: "519014a3b003a9a3"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-20
     note: "Second notice of 17 Nov: tampering 501, 3,437 Cook Lists viewed, store resumed"
+  - date: 2026-11-26
+    note: "Figure 1 caption reworded: whether the login belongs to the member (#53)"
 version: "1.0"
 og_lead_ja: "Mizkan のコミュニティサイト「ミツカン 365」で、会員 501 名のニックネームとアイコンが書き換えられ、29 名の顧客 ID とメールアドレスが漏えいした"
 og_lead_en: "On Mizkan's community site \"Mizkan 365\", nicknames and icons of 501 members were rewritten, and customer IDs and email addresses of 29 were leaked"
@@ -95,7 +97,7 @@ Whatever the route, the condition for telling them apart is that, before a membe
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking, before a member's profile data is rewritten, that the member being rewritten owns the login that made the change, and keeping a record. Detection means noticing the unauthorised access from members' enquiries, stopping the site and fixing the program. Dates rely on Mizkan's disclosure.</p>
+<p class="rx-ex-cap">A pre-execution check means checking, before a member's profile data is rewritten, that the login that made the change belongs to the member being rewritten, and keeping a record. Detection means noticing the unauthorised access from members' enquiries, stopping the site and fixing the program. Dates rely on Mizkan's disclosure.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Save a rewrite only after checking that the target owns the login that made it</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Other members' profile data rewritten: 501<br>Customer IDs and email addresses leaked: 29</span></div>

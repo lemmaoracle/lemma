@@ -12,10 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["144-studio-saas-breach-decryption-keys-read", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-19
-  rev: "89f976dc3299942e"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1177"
+  at: 2026-11-26
+  rev: "8ff645c3e139e6bf"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Removed the metaphor in the 01 bold; added the 16 November date (#53)"
 version: "1.0"
 og_lead_ja: "理研の「富岳」で、公開ダッシュボードを足がかりに運用系へ侵入され、利用者最大4,597名分の情報とSSH秘密鍵が持ち出されたおそれが公表された"
 og_lead_en: "At RIKEN's 'Fugaku', intruders used the public status dashboard to reach the operations network, and records for up to 4,597 users and their SSH private keys may have been taken"
@@ -29,7 +32,7 @@ og_headline_en: "A read-only page became\nthe way into operations.\n<accent>User
 key_figures:
   - value: "4,597"
     unit: "users"
-    label: "Users whose registered records were taken or may have been taken (Fugaku up to 4,222 plus Rikyu up to 375; RIKEN announcement)"
+    label: "Users whose registered records were taken or may have been taken (Fugaku up to 4,222 plus Rikyu up to 375; as of the 16 November disclosure; RIKEN announcement)"
     tone: "alert"
   - value: "11-10 → 11-13"
     label: "Period during which the intruders were inside the operations network, entering via the public dashboard"
@@ -75,7 +78,7 @@ Two kinds of information were taken, or may have been taken. The first is inform
 
 RIKEN stopped Fugaku's operations at 04:30 on 14 November, cut off outside access, and invalidated all users' login public keys. It has asked users to invalidate, at each destination, the SSH private keys and other credentials they had stored on Fugaku, and to have them reissued.
 
-<strong>A public, read-only page became the way into the operations network. Entry points are not only login screens.</strong>
+<strong>Login screens are not the only screens that can be entered from outside. A public, read-only dashboard became the foothold for intruding into the operations network.</strong>
 
 ## 2. What got through
 

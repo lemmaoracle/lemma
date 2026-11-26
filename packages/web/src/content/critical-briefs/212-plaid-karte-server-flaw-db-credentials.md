@@ -12,10 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["210-dentsu-digital-tonariwa-admin-privilege-line-tokens", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "3d5bfe81756306f0"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1187"
+  at: 2026-11-26
+  rev: "0322a68e28f86439"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "帯・03 の冒頭・図表1を、読み出す者がどの利用企業のどの処理かで書き直した（#53）"
 version: "1.0"
 og_lead_ja: "プレイドの KARTE で、サーバーの脆弱性から接続用の認証情報が盗まれ、メールアドレス 79,249 件と外部連携の認証情報、利用企業の顧客データの一部が漏えいした"
 og_lead_en: "At Plaid's KARTE, connection credentials were stolen through a server vulnerability, and 79,249 email addresses, integration credentials and part of client companies' customer data leaked"
@@ -45,7 +48,7 @@ insight:
   slug: "db-credential-read-not-tied-to-client-job"
   stop: true
   label: "接続用の認証情報での読み出しは、利用企業の依頼を示さない"
-  quote: "利用企業の顧客データをまとめて読み出す前に、その読み出しを、接続用の認証情報ではなく、利用企業の処理の記録と照合する。"
+  quote: "利用企業の顧客データをまとめて読み出す前に、読み出そうとしている者が、どの利用企業のどの処理として読んでいるかを、接続用の認証情報ではなく、利用企業の処理の記録と照合する。"
 industries: ["retail", "supply-chain"]
 operations: ["data-access", "account-admin"]
 controls:
@@ -83,7 +86,7 @@ search_description: "プレイドの KARTE で、サーバーの脆弱性から�
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、利用企業の顧客データをまとめて読み出す前に、その読み出しを、接続用の認証情報とは別の、利用企業の処理の記録と照合することである。
+経路を問わず区別できる条件は、利用企業の顧客データをまとめて読み出す前に、読み出そうとしている者が、どの利用企業のどの処理として読んでいるかを、接続用の認証情報とは別の、利用企業の処理の記録と照合することである。
 
 - **誰が記録を出すか**: 計測・配信・会員情報の照合などの処理を動かす KARTE の仕組み。処理ごとに、どの利用企業の、どのデータを、どの範囲で読むかを記録に出す。利用企業は、どのデータを取り込み、いつまで使うかを決める。
 - **どこで照合するか**: データベースから、利用企業の顧客データをまとめて読み出す手順。読み出しが、記録にある利用企業の処理と範囲に結びつくかを照合し、結びつかない読み出しは保留する。照合は、接続用の認証情報とは別のサーバーで、別の鍵で動かす。サーバーそのものを乗っ取られて照合ごと飛ばされる形では、この照合を経ない。
@@ -91,9 +94,9 @@ search_description: "プレイドの KARTE で、サーバーの脆弱性から�
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
-<p class="rx-ex-cap">実行の前の照合＝利用企業の顧客データをまとめて読み出す前に、その読み出しを、利用企業の処理の記録と照合し、記録に残すこと。検知＝不正アクセスに気づき、盗まれた認証情報を無効化し、サービスを止めて攻撃元からの通信を遮断すること。日付と時刻はプレイドと利用企業の公表に拠る。</p>
+<p class="rx-ex-cap">実行の前の照合＝利用企業の顧客データをまとめて読み出す前に、読み出そうとしている者が、どの利用企業のどの処理として読んでいるかを、利用企業の処理の記録と照合し、記録に残すこと。検知＝不正アクセスに気づき、盗まれた認証情報を無効化し、サービスを止めて攻撃元からの通信を遮断すること。日付と時刻はプレイドと利用企業の公表に拠る。</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>顧客データの読み出しを、利用企業の処理の記録で照合してから通す</div>
+<div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>読み出す者が、どの利用企業のどの処理として読むかを、処理の記録で照合してから通す</div>
 <div class="rx-zone gapz"><b>確認されたこと</b><span>接続用の認証情報の窃取と、データベースなどからの読み出し<br>メールアドレス 79,249 件と、外部連携の認証情報・顧客データの一部の漏えい</span></div>
 <div class="rx-zone det"><b>検知 · 働いた</b>認証情報を無効化し、全サービスを止めて通信を遮断する</div>
 <div class="rx-g g1"><div class="t">11-13</div><b>未明に不正アクセス、8 時 59 分にプレイドが検知する</b></div>
