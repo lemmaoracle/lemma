@@ -1,7 +1,7 @@
 ---
 brief_no: 213
-title: "楽天証券：テスト環境で管理していた顧客の情報が、不正アクセスで外部に漏えいしたおそれがある(楽天証券の公表)"
-title_en: "Rakuten Securities: Customer data held in a test environment may have leaked through unauthorised access (Rakuten Securities' disclosure)"
+title: "楽天証券：テスト環境で管理していた顧客の情報が、不正アクセスで外部に持ち出された(楽天証券の公表)"
+title_en: "Rakuten Securities: Customer data held in a test environment was taken outside through unauthorised access (Rakuten Securities' disclosure)"
 pillar: 01-verifiable-origin
 primary_category: data-provenance
 secondary_categories: [identity-auth]
@@ -12,40 +12,42 @@ related_pack: [A-incident-response]
 related_briefs: ["142-awa-bank-test-environment-repurposed-leak", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "4cedd6f92027b023"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1185"
+  at: 2026-11-26
+  rev: "b1ae82535b517996"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Explained branch and customer codes; added the 17 November date (#53)"
+  - date: 2026-11-26
+    note: "Updated to the 24 Nov second report (c. 4.41m records, c. 11.98m accounts)"
 version: "1.0"
-og_lead_ja: "楽天証券で、テスト環境のシステム内で管理していた顧客の情報が、第三者の不正アクセスで外部に漏えいしたおそれ"
-og_lead_en: "At Rakuten Securities, customer data held in a test environment system may have leaked through unauthorised access by a third party"
+og_lead_ja: "楽天証券で、テスト環境のシステム内で管理していた顧客の情報が、第三者の不正アクセスで外部に持ち出された"
+og_lead_en: "At Rakuten Securities, customer data held in a test environment system was taken outside through unauthorised access by a third party"
 layout: "report"
 sections: "proof"
 gate: "disclosure"
 og_kicker_ja: "サイバー攻撃事例 · 不正アクセス"
 og_kicker_en: "CYBERATTACK · DATA LEAK"
-og_headline_ja: "テスト環境にあった\n本番の顧客情報が\n外に漏れたおそれ。\n<accent>最大約 447 万口座</accent>"
-og_headline_en: "Live customer data\nheld in a test environment\nmay have leaked.\n<accent>Up to c. 4.47m accounts.</accent>"
+og_headline_ja: "テスト環境にあった\n本番の顧客情報が\n外に持ち出された。\n<accent>約 441 万件</accent>"
+og_headline_en: "Live customer data\nheld in a test environment\nwas taken outside.\n<accent>c. 4.41m records.</accent>"
 key_figures:
-  - value: "c. 4.47m"
-    unit: "accounts"
-    label: "Accounts whose names, addresses, withdrawal bank accounts, declared income and financial assets and more may have leaked (maximum; includes closed accounts; as of the 17 November disclosure; Rakuten Securities)"
+  - value: "c. 4.41m"
+    unit: "records"
+    label: "Records of personal data such as names and addresses that leaked (c. 3.22m account holders' accounts and c. 1.19m applicants without an account; may include duplicates; as of the 24 November second report; Rakuten Securities)"
     tone: "alert"
-  - value: "c. 11.25m"
+  - value: "c. 11.98m"
     unit: "accounts"
-    label: "Accounts whose per-account numbers (branch and customer codes) and login IDs may have leaked (maximum; the login ID is not the Rakuten ID; as of the 17 November disclosure; Rakuten Securities)"
+    label: "Accounts where only branch and customer codes and login IDs leaked (the login ID is not the Rakuten ID; as of the 24 November second report; Rakuten Securities)"
   - value: "11-11 → 11-16"
-    label: "From the day data in the test environment may have leaked to the day Rakuten Securities detected possible unauthorised access"
+    label: "From the day data in the test environment may have leaked to the day Rakuten Securities detected possible unauthorised access (17 November first report)"
 glossary:
   - term: "Test environment"
     desc: "An environment set up apart from production for developing and testing systems. Rakuten Securities told the press that it normally keeps only dummy data in its test environments."
   - term: "Masking"
     desc: "In general, replacing fields such as names and account numbers in test data with other characters so they cannot be read. Rakuten Securities told ITmedia NEWS that the customer data in this case was not masked."
   - term: "Branch and customer code"
-    desc: "A number Rakuten Securities assigns to each account (部店・お客様コード). In this case, codes and login IDs for up to about 11.25 million accounts were in scope."
+    desc: "A number Rakuten Securities assigns to each account (部店・お客様コード). According to the second report of 24 November, the leak was limited to these codes and login IDs for about 11.98 million accounts."
 insight:
   slug: "production-copy-scope-unchecked"
   stop: true
@@ -60,17 +62,17 @@ controls:
     item: "Hold, before execution, any copy of production data into a test environment that is not tied to an approved test plan"
   - slug: "audit-trail"
     item: "Record, apart from the environment, which production data was placed in a test environment, on whose approval, from when until when, and when it was deleted"
-impact: "Names, addresses, withdrawal bank accounts, declared income and financial assets and more for up to about 4.47 million accounts, and branch and customer codes and login IDs for up to about 11.25 million accounts, may have leaked (includes closed accounts; Rakuten Securities, 17 November). The company says no leak of passwords or PINs, and no fraudulent trading arising from the incident, has been confirmed"
-takeaway: "Customer data held in a test environment system may have leaked through unauthorised access. Even when a copy goes through formal procedures, check separately that its scope is only what the test needs. Before production data is copied into a test environment, check its scope and deletion date against the approved plan."
+impact: "According to Rakuten Securities' second report (24 November), personal data such as names, dates of birth, addresses and phone numbers leaked for about 4.41 million records (about 3.22 million accounts of account holders and about 1.19 million records of people without an account), and per-account numbers (branch and customer codes) and login IDs alone leaked for about 11.98 million accounts. The company says no leak of passwords or PINs, and no unauthorised access to customer accounts or fraudulent trading arising from the incident, has been confirmed"
+takeaway: "Customer data held in a test environment system was taken outside through unauthorised access. Even when a copy goes through formal procedures, check separately that its scope is only what the test needs. Before production data is copied into a test environment, check its scope and deletion date against the approved plan."
 self_check: "Before production customer data is copied into a test environment, do you have a mechanism that checks the accounts, fields and deletion date against the approved test plan?"
 countries: ["jp"]
-search_title: "楽天証券の情報漏えいのおそれ：テスト環境の最大1,125万口座"
-search_description: "楽天証券は、第三者の不正アクセスで、テスト環境で管理していた最大約447万口座の氏名・出金先口座などと、最大約1,125万口座のログインIDが漏えいしたおそれがあると公表した（11月17日）。経緯と対策を整理。"
+search_title: "楽天証券の情報漏えい：テスト環境の約441万件・1,198万口座"
+search_description: "楽天証券は第2報（11月24日）で、テスト環境から外部に持ち出された個人情報は約441万件、口座ごとの番号とログインIDに限った漏えいは約1,198万口座と公表した。経緯と対策を整理。"
 ---
 
 ## 1. Summary
 
-According to Rakuten Securities, on 11 November 2026 part of the data held in a system in its test environment may have leaked outside through unauthorised access by a third party. For up to about 4.47 million accounts, the data includes names, dates of birth, addresses, phone numbers, email addresses, employers, withdrawal bank accounts, declared income and financial assets, holdings by product and last login dates. The company detected possible unauthorised access on 16 November, cut off access and made fixes. The cause and details of the unauthorised access are under investigation.
+In its first report of 17 November, Rakuten Securities disclosed that on 11 November 2026 part of the data held in a system in its test environment may have leaked outside through unauthorised access by a third party. According to its second report of 24 November, the personal data taken outside covers about 4.41 million records (about 3.22 million accounts of account holders and about 1.19 million records of people without an account). For these records, the company says it confirmed leaks of the items in the first report (names, addresses, withdrawal bank accounts and more) plus seven further items such as gender, nationality and deposit account details. For about 11.98 million accounts, the leak was limited to branch and customer codes and login IDs. The company detected possible unauthorised access on 16 November, cut off access and made fixes. The cause and details of the unauthorised access are under investigation.
 
 The company says no leak of the passwords and PINs needed to log in has been confirmed, and no unauthorised access or fraudulent trading arising from the incident has been confirmed. It told the press that, to test an upgrade of internal systems, it had copied part of its production customer data into the test environment for a period. The data was not masked (ITmedia NEWS), and the copy had gone through formal internal procedures, it said (ITmedia NEWS, J-CAST News).
 
@@ -78,10 +80,10 @@ The company says no leak of the passwords and PINs needed to log in has been con
 
 ## 2. What got through
 
-- **What got through**: Copying part of the production customer data, unmasked, onto a test environment server to test an upgrade of internal systems (the company's account to the press, as reported). Then, on 11 November, part of the data held in a system in the test environment may have leaked outside (Rakuten Securities' disclosure).
+- **What got through**: Copying part of the production customer data, unmasked, onto a test environment server to test an upgrade of internal systems (the company's account to the press, as reported). Then, on 11 November, part of the data held in a system in the test environment may have leaked outside (Rakuten Securities' first report), and the second report of 24 November set out the data taken outside and the counts.
 - **What reached the accepting side**: In general, a job that copies data from production into a test environment receives only the procedural approval and the copy operation. Whether the number of accounts and the fields copied stay within what the test needs, and when the copy will be deleted, cannot be told from the copy operation itself. Copied data generally sits in a test environment with weaker protection than production.
 - **Intrusion route**: Rakuten Securities says the cause and details of the unauthorised access are under investigation (primary disclosure). According to ITmedia NEWS, the company told it that security measures were in place but a vulnerability was exploited. Which vulnerability, and through which entry point, has not been disclosed.
-- **Not disclosed**: The intrusion route and the vulnerability exploited. When the production customer data was copied into the test environment and how long it stayed there (the company declined to say, as reported). Which accounts and fields the test needed. What was taken on 11 November, and by which route. How the company noticed on 16 November. How many closed accounts are in scope.
+- **Not disclosed**: The intrusion route and the vulnerability exploited. When the production customer data was copied into the test environment and how long it stayed there (the company declined to say, as reported). Which accounts and fields the test needed. By which route the data was taken. How the company noticed on 16 November. How many people the c. 4.41 million records represent once duplicates are removed.
 
 ## 3. Pre-execution check
 
@@ -93,15 +95,15 @@ Whatever the route, the condition for telling them apart is that, before product
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking the scope and deletion date against the approved test plan before production customer data is copied into a test environment, and keeping a record. Detection means noticing possible unauthorised access, cutting off access and making fixes. Dates rely on Rakuten Securities' disclosure and its account to the press (as reported).</p>
+<p class="rx-ex-cap">A pre-execution check means checking the scope and deletion date against the approved test plan before production customer data is copied into a test environment, and keeping a record. Detection means noticing possible unauthorised access, cutting off access and making fixes. Dates and counts rely on Rakuten Securities' first and second reports.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check scope and deletion date against the approved plan before copying production data</div>
-<div class="rx-zone gapz"><b>What was confirmed</b><span>Possible leak of data from the test environment<br>Names, withdrawal accounts and more for up to c. 4.47m accounts; login IDs and more for up to c. 11.25m</span></div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Data in the test environment taken outside<br>Personal data such as names and addresses: c. 4.41m records; login IDs and the like alone: c. 11.98m accounts (second report)</span></div>
 <div class="rx-zone det"><b>Detection · worked</b>Possible unauthorised access detected, cut off and fixed</div>
 <div class="rx-g g1"><div class="t">11-11</div><b>Data in the test environment may have leaked</b></div>
 <div class="rx-g g2"><div class="t">11-16</div><b>Rakuten Securities detects possible unauthorised access and cuts it off</b></div>
-<div class="rx-g g3"><div class="t">11-17</div><b>Rakuten Securities discloses</b></div>
-<div class="rx-g g4"><div class="t">11-18</div><b>The company tells the press why production data was used (as reported)</b></div>
+<div class="rx-g g3"><div class="t">11-17</div><b>Rakuten Securities discloses a possible leak (first report)</b></div>
+<div class="rx-g g4"><div class="t">11-24</div><b>It discloses the counts of data taken outside (second report)</b></div>
 </div>
 </figure>
 
@@ -143,20 +145,21 @@ Three things to confirm about production customer data placed in development and
 ## 5. Facts and timeline
 
 - **Parties**: Rakuten Securities, Inc. (an online brokerage).
-- **What happened**: According to Rakuten Securities, on 16 November it detected possible unauthorised access by a third party to part of its systems, cut off access to the affected part and made fixes. Its investigation found that on 11 November part of the data held in a system in its test environment may have leaked outside. The cause and details of the unauthorised access are under investigation.
+- **What happened**: According to Rakuten Securities, on 16 November it detected possible unauthorised access by a third party to part of its systems, cut off access to the affected part and made fixes. Its investigation found that on 11 November part of the data held in a system in its test environment may have leaked outside (first report, 17 November). In its second report of 24 November, it disclosed the counts and items of data taken outside. The cause and details of the unauthorised access are still under investigation, and it says it will continue to look into the cause.
 - **Why it was in the test environment**: Rakuten Securities told the press that an upgrade of internal systems required checking some functions with production data. It had copied part of the production customer data onto a test server for a period to run the tests, and according to ITmedia NEWS the data was not masked. The copy was not one staff member's decision but went through formal internal procedures, it said. Normally, it said, test environments hold only dummy data (ITmedia NEWS, J-CAST News). It declined to say when the data was copied or how long the work lasted.
-- **Data**: According to Rakuten Securities, the scope covers the following data for customers, including closed accounts. (1) Branch and customer code, login ID, name, name in kana, date of birth, address, phone number, email address, employer, withdrawal bank account (institution, account number, holder), income and financial assets (as declared by the customer), holdings by product, last login date: up to about 4.47 million accounts. (2) Branch and customer code and login ID: up to about 11.25 million accounts. The login ID is not the Rakuten ID. According to J-CAST News, the company told it the two groups of accounts do not overlap (up to about 15.72 million accounts in total, as reported).
-- **Impact**: Rakuten Securities says no leak of information needed for trading, including the passwords and PINs needed to log in, has been confirmed. As of 17 November, no unauthorised access or fraudulent trading thought to arise from the incident had been confirmed. The disclosure speaks of a "possible" leak, but according to J-CAST News the company said on 18 November that it had confirmed that information including personal data had in fact leaked outside.
+- **Data**: According to Rakuten Securities' second report (24 November), the data taken outside is as follows. (1) Branch and customer code and login ID, plus personal data such as name, name in kana, date of birth, address and phone number: about 4.41 million records. Of these, about 3.22 million accounts are data on account holders and about 1.19 million records are data on people who had not opened an account (what they provided when applying), and the records may include duplicates (for example, where someone abandoned an application and applied again). For these c. 4.41 million records, the company says it confirmed leaks of seven items in addition to those in the first report (email address, employer, withdrawal bank account (institution, account number, holder), last login date and more): gender, nationality, fax number, deposit account details (Rakuten Securities' account details), account opening, receipt and closure status, account registration survey answers, and account registration status. Which items each record holds is not stated. Holdings by product (the number of accounts with assets held) cover about 1.68 million records, customer-declared income about 14,000 records and declared assets about 2.71 million records; the declarations are only the bracket number chosen, without detailed amounts. (2) Leak limited to branch and customer code and login ID: about 11.98 million accounts. The login ID is not the Rakuten ID. The first report of 17 November, including closed accounts, put (1) at up to about 4.47 million accounts and (2) at up to about 11.25 million accounts as a "possible leak".
+- **Impact**: Rakuten Securities says no leak of information needed for trading, including the passwords and PINs needed to log in, has been confirmed. As of the second report of 24 November, no unauthorised access to customer accounts or fraudulent trading thought to arise from the incident had been confirmed. The first report spoke of a "possible" leak, but according to J-CAST News the company said on 18 November that it had confirmed that information including personal data had in fact leaked outside.
 - **How it was found**: Rakuten Securities detected possible unauthorised access on 16 November. How it noticed has not been disclosed.
 
 ### Timeline
 
-- **2026-11-11**: Part of the data held in a system in Rakuten Securities' test environment may have leaked outside (Rakuten Securities).
+- **2026-11-11**: Part of the data held in a system in Rakuten Securities' test environment may have leaked outside (Rakuten Securities' first report).
 - **2026-11-16**: Rakuten Securities detects possible unauthorised access by a third party to part of its systems, cuts off access and makes fixes.
-- **2026-11-17**: Rakuten Securities discloses the possible data leak.
+- **2026-11-17**: Rakuten Securities discloses the possible data leak (first report).
 - **2026-11-18**: Rakuten Securities tells the press it had copied production customer data into the test environment to test an upgrade (as reported).
+- **2026-11-24**: Rakuten Securities publishes its second report: personal data leaked for about 4.41 million records, and branch and customer codes and login IDs alone for about 11.98 million accounts.
 
-> The facts rely on Rakuten Securities' disclosure of 17 November (primary) and the company's answers to the press (ITmedia NEWS, J-CAST News). The reason production customer data was in the test environment, the masking, the procedures and the vulnerability come from answers to the press and are not in the company's disclosure. No disclosure on this incident by the Financial Services Agency or the Personal Information Protection Commission had been found as of 20 November, nor any follow-up notice from Rakuten Securities. The intrusion route, when and for how long production customer data was copied into the test environment, and the scope the test needed have not been disclosed. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the company's response. Written as of 20 November.
+> The facts rely on Rakuten Securities' first report of 17 November and second report of 24 November (primary) and the company's answers to the press (ITmedia NEWS, J-CAST News). The reason production customer data was in the test environment, the masking, the procedures and the vulnerability come from answers to the press and are not in the company's disclosure. No disclosure on this incident by the Financial Services Agency or the Personal Information Protection Commission had been found as of 20 November. The intrusion route, when and for how long production customer data was copied into the test environment, and the scope the test needed have not been disclosed. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the company's response. Written as of 20 November; the counts were updated to the second report on 26 November.
 
 ### After disclosure
 
@@ -165,7 +168,8 @@ Three things to confirm about production customer data placed in development and
 
 ## 6. Sources
 
-- **Rakuten Securities (Primary, company disclosure)**: 「当社お客様の情報漏えいの可能性に関するお詫びとお知らせ」 (2026-11-17) — <https://www.rakuten-sec.co.jp/web/info/info20261117-02.html>
+- **Rakuten Securities (Primary, company disclosure)**: 「当社お客様の情報漏えいの可能性に関するお詫びとお知らせ」 (2026-11-17, first report) — <https://www.rakuten-sec.co.jp/web/info/info20261117-02.html>
+- **Rakuten Securities (Primary, company disclosure)**: 「当社お客様の情報漏えいに関するお詫びとお知らせ（第2報）」 (2026-11-24) — <https://www.rakuten-sec.co.jp/web/info/info20261124-04.html>
 - **ITmedia NEWS (Press, interview with the company)**: 「楽天証券の大規模漏えい、なぜテスト環境に顧客情報が？ 「本番データでの確認が必要だった」」 (2026-11-18) — <https://www.itmedia.co.jp/news/article/2611/18/2000003302/>
 - **J-CAST News (Press, interview with the company)**: 「楽天証券の情報漏えい、なぜテスト環境に顧客情報？ 「普段は保管せず」も...会社が明かした経緯」 (2026-11-18) — <https://www.j-cast.com/2026/11/18519264.html?p=all>
 - **Impress Watch (Press)**: 「楽天証券に不正アクセス 最大1125万口座の情報漏えい可能性」 (2026-11-17) — <https://www.watch.impress.co.jp/docs/news/2157207.html>
