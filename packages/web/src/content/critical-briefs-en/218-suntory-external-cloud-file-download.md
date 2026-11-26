@@ -13,7 +13,7 @@ related_briefs: ["216-digital-agency-gss-file-sharing", "212-plaid-karte-server-
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "7f935f8d089e6c32"
+  rev: "7c36b1bb938c991c"
   ref: "https://github.com/lemmaoracle/lemma/pull/1215"
 status: draft
 version: "1.0"
@@ -43,8 +43,8 @@ glossary:
 insight:
   slug: "cloud-file-download-not-checked-against-role"
   stop: true
-  label: "A download by an outsider shows no assigned scope"
-  quote: "Before a file is downloaded from a work cloud service, check that operation against the account holder's assigned scope and the record of normal use."
+  label: "File downloads not checked against who handles the file"
+  quote: "Before a file is downloaded from a work cloud service, check whether the person downloading it is someone who handles that file, against the record of assigned scope and normal use."
 industries: ["manufacturing", "supply-chain"]
 operations: ["data-access"]
 controls:
@@ -58,8 +58,8 @@ controls:
     item: "Keep a record of who downloaded which file and when, so the scope of a leak can be checked afterwards"
 attack_method: "account-takeover"
 impact: "A third party accessed an external cloud service used by the Suntory group without authorisation and downloaded files containing personal information. By 1 November, the personal information confirmed covered seven categories, including the names and email addresses of about 90,000 employees of the group, partner companies and others, 7,173 applicants for 2026 graduate recruitment and the email addresses of 7,323 people registered with a corporate-activity programme; together they exceed 100,000 (overlap between the categories has not been disclosed). Payment information such as credit card numbers was not included. The route and method of the intrusion have not been disclosed"
-takeaway: "Files containing personal information were downloaded by a third party from a cloud service used for work. Unless the operation of reading a file is compared with an assigned scope, a download by an outsider cannot be told apart from work. Before a download, check that operation against the assigned scope and the record of normal use, and keep a record of who downloaded what."
-self_check: "Have you decided who can download which files stored on your work cloud, and how far?"
+takeaway: "Files containing personal information were downloaded by a third party from a cloud service used for work. Unless someone confirms whether the person downloading a file is the one who handles it, a download by a third party who got in from outside cannot be told apart from everyday work. Before a download, check against the record of assigned scope and normal use whether that person handles the file, and record who downloaded what."
+self_check: "Do you have a mechanism that checks, against a record, whether the person downloading a file from your work cloud is the one who handles it?"
 countries: ["jp"]
 search_title: "サントリー情報漏えい：外部クラウド不正アクセスで10万人超"
 search_description: "サントリーは、グループが利用する外部クラウドサービスへの不正アクセスで、従業員や採用の応募者など7区分の個人情報を含むファイルがダウンロードされたと公表した（11月2日）。何が起きたか、なぜ通ったか、対策を整理。"
@@ -71,7 +71,7 @@ On 2 November 2026, Suntory announced that an external cloud service used by the
 
 By 1 November, the personal information confirmed as leaked to a third party covered seven categories; the largest is the names and email addresses of about 90,000 employees of the group, partner companies and others. The categories also include 7,173 applicants for 2026 graduate recruitment and the email addresses of 7,323 people registered with the corporate-activity programme "Mal de Shine", and together they exceed 100,000 people. Payment information such as credit card numbers was not included. The name of the service is not given in the disclosure; Nikkei and NHK reported that a Microsoft cloud service was the target. The route and method of the intrusion have not been disclosed.
 
-<strong>Unless downloads are compared with an assigned scope, an outsider's operation goes through, indistinguishable from normal work.</strong>
+<strong>Unless someone confirms whether the person downloading a file is the one who handles it, a download by a third party who got in from outside cannot be told apart from everyday work.</strong>
 
 ## 2. What got through
 
@@ -82,7 +82,7 @@ By 1 November, the personal information confirmed as leaked to a third party cov
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a file is downloaded from a work cloud service, the operation is checked against the account holder's assigned scope and the record of normal use.
+Whatever the route, the condition for telling them apart is that, before a file is downloaded from a work cloud service, whether the person downloading it is someone who handles that file is checked against the record of assigned scope and normal use.
 
 - **Who issues the record**: The department that manages the work cloud. For each account, it records which folders and files the person handles as part of their role, and how much they normally download. For files handled by only a few people, such as recruitment or programme lists, it records who handles them.
 - **Where it is checked**: The steps for downloading a file. The check confirms whether the operation is tied to the assigned scope and normal use in the record; operations that are not are held. The check runs on a mechanism separate from the cloud accounts themselves.
@@ -90,9 +90,9 @@ Whatever the route, the condition for telling them apart is that, before a file 
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking a download from a work cloud service against the assigned scope and the record of normal use before the file is downloaded, and keeping a record. Detection means noticing an anomaly on the external cloud service and cutting off the unauthorised access. Dates rely on Suntory's disclosure.</p>
+<p class="rx-ex-cap">A pre-execution check means checking, before a file is downloaded from a work cloud service, whether the person downloading it is someone who handles that file, against the record of assigned scope and normal use, and keeping a record. Detection means noticing an anomaly on the external cloud service and cutting off the unauthorised access. Dates rely on Suntory's disclosure.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check a download against the assigned scope and the record of normal use before letting it through</div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check against the record that the person downloading handles the file before letting it through</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Downloads by a third party of files containing personal information<br>Seven categories of personal information confirmed by 1 November</span></div>
 <div class="rx-zone det"><b>Detection · worked</b>The anomaly detected and the unauthorised access cut off</div>
 <div class="rx-g g1"><div class="t">10-28</div><b>An anomaly on the external cloud service is detected and the unauthorised access is cut off</b></div>
