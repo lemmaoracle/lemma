@@ -185,6 +185,22 @@ individual gate names (payment-instruction etc.) stay out until the product page
 Without `stop` the band stays the one-sentence core of the case; Briefs moved to the proof
 layout get rewritten and flagged as they are revised.
 
+**Writing the highlights** (2026-11-26, from the reviews of 211–216):
+
+1. The band names **the person and the condition** being checked: "check whether the person
+   opening the file is an intended recipient, against the record of scope and expiry", not
+   "check the access against the recipient and the record". Match the opening of 03 and figure 1.
+2. The bold sentence of 01 (why it got through) uses **no metaphors and no double negatives**.
+   Say plainly who did not compare what with what. For undisclosed points, use "if … not" or
+   "not necessarily"; never "because there was no …".
+3. **Review the wording of the highlights before publishing**: `insight.label`, `insight.quote`,
+   the 01 bold, `takeaway`, `key_figures` labels, `og_headline` and `self_check`. Fix misused
+   words, jargon an ordinary developer would not know, and broken sentences. Reviewer ②
+   (rules and readability) always checks this.
+4. A **"up to" or "about" figure in `key_figures` states which disclosure it comes from** in its
+   `label` (e.g. "as of the 24 November disclosure"). Counts often change in follow-ups, so check
+   for newer disclosures while the draft is in review.
+
 ### Index fields (2026-10, any layout)
 
 The index (`/critical/briefs/`) is built as "Latest (4, automatic by publication date; same-day ties go to the higher number) → Featured (1–2 pinned) → Browse by control → More recent briefs".
