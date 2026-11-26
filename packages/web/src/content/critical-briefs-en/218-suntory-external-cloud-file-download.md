@@ -10,6 +10,11 @@ published: 2026-11-26
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
 related_briefs: ["216-digital-agency-gss-file-sharing", "212-plaid-karte-server-flaw-db-credentials"]
+fact_check:
+  by: "Claude Opus 5.5"
+  at: 2026-11-26
+  rev: "7f935f8d089e6c32"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1215"
 status: draft
 version: "1.0"
 og_lead_ja: "サントリーグループが利用する外部クラウドサービスに第三者が不正にアクセスし、従業員や採用の応募者など 7 区分の個人情報を含むファイルをダウンロードした"
@@ -24,7 +29,7 @@ og_headline_en: "Files were downloaded\nfrom a work cloud service.\n<accent>Data
 key_figures:
   - value: "100,000+"
     unit: "people"
-    label: "The sum of the seven categories of personal information confirmed as leaked (as of 1 November, Suntory). The largest is the names and email addresses of about 90,000 employees of the group, partner companies and others. Overlap between the categories has not been disclosed"
+    label: "The sum of the seven categories of personal information confirmed as leaked (confirmed by 1 November, Suntory's disclosure). The largest is the names and email addresses of about 90,000 employees of the group, partner companies and others. Overlap between the categories has not been disclosed"
     tone: "alert"
   - value: "10/28 → 10/29"
     label: "The day Suntory detected an anomaly on the external cloud service and cut off the unauthorised access, and the day it confirmed that some of the downloaded files contained personal information"
@@ -52,7 +57,7 @@ controls:
   - slug: "audit-trail"
     item: "Keep a record of who downloaded which file and when, so the scope of a leak can be checked afterwards"
 attack_method: "account-takeover"
-impact: "A third party accessed an external cloud service used by the Suntory group without authorisation and downloaded files containing personal information. As of 1 November, the personal information confirmed covered seven categories, including the names and email addresses of about 90,000 employees of the group, partner companies and others, 7,173 applicants for 2026 graduate recruitment and the email addresses of 7,323 people registered with a corporate-activity programme; together they exceed 100,000 (overlap between the categories has not been disclosed). Payment information such as credit card numbers was not included. The route and method of the intrusion have not been disclosed"
+impact: "A third party accessed an external cloud service used by the Suntory group without authorisation and downloaded files containing personal information. By 1 November, the personal information confirmed covered seven categories, including the names and email addresses of about 90,000 employees of the group, partner companies and others, 7,173 applicants for 2026 graduate recruitment and the email addresses of 7,323 people registered with a corporate-activity programme; together they exceed 100,000 (overlap between the categories has not been disclosed). Payment information such as credit card numbers was not included. The route and method of the intrusion have not been disclosed"
 takeaway: "Files containing personal information were downloaded by a third party from a cloud service used for work. Unless the operation of reading a file is compared with an assigned scope, a download by an outsider cannot be told apart from work. Before a download, check that operation against the assigned scope and the record of normal use, and keep a record of who downloaded what."
 self_check: "Have you decided who can download which files stored on your work cloud, and how far?"
 countries: ["jp"]
@@ -62,11 +67,11 @@ search_description: "サントリーは、グループが利用する外部ク�
 
 ## 1. Summary
 
-On 2 November 2026, Suntory Holdings and Suntory Beverage & Food announced that an external cloud service used by the Suntory group had been accessed without authorisation by a third party, and that files containing personal information had been downloaded. Suntory detected an anomaly on the external cloud service on 28 October, cut off the unauthorised access, began an investigation and identified the names of the leaked files. On 29 October, it confirmed that some of the leaked files contained personal information.
+On 2 November 2026, Suntory announced that an external cloud service used by the Suntory group had been accessed without authorisation by a third party, and that files containing personal information had been downloaded. Suntory detected an anomaly on the external cloud service on 28 October, cut off the unauthorised access, began an investigation and identified the names of the leaked files. On 29 October, it confirmed that some of the leaked files contained personal information.
 
-As of 1 November, the personal information confirmed as leaked covered seven categories; the largest is the names and email addresses of about 90,000 employees of the group, partner companies and others. The categories also include 7,173 applicants for 2026 graduate recruitment and the email addresses of 7,323 people registered with the corporate-activity programme "Mal de Shine", and together they exceed 100,000 people. Payment information such as credit card numbers was not included. The name of the service is not given in the disclosure; Nikkei and NHK reported that a Microsoft cloud service was the target. The route and method of the intrusion have not been disclosed.
+By 1 November, the personal information confirmed as leaked to a third party covered seven categories; the largest is the names and email addresses of about 90,000 employees of the group, partner companies and others. The categories also include 7,173 applicants for 2026 graduate recruitment and the email addresses of 7,323 people registered with the corporate-activity programme "Mal de Shine", and together they exceed 100,000 people. Payment information such as credit card numbers was not included. The name of the service is not given in the disclosure; Nikkei and NHK reported that a Microsoft cloud service was the target. The route and method of the intrusion have not been disclosed.
 
-<strong>Unless the operation of reading a file is compared with an assigned scope, a download by an outsider goes through, indistinguishable from a normal work download.</strong>
+<strong>Unless downloads are compared with an assigned scope, an outsider's operation goes through, indistinguishable from normal work.</strong>
 
 ## 2. What got through
 
@@ -81,14 +86,14 @@ Whatever the route, the condition for telling them apart is that, before a file 
 
 - **Who issues the record**: The department that manages the work cloud. For each account, it records which folders and files the person handles as part of their role, and how much they normally download. For files handled by only a few people, such as recruitment or programme lists, it records who handles them.
 - **Where it is checked**: The steps for downloading a file. The check confirms whether the operation is tied to the assigned scope and normal use in the record; operations that are not are held. The check runs on a mechanism separate from the cloud accounts themselves.
-- **What is recorded**: Who downloaded which file, and when. This is kept apart from the cloud, in a form that lets the scope of a leak be checked afterwards. Suntory identified the names of the leaked files on 28 October, the day it detected the anomaly.
+- **What is recorded**: Who downloaded which file, and when. This is kept apart from the cloud, in a form that lets the scope of a leak be checked afterwards.
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
 <p class="rx-ex-cap">A pre-execution check means checking a download from a work cloud service against the assigned scope and the record of normal use before the file is downloaded, and keeping a record. Detection means noticing an anomaly on the external cloud service and cutting off the unauthorised access. Dates rely on Suntory's disclosure.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check a download against the assigned scope and the record of normal use before letting it through</div>
-<div class="rx-zone gapz"><b>What was confirmed</b><span>Downloads by a third party of files containing personal information<br>Seven categories of personal information as of 1 November</span></div>
+<div class="rx-zone gapz"><b>What was confirmed</b><span>Downloads by a third party of files containing personal information<br>Seven categories of personal information confirmed by 1 November</span></div>
 <div class="rx-zone det"><b>Detection · worked</b>The anomaly detected and the unauthorised access cut off</div>
 <div class="rx-g g1"><div class="t">10-28</div><b>An anomaly on the external cloud service is detected and the unauthorised access is cut off</b></div>
 <div class="rx-g g2"><div class="t">10-28</div><b>An investigation begins and the names of the leaked files are identified</b></div>
@@ -121,7 +126,7 @@ The route in this case is column 1 (downloads of files on the work cloud by some
 
 Confirming who signs in at the entry does not stop access that slips past the confirmation, or operations by legitimate users. Not leaving finished lists makes the scope of a leak smaller, but does not stop the download itself. Lemma checks, before execution, not whether a download is valid but whether it is tied to the assigned scope and the record of normal use.
 
-Note: Lemma's check works only when it is built into the steps for downloading files, and the record of assigned scope and normal use is managed apart from the cloud accounts. If the cloud's administrator permissions are taken over and files are reached directly by a route that skips the check, the check is bypassed. Messages using leaked contact details also bypass it, and warning the people who receive them is the answer. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, fix cloud settings or recover files that have leaked.
+Note: Lemma's check works only when it is built into the steps for downloading files, and the record of assigned scope and normal use is managed apart from the cloud accounts. If the cloud's administrator permissions are taken over, files read by a route that skips the check bypass it. Messages using leaked contact details also bypass it, and warning the people who receive them is the answer. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, fix cloud settings or recover files that have leaked.
 
 ### Checklist
 
@@ -133,9 +138,9 @@ Three things to confirm about the files kept on the work cloud, the scope of dow
 
 ## 5. Facts and timeline
 
-- **Party**: Suntory Holdings Limited and Suntory Beverage & Food Limited, which disclosed the case jointly. The target was an external cloud service used by the Suntory group.
+- **Party**: Suntory Holdings Limited (the disclosure page is on its website). A PDF with the same date is also posted on Suntory Beverage & Food's website. The target was an external cloud service used by the Suntory group.
 - **What happened**: According to Suntory, an external cloud service used by the group was accessed without authorisation by a third party, and files were downloaded. On 28 October it detected an anomaly on the external cloud service, cut off the unauthorised access, began an investigation and identified the names of the leaked files. On 29 October, it confirmed that some of the leaked files contained personal information. The route and method of the intrusion have not been disclosed. Nikkei reported that Suntory Holdings had detected unauthorised access by a third party to Microsoft 365, the work software its staff use, and that the attacker had not been identified.
-- **Information**: According to Suntory, the personal information confirmed as leaked as of 1 November falls into the following seven categories. (1) Names and email addresses of about 90,000 employees of the Suntory group, partner companies and others. (2) Email addresses of 7,323 people registered with the corporate-activity programme "Mal de Shine" as of the end of 2023. (3) Recruitment-portal registration data (name, email address, phone number and so on) of 7,173 applicants for Suntory Holdings' 2026 graduate recruitment, business division open selection. (4) Names and phone numbers of 1,097 employees of the group and business partners stored on company mobile phones of Suntory Beverage Solution. (5) Names, email addresses and phone numbers of 324 employees of Monte Bussan and partner companies. (6) Names and delivery-address information of 96 Izutsu Maisen home-delivery customers and delivery staff. (7) Names and job titles of 25 employees of business partners. Together the categories exceed 100,000 people, but the overlap between them has not been disclosed. Payment information such as credit card numbers was not included.
+- **Information**: According to Suntory, the personal information confirmed by 1 November as leaked to a third party falls into the following seven categories. (1) Names and email addresses of about 90,000 employees of the Suntory group, partner companies and others. (2) Email addresses of 7,323 people registered with the corporate-activity programme "Mal de Shine" as of the end of 2023. (3) Recruitment-portal registration data (name, email address, phone number and so on) of 7,173 applicants for Suntory Holdings' 2026 graduate recruitment, business division open selection. (4) Names and phone numbers of 1,097 employees of the group and business partners stored on two company mobile phones of Suntory Beverage Solution. (5) Names, email addresses and phone numbers of 324 employees of Monte Bussan and partner companies. (6) Names and delivery-location information of 96 Izutsu Maisen home-delivery customers and delivery staff. (7) Names and job titles of 25 employees of business partners. Together the categories exceed 100,000 people, but the overlap between them has not been disclosed. Payment information such as credit card numbers was not included.
 - **Impact**: According to Suntory, at this point no misuse of the personal information has been confirmed. It began contacting affected people individually on 2 November. Enquiries are handled through an enquiry form and a toll-free number (0120-050-310).
 - **How it came to light**: Suntory detected an anomaly on the external cloud service on 28 October and cut off the unauthorised access. It says it has taken the measures needed to prevent further harm and continues to investigate.
 
@@ -143,10 +148,10 @@ Three things to confirm about the files kept on the work cloud, the scope of dow
 
 - **2026-10-28**: Suntory detects an anomaly on the external cloud service, cuts off the unauthorised access and begins an investigation. It identifies the names of the leaked files.
 - **2026-10-29**: Some of the leaked files are confirmed to contain personal information.
-- **2026-11-01**: As of this date, the personal information confirmed as leaked is grouped into seven categories.
-- **2026-11-02**: Suntory Holdings and Suntory Beverage & Food disclose the case. They make a preliminary report to the Personal Information Protection Commission and begin contacting affected people individually.
+- **2026-11-01**: By this date, the personal information confirmed as leaked to a third party covers seven categories (the cut-off date of the disclosure's count).
+- **2026-11-02**: Suntory discloses the case. It makes a preliminary report to the Personal Information Protection Commission and begins contacting affected people individually.
 
-> The facts of this case rely on the 2 November disclosure by Suntory Holdings and Suntory Beverage & Food (the primary source). The disclosure page and PDF could not be read directly when this Brief was written, because access was denied, so the categories, counts and dates were checked against several reports citing the disclosure (Business+IT, MBS News, Nikkei, NHK and ScanNetSecurity). The name of the service (a Microsoft cloud service) relies on reporting by Nikkei and NHK. No follow-up report was found as of a check on 26 November. The route and method of the intrusion, which account was used, when the unauthorised access began, how many files were downloaded, and the overlap between the categories have not been disclosed and are said to be under investigation. What has not been disclosed does not mean that no countermeasures were in place. This Brief does not evaluate any party's response. As of the 2 November disclosure.
+> The facts of this case rely on Suntory's 2 November disclosure (the primary source). The disclosure page refuses automated retrieval, so the categories, counts and dates were checked against its full text as opened in a browser on 26 November. The PDF has not been read. The disclosure gives no total; "exceed 100,000" is the sum of the seven categories (Nikkei and NHK reported about 100,000 people). The name of the service (a Microsoft cloud service) relies on reporting by Nikkei and NHK. No follow-up report was found as of a check on 26 November. The route and method of the intrusion, which account was used, when the unauthorised access began, how many files were downloaded, and the overlap between the categories have not been disclosed; Suntory continues to investigate. What has not been disclosed does not mean that no countermeasures were in place. This Brief does not evaluate any party's response. As of the 2 November disclosure.
 
 ### Response after disclosure
 
@@ -154,8 +159,8 @@ Three things to confirm about the files kept on the work cloud, the scope of dow
 
 ## 6. Sources
 
-- **Suntory Holdings (primary source, the disclosing party)**: "Apology regarding the leak of personal information due to unauthorised access to an external cloud service" (2 November 2026) — <https://www.suntory.co.jp/note/detail/261102_008203.html> (access was denied when this Brief was written, and it could not be read directly)
-- **Suntory Holdings and Suntory Beverage & Food (primary source, the disclosing parties, PDF)**: "Apology regarding the leak of personal information due to unauthorised access to an external cloud service" (2 November 2026) — <https://www.suntory.co.jp/softdrink/note/detail/pdf/20261102_j.pdf> (access was denied when this Brief was written, and it could not be read directly)
+- **Suntory Holdings (primary source, the disclosing party)**: "Apology regarding the leak of personal information due to unauthorised access to an external cloud service" (2 November 2026) — <https://www.suntory.co.jp/note/detail/261102_008203.html> (automated retrieval is refused; checked against the full text opened in a browser on 26 November 2026)
+- **Suntory Beverage & Food (primary source, the disclosing party, PDF)**: PDF of the disclosure with the same date (2 November 2026) — <https://www.suntory.co.jp/softdrink/note/detail/pdf/20261102_j.pdf> (access was denied; not read)
 - **Business+IT (report)**: Report on the unauthorised access to Suntory's external cloud and the seven categories of personal information (November 2026) — <https://www.sbbit.jp/article/cont1/188015>
 - **Nikkei (report)**: "Suntory HD leaks personal information on 100,000 people through unauthorised access" (2 November 2026) — <https://www.nikkei.com/article/DGXZQOUC0254H0S6A101C2000000/>
 - **MBS News (report)**: "Breaking: Unauthorised access to Suntory's cloud; information on recruitment applicants and others may have leaked" (2 November 2026) — <https://news.yahoo.co.jp/articles/42cc04368ed201764a33f42c92705b2892bb0b62>
