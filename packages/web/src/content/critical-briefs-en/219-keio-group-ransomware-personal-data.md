@@ -15,10 +15,7 @@ fact_check:
   at: 2026-11-26
   rev: "766ae3d74f227119"
   ref: "https://github.com/lemmaoracle/lemma/pull/1219"
-status: draft
-draft_fixed:
-  - date: 2026-11-26
-    note: "Cut overlapping explanations and shortened the text"
+status: published
 version: "1.0"
 og_lead_ja: "京王電鉄のグループのサーバーへのランサムウェア攻撃で、従業員などの個人情報の漏えいが確認され、顧客・取引先などの個人情報にも漏えいの可能性がある"
 og_lead_en: "A ransomware attack on Keio Corporation's group servers led to confirmed leakage of personal information on employees and others, and personal information on customers, business partners and others may also have leaked"

@@ -15,10 +15,7 @@ fact_check:
   at: 2026-11-26
   rev: "9f3d6bccaf57f228"
   ref: "https://github.com/lemmaoracle/lemma/pull/1219"
-status: draft
-draft_fixed:
-  - date: 2026-11-26
-    note: "Cut overlapping explanations and shortened the text"
+status: published
 version: "1.0"
 og_lead_ja: "サントリーグループが利用する外部クラウドサービスに第三者が不正にアクセスし、従業員や採用の応募者など 7 区分の個人情報を含むファイルをダウンロードした"
 og_lead_en: "A third party accessed an external cloud service used by the Suntory group without authorisation and downloaded files containing personal information in seven categories, including employees and recruitment applicants"
