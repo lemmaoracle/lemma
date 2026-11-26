@@ -12,10 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["185-studco-fourth-circuit-ach-name-mismatch", "184-singapore-commodity-trader-lookalike-supplier-email", "170-zephyr-energy-contractor-payment-diverted"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "212d62464426e233"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "d08d614b20aa01aa"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Cut overlapping explanations and shortened the text"
 version: "1.0"
 og_lead_ja: "Logix Aero、エンジン 2 基の売買のメールに似せたドメインの相手が割り込み、書き換えた契約書の口座へ 824,900 ドルを払った"
 og_lead_en: "Logix Aero paid $824,900 to an account written into contracts doctored by lookalike domains inside an engine deal"
@@ -57,7 +60,7 @@ controls:
     item: "Record whose account, from which document, was checked by whom and by what means before payment"
 attack_method: "impersonation"
 impact: "The $824,900 price of two engines was paid to an account written into contracts and invoices doctored by a party using lookalike domains, and had been withdrawn before discovery (as found in the judgments)"
-takeaway: "Emails impersonating both seller and buyer cut into a sale, and the bank details in signed contracts and invoices were swapped. Check an account written in the papers against the agreed account and the counterparty's registered contact details before paying."
+takeaway: "Emails that cut into a deal can swap the bank details even in signed contracts and invoices. Check an account written in the papers against the agreed account and the counterparty's registered contact details before paying."
 self_check: "Do you know how you would find out, before paying, that the account in a contract or invoice differs from the one first agreed with the counterparty?"
 countries: ["gb", "ie"]
 ---
@@ -72,13 +75,13 @@ According to the judgments, there was no evidence that either company's systems 
 
 ## 2. What got through
 
-- **What got through**: Payment of the price of the two engines. On 21 August 2024 the buyer paid $824,900 into an account in Vietnam written in the signed contracts and invoices it had received by email. The seller's genuine account was in Thailand and was also set out in the LOI both companies signed in July (as found in the judgments).
+- **What got through**: Payment of the price of the two engines. The buyer paid into an account in Vietnam written in the signed contracts and invoices it had received by email. The seller's genuine account was in Thailand and was also set out in the LOI both companies signed in July (as found in the judgments).
 - **What reached the accepting side**: In general, the paying side receives contracts and invoices sent in the name of the counterparty's contact. According to the judgments, the fraudster copied the text and attachments of genuine emails and changed only the bank details. The seller's genuine address ended ".com"; the fake one was the same except that it ended ".co". The buyer's email system automatically noted that email did not often arrive from that address.
-- **Not disclosed**: How the fraudster obtained the genuine email of 29 July. Since when the fraudster had been watching the correspondence, after a domain imitating Sky Aero's was registered in June. Where the funds went from the Vietnamese account. The judgments say there was no evidence that either company's systems had been compromised.
+- **Not disclosed**: How the fraudster obtained the genuine email of 29 July. Since when the fraudster had been watching the correspondence, after a domain imitating Sky Aero's was registered in June. Where the funds went from the Vietnamese account.
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before the price is paid, the account written in the contracts and invoices is checked, apart from the papers received by email, as being the agreed account or, if different, one the counterparty has approved.
+Whatever the route, the condition for telling them apart is whether the account in the papers is the agreed account or, if different, one the counterparty has approved through a route apart from the papers received by email.
 
 - **Who approves**: The seller. It registers the account for receiving payment at the start of the deal and approves any change by a phone number registered beforehand or a signature with its own key. Contact details written in the email or its attachments are not used.
 - **Where it is checked**: The approval step before the price is paid. The account in the contracts and invoices is compared with the registered account (here, the one set out in the LOI); if it differs, payment is held until it can be checked against the seller's approval.
@@ -98,7 +101,7 @@ Whatever the route, the condition for telling them apart is that, before the pri
 </div>
 </figure>
 
-The buyer saw an automatic note about the lookalike address, but it was a mechanism separate from any check before payment. Cases where a lookalike domain supplied the payment account include [Studco](/critical/briefs/185-studco-fourth-circuit-ach-name-mismatch/) (a fake supplier email changed the account, and a court held the receiving bank not liable) and [a Singapore commodity firm](/critical/briefs/184-singapore-commodity-trader-lookalike-supplier-email/) (a lookalike supplier address named a new account). A case where a payment meant for a genuine counterparty went to another account is [Zephyr Energy](/critical/briefs/170-zephyr-energy-contractor-payment-diverted/). Here, both seller and buyer were impersonated, and the account in the signed contracts themselves was rewritten.
+The buyer saw an automatic note about the lookalike address, but it was a mechanism separate from any check before payment. Cases where a lookalike domain supplied the payment account include [Studco](/critical/briefs/185-studco-fourth-circuit-ach-name-mismatch/) (a fake supplier email changed the account, and a court held the receiving bank not liable) and [a Singapore commodity firm](/critical/briefs/184-singapore-commodity-trader-lookalike-supplier-email/) (a lookalike supplier address named a new account). A case where a payment meant for a genuine counterparty went to another account is [Zephyr Energy](/critical/briefs/170-zephyr-energy-contractor-payment-diverted/).
 
 ## 4. What Lemma does
 
@@ -113,7 +116,7 @@ The buyer saw an automatic note about the lookalike address, but it was a mechan
 
 ### Current controls vs Lemma
 
-The route in this case runs through column 1 (bank details in contracts and invoices rewritten mid-thread) and column 2 (payment to the swapped account). Column 3 covers papers sent from a counterparty's genuine mailbox after a takeover; the judgments say there was no evidence of that here.
+The route in this case runs through columns 1 and 2. For column 3 (a takeover of the counterparty's genuine mailbox), the judgments say there was no evidence of that here.
 
 | Control | Bank details rewritten in the papers | Payment to the swapped account | Takeover of the counterparty's mailbox |
 | --- | --- | --- | --- |
@@ -122,7 +125,7 @@ The route in this case runs through column 1 (bank details in contracts and invo
 | Monitoring after transfer and recall requests | Not relevant | Partial | Partial |
 | **Lemma (pre-execution check)** | Effective | Effective | Partial |
 
-Sender checks flag a domain one character off through a display or warning, but when the text and attachments match the genuine ones, telling them apart is left to the recipient. Matching the contract against the invoice agrees when both have been rewritten the same way. Monitoring and recall requests after transfer do not reach funds that, as here, have already been withdrawn. Lemma confirms before payment not the content of the papers but whether the account can be checked against the seller's approval.
+Sender checks flag a domain one character off through a display or warning, but when the text and attachments match the genuine ones, telling them apart is left to the recipient. Matching the contract against the invoice agrees when both have been rewritten the same way. Monitoring and recall requests after transfer do not reach funds that, as here, have already been withdrawn.
 
 Note: Lemma's check works only when it is built into the approval before payment and the seller's approval is received through registered contact details or a key apart from the email that delivered the papers. If the registered contact details themselves have been changed, or the check uses contact details written in the received email, it can pass. If the counterparty's mailbox is taken over, it works when the check does not go through that mailbox, and can pass when it does. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusion or impersonation, and it does not recover funds already paid.
 
@@ -159,11 +162,11 @@ Three things to confirm about deals where terms and documents are exchanged by e
 - **2026-02-05**: The Court of Appeal hears the appeal.
 - **2026-04-29**: The Court of Appeal dismisses the appeal.
 
-> The facts rely on the judgments of the English High Court ([2025] EWHC 1283 (KB)) and the Court of Appeal ([2026] EWCA Civ 510) (both primary). The High Court records that the facts were not in dispute. How the fraudster obtained the first email, since when it was watching the correspondence, and where the funds went from the Vietnamese account have not been disclosed. The courts' conclusion concerns whether the seller bears the buyer's loss. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the companies' responses.
+> The facts rely on the judgments of the English High Court ([2025] EWHC 1283 (KB)) and the Court of Appeal ([2026] EWCA Civ 510) (both primary). The High Court records that the facts were not in dispute. The courts' conclusion concerns whether the seller bears the buyer's loss. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the companies' responses.
 
 ### After disclosure
 
-- **Logix Aero**: Obtained precautionary seizures of the engines in France and sued in England. Its original claim suggested Siam Aero's complicity, an allegation dropped after a forensic investigation of the computer systems (Court of Appeal judgment).
+- **Logix Aero**: Its original claim in England suggested Siam Aero's complicity, an allegation dropped after a forensic investigation of the computer systems (Court of Appeal judgment).
 - **Court of Appeal**: Dismissed the appeal unanimously. It found it unnecessary to decide the further grounds Siam Aero raised (such as that there was no breach of the confidentiality clause).
 
 ## 6. Sources

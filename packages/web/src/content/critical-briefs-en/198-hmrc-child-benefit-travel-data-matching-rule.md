@@ -12,10 +12,13 @@ related_pack: [B-regulatory]
 related_briefs: ["078-tenncare-connect-medicaid-eligibility", "124-wiser-medicare-ai-prior-authorization"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "bb0c2c28e7528449"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "0e6fdf8b0b9a0d1b"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Cut overlapping explanations and shortened the text"
 version: "1.0"
 og_lead_ja: "英国 HMRC が渡航データとの突き合わせで児童手当 23,794 件の支給を止め、59% は受給資格ありか雇用の確認で外れたと会計検査院が報告"
 og_lead_en: "HMRC suspended 23,794 Child Benefit claims after matching them against travel data; 59% were confirmed eligible or cleared by an employment check, the NAO reports"
@@ -35,12 +38,12 @@ key_figures:
     unit: "%"
     label: "Share of those confirmed eligible or removed by the employment check (14,156 claims, as of April 2026, NAO analysis). 38% (9,010) were confirmed fraudulent or incorrect"
   - value: "12 months → 5 years"
-    label: "Period the matching treated as possible absence (pilot → first rollout). HMRC says this was not a planned change and it noticed only after the rollout began"
+    label: "Period the matching treated as possible absence (pilot → first rollout). HMRC says this was not a planned change"
 glossary:
   - term: "Child Benefit"
-    desc: "A UK benefit HMRC pays to UK residents responsible for a child. It goes to around 6.9 million families, and spending was £13.3 billion in 2024-25. A claimant who no longer lives in the UK loses eligibility."
+    desc: "A UK benefit HMRC pays to UK residents responsible for a child. A claimant who no longer lives in the UK loses eligibility."
   - term: "PAYE check"
-    desc: "A check of HMRC's Pay As You Earn records for evidence that the claimant kept working in the UK during the period the travel data showed them abroad. In the pilot it ran before an enquiry was opened and removed 12% of matches. Self-employed people do not appear in these records."
+    desc: "A check of HMRC's Pay As You Earn records for evidence that the claimant kept working in the UK during the period the travel data showed them abroad. Self-employed people do not appear in these records."
   - term: "DEA Board"
     desc: "The cross-government Debt and Fraud Information Sharing Review Board, which reviews data sharing under the Digital Economy Act and is co-chaired by the Cabinet Office and HM Treasury. It covers the legality of data sharing and data protection; it says detailed oversight of the processes that use the data is outside its remit."
 insight:
@@ -59,7 +62,7 @@ controls:
     item: "Record, apart from the process itself, which conditions produced the match, who decided to suspend, and when the payment was reinstated and backdated"
 attack_method: "human-error"
 impact: "23,794 Child Benefit claims were suspended in the first rollout (August to October 2025); as of April 2026, 59% (14,156) had been confirmed eligible or removed by the employment check (NAO)"
-takeaway: "After the pilot, HMRC dropped the employment check at working level, so travel-data matches alone suspended payments to eligible families too. Before suspending, check a match against the approved conditions and other records."
+takeaway: "Dropping the employment check meant travel-data matches alone suspended payments to eligible families too. Before suspending, check a match against the approved conditions and other records."
 self_check: "Do you know whether processes that suspend payments or transactions on data-matching results still run under the same conditions as when they were approved?"
 countries: ["gb"]
 ---
@@ -68,13 +71,13 @@ countries: ["gb"]
 
 In August 2025 HM Revenue & Customs (HMRC) moved into full rollout an intervention that matched Home Office travel data against Child Benefit records, opened enquiries for claimants apparently abroad for 12 weeks or more, and suspended their payments at the same time. According to the National Audit Office (NAO), between the pilot (March to December 2024) and the rollout HMRC removed the step of checking employment records (PAYE) before opening an enquiry, and the matching period also widened from 12 months to five years. By October, 23,794 claims had been suspended.
 
-In the NAO's analysis, as of April 2026, 59% of the 23,794 suspended claims had been confirmed eligible or removed by the employment check, while 38% were confirmed fraudulent or incorrect. The decision to remove the employment check was taken in May 2025 at a workshop of operational staff. HMRC accepts there were weaknesses in its oversight of the move from pilot to rollout; in October and November it reintroduced the employment check, reinstated 5,327 payments automatically and backdated them. Since March 2026 it has given claimants a month to respond before suspending payments.
+In the NAO's analysis, 59% of them had been confirmed eligible or removed by the employment check, and 38% were fraudulent or incorrect (as of April 2026). HMRC accepts there were weaknesses in its oversight of the move from pilot to rollout; in October and November it reintroduced the employment check, reinstated 5,327 payments automatically and backdated them. Since March 2026 it has given claimants a month to respond before suspending payments.
 
 <strong>Even if the match conditions have changed since they were approved, a data match still stops payments.</strong>
 
 ## 2. What got through
 
-- **What got through**: Opening enquiries and suspending Child Benefit payments on the basis of travel-data matches. According to the NAO, HMRC suspended payments as soon as it opened an enquiry and asked claimants for evidence of UK residency. HMRC told the NAO that it did not use automated decision-making to open enquiries, suspend payments or terminate eligibility, and that suspension relied on a manual intervention by staff using guidance.
+- **What got through**: Opening enquiries and suspending Child Benefit payments on the basis of travel-data matches. According to the NAO, HMRC asked claimants for evidence of UK residency. HMRC told the NAO that it did not use automated decision-making to open enquiries, suspend payments or terminate eligibility, and that suspension relied on a manual intervention by staff using guidance.
 - **What reached the accepting side**: In general, the process that receives matching results receives only the matched claimant and the period they appear to have been abroad. It does not receive which matching period produced the match, or whether the match conflicts with employment records. According to the NAO, the Home Office advised HMRC that the travel data could not be used in isolation to determine residency and were only a starting point for enquiries. The data come mainly from Advance Passenger Information (API), include trips that were cancelled, and do not include border control records of exits from the UK.
 - **Conditions that changed**: According to the NAO, three things changed between the pilot and the first rollout. The upfront PAYE check was moved to the end of the process (temporary staff found it too complicated; staffing was the driver). The letter to claimants who had travelled to European Economic Area (EEA) countries became 14 pages with over 70 questions. The matching period widened from the previous 12 months to five years (HMRC says this was not a planned decision and it identified the change only after the rollout began).
 - **Approval and notification**: According to the NAO, the decisions to remove the PAYE check and change the letter were taken at a May 2025 workshop of operations staff, operational analysts and policy staff, and HMRC said staff had felt empowered to make them at a working level. There was no Senior Responsible Owner or governance forum responsible for approving the move to business as usual. Neither the DEA Board approval nor the agreement with the Home Office required HMRC to notify process changes after the pilot, and HMRC did not alert the DEA Board to them before final approval in July 2025.
@@ -82,10 +85,10 @@ In the NAO's analysis, as of April 2026, 59% of the 23,794 suspended claims had 
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a payment is suspended, the travel-data match is checked as having been produced under the approved conditions (matching period, data sources, employment check) and as not conflicting with other records such as employment.
+Whatever the route, the condition for telling them apart is whether the travel-data match was produced under the approved conditions (matching period, data sources, employment check) and does not conflict with other records such as employment.
 
 - **Who approves**: The body that approved the matching conditions, and the person accountable for the intervention. When the matching period, data sources or exclusion checks change, an approval for the changed conditions is issued, separate from the approval given for the pilot.
-- **Where it is checked**: The step in which an enquiry is opened and payment suspended. It confirms that the match was produced under the approved conditions; a match that conflicts with employment records, or falls outside the conditions, is held rather than suspended, and the claimant is asked first.
+- **Where it is checked**: The step in which an enquiry is opened and payment suspended. A match that conflicts with employment records, or falls outside the approved conditions, is held rather than suspended, and the claimant is asked first.
 - **What is recorded**: Which conditions produced the match, who decided to suspend, and when the payment was reinstated and how much was backdated. It is kept apart from the process and used to count wrongful suspensions and the time taken to reinstate.
 
 <figure class="rx-ex">
@@ -102,7 +105,7 @@ Whatever the route, the condition for telling them apart is that, before a payme
 </div>
 </figure>
 
-Detection worked, and HMRC changed the process within two to four weeks of problems emerging. Even so, 23,794 claims were suspended, and 59% of them were confirmed eligible or cleared by the employment check. Cases where an automated judgment stopped benefits are [TennCare Connect](/critical/briefs/078-tenncare-connect-medicaid-eligibility/) (defects in eligibility decisions cut people off Medicaid) and [WISeR](/critical/briefs/124-wiser-medicare-ai-prior-authorization/) (AI prior authorization leaves no record of which evidence a denial rested on). Here, the matching conditions approved for the pilot changed at working level before the rollout.
+Detection worked, and HMRC changed the process within two to four weeks of problems emerging. Even so, 23,794 claims had been suspended before the fix. Cases where an automated judgment stopped benefits are [TennCare Connect](/critical/briefs/078-tenncare-connect-medicaid-eligibility/) (defects in eligibility decisions cut people off Medicaid) and [WISeR](/critical/briefs/124-wiser-medicare-ai-prior-authorization/) (AI prior authorization leaves no record of which evidence a denial rested on).
 
 ## 4. What Lemma does
 
@@ -115,7 +118,7 @@ Detection worked, and HMRC changed the process within two to four weeks of probl
 
 ### Current controls vs Lemma
 
-The route in this case is columns 1 and 2 (with the employment check removed and the period widened, limitations of the travel data, such as cancelled trips and returns by land or sea, passed straight through to suspension). Column 3 covers a member of staff wrongly suspending an individual case; nothing disclosed says that happened here.
+The route in this case is columns 1 and 2. Nothing disclosed says column 3 (a member of staff wrongly suspending an individual case) happened here.
 
 | Control | Bulk suspension under conditions changed after approval | Wrong matches from data limitations | Staff misjudgement in an individual case |
 | --- | --- | --- | --- |
@@ -124,7 +127,7 @@ The route in this case is columns 1 and 2 (with the employment check removed and
 | Caps on case numbers and full quality checks | Partial | Partial | Effective |
 | **Lemma (pre-execution check)** | Effective | Partial | Not effective |
 
-The pilot and its approval confirm that data sharing is lawful, but according to the NAO the DEA Board's remit does not extend to detailed oversight of the processes using the data, and there was no requirement to notify it of post-pilot changes. Asking before suspending is the approach HMRC adopted for the second rollout; payments continue while it waits for a reply. Caps on case numbers (starting at 50 a week) and quality checks of every case by a separate team catch errors at a small scale. Lemma checks, before suspension, not whether the data are correct but whether a match was produced within the approved conditions and does not conflict with other records such as employment.
+The pilot and its approval confirm that data sharing is lawful, but did not extend to the detailed processes using the data or to post-pilot changes (NAO). Asking before suspending is the approach HMRC adopted for the second rollout; payments continue while it waits for a reply. Caps on case numbers (starting at 50 a week) and quality checks of every case by a separate team catch errors at a small scale.
 
 Note: Lemma's check works only when it is built into the step that suspends payments and the approved conditions are managed apart from the staff who run the process. Claimants who do not appear in the records used for the check, such as the self-employed, can pass without any conflict showing. It also passes when the travel data themselves are wrong within the approved conditions. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not decide eligibility, and it does not reinstate suspended payments.
 
@@ -156,10 +159,10 @@ Three things to confirm about processes that stop benefits or transactions on da
 - **2025-10**: Problems emerge in mid-October through rising calls, MPs and the media; at month end HMRC stops opening new enquiries and applies a simplified PAYE check to all open enquiries. Enquiries total 23,794.
 - **2025-11**: By mid-November 5,327 payments are reinstated automatically and backdated. HMRC's Accounting Officer writes to the Chair of the Treasury Committee acknowledging the impact and setting out steps to strengthen the process.
 - **2025-12**: The internal audit reports, and data sharing with the Home Office restarts with ferry and Channel Tunnel data added.
-- **2026-03**: The second rollout begins, with a month to respond before suspension, the upfront PAYE check reinstated and new enquiries capped at 50 a week.
+- **2026-03**: The second rollout begins (details under After disclosure).
 - **2026-06-24**: The NAO publishes its report.
 
-> The facts rely on the NAO report (24 June 2026; primary) and its press release. Counts are the NAO's analysis of HMRC management information, have not been audited, and may change as Mandatory Reconsiderations and appeals conclude. The NAO compares matches investigated rather than enquiries opened, so its figures differ from HMRC's published ones. The letter from HMRC's Accounting Officer to the Treasury Committee itself could not be confirmed; this Brief relies on the NAO report's account of it. Counts reported in the media are not used. How long suspensions lasted and the total backdated have not been disclosed. What has not been disclosed does not mean there were no controls. This Brief does not evaluate HMRC's response. Written as of 10 November.
+> The facts rely on the NAO report (24 June 2026; primary) and its press release. Counts are the NAO's analysis of HMRC management information, have not been audited, and may change as Mandatory Reconsiderations and appeals conclude. The NAO compares matches investigated rather than enquiries opened, so its figures differ from HMRC's published ones. The letter from HMRC's Accounting Officer to the Treasury Committee itself could not be confirmed; this Brief relies on the NAO report's account of it. Counts reported in the media are not used. What has not been disclosed does not mean there were no controls. This Brief does not evaluate HMRC's response. Written as of 10 November.
 
 ### After disclosure
 

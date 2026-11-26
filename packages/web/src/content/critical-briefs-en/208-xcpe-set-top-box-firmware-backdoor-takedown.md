@@ -12,10 +12,13 @@ related_pack: [A-incident-response]
 related_briefs: ["063-smart-tv-residential-proxy-ai-scraping", "082-xz-utils-backdoor-identity-provenance", "201-bank-sinopac-vendor-setting-unauthorized-transfers"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "b0f6f38327a05006"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "9b99535f4518f1b6"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Cut overlapping explanations and shortened the text"
 version: "1.0"
 og_lead_ja: "XCPE ボットネット：Android TV のセットトップボックス 130 万台超に事前導入されたバックドアを、Google が警察庁と連携してテイクダウンした"
 og_lead_en: "XCPE botnet: Google, working with Japan's NPA, took down a backdoor preinstalled on more than 1.3 million Android TV set-top boxes"
@@ -58,7 +61,7 @@ controls:
     item: "Record which transfer was confirmed with which device's key, apart from the source IP address"
 attack_method: "supply-chain"
 impact: "More than 1.3 million set-top boxes were enrolled into a botnet and used for residential proxies and ad fraud (Google's disclosure). Google estimates its C2 takedowns severed access to at least 10 million other infected devices"
-takeaway: "Through a backdoor its maker is assessed to have preinstalled, home TV boxes relayed other people's traffic. A connection from a domestic home IP address need not be the customer. Check transfers against the key on the customer's registered device before letting them through."
+takeaway: "A connection from a domestic home IP address need not be the customer. Check transfers against the key on the customer's registered device before letting them through."
 self_check: "Do you know what, besides source IP address or country, you rely on to treat an online banking transfer as the customer's own request?"
 countries: ["jp", "global"]
 search_title: "XCPE ボットネット：警察庁と Google がテイクダウン"
@@ -67,17 +70,17 @@ search_description: "Android TV のセットトップボックスなどに事前
 
 ## 1. Summary
 
-On 3 November, Google Threat Intelligence Group disclosed that it and industry partners had dismantled "XCPE", a backdoor preinstalled in the firmware of Android TV set-top boxes and other devices, together with its botnet. Google assesses with high confidence that Videostrong Technology, an Android device manufacturer, intentionally developed and operated the backdoor and botnet for financial gain. Infected devices were used as residential proxies (relaying other people's traffic) and for ad fraud.
+On 3 November, Google Threat Intelligence Group disclosed that it and industry partners had dismantled "XCPE", a backdoor preinstalled in the firmware of Android TV set-top boxes and other devices, together with its botnet. Google assesses with high confidence that Videostrong Technology, an Android device manufacturer, intentionally developed and operated the backdoor and botnet for financial gain. Infected devices were used as residential proxies and for ad fraud.
 
-On 4 November, Japan's National Police Agency (NPA) said that, after it had worked with Google together with the Kanto Regional Police Bureau's Cyber Special Investigation Unit and the Fukuoka Prefectural Police, Google took legal action and other steps in the United States leading to the takedown of domains and servers linked to residential proxies. One starting point was a search in September 2025 by the Fukuoka police of the source of unauthorised access in an online banking fraud case, which found an IoT device carrying a malicious app. The NPA has analysed that a residential proxy was used in about 44% of online banking fraud cases in 2024.
+On 4 November, Japan's National Police Agency (NPA) said that, after it had worked with Google together with the Kanto Regional Police Bureau's Cyber Special Investigation Unit and the Fukuoka Prefectural Police, Google took legal action and other steps in the United States leading to the takedown of domains and servers linked to residential proxies (one starting point was the Fukuoka police's investigation of an online banking fraud case). The NPA has analysed that a residential proxy was used in about 44% of online banking fraud cases in 2024.
 
 <strong>Even traffic from a home connection in Japan is not necessarily sent by the person it appears to come from.</strong>
 
 ## 2. What got through
 
-- **What got through**: Two things. One is unauthorised access to online banking and transfers: according to the NPA, a residential proxy was used in at least 1,918 online banking fraud cases in 2024. The other is the maker's backdoored firmware passing certification tests. According to Google, Videostrong used obfuscation to exploit a gap in the tests and loaded malicious code after the device's first boot.
-- **What reached the accepting side**: In general, online banking receives credentials such as an ID and password, and the source IP address. Through a residential proxy, the record shows the IP address of the relaying household, the real source is hidden, and servers that restrict access from abroad are reached as well (NPA, MIC and NICT). On the device side, a backdoor preinstalled in the system partition cannot be removed by the user (Google).
-- **Not disclosed**: The losses and number of transfers in the Fukuoka case, and how the credentials were obtained in it. Whether the device found by the Fukuoka police was infected with XCPE (the NPA's material does not name XCPE or the maker). The number of botnet devices by country. The exact date of the takedown (Google says "last week"). Where Videostrong is based, and Videostrong's own response.
+- **What got through**: Two things. One is unauthorised access to online banking and transfers via residential proxies. The other is the maker's backdoored firmware passing certification tests. According to Google, Videostrong used obfuscation to exploit a gap in the tests and loaded malicious code after the device's first boot.
+- **What reached the accepting side**: In general, online banking receives credentials such as an ID and password, and the source IP address. Through a residential proxy, the record shows the IP address of the relaying household, and servers that restrict access from abroad are reached as well (NPA, MIC and NICT).
+- **Not disclosed**: The losses and number of transfers in the Fukuoka case, and how the credentials were obtained in it. Whether the device found by the Fukuoka police was infected with XCPE. The number of botnet devices by country. The exact date of the takedown (Google says "last week"). Where Videostrong is based, and Videostrong's own response.
 
 ## 3. Pre-execution check
 
@@ -85,7 +88,7 @@ Whatever the route, the condition for telling them apart is that, before a trans
 
 - **Who approves**: The account holder. A transfer or a new payee is signed with a key held inside the device the customer registered. A third party holding only the ID and password, or a home device used as a relay, cannot produce that signature.
 - **Where it is checked**: The step at which online banking executes a transfer. Even when the source is a domestic home IP address, a request not tied to the registered device's key is held until the customer confirms it on a registered device.
-- **The other place**: On the manufacturing side, before a device is certified or shipped, the origin and contents of its firmware are checked apart from the maker's own declaration. Google says it is improving how it ensures firmware integrity on certified Android TV devices. A design that pulls in code from outside after first boot, as here, is out of reach of a check at shipping alone.
+- **The other place**: On the manufacturing side, before a device is certified or shipped, the origin and contents of its firmware are checked apart from the maker's own declaration. A design that pulls in code from outside after first boot, as here, is out of reach of a check at shipping alone.
 - **What is recorded**: Which transfer was confirmed with which device's key. It is kept apart from the record of source IP addresses, so that an investigation into fraudulent transfers can still establish whether a request was the customer's when the traffic's real source cannot be traced.
 
 <figure class="rx-ex">
@@ -102,7 +105,7 @@ Whatever the route, the condition for telling them apart is that, before a trans
 </div>
 </figure>
 
-The takedown came from tracing the device and its maker out of a fraud investigation, so detection and tracing worked. Even so, at the time of the transfers, what the record held was the IP address of a relaying household. A case where living-room smart TVs and other devices were reported to be relay nodes is [Bright Data SDK](/critical/briefs/063-smart-tv-residential-proxy-ai-scraping/); one where a backdoor was built into official releases is [xz utils](/critical/briefs/082-xz-utils-backdoor-identity-provenance/); and one where transfers went through online banking without the customer's action is [Bank SinoPac](/critical/briefs/201-bank-sinopac-vendor-setting-unauthorized-transfers/). Here, a backdoor its maker is assessed to have installed before shipping turned home devices themselves into relays.
+The takedown came from tracing the device and its maker out of a fraud investigation, so detection and tracing worked. Even so, at the time of the transfers, what the record held was the IP address of a relaying household. A case where living-room smart TVs and other devices were reported to be relay nodes is [Bright Data SDK](/critical/briefs/063-smart-tv-residential-proxy-ai-scraping/); one where a backdoor was built into official releases is [xz utils](/critical/briefs/082-xz-utils-backdoor-identity-provenance/); and one where transfers went through online banking without the customer's action is [Bank SinoPac](/critical/briefs/201-bank-sinopac-vendor-setting-unauthorized-transfers/).
 
 ## 4. What Lemma does
 
@@ -110,14 +113,14 @@ The takedown came from tracing the device and its maker out of a fraud investiga
 
 ### Industries and operations to watch
 
-- **Industry · Finance & FinTech**: Banks and payment providers with online banking or payment services that tell suspicious access apart by source IP address or country. Through a residential proxy, the source looks like a domestic household.
+- **Industry · Finance & FinTech**: Banks and payment providers with online banking or payment services that tell suspicious access apart by source IP address or country.
 - **Industry · Manufacturing & critical infrastructure**: Companies that make, sell or certify devices on home or shop internet lines, such as streaming boxes, routers and cameras. Malicious software can enter during manufacturing or distribution (NPA, MIC and NICT).
 - **Operation · Approval & sign-off**: Online banking transfers and adding payees.
 - **Operation · Accounts & permissions**: Login authentication, registering new devices and restrictions by source.
 
 ### Current controls vs Lemma
 
-The route in this case is column 1 (transfers with stolen credentials via a domestic home IP address). In the NPA's analysis, a residential proxy was used in about 44% of 2024 fraud cases. Column 2 covers transfers made directly from a foreign IP address, and column 3 a takeover of the customer's own device; nothing disclosed says either happened here.
+The route in this case is column 1. Nothing disclosed says column 2 (transfers made directly from a foreign IP address) or column 3 (a takeover of the customer's own device) happened here.
 
 | Control | Transfer with stolen credentials via a home IP address | Transfer with stolen credentials from a foreign IP address | Transfer after the customer's own device is taken over |
 | --- | --- | --- | --- |
@@ -126,9 +129,9 @@ The route in this case is column 1 (transfers with stolen credentials via a dome
 | Detection of suspicious transactions | Partial | Partial | Partial |
 | **Lemma (pre-execution check)** | Effective | Effective | Not effective |
 
-Restrictions by source tell connections from abroad apart, but pass traffic relayed through a domestic home IP address. One-time passwords by SMS or email narrow transfers made with only an ID and password, but pass when stolen at the same time through a fake site or similar. Detection of suspicious transactions notices after the transfer or from signs at the time, and has fewer clues when the source looks like a household. Lemma checks, before execution, not the source but whether the request was signed with the key on the customer's registered device.
+Restrictions by source tell connections from abroad apart, but pass traffic relayed through a domestic home IP address. One-time passwords by SMS or email narrow transfers made with only an ID and password, but pass when stolen at the same time through a fake site or similar. Detection of suspicious transactions notices after the transfer or from signs at the time, and has fewer clues when the source looks like a household.
 
-Note: Lemma's check works only when it is built into transfer execution and the customer's key is managed so that it never leaves the registered device. If the customer's device is taken over, or the customer is deceived into approving a transfer on their own device, it can pass. A check on the manufacturing side does not reach code pulled in from outside after shipping. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions or botnets, and it does not recover funds already sent.
+Note: Lemma's check works only when it is built into transfer execution and the customer's key is managed so that it never leaves the registered device. If the customer's device is taken over, or the customer is deceived into approving a transfer on their own device, it can pass. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions or botnets, and it does not recover funds already sent.
 
 ### Checklist
 
@@ -150,14 +153,14 @@ Three things to confirm about online banking transfers and devices on your netwo
 
 - **2024**: A residential proxy is used at the time of the crime in at least 1,918 online banking fraud cases (NPA analysis).
 - **Late 2024**: According to Google, from at least this time Videostrong rebuilds its preinstalled malware into a form that loads modules.
-- **2025-09**: Fukuoka police, searching the source of unauthorised access in an online banking fraud case, find an IoT device carrying a malicious app.
+- **2025-09**: Fukuoka police, searching the source of unauthorised access in a fraud case, find an IoT device carrying a malicious app.
 - **2026-03**: The NPA and the Kanto unit begin working with Google, including by sharing information.
-- **2026-07-21**: The NPA, MIC and NICT publish a paper on residential proxies abusing home IoT devices and set up a residential proxy countermeasures alliance.
+- **2026-07-21**: The NPA, MIC and NICT publish a paper on residential proxies abusing home IoT devices.
 - **Late October 2026**: Google and partners dismantle the XCPE backdoor ("last week" in the 3 November disclosure).
 - **2026-11-03**: Google Threat Intelligence Group discloses (Japanese version on 4 November).
 - **2026-11-04**: The NPA discloses the takedown of criminal infrastructure in cooperation with Google.
 
-> The facts rely on the NPA's press material (4 November), the NPA, MIC and NICT paper (21 July) and Google Threat Intelligence Group's disclosure (3 November), all primary. That Videostrong developed and operated XCPE is Google's assessment (high confidence). The NPA's material does not name XCPE or Videostrong, and whether the device found by the Fukuoka police was infected with XCPE has not been disclosed. Neither the losses in the Fukuoka case nor how the credentials were obtained have been disclosed. The NPA's web page gives the 2024 losses as "at least about ¥3 billion" and its paper as "about ¥2.89 billion"; this Brief uses the paper's figure. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the responses of the companies or agencies. Written as of 12 November.
+> The facts rely on the NPA's press material (4 November), the NPA, MIC and NICT paper (21 July) and Google Threat Intelligence Group's disclosure (3 November), all primary. That Videostrong developed and operated XCPE is Google's assessment (high confidence). The NPA's material does not name XCPE or Videostrong. The NPA's web page gives the 2024 losses as "at least about ¥3 billion" and its paper as "about ¥2.89 billion"; this Brief uses the paper's figure. What has not been disclosed does not mean there were no controls. This Brief does not evaluate the responses of the companies or agencies. Written as of 12 November.
 
 ### After disclosure
 

@@ -12,15 +12,17 @@ related_pack: [A-incident-response]
 related_briefs: ["135-zombie-cards-visa-contactless-expiry", "069-connectwise-cloud-backup-app-identity-credential-abuse", "162-hatena-police-impersonation-remote-transfer"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "7f50307072f0bd35"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1192"
+  at: 2026-11-26
+  rev: "066d5cc2eea27a92"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-20
     note: "Added the 12 November report and the FSC's stance on penalties and outsourcing"
   - date: 2026-11-26
     note: "Rewrote the band around the person giving the instruction and the cap (#53)"
+  - date: 2026-11-26
+    note: "Cut overlapping explanations and shortened the text"
 version: "1.0"
 og_lead_ja: "台湾の永豊銀行で、新しいネットバンキングの取引システムの提供元の安全の設定が外部のハッカーに利用され、418 人の口座から 427 件・約 4,176 万台湾ドルが不正に送金された"
 og_lead_en: "At Taiwan's Bank SinoPac, outside hackers exploited the vendor's security settings on a new online banking system, and NT$41.76 million left 418 customers' accounts in 427 transfers"
@@ -34,18 +36,18 @@ og_headline_en: "Transfers left accounts\nwhose owners had not\nlogged in.\n<acc
 key_figures:
   - value: "NT$41.76"
     unit: "million"
-    label: "Transferred out of customers' accounts without authorisation (418 customers, 427 transfers of NT$10,000 to NT$100,000 each, most NT$100,000; bank's press conference via CNA). All of it was refunded the same day"
+    label: "Transferred without authorisation (418 customers, 427 transfers, most NT$100,000 each; bank's press conference via CNA). All of it was refunded the same day"
     tone: "alert"
   - value: "418 / 427"
     unit: "customers / transfers"
     label: "Affected customers and transfers (bank's press conference via CNA). The FSC first gave 419 customers and 427 transfers (Liberty Times, CNA)"
   - value: "09:29 → 13:47"
-    label: "On 3 November, from the first customer complaints to the bank identifying the cause and pulling the new app (bank's press conference via CNA)"
+    label: "On 3 November, from the first customer complaints to the bank pulling the new app (bank's press conference via CNA)"
 glossary:
   - term: "New online banking (新網銀)"
     desc: "The transaction system behind Bank SinoPac's newly introduced online and mobile banking. According to the bank, it is a foreign vendor's product that no other financial institution in Taiwan has adopted."
   - term: "Non-designated transfer"
-    desc: "A transfer to an account not registered in advance. Taiwanese banks set lower caps on these than on transfers to registered accounts; Bank SinoPac's guidance gives NT$50,000 per transfer and NT$100,000 per day for an ordinary account."
+    desc: "A transfer to an account not registered in advance. Taiwanese banks set lower caps on these than on transfers to registered accounts."
   - term: "F-ISAC"
     desc: "Taiwan's financial-sector information sharing and analysis centre for cybersecurity, through which financial institutions share information on attack methods."
 insight:
@@ -64,7 +66,7 @@ controls:
     item: "Keep, apart from the transaction system, a record of which account's transfer passed which authentication and arrived from which transaction system"
 attack_method: "supply-chain"
 impact: "427 unauthorised transfers totalling NT$41.76 million left 418 customers' accounts for a single account at another bank (bank's press conference). The bank refunded the full amount and fees the same day"
-takeaway: "On a new online banking transaction system, outside hackers exploited the vendor's security settings, and transfers went through from accounts whose owners had not logged in. Execute transfers only after checking them against the customer's authentication record and the cap, apart from the transaction system's settings."
+takeaway: "A system accepting a transfer does not mean the account holder gave the instruction. Execute transfers only after checking them against the customer's authentication record and the cap, apart from the transaction system's settings."
 self_check: "Do you know whether the check of customer authentication and the per-transfer cap before a transfer is executed is left solely to a vendor product's settings?"
 countries: ["tw"]
 ---
@@ -73,22 +75,22 @@ countries: ["tw"]
 
 On the morning of 3 November 2026, unauthorised transfers ran from customers' accounts at Taiwan's Bank SinoPac to a single account at another bank. At a press conference the bank put the damage at 418 customers, 427 transfers and NT$41.76 million in total, with each transfer between NT$10,000 and NT$100,000 and most at NT$100,000 (CNA). According to reports, the affected customers had not logged in to the new app, and the money left without SMS verification or facial recognition.
 
-On 4 November the bank said outside hackers had exploited the vendor's security settings on the transaction system behind its new online banking. No other financial institution in Taiwan has adopted that system. The bank pulled the new app, refunded the full amount and fees the same day, and says it will claim damages from the vendor. Details of the method have not been disclosed, as the case is under judicial investigation.
+On 4 November the bank said outside hackers had exploited the vendor's security settings on the transaction system behind its new online banking. No other financial institution in Taiwan has adopted that system. The bank pulled the new app and refunded the full amount and fees the same day. Details of the method have not been disclosed, as the case is under judicial investigation.
 
 <strong>A system accepting a transfer does not mean the account holder gave the instruction.</strong>
 
 ## 2. What got through
 
-- **What got through**: Transfers out of customers' accounts. According to Bank SinoPac, outside hackers exploited the vendor's security settings on the new online banking transaction system, and money left customers' accounts without their knowledge. According to reports, the affected customers had not logged in to the new app and had passed no SMS verification or facial recognition (Economic Daily News). Every transfer went into the same account at Taipei Fubon Bank, which was frozen that morning (CNA, Liberty Times).
-- **What reached the accepting side**: In general, the bank's account-keeping side that executes a transfer receives from the transaction system an instruction naming the source account, the payee and the amount. Whether the instruction passed customer authentication arrives only as the transaction system's own verdict. According to Bank SinoPac, the affected customers' national ID numbers all began with "P", because the hackers found valid accounts by random trial and error with a specific technique rather than by obtaining customer data in advance. No sign of a personal-data leak has been found.
-- **Not disclosed**: The vendor's name and country. Which security setting was exploited, and how (the president said the bank knows the cause but cannot disclose it because the case is under judicial investigation; BusinessNext). How transfer instructions went through without a login or customer authentication. How the cap was handled (the bank's guidance caps transfers to unregistered accounts at NT$50,000 each, but according to reports most of these transfers were NT$100,000, and how they went through has not been disclosed). How widely the system is used (the bank and the FSC say no other financial institution in Taiwan has adopted it, while CNA reported that "five businesses in Taiwan use the system").
+- **What got through**: Transfers out of customers' accounts without the account holder's login or authentication (Economic Daily News). Every transfer went into the same account at Taipei Fubon Bank, which was frozen that morning (CNA, Liberty Times).
+- **What reached the accepting side**: In general, the bank's account-keeping side that executes a transfer receives from the transaction system an instruction naming the source account, the payee and the amount. Whether the instruction passed customer authentication arrives only as the transaction system's own verdict.
+- **Not disclosed**: The vendor's name and country. Which security setting was exploited, and how (the president said the bank knows the cause but cannot disclose it because the case is under judicial investigation; BusinessNext). How transfer instructions went through without a login or customer authentication. How the cap was handled (the bank's guidance caps transfers to unregistered accounts at NT$50,000 each, but according to reports most of these transfers were NT$100,000). How widely the system is used (the bank's account and CNA's reporting differ).
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a transfer out of an account is executed, the instruction is checked as having passed customer authentication, against the bank's own authentication record and the per-transfer cap, apart from the transaction system's verdict.
+Whatever the route, the condition for telling them apart is whether a transfer instruction can be shown to have passed customer authentication by the bank's own authentication record, apart from the transaction system's verdict, and whether the amount is within the per-transfer cap.
 
 - **Who approves**: The account holder. Through the authentication at login or transfer (a registered device, SMS, facial recognition and the like), they give an approval for each transfer instruction in a form the transaction system's settings alone cannot produce.
-- **Where it is checked**: The step in which the bank executes a transfer. Even when an instruction arrives from the transaction system, one not tied to an authentication record, or over the per-transfer or daily cap, is held. Instructions from many accounts converging on one payee in a short time are also held before execution.
+- **Where it is checked**: The step in which the bank executes a transfer. Instructions not tied to an authentication record, over the per-transfer or daily cap, or from many accounts converging on one payee in a short time are held.
 - **What is recorded**: Which account's transfer passed which authentication and arrived from which transaction system. It is kept apart from the transaction system and used to establish the scope of the damage, to claim against the vendor and to report to the authorities.
 
 <figure class="rx-ex">
@@ -105,7 +107,7 @@ Whatever the route, the condition for telling them apart is that, before a trans
 </div>
 </figure>
 
-Detection worked the same day: freezing the receiving account kept the money from leaving, and the bank refunded everything. Even so, 427 transfers went through in the roughly four hours between the first complaints and the system being stopped. A case where the result turned on whether the issuer checked the value a terminal read against its own record is [Visa contactless cards](/critical/briefs/135-zombie-cards-visa-contactless-expiry/); one where a vendor's app credential was used to act in customers' environments is [ConnectWise](/critical/briefs/069-connectwise-cloud-backup-app-identity-credential-abuse/); and one where fund moves went through from a remotely controlled PC is [Hatena](/critical/briefs/162-hatena-police-impersonation-remote-transfer/). Here, transfers without the account holder's login went through via a vendor product's settings.
+Detection worked the same day: freezing the receiving account kept the money from leaving. Even so, 427 transfers went through in the roughly four hours between the first complaints and the system being stopped. A case where the result turned on whether the issuer checked the value a terminal read against its own record is [Visa contactless cards](/critical/briefs/135-zombie-cards-visa-contactless-expiry/); one where a vendor's app credential was used to act in customers' environments is [ConnectWise](/critical/briefs/069-connectwise-cloud-backup-app-identity-credential-abuse/); and one where fund moves went through from a remotely controlled PC is [Hatena](/critical/briefs/162-hatena-police-impersonation-remote-transfer/).
 
 ## 4. What Lemma does
 
@@ -119,7 +121,7 @@ Detection worked the same day: freezing the receiving account kept the money fro
 
 ### Current controls vs Lemma
 
-The route in this case is column 1 (transfers without the account holder's login, via a vendor product's settings). Column 2 covers transfers after a login with a stolen ID and password, and column 3 an account holder who is deceived into making the transfer; nothing disclosed says either happened here.
+The route in this case is column 1. Nothing disclosed says column 2 (transfers after a login with a stolen ID and password) or column 3 (an account holder deceived into transferring) happened here.
 
 | Control | Transfers without a login, via a vendor product's settings | Transfers after a login with a stolen ID and password | An account holder deceived into transferring |
 | --- | --- | --- | --- |
@@ -128,7 +130,7 @@ The route in this case is column 1 (transfers without the account holder's login
 | Monitoring for unusual activity (bursts of queries or transfers) | Partial | Partial | Partial |
 | **Lemma (pre-execution check)** | Effective | Partial | Not effective |
 
-Multi-factor authentication and facial recognition confirm the person logging in, but here transfers are reported to have gone through without a login. Caps limit the size of each transfer, but if the decision sits inside the same transaction system, it can fall away along with that system's settings (how the cap was handled here has not been disclosed). Monitoring, which the bank strengthened after the incident, finds and stops bursts of queries or transfers, but transfers go through until it notices. Lemma checks, before execution, not the transaction system's verdict but whether the instruction is tied to the customer's authentication record and is within the cap.
+Multi-factor authentication and facial recognition confirm the person logging in, but here transfers are reported to have gone through without a login. Caps limit the size of each transfer, but if the decision sits inside the same transaction system, it can fall away along with that system's settings (how the cap was handled here has not been disclosed). Monitoring, which the bank strengthened after the incident, finds and stops bursts of queries or transfers, but transfers go through until it notices.
 
 Note: Lemma's check works only when it is built into the step in which the bank executes transfers and the authentication records and caps are managed somewhere apart from the transaction system vendor's product. If stolen credentials pass customer authentication itself, only the cap check applies. A transfer the account holder authenticates after being deceived goes through. The table compares what each control checks; it does not show whether this incident would have been stopped. Lemma does not detect or prevent intrusions, nor does it recover funds already sent.
 
@@ -143,7 +145,7 @@ Three things to confirm about switching transaction systems and executing transf
 ## 5. Facts and timeline
 
 - **Parties**: Bank SinoPac (永豐商業銀行, Taiwan; a wholly owned subsidiary of SinoPac Holdings). The vendor of the new online banking transaction system is described as a well-known foreign company, but its name and country have not been disclosed. The supervisor is the Banking Bureau of the Financial Supervisory Commission (FSC). The receiving account was at Taipei Fubon Bank.
-- **What happened**: According to Bank SinoPac, outside hackers exploited the vendor's security settings on the new online banking transaction system, and money left customers' accounts without their knowledge. The bank's notice of 3 November and SinoPac Holdings' material announcement that day (18:10) had put the cause down to a program anomaly in the "new online banking transaction system". At its press conference the bank gave 418 customers, 427 transfers and NT$41.76 million in total (NT$10,000 to NT$100,000 each, most NT$100,000) (CNA). On 3 November the FSC had given 419 customers, 427 transfers and over NT$40 million (Liberty Times, CNA).
+- **What happened**: According to Bank SinoPac, outside hackers exploited the vendor's security settings. The bank's notice of 3 November and SinoPac Holdings' material announcement that day (18:10) had put the cause down to a program anomaly in the "new online banking transaction system". On 3 November the FSC had given 419 customers, 427 transfers and over NT$40 million (Liberty Times, CNA).
 - **How accounts were picked**: According to Bank SinoPac, the affected customers' national ID numbers all began with "P", because the hackers found valid accounts by random trial and error with a specific technique rather than by obtaining customer data in advance. No sign of a personal-data leak has been found, and the bank has begun a review of its security and personal data. The Criminal Investigation Bureau received 68 reports by noon on 3 November, many from customers with ties to Yunlin County (CNA).
 - **Caps**: The bank's guidance caps transfers to unregistered accounts from ordinary accounts and Type 1 and Type 2 digital accounts at NT$50,000 per transfer, NT$100,000 per day and NT$200,000 per month. According to reports most of these transfers were NT$100,000, and how they went through has not been disclosed (BusinessNext).
 - **How widely the system is used**: Bank SinoPac said no other financial institution in Taiwan has adopted the transaction system. According to the Economic Daily News, the FSC took the same view. CNA reported that "five businesses in Taiwan use the system".
@@ -157,12 +159,12 @@ Three things to confirm about switching transaction systems and executing transf
 - **2026-11-05**: The FSC is reported to have asked the chairman and president to explain and to be reviewing outsourcing and internal controls (Economic Daily News).
 - **2026-11-12**: Deadline for the bank's major-incident investigation report to the FSC (Liberty Times, Economic Daily News, Liberty Times Finance). Liberty Times Finance reported that the bank was due to submit it that day.
 
-> The facts rely on Bank SinoPac's notice (3 November) and press release (4 November), SinoPac Holdings' material announcement (3 November) and the bank's FAQ guidance (all primary), and on reporting by CNA, Liberty Times, Economic Daily News and BusinessNext. The customer, transfer and amount figures and the times rely on reporting of the bank's press conference. All FSC statements rely on reporting; no FSC press release could be confirmed. The vendor's name and country, the security setting exploited, how transfers went through without a login or customer authentication, and how the cap was handled have not been disclosed. The explanation of 3 November (a program anomaly) differs from that of 4 November (hackers exploited the vendor's security settings). What has not been disclosed does not mean there were no controls. This Brief does not evaluate the responses of the bank or the vendor. Written as of 20 November.
+> The facts rely on Bank SinoPac's notice (3 November) and press release (4 November), SinoPac Holdings' material announcement (3 November) and the bank's FAQ guidance (all primary), and on reporting by CNA, Liberty Times, Economic Daily News and BusinessNext. The customer, transfer and amount figures and the times rely on reporting of the bank's press conference. All FSC statements rely on reporting; no FSC press release could be confirmed. The explanation of 3 November (a program anomaly) differs from that of 4 November (hackers exploited the vendor's security settings). What has not been disclosed does not mean there were no controls. This Brief does not evaluate the responses of the bank or the vendor. Written as of 20 November.
 
 ### After disclosure
 
-- **Bank SinoPac**: Pulled the new app and directed customers to its previous app and ATMs. It says it has blocked the method used, tightened verification, brought in a third-party security team, shared the attack information with other institutions through F-ISAC, and strengthened monitoring to flag and stop bursts of queries and unusual transactions at once; it says it will claim damages from the vendor.
-- **FSC**: Treated the case as a major incident, required an investigation report by 12 November and asked the chairman and president to explain. According to reports, it is reviewing outsourcing and internal controls and having F-ISAC run a correlation analysis, with any penalty awaiting the investigation's results (Economic Daily News). According to a 12 November report, the FSC had not yet decided whether or how far to penalise the bank, and said it would review outsourcing and supply-chain management in light of the findings and consider amending self-regulatory rules. Noting that the incident occurred in the middle-layer transaction system rather than the front or back end, it also said it would ask financial institutions for protection across all layers (Liberty Times Finance).
+- **Bank SinoPac**: Directed customers to its previous app and ATMs. It says it has blocked the method used, tightened verification, brought in a third-party security team, shared the attack information with other institutions through F-ISAC, and strengthened monitoring to flag and stop bursts of queries and unusual transactions at once; it says it will claim damages from the vendor.
+- **FSC**: Treated the case as a major incident, required an investigation report by 12 November and asked the chairman and president to explain. According to reports, it is reviewing outsourcing and internal controls and having F-ISAC run a correlation analysis (Economic Daily News). According to a 12 November report, it had not yet decided whether or how far to penalise the bank, and said it would review outsourcing and supply-chain management in light of the findings and consider amending self-regulatory rules. Noting that the incident occurred in the middle-layer transaction system rather than the front or back end, it also said it would ask financial institutions for protection across all layers (Liberty Times Finance).
 - **Prosecutors**: The Taipei District Prosecutors Office is investigating the case as an offence of obstructing computer use (CNA).
 
 ## 6. Sources
