@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["204-ntt-data-stdirect-vendor-saas-admin-rights", "154-yumirlink-cuenote-support-credential-db-export"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "315f57cf0e97fe70"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "2bb71cba7817583b"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-20
@@ -93,7 +93,7 @@ Whatever the route, the condition for telling them apart is that, before an admi
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking a change against the record of approvals before an administrative account's scope of operations is widened, and keeping a record. Detection means noticing the unauthorised access and privilege escalation, revoking the credentials, and stopping and isolating all servers. Dates rely on the disclosures by Dentsu Digital and Japan Post.</p>
+<p class="rx-ex-cap">A pre-execution check means checking, before an administrative account's scope of operations is widened, whether the person changing the permissions has the approval of the staff in charge, against the record of approvals, and keeping a record. Detection means noticing the unauthorised access and privilege escalation, revoking the credentials, and stopping and isolating all servers. Dates rely on the disclosures by Dentsu Digital and Japan Post.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check that the person changing permissions has the approval of the staff in charge, against the record of approvals, before letting it through</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Unauthorised access to an administrative account and privilege escalation<br>Personal data leaks at two client companies (count being determined)</span></div>

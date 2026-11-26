@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["144-studio-saas-breach-decryption-keys-read", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-19
-  rev: "89f976dc3299942e"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1177"
+  at: 2026-11-26
+  rev: "8ff645c3e139e6bf"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-26

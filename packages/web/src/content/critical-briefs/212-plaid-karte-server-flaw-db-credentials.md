@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["210-dentsu-digital-tonariwa-admin-privilege-line-tokens", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "3d5bfe81756306f0"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1187"
+  at: 2026-11-26
+  rev: "0322a68e28f86439"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -94,7 +94,7 @@ search_description: "プレイドの KARTE で、サーバーの脆弱性から�
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
-<p class="rx-ex-cap">実行の前の照合＝利用企業の顧客データをまとめて読み出す前に、その読み出しを、利用企業の処理の記録と照合し、記録に残すこと。検知＝不正アクセスに気づき、盗まれた認証情報を無効化し、サービスを止めて攻撃元からの通信を遮断すること。日付と時刻はプレイドと利用企業の公表に拠る。</p>
+<p class="rx-ex-cap">実行の前の照合＝利用企業の顧客データをまとめて読み出す前に、読み出そうとしている者が、どの利用企業のどの処理として読んでいるかを、利用企業の処理の記録と照合し、記録に残すこと。検知＝不正アクセスに気づき、盗まれた認証情報を無効化し、サービスを止めて攻撃元からの通信を遮断すること。日付と時刻はプレイドと利用企業の公表に拠る。</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>読み出す者が、どの利用企業のどの処理として読むかを、処理の記録で照合してから通す</div>
 <div class="rx-zone gapz"><b>確認されたこと</b><span>接続用の認証情報の窃取と、データベースなどからの読み出し<br>メールアドレス 79,249 件と、外部連携の認証情報・顧客データの一部の漏えい</span></div>

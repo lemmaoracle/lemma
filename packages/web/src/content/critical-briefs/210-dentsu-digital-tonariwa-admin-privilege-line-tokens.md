@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["204-ntt-data-stdirect-vendor-saas-admin-rights", "154-yumirlink-cuenote-support-credential-db-export"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "c843cabc4efc04ce"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "af43cb2df1f99b69"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-20
@@ -94,7 +94,7 @@ search_description: "電通デジタルの TONARIWA で、漏えいした認証�
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
-<p class="rx-ex-cap">実行の前の照合＝管理アカウントの操作の範囲を広げる前に、その変更を承認の記録で照合し、記録に残すこと。検知＝不正アクセスと権限昇格に気づき、認証情報を失効させ、全サーバーを止めて隔離すること。日付は電通デジタル・日本郵便の公表に拠る。</p>
+<p class="rx-ex-cap">実行の前の照合＝管理アカウントの操作の範囲を広げる前に、権限を変えようとしている人が担当者の承認を受けているかを、承認の記録で照合し、記録に残すこと。検知＝不正アクセスと権限昇格に気づき、認証情報を失効させ、全サーバーを止めて隔離すること。日付は電通デジタル・日本郵便の公表に拠る。</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>権限を変える人が担当者の承認を受けているかを、承認の記録で照合してから通す</div>
 <div class="rx-zone gapz"><b>確認されたこと</b><span>管理アカウントへの不正アクセスと権限昇格<br>導入企業 2 社で個人情報の漏えい（件数は特定中）</span></div>

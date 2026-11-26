@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["211-riken-fugaku-unauthorized-access", "212-plaid-karte-server-flaw-db-credentials"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-25
-  rev: "e798925d158db257"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1202"
+  at: 2026-11-26
+  rev: "36d2502837974f4a"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -90,7 +90,7 @@ Whatever the route, the condition for telling them apart is that, before a share
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking access against the intended recipients and the record of the sharing's scope and period before a shared file is opened, and keeping a record. Detection means noticing the possibility of access by someone other than the intended recipients, cutting off communication with the outside and stopping provision of the service. Dates rely on the Digital Agency's disclosure.</p>
+<p class="rx-ex-cap">A pre-execution check means checking, before a shared file is opened, whether the person opening it is an intended recipient, against the record of the sharing's scope and period, and keeping a record. Detection means noticing the possibility of access by someone other than the intended recipients, cutting off communication with the outside and stopping provision of the service. Dates rely on the Digital Agency's disclosure.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check that the person opening the file is an intended recipient, against the record of scope and period, before letting it through</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Access by someone other than the intended recipients (30 July – 12 November)<br>The possibility that some of the files leaked</span></div>

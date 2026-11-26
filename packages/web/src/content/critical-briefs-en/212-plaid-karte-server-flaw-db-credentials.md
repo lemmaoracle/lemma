@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["210-dentsu-digital-tonariwa-admin-privilege-line-tokens", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "676d572ee37ed67e"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1187"
+  at: 2026-11-26
+  rev: "ac12d82909495c06"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -94,7 +94,7 @@ Whatever the route, the condition for telling them apart is that, before a clien
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking a read against the record of the client company's jobs before client companies' customer data is read out in bulk, and keeping a record. Detection means noticing the unauthorised access, invalidating the stolen credentials, shutting services down and cutting off traffic from the attack source. Dates and times rely on the disclosures by Plaid and client companies.</p>
+<p class="rx-ex-cap">A pre-execution check means checking, before client companies' customer data is read out in bulk, which client company and which of its jobs the reader is reading for, against the record of client companies' jobs, and keeping a record. Detection means noticing the unauthorised access, invalidating the stolen credentials, shutting services down and cutting off traffic from the attack source. Dates and times rely on the disclosures by Plaid and client companies.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check which client company's job the reader is reading for, against the job record, before letting it through</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Theft of connection credentials, and reads from databases and other stores<br>Leak of 79,249 email addresses, integration credentials and part of customer data</span></div>

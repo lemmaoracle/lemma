@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["212-plaid-karte-server-flaw-db-credentials", "211-riken-fugaku-unauthorized-access"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-25
-  rev: "53d65ddfcd4f418f"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1197"
+  at: 2026-11-26
+  rev: "3ed611cd0d58a91c"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -92,7 +92,7 @@ Whatever the route, the condition for telling them apart is that, before login a
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking an attempt against the record of normal use (count, hour and origin) before letting it through at the entry, and keeping a record. Detection means noticing the unauthorised access, isolating the server and cutting off the attacker's access. Dates rely on SBC Medical Group's disclosure.</p>
+<p class="rx-ex-cap">A pre-execution check means checking, before access to a database and logins to an admin console are let through, whether the count, hour and origin of the attempts are within normal use, against the record of use, and keeping a record. Detection means noticing the unauthorised access, isolating the server and cutting off the attacker's access. Dates rely on SBC Medical Group's disclosure.</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check that the count, hour and origin of attempts are within normal use before letting them through</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>A database reached through 770,000 sustained attacks from overseas<br>Personal information taken, including passwords without encryption</span></div>

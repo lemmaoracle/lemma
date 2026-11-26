@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["212-plaid-karte-server-flaw-db-credentials", "211-riken-fugaku-unauthorized-access"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-25
-  rev: "fadb4e4349d5fe8c"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1197"
+  at: 2026-11-26
+  rev: "4ddb8b15a229bfd2"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -92,7 +92,7 @@ search_description: "SBCメディカルグループは、海外からの77万回
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
-<p class="rx-ex-cap">実行の前の照合＝入口への試行を通す前に、その試行を、通常の利用の記録（回数・時間帯・出どころ）と照合し、記録に残すこと。検知＝不正アクセスに気づき、サーバーを隔離して攻撃者からのアクセスを遮断すること。日付は SBC メディカルグループの公表に拠る。</p>
+<p class="rx-ex-cap">実行の前の照合＝データベースへのアクセスと管理画面へのログインを通す前に、試みている者の回数・時間帯・出どころが通常の利用の内かを、利用の記録と照合し、記録に残すこと。検知＝不正アクセスに気づき、サーバーを隔離して攻撃者からのアクセスを遮断すること。日付は SBC メディカルグループの公表に拠る。</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>試みている者の回数・時間帯・出どころが、通常の利用の内かを照合してから通す</div>
 <div class="rx-zone gapz"><b>確認されたこと</b><span>海外からの 77 万回の継続攻撃によるデータベースへの到達<br>暗号化していないパスワードを含む個人情報の取得</span></div>

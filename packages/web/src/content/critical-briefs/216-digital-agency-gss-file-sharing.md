@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["211-riken-fugaku-unauthorized-access", "212-plaid-karte-server-flaw-db-credentials"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-25
-  rev: "425ae10bf7621271"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1202"
+  at: 2026-11-26
+  rev: "ce358abbfc60fbc6"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -90,7 +90,7 @@ search_description: "デジタル庁は、ガバメントソリューション�
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">図表 1</span><span class="rx-ex-t">「検知」と「実行の前の照合」の違い</span></div>
-<p class="rx-ex-cap">実行の前の照合＝共有されたファイルを開く前に、そのアクセスを、正規の共有相手と共有の範囲・期限の記録と照合し、記録に残すこと。検知＝正規の共有相手以外の者からのアクセスの可能性に気づき、外部との通信を遮断して当該サービスの提供を止めること。日付はデジタル庁の公表に拠る。</p>
+<p class="rx-ex-cap">実行の前の照合＝共有されたファイルを開く前に、開こうとしている人が正規の共有相手かどうかを、共有の範囲・期限の記録と照合し、記録に残すこと。検知＝正規の共有相手以外の者からのアクセスの可能性に気づき、外部との通信を遮断して当該サービスの提供を止めること。日付はデジタル庁の公表に拠る。</p>
 <div class="rx-gap">
 <div class="rx-zone proof"><b>実行の前の照合 · 公表からは分からない</b>開こうとしている人が正規の共有相手かを、範囲・期限の記録で照合してから通す</div>
 <div class="rx-zone gapz"><b>確認されたこと</b><span>正規の共有相手先以外の者からのアクセス（7 月 30 日〜11 月 12 日）<br>ファイルの一部が漏えいした可能性</span></div>
