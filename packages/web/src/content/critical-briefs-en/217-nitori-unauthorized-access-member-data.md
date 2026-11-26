@@ -15,10 +15,7 @@ fact_check:
   at: 2026-11-26
   rev: "dde9575eecdb49ed"
   ref: "https://github.com/lemmaoracle/lemma/pull/1219"
-status: draft
-draft_fixed:
-  - date: 2026-11-26
-    note: "Cut overlapping explanations and shortened the text and the cover period figure"
+status: published
 version: "1.0"
 og_lead_ja: "ニトリホールディングスが管理するシステムに第三者が不正にアクセスし、サーバー上の会員情報や注文情報など、最大3,762万件の個人情報が外部に流出した可能性がある"
 og_lead_en: "A third party gained unauthorised access to a system Nitori Holdings manages, and up to 37.62 million records of personal information held on its servers, including member and order information, may have leaked to the outside"
