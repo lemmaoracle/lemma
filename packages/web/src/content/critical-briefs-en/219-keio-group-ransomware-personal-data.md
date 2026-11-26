@@ -13,8 +13,8 @@ related_briefs: ["215-sbc-medical-group-unencrypted-passwords", "216-digital-age
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "55aecb556536ef8d"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1214"
+  rev: "766ae3d74f227119"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1219"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -32,7 +32,7 @@ og_headline_en: "Ransomware hit the group,\nand personal data leaked.\n<accent>A
 key_figures:
   - value: "c. 10.63"
     unit: "million"
-    label: "Customers, business partners and others whose data may have leaked (as of the 24 November disclosure, Keio Corporation). Also c. 360,000 applicants and c. 77,000 staff; counts do not simply add up"
+    label: "Customers, business partners and others whose data may have leaked (as of the 24 November disclosure, Keio Corporation). Also c. 360,000 applicants and c. 77,000 employees and others; counts do not simply add up"
     tone: "alert"
   - value: "c. 12,000"
     label: "Employees, former employees and dependants confirmed as leaked (as of the 24 November disclosure). Also c. 150 tenants and others, and c. 160 applicants"
@@ -149,11 +149,11 @@ Three things to confirm about the scope of personal information held, the links 
 
 - **2026-09-26**: In the early hours, Keio Corporation confirms a ransomware attack on Keio Group servers. It takes measures including cutting off the network and notifies the police. It issues its first notice, saying that no leakage of information had been confirmed at that point.
 - **2026-09-28**: According to a report, Keio Corporation explains that two locations were hit — Keio Group servers and Keio Plaza Hotel servers — and that, as of noon that day, it had not confirmed a ransom demand.
-- **2026-10-16**: Keio Corporation issues its second report (a claim of publication by the organisation is confirmed).
+- **2026-10-16**: Keio Corporation issues its second report (it confirms that the organisation claiming the attack says it has published part of the information).
 - **2026-10-21**: Keio Corporation issues its third report (a report from outside experts that the information was published). It says it has reported to the Personal Information Protection Commission.
 - **2026-11-24**: Keio Corporation submits its final report to the Personal Information Protection Commission and issues a notice on the leakage of personal information.
 
-> The facts of this case rely on Keio Corporation's four disclosures (the primary sources). The 24 November disclosure is the fourth in the series, but its title is "Notice and apology regarding the leakage of personal information due to a ransomware attack" and it is not labelled "fourth report". The number of servers hit and the status of any ransom demand rely on Nikkei xTECH's report. Reports give a cumulative total of about 11.08 million by adding up the category counts. According to reports, an organisation calling itself the ransomware group "Qilin" listed Keio Corporation on its leak site, but Keio Corporation has not disclosed the organisation's name. The date of the preliminary report to the Personal Information Protection Commission has not been stated. What has not been disclosed does not mean that no countermeasures were in place. This Brief does not evaluate any party's response. As of 24 November.
+> The facts of this case rely on Keio Corporation's four disclosures (the primary sources). The 24 November disclosure is the fourth in the series, but its title is "Notice and apology regarding the leakage of personal information due to a ransomware attack" and it is not labelled "fourth report". The number of servers hit and the status of any ransom demand rely on Nikkei xTECH's report. Nikkei's report gives a cumulative total of about 11.08 million by adding up the category counts, but Keio Corporation says they do not simply add up. According to reports, an organisation calling itself the ransomware group "Qilin" listed Keio Corporation on its leak site, but Keio Corporation has not disclosed the organisation's name. The date of the preliminary report to the Personal Information Protection Commission has not been stated. What has not been disclosed does not mean that no countermeasures were in place. This Brief does not evaluate any party's response. As of 24 November.
 
 ### Response after disclosure
 

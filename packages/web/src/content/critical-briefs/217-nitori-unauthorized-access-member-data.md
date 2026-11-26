@@ -13,8 +13,8 @@ related_briefs: ["110-sourcenext-member-api-22m-records", "215-sbc-medical-group
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "64dea95ad04549bd"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1216"
+  rev: "ed696813978b9085"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1219"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -40,7 +40,7 @@ key_figures:
     label: "本件を公表した日。侵入経路は調査中で、アクセスを受けたシステムの名前は公表されていない"
 glossary:
   - term: "最大 3,762 万件"
-    desc: "区分ごとの内訳と、人数としての重なりは公表されていない。情報の組み合わせはお客様ごとに異なる（ニトリホールディングス）。"
+    desc: "流出した可能性がある個人情報の件数。区分ごとの内訳と、人数としての重なりは公表されていない。情報の組み合わせはお客様ごとに異なる（ニトリホールディングス）。"
   - term: "ニトリ公式ショップ"
     desc: "EC モール（複数の店が出店する通販サイト）にニトリが出す店。自社の通販サイト「ニトリネット」とともに、ここを通じた注文データが対象になる。"
 insight:

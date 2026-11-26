@@ -13,8 +13,8 @@ related_briefs: ["216-digital-agency-gss-file-sharing", "212-plaid-karte-server-
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "7c36b1bb938c991c"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1215"
+  rev: "9f3d6bccaf57f228"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1219"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -35,7 +35,7 @@ key_figures:
     label: "Sum of the seven categories confirmed as leaked (by 1 November, Suntory's disclosure). The largest is about 90,000 employees and others; overlap has not been disclosed"
     tone: "alert"
   - value: "10/28 → 10/29"
-    label: "The day an anomaly on the cloud service was detected and the access cut off, and the day files were confirmed to contain personal information"
+    label: "The day an anomaly on the cloud service was detected and the access cut off, and the day some of the files were confirmed to contain personal information"
   - value: "11/2"
     label: "The day the case was disclosed and a preliminary report made to the Personal Information Protection Commission. The intrusion route and method have not been disclosed"
 glossary:

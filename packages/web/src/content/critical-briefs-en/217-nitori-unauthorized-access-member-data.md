@@ -13,8 +13,8 @@ related_briefs: ["110-sourcenext-member-api-22m-records", "215-sbc-medical-group
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "2f229f69e71d3dd1"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1216"
+  rev: "dde9575eecdb49ed"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1219"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -40,7 +40,7 @@ key_figures:
     label: "The day the case was disclosed. The intrusion route is under investigation; the system that was accessed has not been named"
 glossary:
   - term: "Up to 37.62 million records"
-    desc: "No breakdown by category, and no overlap in terms of people, has been disclosed. The combination of information differs from customer to customer (Nitori Holdings)."
+    desc: "The number of records of personal information that may have leaked. Neither a breakdown by category nor the overlap in terms of people has been disclosed. The combination of information differs from customer to customer (Nitori Holdings)."
   - term: "Nitori official shop"
     desc: "The store Nitori runs on e-commerce malls (online marketplaces where many stores sell). Order data placed through it, as well as through Nitori's own online store, Nitori Net, is covered."
 insight:

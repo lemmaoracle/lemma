@@ -13,8 +13,8 @@ related_briefs: ["216-digital-agency-gss-file-sharing", "212-plaid-karte-server-
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "95022b4ebd2eeca4"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1215"
+  rev: "e2ff3d8e2f47ae3a"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1219"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -35,7 +35,7 @@ key_figures:
     label: "漏えいが確認された 7 区分の人数の合計（11 月 1 日まで・サントリーの公表）。最多は従業員などの約 9 万人分で、区分の重なりは公表されていない"
     tone: "alert"
   - value: "10/28 → 10/29"
-    label: "外部クラウドサービス上の異常を検知して遮断した日と、ファイルに個人情報が含まれると確認した日"
+    label: "外部クラウドサービス上の異常を検知して遮断した日と、ファイルの一部に個人情報が含まれると確認した日"
   - value: "11/2"
     label: "本件を公表し、個人情報保護委員会へ速報で報告した日。侵入の経路と手口は公表されていない"
 glossary:
