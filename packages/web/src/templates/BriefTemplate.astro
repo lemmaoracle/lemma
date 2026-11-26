@@ -125,10 +125,16 @@ const readMinutes =
  */
 const isReport = brief.data.layout === "report";
 const coverArt = isReport ? briefCoverArt(brief.data.brief_no) : null;
+/* 表紙の数の札：スマホでは数を左・説明を右に並べる。数が長い（日付の範囲・→ の形など）と
+   左の桁が広がり、説明が細い柱に潰れた（本人 2026-11-26「ニトリは冒頭の数字がスマホでくずれる」）。
+   全角を 2 と数えた幅がこの値以上なら、スマホでは数の下に説明を置く（.rx-fig.long）。 */
+const FIG_LONG = 13;
+const figWidth = (s: string): number =>
+  [...s].reduce((n, c) => n + (/[\u1100-\u115f\u2e80-\ua4cf\uac00-\ud7a3\uf900-\ufaff\ufe30-\ufe4f\uff00-\uff60\uffe0-\uffe6]/.test(c) ? 2 : 1), 0);
 const keyFigures = (isReport ? (brief.data.key_figures ?? []) : []).map(
   (f) => {
     const [from, to] = f.value.split(/\s*→\s*/);
-    return { ...f, from, to };
+    return { ...f, from, to, long: figWidth(`${from}${to ?? ""}`) >= FIG_LONG };
   },
 );
 
@@ -545,7 +551,7 @@ const labels = isJa
                 {keyFigures.length > 0 && (
                   <div class="rx-figs">
                     {keyFigures.map((f) => (
-                      <div class:list={["rx-fig", f.tone === "alert" && "alert"]}>
+                      <div class:list={["rx-fig", f.tone === "alert" && "alert", f.long && "long"]}>
                         {/* 数値・矢印・単位の間に空白を入れない（JSX の改行が空白になる）。 */}
                         <div class="n">{f.from}{f.to !== undefined && <><span class="arw">→</span>{f.to}</>}{f.unit && <small>{f.unit}</small>}</div>
                         <div class="l">{f.label}</div>
@@ -3484,6 +3490,10 @@ const labels = isJa
     }
     .rx-fig:last-child {
       border-bottom: 0;
+    }
+    .rx-fig.long {
+      grid-template-columns: 1fr;
+      gap: 6px;
     }
     .rx-fig .n {
       font-size: 21px;
