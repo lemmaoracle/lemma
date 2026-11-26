@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["174-mobile-alabama-arena-contractor-bank-change", "200-logix-aero-lookalike-domain-engine-sale-invoice"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "a8c2125e900affb2"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "3f433a10fbdee013"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -22,7 +22,7 @@ draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
   - date: 2026-11-27
-    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "米ニュージャージー州クランベリー町、土地の購入の代金約 2,600 万ドルが偽の振込の指示で送られ、1,730 万ドル近くが凍結された"
 og_lead_en: "Cranbury Township, New Jersey wired about $26M for a land purchase on fraudulent instructions; nearly $17.3M has been frozen"

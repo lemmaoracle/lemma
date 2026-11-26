@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "059-vercel-contextai-oauth", "007-pocketos-cursor-db-deletion"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "17ca4cb085c626c1"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "a74816e8bf1a8f5c"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26

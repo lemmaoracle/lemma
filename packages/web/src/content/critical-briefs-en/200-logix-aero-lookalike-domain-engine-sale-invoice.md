@@ -12,15 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["185-studco-fourth-circuit-ach-name-mismatch", "184-singapore-commodity-trader-lookalike-supplier-email", "170-zephyr-energy-contractor-payment-diverted"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "d08d614b20aa01aa"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "185cc6b4eacc1588"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
   - date: 2026-11-27
-    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "Logix Aero、エンジン 2 基の売買のメールに似せたドメインの相手が割り込み、書き換えた契約書の口座へ 824,900 ドルを払った"
 og_lead_en: "Logix Aero paid $824,900 to an account written into contracts doctored by lookalike domains inside an engine deal"

@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["212-plaid-karte-server-flaw-db-credentials", "211-riken-fugaku-unauthorized-access"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "f670b71e36857746"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "b998545a7e4064bc"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26

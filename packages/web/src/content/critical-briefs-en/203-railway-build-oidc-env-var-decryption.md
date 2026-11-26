@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "059-vercel-contextai-oauth", "007-pocketos-cursor-db-deletion"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "cd954ec7c854bfaa"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "0b247a056c4c16b1"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -22,7 +22,7 @@ draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
   - date: 2026-11-27
-    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "Railway で、ビルド基盤の脆弱性と誤った OIDC の設定を経て、最大で約 10 万のワークスペースの環境変数が復号された可能性がある"
 og_lead_en: "At Railway, a build-infrastructure vulnerability and a misconfigured OIDC binding led to the possible decryption of environment variables in up to about 100,000 workspaces"

@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["211-riken-fugaku-unauthorized-access", "212-plaid-karte-server-flaw-db-credentials"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "c090d27ea9047290"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "216d46395e445dc7"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -22,7 +22,7 @@ draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
   - date: 2026-11-27
-    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "デジタル庁のガバメントソリューションサービス（GSS）のファイル共有サービスで、正規の共有相手以外の者からのアクセスがあり、アップロードされていたファイルの一部が漏えいした可能性がある"
 og_lead_en: "On the file-sharing service of the Digital Agency's Government Solution Service (GSS), someone other than the intended recipients accessed files, and some of the uploaded files may have leaked"

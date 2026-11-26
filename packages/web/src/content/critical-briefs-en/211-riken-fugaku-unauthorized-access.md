@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["144-studio-saas-breach-decryption-keys-read", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "651b7e03b0fb41fc"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "33c87136cf5f3439"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -22,7 +22,7 @@ draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
   - date: 2026-11-27
-    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "理研の「富岳」で、公開ダッシュボードを足がかりに運用系へ侵入され、利用者最大4,597名分の情報とSSH秘密鍵が持ち出されたおそれが公表された"
 og_lead_en: "At RIKEN's 'Fugaku', intruders used the public status dashboard to reach the operations network, and records for up to 4,597 users and their SSH private keys may have been taken"

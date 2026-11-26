@@ -12,15 +12,15 @@ related_pack: [B-regulatory]
 related_briefs: ["078-tenncare-connect-medicaid-eligibility", "124-wiser-medicare-ai-prior-authorization"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "0e6fdf8b0b9a0d1b"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "26de2f48a6ab454b"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
   - date: 2026-11-27
-    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "英国 HMRC が渡航データとの突き合わせで児童手当 23,794 件の支給を止め、59% は受給資格ありか雇用の確認で外れたと会計検査院が報告"
 og_lead_en: "HMRC suspended 23,794 Child Benefit claims after matching them against travel data; 59% were confirmed eligible or cleared by an employment check, the NAO reports"

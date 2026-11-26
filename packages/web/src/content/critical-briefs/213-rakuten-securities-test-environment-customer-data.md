@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["142-awa-bank-test-environment-repurposed-leak", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "dc75d93e47fac54a"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "80193cd84b631d43"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
