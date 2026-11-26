@@ -19,6 +19,8 @@ status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "英国 HMRC が渡航データとの突き合わせで児童手当 23,794 件の支給を止め、59% は受給資格ありか雇用の確認で外れたと会計検査院が報告"
 og_lead_en: "HMRC suspended 23,794 Child Benefit claims after matching them against travel data; 59% were confirmed eligible or cleared by an employment check, the NAO reports"
@@ -85,7 +87,7 @@ In the NAO's analysis, 59% of them had been confirmed eligible or removed by the
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is whether the travel-data match was produced under the approved conditions (matching period, data sources, employment check) and does not conflict with other records such as employment.
+Whatever the route, the condition for telling them apart is whether the data match that stops a payment was made under the approved conditions and does not conflict with the facts of employment.
 
 - **Who approves**: The body that approved the matching conditions, and the person accountable for the intervention. When the matching period, data sources or exclusion checks change, an approval for the changed conditions is issued, separate from the approval given for the pilot.
 - **Where it is checked**: The step in which an enquiry is opened and payment suspended. A match that conflicts with employment records, or falls outside the approved conditions, is held rather than suspended, and the claimant is asked first.

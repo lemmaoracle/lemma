@@ -21,6 +21,8 @@ draft_fixed:
     note: "Added the disclosure date (6 November) to the amount (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "米ニュージャージー州クランベリー町、土地の購入の代金約 2,600 万ドルが偽の振込の指示で送られ、1,730 万ドル近くが凍結された"
 og_lead_en: "Cranbury Township, New Jersey wired about $26M for a land purchase on fraudulent instructions; nearly $17.3M has been frozen"
@@ -86,7 +88,7 @@ The township told residents on 6 November. Investigators have frozen nearly $17.
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before wiring money for a land purchase, the payer checks that the account in the wiring instructions was approved by the receiving side, separately from the channel the instructions came through.
+Whatever the route, the condition for telling them apart is whether the account in the payment instruction is one the recipient approved.
 
 - **Who approves**: The receiving side (the seller or a closing agent). It registers the destination account at the start of the closing process and approves any change through a contact registered in advance. Phone numbers or addresses written in the instructions are not used.
 - **Where it is checked**: The approval step before the wire is sent. The account in the instructions is compared with the registered account; if it differs, the wire is held until it can be checked against the receiving side's approval.

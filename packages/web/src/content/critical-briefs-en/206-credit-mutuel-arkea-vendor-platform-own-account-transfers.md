@@ -21,6 +21,8 @@ draft_fixed:
     note: "Band rewritten around approver, payee and cap; added 4 November date (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "フランスの Crédit Mutuel Arkéa で、委託先のプラットフォームを経て入った攻撃者が、銀行の自己勘定から他行へ送金した。同行は報道の 1 億 1,800 万ユーロについて、額は確認せず桁だけを認めた"
 og_lead_en: "At France's Crédit Mutuel Arkéa, attackers who came in through a service provider's platform sent money from the bank's own account to other banks. The bank confirmed only the order of magnitude of the reported €118 million"
@@ -82,7 +84,7 @@ In an FAQ the same day, the bank said the attackers reached it directly through 
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before money is sent from the bank's own account to another bank, the instruction is checked as having passed a registered officer's approval, against the approval record, the payee and the cap, apart from the arriving system's verdict.
+Whatever the route, the condition for telling them apart is whether an own-account transfer to another bank was approved by a registered officer, goes to a registered payee and is within the cap.
 
 - **Who approves**: The bank's treasury officer. For each own-account transfer, they give an approval (such as a key held by each officer) in a form that the settings of the provider's or the bank's own systems alone cannot produce.
 - **Where it is checked**: The step in which the bank executes a transfer to another bank. Whichever system an instruction arrives from, one not tied to a registered officer's approval, one to an unregistered payee, or one over the per-transfer or daily cap is held.

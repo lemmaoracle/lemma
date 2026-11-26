@@ -19,6 +19,8 @@ status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "NTT データの STdirectServices で、委託先 Securitize Japan の SaaS の管理者権限が不正に取得され、社債の購入者 111 名・2,678 名の情報が持ち出された"
 og_lead_en: "At NTT DATA's STdirectServices, administrator rights at contractor Securitize Japan's SaaS were illicitly obtained, and data on 111 and 2,678 bond buyers was taken"
@@ -85,7 +87,7 @@ The data illicitly obtained comprises the names, addresses, dates of birth and m
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is whether the issuer's record of requests, kept apart from administrator rights, shows which issuer's perk procedure a read or export of buyers' personal data rests on.
+Whatever the route, the condition for telling them apart is whether reading or exporting buyers' personal data is part of a benefit procedure the issuer requested.
 
 - **Who approves**: The issuer that entrusted the buyer data, and NTT DATA as the service provider. For each perk procedure they set which bond, which period and which fields are handled, and issue requests in a form the contractor's administrator rights alone cannot produce.
 - **Where it is checked**: The step in the contractor's SaaS that executes reads and exports of buyer data. Even with administrator rights, an operation not tied to the record of requests, or one beyond the scope (issuer, count, fields), is held. Data for bonds whose procedures have ended cannot be read without a request.

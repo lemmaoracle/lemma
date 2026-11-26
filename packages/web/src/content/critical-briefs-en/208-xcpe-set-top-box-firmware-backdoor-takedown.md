@@ -19,6 +19,8 @@ status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "XCPE ボットネット：Android TV のセットトップボックス 130 万台超に事前導入されたバックドアを、Google が警察庁と連携してテイクダウンした"
 og_lead_en: "XCPE botnet: Google, working with Japan's NPA, took down a backdoor preinstalled on more than 1.3 million Android TV set-top boxes"
@@ -84,7 +86,7 @@ On 4 November, Japan's National Police Agency (NPA) said that, after it had work
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a transfer is executed, the request is checked as coming from the customer's own device, against a key the customer registered on that device and not against the source IP address.
+Whatever the route, the condition for telling them apart is whether the request to transfer money or add a payee is one the account holder approved.
 
 - **Who approves**: The account holder. A transfer or a new payee is signed with a key held inside the device the customer registered. A third party holding only the ID and password, or a home device used as a relay, cannot produce that signature.
 - **Where it is checked**: The step at which online banking executes a transfer. Even when the source is a domestic home IP address, a request not tied to the registered device's key is held until the customer confirms it on a registered device.

@@ -21,6 +21,8 @@ draft_fixed:
     note: "Band, label, 03, figure 1 and 01 bold rewritten without metaphors (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "SBCメディカルグループで、海外からの77万回の攻撃でデータベースに到達され、暗号化していなかったパスワードを含む基本情報162万4,000人分などが不正に取得された"
 og_lead_en: "At SBC Medical Group, sustained attacks from overseas — 770,000 in all — reached a database, and basic information on 1,624,000 people, including passwords stored without encryption, was taken without authorisation"
@@ -86,7 +88,7 @@ The information confirmed taken was disclosed by category. The largest, basic in
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before login and access attempts are let through, whether the count, hour and origin of the attempts are within normal use is checked against the record of use.
+Whatever the route, the condition for telling them apart is whether login and access attempts are within normal use in number, time of day and origin.
 
 - **Who issues the record**: The components that run the website and database, and the outside booking service. For each kind of work — bookings, enquiries, clinic operations — they record when, from where and how much access is normal. For a contractor's admin console, the clinics that use it and the scope of operations are decided.
 - **Where it is checked**: The steps for access to the database and for logins to the admin console. An attempt whose count, hour and origin are not tied to normal use in the record is held. The check runs on a mechanism separate from the entry itself.

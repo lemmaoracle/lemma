@@ -21,6 +21,8 @@ draft_fixed:
     note: "Band, label, 03, figure 1, takeaway and 01 bold name the opener (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "デジタル庁のガバメントソリューションサービス（GSS）のファイル共有サービスで、正規の共有相手以外の者からのアクセスがあり、アップロードされていたファイルの一部が漏えいした可能性がある"
 og_lead_en: "On the file-sharing service of the Digital Agency's Government Solution Service (GSS), someone other than the intended recipients accessed files, and some of the uploaded files may have leaked"
@@ -84,7 +86,7 @@ The Digital Agency detected the possibility of the access on 12 November and beg
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a shared file is opened, whether the person opening it is an intended recipient is checked against the record of the sharing's scope and period.
+Whatever the route, the condition for telling them apart is whether the person opening the file is a legitimate share recipient.
 
 - **Who issues the record**: The file-sharing mechanism. Each time a file is shared, it records who the intended recipients are, what scope is shared, and until when. For sharing with people outside the organisations, the result of checking the recipient is also kept in the record.
 - **Where it is checked**: The steps for opening a shared file. Access not tied to an intended recipient in the record is held. The check runs on a mechanism separate from the sharing mechanism itself.

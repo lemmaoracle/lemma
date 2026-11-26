@@ -23,6 +23,8 @@ draft_fixed:
     note: "Figure 1 caption reworded: whether the login belongs to the member (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "Mizkan のコミュニティサイト「ミツカン 365」で、会員 501 名のニックネームとアイコンが書き換えられ、29 名の顧客 ID とメールアドレスが漏えいした"
 og_lead_en: "On Mizkan's community site \"Mizkan 365\", nicknames and icons of 501 members were rewritten, and customer IDs and email addresses of 29 were leaked"
@@ -91,7 +93,7 @@ Through this, customer IDs, registered email addresses and other data of 29 of t
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a member's profile data is rewritten, the member being rewritten is checked as the owner of the login that made the change, against a server-side record kept apart from the content of the request.
+Whatever the route, the condition for telling them apart is whether the person rewriting the registration details is that member.
 
 - **Who approves**: The member who owns the profile data. Only a rewrite from that member's own login counts as their approval. When the operator corrects a member's data, it goes through separately, under the operator staff's rights and a record of the request.
 - **Where it is checked**: The step at which the site saves a rewrite of member data. If the member being rewritten differs from the owner of the login that made the change, it is not saved. Registered text and images are put in a form that cannot run as a program before they appear on other members' screens.

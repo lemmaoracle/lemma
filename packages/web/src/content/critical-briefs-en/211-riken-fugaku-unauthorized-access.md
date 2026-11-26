@@ -21,6 +21,8 @@ draft_fixed:
     note: "Removed the metaphor in the 01 bold; added the 16 November date (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "理研の「富岳」で、公開ダッシュボードを足がかりに運用系へ侵入され、利用者最大4,597名分の情報とSSH秘密鍵が持ち出されたおそれが公表された"
 og_lead_en: "At RIKEN's 'Fugaku', intruders used the public status dashboard to reach the operations network, and records for up to 4,597 users and their SSH private keys may have been taken"
@@ -91,7 +93,7 @@ RIKEN stopped Fugaku's operations at 04:30 on 14 November, cut off outside acces
 
 ## 3. Pre-execution check
 
-Two conditions distinguish the cases regardless of route. One is checking, before publication, how far a public page connects into the inside. The other is checking keys used to connect outwards against records of their owners and locations, and revoking them as soon as a leak is suspected.
+Whatever the route, the condition for telling them apart is whether connections from public pages stay within the set boundary and keys for outward connections have a known owner and have not been revoked.
 
 - **Who checks**: The people who manage the public pages and network configuration of the computing platform, and the people who manage users' keys. In ordinary times they keep records of how far each public page connects inside, and of who placed each key, where, and for what.
 - **Checked against what**: For public pages, the record of the boundary between the public area and the operations network. For keys, the record of owner, location and destination, and the revocation status.

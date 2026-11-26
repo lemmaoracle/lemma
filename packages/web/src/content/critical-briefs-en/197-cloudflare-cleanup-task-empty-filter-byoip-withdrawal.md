@@ -21,6 +21,8 @@ draft_fixed:
     note: "Added the disclosure date (21 February) to the figures (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "Cloudflare で、BYOIP の掃除用の定期処理が空の条件を「すべて」と解釈し、顧客の約 1,100 の IP プレフィックスの経路を取り下げた"
 og_lead_en: "At Cloudflare, a recurring BYOIP cleanup task read an empty condition as \"all\" and withdrew the routes of about 1,100 customer IP prefixes"
@@ -85,7 +87,7 @@ The cause was a cleanup task that regularly looks for prefixes customers have as
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is whether the number and scope of targets match the record of deletion requests customers made, not the task's own query result.
+Whatever the route, the condition for telling them apart is whether the number and scope of what is deleted match the deletions the customer asked for.
 
 - **Who approves**: The customer who owns the prefix. When it requests deletion in the dashboard or API, a record of which prefixes to remove is kept in a form the cleanup task cannot produce.
 - **Where it is checked**: The step at which the cleanup task executes the deletion. If the targets returned by the query do not match the record of deletion requests by count and by prefix, if a condition is empty or unspecified, or if one run exceeds the cap, the deletion is held before execution.

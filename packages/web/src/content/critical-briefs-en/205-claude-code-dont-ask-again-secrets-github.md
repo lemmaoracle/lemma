@@ -19,6 +19,8 @@ status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "Claude Code で「今後は聞かない」と承認したコマンドが秘密情報ごと設定ファイルに保存され、公開の GitHub で 1,122 ファイルに 1,379 件の秘密情報が見つかったと Apiiro が報告"
 og_lead_en: "Commands approved with \"don't ask again\" in Claude Code were saved with their secrets; Apiiro reports 1,379 secrets in 1,122 settings files on public GitHub"
@@ -84,7 +86,7 @@ Claude Code adds the file to the global git excludes, but Apiiro says this does 
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is whether the files in a push are ones the repository's owner has decided may be published, apart from local exclusion settings.
+Whatever the route, the condition for telling them apart is whether the files in the push are ones the owner decided may be made public.
 
 - **Who approves**: The repository's owner (the administrator of the organisation's repositories). They set the list of files that may be published, and treat an AI tool's local settings (such as .claude/settings.local.json) and conversation logs as not on the list.
 - **Where it is checked**: The step that accepts a push to a public repository. A push containing a file not on the list, or content matching a secret format, is held before publication. A second place, earlier, is the step that saves an approved command as an allow rule: if the rule's text contains a secret, it is not saved as it is.

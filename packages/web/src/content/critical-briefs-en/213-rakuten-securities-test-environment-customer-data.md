@@ -23,6 +23,8 @@ draft_fixed:
     note: "Updated to the 24 Nov second report (c. 4.41m records, c. 11.98m accounts)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence at the start of section 3 and moved the means out"
 version: "1.0"
 og_lead_ja: "楽天証券で、テスト環境のシステム内で管理していた顧客の情報が、第三者の不正アクセスで外部に持ち出された"
 og_lead_en: "At Rakuten Securities, customer data held in a test environment system was taken outside through unauthorised access by a third party"
@@ -89,7 +91,7 @@ It says no leak of passwords or PINs, and no unauthorised access or fraudulent t
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before production customer data is copied into a test environment, the accounts and fields copied, the fields masked and the deletion date are checked against the approved test plan.
+Whatever the route, the condition for telling them apart is whether the production data copied to the test environment is within the approved test plan.
 
 - **Who approves**: The side that manages the customer data (the owner of the production data). For each upgrade test, it decides which accounts and fields are needed to check which functions, which fields are masked and how long the copy may stay, and issues the approval separately from the staff who perform the copy.
 - **Where it is checked**: First, just before data is copied from production into the test environment. The check confirms that the number of accounts and the fields fall within the approval and that the fields to be masked are masked; if not, the copy is held. Second, on the approved deletion date. The test environment is checked against the record for remaining production data, and if any is left, the data owner is asked to delete it.
