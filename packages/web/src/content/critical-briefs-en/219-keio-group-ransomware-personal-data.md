@@ -13,7 +13,7 @@ related_briefs: ["215-sbc-medical-group-unencrypted-passwords", "216-digital-age
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "9889e7a20a38e0ba"
+  rev: "55aecb556536ef8d"
   ref: "https://github.com/lemmaoracle/lemma/pull/1214"
 status: draft
 version: "1.0"
@@ -29,10 +29,10 @@ og_headline_en: "Ransomware hit the group,\nand personal data leaked.\n<accent>A
 key_figures:
   - value: "c. 10.63"
     unit: "million"
-    label: "Customers, business partners and others of the Keio Group whose personal information may have leaked. Also about 360,000 people who applied for jobs, and about 77,000 employees, former employees and their dependants. The category counts do not simply add up (Keio Corporation, as of 24 November)"
+    label: "Customers, business partners and others of the Keio Group whose personal information may have leaked. Also about 360,000 people who applied for jobs, and about 77,000 employees, former employees and their dependants. The category counts do not simply add up (as of the 24 November disclosure, Keio Corporation)"
     tone: "alert"
   - value: "c. 12,000"
-    label: "Employees, former employees and their dependants whose personal information was confirmed to have leaked. Leakage was also confirmed for about 150 people such as tenants of rental properties Keio Corporation owns, and about 160 people who applied for jobs (Keio Corporation)"
+    label: "Employees, former employees and their dependants whose personal information was confirmed to have leaked. Leakage was also confirmed for about 150 people such as tenants of rental properties Keio Corporation owns, and about 160 people who applied for jobs (as of the 24 November disclosure, Keio Corporation)"
   - value: "9/26 → 11/24"
     label: "From the day Keio Corporation detected the attack to the day it submitted its final report to the Personal Information Protection Commission and disclosed the results. The route of the attack has not been disclosed"
 glossary:
@@ -43,8 +43,8 @@ glossary:
 insight:
   slug: "bulk-personal-data-read-not-checked-against-business-record"
   stop: true
-  label: "A bulk read that is not in the business record is not business"
-  quote: "Before personal information is read out in bulk and taken outside, check that operation against the record of which company, which business task and how much is being read."
+  label: "Bulk reads of personal data not compared with the business record"
+  quote: "Before personal information is read out in bulk, check whether the person reading it is staying within the scope and volume set for their own company's business work, against the business record."
 industries: ["retail"]
 operations: ["data-access"]
 controls:
@@ -56,8 +56,8 @@ controls:
     item: "Keep a record of who read which personal information and when, so the scope of a leak can be checked afterwards"
 attack_method: "account-takeover"
 impact: "Personal information on about 10.63 million customers, business partners and others of the Keio Group, about 360,000 people who applied for jobs, and about 77,000 employees, former employees and their dependants may have leaked (the category counts do not simply add up). Leakage was confirmed for about 12,000 employees, former employees and their dependants, about 150 people such as tenants of rental properties, and about 160 people who applied for jobs. The information that may have leaked also includes about 1.6 million copies of passports of guests from overseas, credit card numbers, and about 46,000 identity documents. The route of the attack has not been disclosed. No secondary harm has been confirmed"
-takeaway: "In a group of 47 companies spanning railways, hotels, a department store and real estate, confirmed leakage of personal information on employees and others, and possible leakage for customers and others, were disclosed after a ransomware attack. If the operation of reading personal information out in bulk within the group is not compared with the business record, taking data out goes through just like everyday work. Before data is taken out, check that operation against the record of which company and which business task the read is for, and do not keep copies once the task is done."
-self_check: "Do you have a mechanism that checks bulk reads of personal information against the business record before letting them through?"
+takeaway: "After a ransomware attack on the Keio Group's servers, it was disclosed that personal information on employees and others was confirmed to have leaked, and that personal information on customers and others may also have leaked. The companies involved number 47, spanning railways, hotels, a department store and real estate. Unless someone confirms which company and which business task the person reading personal information in bulk is reading it for, an attacker's taking of data cannot be told apart from everyday business reads. Before a bulk read, check against the record whether the person reading is within the scope and volume of their own company's business work, and do not keep copies once the task is done."
+self_check: "Do you have a mechanism that checks, against the business record, whether the person reading personal information in bulk is within the scope and volume of their own company's business work?"
 countries: ["jp"]
 search_title: "京王電鉄ランサムウェア：1,063万人に漏えいの可能性"
 search_description: "京王電鉄は、グループのサーバーへのランサムウェア攻撃で、従業員など約1.2万人の個人情報の漏えいを確認し、顧客など約1,063万人に漏えいの可能性があると公表した（11月24日）。何が起きたか、なぜ通ったか、対策を整理。"
@@ -69,7 +69,7 @@ In the early hours of 26 September 2026, Keio Corporation confirmed a ransomware
 
 On 24 November, Keio Corporation submitted its final report to the Personal Information Protection Commission and disclosed the results of its investigation. Leakage was confirmed for personal information on about 12,000 employees, former employees and their dependants, among others. Personal information that may have leaked covers about 10.63 million customers, business partners and others, among other categories, and includes about 1.6 million copies of passports of guests from overseas. The route of the attack has not been disclosed; up to the third report, Keio Corporation said it was continuing to investigate the route. No secondary harm has been confirmed.
 
-<strong>If the operation of reading personal information out in bulk within the group is not compared with the business record, taking data out goes through just like everyday work.</strong>
+<strong>Unless someone confirms which company and which business task the person reading personal information in bulk is reading it for, an attacker's taking of data cannot be told apart from everyday business reads.</strong>
 
 ## 2. What got through
 
@@ -80,7 +80,7 @@ On 24 November, Keio Corporation submitted its final report to the Personal Info
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before personal information is read out in bulk, the operation is checked against the record of which company, which business task and how much is being read.
+Whatever the route, the condition for telling them apart is that, before personal information is read out in bulk, whether the person reading it is staying within the scope and volume set for their own company's business work is checked against the business record.
 
 - **Who issues the record**: The business systems of each company that holds personal information. For each task — reservations, contracts, recruitment, HR — it records which data is normally read, by whom and in what volume. When data passes between group companies, the recipient and the purpose are also recorded.
 - **Where it is checked**: The steps for reading data out in bulk from servers that hold personal information. The check confirms whether the operation is tied to a company, a task and a volume in the record; reads that are not are held. The check runs on a mechanism separate from the servers themselves.
@@ -88,9 +88,9 @@ Whatever the route, the condition for telling them apart is that, before persona
 
 <figure class="rx-ex">
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
-<p class="rx-ex-cap">A pre-execution check means checking the operation against the record of which company, which business task and how much is being read before personal information is read out in bulk and taken outside, and keeping a record. Detection means noticing the ransomware attack and cutting off the network. Dates are the dates of Keio Corporation's disclosures.</p>
+<p class="rx-ex-cap">A pre-execution check means checking, before personal information is read out in bulk, whether the person reading it is within the scope and volume set for their own company's business work, against the business record, and keeping a record. Detection means noticing the ransomware attack and cutting off the network. Dates are the dates of Keio Corporation's disclosures.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check bulk reads of personal information against the business record before letting them through</div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosure</b>Check against the record that the reader is within their company's business scope and volume before letting it through</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Publication of information claimed to have been stolen<br>Leakage of personal information on employees and others, and possible leakage for customers and others</span></div>
 <div class="rx-zone det"><b>Detection · worked</b>The attack detected and the network cut off</div>
 <div class="rx-g g1"><div class="t">09-26</div><b>Keio Corporation detects the attack and cuts off the network</b></div>
