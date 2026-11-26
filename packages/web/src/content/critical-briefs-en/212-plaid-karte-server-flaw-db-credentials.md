@@ -16,6 +16,9 @@ fact_check:
   rev: "676d572ee37ed67e"
   ref: "https://github.com/lemmaoracle/lemma/pull/1187"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Band, 03 opening and figure 1 now name the reader and the client's job (#53)"
 version: "1.0"
 og_lead_ja: "プレイドの KARTE で、サーバーの脆弱性から接続用の認証情報が盗まれ、メールアドレス 79,249 件と外部連携の認証情報、利用企業の顧客データの一部が漏えいした"
 og_lead_en: "At Plaid's KARTE, connection credentials were stolen through a server vulnerability, and 79,249 email addresses, integration credentials and part of client companies' customer data leaked"
@@ -45,7 +48,7 @@ insight:
   slug: "db-credential-read-not-tied-to-client-job"
   stop: true
   label: "A read with connection credentials does not show a client's request"
-  quote: "Before a client company's customer data is read out in bulk, check that read against the record of the client company's jobs, not against the connection credentials."
+  quote: "Before a client company's customer data is read out in bulk, check which client company, and which of its jobs, the reader is reading for, against the record of client companies' jobs, not against the connection credentials."
 industries: ["retail", "supply-chain"]
 operations: ["data-access", "account-admin"]
 controls:
@@ -83,7 +86,7 @@ The leak was confirmed for 79,249 email addresses registered as KARTE accounts, 
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a client company's customer data is read out in bulk, the read is checked against the record of the client company's jobs, kept apart from the connection credentials.
+Whatever the route, the condition for telling them apart is that, before a client company's customer data is read out in bulk, which client company, and which of its jobs, the reader is reading for is checked against the record of client companies' jobs, kept apart from the connection credentials.
 
 - **Who issues the record**: The KARTE components that run jobs such as tracking, sending and matching member data. For each job, they record which client company's data, and what scope of it, will be read. Client companies decide which data to import and how long to use it.
 - **Where it is checked**: The step at which client companies' customer data is read out of a database in bulk. The check confirms that the read is tied to a client's job and scope in the record; a read that is not is held. The check runs on a server separate from the connection credentials, with a separate key. Where the server itself is taken over and the check is skipped altogether, this check is bypassed.
@@ -93,7 +96,7 @@ Whatever the route, the condition for telling them apart is that, before a clien
 <div class="rx-ex-h"><span class="rx-ex-no">Exhibit 1</span><span class="rx-ex-t">Detection vs pre-execution check</span></div>
 <p class="rx-ex-cap">A pre-execution check means checking a read against the record of the client company's jobs before client companies' customer data is read out in bulk, and keeping a record. Detection means noticing the unauthorised access, invalidating the stolen credentials, shutting services down and cutting off traffic from the attack source. Dates and times rely on the disclosures by Plaid and client companies.</p>
 <div class="rx-gap">
-<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check a read of customer data against the record of a client's job before letting it through</div>
+<div class="rx-zone proof"><b>Pre-execution check · not known from the disclosures</b>Check which client company's job the reader is reading for, against the job record, before letting it through</div>
 <div class="rx-zone gapz"><b>What was confirmed</b><span>Theft of connection credentials, and reads from databases and other stores<br>Leak of 79,249 email addresses, integration credentials and part of customer data</span></div>
 <div class="rx-zone det"><b>Detection · worked</b>Credentials invalidated, all services shut down and traffic cut off</div>
 <div class="rx-g g1"><div class="t">11-13</div><b>Access in the early hours; Plaid detects it at 08:59</b></div>

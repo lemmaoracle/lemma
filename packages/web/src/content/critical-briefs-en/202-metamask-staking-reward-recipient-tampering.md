@@ -16,6 +16,9 @@ fact_check:
   rev: "bf080ba32931d608"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Added when each figure was disclosed or reported (5 November, 1 October) (#53)"
 version: "1.0"
 og_lead_ja: "MetaMask Staking で、報酬の受取先を保管するインフラに不正アクセスがあり、一部のバリデーターの受取先が書き換えられて約 0.385 ETH の報酬が流れた"
 og_lead_en: "At MetaMask Staking, unauthorised access to the infrastructure storing reward recipient addresses let an attacker alter some validators' recipients and divert about 0.385 ETH"
@@ -29,13 +32,13 @@ og_headline_en: "Reward payout addresses\nwere altered after a breach\nof where 
 key_figures:
   - value: "c. 0.385"
     unit: "ETH"
-    label: "Rewards diverted by the altered recipients (execution-layer rewards, separate from the ETH customers staked; MetaMask disclosure)"
+    label: "Rewards diverted by the altered recipients (execution-layer rewards, separate from the ETH customers staked; as of the 5 November disclosure; MetaMask disclosure)"
     tone: "alert"
   - value: "09-28 → 11-05"
     label: "From MetaMask identifying the incident to disclosing the recipient changes (2026; MetaMask disclosure)"
   - value: "c. 523,000"
     unit: "ETH"
-    label: "Stake held by the roughly 17,000 validators exited as a precaution (a researcher's estimate, not confirmed by MetaMask; Decrypt)"
+    label: "Stake held by the roughly 17,000 validators exited as a precaution (a researcher's estimate, not confirmed by MetaMask; as reported on 1 October; Decrypt)"
 glossary:
   - term: "Validator"
     desc: "On Ethereum, a setup that stakes ETH as collateral to take part in confirming transactions and earns rewards for it. MetaMask Staking runs validators on behalf of clients and partners."

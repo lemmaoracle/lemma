@@ -16,6 +16,9 @@ fact_check:
   rev: "325e8d9306ec707b"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Band rewritten around approver, payee and cap; added 4 November date (#53)"
 version: "1.0"
 og_lead_ja: "フランスの Crédit Mutuel Arkéa で、委託先のプラットフォームを経て入った攻撃者が、銀行の自己勘定から他行へ送金した。同行は報道の 1 億 1,800 万ユーロについて、額は確認せず桁だけを認めた"
 og_lead_en: "At France's Crédit Mutuel Arkéa, attackers who came in through a service provider's platform sent money from the bank's own account to other banks. The bank confirmed only the order of magnitude of the reported €118 million"
@@ -29,7 +32,7 @@ og_headline_en: "Via a vendor's platform,\nmoney left the bank's\nown account.\n
 key_figures:
   - value: "c. €100"
     unit: "million"
-    label: "Scale of the money sent from the bank's own account. On the reported €118 million ($133 million), the bank did not confirm the amount and validated only the order of magnitude (bank's FAQ). AFP reported that the bank gave a provisional estimate of around €100 million"
+    label: "Scale of the money sent from the bank's own account. On the reported €118 million ($133 million), the bank did not confirm the amount and validated only the order of magnitude (as of the 4 November disclosure; bank's FAQ). AFP reported that the bank gave a provisional estimate of around €100 million"
     tone: "alert"
   - value: "11-02 → 11-04"
     label: "From the day blockchain investigator ZachXBT flagged suspicious crypto withdrawals to the day the bank disclosed the attack (Silicon.fr, CSO, bank's press release)"
@@ -44,7 +47,7 @@ insight:
   slug: "own-account-transfer-reached-via-vendor"
   stop: true
   label: "Own-account transfers reachable through a vendor's route"
-  quote: "Before sending money from the bank's own account to another bank, check the instruction against the registered officer's approval, the registered payee and the cap, not against the route it arrived by."
+  quote: "Before sending money from the bank's own account to another bank, check whether the person approving it is a registered officer, and whether the payee is registered and the amount within the cap, against internal records rather than the route the instruction arrived by."
 industries: ["finance"]
 operations: ["approval"]
 controls:

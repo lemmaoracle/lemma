@@ -16,6 +16,9 @@ fact_check:
   rev: "8d7b4aac309b1c08"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "帯の見出しを、権限を書き出すと読めない形に直した（#53）"
 version: "1.0"
 og_lead_ja: "NTT データの STdirectServices で、委託先 Securitize Japan の SaaS の管理者権限が不正に取得され、社債の購入者 111 名・2,678 名の情報が持ち出された"
 og_lead_en: "At NTT DATA's STdirectServices, administrator rights at contractor Securitize Japan's SaaS were illicitly obtained, and data on 111 and 2,678 bond buyers was taken"
@@ -44,7 +47,7 @@ glossary:
 insight:
   slug: "admin-export-not-tied-to-issuer-request"
   stop: true
-  label: "管理者権限の書き出しは、発行体の依頼を示さない"
+  label: "管理者権限があっても、書き出しが発行体の依頼とは限らない"
   quote: "購入者の個人情報を書き出す前に、その書き出しがどの発行体のどの特典の手続きかを、管理者権限ではなく発行体の依頼の記録で照合する。"
 industries: ["finance", "supply-chain"]
 operations: ["data-access", "account-admin"]

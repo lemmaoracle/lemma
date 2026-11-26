@@ -16,6 +16,9 @@ fact_check:
   rev: "e811eb1fab8f46df"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "takeaway の主語の重なりを直し、数の時点（2 月 21 日の公表）を足した（#53）"
 version: "1.0"
 og_lead_ja: "Cloudflare で、BYOIP の掃除用の定期処理が空の条件を「すべて」と解釈し、顧客の約 1,100 の IP プレフィックスの経路を取り下げた"
 og_lead_en: "At Cloudflare, a recurring BYOIP cleanup task read an empty condition as \"all\" and withdrew the routes of about 1,100 customer IP prefixes"
@@ -29,13 +32,13 @@ og_headline_en: "A cleanup task read\nan empty filter as \"all\"\nand pulled cus
 key_figures:
   - value: "約 1,100"
     unit: "件"
-    label: "経路が取り下げられた BYOIP のプレフィックス（BYOIP の 4,306 件の約 25%・17:56〜18:46 UTC・同社の事後報告）"
+    label: "経路が取り下げられた BYOIP のプレフィックス（BYOIP の 4,306 件の約 25%・17:56〜18:46 UTC・2 月 21 日の公表時点・同社の事後報告）"
     tone: "alert"
   - value: "17:56 → 23:03"
     label: "影響の始まりから、すべてのプレフィックスが戻るまで（2026-02-20・UTC・同社は事案の長さを 6 時間 7 分とする）"
   - value: "約 300"
     unit: "件"
-    label: "サービスの設定がエッジから消え、顧客がダッシュボードから戻せなかったプレフィックス（同社の事後報告）"
+    label: "サービスの設定がエッジから消え、顧客がダッシュボードから戻せなかったプレフィックス（2 月 21 日の公表時点・同社の事後報告）"
 glossary:
   - term: "BYOIP（Bring Your Own IP）"
     desc: "顧客が自社で持つ IP アドレスの範囲を Cloudflare に預け、Cloudflare のネットワークからインターネットに広告してもらうサービス。"
@@ -59,7 +62,7 @@ controls:
     item: "どの処理が、どの条件で、どの顧客の設定を消したかを、元の状態とともに処理とは別に残す"
 attack_method: "human-error"
 impact: "BYOIP のプレフィックス約 1,100 件の経路が取り下げられ、CDN・Spectrum・Dedicated Egress・Magic Transit を使う一部の顧客に約 6 時間の影響（同社の事後報告）。攻撃ではない"
-takeaway: "BYOIP の掃除用の定期処理が、値なしで渡した条件が「すべての BYOIP」と解釈され、約 1,100 件の経路を取り下げた。照会の結果が正しい対象とは限らない。消す前に、件数と範囲を削除の依頼の記録と照合する。"
+takeaway: "BYOIP の掃除用の定期処理で、値なしで渡した条件が「すべての BYOIP」と解釈され、約 1,100 件の経路が取り下げられた。照会の結果が正しい対象とは限らない。消す前に、件数と範囲を削除の依頼の記録と照合する。"
 self_check: "定期の自動処理が顧客の設定を消すとき、1 回に消せる件数の上限と、対象を決める条件の扱いを把握しているか。"
 countries: ["us"]
 ---

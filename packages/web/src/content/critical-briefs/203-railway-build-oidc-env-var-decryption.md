@@ -16,6 +16,9 @@ fact_check:
   rev: "ed7b5f9bf1e500b4"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "帯と見出しの語を分かりやすくし、数の時点（11 月 10 日の公表）を足した（#53）"
 version: "1.0"
 og_lead_ja: "Railway で、ビルド基盤の脆弱性と誤った OIDC の設定を経て、最大で約 10 万のワークスペースの環境変数が復号された可能性がある"
 og_lead_en: "At Railway, a build-infrastructure vulnerability and a misconfigured OIDC binding led to the possible decryption of environment variables in up to about 100,000 workspaces"
@@ -29,14 +32,14 @@ og_headline_en: "In through the builders,\npast a bad OIDC setting,\nto decrypte
 key_figures:
   - value: "最大 1.85"
     unit: "%"
-    label: "環境変数のいずれかが復号された可能性のあるワークスペースの割合（約 100,000・記録が示すのは環境の単位で、上限の値・Railway のインシデント報告）"
+    label: "環境変数のいずれかが復号された可能性のあるワークスペースの割合（約 100,000・記録が示すのは環境の単位で、上限の値・11 月 10 日の公表時点・Railway のインシデント報告）"
     tone: "alert"
   - value: "353"
     unit: "件"
     label: "攻撃者が Temporal から履歴を読んだビルドの数（秘匿された変数を含む・10 月 20 日 13:50〜15:30 UTC）"
   - value: "約 74 万"
     unit: "米ドル"
-    label: "盗まれた鍵での不正な利用額の見積り（Railway のインシデント報告）"
+    label: "盗まれた鍵での不正な利用額の見積り（11 月 10 日の公表時点・Railway のインシデント報告）"
 glossary:
   - term: "環境変数"
     desc: "アプリの外から渡す設定の値。API キーやデータベースの接続情報などの秘密情報を入れることが多い。Railway では環境ごとの鍵で暗号化して保存する。"
@@ -47,8 +50,8 @@ glossary:
 insight:
   slug: "workload-credential-not-tied-to-deploy"
   stop: true
-  label: "出された認証情報は、作業を示さない"
-  quote: "CI/CD にクラウドの認証情報を出す前に、交換を求めた作業が、どのリポジトリのどの配置かを、信頼の設定の一致ではなく配置の記録で照合する。"
+  label: "出された認証情報は、作業が本物かを示さない"
+  quote: "CI/CD にクラウドの認証情報を出す前に、認証情報を求めてきた作業が、どのリポジトリのどの配置（デプロイ）の作業かを、信頼の設定の一致ではなく配置の記録で照合する。"
 industries: ["developers", "ai"]
 operations: ["account-admin", "data-access"]
 controls:

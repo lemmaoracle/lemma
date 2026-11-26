@@ -16,6 +16,9 @@ fact_check:
   rev: "ea80e9c214fa2ff0"
   ref: "https://github.com/lemmaoracle/lemma/pull/1185"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "帯の見出しの語と「部店」を直し、口座数の時点（11 月 17 日の公表）を足した（#53）"
 version: "1.0"
 og_lead_ja: "楽天証券で、テスト環境のシステム内で管理していた顧客の情報が、第三者の不正アクセスで外部に漏えいしたおそれ"
 og_lead_en: "At Rakuten Securities, customer data held in a test environment system may have leaked through unauthorised access by a third party"
@@ -29,11 +32,11 @@ og_headline_en: "Live customer data\nheld in a test environment\nmay have leaked
 key_figures:
   - value: "約 447 万"
     unit: "口座"
-    label: "氏名・住所・出金先口座・年収と金融資産の申告などが外部に漏えいしたおそれがある口座（最大・退会者を含む・楽天証券）"
+    label: "氏名・住所・出金先口座・年収と金融資産の申告などが外部に漏えいしたおそれがある口座（最大・退会者を含む・11 月 17 日の公表時点・楽天証券）"
     tone: "alert"
   - value: "約 1,125 万"
     unit: "口座"
-    label: "部店・お客様コードとログイン ID が外部に漏えいしたおそれがある口座（最大・ログイン ID は楽天 ID とは異なる・楽天証券）"
+    label: "口座ごとの番号（部店・お客様コード）とログイン ID が外部に漏えいしたおそれがある口座（最大・ログイン ID は楽天 ID とは異なる・11 月 17 日の公表時点・楽天証券）"
   - value: "11-11 → 11-16"
     label: "テスト環境の情報が外部に漏えいしたおそれがある日から、楽天証券が不正アクセスの可能性を検知するまで"
 glossary:
@@ -46,7 +49,7 @@ glossary:
 insight:
   slug: "production-copy-scope-unchecked"
   stop: true
-  label: "範囲を照らさずにテスト環境へ写る本番データ"
+  label: "範囲を確かめずにテスト環境へ写る本番データ"
   quote: "本番の顧客データをテスト環境へ写す前に、写す口座と項目、伏せる項目、消す日を、承認された検証の計画と照合する。"
 industries: ["finance"]
 operations: ["data-access", "disclosure"]

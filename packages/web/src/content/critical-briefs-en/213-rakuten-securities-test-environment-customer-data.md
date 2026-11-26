@@ -16,6 +16,9 @@ fact_check:
   rev: "4cedd6f92027b023"
   ref: "https://github.com/lemmaoracle/lemma/pull/1185"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "Explained branch and customer codes; added the 17 November date (#53)"
 version: "1.0"
 og_lead_ja: "楽天証券で、テスト環境のシステム内で管理していた顧客の情報が、第三者の不正アクセスで外部に漏えいしたおそれ"
 og_lead_en: "At Rakuten Securities, customer data held in a test environment system may have leaked through unauthorised access by a third party"
@@ -29,11 +32,11 @@ og_headline_en: "Live customer data\nheld in a test environment\nmay have leaked
 key_figures:
   - value: "c. 4.47m"
     unit: "accounts"
-    label: "Accounts whose names, addresses, withdrawal bank accounts, declared income and financial assets and more may have leaked (maximum; includes closed accounts; Rakuten Securities)"
+    label: "Accounts whose names, addresses, withdrawal bank accounts, declared income and financial assets and more may have leaked (maximum; includes closed accounts; as of the 17 November disclosure; Rakuten Securities)"
     tone: "alert"
   - value: "c. 11.25m"
     unit: "accounts"
-    label: "Accounts whose branch and customer codes and login IDs may have leaked (maximum; the login ID is not the Rakuten ID; Rakuten Securities)"
+    label: "Accounts whose per-account numbers (branch and customer codes) and login IDs may have leaked (maximum; the login ID is not the Rakuten ID; as of the 17 November disclosure; Rakuten Securities)"
   - value: "11-11 → 11-16"
     label: "From the day data in the test environment may have leaked to the day Rakuten Securities detected possible unauthorised access"
 glossary:

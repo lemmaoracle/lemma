@@ -16,6 +16,9 @@ fact_check:
   rev: "9a1b7b87e3ea31f1"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "帯の「一元の保管先」を言い換え、数の時点（11 月 5 日・10 月 1 日）を足した（#53）"
 version: "1.0"
 og_lead_ja: "MetaMask Staking で、報酬の受取先を保管するインフラに不正アクセスがあり、一部のバリデーターの受取先が書き換えられて約 0.385 ETH の報酬が流れた"
 og_lead_en: "At MetaMask Staking, unauthorised access to the infrastructure storing reward recipient addresses let an attacker alter some validators' recipients and divert about 0.385 ETH"
@@ -29,13 +32,13 @@ og_headline_en: "Reward payout addresses\nwere altered after a breach\nof where 
 key_figures:
   - value: "約 0.385"
     unit: "ETH"
-    label: "受取先の書き換えで流れた報酬（実行層の報酬・顧客がステーキングに預けた ETH とは別・MetaMask の公表）"
+    label: "受取先の書き換えで流れた報酬（実行層の報酬・顧客がステーキングに預けた ETH とは別・11 月 5 日の公表時点・MetaMask の公表）"
     tone: "alert"
   - value: "09-28 → 11-05"
     label: "MetaMask が事案を把握してから、受取先の書き換えを公表するまで（2026 年・MetaMask の公表）"
   - value: "約 523,000"
     unit: "ETH"
-    label: "予防のために退出を始めたバリデーター約 17,000 の預かり（研究者の推計・MetaMask は確認していない・Decrypt）"
+    label: "予防のために退出を始めたバリデーター約 17,000 の預かり（研究者の推計・MetaMask は確認していない・10 月 1 日の報道時点・Decrypt）"
 glossary:
   - term: "バリデーター"
     desc: "イーサリアムで、預かった ETH を担保に取引の承認に加わり、報酬を受け取る仕組み。MetaMask Staking は、顧客やパートナーのためにバリデーターを運営する。"
@@ -45,7 +48,7 @@ insight:
   slug: "payout-recipient-taken-from-central-store"
   stop: true
   label: "保管先の値がそのまま受取先になる"
-  quote: "報酬の受取先を変更する前に、新しい受取先を、一元の保管先の値ではなく、顧客が指定した受取先の記録で照合する。"
+  quote: "報酬の受取先を変更する前に、新しい受取先を、まとめて保管している場所の値ではなく、顧客が指定した受取先の記録で照合する。"
 industries: ["finance"]
 operations: ["payment-change", "account-admin"]
 controls:

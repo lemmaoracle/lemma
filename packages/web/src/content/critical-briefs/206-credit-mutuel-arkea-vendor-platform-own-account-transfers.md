@@ -16,6 +16,9 @@ fact_check:
   rev: "42999f3be0ac5c24"
   ref: "https://github.com/lemmaoracle/lemma/pull/1184"
 status: draft
+draft_fixed:
+  - date: 2026-11-26
+    note: "帯を承認した人と送金先・上限で書き直し、額の時点（11 月 4 日）を足した（#53）"
 version: "1.0"
 og_lead_ja: "フランスの Crédit Mutuel Arkéa で、委託先のプラットフォームを経て入った攻撃者が、銀行の自己勘定から他行へ送金した。同行は報道の 1 億 1,800 万ユーロについて、額は確認せず桁だけを認めた"
 og_lead_en: "At France's Crédit Mutuel Arkéa, attackers who came in through a service provider's platform sent money from the bank's own account to other banks. The bank confirmed only the order of magnitude of the reported €118 million"
@@ -29,7 +32,7 @@ og_headline_en: "Via a vendor's platform,\nmoney left the bank's\nown account.\n
 key_figures:
   - value: "約 1 億"
     unit: "ユーロ"
-    label: "自己勘定から送られた額の規模。報道の 1 億 1,800 万ユーロ（1 億 3,300 万ドル）について、同行は額を確認せず、桁だけを認めた（同行の FAQ）。AFP は、同行が暫定の見積もりで約 1 億ユーロとしたと伝えた"
+    label: "自己勘定から送られた額の規模。報道の 1 億 1,800 万ユーロ（1 億 3,300 万ドル）について、同行は額を確認せず、桁だけを認めた（11 月 4 日の公表時点・同行の FAQ）。AFP は、同行が暫定の見積もりで約 1 億ユーロとしたと伝えた"
     tone: "alert"
   - value: "11-02 → 11-04"
     label: "ブロックチェーンの調査者 ZachXBT が暗号資産の不審な引き出しを指摘した日から、同行が攻撃を公表した日まで（Silicon.fr・CSO・同行の発表）"
@@ -44,7 +47,7 @@ insight:
   slug: "own-account-transfer-reached-via-vendor"
   stop: true
   label: "委託先の経路から出せる自己勘定の送金"
-  quote: "自己勘定から他行へ送金する前に、その指示を、どの経路から届いたかではなく、社内で登録した担当の承認と送金先と上限で照合する。"
+  quote: "自己勘定から他行へ送金する前に、承認した人が登録した担当か、送金先が登録済みで額が上限の内かを、届いた経路ではなく社内の記録で照合する。"
 industries: ["finance"]
 operations: ["approval"]
 controls:
