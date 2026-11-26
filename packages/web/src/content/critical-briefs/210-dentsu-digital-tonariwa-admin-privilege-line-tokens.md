@@ -13,8 +13,8 @@ related_briefs: ["204-ntt-data-stdirect-vendor-saas-admin-rights", "154-yumirlin
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "af43cb2df1f99b69"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
+  rev: "baa0c48fb3baec5d"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-20

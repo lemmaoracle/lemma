@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["032-booking-payout-account-tampering", "175-storm-2657-university-payroll-diversion", "196-bithumb-event-reward-btc-payout-error"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "9a1b7b87e3ea31f1"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "b5d2501f04c01070"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26

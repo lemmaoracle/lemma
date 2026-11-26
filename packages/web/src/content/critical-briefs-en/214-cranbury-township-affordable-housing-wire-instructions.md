@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["174-mobile-alabama-arena-contractor-bank-change", "200-logix-aero-lookalike-domain-engine-sale-invoice"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "ce4ab32e05ebf09a"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1186"
+  at: 2026-11-26
+  rev: "a8c2125e900affb2"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26

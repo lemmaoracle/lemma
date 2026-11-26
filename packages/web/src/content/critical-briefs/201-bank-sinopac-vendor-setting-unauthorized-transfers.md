@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["135-zombie-cards-visa-contactless-expiry", "069-connectwise-cloud-backup-app-identity-credential-abuse", "162-hatena-police-impersonation-remote-transfer"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "bd31a74596cf53de"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1192"
+  at: 2026-11-26
+  rev: "7dc23d3bcebbab05"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-20
@@ -87,7 +87,7 @@ countries: ["tw"]
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、送金の指示が本人の認証を経たものかと、額が 1 回の上限の内かである。
+経路を問わず区別できる条件は、送金の指示が本人の認証を経たものかを、取引システムの判定とは別に銀行が持つ認証の記録で確かめられるかと、額が 1 回の上限の内かである。
 
 - **誰が承認を出すか**: 口座の本人。ログインや送金のときの認証（登録した端末・SMS・顔認証など）で、取引システムの設定だけでは作れない形の承認を、送金の指示ごとに出す。
 - **どこで照合するか**: 銀行が送金を実行する手順。本人の認証の記録と結びつかない指示、1 回・1 日の上限を超える指示、短い時間に多くの口座から同じ受取口座へ集まる指示は保留する。

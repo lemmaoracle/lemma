@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["154-yumirlink-cuenote-support-credential-db-export", "193-amadeus-system-account-airline-booking-data", "167-zeabur-second-breach-admin-token"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "dff5575779082332"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "4218ab1fc3e4e996"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -85,7 +85,7 @@ The data illicitly obtained comprises the names, addresses, dates of birth and m
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is which issuer's perk procedure a read or export of buyers' personal data rests on.
+Whatever the route, the condition for telling them apart is whether the issuer's record of requests, kept apart from administrator rights, shows which issuer's perk procedure a read or export of buyers' personal data rests on.
 
 - **Who approves**: The issuer that entrusted the buyer data, and NTT DATA as the service provider. For each perk procedure they set which bond, which period and which fields are handled, and issue requests in a form the contractor's administrator rights alone cannot produce.
 - **Where it is checked**: The step in the contractor's SaaS that executes reads and exports of buyer data. Even with administrator rights, an operation not tied to the record of requests, or one beyond the scope (issuer, count, fields), is held. Data for bonds whose procedures have ended cannot be read without a request.

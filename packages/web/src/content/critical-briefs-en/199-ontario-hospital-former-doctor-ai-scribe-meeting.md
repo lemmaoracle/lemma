@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["157-met-police-auror-unapproved-platform", "172-illuminate-education-ftc-former-customer-data"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "94aca2a5da1429f5"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "979fec15a919ac37"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26

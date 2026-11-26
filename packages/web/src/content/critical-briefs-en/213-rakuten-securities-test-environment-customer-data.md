@@ -13,8 +13,8 @@ related_briefs: ["142-awa-bank-test-environment-repurposed-leak", "204-ntt-data-
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "b1ae82535b517996"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
+  rev: "41343369fc69ed91"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -92,7 +92,7 @@ It says no leak of passwords or PINs, and no unauthorised access or fraudulent t
 Whatever the route, the condition for telling them apart is that, before production customer data is copied into a test environment, the accounts and fields copied, the fields masked and the deletion date are checked against the approved test plan.
 
 - **Who approves**: The side that manages the customer data (the owner of the production data). For each upgrade test, it decides which accounts and fields are needed to check which functions, which fields are masked and how long the copy may stay, and issues the approval separately from the staff who perform the copy.
-- **Where it is checked**: First, just before data is copied from production into the test environment. The check confirms that the number of accounts and the fields fall within the approval and that the fields to be masked are masked; if not, the copy is held. Second, on the approved deletion date. The record is checked for remaining production data, and if any is left, the data owner is asked to delete it.
+- **Where it is checked**: First, just before data is copied from production into the test environment. The check confirms that the number of accounts and the fields fall within the approval and that the fields to be masked are masked; if not, the copy is held. Second, on the approved deletion date. The test environment is checked against the record for remaining production data, and if any is left, the data owner is asked to delete it.
 - **What is recorded**: Which production data was placed in the test environment, on whose approval, from when until when, and when it was deleted. This is kept apart from the test environment, so the affected accounts and fields can be identified later.
 
 <figure class="rx-ex">

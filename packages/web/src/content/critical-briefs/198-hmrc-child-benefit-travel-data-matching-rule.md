@@ -12,9 +12,9 @@ related_pack: [B-regulatory]
 related_briefs: ["078-tenncare-connect-medicaid-eligibility", "124-wiser-medicare-ai-prior-authorization"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "f96cda57ac6b017c"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "ad9a94c1ced087fb"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26

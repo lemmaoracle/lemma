@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["007-pocketos-cursor-db-deletion", "080-replit-agent-code-freeze-data-loss"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "51181e5b2073c8e6"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "2c397c24379bd7f3"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26

@@ -13,8 +13,8 @@ related_briefs: ["184-singapore-commodity-trader-lookalike-supplier-email", "200
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "76990758f5684e6e"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
+  rev: "c645e52f388c3cf6"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-20

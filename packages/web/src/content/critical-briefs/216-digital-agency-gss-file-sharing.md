@@ -13,8 +13,8 @@ related_briefs: ["211-riken-fugaku-unauthorized-access", "212-plaid-karte-server
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "ce358abbfc60fbc6"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
+  rev: "809d6b0c3eaa94d6"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26

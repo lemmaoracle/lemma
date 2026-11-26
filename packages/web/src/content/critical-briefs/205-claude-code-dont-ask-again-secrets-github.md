@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["037-agent-config-auto-execution", "027-librechat-mcp-url-secrets", "062-claude-code-github-action-bot-trust"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "a9aa88df1c642d4b"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "8a784df7afe5fb00"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -145,7 +145,7 @@ AI のコーディングツールを使うリポジトリについて、組織�
 ## 5. 事実と時系列
 
 - **当事者**: Claude Code の提供元の Anthropic（米国）と、Claude Code を使う開発者・組織。調べたのはアプリケーションのセキュリティの会社 Apiiro である。
-- **起きたこと**: Apiiro によれば、Claude Code にデータベースの確認や API の呼び出しを頼むと、提案するコマンドに秘密情報が入ることがあり、「今後は聞かない」と承認すると秘密情報ごと保存される。Anthropic の文書も、この承認が allow の規則として保存されると記している。Apiiro は、これをモデルではなく Claude Code の動きとし、16 のコーディングエージェントのうち、承認したコマンドの全文を既定でプロジェクトのファイルに書くと確認できたのは Claude Code だけだったとしている。
+- **起きたこと**: Apiiro によれば、Claude Code にデータベースの確認や API の呼び出しを頼むと、提案するコマンドに秘密情報が入ることがあり、「Yes, and don't ask again」で承認すると秘密情報ごと保存される。Anthropic の文書も、この承認が allow の規則として保存されると記している。Apiiro は、これをモデルではなく Claude Code の動きとし、16 のコーディングエージェントのうち、承認したコマンドの全文を既定でプロジェクトのファイルに書くと確認できたのは Claude Code だけだったとしている。
 - **除外の仕組み**: Anthropic の文書によれば、Claude Code は git リポジトリの中でこのファイルを初めて書くとき、まだ無視されていなければ global の git excludes に足す。手でファイルを作った場合は、自分で .gitignore に足すよう求めている。Apiiro によれば、後から git のリポジトリになったフォルダ、別の機械の clone、すでに commit されたファイルは守られず、追跡されているファイルにはその後の承認も書き足される。
 - **調べた範囲と数**: Apiiro は 2026 年 11 月 1〜3 日に、GitHub のコード検索と commit 検索で公開のリポジトリを読んだ。.claude/settings.local.json は 104,185 個（103,617 リポジトリ）あり、1,122 個（約 1.1%）に本物の秘密情報があった。異なる値は 1,379 件（提供元の形式の鍵 636・公開されたホストのパスワードやトークン 743）で、データベースのパスワード 379、SSH のログイン 43、GitHub・GitLab・npm のトークン 42、AWS の鍵 23 などを含む。211 の fork（74 リポジトリ）が同じ秘密情報を持ち、過去の版には今の写しに無い秘密情報が 734 件（509 リポジトリ）あった。git の履歴・共有の .claude/settings.json・会話の記録まで含めると、1,994 リポジトリで 2,539 件だった。
 - **調べ方と限界**: Apiiro は資格情報を使っておらず、試してもいない。「本物の秘密情報」は、提供元の鍵の形式に合うか公開されたホストを指すもので、有効と確かめたものではない。2,774 の値を、規則と、それとは別の LLM のレビューで分け、両方が当たったものだけを数えた。影響のある組織は 63 だった。

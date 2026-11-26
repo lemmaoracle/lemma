@@ -13,8 +13,8 @@ related_briefs: ["144-studio-saas-breach-decryption-keys-read", "204-ntt-data-st
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "7f5c138ba7919211"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
+  rev: "a8f557481144b883"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26

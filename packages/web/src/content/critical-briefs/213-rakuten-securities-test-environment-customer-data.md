@@ -13,8 +13,8 @@ related_briefs: ["142-awa-bank-test-environment-repurposed-leak", "204-ntt-data-
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "a19d36008a18ff79"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
+  rev: "dc75d93e47fac54a"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26

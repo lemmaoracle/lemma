@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "059-vercel-contextai-oauth", "007-pocketos-cursor-db-deletion"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "9a258aa8da2a2816"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "cd954ec7c854bfaa"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26
@@ -67,7 +67,7 @@ controls:
     item: "Record, apart from the key service, which caller decrypted which environment's values for which job"
 attack_method: "supply-chain"
 impact: "Up to 1.85% of workspaces (about 100,000) could have had any environment variable decrypted (an upper bound). Linked-account tokens of 1,852 users were decrypted, and unauthorised spend on the stolen keys was estimated at about USD 740,000 (Railway's incident report)"
-takeaway: "A correctly issued credential does not mean the job using it is genuine. Before cloud credentials are issued to CI/CD and before secrets are decrypted, check against the deployment record."
+takeaway: "An issued credential does not mean the job using it is genuine. Before cloud credentials are issued to CI/CD and before secrets are decrypted, check against the deployment record."
 self_check: "Do you know the conditions under which your CI/CD can receive cloud credentials, down to which repository and which job?"
 countries: ["us"]
 ---
@@ -88,7 +88,7 @@ According to Railway, at most 1.85% of workspaces (about 100,000) could have had
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is which repository's which deployment a credential exchange or a decryption request is for.
+Whatever the route, the condition for telling them apart is whether a deployment record, kept apart from the trust configuration's match and the keys at hand, shows which repository's which deployment a credential exchange or a decryption request is for.
 
 - **Who approves**: The owner of the deployment at the company running the platform. They decide which job, from which repository and branch, may reach which cloud environment with which permissions, and keep this as a deployment record in a form that CI/CD and build credentials cannot produce.
 - **Where it is checked**: In two places: the step that issues cloud credentials in an OIDC exchange, and the step that asks the KMS to decrypt. An exchange that matches the trust configuration but cannot be tied to the deployment record is held. A decryption for a deployment not in the record, or one spanning many customers' environments, is also held.

@@ -13,8 +13,8 @@ related_briefs: ["164-capcom-id-password-change-ecommerce-mypage", "168-goodsmil
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "519014a3b003a9a3"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
+  rev: "f889c59dd12a9318"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-20

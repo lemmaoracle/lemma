@@ -13,8 +13,8 @@ related_briefs: ["212-plaid-karte-server-flaw-db-credentials", "211-riken-fugaku
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "3ed611cd0d58a91c"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
+  rev: "7912871ea57f30d8"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26

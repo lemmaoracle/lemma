@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["037-agent-config-auto-execution", "027-librechat-mcp-url-secrets", "062-claude-code-github-action-bot-trust"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "6288ba2a1e9a39e3"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1184"
+  at: 2026-11-26
+  rev: "2471b1054d26112d"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26

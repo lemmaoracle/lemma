@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["085-secret-network-axelar-bridge-infinite-mint", "190-iwai-cosmo-tradeworks-admin-function-unintended-orders"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "299bd71f4e64ac21"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1192"
+  at: 2026-11-26
+  rev: "c3ae9edede11c161"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-20

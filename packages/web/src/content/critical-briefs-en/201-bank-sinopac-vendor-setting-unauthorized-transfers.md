@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["135-zombie-cards-visa-contactless-expiry", "069-connectwise-cloud-backup-app-identity-credential-abuse", "162-hatena-police-impersonation-remote-transfer"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-20
-  rev: "7f50307072f0bd35"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1192"
+  at: 2026-11-26
+  rev: "066d5cc2eea27a92"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-20
@@ -87,7 +87,7 @@ On 4 November the bank said outside hackers had exploited the vendor's security 
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is whether a transfer instruction passed customer authentication and the amount is within the per-transfer cap.
+Whatever the route, the condition for telling them apart is whether a transfer instruction can be shown to have passed customer authentication by the bank's own authentication record, apart from the transaction system's verdict, and whether the amount is within the per-transfer cap.
 
 - **Who approves**: The account holder. Through the authentication at login or transfer (a registered device, SMS, facial recognition and the like), they give an approval for each transfer instruction in a form the transaction system's settings alone cannot produce.
 - **Where it is checked**: The step in which the bank executes a transfer. Instructions not tied to an authentication record, over the per-transfer or daily cap, or from many accounts converging on one payee in a short time are held.

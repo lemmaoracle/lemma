@@ -13,8 +13,8 @@ related_briefs: ["210-dentsu-digital-tonariwa-admin-privilege-line-tokens", "204
 fact_check:
   by: "Claude Opus 5.5"
   at: 2026-11-26
-  rev: "ac12d82909495c06"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1218"
+  rev: "9b669b2c8fdef364"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
 status: draft
 draft_fixed:
   - date: 2026-11-26
