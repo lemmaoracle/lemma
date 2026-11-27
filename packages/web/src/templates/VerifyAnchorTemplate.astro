@@ -254,6 +254,14 @@ const DOC = {
   verifyIdLabel: "verifyId",
   noProof: "このドキュメントにはまだ proof が登録されていません",
   noProofEn: "No proof has been registered for this document yet.",
+  // proof の無い登録（ドキュメントの指紋だけ・例：CLUBS の日報・作業報告書）は失敗ではない。
+  // 上の「改ざんされていません」が確かめた結果なので、赤くせず種類だけを伝える。
+  docOnly: "ⓘ 記録の登録（ゼロ知識証明なし）",
+  docOnlyEn: "Record registration (no zero-knowledge proof)",
+  docOnlyBody:
+    "この記録は、中身の指紋（DOC HASH）と登録日時を Lemma に残す形です。上の「改ざんされていません」が、確かめた結果です。",
+  docOnlyBodyEn:
+    "This record keeps its fingerprint and time on Lemma. The result above is the check.",
   verifyNetErr: "検証リクエストに失敗しました",
   verifyNetErrEn: "The verification request failed.",
   verifyInvalid: "証明は無効です",
@@ -620,6 +628,14 @@ const DOC = {
         </details></div>`;
         return;
       }
+      if (state === "docOnly") {
+        el.innerHTML = `<div class="pv-status none" role="status">
+          <span class="pv-mark">${DOC.docOnly}</span>
+          <span class="en">${DOC.docOnlyEn}</span>
+          <p class="pv-err">${DOC.docOnlyBody}<span class="en">${DOC.docOnlyBodyEn}</span></p>
+        </div>`;
+        return;
+      }
       // failed
       const msg = data && data.message ? data.message : DOC.verifyNetErr;
       const msgEn = data && data.messageEn ? data.messageEn : DOC.verifyNetErrEn;
@@ -638,10 +654,8 @@ const DOC = {
           { headers: { accept: "application/json" } },
         );
         if (gr.status === 404) {
-          setProofVerifyState("failed", {
-            message: DOC.noProof,
-            messageEn: DOC.noProofEn,
-          });
+          // proof の無い登録は失敗ではない（ドキュメントの指紋だけの記録）。
+          setProofVerifyState("docOnly");
           return;
         }
         if (!gr.ok) {
@@ -1559,6 +1573,13 @@ const DOC = {
   .v9 .pv-status.ok .pv-mark {
     color: var(--ok);
     font-weight: 500;
+  }
+  .v9 .pv-status.none .pv-mark {
+    color: #d8ddd1;
+    font-weight: 500;
+  }
+  .v9 .pv-status.none .pv-err {
+    color: #aab1a4;
   }
   .v9 .pv-status.fail .pv-mark {
     color: #e0906f;
