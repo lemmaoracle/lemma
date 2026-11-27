@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["204-ntt-data-stdirect-vendor-saas-admin-rights", "154-yumirlink-cuenote-support-credential-db-export"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "baa0c48fb3baec5d"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "888288c441187a68"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-20
@@ -23,6 +23,8 @@ draft_fixed:
     note: "帯・03 の冒頭・図表1を、権限を変える人が承認を受けているかで書き直した（#53）"
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "電通デジタルの TONARIWA で、漏えいした認証情報で管理アカウントに入られて権限が広げられ、導入企業 2 社の個人情報の漏えいが確認された"
 og_lead_en: "At Dentsu Digital's TONARIWA, leaked credentials let a third party into an administrative account and widen its permissions, and leaks were confirmed at two client companies"
@@ -88,7 +90,7 @@ search_description: "電通デジタルの TONARIWA で、漏えいした認証�
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、管理アカウントの操作の範囲を広げる前に、権限を変えようとしている人が担当者の承認を受けているかを、ログインに使われた認証情報とは別の承認の記録で照合することである。
+経路を問わず区別できる条件は、権限を広げようとしている人が、担当者の承認を受けているかどうかである。
 
 - **誰が承認を出すか**: 基盤を運営する電通デジタルの、権限の変更を承認する担当者。どのアカウントに、どの操作を、どの期間認めるかを決め、管理アカウントの認証情報だけでは作れない形で承認を出す。配信については、LINE 公式アカウントを持つ導入企業が、配信の計画を出す。
 - **どこで照合するか**: 1 つ目は、基盤が管理アカウントの権限を変更する手順。承認の記録と結びつかない変更は保留し、広がる前の範囲のまま扱う。2 つ目は、基盤が導入企業の LINE 公式アカウントから配信を実行する手順。配信が、どの導入企業のどの配信計画に基づくかを照合し、結びつかない配信は保留する。

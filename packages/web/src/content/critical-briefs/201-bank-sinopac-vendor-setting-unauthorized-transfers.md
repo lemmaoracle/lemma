@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["135-zombie-cards-visa-contactless-expiry", "069-connectwise-cloud-backup-app-identity-credential-abuse", "162-hatena-police-impersonation-remote-transfer"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "7dc23d3bcebbab05"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "f89f4a688d4934c4"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-20
@@ -23,6 +23,8 @@ draft_fixed:
     note: "帯を、指示した人の認証と 1 回の上限という人と条件で書き直した（#53）"
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "台湾の永豊銀行で、新しいネットバンキングの取引システムの提供元の安全の設定が外部のハッカーに利用され、418 人の口座から 427 件・約 4,176 万台湾ドルが不正に送金された"
 og_lead_en: "At Taiwan's Bank SinoPac, outside hackers exploited the vendor's security settings on a new online banking system, and NT$41.76 million left 418 customers' accounts in 427 transfers"
@@ -87,7 +89,7 @@ countries: ["tw"]
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、送金の指示が本人の認証を経たものかを、取引システムの判定とは別に銀行が持つ認証の記録で確かめられるかと、額が 1 回の上限の内かである。
+経路を問わず区別できる条件は、送金の指示が、口座の本人が認証を済ませたもので、額が 1 回の上限の内かどうかである。
 
 - **誰が承認を出すか**: 口座の本人。ログインや送金のときの認証（登録した端末・SMS・顔認証など）で、取引システムの設定だけでは作れない形の承認を、送金の指示ごとに出す。
 - **どこで照合するか**: 銀行が送金を実行する手順。本人の認証の記録と結びつかない指示、1 回・1 日の上限を超える指示、短い時間に多くの口座から同じ受取口座へ集まる指示は保留する。

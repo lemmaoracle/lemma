@@ -12,15 +12,17 @@ related_pack: [A-incident-response]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "059-vercel-contextai-oauth", "007-pocketos-cursor-db-deletion"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "cd954ec7c854bfaa"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "0b247a056c4c16b1"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Clarified the insight label and added the disclosure date (10 November) (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "Railway で、ビルド基盤の脆弱性と誤った OIDC の設定を経て、最大で約 10 万のワークスペースの環境変数が復号された可能性がある"
 og_lead_en: "At Railway, a build-infrastructure vulnerability and a misconfigured OIDC binding led to the possible decryption of environment variables in up to about 100,000 workspaces"
@@ -88,7 +90,7 @@ According to Railway, at most 1.85% of workspaces (about 100,000) could have had
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is whether a deployment record, kept apart from the trust configuration's match and the keys at hand, shows which repository's which deployment a credential exchange or a decryption request is for.
+Whatever the route, the condition for telling them apart is whether the job asking for credentials or decryption belongs to an approved repository and deployment.
 
 - **Who approves**: The owner of the deployment at the company running the platform. They decide which job, from which repository and branch, may reach which cloud environment with which permissions, and keep this as a deployment record in a form that CI/CD and build credentials cannot produce.
 - **Where it is checked**: In two places: the step that issues cloud credentials in an OIDC exchange, and the step that asks the KMS to decrypt. An exchange that matches the trust configuration but cannot be tied to the deployment record is held. A decryption for a deployment not in the record, or one spanning many customers' environments, is also held.

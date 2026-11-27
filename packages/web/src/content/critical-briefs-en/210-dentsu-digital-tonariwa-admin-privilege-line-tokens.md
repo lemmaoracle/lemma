@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["204-ntt-data-stdirect-vendor-saas-admin-rights", "154-yumirlink-cuenote-support-credential-db-export"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "1ca67c961076139b"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "98350eae048fd761"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-20
@@ -23,6 +23,8 @@ draft_fixed:
     note: "Band, 03 opening and figure 1 now name the person changing permissions (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "電通デジタルの TONARIWA で、漏えいした認証情報で管理アカウントに入られて権限が広げられ、導入企業 2 社の個人情報の漏えいが確認された"
 og_lead_en: "At Dentsu Digital's TONARIWA, leaked credentials let a third party into an administrative account and widen its permissions, and leaks were confirmed at two client companies"
@@ -87,7 +89,7 @@ According to the second notice (12 November), logs showing data being taken out 
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before an administrative account's scope of operations is widened, whether the person changing the permissions has the approval of the staff in charge is checked against a record of approvals kept apart from the credentials used to log in.
+Whatever the route, the condition for telling them apart is whether the person widening the permissions has the approval of the responsible staff.
 
 - **Who approves**: The staff at Dentsu Digital, as platform operator, who approve permission changes. They set which account may perform which operations for how long, and issue approvals in a form the administrative account's credentials alone cannot produce. For sending, the client company that owns the LINE Official Account issues the sending plan.
 - **Where it is checked**: First, the step at which the platform changes an administrative account's permissions. A change not tied to the record of approvals is held, and the account keeps its scope from before the change. Second, the step at which the platform sends from a client company's LINE Official Account. The send is checked as resting on a specific client's sending plan, and a send not tied to one is held.

@@ -12,15 +12,17 @@ related_pack: [A-incident-response]
 related_briefs: ["201-bank-sinopac-vendor-setting-unauthorized-transfers", "081-bybit-safe-wallet-ui-injection", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "0b905dcb8207e1dd"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "5c103d41eeab59cd"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "帯を承認した人と送金先・上限で書き直し、額の時点（11 月 4 日）を足した（#53）"
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "フランスの Crédit Mutuel Arkéa で、委託先のプラットフォームを経て入った攻撃者が、銀行の自己勘定から他行へ送金した。同行は報道の 1 億 1,800 万ユーロについて、額は確認せず桁だけを認めた"
 og_lead_en: "At France's Crédit Mutuel Arkéa, attackers who came in through a service provider's platform sent money from the bank's own account to other banks. The bank confirmed only the order of magnitude of the reported €118 million"
@@ -82,7 +84,7 @@ countries: ["fr"]
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、自己勘定から他行へ送金する前に、指示が登録した担当の承認を経たものかを、届いた系統の判定とは別に、承認の記録と送金先と上限で照合することである。
+経路を問わず区別できる条件は、自己勘定から他行への送金が、登録した担当の承認を経て、送金先が登録済みで額が上限の内かどうかである。
 
 - **誰が承認を出すか**: 銀行の資金の担当。自己勘定からの送金ごとに、委託先の系統や社内の系統の設定だけでは作れない形の承認（担当ごとの鍵など）を出す。
 - **どこで照合するか**: 銀行が他行への送金を実行する手順。指示がどの系統から届いても、登録した担当の承認と結びつかない指示、登録の無い送金先への指示、1 回・1 日の上限を超える指示は保留する。

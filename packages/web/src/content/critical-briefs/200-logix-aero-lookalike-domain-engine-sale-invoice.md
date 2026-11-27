@@ -12,13 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["185-studco-fourth-circuit-ach-name-mismatch", "184-singapore-commodity-trader-lookalike-supplier-email", "170-zephyr-energy-contractor-payment-diverted"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "f12183f234bd6322"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "7c6e5824224bba89"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "Logix Aero、エンジン 2 基の売買のメールに似せたドメインの相手が割り込み、書き換えた契約書の口座へ 824,900 ドルを払った"
 og_lead_en: "Logix Aero paid $824,900 to an account written into contracts doctored by lookalike domains inside an engine deal"
@@ -82,7 +84,7 @@ countries: ["gb", "ie"]
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、書類に書かれた口座が取り決めた口座と同じか、違うなら取引先が、メールで届いた書類とは別の経路で認めたものかである。
+経路を問わず区別できる条件は、支払う先の口座が、取引先が認めた口座かどうかである。
 
 - **誰が承認を出すか**: 売り手。代金を受ける口座を、取引の初めに登録し、変えるときは前から登録してある電話番号や売り手の鍵での署名で認める。メールの本文や添付に書かれた連絡先は使わない。
 - **どこで照合するか**: 代金を払う前の承認の手順。契約書と請求書の口座を、登録済みの口座（この事案では LOI に書かれた口座）と照らし、違えば、売り手の承認と照合できるまで支払いを保留する。

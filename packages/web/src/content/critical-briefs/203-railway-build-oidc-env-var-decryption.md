@@ -12,15 +12,17 @@ related_pack: [A-incident-response]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "059-vercel-contextai-oauth", "007-pocketos-cursor-db-deletion"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "17ca4cb085c626c1"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "a74816e8bf1a8f5c"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "帯と見出しの語を分かりやすくし、数の時点（11 月 10 日の公表）を足した（#53）"
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "Railway で、ビルド基盤の脆弱性と誤った OIDC の設定を経て、最大で約 10 万のワークスペースの環境変数が復号された可能性がある"
 og_lead_en: "At Railway, a build-infrastructure vulnerability and a misconfigured OIDC binding led to the possible decryption of environment variables in up to about 100,000 workspaces"
@@ -88,7 +90,7 @@ Railway によれば、環境変数のいずれかが復号された可能性が
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、認証情報の交換と復号の依頼が、どのリポジトリのどの配置の作業かを、信頼の設定の一致や手元の鍵とは別の配置の記録で確かめられるかである。
+経路を問わず区別できる条件は、認証情報や復号を求めてきた作業が、認められたリポジトリと配置の作業かどうかである。
 
 - **誰が承認を出すか**: 基盤を運用する会社の、配置の持ち主。どのリポジトリのどのブランチの、どの配置の作業が、どのクラウドの環境に、どの権限で届いてよいかを決め、配置の記録として、CI/CD やビルドの認証情報では作れない形で残す。
 - **どこで照合するか**: 2 か所ある。OIDC の交換でクラウドの認証情報を出す手順と、KMS に復号を求める手順。信頼の設定の条件に合っても、配置の記録と結びつかない交換は保留する。記録にない配置のための復号や、多くの顧客の環境にまたがる復号も保留する。

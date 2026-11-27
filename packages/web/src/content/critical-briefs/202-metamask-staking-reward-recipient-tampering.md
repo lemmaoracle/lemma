@@ -12,15 +12,17 @@ related_pack: [A-incident-response]
 related_briefs: ["032-booking-payout-account-tampering", "175-storm-2657-university-payroll-diversion", "196-bithumb-event-reward-btc-payout-error"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "b5d2501f04c01070"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "bbd06b782c96bc71"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "帯の「一元の保管先」を言い換え、数の時点（11 月 5 日・10 月 1 日）を足した（#53）"
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "MetaMask Staking で、報酬の受取先を保管するインフラに不正アクセスがあり、一部のバリデーターの受取先が書き換えられて約 0.385 ETH の報酬が流れた"
 og_lead_en: "At MetaMask Staking, unauthorised access to the infrastructure storing reward recipient addresses let an attacker alter some validators' recipients and divert about 0.385 ETH"
@@ -82,7 +84,7 @@ MetaMask は書き換えを同じ日に見つけて直し、予防のため、�
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、新しい受取先が、保管先に書かれた値かどうかではなく、ステーキングを委ねた顧客の指定と結びつくかである。
+経路を問わず区別できる条件は、新しい受取先が、ステーキングを委ねた顧客が指定したものかどうかである。
 
 - **誰が承認を出すか**: ステーキングを委ねた顧客（機関やパートナー）。報酬の受取先を顧客の鍵で署名して指定し、変更するときも、顧客の署名した指定で出す。運営者の保管先に書き込めるだけでは、この指定は作れない。
 - **どこで照合するか**: 受取先の設定をバリデーターに反映する手順（報酬の支払いに使われる前）。顧客の指定と合わない受取先は、反映の前に保留する。保管先そのものの値も、反映のたびに顧客の指定と突き合わせる。

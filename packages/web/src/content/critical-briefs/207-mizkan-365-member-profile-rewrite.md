@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["164-capcom-id-password-change-ecommerce-mypage", "168-goodsmile-payment-page-tampering", "190-iwai-cosmo-tradeworks-admin-function-unintended-orders"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "c39941a6a1c7254e"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "22fdc4e6960a6b2c"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-20
@@ -23,6 +23,8 @@ draft_fixed:
     note: "帯・03・図表1・takeaway を、操作した人のログインが会員本人のものかで書き直した（#53）"
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "Mizkan のコミュニティサイト「ミツカン 365」で、会員 501 名のニックネームとアイコンが書き換えられ、29 名の顧客 ID とメールアドレスが漏えいした"
 og_lead_en: "On Mizkan's community site \"Mizkan 365\", nicknames and icons of 501 members were rewritten, and customer IDs and email addresses of 29 were leaked"
@@ -91,7 +93,7 @@ search_description: "Mizkan の「ミツカン 365」で会員 501 名のニッ�
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、会員の登録情報を書き換える前に、操作した人のログインが、書き換える先の会員本人のものかを、操作の中身とは別のサーバ側の記録で照合することである。
+経路を問わず区別できる条件は、登録情報を書き換えようとしている人が、その会員本人かどうかである。
 
 - **誰が承認を出すか**: 登録情報の持ち主である会員本人。本人のログインからの書き換えだけが、本人の承認として扱われる。運営側が会員の情報を直すときは、運営の担当者の権限と依頼の記録で別に通す。
 - **どこで照合するか**: サイトが会員情報の書き換えを保存する手順。書き換える先の会員と、操作したログインの持ち主が違えば保存しない。登録された文字や画像は、ほかの会員の画面に出す前に、プログラムとして動かない形にする。

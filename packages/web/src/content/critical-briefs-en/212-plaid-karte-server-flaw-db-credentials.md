@@ -12,15 +12,17 @@ related_pack: [A-incident-response]
 related_briefs: ["210-dentsu-digital-tonariwa-admin-privilege-line-tokens", "204-ntt-data-stdirect-vendor-saas-admin-rights"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "9b669b2c8fdef364"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "16282ae939025a2e"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Band, 03 opening and figure 1 now name the reader and the client's job (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "プレイドの KARTE で、サーバーの脆弱性から接続用の認証情報が盗まれ、メールアドレス 79,249 件と外部連携の認証情報、利用企業の顧客データの一部が漏えいした"
 og_lead_en: "At Plaid's KARTE, connection credentials were stolen through a server vulnerability, and 79,249 email addresses, integration credentials and part of client companies' customer data leaked"
@@ -88,7 +90,7 @@ The leak was confirmed for 79,249 KARTE account email addresses, credentials use
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before a client company's customer data is read out in bulk, which client company, and which of its jobs, the reader is reading for is checked against the record of client companies' jobs, kept apart from the connection credentials.
+Whatever the route, the condition for telling them apart is whether whoever reads customer data in bulk is reading it as part of a client company's processing.
 
 - **Who issues the record**: The KARTE components that run jobs such as tracking, sending and matching member data. For each job, they record which client company's data, and what scope of it, will be read. Client companies decide which data to import and how long to use it.
 - **Where it is checked**: The step at which client companies' customer data is read out of a database in bulk. A read not tied to a client's job and scope in the record is held. The check runs on a server separate from the connection credentials, with a separate key.

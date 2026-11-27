@@ -12,13 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["157-met-police-auror-unapproved-platform", "172-illuminate-education-ftc-former-customer-data"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "d35b0f88f745a1ed"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "0e573d000293f410"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "オンタリオ州の病院で、退職した医師の AI 文字起こしツールが招待の残った会議に自動で参加し、患者 7 人の診断や治療の情報を記録した"
 og_lead_en: "At an Ontario hospital, a former physician's AI transcription tool auto-joined a meeting through a leftover invite and recorded seven patients' diagnoses and treatment"
@@ -83,7 +85,7 @@ countries: ["ca"]
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、参加者の一人ひとりが今の在籍者か病院が承認したツールかを、招待の宛先とは別の記録で確かめることである。
+経路を問わず区別できる条件は、会議の参加者が、今の在籍者か、病院が承認したツールかどうかである。
 
 - **誰が承認を出すか**: 会議を主催する診療科と、在籍を管理する人事・医局。患者の情報を話す会議ごとに、出てよい人と使ってよい記録のツールを決め、招待の宛先とは別の名簿として持つ。辞めた日に名簿から外れる。
 - **どこで照合するか**: 会議の参加を受け入れる手順（待合室）と、患者の情報を話し始める前。参加者を在籍の記録と承認済みのツールの一覧に当て、合わない参加者は入れる前に保留する。招待のリンクを持っていることは、在籍の代わりにしない。

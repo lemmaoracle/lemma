@@ -12,15 +12,17 @@ related_pack: [A-incident-response]
 related_briefs: ["007-pocketos-cursor-db-deletion", "080-replit-agent-code-freeze-data-loss"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "9d32bd33cf4d9892"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "a2cd80ddc1d45b44"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "takeaway の主語の重なりを直し、数の時点（2 月 21 日の公表）を足した（#53）"
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "Cloudflare で、BYOIP の掃除用の定期処理が空の条件を「すべて」と解釈し、顧客の約 1,100 の IP プレフィックスの経路を取り下げた"
 og_lead_en: "At Cloudflare, a recurring BYOIP cleanup task read an empty condition as \"all\" and withdrew the routes of about 1,100 customer IP prefixes"
@@ -85,7 +87,7 @@ countries: ["us"]
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、消す対象の件数と範囲が、処理自身の照会の結果ではなく、顧客が出した削除の依頼の記録と合うかである。
+経路を問わず区別できる条件は、消す対象の件数と範囲が、顧客が依頼した削除と合うかどうかである。
 
 - **誰が承認を出すか**: プレフィックスの持ち主である顧客。ダッシュボードや API で削除を依頼したときに、どのプレフィックスを消すかの記録を、掃除用の処理では作れない形で残す。
 - **どこで照合するか**: 掃除用の処理が削除を実行する手順。照会で返った対象が、削除の依頼の記録と件数・プレフィックスごとに合わないとき、条件が空や未指定のとき、1 回の件数が上限を超えるときは、実行の前に保留する。

@@ -12,13 +12,15 @@ related_pack: [B-regulatory]
 related_briefs: ["078-tenncare-connect-medicaid-eligibility", "124-wiser-medicare-ai-prior-authorization"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "ad9a94c1ced087fb"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "d90d57caa923c856"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "英国 HMRC が渡航データとの突き合わせで児童手当 23,794 件の支給を止め、59% は受給資格ありか雇用の確認で外れたと会計検査院が報告"
 og_lead_en: "HMRC suspended 23,794 Child Benefit claims after matching them against travel data; 59% were confirmed eligible or cleared by an employment check, the NAO reports"
@@ -85,7 +87,7 @@ NAO の分析では、その 59% が受給資格ありと確認されたか雇�
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、渡航データとの一致が承認を受けた条件（対象期間・データの種類・雇用の確認）で作られたものか、雇用などの別の記録と食い違わないかである。
+経路を問わず区別できる条件は、支給を止める根拠の一致が、承認された条件で作られ、雇用の事実と食い違わないかどうかである。
 
 - **誰が承認を出すか**: 突き合わせの条件を承認した会議体と、取り組みの責任者。対象期間・データの種類・除外の確認を変えるときは、試行のときの承認とは別に、変えた条件への承認を出す。
 - **どこで照合するか**: 照会を開いて支給を止める手順。雇用の記録と食い違う一致や、承認を受けた条件の外の一致は、止めずに保留して問い合わせを先にする。

@@ -12,13 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["063-smart-tv-residential-proxy-ai-scraping", "082-xz-utils-backdoor-identity-provenance", "201-bank-sinopac-vendor-setting-unauthorized-transfers"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "5a790b32b0271823"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "42fef445536331a8"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "XCPE ボットネット：Android TV のセットトップボックス 130 万台超に事前導入されたバックドアを、Google が警察庁と連携してテイクダウンした"
 og_lead_en: "XCPE botnet: Google, working with Japan's NPA, took down a backdoor preinstalled on more than 1.3 million Android TV set-top boxes"
@@ -84,7 +86,7 @@ Google Threat Intelligence Group は 11 月 3 日、Android TV のセットト�
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、送金を実行する前に、その依頼が本人の端末から出たかを、接続元の IP アドレスとは別の、本人が登録した端末の鍵で照合することである。
+経路を問わず区別できる条件は、送金や振込先の追加の依頼が、口座を持つ本人が認めたものかどうかである。
 
 - **誰が承認を出すか**: 口座を持つ本人。送金や振込先の追加は、本人が登録した端末の中にある鍵で依頼に署名する。ID とパスワードを持つだけの第三者や、中継に使われた家庭の機器では、その署名を作れない。
 - **どこで照合するか**: ネットバンキングが送金を実行する手順。接続元が国内の家庭の IP アドレスでも、登録した端末の鍵と結びつかない依頼は、本人が登録済みの端末で確かめるまで保留する。

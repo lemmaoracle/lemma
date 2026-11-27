@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["085-secret-network-axelar-bridge-infinite-mint", "190-iwai-cosmo-tradeworks-admin-function-unintended-orders"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "c3ae9edede11c161"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "32dd82ed7b8cb677"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-20
@@ -23,6 +23,8 @@ draft_fixed:
     note: "帯の見出しの「照らさずに」を「確かめずに」に直した（#53）"
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "韓国の暗号資産取引所 Bithumb、イベントの報酬 2,000 ウォンを 2,000 BTC として付与し、計 62 万 BTC が利用者の口座に記帳された"
 og_lead_en: "Bithumb, a South Korean crypto exchange, paid a 2,000-won event reward as 2,000 BTC, crediting 620,000 BTC to users' accounts"
@@ -85,7 +87,7 @@ Bithumb の報告として金融委員会は、翌日 4 時の時点で 99.7% �
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、付与の単位と総量が、事前の支給計画と取引所が実際に持つ量の範囲に収まるかである。
+経路を問わず区別できる条件は、付与の単位と総量が、支給計画と取引所が実際に持つ量の内かどうかである。
 
 - **誰が承認を出すか**: 支給の計画を決めた部署と、入力した担当者とは別の承認者。計画（銘柄・単位・1 人あたりの量・総量・対象の人数）を承認者の鍵で署名して残し、付与はその計画と結びつく場合だけ通す。
 - **どこで照合するか**: 付与を帳簿に記帳する手順（利用者の残高が増える前）。入力の単位や総量が計画と合わない付与、取引所が実際に持つ量を超える付与は、記帳の前に保留する。

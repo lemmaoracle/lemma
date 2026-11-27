@@ -12,15 +12,17 @@ related_pack: [A-incident-response]
 related_briefs: ["085-secret-network-axelar-bridge-infinite-mint", "190-iwai-cosmo-tradeworks-admin-function-unintended-orders"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "4f43a44b87e4ecbe"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "f22563fa1d9cca37"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-20
     note: "Added the FSS inspection opinion and three rulings in the return lawsuits"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "韓国の暗号資産取引所 Bithumb、イベントの報酬 2,000 ウォンを 2,000 BTC として付与し、計 62 万 BTC が利用者の口座に記帳された"
 og_lead_en: "Bithumb, a South Korean crypto exchange, paid a 2,000-won event reward as 2,000 BTC, crediting 620,000 BTC to users' accounts"
@@ -83,7 +85,7 @@ Citing Bithumb's report, the Financial Services Commission (FSC) said that by 04
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is whether the payout's unit and total fall within the approved payout plan and what the exchange actually holds.
+Whatever the route, the condition for telling them apart is whether the units and total of the award fall within the payout plan and the amount the exchange actually holds.
 
 - **Who approves**: The department that set the payout plan, and an approver other than the person who enters it. The plan (asset, unit, amount per person, total and number of recipients) is signed and kept with the approver's key, and a payout goes through only when it is tied to that plan.
 - **Where it is checked**: The step that credits the payout to the ledger (before users' balances increase). A payout whose unit or total does not match the plan, or that exceeds what the exchange actually holds, is held before crediting.

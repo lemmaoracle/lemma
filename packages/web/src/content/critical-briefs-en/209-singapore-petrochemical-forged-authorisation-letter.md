@@ -12,9 +12,9 @@ related_pack: [A-incident-response]
 related_briefs: ["184-singapore-commodity-trader-lookalike-supplier-email", "200-logix-aero-lookalike-domain-engine-sale-invoice", "174-mobile-alabama-arena-contractor-bank-change"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "c645e52f388c3cf6"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "628a301263c28056"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-20
@@ -23,6 +23,8 @@ draft_fixed:
     note: "Replaced the metaphor in the 01 bold sentence with plain wording (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "シンガポールの石油化学会社、書類の食い違いに気づいたが偽の授権書を示され、カンボジアの口座へ 1,280 万ドルを送金"
 og_lead_en: "A Singapore petrochemical firm spotted a discrepancy, then wired $12.8M to Cambodia on a forged authorisation letter"
@@ -83,7 +85,7 @@ The fraud came to light on 26 October, when the counterpart said it had not rece
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is that, before the transfer, whether the counterparty approved the new account is checked through its registered contact details, not through the instruction email or papers supplied by the instructing party.
+Whatever the route, the condition for telling them apart is whether the new account is one the counterparty approved.
 
 - **Who approves**: The counterparty. When it changes its receiving account, it approves the account through contact details registered beforehand (not those written in the instruction email or the authorisation letter) or a signature with its own key.
 - **Where it is checked**: The approval step before the transfer is executed. If the account in the instructions differs from the registered one, the transfer is held until it can be checked against the counterparty's approval. When a discrepancy is found in the documents, it is also resolved through the same registered contact details.

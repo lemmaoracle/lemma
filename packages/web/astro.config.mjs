@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { rehypeBriefSectionNumber } from "./src/lib/rehype-brief-section-number.mjs";
 import { stripHtmlComments } from "./src/lib/strip-html-comments.mjs";
 import checkInternalLinks from "./src/lib/check-internal-links.mjs";
+import checkBriefCondition from "./src/lib/check-brief-condition.mjs";
 
 export default defineConfig({
   site: "https://lemma.frame00.com",
@@ -16,6 +17,7 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
   },
   integrations: [
+    checkBriefCondition(),
     react(),
     sitemap({
       i18n: { defaultLocale: "en", locales: { en: "en-US", ja: "ja-JP" } },

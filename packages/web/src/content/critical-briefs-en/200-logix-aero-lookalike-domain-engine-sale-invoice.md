@@ -12,13 +12,15 @@ related_pack: [A-incident-response]
 related_briefs: ["185-studco-fourth-circuit-ach-name-mismatch", "184-singapore-commodity-trader-lookalike-supplier-email", "170-zephyr-energy-contractor-payment-diverted"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "d08d614b20aa01aa"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "185cc6b4eacc1588"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "Logix Aero、エンジン 2 基の売買のメールに似せたドメインの相手が割り込み、書き換えた契約書の口座へ 824,900 ドルを払った"
 og_lead_en: "Logix Aero paid $824,900 to an account written into contracts doctored by lookalike domains inside an engine deal"
@@ -81,7 +83,7 @@ According to the judgments, there was no evidence that either company's systems 
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is whether the account in the papers is the agreed account or, if different, one the counterparty has approved through a route apart from the papers received by email.
+Whatever the route, the condition for telling them apart is whether the account to be paid is one the counterparty approved.
 
 - **Who approves**: The seller. It registers the account for receiving payment at the start of the deal and approves any change by a phone number registered beforehand or a signature with its own key. Contact details written in the email or its attachments are not used.
 - **Where it is checked**: The approval step before the price is paid. The account in the contracts and invoices is compared with the registered account (here, the one set out in the LOI); if it differs, payment is held until it can be checked against the seller's approval.

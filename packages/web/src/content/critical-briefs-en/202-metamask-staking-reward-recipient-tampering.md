@@ -12,15 +12,17 @@ related_pack: [A-incident-response]
 related_briefs: ["032-booking-payout-account-tampering", "175-storm-2657-university-payroll-diversion", "196-bithumb-event-reward-btc-payout-error"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "598672f27abe4cbe"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "abadea7b8e086269"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "Added when each figure was disclosed or reported (5 November, 1 October) (#53)"
   - date: 2026-11-26
     note: "Cut overlapping explanations and shortened the text"
+  - date: 2026-11-27
+    note: "Shortened the condition sentence in section 3 and moved the means below it"
 version: "1.0"
 og_lead_ja: "MetaMask Staking で、報酬の受取先を保管するインフラに不正アクセスがあり、一部のバリデーターの受取先が書き換えられて約 0.385 ETH の報酬が流れた"
 og_lead_en: "At MetaMask Staking, unauthorised access to the infrastructure storing reward recipient addresses let an attacker alter some validators' recipients and divert about 0.385 ETH"
@@ -82,7 +84,7 @@ MetaMask identified and fixed the change on the same day and, as a precaution, e
 
 ## 3. Pre-execution check
 
-Whatever the route, the condition for telling them apart is not whether the new recipient is the value in the store, but whether it ties back to the designation of the customer who delegated the stake.
+Whatever the route, the condition for telling them apart is whether the new reward recipient is one specified by the customer who delegated the staking.
 
 - **Who approves**: The customer who delegated the stake (an institution or a partner). The customer designates the reward recipient, signed with their own key, and any change is also issued as a designation they have signed. Being able to write to the operator's store is not enough to produce that designation.
 - **Where it is checked**: The step that applies a recipient setting to validators (before it is used for reward payouts). A recipient that does not match the customer's designation is held before it is applied. The value in the store itself is also compared with the customer's designation each time it is applied.

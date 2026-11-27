@@ -12,15 +12,17 @@ related_pack: [A-incident-response]
 related_briefs: ["154-yumirlink-cuenote-support-credential-db-export", "193-amadeus-system-account-airline-booking-data", "167-zeabur-second-breach-admin-token"]
 fact_check:
   by: "Claude Opus 5.5"
-  at: 2026-11-26
-  rev: "256946822fe7c143"
-  ref: "https://github.com/lemmaoracle/lemma/pull/1221"
+  at: 2026-11-27
+  rev: "e0037dc6870ece14"
+  ref: "https://github.com/lemmaoracle/lemma/pull/1223"
 status: draft
 draft_fixed:
   - date: 2026-11-26
     note: "帯の見出しを、権限を書き出すと読めない形に直した（#53）"
   - date: 2026-11-26
     note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
+  - date: 2026-11-27
+    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
 version: "1.0"
 og_lead_ja: "NTT データの STdirectServices で、委託先 Securitize Japan の SaaS の管理者権限が不正に取得され、社債の購入者 111 名・2,678 名の情報が持ち出された"
 og_lead_en: "At NTT DATA's STdirectServices, administrator rights at contractor Securitize Japan's SaaS were illicitly obtained, and data on 111 and 2,678 bond buyers was taken"
@@ -87,7 +89,7 @@ NTT データが提供するデジタル証券プラットフォーム「STdirec
 
 ## 3. 実行前の照合
 
-経路を問わず区別できる条件は、購入者の個人情報の読み出し・書き出しが、どの発行体のどの特典の手続きに基づくかを、管理者権限とは別の発行体の依頼の記録で確かめられるかである。
+経路を問わず区別できる条件は、購入者の個人情報の読み出しや書き出しが、発行体が依頼した特典の手続きかどうかである。
 
 - **誰が承認を出すか**: 購入者の情報を預けた発行体と、サービスを提供する NTT データ。特典の手続きごとに、どの社債の、どの期間の、どの項目を扱うかを決め、委託先の管理者権限だけでは作れない形で依頼を出す。
 - **どこで照合するか**: 委託先の SaaS が、購入者の情報の読み出しや書き出しを実行する手順。管理者権限があっても、依頼の記録と結びつかない操作や、範囲（発行体・件数・項目）を超える操作は保留する。手続きの終わった社債の情報は、依頼が無ければ読み出せない形にする。
