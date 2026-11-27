@@ -108,7 +108,7 @@ function sectionHeadIndex(children, num) {
  * クラスに組み替える（CSS は手書き版のものをそのまま使う）。手書きの
  * HTML ブロックは md の段階では `raw` ノードなので、ここでは触らない
  * ——既に手で書かれた部品は二重に組み替わらない。
- * 規則の一覧は critical-briefs/README.md の「report レイアウト」。
+ * 規則の一覧は critical-briefs/README.md の「普通の markdown から組み立てる部品」。
  * ------------------------------------------------------------------ */
 
 const isEl = (n, tag) => n?.type === "element" && (tag === undefined || n.tagName === tag);
