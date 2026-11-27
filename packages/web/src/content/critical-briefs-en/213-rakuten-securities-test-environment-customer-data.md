@@ -15,16 +15,7 @@ fact_check:
   at: 2026-11-27
   rev: "c76e7a4747f6379a"
   ref: "https://github.com/lemmaoracle/lemma/pull/1223"
-status: draft
-draft_fixed:
-  - date: 2026-11-26
-    note: "Explained branch and customer codes; added the 17 November date (#53)"
-  - date: 2026-11-26
-    note: "Updated to the 24 Nov second report (c. 4.41m records, c. 11.98m accounts)"
-  - date: 2026-11-26
-    note: "Cut overlapping explanations and shortened the text"
-  - date: 2026-11-27
-    note: "Shortened the condition sentence in section 3 and moved the means below it"
+status: published
 version: "1.0"
 og_lead_ja: "楽天証券で、テスト環境のシステム内で管理していた顧客の情報が、第三者の不正アクセスで外部に持ち出された"
 og_lead_en: "At Rakuten Securities, customer data held in a test environment system was taken outside through unauthorised access by a third party"
