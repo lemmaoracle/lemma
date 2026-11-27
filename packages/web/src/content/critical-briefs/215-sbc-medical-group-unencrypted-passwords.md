@@ -15,14 +15,7 @@ fact_check:
   at: 2026-11-27
   rev: "b998545a7e4064bc"
   ref: "https://github.com/lemmaoracle/lemma/pull/1223"
-status: draft
-draft_fixed:
-  - date: 2026-11-26
-    note: "帯・見出し・03 の冒頭・図表1を人と条件で、01 の太字を比喩なしの2文に直した（#53）"
-  - date: 2026-11-26
-    note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
-  - date: 2026-11-27
-    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
+status: published
 version: "1.0"
 og_lead_ja: "SBCメディカルグループで、海外からの77万回の攻撃でデータベースに到達され、暗号化していなかったパスワードを含む基本情報162万4,000人分などが不正に取得された"
 og_lead_en: "At SBC Medical Group, sustained attacks from overseas — 770,000 in all — reached a database, and basic information on 1,624,000 people, including passwords stored without encryption, was taken without authorisation"

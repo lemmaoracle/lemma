@@ -15,16 +15,7 @@ fact_check:
   at: 2026-11-27
   rev: "80193cd84b631d43"
   ref: "https://github.com/lemmaoracle/lemma/pull/1223"
-status: draft
-draft_fixed:
-  - date: 2026-11-26
-    note: "帯の見出しの語と「部店」を直し、口座数の時点（11 月 17 日の公表）を足した（#53）"
-  - date: 2026-11-26
-    note: "11 月 24 日の第 2 報の数（約 441 万件・約 1,198 万口座）に更新し、第 1 報の数は経緯に残した"
-  - date: 2026-11-26
-    note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
-  - date: 2026-11-27
-    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
+status: published
 version: "1.0"
 og_lead_ja: "楽天証券で、テスト環境のシステム内で管理していた顧客の情報が、第三者の不正アクセスで外部に持ち出された"
 og_lead_en: "At Rakuten Securities, customer data held in a test environment system was taken outside through unauthorised access by a third party"

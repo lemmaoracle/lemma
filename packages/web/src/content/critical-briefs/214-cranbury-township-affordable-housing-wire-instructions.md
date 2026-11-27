@@ -15,14 +15,7 @@ fact_check:
   at: 2026-11-27
   rev: "631576d262f49718"
   ref: "https://github.com/lemmaoracle/lemma/pull/1223"
-status: draft
-draft_fixed:
-  - date: 2026-11-26
-    note: "送金額の時点（11 月 6 日の公表）を足した（#53）"
-  - date: 2026-11-26
-    note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
-  - date: 2026-11-27
-    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
+status: published
 version: "1.0"
 og_lead_ja: "米ニュージャージー州クランベリー町、土地の購入の代金約 2,600 万ドルが偽の振込の指示で送られ、1,730 万ドル近くが凍結された"
 og_lead_en: "Cranbury Township, New Jersey wired about $26M for a land purchase on fraudulent instructions; nearly $17.3M has been frozen"

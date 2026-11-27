@@ -15,14 +15,7 @@ fact_check:
   at: 2026-11-27
   rev: "ed0822bd11831c02"
   ref: "https://github.com/lemmaoracle/lemma/pull/1223"
-status: draft
-draft_fixed:
-  - date: 2026-11-26
-    note: "帯・見出し・03 の冒頭・図表1・takeaway・01 の太字を、開こうとする人で書き直した（#53）"
-  - date: 2026-11-26
-    note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
-  - date: 2026-11-27
-    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
+status: published
 version: "1.0"
 og_lead_ja: "デジタル庁のガバメントソリューションサービス（GSS）のファイル共有サービスで、正規の共有相手以外の者からのアクセスがあり、アップロードされていたファイルの一部が漏えいした可能性がある"
 og_lead_en: "On the file-sharing service of the Digital Agency's Government Solution Service (GSS), someone other than the intended recipients accessed files, and some of the uploaded files may have leaked"

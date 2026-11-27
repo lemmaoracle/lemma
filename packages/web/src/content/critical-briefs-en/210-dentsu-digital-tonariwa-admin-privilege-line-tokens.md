@@ -15,16 +15,7 @@ fact_check:
   at: 2026-11-27
   rev: "98350eae048fd761"
   ref: "https://github.com/lemmaoracle/lemma/pull/1223"
-status: draft
-draft_fixed:
-  - date: 2026-11-20
-    note: "なぜ通ったか：ログインのあとの権限の変更に追加の承認が要らなければ通る、と短くした"
-  - date: 2026-11-26
-    note: "Band, 03 opening and figure 1 now name the person changing permissions (#53)"
-  - date: 2026-11-26
-    note: "Cut overlapping explanations and shortened the text"
-  - date: 2026-11-27
-    note: "Shortened the condition sentence in section 3 and moved the means below it"
+status: published
 version: "1.0"
 og_lead_ja: "電通デジタルの TONARIWA で、漏えいした認証情報で管理アカウントに入られて権限が広げられ、導入企業 2 社の個人情報の漏えいが確認された"
 og_lead_en: "At Dentsu Digital's TONARIWA, leaked credentials let a third party into an administrative account and widen its permissions, and leaks were confirmed at two client companies"

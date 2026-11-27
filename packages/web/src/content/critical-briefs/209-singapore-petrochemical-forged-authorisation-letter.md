@@ -15,16 +15,7 @@ fact_check:
   at: 2026-11-27
   rev: "c7f5a2751451a723"
   ref: "https://github.com/lemmaoracle/lemma/pull/1223"
-status: draft
-draft_fixed:
-  - date: 2026-11-20
-    note: "なぜ通ったか：「指示を出した側から届いた書類」を「送ってきた相手が出した別の書類だけ」に"
-  - date: 2026-11-26
-    note: "01 の太字の比喩（相手の手の中で終わる）を、ふだんの言葉に直した（#53）"
-  - date: 2026-11-26
-    note: "重なっていた説明を削り、字数を短くした（本人の回覧）"
-  - date: 2026-11-27
-    note: "03 の冒頭の条件の1文を短くし、照合の手段を外した（本人の回覧）"
+status: published
 version: "1.0"
 og_lead_ja: "シンガポールの石油化学会社、書類の食い違いに気づいたが偽の授権書を示され、カンボジアの口座へ 1,280 万ドルを送金"
 og_lead_en: "A Singapore petrochemical firm spotted a discrepancy, then wired $12.8M to Cambodia on a forged authorisation letter"
