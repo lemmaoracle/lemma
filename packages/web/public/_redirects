@@ -66,3 +66,8 @@
 /ja/critical/briefs/134-cloudflare-workers-spectre-jwt-cross-tenant/   /ja/critical/briefs/  301
 /critical/briefs/134-cloudflare-workers-spectre-jwt-cross-tenant       /critical/briefs/     301
 /critical/briefs/134-cloudflare-workers-spectre-jwt-cross-tenant/      /critical/briefs/     301
+# 取り下げた Critical Brief（2026-11-28・077 IDMerit：照合が効く事例として筋が通らない・事実が係争中）
+/ja/critical/briefs/077-idmerit-kyc-data-exposure    /ja/critical/briefs/  301
+/ja/critical/briefs/077-idmerit-kyc-data-exposure/   /ja/critical/briefs/  301
+/critical/briefs/077-idmerit-kyc-data-exposure       /critical/briefs/     301
+/critical/briefs/077-idmerit-kyc-data-exposure/      /critical/briefs/     301

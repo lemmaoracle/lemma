@@ -9,7 +9,7 @@ incident_date: 2026-02-04
 published: 2026-06-30
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
-related_briefs: ["077-idmerit-kyc-data-exposure", "013-coinbase-kyc-insider-breach", "052-discord-age-verification-id-leak"]
+related_briefs: ["013-coinbase-kyc-insider-breach", "052-discord-age-verification-id-leak"]
 status: "published"
 version: "2.1"
 og_lead_ja: "Sumsub：本人確認事業者のサポート環境に約 18 か月気づかず侵入、利用者の氏名・連絡先が露出"

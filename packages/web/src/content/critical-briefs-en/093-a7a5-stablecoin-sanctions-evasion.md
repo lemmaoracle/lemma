@@ -9,7 +9,7 @@ incident_date: 2026-06-24
 published: 2026-07-03
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
-related_briefs: ["077-idmerit-kyc-data-exposure", "013-coinbase-kyc-insider-breach", "086-sumsub-support-environment-breach", "021-wirecard-balance-attestation"]
+related_briefs: ["013-coinbase-kyc-insider-breach", "086-sumsub-support-environment-breach", "021-wirecard-balance-attestation"]
 status: published
 gate: "payment-instruction"
 version: "1.0"
@@ -86,7 +86,7 @@ The condition that holds whatever the route is this: before accepting a transfer
 </div>
 </figure>
 
-Chain analysis identified A7A5's flows and the entities involved and led to sanctions designations, but it identified them after the transfers had settled. Cases about holding and protecting KYC data are [Coinbase's insider KYC leak](https://lemma.frame00.com/critical/briefs/013-coinbase-kyc-insider-breach/) (Brief 013), [IDMerit's exposure](https://lemma.frame00.com/critical/briefs/077-idmerit-kyc-data-exposure/) (Brief 077) and [the Sumsub support-environment breach](https://lemma.frame00.com/critical/briefs/086-sumsub-support-environment-breach/) (Brief 086); this case is the other side, where the attribute KYC established does not travel with later transactions. Claims about attributes circulating unchecked echo [Wirecard's forged balances](https://lemma.frame00.com/critical/briefs/021-wirecard-balance-attestation/) (Brief 021).
+Chain analysis identified A7A5's flows and the entities involved and led to sanctions designations, but it identified them after the transfers had settled. Cases about holding and protecting KYC data are [Coinbase's insider KYC leak](https://lemma.frame00.com/critical/briefs/013-coinbase-kyc-insider-breach/) (Brief 013) and [the Sumsub support-environment breach](https://lemma.frame00.com/critical/briefs/086-sumsub-support-environment-breach/) (Brief 086); this case is the other side, where the attribute KYC established does not travel with later transactions. Claims about attributes circulating unchecked echo [Wirecard's forged balances](https://lemma.frame00.com/critical/briefs/021-wirecard-balance-attestation/) (Brief 021).
 
 ## 4. What Lemma does
 

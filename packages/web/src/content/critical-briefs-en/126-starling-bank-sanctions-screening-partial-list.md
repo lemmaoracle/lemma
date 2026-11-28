@@ -9,7 +9,7 @@ incident_date: 2024-10-02
 published: 2026-08-07
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
-related_briefs: ["093-a7a5-stablecoin-sanctions-evasion", "086-sumsub-support-environment-breach", "077-idmerit-kyc-data-exposure", "013-coinbase-kyc-insider-breach"]
+related_briefs: ["093-a7a5-stablecoin-sanctions-evasion", "086-sumsub-support-environment-breach", "013-coinbase-kyc-insider-breach"]
 status: published
 gate: "payment-instruction"
 version: "1.0"
@@ -74,7 +74,7 @@ The screening ran. Customers were matched every day. What was missing sits earli
 
 > Matching means something only when it covers the whole of the source list. Against a fragment, clearing the check establishes nothing, and a sanctioned party surfaces only after the account exists.
 
-The high-risk account openings have the same shape. The agreement not to open them existed; what did not exist was a form in which each opening could be checked against that agreement. As a structure in which a regulated attribute rides into a financial path without being independently checked, this shares a direction with [Brief 093](/critical/briefs/093-a7a5-stablecoin-sanctions-evasion/) (moving funds under sanctions), and it belongs to the KYC/AML cluster of [Brief 013](/critical/briefs/013-coinbase-kyc-insider-breach/) · [Brief 086](/critical/briefs/086-sumsub-support-environment-breach/) · [Brief 077](/critical/briefs/077-idmerit-kyc-data-exposure/), where the layer that verifies identity and attributes thins out.
+The high-risk account openings have the same shape. The agreement not to open them existed; what did not exist was a form in which each opening could be checked against that agreement. As a structure in which a regulated attribute rides into a financial path without being independently checked, this shares a direction with [Brief 093](/critical/briefs/093-a7a5-stablecoin-sanctions-evasion/) (moving funds under sanctions), and it belongs to the KYC/AML cluster of [Brief 013](/critical/briefs/013-coinbase-kyc-insider-breach/) · [Brief 086](/critical/briefs/086-sumsub-support-environment-breach/), where the layer that verifies identity and attributes thins out.
 
 ## 5. What proof would have changed
 

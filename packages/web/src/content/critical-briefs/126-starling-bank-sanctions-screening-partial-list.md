@@ -9,7 +9,7 @@ incident_date: 2024-10-02
 published: 2026-08-07
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
-related_briefs: ["093-a7a5-stablecoin-sanctions-evasion", "086-sumsub-support-environment-breach", "077-idmerit-kyc-data-exposure", "013-coinbase-kyc-insider-breach"]
+related_briefs: ["093-a7a5-stablecoin-sanctions-evasion", "086-sumsub-support-environment-breach", "013-coinbase-kyc-insider-breach"]
 status: published
 gate: "payment-instruction"
 version: "1.0"
@@ -74,7 +74,7 @@ countries: ["gb"]
 
 > 照合は、原本の全体に向いて初めて意味を持つ。断片としか突き合わせていない照合は、通過しても確かめたことにならず、制裁該当は口座が開かれた後にしか現れない。
 
-高リスク顧客の口座開設も同じ形をしている。開設しないという合意は在ったが、個々の開設が合意に照らして確かめられる形にはなっていなかった。規制属性が独立に照合されないまま金融の動線に乗る構造として、これは [Brief 093](https://lemma.frame00.com/ja/critical/briefs/093-a7a5-stablecoin-sanctions-evasion/)（制裁下での資金移動）と方向を共有し、本人性・属性の検証層が痩せる点で [Brief 013](https://lemma.frame00.com/ja/critical/briefs/013-coinbase-kyc-insider-breach/) · [Brief 086](https://lemma.frame00.com/ja/critical/briefs/086-sumsub-support-environment-breach/) · [Brief 077](https://lemma.frame00.com/ja/critical/briefs/077-idmerit-kyc-data-exposure/) の KYC/AML クラスタに連なる。
+高リスク顧客の口座開設も同じ形をしている。開設しないという合意は在ったが、個々の開設が合意に照らして確かめられる形にはなっていなかった。規制属性が独立に照合されないまま金融の動線に乗る構造として、これは [Brief 093](https://lemma.frame00.com/ja/critical/briefs/093-a7a5-stablecoin-sanctions-evasion/)（制裁下での資金移動）と方向を共有し、本人性・属性の検証層が痩せる点で [Brief 013](https://lemma.frame00.com/ja/critical/briefs/013-coinbase-kyc-insider-breach/) · [Brief 086](https://lemma.frame00.com/ja/critical/briefs/086-sumsub-support-environment-breach/) の KYC/AML クラスタに連なる。
 
 ## 5. 証明があれば、何が変わるか
 
