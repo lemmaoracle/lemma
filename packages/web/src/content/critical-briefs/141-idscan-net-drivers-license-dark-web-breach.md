@@ -9,7 +9,7 @@ incident_date: 2026-09-01
 published: 2026-09-04
 authors: ["Lemma Critical Team"]
 related_pack: [B-regulatory]
-related_briefs: ["052-discord-age-verification-id-leak", "077-idmerit-kyc-data-exposure", "086-sumsub-support-environment-breach", "034-ekyc-liveness-bypass"]
+related_briefs: ["052-discord-age-verification-id-leak", "086-sumsub-support-environment-breach", "034-ekyc-liveness-bypass"]
 status: published
 gate: "disclosure"
 version: "1.0"
@@ -72,7 +72,7 @@ countries: ["us"]
 
 > 「Caesars は IDScan.net の顧客ではなく、2025 年 2 月以降 VeriScan を使用していない。にもかかわらず IDScan.net は自社サイトで当社を取引先として掲載している」——Caesars Entertainment。本人確認を担う事業者が公開する取引先一覧でさえ、独立に確かめられないまま古い状態で残っていた。
 
-年齢を証明するために渡した政府 ID が第三者から流出した [Brief 052](https://lemma.frame00.com/ja/critical/briefs/052-discord-age-verification-id-leak/)、KYC データの露出と帰属の争いを扱った [Brief 077](https://lemma.frame00.com/ja/critical/briefs/077-idmerit-kyc-data-exposure/) と [Brief 086](https://lemma.frame00.com/ja/critical/briefs/086-sumsub-support-environment-breach/) は、いずれも同じ失敗の型——確認のために原本を渡す設計——を別の業種で示している。
+年齢を証明するために渡した政府 ID が第三者から流出した [Brief 052](https://lemma.frame00.com/ja/critical/briefs/052-discord-age-verification-id-leak/)、KYC データを預かる会社の内側での露出を扱った [Brief 086](https://lemma.frame00.com/ja/critical/briefs/086-sumsub-support-environment-breach/) は、いずれも同じ失敗の型——確認のために原本を渡す設計——を別の業種で示している。
 
 ## 5. 証明があれば、何が変わるか
 

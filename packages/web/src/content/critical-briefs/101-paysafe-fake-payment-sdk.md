@@ -9,7 +9,7 @@ incident_date: 2026-07-07
 published: 2026-07-10
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
-related_briefs: ["028-npm-dependency-confusion-recon", "038-ironworm-npm-self-propagation", "090-air-fake-agent-skill-toctou", "077-idmerit-kyc-data-exposure", "013-coinbase-kyc-insider-breach"]
+related_briefs: ["028-npm-dependency-confusion-recon", "038-ironworm-npm-self-propagation", "090-air-fake-agent-skill-toctou", "013-coinbase-kyc-insider-breach"]
 status: published
 gate: "intake"
 version: "1.0"

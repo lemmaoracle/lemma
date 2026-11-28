@@ -9,7 +9,7 @@ incident_date: 2026-03-24
 published: 2026-09-08
 authors: ["Lemma Critical Team"]
 related_pack: [A-incident-response]
-related_briefs: ["077-idmerit-kyc-data-exposure", "086-sumsub-support-environment-breach", "006-google-api-key-revocation-lag"]
+related_briefs: ["086-sumsub-support-environment-breach", "006-google-api-key-revocation-lag"]
 status: published
 version: "2.1"
 og_lead_ja: "阿波銀行、役目を終えたテスト環境への不正アクセスで顧客・株主情報 2.7 万件が漏えい"
