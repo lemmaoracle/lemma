@@ -1,7 +1,7 @@
 ---
 brief_no: 77
-title: "IDMerit：本人確認に使われたとみられる約 10 億件がパスワードの無い DB で見つかったと報じられたが、IDMerit は否認し、帰属は確定しないまま(Cybernews 報道・IDMerit 否認)"
-title_en: "IDMerit: about a billion records apparently used for identity checks were reported found in a password-less database, IDMerit denied it, and whose data it was remains unsettled (Cybernews report, IDMerit denial)"
+title: "IDMerit：本人確認に使われたとみられるデータがパスワードの無い DB で見つかったと報じられ、IDMerit は自社の環境での露出を否認した。DB の持ち主は確定していない(Cybernews 報道・IDMerit 否認)"
+title_en: "IDMerit: identity-check data was reported found in a password-less database, IDMerit denied any exposure in its environment, and the database's owner has not been established (Cybernews report, IDMerit denial)"
 pillar: "04-regulatory-attribute"
 primary_category: "kyc-aml-disclosure"
 secondary_categories: ["data-provenance", "attribute-proof-bypass"]
@@ -11,23 +11,22 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["086-sumsub-support-environment-breach", "013-coinbase-kyc-insider-breach", "052-discord-age-verification-id-leak"]
 status: published
-version: "3.1"
-og_lead_ja: "IDMerit 10 億件露出の係争 — 誰のデータかを誰も記録で示せない"
-og_lead_en: "IDMerit's disputed billion-record exposure — no one can show whose data it was"
+version: "3.2"
+og_lead_ja: "本人確認データの露出の報道と IDMerit の否認 — DB の持ち主は記録で示されていない"
+og_lead_en: "A reported identity-data exposure and IDMerit's denial — the database's owner has not been shown by records"
 layout: "report"
 sections: "proof"
 gate: "disclosure"
-og_kicker_ja: "情報漏えい事例 · 帰属の係争"
-og_kicker_en: "DATA EXPOSURE · DISPUTED CUSTODY"
-og_headline_ja: "本人確認のデータが\n公開の DB で見つかった。\n誰のものかは決まらない。\n<accent>約 10 億件（報道の主張）</accent>"
-og_headline_en: "Identity-check data was found in an open database. Whose it was is unsettled.\n<accent>About 1 billion records (as claimed).</accent>"
+og_kicker_ja: "露出の報道 · 帰属の係争"
+og_kicker_en: "REPORTED EXPOSURE · DISPUTED CUSTODY"
+og_headline_ja: "本人確認のデータが\n公開の DB で見つかった。\n誰のものかは決まらない。\n<accent>件数は報道の主張で、未検証</accent>"
+og_headline_en: "Identity-check data was found in an open database. Whose it was is unsettled.\n<accent>The figures are the report's claim and unverified.</accent>"
 key_figures:
+  - value: "否認"
+    label: "IDMerit は、自社の環境での露出・不正アクセスは無かったとした（2026-02-20 の報道で）"
   - value: "約 10 億"
     unit: "件"
-    label: "機微な個人データを含むとされるレコード（Cybernews の主張・未検証）。総数は約 30 億件"
-    tone: "alert"
-  - value: "11-11 → 11-12"
-    label: "パスワードの無い DB の発見から、閉じられるまで（2025 年）"
+    label: "機微な個人データを含むと Cybernews が主張した件数（2026-02-18 の報道・未検証）"
   - value: "取り下げ"
     label: "IDMerit を相手取った集団訴訟（2026-03 提訴）。判断が出ないまま 06-03 に終わった"
 glossary:
@@ -48,11 +47,13 @@ controls:
     item: "委託先が本人確認のデータを保存するか、どこにどれだけの期間置くかを契約で決め、台帳と照合する"
   - slug: "audit-trail"
     item: "どのデータを、誰の管理下で、どこに置いているかを記録する"
-impact: "約 10 億件の露出が報じられ、帰属は係争（件数は未検証）"
+impact: "本人確認データの露出が報じられ、IDMerit は否認。DB の持ち主は確定していない（件数は報道の主張で未検証）"
 takeaway: "預けたデータが、誰の管理下で、どの契約で置かれているかを、置く前に記録し、指摘を受けたときに記録で答えられる形にする。"
 self_check: "自社の利用者のデータが見つかったと指摘されたとき、自社の管理下のものかどうかを記録で答えられるか。"
 countries: ["us"]
 ---
+
+> **改訂（v3.2 / 2026-11-28）**: 題・共有カード・表紙の数字を、報道と否認を並べる言い方にそろえ、件数を題から外した。表紙の数字は、否認・主張された件数・集団訴訟の3つにした（発見から閉鎖までの日付は §5 にある）。§4 の表の行の名前とチェックリストを、特定の会社の説明を評しているように読めない言い方にした。§5 から、IDMerit の否認と公表のあとの振る舞いを評していると読める文を外した。事実と出典は変えていない。
 
 > **改訂（v3.1 / 2026-11-02）**: 章立てを「通った操作」から始まる並びに組み直し、題から「欠けている層」の後半を外した。事実と出典は変えていない。
 
@@ -73,7 +74,7 @@ IDMerit は、顧客データも独立したデータソースのデータも所
 
 経路を問わず区別できる条件は、データを置く側が、置く前に、そのデータが誰の管理下で、どの契約で預かったものかを、預けた側の台帳と照合し、置いた場所とともに記録に残すことである。
 
-- **誰が承認を出すか**: 預けた側（本人確認を委託する金融機関など）。委託先とその先のデータソースについて、どのデータを保存してよいか（しないか）、どこに置いてよいかを、契約で決めて台帳に持つ。委託先の「保存しない」という説明だけには頼らない。
+- **誰が承認を出すか**: 預けた側（本人確認を委託する金融機関など）。委託先とその先のデータソースについて、どのデータを保存してよいか（しないか）、どこに置いてよいかを、契約で決めて台帳に持つ。委託先の説明だけには頼らない。
 - **どこで照合するか**: データを置く・保存する仕組み（DB の作成や複製の手続き）。台帳に無い管理主体や場所には、置かせない。
 - **何が残るか**: データごとに、管理する主体、預けた根拠（契約）、置いた場所と期間の記録。後から第三者に示せる形で残し、指摘を受けたとき、自社のものかどうかを記録で答えられるようにする。
 
@@ -108,7 +109,7 @@ IDMerit は、顧客データも独立したデータソースのデータも所
 
 | 対策 | データを置く・保存する | 公開された DB の発見後の、持ち主の特定 | 委託先の先のデータソースでの保存 |
 | --- | --- | --- | --- |
-| 委託先の「保存しない」という説明 | 一部 | 関係しない | 効かない |
+| 委託先による保存の有無の説明 | 一部 | 関係しない | 効かない |
 | データ処理の契約（保存の有無・場所） | 一部 | 効かない | 一部 |
 | データベースの公開設定の点検 | 関係しない | 効かない | 関係しない |
 | 研究者による発見と通知 | 関係しない | 一部 | 関係しない |
@@ -123,7 +124,7 @@ IDMerit は、顧客データも独立したデータソースのデータも所
 本人確認を外部に任せている組織で確認する 3 項目
 
 - 委託先が照会するデータソースと、データが保存される場所を言えるか。
-- 委託先の「保存しない」という説明を、説明以外の記録で確認しているか。
+- 委託先が説明する保存の有無を、契約と記録でも確かめられるか。
 - 自社の利用者のデータが見つかったと指摘されたとき、自社の管理下のものかを記録で答えられるか。
 
 ## 5. 事実と時系列
@@ -146,12 +147,11 @@ IDMerit は、顧客データも独立したデータソースのデータも所
 - **2026-03-11**: 米カリフォルニア州南部地区の連邦地裁に、IDMerit を相手取った集団訴訟が起こされる。
 - **2026-06-03**: 原告が訴えを取り下げる。判断は出ていない。
 
-> 件数と中身は Cybernews の主張で、独立に確認されていない。IDMerit の否認も、外から確認できる記録を伴っていない。2026 年 10 月の時点で、監督当局の判断や、DB の持ち主を特定した公表は無い。この Brief は、どちらの主張の真偽も認定しない。公表されていないことは、対策が無かったことを意味しない。
+> 件数と中身は Cybernews の主張で、独立に確認されていない。2026 年 10 月の時点で、監督当局の判断や、DB の持ち主を特定した公表は無い。この Brief は、どちらの主張の真偽も認定しない。公表されていないことは、対策が無かったことを意味しない。
 
 ### 公表後の対応
 
 - **Cybernews**: 発見は正当だとする立場を保ち、修正の販売はしていないと注記した。
-- **IDMerit**: 同じ時期に、データを保存しない設計を説明するブログを公開したが、事案には直接触れていない。
 
 ## 6. Sources
 

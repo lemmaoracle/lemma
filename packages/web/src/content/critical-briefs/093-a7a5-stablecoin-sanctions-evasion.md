@@ -90,7 +90,7 @@ A7A5 は 2025 年に、Ilan Shor と、ロシア国有で防衛セクター向�
 </div>
 </figure>
 
-チェーンの分析は、A7A5 のフローと関与した主体を特定し、制裁の指定につながったが、それは移転と決済が済んだ後の特定だった。KYC で預かったデータの保有と保護が問われた事案に、[Coinbase の内部経由の KYC データの漏えい](https://lemma.frame00.com/ja/critical/briefs/013-coinbase-kyc-insider-breach/)（Brief 013）、[IDMerit の露出](https://lemma.frame00.com/ja/critical/briefs/077-idmerit-kyc-data-exposure/)（Brief 077）、[Sumsub のサポート環境の侵害](https://lemma.frame00.com/ja/critical/briefs/086-sumsub-support-environment-breach/)（Brief 086）があり、本件は、KYC で確認した属性が以後の取引に伴わない側にあたる。属性の主張が照合されないまま流通した点は、[Wirecard の残高の偽装](https://lemma.frame00.com/ja/critical/briefs/021-wirecard-balance-attestation/)（Brief 021）と重なる。
+チェーンの分析は、A7A5 のフローと関与した主体を特定し、制裁の指定につながったが、それは移転と決済が済んだ後の特定だった。KYC で預かったデータの保有と保護が問われた事案に、[Coinbase の内部経由の KYC データの漏えい](https://lemma.frame00.com/ja/critical/briefs/013-coinbase-kyc-insider-breach/)（Brief 013）、[IDMerit をめぐる露出の報道と帰属の係争](https://lemma.frame00.com/ja/critical/briefs/077-idmerit-kyc-data-exposure/)（Brief 077）、[Sumsub のサポート環境の侵害](https://lemma.frame00.com/ja/critical/briefs/086-sumsub-support-environment-breach/)（Brief 086）があり、本件は、KYC で確認した属性が以後の取引に伴わない側にあたる。属性の主張が照合されないまま流通した点は、[Wirecard の残高の偽装](https://lemma.frame00.com/ja/critical/briefs/021-wirecard-balance-attestation/)（Brief 021）と重なる。
 
 ## 4. Lemma でできること
 

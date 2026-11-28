@@ -1,7 +1,7 @@
 ---
 brief_no: 77
-title: "IDMerit: about a billion records apparently used for identity checks were reported found in a password-less database, IDMerit denied it, and whose data it was remains unsettled (Cybernews report, IDMerit denial)"
-title_en: "IDMerit: about a billion records apparently used for identity checks were reported found in a password-less database, IDMerit denied it, and whose data it was remains unsettled (Cybernews report, IDMerit denial)"
+title: "IDMerit: identity-check data was reported found in a password-less database, IDMerit denied any exposure in its environment, and the database's owner has not been established (Cybernews report, IDMerit denial)"
+title_en: "IDMerit: identity-check data was reported found in a password-less database, IDMerit denied any exposure in its environment, and the database's owner has not been established (Cybernews report, IDMerit denial)"
 pillar: "04-regulatory-attribute"
 primary_category: "kyc-aml-disclosure"
 secondary_categories: ["data-provenance", "attribute-proof-bypass"]
@@ -11,23 +11,22 @@ authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["086-sumsub-support-environment-breach", "013-coinbase-kyc-insider-breach", "052-discord-age-verification-id-leak"]
 status: published
-version: "3.1"
-og_lead_ja: "IDMerit 10 億件露出の係争 — 誰のデータかを誰も記録で示せない"
-og_lead_en: "IDMerit's disputed billion-record exposure — no one can show whose data it was"
+version: "3.2"
+og_lead_ja: "本人確認データの露出の報道と IDMerit の否認 — DB の持ち主は記録で示されていない"
+og_lead_en: "A reported identity-data exposure and IDMerit's denial — the database's owner has not been shown by records"
 layout: "report"
 sections: "proof"
 gate: "disclosure"
-og_kicker_ja: "情報漏えい事例 · 帰属の係争"
-og_kicker_en: "DATA EXPOSURE · DISPUTED CUSTODY"
-og_headline_ja: "本人確認のデータが\n公開の DB で見つかった。\n誰のものかは決まらない。\n<accent>約 10 億件（報道の主張）</accent>"
-og_headline_en: "Identity-check data was found in an open database. Whose it was is unsettled.\n<accent>About 1 billion records (as claimed).</accent>"
+og_kicker_ja: "露出の報道 · 帰属の係争"
+og_kicker_en: "REPORTED EXPOSURE · DISPUTED CUSTODY"
+og_headline_ja: "本人確認のデータが\n公開の DB で見つかった。\n誰のものかは決まらない。\n<accent>件数は報道の主張で、未検証</accent>"
+og_headline_en: "Identity-check data was found in an open database. Whose it was is unsettled.\n<accent>The figures are the report's claim and unverified.</accent>"
 key_figures:
+  - value: "Denied"
+    label: "IDMerit said there was no exposure or unauthorised access in its environment (as reported 2026-02-20)"
   - value: "≈ 1"
     unit: "billion"
-    label: "Records said to contain sensitive personal data (Cybernews's claim, unverified). About 3 billion in total"
-    tone: "alert"
-  - value: "11-11 → 11-12"
-    label: "From finding the password-less database to its closure (2025)"
+    label: "Records Cybernews claimed contained sensitive personal data (reported 2026-02-18, unverified)"
   - value: "Dismissed"
     label: "Class action against IDMerit (filed 2026-03). Ended 06-03 without a ruling"
 glossary:
@@ -48,11 +47,13 @@ controls:
     item: "Agree by contract whether, where and for how long a vendor stores identity data, and check it against the register"
   - slug: "audit-trail"
     item: "Record which data is held, under whose custody, and where"
-impact: "Reported exposure of about 1 billion records; custody disputed (figures unverified)"
+impact: "An identity-data exposure was reported and IDMerit denied it; the database's owner has not been established (figures are the report's claim, unverified)"
 takeaway: "Record, before placing data, whose custody it is in and under which contract, so you can answer from records when challenged."
 self_check: "If someone said your users' data had been found exposed, could you answer from records whether it was in your custody?"
 countries: ["us"]
 ---
+
+> **Revision (v3.2 / 2026-11-28)**: Reworded the title, share card and cover figures to set the report and the denial side by side, and took the record count out of the title. The cover figures are now the denial, the claimed count and the class action (the discovery-to-closure dates remain in §5). Renamed a row of the §4 table and reworded the checklist so they do not read as judging a particular company's statement. Removed from §5 sentences that could read as judging IDMerit's denial and its conduct after publication. Facts and sources are unchanged.
 
 > **Revision (v3.1 / 2026-11-02)**: Reordered so the chapters start from what got through, and dropped the second half of the title. Facts and sources are unchanged.
 
@@ -73,7 +74,7 @@ IDMerit denied that it owns, controls or stores customer data or the data held b
 
 Whatever the route, the condition for telling them apart is that whoever places data checks, before placing it, whose custody the data is in and under which contract it was entrusted, against the ledger kept by the party that entrusted it, and records where it was placed.
 
-- **Who approves**: The party that entrusted the data (such as a financial institution that outsources identity checks). For the vendor and the data sources beyond it, it sets by contract which data may be stored (or not) and where, and keeps that in a ledger. It does not rely on the vendor's own "we don't store it" statement.
+- **Who approves**: The party that entrusted the data (such as a financial institution that outsources identity checks). For the vendor and the data sources beyond it, it sets by contract which data may be stored (or not) and where, and keeps that in a ledger. It does not rely on the vendor's account alone.
 - **Where it is checked**: The mechanism that places and stores data (the procedures that create or copy a database). It refuses to place data under a custodian or location that is not in the ledger.
 - **What is recorded**: For each set of data, who controls it, the basis it was entrusted on (the contract), and where and for how long it was placed, kept in a form that can be shown to a third party later, so that you can answer from records whether it was yours when challenged.
 
@@ -108,7 +109,7 @@ The route in this case is column 1 (placing and storing data), but who placed it
 
 | Control | Placing and storing data | Identifying the owner after an open database is found | Storage at data sources beyond the vendor |
 | --- | --- | --- | --- |
-| The vendor's "we don't store it" | Partial | Not relevant | Not effective |
+| The vendor's account of whether it stores data | Partial | Not relevant | Not effective |
 | Data-processing contracts (storage, location) | Partial | Not effective | Partial |
 | Checking databases' exposure settings | Not relevant | Not effective | Not relevant |
 | Discovery and reporting by researchers | Not relevant | Partial | Not relevant |
@@ -123,7 +124,7 @@ Note: Lemma's check works only when it is built into the mechanism that places a
 Three things to confirm in an organisation that outsources identity checks
 
 - Can you name the data sources your vendor queries and where data is stored?
-- Do you confirm your vendor's "we don't store it" with records, not just the statement?
+- Can you confirm your vendor's account of whether it stores data against contracts and records too?
 - If told your users' data had been found, could you answer from records whether it was in your custody?
 
 ## 5. Facts and timeline
@@ -146,12 +147,11 @@ Three things to confirm in an organisation that outsources identity checks
 - **2026-03-11**: A class action against IDMerit is filed in the US District Court for the Southern District of California.
 - **2026-06-03**: The plaintiff voluntarily dismisses the case; no ruling was made.
 
-> The figures and contents are Cybernews's claims and have not been independently verified. IDMerit's denial is not backed by records that outsiders can check either. As of October 2026, there has been no regulator finding and no disclosure identifying the database's owner. This Brief does not rule on either side's claims. What has not been disclosed does not mean there were no controls.
+> The figures and contents are Cybernews's claims and have not been independently verified. As of October 2026, there has been no regulator finding and no disclosure identifying the database's owner. This Brief does not rule on either side's claims. What has not been disclosed does not mean there were no controls.
 
 ### After disclosure
 
 - **Cybernews**: Maintained that the findings were legitimate, and noted that it does not sell fixes.
-- **IDMerit**: Around the same time published blog posts on its no-storage design, without referring to the case directly.
 
 ## 6. Sources
 
